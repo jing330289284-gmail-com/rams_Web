@@ -4,7 +4,7 @@ import * as bankInfoJs from '../components/bankInfoJs.js';
 import $ from 'jquery';
 
 class BankInfo extends Component {
-    state = {  }
+    //state = {  }
 
     componentDidMount(){
         if($("#customerNo").val() === '' || $("#customerNo").val() === null){
