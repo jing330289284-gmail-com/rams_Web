@@ -3,18 +3,42 @@ import {Row , Form , Col , InputGroup , Button , FormControl , OverlayTrigger , 
 import * as customerInfoJs from '../components/CustomerInfoJs.js';
 import $ from 'jquery';
 import BankInfo from './bankInfo';
+import Autosuggest from 'react-autosuggest';
+import './style.css';
 import TopCustomerInfo from './topCustomerInfo';
 import { BrowserRouter as Router, Route, Link ,Switch } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
+import axios from 'axios';
 
+function escapeRegexCharacters(str) {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getSuggestions(value, datas) {
+	const escapedValue = escapeRegexCharacters(value.trim());
+	const regex = new RegExp('^' + escapedValue, 'i');
+
+	return datas.filter(data => regex.test(data.topCustomerName));
+}
+function getSuggestionDlt1(suggestion) {
+	return suggestion.topCustomerName;
+}
+function renderSuggestion(suggestion) {
+	return (
+		<span>{suggestion.topCustomerName}</span>
+	);
+}
 class CustomerInfo extends Component {
     state = {
         showBankInfoModal:false,
         showCustomerInfoModal:false,
         establishmentDate: new Date(),
         businessStartDate: new Date(),
+        topCustomerSuggestions:[],
+        topCustomerValue:'',
+        topCustomerName:'',
      }
     //日期更改
     establishmentDateChange = date => {
@@ -30,8 +54,7 @@ class CustomerInfo extends Component {
             businessStartDate: date,
         });
             let month = date.getMonth() + 1;
-            let day = date.getDate();
-            $("#businessStartDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month) + '' + (day < 10 ? '0'+day: day));
+            $("#businessStartDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month));
         
         };
      constructor(props){
@@ -54,12 +77,65 @@ class CustomerInfo extends Component {
          }
      }
     componentDidMount(){
-        $("#shoriKbn").val( this.props.location.state);
-        $("#customerNo").val('C002');
+        var pro = this.props.location.state;
+        $("#shoriKbn").val( pro.split("-")[0]);
+        $("#customerNo").val( pro.split("-")[1]);
         customerInfoJs.onload();
+        if( $("#shoriKbn").val() === "shusei" ||  $("#shoriKbn").val() === "shosai"){
+            var customerInfoMod = {};
+            customerInfoMod["customerNo"] = $("#customerNo").val();
+            customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
+            axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
+            .then(resultMap =>{
+                this.setState({
+                    topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
+                })
+            })
+        }
     }
+    //提示查询
+        
+	onDlt1SuggestionsFetchRequested = ({ value }) => {
+		const customerInfoMod = {
+			topCustomerName: value
+		};
+		axios.post("http://127.0.0.1:8080/customerInfo/getTopCustomer", customerInfoMod)
+			.then(response => {
+				console.log(response);
+				if (response.data != null) {
+					this.setState({
+						topCustomerSuggestions: getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+    };
+    onDlt1SuggestionsClearRequested = () => {
+		this.setState({
+			developement1Suggestions: []
+		});
+    };
+    onDlt1SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			topCustomerValue: suggestion.topCustomerName
+		});
+    };
+    onDevelopement1Change = (event, { newValue }) => {
+		this.setState({
+			topCustomerValue: newValue
+		});
+	};
     render() {
         console.log(this.props)
+        const {topCustomerSuggestions , topCustomerValue} = this.state;
+        const dlt1InputProps = {
+			placeholder: "例：富士通",
+			value: topCustomerValue,
+            onChange: this.onDevelopement1Change,
+            id:"topCustomerNameShita",
+            className:'form-control'
+		};
         return (
             <div className="container col-8" style={{"background":"#f5f5f5"}}>
             <div className="container col-10" style={{"background":"#f5f5f5"}}>
@@ -113,7 +189,7 @@ class CustomerInfo extends Component {
                 </Row>
                 <Form id="customerForm">
                 <Row>
-                    <Col sm={6}>
+                    <Col sm={4}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
@@ -121,13 +197,21 @@ class CustomerInfo extends Component {
                                 <Form.Control placeholder="お客様番号" id="customerNo" name="customerNo" readOnly/>
                         </InputGroup>
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={5}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="お客様名" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font  color="red"
+                                <Form.Control placeholder="例：LYC株式会社" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font  color="red"
 				style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
+                        </InputGroup>
+                    </Col>
+                    <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-sm">略称</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <Form.Control placeholder="LYC" id="customerAbbreviation" name="customerAbbreviation" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -137,7 +221,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="本社場所" id="headOffice" name="headOffice" />
+                                <Form.Control placeholder="東京都千代田区XXX" id="headOffice" name="headOffice" />
                         </InputGroup>
                     </Col>
                     <Col sm={4}>
@@ -145,7 +229,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">設立</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="設立" id="establishmentDate" readOnly name="establishmentDate" />
+                                <Form.Control placeholder="yyyydd" id="establishmentDate" readOnly name="establishmentDate" />
                                 <DatePicker
                                 selected={this.state.establishmentDate}
                                 onChange={this.establishmentDateChange}
@@ -167,13 +251,14 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="取引開始日" id="businessStartDate" readOnly name="businessStartDate" />
+                                <Form.Control placeholder="yyyydd" id="businessStartDate" readOnly name="businessStartDate" />
                                 <DatePicker
                                 selected={this.state.businessStartDate}
                                 onChange={this.businessStartDateChange}
                                 dateFormat={"yyyy MM"}
                                 autoComplete="on"
                                 locale="pt-BR"
+                                showMonthYearPicker
                                 showFullMonthYearPicker
                                 // minDate={new Date()}
                                 showDisabledMonthNavigation
@@ -219,7 +304,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="URL" id="url" name="url" />
+                                <Form.Control placeholder="www.lyc.co.jp" id="url" name="url" />
                         </InputGroup>
                     </Col>
                     <Col sm={4}>
@@ -227,7 +312,16 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="上位お客様" id="topCustomer" name="topCustomer" />
+                                {/* <Form.Control placeholder="上位お客様" id="topCustomer" name="topCustomer" /> */}
+                                <Autosuggest
+                                    suggestions={topCustomerSuggestions}
+                                    onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
+                                    onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
+                                    onSuggestionSelected={this.onDlt1SuggestionSelected}
+                                    getSuggestionValue={getSuggestionDlt1}
+                                    renderSuggestion={renderSuggestion}
+                                    inputProps={dlt1InputProps}                                    
+                                />
                         </InputGroup>
                     </Col>
                     <Col sm={4}>

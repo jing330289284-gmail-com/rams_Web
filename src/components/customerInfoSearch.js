@@ -4,7 +4,7 @@ import $ from 'jquery';
 import axios from "axios";
 import * as customerInfoSearchJs from '../components/CustomerInfoSearchJs.js';
 import { BrowserRouter as Router, Route, Link ,Switch } from "react-router-dom";
-import {BootstrapTable, TableHeaderColumn , ReactBsTable} from 'react-bootstrap-table';
+import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 class CustomerInfoSearch extends Component {
@@ -12,7 +12,8 @@ class CustomerInfoSearch extends Component {
         radioValue:'',
         customerInfoData:[],
         currentPage: 1,
-		emploryeesPerPage: 5,
+        emploryeesPerPage: 5,
+        selectRowNo:'',
      }
     componentDidMount(){
         customerInfoSearchJs.onload();
@@ -36,8 +37,25 @@ class CustomerInfoSearch extends Component {
             })
         })
         .catch(function (error) {
-        alert("select框内容获取错误，请检查程序");
+        alert("查询错误，请检查程序");
         });  
+    }
+    //调用后台删除
+    onDeleteRow(rows) {
+        // ...
+        var customerInfoMod = {};
+        customerInfoMod["customerNo"] = rows.customerNo;
+        axios.post("http://127.0.0.1:8080/customerInfoSearch/delect" , customerInfoMod)
+        .then(result=> {
+            if(result.data){
+                alert("数据删除成功");
+            }else{
+                alert("数据删除失败");
+            }
+        })
+        .catch(function (error) {
+          alert("删除错误，请检查程序");
+        });
     }
     isExpandableRow(row) {
         if (row.employeeNameList !== null) return true;
@@ -61,11 +79,24 @@ class CustomerInfoSearch extends Component {
         if (isSelected) {
             document.getElementById('shusei').className = "btn btn-sm btn-primary";
             document.getElementById('sakujo').className = "btn btn-sm btn-primary";
+            this.setState({
+                selectRowNo:row.customerNo,
+            })
         } else {
             document.getElementById('shusei').className = "btn btn-sm btn-primary disabled";
             document.getElementById('sakujo').className = "btn btn-sm btn-primary disabled";
+            this.setState({
+                selectRowNo:'',
+            })
         }
     }
+    //删除行按钮
+    handleDeleteButtonClick = (onClick) => {
+        // Custom your onClick event here,
+        // it's not necessary to implement this function if you have no any process before onClick
+        console.log('This is my custom function for DeleteButton click event');
+        onClick();
+      }
     //稼動者テーブル
     expandComponent(row) {
     return (
@@ -91,13 +122,24 @@ class CustomerInfoSearch extends Component {
         </div>
     );
     }
+    //创建删除行按钮
+    createCustomDeleteButton = (onClick) => {
+        return (
+          <DeleteButton
+            btnText='削除'
+            btnContextual='btn-warning'
+            className='my-custom-class'
+            btnGlyphicon='glyphicon-edit'
+            onClick={ () => this.handleDeleteButtonClick(onClick) }/>
+        );
+      }
     render() {
-        const { radioValue , customerInfoData , emploryeesPerPage , currentPage}=this.state;
+        const { radioValue , customerInfoData }=this.state;
         var tsuikaPath = {
             pathname:'/subMenu/customerInfo',state:"tsuika",
           }
         var shuseiPath = {
-        pathname:'/subMenu/customerInfo',state:"shusei",
+        pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.selectRowNo,
         }
         const selectRow = {
             mode: 'radio',
@@ -108,7 +150,7 @@ class CustomerInfoSearch extends Component {
             onSelect:this.handleRowSelect,
         };
         const options = {
-        page: 2,  // which page you want to show as default
+        page: 1,  // which page you want to show as default
         sizePerPage: 5,  // which size per page you want to locate as default
         pageStartIndex: 1, // where to start counting the pages
         paginationSize: 3,  // the pagination bar size.
@@ -122,6 +164,8 @@ class CustomerInfoSearch extends Component {
         // alwaysShowAllBtns: true // Always show next and previous button
         // withFirstAndLast: false > Hide the going to First and Last page button
         expandRowBgColor: 'rgb(165, 165, 165)',
+        deleteBtn: this.createCustomDeleteButton,
+        onDeleteRow: this.onDeleteRow,
         };
         return (
            <div>
@@ -145,7 +189,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="お客様番号" id="customerNo" name="customerNo"/>
+                                <Form.Control placeholder="例：C001" id="customerNo" name="customerNo"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -153,7 +197,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="お客様名" id="customerName" name="customerName"/>
+                                <Form.Control placeholder="例：LYC株式会社" id="customerName" name="customerName"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -161,7 +205,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="本社場所" id="headOffice" name="headOffice"/>
+                                <Form.Control placeholder="秋葉原" id="headOffice" name="headOffice"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -175,7 +219,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="お客様ランキング" id="customerRankingCode" name="customerRankingCode">
+                                <Form.Control as="select" id="customerRankingCode" name="customerRankingCode">
                                 <option value=''>選択してください</option>
                                 </Form.Control>
                         </InputGroup>
@@ -185,7 +229,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode">
+                                <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
                                 <option value=''>選択してください</option>
                                 </Form.Control>
                         </InputGroup>
@@ -195,7 +239,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="上位お客様" id="topCustomerName" name="topCustomerName"/>
+                                <Form.Control placeholder="例：富士通" id="topCustomerName" name="topCustomerName"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -213,8 +257,6 @@ class CustomerInfoSearch extends Component {
                </Form>
                <Form>
                 <br/>
-                <Card>
-                    <Card.Body>
                     <Row>
                         <Col sm={1}>
                         </Col>
@@ -224,7 +266,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={1}></Col>
                         <Col sm={2}>
                                 <Link to={shuseiPath} className="btn btn-sm btn-primary" id="shusei">修正</Link>
-                                <Link className="btn btn-sm btn-primary" id="sakujo">删除</Link>
+                                <Button size="sm" id="sakujo" >删除</Button>
                         </Col>
                     </Row>
                         { radioValue === "haveOperator" ?
@@ -241,38 +283,41 @@ class CustomerInfoSearch extends Component {
                             selectRow={ selectRow }
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
+                            deleteRow
                              >
-                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true }>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo' dataSort={ true }>お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName' dataSort={ true }>お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true }>ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice' dataSort={ true }>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true }>会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true }>上位客様</TableHeaderColumn>
+                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true } headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo' dataSort={ true } headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='headOffice' dataSort={ true } headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true }headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options }>
-                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true }>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo' dataSort={ true }>お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName' dataSort={ true }>お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true }>ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice' dataSort={ true }>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true }>会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true }>上位客様</TableHeaderColumn>
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow={true}>
+                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true } headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo' dataSort={ true } headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='headOffice' dataSort={ true } headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                             </BootstrapTable>
                         }
-                            </Card.Body>
-                </Card>
                 </Form>
            </div> 
         );
     }
     renderShowsTotal(start, to, total) {
-        return (
-            <p>
-            ページ： { start } /{ to }, トータル件数： { total }&nbsp;&nbsp;
-            </p>
-        );
+        if(total === 0){
+            return (<></>);
+        }else{
+            return (
+                <p>
+                ページ： { start } /{ to }, トータル件数： { total }&nbsp;&nbsp;
+                </p>
+            );
+            }
       }
 }
 

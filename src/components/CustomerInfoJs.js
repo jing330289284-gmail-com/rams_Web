@@ -5,13 +5,15 @@ var oldForm_dataJson;
 var newForm_data;
 var newForm_dataJson;
 
-export function onload(){
+export async function onload(){
+  if($("#shoriKbn").val() !== "shusei"){
     $("#toBankInfo").attr("disabled",true);
     $("#toCustomerInfo").attr("disabled",true);
+  }
     var customerInfoMod = {};
     customerInfoMod["customerNo"] = $("#customerNo").val();
     customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
-    axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
+    await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
     .then(function (resultMap) {
         var customerRanking = {};
         var companyNature = {};
@@ -40,6 +42,9 @@ export function onload(){
             $("#customerNo").attr("readOnly",true);
         }else{
             $("#customerName").val(customerInfoMod.customerName);
+            $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
+            $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
+            $("#businessStartDate").val(customerInfoMod.businessStartDate);
             $("#headOffice").val(customerInfoMod.headOffice);
             $("#establishmentDate").val(customerInfoMod.establishmentDate);
             $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
@@ -68,7 +73,7 @@ export function toroku(){
         $.each(formArray,function(i,item){
             customerInfoMod[item.name] = item.value;     
         });
-        customerInfoMod["topCustomerName"] = $("#topCustomer").val();
+        customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
         customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
         axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
         .then(function (result) {

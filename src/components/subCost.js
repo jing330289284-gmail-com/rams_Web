@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , FormControl , OverlayTrigger , Popover} from 'react-bootstrap';
 import * as SubCostJs from '../components/subCostJs.js';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,6 +13,7 @@ class SubCost extends Component {
     state = {
         bonusStartDate: new Date(),
         raiseStartDate: new Date(),
+        RelatedEmployees:'',
     }
     //日期更改
     bonusChange = date => {
@@ -34,7 +35,7 @@ class SubCost extends Component {
       var employeeNo = sessionStorage.getItem('employeeNo');
       var shoriKbn = sessionStorage.getItem('shoriKbn');
       $("#employeeNo").val("LYC001")
-      $("#shoriKbn").val("tsuika")
+      $("#shoriKbn").val("shusei")
       if($("#shoriKbn").val() === "shosai"){
         SubCostJs.onloadPage();
         SubCostJs.setDisabled();
@@ -42,10 +43,16 @@ class SubCost extends Component {
         SubCostJs.onloadPage();
       }
     }
+    setYouin=()=>{
+        this.setState({
+            RelatedEmployees:$("#RelatedEmployees").val()
+        })
+    }
     render() {
+        const {RelatedEmployees} = this.state;
         return (
           <div className="container col-10" style={{"background":"#f5f5f5"}}>
-          <div className="container col-6" style={{"background":"#f5f5f5"}}>
+          <div className="container col-7" style={{"background":"#f5f5f5"}}>
             <Form id="costForm">
               <Form.Group>
               {/* <Row>
@@ -59,63 +66,51 @@ class SubCost extends Component {
                  <h2>諸費用</h2>
                 </Col>
               </Row>
+              <Row>
+                        <Col sm={3}>
+                        </Col>
+                        <Col sm={7}>
+                        <p id="subCostErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★</p>
+                        </Col>
+                </Row>
               </Form.Group>
               <Form.Group>
                     <Row>
                     <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">給料</InputGroup.Text>
+                            <InputGroup.Text id="inputGroup-sizing-sm">社員給料</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="salary" name="salary" maxLength="6" placeholder="給料" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="salary" name="salary" maxLength="6" 
+                            onChange={SubCostJs.totalKeisan} placeholder="給料" aria-label="Small" aria-describedby="inputGroup-sizing-sm" /><font id="mark" color="red"
+				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                         </InputGroup>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">社会保险</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Check defaultChecked={true}　label="あり" inline="true" type="radio" id="hokenCheckYes" name="SocialInsuranceFlag" value="0" onClick={SubCostJs.checkHave.bind(this,"SocialInsuranceFlag")}  />
-                            <Form.Check label="なし" inline="true" type="radio" name="SocialInsuranceFlag" id="hokenCheckNo" value="1" onClick={SubCostJs.checkHave.bind(this,"SocialInsuranceFlag")}  />
+                            <FormControl as="select" id="SocialInsuranceFlag" name="SocialInsuranceFlag" onChange={SubCostJs.jidoujisan}>
+                                <option value="1">なし</option>
+                                <option value="0">あり</option>
+                            </FormControl>
                         </InputGroup>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">保険料</InputGroup.Text>
+                            <InputGroup.Text id="inputGroup-sizing-sm">厚生</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="InsuranceFee" name="InsuranceFee" readOnly maxLength="5" placeholder="保険料" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="welfarePensionAmount" onChange={SubCostJs.totalKeisan} name="welfarePensionAmount" readOnly maxLength="5" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                             <InputGroup.Prepend>
-                                <Button id="jidokeisan" onClick={SubCostJs.jidoujisan} >自動計算</Button>
+                            <InputGroup.Text id="inputGroup-sizing-sm">健康</InputGroup.Text>
                             </InputGroup.Prepend>
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <br/>
-                <Row>
-                    <Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
+                            <FormControl id="healthInsuranceAmount" onChange={SubCostJs.totalKeisan} name="healthInsuranceAmount" readOnly aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                             <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">待機費</InputGroup.Text>
+                            <InputGroup.Text id="inputGroup-sizing-sm">総額</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="WaitingCost" name="WaitingCost" maxLength="6" type="text" placeholder="待機費" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-                        </InputGroup>
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">ボーナス：</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Check label="あり" defaultChecked={true} inline="true" type="radio" id="bonusCheckYes" name="BonusFlag" value="0" onClick={SubCostJs.checkHave.bind(this,"BonusFlag")}  />
-                            <Form.Check label="なし" inline="true" type="radio" id="bonusCheckNo" name="BonusFlag" value="1" onClick={SubCostJs.checkHave.bind(this,"BonusFlag")}  />
-                        </InputGroup>
-                    </Col>
-                    <Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">ボーナス</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl id="BonusAmount" name="BonusAmount" maxLength="6" placeholder="ボーナス" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="InsuranceFeeAmount" onChange={SubCostJs.totalKeisan} name="InsuranceFeeAmount" readOnly aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -126,7 +121,41 @@ class SubCost extends Component {
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">交通費</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="TransportationExpenses" name="TransportationExpenses" maxLength="5" type="text" placeholder="交通費" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="TransportationExpenses" onChange={SubCostJs.totalKeisan} name="TransportationExpenses" maxLength="5" type="text" placeholder="交通費" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                        </InputGroup>
+                    </Col>
+                    <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">ボーナス：</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <FormControl as="select" id="BonusFlag" name="BonusFlag" onChange={SubCostJs.bonusCanInput}> 
+                                    <option value="1">なし</option>
+                                    <option value="0">あり</option>
+                                </FormControl>
+                            </InputGroup>
+                    </Col>
+                    <Col sm={5}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">前回額</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl id="lastTimeBonusAmount" onChange={SubCostJs.totalKeisan} readOnly name="lastTimeBonusAmount" maxLength="7" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">予定額</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl id="scheduleOfBonusAmount" onChange={SubCostJs.totalKeisan} readOnly name="scheduleOfBonusAmount" maxLength="7" placeholder="予定額" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                        </InputGroup>
+                    </Col>
+                </Row>
+                <br/>
+                <Row>
+                    <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">非稼働費用</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl id="WaitingCost" onChange={SubCostJs.totalKeisan} readOnly name="WaitingCost" maxLength="6" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                         </InputGroup>
                     </Col>
                     <Col sm={4}>
@@ -180,24 +209,62 @@ class SubCost extends Component {
                 </Row>
                 <br/>
                 <Row>
-                    <Col sm={5}>
+                    <Col sm={4}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">リーダ手当</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl id="leaderAllowanceAmount" onChange={SubCostJs.totalKeisan} readOnly maxLength="6" name="leaderAllowanceAmount" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <InputGroup.Prepend>
+                            <OverlayTrigger
+                                trigger="click"
+                                key={"top"}
+                                placement={"top"}
+                                overlay={
+                                    <Popover>
+                                    <Popover.Content>
+                                        <a >{RelatedEmployees}</a>
+                                    </Popover.Content>
+                                    </Popover>
+                                }
+                                >
+                                <Button size="sm" id="youin" onClick={this.setYouin}>要員</Button>
+                            </OverlayTrigger>
+                            </InputGroup.Prepend>
+                        </InputGroup>
+                    </Col>
+                    <Col sm={4}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">他の手当</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="otherAllowance" maxLength="20" name="otherAllowance" type="text" placeholder="手当名称" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-                            <FormControl id="otherAllowanceAmount" maxLength="6" name="otherAllowanceAmount" type="text" placeholder="手当金額" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="otherAllowance" maxLength="20" name="otherAllowance" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="otherAllowanceAmount" onChange={SubCostJs.totalKeisan} maxLength="6" name="otherAllowanceAmount" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">円</InputGroup.Text>
                             </InputGroup.Prepend>
                         </InputGroup>
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={4}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="remark" name="remark" type="text" placeholder="備考" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="remark" name="remark" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                        </InputGroup>
+                    </Col>
+                </Row>
+                <br/>
+                <Row>
+                    <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">総額</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl id="totalAmount" maxLength="7" name="totalAmount" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroup-sizing-sm">円</InputGroup.Text>
+                            </InputGroup.Prepend>
                         </InputGroup>
                     </Col>
                 </Row>
@@ -219,6 +286,7 @@ class SubCost extends Component {
             </Form.Group>
             <input type="hidden" id="employeeNo" name="employeeNo"/>
             <input type="hidden" id="shoriKbn" name="shoriKbn"/>
+            <input type="hidden" id="RelatedEmployees" name="RelatedEmployees"/>
           </Form>
           </div>
           </div>

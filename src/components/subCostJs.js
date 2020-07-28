@@ -1,3 +1,5 @@
+import { func } from 'prop-types';
+
 const $ = require('jquery');
 const axios = require('axios');
 var oldForm_data;
@@ -5,27 +7,12 @@ var oldForm_dataJson;
 var newForm_data;
 var newForm_dataJson;
 
-// radio切换
-export  function checkHave(radioName){   
-    var changeId = (radioName == "SocialInsuranceFlag") ? "InsuranceFee" : "BonusAmount";
-    if($('input:radio[name="'+radioName+'"]:checked').val() == "1"){
-        $("#"+changeId+"").attr("disabled",true);
-        $("#"+changeId+"").val("");
-        if(radioName == "SocialInsuranceFlag"){
-          $("#jidokeisan").attr("disabled",true);
-        }
-    }else if($('input:radio[name="'+radioName+'"]:checked').val() == "0"){
-        $("#"+changeId+"").attr("disabled",false);
-        if(radioName == "SocialInsuranceFlag"){
-          $("#jidokeisan").attr("disabled",false);
-        }
-    }
- }
 // 登录按钮
 export function tokuro(){
   newForm_data = $("#costForm").serializeArray();
   newForm_dataJson = JSON.stringify({ dataform: newForm_data });
-  if(newForm_dataJson != oldForm_dataJson){
+  if(newForm_dataJson !== oldForm_dataJson && $("#totalAmount").val() !== '' && 
+  $("#totalAmount").val() !== null && !isNaN($("#totalAmount").val())){
     var costModel = {};
     var formArray =$("#costForm").serializeArray();
     $.each(formArray,function(i,item){
@@ -46,37 +33,58 @@ export function tokuro(){
       alert("登录错误，请检查程序");
     });
   }else{
-    alert("修正してありません!")
+    if(newForm_dataJson === oldForm_dataJson){
+      alert("修正してありません!")
+    }else if($("#totalAmount").val() === '' || 
+    $("#totalAmount").val() === null || isNaN($("#totalAmount").val())){
+      document.getElementById("subCostErorMsg").innerHTML = "入力してあるデータに不正があるため、チェックしてください！";
+      document.getElementById("subCostErorMsg").style = "visibility:visible";    } 
   }   
 }
 // 页面加载
 export function onloadPage(){
+  $("#youin").attr("disabled",true);
   var costModel = {};
   costModel["employeeNo"] = $("#employeeNo").val();
   costModel["shoriKbn"] = $("#shoriKbn").val();
   axios.post("http://127.0.0.1:8080/subCost/loadCost", costModel)
   .then(function (resultMap) {
-    var resultList = resultMap.data.dataList
-    $("#BonusAmount").val(resultList[0]["BonusAmount"]);
-      if(resultList[0]["BonusFlag"] == "0"){
-        $("#bonusCheckYes").attr("checked",true)
-      }else{
-        $("#bonusCheckNo").attr("checked",true)
-      }
-    $("#InsuranceFee").val(resultList[0]["InsuranceFee"]);
-      if(resultList[0]["SocialInsuranceFlag"] == "0"){
-        $("#hokenCheckYes").attr("checked",true)
-      }else{
-        $("#hokenCheckNo").attr("checked",true)
-      }
-    $("#TransportationExpenses").val(resultList[0]["TransportationExpenses"]);
-    $("#remark").val(resultList[0]["remark"]);
+    var resultList = resultMap.data.dataList.dataList;
+    var checkKadoMap = resultMap.data.checkKadoMap;
     $("#salary").val(resultList[0]["salary"]);
+    $("#SocialInsuranceFlag").val(resultList[0]["SocialInsuranceFlag"]);
+    $("#welfarePensionAmount").val(resultList[0]["welfarePensionAmount"]);
+    $("#healthInsuranceAmount").val(resultList[0]["healthInsuranceAmount"]);
+    $("#InsuranceFeeAmount").val(resultList[0]["InsuranceFeeAmount"]);
+    $("#TransportationExpenses").val(resultList[0]["TransportationExpenses"]);
+    $("#BonusFlag").val(resultList[0]["BonusFlag"]);
+    if($("#BonusFlag").val() === "0"){
+      $("#lastTimeBonusAmount").attr('readOnly' , false);
+      $("#scheduleOfBonusAmount").attr('readOnly' , false);
+    }
+    $("#lastTimeBonusAmount").val(resultList[0]["lastTimeBonusAmount"]);
+    $("#scheduleOfBonusAmount").val(resultList[0]["scheduleOfBonusAmount"]);
     $("#WaitingCost").val(resultList[0]["WaitingCost"]);
     $("#NextBonusMonth").val(resultList[0]["NextBonusMonth"]);
     $("#NextRaiseMonth").val(resultList[0]["NextRaiseMonth"]);
+    $("#leaderAllowanceAmount").val(resultList[0]["leaderAllowanceAmount"]);
     $("#otherAllowance").val(resultList[0]["otherAllowance"]);
     $("#otherAllowanceAmount").val(resultList[0]["otherAllowanceAmount"]);
+    $("#remark").val(resultList[0]["remark"]);
+    $("#totalAmount").val(resultList[0]["totalAmount"]);
+    //非稼动判断
+    if(checkKadoMap !== null){
+      if(checkKadoMap["siteRoleCode"] === 1){
+        $("#leaderAllowanceAmount").attr("readOnly",false);
+        if(checkKadoMap["RelatedEmployees"] !== null && checkKadoMap["RelatedEmployees"] !== ''){
+          $("#RelatedEmployees").val(checkKadoMap["RelatedEmployees"]);
+          $("#youin").attr("disabled",false);
+        }
+      }
+    }else{
+      $("#WaitingCost").attr("readOnly",false);
+      document.getElementById('mark').innerHTML = '';
+    }
     oldForm_data = $("#costForm").serializeArray();
     oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
   })
@@ -86,38 +94,88 @@ export function onloadPage(){
 }
 // 页面不可更改
 export function setDisabled(){
+  $("#salary").attr("disabled",true)
+  $("#SocialInsuranceFlag").attr("disabled",true)
+  $("#welfarePensionAmount").attr("disabled",true)
+  $("#healthInsuranceAmount").attr("disabled",true)
+  $("#InsuranceFeeAmount").attr("disabled",true)
+  $("#TransportationExpenses").attr("disabled",true)
+  $("#BonusFlag").attr("disabled",true)
+  $("#lastTimeBonusAmount").attr("disabled",true)
+  $("#scheduleOfBonusAmount").attr("disabled",true)
+  $("#leaderAllowanceAmount").attr("disabled",true)
+  $("#totalAmount").attr("disabled",true)
+  $("#RelatedEmployees").attr("disabled",true)
+  $("#youin").attr("disabled",true)
   $("#BonusAmount").attr("disabled",true)
   $("#bonusCheckYes").attr("disabled",true)
   $("#bonusCheckNo").attr("disabled",true)
   $("#InsuranceFee").attr("disabled",true);
   $("#hokenCheckYes").attr("disabled",true)
   $("#hokenCheckNo").attr("disabled",true)
-  $("#TransportationExpenses").attr("disabled",true)
   $("#remark").attr("disabled",true)
-  $("#salary").attr("disabled",true)
   $("#WaitingCost").attr("disabled",true)
   $("#NextBonusMonth").attr("disabled",true)
   $("#NextRaiseMonth").attr("disabled",true)
   $("#toroku").attr("disabled",true)
   $("#reset").attr("disabled",true)
-  $("#jidokeisan").attr("disabled",true)
   $("#otherAllowance").attr("disabled",true)
   $("#otherAllowanceAmount").attr("disabled",true)
 }
-export function jidoujisan(){
+export async function jidoujisan(){
   var salary = document.getElementById("salary").value;
-  if(salary === ''){
-    alert("请输入给料");
-  }else if(salary === '0'){
-    alert("给料不能为0");
+  if($("#SocialInsuranceFlag").val() === "0"){
+    if(salary === ''){
+      alert("请输入给料");
+      $("#SocialInsuranceFlag").val("1");
+    }else if(salary === '0'){
+      alert("给料不能为0");
+      $("#SocialInsuranceFlag").val("1");
+    }else{
+      await axios.post("/api/getSocialInsurance202003?salary="+salary+"&kaigo=0")
+      .then(function (result) {
+        $("#welfarePensionAmount").val(result.data.pension.payment);
+        $("#healthInsuranceAmount").val(result.data.insurance.payment);
+        $("#InsuranceFeeAmount").val(result.data.insurance.payment + result.data.pension.payment);
+      })
+      .catch(function (error) {
+        alert("保险计算错误，请检查程序");
+        $("#SocialInsuranceFlag").val("1");
+      });
+    }
+    totalKeisan();
   }else{
-    axios.post("/api/getSocialInsurance202003?salary="+salary+"&kaigo=0")
-    .then(function (result) {
-      $("#InsuranceFee").val(result.data.insurance.payment + result.data.pension.payment);
-    })
-    .catch(function (error) {
-      alert("保险计算错误，请检查程序");
-    });
+    $("#welfarePensionAmount").val('');
+    $("#healthInsuranceAmount").val('');
+    $("#InsuranceFeeAmount").val('');
+    totalKeisan();
   }
-  
+}
+export function bonusCanInput(){
+  if($("#BonusFlag").val() === "0"){
+    $("#lastTimeBonusAmount").attr('readOnly' , false);
+    $("#scheduleOfBonusAmount").attr('readOnly' , false);
+    totalKeisan();
+  }else{
+    $("#lastTimeBonusAmount").attr('readOnly' , true);
+    $("#scheduleOfBonusAmount").attr('readOnly' , true);
+    $("#lastTimeBonusAmount").val('');
+    $("#scheduleOfBonusAmount").val('');
+    totalKeisan();
+  }
+}
+export function totalKeisan(){
+  var sum = 0;
+  if($("#salary").val() === '' && $("#WaitingCost").val() !== ''){
+    sum += parseInt($("#WaitingCost").val());
+  }else if($("#salary").val() !== '' && $("#WaitingCost").val() === ''){
+    sum += parseInt($("#salary").val());
+  }
+  sum = sum + parseInt(($("#InsuranceFeeAmount").val() === '' ? 0 : $("#InsuranceFeeAmount").val())) + parseInt(($("#TransportationExpenses").val() === '' ? 0 : $("#TransportationExpenses").val())) 
+  + parseInt(($("#leaderAllowanceAmount").val() === '' ? 0 : $("#leaderAllowanceAmount").val())) + 
+  parseInt(($("#otherAllowanceAmount").val() === '' ? 0 : $("#otherAllowanceAmount").val())) + Math.floor(($("#scheduleOfBonusAmount").val() === '' ? 0 : $("#scheduleOfBonusAmount").val())/12);
+  $("#totalAmount").val((isNaN(sum) ? '' : sum));
+  if($("#totalAmount").val() === "0"){
+    $("#totalAmount").val('');
+  }
 }
