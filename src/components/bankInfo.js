@@ -1,18 +1,20 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , OverlayTrigger , Tooltip} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , Navbar , OverlayTrigger , Tooltip} from 'react-bootstrap';
 import * as bankInfoJs from '../components/bankInfoJs.js';
 import $ from 'jquery';
 
 class BankInfo extends Component {
-    //state = {  }
+    state = {  }
 
     componentDidMount(){
         if($("#customerNo").val() === '' || $("#customerNo").val() === null){
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
+            document.getElementById("No").innerHTML  = "社員：" + $("#employeeNo").val();
         }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){
             $("#employeeOrCustomerNo").val($("#customerNo").val())
             $("#accountBelongsStatus").val("1")
+            document.getElementById("No").innerHTML  = "お客様：" + $("#customerNo").val();
         }
         bankInfoJs.onload();
     }
@@ -39,6 +41,17 @@ class BankInfo extends Component {
                         </Col>
                 </Row>
                 <Form id="bankForm">
+                <Row>
+                        <Col>
+                            <Navbar>
+                                    <Navbar.Collapse>
+                                        <Navbar.Text>
+                                            <a id="No"></a>
+                                        </Navbar.Text>
+                                </Navbar.Collapse>
+                            </Navbar>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col>
                             <InputGroup size="sm" className="mb-3">
