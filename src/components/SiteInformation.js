@@ -4,7 +4,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as SiteJs from './SiteInformationJs.js';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { startDate, registerLocale, setStartDate } from "react-datepicker"
+import DatePicker, {registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/SiteInformation.css';
 import axios from 'axios';
@@ -124,9 +124,7 @@ class SiteInformation extends Component {
 						<Form.Group>
 							{/* <Row>
                     <Col sm={3}></Col>
-                    <Col sm={7}>
-                        <img className="mb-4" alt="title" src={title}/>
-                    </Col>
+                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
               </Row> */}
 							<Row inline="true">
 								<Col className="text-center">
@@ -208,7 +206,7 @@ class SiteInformation extends Component {
 									<InputGroup size="sm" className="mb-3">
 
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">精算< /InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
                             </InputGroup.Prepend>
 											<Form.Control as="select" id="time_1" name="time_1" value={time_1} onChange={this.fixed}>
 												<option value="0">固定</option>
@@ -345,9 +343,9 @@ class SiteInformation extends Component {
 							<TableHeaderColumn dataField='location'>場所</TableHeaderColumn>
 							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
 							<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developlanguage'>言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleCodeName'>役割</TableHeaderColumn>
+							<TableHeaderColumn width='100' dataField='unitPrice'>単価</TableHeaderColumn>
+							<TableHeaderColumn width='100' dataField='developlanguage'>言語</TableHeaderColumn>
+							<TableHeaderColumn width='100' dataField='siteRoleCodeName'>役割</TableHeaderColumn>
 						</BootstrapTable>
           </div>
 				</div>
