@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Button, Form, Col, Row } from 'react-bootstrap';
+import { Card, Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import MyToast from './myToast';
 import axios from 'axios';
 import Autosuggest from 'react-autosuggest';
@@ -480,8 +480,8 @@ class mainSearch extends React.Component {
 
 	renderShowsTotal(start, to, total) {
 		return (
-			<p style={{ color: 'dark', "float": "left" }}  >
-				From {start} to {to}, totals is {total}
+			<p style={{ color: 'dark', "float": "left","display":total>0 ? "block" : "none" }}  >
+					から {start} まで {to}, 総計{total}				
 			</p>
 		);
 	}
@@ -522,75 +522,76 @@ class mainSearch extends React.Component {
 			onSelect: this.handleRowSelect
 		};
 		return (
-			<div >
-				<div>
-					<div style={{ "display": this.state.show ? "block" : "none" }} >
-						<MyToast show={this.state.show} message={"delete success"} />
-					</div>
-				</div>
-
-				<Card className="border border-dark bg-dark text-white" style={{ "textAlign": "center" }}>
+			<div >					
 					<Form id="bookFormID" inline >
-						<div style={{ "width": "1050px", "height": "260px" }}>
+						<div style={{ "width": "1300px", "height": "220px" }}>
 							<Card.Body>
-								<Form.Group as={Row}  >
-									<Form.Label column="sm" lg={2.6}>
-										社員番号
-							<Col sm={4}>
-											<Form.Control type="text"
+								  <Form.Group>
+                                   <Row style={{ "width": "1100px" }}>
+									<Col lg={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl id="inlineFormInputGroup"
 												name="employeeNo" autoComplete="off"
 												value={employeeNo} size="sm"
 												onChange={this.valueChange}
-												className={"optionCss bg-dark text-white"}
 												placeholder="社員番号" />
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;社員名
-							<Col sm={4}>
-											<Form.Control type="text" name="employeeFristName"
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl id="inlineFormInputGroup" name="employeeFristName"
 												value={employeeFristName} autoComplete="off"
 												onChange={this.valueChange} size="sm"
-												className={"optionCss bg-dark text-white"}
-												placeholder="社員名" />								</Col>
-									</Form.Label>
-
-									<Form.Label column="sm" lg={2.6}>
-										社員形式
-							<Col sm={4}>
+												placeholder="社員名" />
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
 												onChange={this.valueChange}
 												name="emploryeeForm" value={emploryeeForm}
-												className={"optionCss bg-dark text-white"} autoComplete="off">
+												autoComplete="off">
 												{this.state.staffForms.map(st =>
 													<option key={st.code} value={st.code}>
 														{st.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;&emsp;性別
-							<Col sm={4}>
+										</InputGroup>
+									</Col>							
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
 												onChange={this.valueChange}
 												name="genderCode" value={genderCode}
-												className={"optionCss  bg-dark text-white"} autoComplete="off">
+												autoComplete="off">
 												{this.state.genders.map(gender =>
 													<option key={gender.code} value={gender.code}>
 														{gender.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-								</Form.Group>
-								<br></br>
-								<Form.Group as={Row} controlId="formGridstartDate">
-									<Form.Label column="sm" lg={2.6}>
-										入社年月
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									</Row>  
+									<Row style={{ "width": "1100px" }}>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
+											</InputGroup.Prepend>
 											<nobr>
 												<DatePicker
 													dateFormat={"yyyy MM"}
@@ -602,125 +603,136 @@ class mainSearch extends React.Component {
 													selected={this.state.joinCompanyOfYear}
 													showMonthYearPicker
 													showFullMonthYearPicker
-													className={"optionCss bg-dark text-white form-control form-control-sm"}
+													className={"optionCss text-white form-control form-control-sm"}
 												/>
 											</nobr>
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;&emsp;年齢
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+											</InputGroup.Prepend>
 											<nobr>
 												<Form.Control type="text" name="ageFrom"
 													value={ageFrom} autoComplete="off"
 													onChange={this.valueChange} size="sm"
-													className={"fromToCss bg-dark text-white"}
+													className={"fromToCss"  }
 												/> ～ <Form.Control type="text" name="ageTo"
 													value={ageTo} autoComplete="off"
 													onChange={this.valueChange} size="sm"
-													className={"fromToCss bg-dark text-white"}
+													className={"fromToCss"  }
 												/>
 											</nobr>
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										在留資格
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">在留資格</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
 												onChange={this.valueChange}
 												name="statusOfResidence" value={statusOfResidence}
-												className={"optionCss bg-dark text-white"}>　autoComplete="off"
+												autoComplete="off">
 												{this.state.visas.map(vi =>
 													<option key={vi.code} value={vi.code}>
 														{vi.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;&emsp;国籍
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select"
 												onChange={this.valueChange} size="sm"
 												name="birthplaceOfcontroy" value={birthplaceOfcontroy}
-												className={"optionCss bg-dark text-white"}>　autoComplete="off"
-												 {this.state.nationalitys.map(na =>
+												autoComplete="off">
+												{this.state.nationalitys.map(na =>
 													<option key={na.code} value={na.code}>
 														{na.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-								</Form.Group>
-								<br></br>
-								<Form.Group as={Row} >
-									<Form.Label column="sm" lg={2.6}>
-										お客様先
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+                                     </Row>
+									 <Row style={{ "width": "1100px" }}>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control type="text"
 												name="customer" autoComplete="off"
 												value={customer} size="sm"
 												onChange={this.valueChange}
-												className={"optionCss bg-dark text-white"}
+												className={"optionCss  text-white"}
 												placeholder="社お客様先" />
-										</Col>
-									</Form.Label>
-
-									<Form.Label column="sm" lg={2.6}>
-										入社区分
-										<Col sm={4} >
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select"
 												onChange={this.valueChange} size="sm"
 												name="intoCompanyCode" value={intoCompanyCode}
-												className={"optionCss bg-dark text-white"}>　autoComplete="off"
+												autoComplete="off">
 												{this.state.intoCompanys.map(ic =>
 													<option key={ic.code} value={ic.code}>
 														{ic.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;日本語
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select"
 												onChange={this.valueChange} size="sm"
 												name="japanease" value={japanease}
-												className={"optionCss bg-dark text-white"}>　autoComplete="off"
-														{this.state.japaneseLevels.map(ja =>
+												autoComplete="off">
+												{this.state.japaneseLevels.map(ja =>
 													<option key={ja.code} value={ja.code}>
 														{ja.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-
-									<Form.Label column="sm" lg={2.6}>
-										&emsp;&emsp;役割
-							<Col sm={4}>
+										</InputGroup>
+									</Col>
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
 												onChange={this.valueChange}
 												name="siteRoleCode" value={siteRoleCode}
-												className={"optionCss bg-dark text-white"} autoComplete="off">
+												autoComplete="off">
 												{this.state.siteMaster.map(sm =>
 													<option key={sm.code} value={sm.code}>
 														{sm.name}
 													</option>
 												)}
 											</Form.Control>
-										</Col>
-									</Form.Label>
-								</Form.Group>
-								<br></br>
-								<Form.Group as={Row} >
-									<Form.Label column="sm" lg={2.6}>
-										開発言語
-                            <Col sm={3}>
+										</InputGroup>
+									</Col>
+									</Row>	
+																		
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Col sm={3}>
 											<Autosuggest
 												suggestions={developement1Suggestions}
 												onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
@@ -742,7 +754,7 @@ class mainSearch extends React.Component {
 												inputProps={dlt2InputProps}
 											/>
 										</Col>
-										<Col sm={2}>
+										<Col sm={3}>
 											<Autosuggest
 												suggestions={developement3Suggestions}
 												onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
@@ -753,41 +765,49 @@ class mainSearch extends React.Component {
 												inputProps={dlt3InputProps}
 											/>
 										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										単価範囲
-							<Col sm={9}>
+									</InputGroup>
+									<Col sm={4}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">単価範囲</InputGroup.Text>
+											</InputGroup.Prepend>
 											<nobr>
 												<Form.Control type="text" name="unitPriceFrom"
 													value={unitPriceFrom} autoComplete="off"
 													onChange={this.valueChange} size="sm"
-													className={"fromToCss2 bg-dark text-white"}
+													className={"fromToCss2"}
 												/> ～ <Form.Control type="text" name="unitPriceTo"
 													value={unitPriceTo} autoComplete="off"
 													onChange={this.valueChange} size="sm"
-													className={"fromToCss2 bg-dark text-white"}
+													className={"fromToCss2"}
 												/>
 											</nobr>
-										</Col>
-									</Form.Label>
-									<Form.Label column="sm" lg={2.6}>
-										稼働
-							<Col sm={9}>
+										</InputGroup>
+									</Col>
+																	
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
+											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
 												onChange={this.valueChange}
 												name="kadou" value={kadou}
-												className={"optionCss  bg-dark text-white"}>　autoComplete="off"
+												autoComplete="off" >　
 												<option value=""　>選択ください</option>
 												<option value="0">はい</option>
 												<option value="1">いいえ</option>
 											</Form.Control>
-										</Col>
-									</Form.Label>
+										</InputGroup>
+									</Col>
+									
+
 								</Form.Group>
+							
 							</Card.Body>
 						</div>
 					</Form>
-					<Card.Footer style={{ "textAlign": "center" }}>
+					<div style={{ "textAlign": "center" }}>
 						<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 							<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
@@ -797,7 +817,7 @@ class mainSearch extends React.Component {
 						<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 							<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
-					</Card.Footer>
+					</div>
 
 					<Card.Body>
 						<div style={{ "float": "right" }} >
@@ -805,24 +825,22 @@ class mainSearch extends React.Component {
 							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} >修正</Button>{' '}
 							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDelete} >削除</Button>
 						</div>
-						<div>
+						<div >
 							<BootstrapTable data={employeeList} selectRow={selectRowProp} className={"bg-white text-dark"} pagination={true} options={this.options}>
-								<TableHeaderColumn dataField='rowNo' dataSort={true} caretRender={getCaret} isKey>番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeNo'>社員番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeFristName'>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={getCaret} isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='80' dataField='employeeFristName'>社員名</TableHeaderColumn>
 								<TableHeaderColumn dataField='furigana'>カタカナ</TableHeaderColumn>
 								<TableHeaderColumn dataField='alphabetOfName'>ローマ字</TableHeaderColumn>
-								<TableHeaderColumn dataField='age' dataSort={true} caretRender={getCaret}>年齢</TableHeaderColumn>
+								<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={getCaret}>年齢</TableHeaderColumn>
 								<TableHeaderColumn dataField='joinCompanyOfYearandMonth'>入社年月</TableHeaderColumn>
-								<TableHeaderColumn dataField='AdmissionStartDate'>入場年月</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeFristName' dataSort={true} caretRender={getCaret} >単価(円)</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeFristName'>稼動お客様</TableHeaderColumn>
-								<TableHeaderColumn dataField='phoneNo'>電話番号</TableHeaderColumn>
+								<TableHeaderColumn 　width='130'　dataField='phoneNo'>電話番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='nearestStation'>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn dataField='visaTime'>ビザ期間</TableHeaderColumn>
 							</BootstrapTable>
 						</div>
 					</Card.Body>
-				</Card>
+				
 			</div >
 		);
 	}
