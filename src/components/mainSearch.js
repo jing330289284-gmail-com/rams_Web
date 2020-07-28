@@ -806,6 +806,7 @@ class mainSearch extends React.Component {
 							
 							</Card.Body>
 						</div>
+						
 					</Form>
 					<div style={{ "textAlign": "center" }}>
 						<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
