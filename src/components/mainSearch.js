@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
-import MyToast from './myToast';
 import axios from 'axios';
 import Autosuggest from 'react-autosuggest';
 import './style.css';
@@ -187,7 +186,7 @@ class mainSearch extends React.Component {
 		const emp = {
 			developmentLanguageNo1: value
 		};
-		axios.post("http://localhost:8080/getTechnologyType", emp)
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -218,7 +217,7 @@ class mainSearch extends React.Component {
 		const emp = {
 			developmentLanguageNo2: value
 		};
-		axios.post("http://localhost:8080/getTechnologyType", emp)
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -235,7 +234,7 @@ class mainSearch extends React.Component {
 		const emp = {
 			developmentLanguageNo3: value
 		};
-		axios.post("http://localhost:8080/getTechnologyType", emp)
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -295,6 +294,7 @@ class mainSearch extends React.Component {
 
 	//検索
 	searchEmployee = () => {
+		alert( this.state.developement1Value);
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeFristName: this.state.employeeFristName,
@@ -313,7 +313,7 @@ class mainSearch extends React.Component {
 			unitPriceFrom: this.state.unitPriceFrom,
 			unitPriceTo: this.state.unitPriceTo,
 		};
-		axios.post("http://localhost:8080/getEmployeeInfo", emp)
+		axios.post("http://127.0.0.1:8080/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ employeeList: response.data })
@@ -326,7 +326,7 @@ class mainSearch extends React.Component {
 
 	/* 国籍 */
 	getNationalitys = () => {
-		axios.post("http://localhost:8080/getNationalitys")
+		axios.post("http://127.0.0.1:8080/getNationalitys")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -345,7 +345,7 @@ class mainSearch extends React.Component {
 
 	//在留資格
 	getVisa = () => {
-		axios.post("http://localhost:8080/getVisa")
+		axios.post("http://127.0.0.1:8080/getVisa")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -361,7 +361,7 @@ class mainSearch extends React.Component {
 	};
 	/* 入社区分 */
 	getIntoCompany = () => {
-		axios.post("http://localhost:8080/getIntoCompany")
+		axios.post("http://127.0.0.1:8080/getIntoCompany")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -378,7 +378,7 @@ class mainSearch extends React.Component {
 
 	/* 日本語レベル */
 	getJapaneseLevel = () => {
-		axios.post("http://localhost:8080/getJapaneseLevel")
+		axios.post("http://127.0.0.1:8080/getJapaneseLevel")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -395,7 +395,7 @@ class mainSearch extends React.Component {
 
 	/* 性別区別 */
 	getGender = () => {
-		axios.post("http://localhost:8080/getGender")
+		axios.post("http://127.0.0.1:8080/getGender")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -413,7 +413,7 @@ class mainSearch extends React.Component {
 
 	/* 社員形式 */
 	getStaffForms = () => {
-		axios.post("http://localhost:8080/getStaffForms")//url,条件
+		axios.post("http://127.0.0.1:8080/getStaffForms")//url,条件
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -430,7 +430,7 @@ class mainSearch extends React.Component {
 
 	/* 役割 */
 	getSiteMaster = () => {
-		axios.post("http://localhost:8080/getSiteMaster")//url,条件
+		axios.post("http://127.0.0.1:8080/getSiteMaster")//url,条件
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(

@@ -21,7 +21,7 @@ export function tokuro() {
     $.each(formArray,function(i,item){
       siteModel[item.name] = item.value;     
     });
-    axios.post("http://localhost:8080/insertSiteInfo", siteModel)
+    axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
     .then(function (result) {
       if(result.data == true){
         alert("登录完成");

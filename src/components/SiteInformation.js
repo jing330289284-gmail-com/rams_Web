@@ -93,7 +93,7 @@ class SiteInformation extends Component {
 	};
 	// 页面加载
 	componentDidMount() {
-		axios.post("http://localhost:8080/getSiteInfo", { employeeNo: "LYC001" })
+		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
