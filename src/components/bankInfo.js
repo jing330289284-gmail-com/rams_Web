@@ -10,11 +10,11 @@ class BankInfo extends Component {
         if($("#customerNo").val() === '' || $("#customerNo").val() === null){
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
-            document.getElementById("No").innerHTML  = "社員：" + $("#employeeNo").val();
+            document.getElementById("No").innerHTML  = "社員：" + $("#employeeName").val();
         }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){
             $("#employeeOrCustomerNo").val($("#customerNo").val())
             $("#accountBelongsStatus").val("1")
-            document.getElementById("No").innerHTML  = "お客様：" + $("#customerNo").val();
+            document.getElementById("No").innerHTML  = "お客様：" + $("#customerName").val();
         }
         bankInfoJs.onload();
     }
@@ -77,7 +77,7 @@ class BankInfo extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">支店名：</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                    <Form.Control readOnly onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchName")} id="bankBranchName" maxLength="20" name="bankBranchName"/>
+                                    <Form.Control readOnly placeholder="例：浦和支店" onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchName")} id="bankBranchName" maxLength="20" name="bankBranchName"/>
                             </InputGroup>
                         </Col>
                         <Col>
@@ -85,7 +85,7 @@ class BankInfo extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">支店番号：</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                    <Form.Control onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode"/>
+                                    <Form.Control placeholder="010" onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode"/>
                             </InputGroup>
                         </Col>
                     </Row>
@@ -95,7 +95,7 @@ class BankInfo extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">口座番号：</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                    <Form.Control readOnly id="accountNo" maxLength="9" name="accountNo"/>
+                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="9" name="accountNo"/>
                             </InputGroup>
                         </Col>
                         <Col>
@@ -110,7 +110,7 @@ class BankInfo extends Component {
                                     </Tooltip>
                                     }
                                 >
-                                    <Form.Control onChange={bankInfoJs.checkAccountName} readOnly id="accountName" maxLength="20" name="accountName"/>
+                                    <Form.Control placeholder="カタカナ" onChange={bankInfoJs.checkAccountName} readOnly id="accountName" maxLength="20" name="accountName"/>
                                 </OverlayTrigger>
                             </InputGroup>
                         </Col>
