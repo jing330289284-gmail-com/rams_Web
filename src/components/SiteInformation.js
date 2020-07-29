@@ -1,15 +1,35 @@
 import React, { Component } from 'react';
-import { Row, Form, Col, InputGroup, Button, FormControl} from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import * as SiteJs from './SiteInformationJs.js';
+import Autosuggest from 'react-autosuggest';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, {registerLocale} from "react-datepicker"
+import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/SiteInformation.css';
 import axios from 'axios';
 
 registerLocale('ja', ja);
+
+function escapeRegexCharacters(str) {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getSuggestions(value, datas) {
+	const escapedValue = escapeRegexCharacters(value.trim());
+	const regex = new RegExp('^' + escapedValue, 'i');
+
+	return datas.filter(data => regex.test(data.name));
+}
+function getSuggestionDlt(suggestion) {
+	return suggestion.name;
+}
+
+function renderSuggestion(suggestion) {
+	return (
+		<span>{suggestion.name}</span>
+	);
+}
 class SiteInformation extends Component {
 	constructor(props) {
 		super(props);
@@ -19,7 +39,11 @@ class SiteInformation extends Component {
 	initialState = {
 		time_1: '',
 		time_2: '',
-
+		siteMaster: [],
+		developementValue: '',
+		developementSuggestions: [],
+		developmentLanguageNo: '',
+		suggestions: []
 	};
 
 	onchange = event => {
@@ -48,6 +72,61 @@ class SiteInformation extends Component {
 		bonusStartDate: new Date(),
 		raiseStartDate: new Date(),
 	}
+	//開発言語　開始
+	onDevelopementChange = (event, { newValue }) => {
+		this.setState({
+			developementValue: newValue
+		});
+	};
+
+	onDltSuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo: value
+		};
+		axios.post("http://localhost:8080/getTechnologyType", emp)
+			.then(response => {
+				console.log(response);
+				if (response.data != null) {
+					this.setState({
+						developementSuggestions: getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+
+
+	};
+
+	onDltSuggestionsClearRequested = () => {
+		this.setState({
+			developementSuggestions: []
+		});
+	};
+
+	onDltSuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developementValue: suggestion.name
+		});
+	};
+
+	//開発言語　終了
+	/* 役割 */
+	getSiteMaster = () => {
+		axios.post("http://127.0.0.1:8080/getSiteMaster")//url,条件
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						siteMaster: [{ code: '', name: '選択ください' }]
+							.concat(data.map(sm => {
+								return { code: sm.code, name: sm.name }
+							}))
+					}
+				);
+			}
+			);
+	};
 	//日期更改
 	inactive = date => {
 		$("#time").val("0年0月");
@@ -93,6 +172,7 @@ class SiteInformation extends Component {
 	};
 	// 页面加载
 	componentDidMount() {
+		this.getSiteMaster();
 		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
@@ -105,7 +185,36 @@ class SiteInformation extends Component {
 			});
 
 	}
-
+	//登録処理
+	tokuro = () => {
+		if ($("#time_2").val() < $("#time_1").val()) {
+			alert("正しい期間を選択してください");
+			return false;
+		}
+		if ('0' != $("#time_1").val()) {
+			if ($("#time_2").val() == $("#time_1").val()) {
+				alert("固定を選択してくださいます");
+				return false;
+			}
+		}
+		var siteModel = {};
+		var formArray = $("#siteForm").serializeArray();
+		$.each(formArray, function(i, item) {
+			siteModel[item.name] = item.value;
+		});
+		siteModel["developlanguage"] = this.state.developementValue;
+		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
+			.then(function(result) {
+				if (result.data == true) {
+					alert("登录完成");
+				} else {
+					alert("登录错误，请检查程序");
+				}
+			})
+			.catch(function(error) {
+				alert("登录错误，请检查程序");
+			});
+	}
 	render() {
 		this.options = {
 			sizePerPage: 5,
@@ -116,7 +225,12 @@ class SiteInformation extends Component {
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 		};
-		const { time_1, time_2, workState, products } = this.state;
+		const { time_1, time_2, workState, products, siteRoleCode, developementValue, developementSuggestions } = this.state;
+		const dltInputProps = {
+			placeholder: "開発言語",
+			value: developementValue,
+			onChange: this.onDevelopementChange
+		};
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
 				<div style={{ "background": "#f5f5f5" }}>
@@ -150,7 +264,7 @@ class SiteInformation extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="systemName" name="systemName" type="text" placeholder="システム名" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="systemName" name="systemName" type="text" placeholder="例：請求システム" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
 
@@ -160,7 +274,7 @@ class SiteInformation extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="location" name="location" placeholder="場所" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="location" name="location" placeholder="例：秋葉原" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 
 								</Col>
@@ -207,150 +321,175 @@ class SiteInformation extends Component {
 
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
-                            </InputGroup.Prepend>
-											<Form.Control as="select" id="time_1" name="time_1" value={time_1} onChange={this.fixed}>
-												<option value="0">固定</option>
-												<option value="130">130</option>
-												<option value="140">140</option>
-												<option value="150">150</option>
-												<option value="160">160</option>
-												<option value="170">170</option>
-												<option value="180">180</option>
-												<option value="190">190</option>
-												<option value="200">200</option>
-											</Form.Control>〜
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="time_1" name="time_1" value={time_1} onChange={this.fixed}>
+											<option value="0">固定</option>
+											<option value="130">130</option>
+											<option value="140">140</option>
+											<option value="150">150</option>
+											<option value="160">160</option>
+											<option value="170">170</option>
+											<option value="180">180</option>
+											<option value="190">190</option>
+											<option value="200">200</option>
+										</Form.Control>〜
 											<Form.Control as="select" id="time_2" name="time_2" value={time_2} onChange={this.onchange} disabled>
-												<option value="0">固定</option>
-												<option value="130">130</option>
-												<option value="140">140</option>
-												<option value="150">150</option>
-												<option value="160">160</option>
-												<option value="170">170</option>
-												<option value="180">180</option>
-												<option value="190">190</option>
-												<option value="200">200</option>
-											</Form.Control>
-                        </InputGroup>
-                    </Col>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
-											</InputGroup.Prepend>
-											<FormControl id="developlanguage" name="developlanguage" placeholder="開発言語" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+											<option value="0">固定</option>
+											<option value="130">130</option>
+											<option value="140">140</option>
+											<option value="150">150</option>
+											<option value="160">160</option>
+											<option value="170">170</option>
+											<option value="180">180</option>
+											<option value="190">190</option>
+											<option value="200">200</option>
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autosuggest
+											suggestions={developementSuggestions}
+											onSuggestionsFetchRequested={this.onDltSuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDltSuggestionsClearRequested}
+											onSuggestionSelected={this.onDltSuggestionSelected}
+											getSuggestionValue={getSuggestionDlt}
+											renderSuggestion={renderSuggestion}
+											inputProps={dltInputProps}
+										/>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+											{this.state.siteMaster.map(sm =>
+												<option key={sm.code} value={sm.code}>
+													{sm.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
 
-										</InputGroup>
-									</Col>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
-											</InputGroup.Prepend>
-											<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange}>
-												<option value="0">PG</option>
-												<option value="1">SE</option>
-											</Form.Control>
-										</InputGroup>
-									</Col>
-									
-						
-                </Row>
-								<br />
-								<Row>
-									<Col sm={2}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
-											</InputGroup.Prepend>
-											<FormControl id="siteManager" name="siteManager" type="text" placeholder="責任者" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-										</InputGroup>
-									</Col>
 
-									<Col sm={4}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
-											</InputGroup.Prepend>
-											<FormControl id="AdmissionStartDate" name="AdmissionStartDate" placeholder="入場年月日" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-											<InputGroup.Append>
-												<DatePicker
-													selected={this.state.raiseStartDate}
-													onChange={this.inactive}
-													autoComplete="on"
-													locale="pt-BR"
-													className={"dateInput"}
-													id="beginDate"
-													locale="ja"
-												/>
-											</InputGroup.Append>
-											<FormControl id="time" name="time" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-										</InputGroup>
-									</Col>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
-											</InputGroup.Prepend>
-											<Form.Control as="select" id="workState" name="workState" value={workState} onChange={this.workState}>
-												<option value="0">終了</option>
-												<option value="1">稼働中</option>
-											</Form.Control>
-										</InputGroup>
-									</Col>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
-											</InputGroup.Prepend>
-											<FormControl id="AdmissionEndDate" name="AdmissionEndDate" placeholder="退場年月日" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-											<InputGroup.Append>
-												<DatePicker
-													selected={this.state.raiseStartDate}
-													onChange={this.raiseChange}
-													autoComplete="on"
-													locale="pt-BR"
-													className={"dateInput"}
-													id="endDateCalendar"
-													locale="ja"
-												/>
-											</InputGroup.Append>
-										</InputGroup>
-									</Col>
-								</Row>
-								<br />
-								<Row>
-									<Col sm={4}></Col>
-									<Col sm={2} className="text-center">
-										<Button block size="sm" type="reset" id="reset" value="Reset" >
-											リセット
+							</Row>
+							<br />
+							<Row>
+								<Col sm={2}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+									</InputGroup>
+								</Col>
+
+								<Col sm={4}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl id="AdmissionStartDate" name="AdmissionStartDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<InputGroup.Append>
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.inactive}
+												autoComplete="on"
+												locale="pt-BR"
+												className={"dateInput"}
+												id="beginDate"
+												locale="ja"
+											/>
+										</InputGroup.Append>
+										<FormControl id="time" name="time" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="workState" name="workState" value={workState} onChange={this.workState}>
+											<option value="0">終了</option>
+											<option value="1">稼働中</option>
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl id="AdmissionEndDate" name="AdmissionEndDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<InputGroup.Append>
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.raiseChange}
+												autoComplete="on"
+												locale="pt-BR"
+												className={"dateInput"}
+												id="endDateCalendar"
+												locale="ja"
+											/>
+										</InputGroup.Append>
+									</InputGroup>
+								</Col>
+							</Row>
+							<br />
+							<Row>
+								<Col sm={5}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+									</InputGroup>
+
+								</Col>
+
+							</Row>
+							<br />
+							<Row>
+								<Col sm={4}></Col>
+								<Col sm={2} className="text-center">
+									<Button block size="sm" type="reset" id="reset" value="Reset" >
+										リセット
                             </Button>
 
-									</Col>
-									<Col sm={2} className="text-center">
-										<Button block size="sm" onClick={SiteJs.tokuro} variant="primary" id="toroku" className="col-offset-1" type="button">
-											登録
+								</Col>
+								<Col sm={2} className="text-center">
+									<Button block size="sm" onClick={this.tokuro} variant="primary" id="toroku" className="col-offset-1" type="button">
+										登録
                             </Button>
-									</Col>
+								</Col>
 
-								</Row>
-            </Form.Group>
-          </Form>
-						<BootstrapTable
-							data={products} pagination={true} options={this.options}
-							pagination>
-							<TableHeaderColumn dataField='workDate' isKey>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName'>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='location'>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='developlanguage'>言語</TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='siteRoleCodeName'>役割</TableHeaderColumn>
-						</BootstrapTable>
-          </div>
+							</Row>
+						</Form.Group>
+					</Form>
+					<BootstrapTable
+						data={products} pagination={true} options={this.options}
+						pagination>
+						<TableHeaderColumn width='210' dataField='workDate' isKey>期間</TableHeaderColumn>
+						<TableHeaderColumn dataField='systemName'>システム</TableHeaderColumn>
+						<TableHeaderColumn width='130' dataField='location'>場所</TableHeaderColumn>
+						<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
+						<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
+						<TableHeaderColumn width='60' dataField='unitPrice'>単価</TableHeaderColumn>
+						<TableHeaderColumn width='90' dataField='developlanguage'>言語</TableHeaderColumn>
+						<TableHeaderColumn width='60' dataField='siteRoleCodeName'>役割</TableHeaderColumn>
+					</BootstrapTable>
 				</div>
-        )
-    }
+			</div>
+		)
+	}
 }
 
 export default SiteInformation;
