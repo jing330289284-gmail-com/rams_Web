@@ -40,6 +40,7 @@ class SiteInformation extends Component {
 		time_1: '',
 		time_2: '',
 		siteMaster: [],
+		payMaster: [],
 		developementValue: '',
 		developementSuggestions: [],
 		developmentLanguageNo: '',
@@ -118,9 +119,25 @@ class SiteInformation extends Component {
 			.then((data) => {
 				this.setState(
 					{
-						siteMaster: [{ code: '', name: '選択ください' }]
+						siteMaster: [{ code: '', name: '選択してください' }]
 							.concat(data.map(sm => {
 								return { code: sm.code, name: sm.name }
+							}))
+					}
+				);
+			}
+			);
+	};
+	/* 精算時間 */
+	getPayMaster = () => {
+		axios.post("http://127.0.0.1:8080/getPayMaster")//url,条件
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						payMaster: [{ code: '', name: '選択してください' }]
+							.concat(data.map(tm => {
+								return { code: tm.code, name: tm.name }
 							}))
 					}
 				);
@@ -173,6 +190,7 @@ class SiteInformation extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.getSiteMaster();
+		this.getPayMaster();
 		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
@@ -322,27 +340,26 @@ class SiteInformation extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="time_1" name="time_1" value={time_1} onChange={this.fixed}>
-											<option value="0">固定</option>
-											<option value="130">130</option>
-											<option value="140">140</option>
-											<option value="150">150</option>
-											<option value="160">160</option>
-											<option value="170">170</option>
-											<option value="180">180</option>
-											<option value="190">190</option>
-											<option value="200">200</option>
-										</Form.Control>〜
-											<Form.Control as="select" id="time_2" name="time_2" value={time_2} onChange={this.onchange} disabled>
-											<option value="0">固定</option>
-											<option value="130">130</option>
-											<option value="140">140</option>
-											<option value="150">150</option>
-											<option value="160">160</option>
-											<option value="170">170</option>
-											<option value="180">180</option>
-											<option value="190">190</option>
-											<option value="200">200</option>
+										<Form.Control as="select"
+											onChange={this.fixed}
+											id="time_1" name="time_1" value={time_1}
+											autoComplete="off">
+											{this.state.payMaster.map(tm =>
+												<option key={tm.code} value={tm.code}>
+													{tm.name}
+												</option>
+											)}
+										</Form.Control>
+										〜
+												<Form.Control as="select"
+											onChange={this.onchange}
+											id="time_2" name="time_2" value={time_2}
+											autoComplete="off">
+											{this.state.payMaster.map(tm =>
+												<option key={tm.code} value={tm.code}>
+													{tm.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
