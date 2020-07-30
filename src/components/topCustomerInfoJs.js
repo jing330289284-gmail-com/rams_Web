@@ -43,7 +43,7 @@ export function onload(){
 export function toroku(){
     newForm_data = $("#topCustomerInfoForm").serializeArray();
     newForm_dataJson = JSON.stringify({ dataform: newForm_data });
-    if(newForm_dataJson != oldForm_dataJson && $("#topCustomerName").val() != "" && $("#topCustomerName").val() != null){
+    if(newForm_dataJson !== oldForm_dataJson && $("#topCustomerName").val() !== "" && $("#topCustomerName").val() != null){
         var topCustomerMod = {};
         topCustomerMod["topCustomerNo"] = $("#topCustomerNo").val();
         topCustomerMod["topCustomerName"] = $("#topCustomerName").val();
@@ -53,7 +53,7 @@ export function toroku(){
         topCustomerMod["updateUser"] = sessionStorage.getItem('employeeNo');
         axios.post("http://127.0.0.1:8080/topCustomerInfo/toroku", topCustomerMod)
         .then(function (result) {
-          if(result.data == true){
+          if(result.data === true){
             alert("登录完成");
             window.location.reload();
           }else{
@@ -64,7 +64,7 @@ export function toroku(){
           alert("登录错误，请检查程序");
         });
       }else{
-          if(newForm_dataJson == oldForm_dataJson){
+          if(newForm_dataJson === oldForm_dataJson){
             alert("修正してありません!");
           }else if($("#topCustomerName").val() === "" || $("#topCustomerName").val() === null){
             document.getElementById("topCustomerInfoErorMsg").style = "visibility:visible";

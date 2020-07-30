@@ -1,9 +1,5 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
 
 export function onload(){
     document.getElementById('shusei').className += " disabled";

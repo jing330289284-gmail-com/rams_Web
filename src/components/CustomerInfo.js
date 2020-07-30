@@ -1,17 +1,17 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , OverlayTrigger , Tooltip , Container , Modal} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , Modal} from 'react-bootstrap';
 import * as customerInfoJs from '../components/CustomerInfoJs.js';
 import $ from 'jquery';
 import BankInfo from './bankInfo';
 import Autosuggest from 'react-autosuggest';
 import '../asserts/css/style.css';
 import TopCustomerInfo from './topCustomerInfo';
-import { BrowserRouter as Router, Route, Link ,Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { registerLocale } from "react-datepicker"
+import DatePicker from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
-import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
+import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 //提示用下拉框
@@ -130,7 +130,24 @@ class CustomerInfo extends Component {
 		this.setState({
 			topCustomerValue: newValue
 		});
-	};
+    };
+    //查询部门信息
+    meisaiToroku =()=>{
+        // var customerInfoMod = {};
+        // var formArray =$("#conditionForm").serializeArray();
+        // $.each(formArray,function(i,item){
+        //     customerInfoMod[item.name] = item.value;     
+        // });
+        // axios.post("http://127.0.0.1:8080/customerInfoSearch/search" , customerInfoMod)
+        // .then(resultList => {
+        //     this.setState({
+        //         customerInfoData : resultList.data,
+        //     })
+        // })
+        // .catch(function (error) {
+        // alert("查询错误，请检查程序");
+        // });  
+    }
     render() {
         console.log(this.props)
         const {topCustomerSuggestions , topCustomerValue} = this.state;

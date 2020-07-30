@@ -1,9 +1,9 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , Card , FormControl , Table , OverlayTrigger , Popover, CloseButton} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , Table } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from "axios";
 import * as customerInfoSearchJs from '../components/CustomerInfoSearchJs.js';
-import { BrowserRouter as Router, Route, Link ,Switch } from "react-router-dom";
+import { BrowserRouter as Link } from "react-router-dom";
 import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 

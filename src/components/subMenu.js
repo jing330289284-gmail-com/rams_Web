@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Row,  Col, Nav  , ListGroup , Dropdown , Card , Accordion , Button , Navbar} from 'react-bootstrap';
+import { Row,  Col , ListGroup , Accordion , Button , Navbar} from 'react-bootstrap';
 
 import title from '../asserts/images/title.png';
 import open from '../asserts/images/打开.png';
@@ -7,7 +7,7 @@ import openPage from '../asserts/images/打开页面.png';
 import menu from '../asserts/images/菜单.png';
 import signout from '../asserts/images/登出.png';
 
-import { BrowserRouter as Router, Route, Link ,Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Subcost from './subCost'
 import Main from './main';
 import MainAdd from './mainAdd';
@@ -18,7 +18,6 @@ import TopCustomerInfo from './topCustomerInfo';
 import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import SiteInformation from './SiteInformation';
-import $ from 'jquery';
 
 class SubMenu extends Component {
     state = {

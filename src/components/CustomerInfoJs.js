@@ -28,7 +28,7 @@ export async function onload(){
         for(let i = 0;i<companyNature.length ; i++){
             $("#companyNatureCode").append('<option value="'+companyNature[i]["companyNatureCode"]+'">'+companyNature[i]["companyNatureName"]+'</option>');
         }
-        if(shoriKbn == 'tsuika'){
+        if(shoriKbn === 'tsuika'){
             var customerNoSaiBan = resultMap.data.customerNoSaiBan;
             customerNoSaiBan =  parseInt(customerNoSaiBan.substring(1,4)) + 1;
             if(customerNoSaiBan < 10){
@@ -54,7 +54,7 @@ export async function onload(){
             $("#remark").val(customerInfoMod.remark);
             oldForm_data = $("#customerForm").serializeArray();
             oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
-            if(shoriKbn == 'sansho'){
+            if(shoriKbn === 'sansho'){
               setDisabled();
           }
         }
@@ -67,7 +67,7 @@ export async function onload(){
 export function toroku(){
     newForm_data = $("#customerForm").serializeArray();
     newForm_dataJson = JSON.stringify({ dataform: newForm_data });
-    if(newForm_dataJson != oldForm_dataJson && $("#customerName").val() != "" && $("#customerName").val() != null){
+    if(newForm_dataJson !== oldForm_dataJson && $("#customerName").val() !== "" && $("#customerName").val() != null){
         var customerInfoMod = {};
         var formArray =$("#customerForm").serializeArray();
         $.each(formArray,function(i,item){
@@ -77,12 +77,12 @@ export function toroku(){
         customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
         axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
         .then(function (result) {
-          if(result.data == 0){
+          if(result.data === 0){
             alert("登录完成");
             window.location.reload();
-          }else if(result.data == 1){
+          }else if(result.data === 1){
             alert("登录错误，请检查程序");
-          }else if(result.data == 2){
+          }else if(result.data === 2){
             alert("上位お客様名前がお客様情報テーブルに存じません，データをチェックしてください");
           }
         })
@@ -90,7 +90,7 @@ export function toroku(){
           alert("登录错误，请检查程序");
         });
       }else{
-          if(newForm_dataJson == oldForm_dataJson){
+          if(newForm_dataJson === oldForm_dataJson){
             alert("修正してありません!");
           }else if($("#customerName").val() === "" || $("#customerName").val() === null){
             document.getElementById("erorMsg").style = "visibility:visible";

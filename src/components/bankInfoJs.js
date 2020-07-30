@@ -17,13 +17,13 @@ export function onload(){
       for(let i = 0;i<bankName.length ; i++){
         $("#bankCode").append('<option value="'+(i+1)+'">'+resultMap.data.accountInfoMod.bankName[i]+'</option>');
       }
-      if(resultMap.data.accountInfoMod != ''){
+      if(resultMap.data.accountInfoMod !== ''){
         $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
         $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
         $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
         $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
         $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
-        if(resultMap.data.accountInfoMod["accountBelongsStatus"] != null && resultMap.data.accountInfoMod["accountBelongsStatus"] != ''){
+        if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
           $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
         }
         if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
@@ -66,7 +66,7 @@ export function canSelect(){
     // $("#futsu").attr("disabled",true);
     // $("#toza").attr("disabled",true);
     // $("#toza").attr("disabled",true);
-	if(val != 0){
+	if(val !== 0){
         $("#bankBranchName").attr("readonly",false);
         $("#bankBranchCode").attr("readonly",false);
         $("#accountNo").attr("readonly",false);
@@ -116,11 +116,11 @@ export function getBankBranchInfo(noORname){
   var pra = {};
   pra[noORname] = $('#'+noORname+'').val();
   pra["bankCode"] = $('#bankCode').val();
-  if($('#'+noORname+'').val() != ""){
+  if($('#'+noORname+'').val() !== ""){
     
     axios.post("http://127.0.0.1:8080/bankInfo/getBankBranchInfo",pra)
       .then(function (resultMap) {
-        if(resultMap.data != ''){
+        if(resultMap.data !== ''){
             $('#bankBranchCode').val(resultMap.data["bankBranchCode"]);
             $('#bankBranchName').val(resultMap.data["bankBranchName"]);
         }else{
@@ -142,7 +142,7 @@ export function tokuro(){
   newForm_data = $("#bankForm").serializeArray();
   newForm_dataJson = JSON.stringify({ dataform: newForm_data });
   var result = checkAccountName();
-  if(newForm_dataJson != oldForm_dataJson && result){
+  if(newForm_dataJson !== oldForm_dataJson && result){
     var bankCol = {};
     var formArray =$("#bankForm").serializeArray();
     $.each(formArray,function(i,item){
@@ -153,7 +153,7 @@ export function tokuro(){
     axios.post("http://127.0.0.1:8080/bankInfo/toroku", bankCol)
     .then(function (result) {
       
-      if(result.data == true){
+      if(result.data === true){
         alert("登录完成");
         window.location.reload();
       }else{
@@ -164,7 +164,7 @@ export function tokuro(){
       alert("登录错误，请检查程序");
     });
   }else{
-    if(newForm_dataJson == oldForm_dataJson){
+    if(newForm_dataJson === oldForm_dataJson){
       alert("修正してありません!");
     }else if(!checkAccountName()){
       document.getElementById("bankInfoErorMsg").style = "visibility:visible";

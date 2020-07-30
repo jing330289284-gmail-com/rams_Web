@@ -1,5 +1,3 @@
-import { func } from 'prop-types';
-
 const $ = require('jquery');
 const axios = require('axios');
 var oldForm_data;
@@ -22,7 +20,7 @@ export function tokuro(){
     axios.post("http://127.0.0.1:8080/subCost/toroku", costModel)
     .then(function (result) {
       
-      if(result.data == true){
+      if(result.data === true){
         alert("登录完成");
         window.location.reload();
       }else{
