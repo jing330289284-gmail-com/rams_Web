@@ -35,6 +35,11 @@ function renderSuggestion(suggestion) {
 		<span>{suggestion.topCustomerName}</span>
 	);
 }
+var oldForm_data;//画面初期のデータ
+var oldForm_dataJson;//画面初期のデータのjson
+var newForm_data;//登録の際データ
+var newForm_dataJson;//登録の際データのjson
+
 class CustomerInfo extends Component {
     state = {
         showBankInfoModal:false,//口座情報画面フラグ
@@ -47,6 +52,7 @@ class CustomerInfo extends Component {
         customerDepartmentName:'',//部門のname
         customerDepartmentNameValue:'',//部門の項目値
         customerDepartmentNameSuggestions:[],//部門の連想数列
+        customerDepartmentList:[],//部門情報数列
      }
     /**
      *  設立のonChange
@@ -98,22 +104,71 @@ class CustomerInfo extends Component {
      /**
      * 画面の初期化 
      */
-    componentDidMount(){
+    async componentDidMount(){
         var pro = this.props.location.state;
         $("#shoriKbn").val( pro.split("-")[0]);
         $("#customerNo").val( pro.split("-")[1]);
-        customerInfoJs.onload();
-        if( $("#shoriKbn").val() === "shusei" ||  $("#shoriKbn").val() === "shosai"){
+
+        if($("#shoriKbn").val() !== "shusei"){
+            $("#toBankInfo").attr("disabled",true);
+            $("#toCustomerInfo").attr("disabled",true);
+          }
             var customerInfoMod = {};
             customerInfoMod["customerNo"] = $("#customerNo").val();
             customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
-            axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
-            .then(resultMap =>{
-                this.setState({
-                    topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
-                })
+            await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
+            .then(resultMap => {
+                var customerRanking = {};
+                var companyNature = {};
+                var customerInfoMod;
+                var shoriKbn = $("#shoriKbn").val();
+                customerRanking = resultMap.data.selectModel.customerRanking;
+                companyNature = resultMap.data.selectModel.companyNature;
+                customerInfoMod = resultMap.data.customerInfoMod;
+                for(let i = 0;i<customerRanking.length ; i++){
+                    $("#customerRankingCode").append('<option value="'+customerRanking[i]["customerRankingCode"]+'">'+customerRanking[i]["customerRankingName"]+'</option>');
+                }
+                for(let i = 0;i<companyNature.length ; i++){
+                    $("#companyNatureCode").append('<option value="'+companyNature[i]["companyNatureCode"]+'">'+companyNature[i]["companyNatureName"]+'</option>');
+                }
+                if(shoriKbn === 'tsuika'){
+                    var customerNoSaiBan = resultMap.data.customerNoSaiBan;
+                    customerNoSaiBan =  parseInt(customerNoSaiBan.substring(1,4)) + 1;
+                    if(customerNoSaiBan < 10){
+                        customerNoSaiBan = 'C00' + customerNoSaiBan;
+                    }else if(customerNoSaiBan >= 10 && customerNoSaiBan < 100){
+                        customerNoSaiBan = 'C0' + customerNoSaiBan;
+                    }else if(customerNoSaiBan >=100){
+                        customerNoSaiBan = 'C' + customerNoSaiBan;
+                    }
+                    $("#customerNo").val(customerNoSaiBan);
+                    $("#customerNo").attr("readOnly",true);
+                }else{
+                    $("#customerName").val(customerInfoMod.customerName);
+                    $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
+                    $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
+                    $("#businessStartDate").val(customerInfoMod.businessStartDate);
+                    $("#headOffice").val(customerInfoMod.headOffice);
+                    $("#establishmentDate").val(customerInfoMod.establishmentDate);
+                    $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
+                    $("#listedCompany").val(customerInfoMod.listedCompany);
+                    $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
+                    $("#url").val(customerInfoMod.url);
+                    $("#remark").val(customerInfoMod.remark);
+                    this.setState({
+                        topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
+                        customerDepartmentList:resultMap.data.customerDepartmentInfoList,
+                    })
+                    oldForm_data = $("#customerForm").serializeArray();
+                    oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
+                    if(shoriKbn === 'sansho'){
+                        customerInfoJs.setDisabled();
+                  }
+                }
             })
-        }
+            .catch(function (error) {
+              alert("select框内容获取错误，请检查程序");
+            });  
     }
      /**
      * 上位お客様連想のデータ取得 
@@ -178,7 +233,7 @@ class CustomerInfo extends Component {
         // });  
     }
     render() {
-        const {topCustomerSuggestions , topCustomerValue} = this.state;
+        const {topCustomerSuggestions , topCustomerValue , customerDepartmentList} = this.state;
         //上位お客様連想
         const topcustomerInputProps = {
 			placeholder: "例：富士通",
@@ -517,13 +572,12 @@ class CustomerInfo extends Component {
                         </Col>
                 </Row>
                 <Row>
-                    <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } deleteRow={true}>
+                    <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } deleteRow={true} data={customerDepartmentList}>
                         <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
-                        <TableHeaderColumn dataField='customerNo' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
-                        <TableHeaderColumn dataField='customerName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
-                        <TableHeaderColumn dataField='customerRankingName' headerAlign='center' dataAlign='center' width="19
-                        0">職位</TableHeaderColumn>
-                        <TableHeaderColumn dataField='headOffice' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
+                        <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
+                        <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
+                        <TableHeaderColumn dataField='position' headerAlign='center' dataAlign='center' width="190">職位</TableHeaderColumn>
+                        <TableHeaderColumn dataField='mail' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
                         <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="140">取引人数</TableHeaderColumn>
                     </BootstrapTable>
                 </Row>
