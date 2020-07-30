@@ -5,7 +5,9 @@ import $ from 'jquery';
 
 class TopCustomerInfo extends Component {
     state = {  }
-
+    /**
+     * 画面の初期化
+     */
     componentDidMount(){
         $("#shoriKbn").val( this.props.location.state);
         TopCustomerInfoJs.onload();

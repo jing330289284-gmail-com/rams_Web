@@ -9,21 +9,30 @@ import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 class CustomerInfoSearch extends Component {
     state = { 
-        radioValue:'',
-        customerInfoData:[],
-        currentPage: 1,
-        emploryeesPerPage: 5,
-        selectRowNo:'',
+        radioValue:'',//稼働の表示
+        customerInfoData:[],//テーブルのデータ
+        currentPage: 1,//テーブルの第一ページ
+        emploryeesPerPage: 5,//毎ページの項目数
+        selectRowNo:'',//選択した列のお客様番号
      }
+     /**
+      * 画面の初期化
+      */
     componentDidMount(){
         customerInfoSearchJs.onload();
     }
+    /**
+      * 稼働のフラグ変化
+      */
     radioChange =(e)=>{
         this.setState({
             radioValue:e.target.value
             }
         )
     }
+    /**
+      * 検索ボタン
+      */
     search =()=>{
         var customerInfoMod = {};
         var formArray =$("#conditionForm").serializeArray();
@@ -40,7 +49,9 @@ class CustomerInfoSearch extends Component {
         alert("查询错误，请检查程序");
         });  
     }
-    //调用后台删除
+    /**
+      * 削除ボタン
+      */
     onDeleteRow(rows) {
         // ...
         var customerInfoMod = {};
@@ -57,11 +68,16 @@ class CustomerInfoSearch extends Component {
           alert("删除错误，请检查程序");
         });
     }
+    /**
+      * 稼働テーブルの開き
+      */
     isExpandableRow(row) {
         if (row.employeeNameList !== null) return true;
         else return false;
     }
-    
+    /**
+      * 稼働テーブル開きアイコン
+      */
     expandColumnComponent({ isExpandableRow, isExpanded }) {
         let content = '';
 
@@ -74,7 +90,9 @@ class CustomerInfoSearch extends Component {
         <div> { content } </div>
         );
     }
-    //行Selectファンクション
+    /**
+      * 行Selectファンクション
+      */
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
             document.getElementById('shusei').className = "btn btn-sm btn-primary";
@@ -90,14 +108,18 @@ class CustomerInfoSearch extends Component {
             })
         }
     }
-    //删除行按钮
+    /**
+     * 行削除ボタン
+     */
     handleDeleteButtonClick = (onClick) => {
         // Custom your onClick event here,
         // it's not necessary to implement this function if you have no any process before onClick
         console.log('This is my custom function for DeleteButton click event');
         onClick();
       }
-    //稼動者テーブル
+     /**
+     * 稼働テーブル
+     */
     expandComponent(row) {
     return (
         <div>
@@ -122,7 +144,9 @@ class CustomerInfoSearch extends Component {
         </div>
     );
     }
-    //创建删除行按钮
+     /**
+     * 行削除ボタン
+     */
     createCustomDeleteButton = (onClick) => {
         return (
           <DeleteButton
@@ -135,12 +159,15 @@ class CustomerInfoSearch extends Component {
       }
     render() {
         const { radioValue , customerInfoData }=this.state;
+        //画面遷移のパラメータ（追加）
         var tsuikaPath = {
             pathname:'/subMenu/customerInfo',state:"tsuika",
           }
+        //画面遷移のパラメータ（修正）
         var shuseiPath = {
-        pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.selectRowNo,
+            pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.selectRowNo,
         }
+        //テーブルの行の選択
         const selectRow = {
             mode: 'radio',
             bgColor: 'pink',
@@ -149,6 +176,7 @@ class CustomerInfoSearch extends Component {
             clickToExpand: true,// click to expand row, default is false
             onSelect:this.handleRowSelect,
         };
+        //テーブルの定義
         const options = {
         page: 1,  // which page you want to show as default
         sizePerPage: 5,  // which size per page you want to locate as default

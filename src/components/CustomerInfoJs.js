@@ -1,10 +1,13 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
+var oldForm_data;//画面初期のデータ
+var oldForm_dataJson;//画面初期のデータのjson
+var newForm_data;//登録の際データ
+var newForm_dataJson;//登録の際データのjson
 
+/**
+ * 画面初期化
+ */
 export async function onload(){
   if($("#shoriKbn").val() !== "shusei"){
     $("#toBankInfo").attr("disabled",true);
@@ -63,7 +66,9 @@ export async function onload(){
       alert("select框内容获取错误，请检查程序");
     });  
 }
-
+/**
+ * 登録ボタン
+ */
 export function toroku(){
     newForm_data = $("#customerForm").serializeArray();
     newForm_dataJson = JSON.stringify({ dataform: newForm_data });
@@ -98,7 +103,9 @@ export function toroku(){
         
       }   
 }
-
+/**
+ *　非活性になる
+ */
 export function setDisabled(){
     $("#customerNo").attr("disabled",true);
     $("#customerName").attr("disabled",true);
@@ -114,7 +121,9 @@ export function setDisabled(){
     $("#toBankInfo").attr("disabled",true);
     $("#toCustomerInfo").attr("disabled",true);
 }
-//重置按钮事件
+/**
+ * リセットブタン
+ */
 export function reset(){
   $("#customerName").val("");
   $("#headOffice").val("");
@@ -127,6 +136,9 @@ export function reset(){
   $("#toBankInfo").attr("disabled",true);
   $("#toCustomerInfo").attr("disabled",true);
 }
+/**
+ * お客様名前を入力してないと、小さい画面を開けない
+ */
 export function toDisabed(){
   if($("#customerName").val() !== null && $("#customerName").val() !== ''){
     $("#toBankInfo").attr("disabled",false);

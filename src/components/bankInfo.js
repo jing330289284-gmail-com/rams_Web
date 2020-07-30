@@ -7,16 +7,16 @@ class BankInfo extends Component {
     state = {  }
 
     componentDidMount(){
-        if($("#customerNo").val() === '' || $("#customerNo").val() === null){
+        if($("#customerNo").val() === '' || $("#customerNo").val() === null){//社員の場合
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
             document.getElementById("No").innerHTML  = "社員：" + $("#employeeName").val();
-        }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){
+        }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){//お客様の場合
             $("#employeeOrCustomerNo").val($("#customerNo").val())
             $("#accountBelongsStatus").val("1")
             document.getElementById("No").innerHTML  = "お客様：" + $("#customerName").val();
         }
-        bankInfoJs.onload();
+        bankInfoJs.onload();//画面初期化
     }
     render() {
         return (

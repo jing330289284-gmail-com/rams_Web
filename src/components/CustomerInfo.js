@@ -8,13 +8,16 @@ import '../asserts/css/style.css';
 import TopCustomerInfo from './topCustomerInfo';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker"
+import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
-//提示用下拉框
+registerLocale('ja', ja);
+/**
+ * 以下の四つメソッドは連想検索
+ */
 function escapeRegexCharacters(str) {
 	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -34,18 +37,20 @@ function renderSuggestion(suggestion) {
 }
 class CustomerInfo extends Component {
     state = {
-        showBankInfoModal:false,
-        showCustomerInfoModal:false,
-        establishmentDate: new Date(),
-        businessStartDate: new Date(),
-        topCustomerSuggestions:[],
-        topCustomerValue:'',
-        topCustomerName:'',
-        customerDepartmentName:'',
-        customerDepartmentNameValue:'',
-        customerDepartmentNameSuggestions:[],
+        showBankInfoModal:false,//口座情報画面フラグ
+        showCustomerInfoModal:false,//上位お客様情報画面フラグ
+        establishmentDate: new Date(),//設立の期日
+        businessStartDate: new Date(),//取引開始の期日
+        topCustomerSuggestions:[],//上位お客様連想の数列
+        topCustomerValue:'',//上位お客様項目の値
+        topCustomerName:'',//上位お客様のname
+        customerDepartmentName:'',//部門のname
+        customerDepartmentNameValue:'',//部門の項目値
+        customerDepartmentNameSuggestions:[],//部門の連想数列
      }
-    //日期更改
+    /**
+     *  設立のonChange
+     */
     establishmentDateChange = date => {
     this.setState({
         establishmentDate: date,
@@ -54,6 +59,9 @@ class CustomerInfo extends Component {
         $("#establishmentDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month));
     
     };
+    /**
+     * 取引開始のonChange 
+     */
     businessStartDateChange = date => {
         this.setState({
             businessStartDate: date,
@@ -67,6 +75,9 @@ class CustomerInfo extends Component {
          this.handleShowModal = this.handleShowModal.bind(this);
          this.handleShowModal = this.handleShowModal.bind(this);
      }
+     /**
+     * 小さい画面の閉め 
+     */
      handleHideModal=(Kbn)=>{
          if(Kbn === "bankInfo"){
             this.setState({showBankInfoModal:false})
@@ -74,6 +85,9 @@ class CustomerInfo extends Component {
             this.setState({showCustomerInfoModal:false})
          }
      }
+     /**
+     *  小さい画面の開き
+     */
      handleShowModal=(Kbn)=>{
         if(Kbn === "bankInfo"){
             this.setState({showBankInfoModal:true})
@@ -81,6 +95,9 @@ class CustomerInfo extends Component {
             this.setState({showCustomerInfoModal:true})
          }
      }
+     /**
+     * 画面の初期化 
+     */
     componentDidMount(){
         var pro = this.props.location.state;
         $("#shoriKbn").val( pro.split("-")[0]);
@@ -98,8 +115,9 @@ class CustomerInfo extends Component {
             })
         }
     }
-    //提示查询
-        
+     /**
+     * 上位お客様連想のデータ取得 
+     */   
 	onDlt1SuggestionsFetchRequested = ({ value }) => {
 		const customerInfoMod = {
 			topCustomerName: value
@@ -116,22 +134,33 @@ class CustomerInfo extends Component {
 				console.error("Error - " + error);
 			});
     };
+    /**
+     *  上位お客様連想のデータのクリア
+     */
     onDlt1SuggestionsClearRequested = () => {
 		this.setState({
 			developement1Suggestions: []
 		});
     };
+    /**
+     *  上位お客様連想のデータの選択
+     */
     onDlt1SuggestionSelected = (event, { suggestion }) => {
 		this.setState({
 			topCustomerValue: suggestion.topCustomerName
 		});
     };
+    /**
+     *  上位お客様連想のデータの変化
+     */
     onDevelopement1Change = (event, { newValue }) => {
 		this.setState({
 			topCustomerValue: newValue
 		});
     };
-    //查询部门信息
+    /**
+     *  部門連想のデータ取得
+     */
     meisaiToroku =()=>{
         // var customerInfoMod = {};
         // var formArray =$("#conditionForm").serializeArray();
@@ -149,9 +178,8 @@ class CustomerInfo extends Component {
         // });  
     }
     render() {
-        console.log(this.props)
         const {topCustomerSuggestions , topCustomerValue} = this.state;
-        //上为客户提示框
+        //上位お客様連想
         const topcustomerInputProps = {
 			placeholder: "例：富士通",
 			value: topCustomerValue,
@@ -159,7 +187,7 @@ class CustomerInfo extends Component {
             id:"topCustomerNameShita",
             
         };
-        //部门提示框
+        //部門の連想
         const customerDepartmentNameInputProps = {
 			placeholder: "例：第一事業部",
 			value: topCustomerValue,
@@ -167,6 +195,7 @@ class CustomerInfo extends Component {
             id:"customerDepartmentName",
             
         };
+        //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
             bgColor: 'pink',
@@ -175,6 +204,7 @@ class CustomerInfo extends Component {
             clickToExpand: true,// click to expand row, default is false
             onSelect:this.handleRowSelect,
         };
+        //テーブルの定義
         const options = {
         page: 1,  // which page you want to show as default
         sizePerPage: 5,  // which size per page you want to locate as default

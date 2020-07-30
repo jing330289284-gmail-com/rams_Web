@@ -11,11 +11,13 @@ registerLocale('ja', ja);
 class SubCost extends Component {
 
     state = {
-        bonusStartDate: new Date(),
-        raiseStartDate: new Date(),
-        RelatedEmployees:'',
+        bonusStartDate: new Date(),//ボーナスの期日
+        raiseStartDate: new Date(),//昇給の期日
+        RelatedEmployees:'',//要員
     }
-    //日期更改
+    /**
+     * ボーナス期日の変化
+     */
     bonusChange = date => {
     this.setState({
         bonusStartDate: date,
@@ -23,14 +25,18 @@ class SubCost extends Component {
     $("#NextBonusMonth").val(date.getMonth() + 1);
     
     };
-      //日期更改
+    /**
+     * 昇給期日の変化
+     */
     raiseChange = date => {
     this.setState({
         raiseStartDate: date,
     });
     $("#NextRaiseMonth").val(date.getMonth() + 1);
     };
-    // 页面加载
+     /**
+     * 画面の初期化
+     */
     componentDidMount(){
       var employeeNo = sessionStorage.getItem('employeeNo');
       var shoriKbn = sessionStorage.getItem('shoriKbn');
@@ -43,6 +49,9 @@ class SubCost extends Component {
         SubCostJs.onloadPage();
       }
     }
+    /**
+     * 要員の内容
+     */
     setYouin=()=>{
         this.setState({
             RelatedEmployees:$("#RelatedEmployees").val()

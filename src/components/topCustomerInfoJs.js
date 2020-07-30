@@ -1,10 +1,13 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
+var oldForm_data;//画面初期のデータ
+var oldForm_dataJson;//画面初期のデータのjson
+var newForm_data;//登録の際データ
+var newForm_dataJson;//登録の際データのjson
 
+/**
+ * 画面の初期化
+ */
 export function onload(){
     var shoriKbn = $("#shoriKbn").val();
     var topCustomerMod = {};
@@ -40,6 +43,9 @@ export function onload(){
         alert("页面加载错误，请检查程序");
     })
 }
+/**
+ * 登録ボタン
+ */
 export function toroku(){
     newForm_data = $("#topCustomerInfoForm").serializeArray();
     newForm_dataJson = JSON.stringify({ dataform: newForm_data });
@@ -73,12 +79,17 @@ export function toroku(){
         
       } 
 }
-//重置按钮事件
+/**
+ * リセットボタン
+ */
 export function reset(){
     $("#topCustomerName").val("");
     $("#topUrl").val("");
     $("#topRemark").val("");
   }
+/**
+ * 項目の非活性
+ */
 export function setDisabled(){
     $("#topCustomerNo").attr("disabled",true);
     $("#topCustomerName").attr("disabled",true);
