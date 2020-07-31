@@ -828,52 +828,7 @@ class mainSearch extends React.Component {
 											</Form.Control>
 									</InputGroup>
 									
-									<Col sm={4}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
-											</InputGroup.Prepend>
-											<FormControl id="joinCompanyOfYearFrom" name="joinCompanyOfYearFrom" value={joinCompanyOfYearFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-											<DatePicker
-												selected={this.state.raiseStartDate}
-												onChange={this.inactiveJoinCompanyOfYearFrom}
-												autoComplete="on"
-												className={"dateInput"}
-												dateFormat={"yyyy MM"}
-												showMonthYearPicker
-												showFullMonthYearPicker
-												showDisabledMonthNavigation
-												locale="ja"
-											/> ～ 
-							                <FormControl id="joinCompanyOfYearTo" name="joinCompanyOfYearTo" value={joinCompanyOfYearTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-											<DatePicker
-												selected={this.state.raiseStartDate}
-												onChange={this.inactiveJoinCompanyOfYearTo}
-												autoComplete="on"
-												className={"dateInput"}
-												dateFormat={"yyyy MM"}
-												showMonthYearPicker
-												showFullMonthYearPicker
-												showDisabledMonthNavigation
-												locale="ja"
-											/>
-										</InputGroup>
-									</Col>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
-											</InputGroup.Prepend>
-											<Form.Control as="select" size="sm"
-												onChange={this.valueChange}
-												name="kadou" value={kadou}
-												autoComplete="off" >　
-												<option value=""　>選択ください</option>
-												<option value="0">はい</option>
-												<option value="1">いいえ</option>
-											</Form.Control>
-										</InputGroup>
-									</Col>
+									
 									
 								</Form.Group>
 							

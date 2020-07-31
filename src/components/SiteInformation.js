@@ -41,6 +41,8 @@ class SiteInformation extends Component {
 		time_2: '',
 		siteMaster: [],
 		payMaster: [],
+		topCustomer: [],
+		customerMaster: [],
 		developementValue: '',
 		developementSuggestions: [],
 		developmentLanguageNo: '',
@@ -128,6 +130,38 @@ class SiteInformation extends Component {
 			}
 			);
 	};
+	/* トップお客様 */
+	getTopCustomer = () => {
+		axios.post("http://127.0.0.1:8080/getTopCustomer")//url,条件
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						topCustomer: [{ code: '', name: '選択してください' }]
+							.concat(data.map(tc => {
+								return { code: tc.code, name: tc.name }
+							}))
+					}
+				);
+			}
+			);
+	};
+	/* お客様 */
+	getCustomerMaster = () => {
+		axios.post("http://127.0.0.1:8080/getCustomerMaster")//url,条件
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						customerMaster: [{ code: '', name: '選択してください' }]
+							.concat(data.map(cm => {
+								return { code: cm.code, name: cm.name }
+							}))
+					}
+				);
+			}
+			);
+	};
 	/* 精算時間 */
 	getPayMaster = () => {
 		axios.post("http://127.0.0.1:8080/getPayMaster")//url,条件
@@ -150,7 +184,7 @@ class SiteInformation extends Component {
 		this.setState({
 			bonusStartDate: date,
 		});
-		$("#AdmissionStartDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
+		$("#admissionStartDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
 		var today = new Date();
 		var year = today.getFullYear() - date.getFullYear();
 		var month = today.getMonth() - date.getMonth();
@@ -185,12 +219,14 @@ class SiteInformation extends Component {
 		this.setState({
 			raiseStartDate: date,
 		});
-		$("#AdmissionEndDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
+		$("#admissionEndDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
 	};
 	// 页面加载
 	componentDidMount() {
 		this.getSiteMaster();
 		this.getPayMaster();
+		this.getTopCustomer();
+		this.getCustomerMaster();
 		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
@@ -275,7 +311,6 @@ class SiteInformation extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -302,9 +337,11 @@ class SiteInformation extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="customerNo" name="customerNo" onChange={this.onchange} >
-											<option value="C001">ベース株式会社</option>
-											<option value="C002">いビジネス</option>
-											<option value="C003">イスタア</option>
+											{this.state.customerMaster.map(cm =>
+												<option key={cm.code} value={cm.code}>
+													{cm.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
@@ -314,14 +351,15 @@ class SiteInformation extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="topCustomerNo" name="topCustomerNo" onChange={this.onchange} >
-											<option value="T001">ベース</option>
-											<option value="T002">富士通</option>
-											<option value="T003">富士急</option>
+											{this.state.topCustomer.map(tc =>
+												<option key={tc.code} value={tc.code}>
+													{tc.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -396,7 +434,6 @@ class SiteInformation extends Component {
 
 
 							</Row>
-							<br />
 							<Row>
 								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
@@ -412,7 +449,7 @@ class SiteInformation extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="AdmissionStartDate" name="AdmissionStartDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<FormControl id="admissionStartDate" name="admissionStartDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.onchange} readOnly />
 										<InputGroup.Append>
 											<DatePicker
 												selected={this.state.raiseStartDate}
@@ -443,7 +480,7 @@ class SiteInformation extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="AdmissionEndDate" name="AdmissionEndDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<FormControl id="admissionEndDate" name="admissionEndDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.onchange} readOnly />
 										<InputGroup.Append>
 											<DatePicker
 												selected={this.state.raiseStartDate}
@@ -458,22 +495,20 @@ class SiteInformation extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 
 								</Col>
 
 							</Row>
-							<br />
 							<Row>
 								<Col sm={4}></Col>
 								<Col sm={2} className="text-center">
