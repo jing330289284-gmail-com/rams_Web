@@ -311,7 +311,6 @@ class SiteInformation extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -361,7 +360,6 @@ class SiteInformation extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -436,7 +434,6 @@ class SiteInformation extends Component {
 
 
 							</Row>
-							<br />
 							<Row>
 								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
@@ -498,7 +495,6 @@ class SiteInformation extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
 								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3">
@@ -513,7 +509,6 @@ class SiteInformation extends Component {
 								</Col>
 
 							</Row>
-							<br />
 							<Row>
 								<Col sm={4}></Col>
 								<Col sm={2} className="text-center">
