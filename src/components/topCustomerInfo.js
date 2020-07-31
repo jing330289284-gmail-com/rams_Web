@@ -1,11 +1,13 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button } from 'react-bootstrap';
 import * as TopCustomerInfoJs from '../components/topCustomerInfoJs.js';
 import $ from 'jquery';
 
 class TopCustomerInfo extends Component {
     state = {  }
-
+    /**
+     * 画面の初期化
+     */
     componentDidMount(){
         $("#shoriKbn").val( this.props.location.state);
         TopCustomerInfoJs.onload();

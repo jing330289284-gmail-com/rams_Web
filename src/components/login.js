@@ -9,8 +9,11 @@ import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 
 class Login extends Component {
 	state = {
-		loginFlag:false,
+		loginFlag:false,//ログインの成功フラグ
 	}
+	/**
+	 * ログインボタン
+	 */
 	login = () =>{
 		var loginModel = {};
 		loginModel["employeeNo"] = $("#employeeNo").val();
@@ -18,7 +21,7 @@ class Login extends Component {
 		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(resultMap =>{
 			var employeeModel = resultMap.data.employeeModel;		
-			if(employeeModel !== null){
+			if(employeeModel !== null){//ログイン成功
 				// this.context.router.push("/subCost")
 				sessionStorage.setItem('employeeNo', employeeModel["employeeNo"]);
 				sessionStorage.setItem('authorityProperty', employeeModel["authorityProperty"]);
@@ -31,7 +34,7 @@ class Login extends Component {
 				this.setState({
 					loginFlag:true,
 				})
-			}else{
+			}else{//ログイン失敗
 				alert("账号或密码输入错误");
 			}
 			})
@@ -39,6 +42,10 @@ class Login extends Component {
 				alert("登录错误，请检查程序");
 			});
 	}
+	/**
+	 * 画面初期化
+	 * remeberボックスの使用
+	 */
 	componentDidMount(){
 		var employeeNo = sessionStorage.getItem('loginEmployeeNo');
 		$("#employeeNo").val(employeeNo);

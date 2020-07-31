@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from './components/login'
 import Subcost from './components/subCost'
@@ -14,9 +14,6 @@ import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInformation from './components/SiteInformation';
 
 function App() {
-	const marginTop = {
-		marginTop: "20px"
-	}
 	return (
 		<Router>
 			<div style={{ "backgroundColor": "#f5f5f5" }}>

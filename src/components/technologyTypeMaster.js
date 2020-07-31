@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
 
@@ -8,6 +8,9 @@ class TechnologyTypeMaster extends Component {
     componentDidMount(){
         this.onloadPage();
     }
+    /**
+     * 画面の初期化
+     */
     onloadPage =()=>{
         axios.post("http://127.0.0.1:8080/technologyTypeMaster/onloadPage")
             .then(function (result) {
@@ -17,6 +20,9 @@ class TechnologyTypeMaster extends Component {
                 alert("页面加载错误，请检查程序");
             });  
     }
+    /**
+     * 登録ボタン
+     */
     toroku =()=>{
         var technologyTypeMod = {};
         technologyTypeMod["technologytypeCode"] = $("#technologytypeCode").val();
@@ -35,6 +41,9 @@ class TechnologyTypeMaster extends Component {
                 alert("页面加载错误，请检查程序");
             });  
     }
+    /**
+     * リセットボタン
+     */
     reset =()=>{
         $("#technologytypeName").val("");
     }

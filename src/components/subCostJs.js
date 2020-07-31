@@ -1,13 +1,13 @@
-import { func } from 'prop-types';
-
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
+var oldForm_data;//画面初期のデータ
+var oldForm_dataJson;//画面初期のデータのjson
+var newForm_data;//登録の際データ
+var newForm_dataJson;//登録の際データのjson
 
-// 登录按钮
+/**
+ * 登録ボタン
+ */
 export function tokuro(){
   newForm_data = $("#costForm").serializeArray();
   newForm_dataJson = JSON.stringify({ dataform: newForm_data });
@@ -22,7 +22,7 @@ export function tokuro(){
     axios.post("http://127.0.0.1:8080/subCost/toroku", costModel)
     .then(function (result) {
       
-      if(result.data == true){
+      if(result.data === true){
         alert("登录完成");
         window.location.reload();
       }else{
@@ -41,7 +41,9 @@ export function tokuro(){
       document.getElementById("subCostErorMsg").style = "visibility:visible";    } 
   }   
 }
-// 页面加载
+/**
+ * 画面初期化
+ */
 export function onloadPage(){
   $("#youin").attr("disabled",true);
   var costModel = {};
@@ -72,7 +74,7 @@ export function onloadPage(){
     $("#otherAllowanceAmount").val(resultList[0]["otherAllowanceAmount"]);
     $("#remark").val(resultList[0]["remark"]);
     $("#totalAmount").val(resultList[0]["totalAmount"]);
-    //非稼动判断
+    //非稼働判断
     if(checkKadoMap !== null){
       if(checkKadoMap["siteRoleCode"] === 1){
         $("#leaderAllowanceAmount").attr("readOnly",false);
@@ -92,7 +94,9 @@ export function onloadPage(){
     alert("查询错误，请检查程序");
   });
 }
-// 页面不可更改
+/**
+ * 画面項目の非活性
+ */
 export function setDisabled(){
   $("#salary").attr("disabled",true)
   $("#SocialInsuranceFlag").attr("disabled",true)
@@ -122,6 +126,9 @@ export function setDisabled(){
   $("#otherAllowance").attr("disabled",true)
   $("#otherAllowanceAmount").attr("disabled",true)
 }
+/**
+ * 社会保険計算
+ */
 export async function jidoujisan(){
   var salary = document.getElementById("salary").value;
   if($("#SocialInsuranceFlag").val() === "0"){
@@ -132,6 +139,10 @@ export async function jidoujisan(){
       alert("给料不能为0");
       $("#SocialInsuranceFlag").val("1");
     }else{
+      /**
+       * https://asia-northeast1-tsunagi-all.cloudfunctions.net/
+       * 社会保険計算
+       */
       await axios.post("/api/getSocialInsurance202003?salary="+salary+"&kaigo=0")
       .then(function (result) {
         $("#welfarePensionAmount").val(result.data.pension.payment);
@@ -151,6 +162,9 @@ export async function jidoujisan(){
     totalKeisan();
   }
 }
+/**
+ * ボーナス項目の活性
+ */
 export function bonusCanInput(){
   if($("#BonusFlag").val() === "0"){
     $("#lastTimeBonusAmount").attr('readOnly' , false);
@@ -164,6 +178,9 @@ export function bonusCanInput(){
     totalKeisan();
   }
 }
+/**
+ * 総計の計算
+ */
 export function totalKeisan(){
   var sum = 0;
   if($("#salary").val() === '' && $("#WaitingCost").val() !== ''){

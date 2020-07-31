@@ -1,10 +1,8 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
-
+/**
+ * 画面の初期化
+ */
 export function onload(){
     document.getElementById('shusei').className += " disabled";
     document.getElementById('sakujo').className += " disabled";
@@ -15,26 +13,12 @@ export function onload(){
         var companyNature = {};
         customerRanking = resultMap.data.selectModel.customerRanking;
         companyNature = resultMap.data.selectModel.companyNature;
-        for(let i = 0;i<customerRanking.length ; i++){
+        for(let i = 0;i<customerRanking.length ; i++){//お客様ランキング
             $("#customerRankingCode").append('<option value="'+customerRanking[i]["customerRankingCode"]+'">'+customerRanking[i]["customerRankingName"]+'</option>');
         }
-        for(let i = 0;i<companyNature.length ; i++){
+        for(let i = 0;i<companyNature.length ; i++){//お客様性質
             $("#companyNatureCode").append('<option value="'+companyNature[i]["companyNatureCode"]+'">'+companyNature[i]["companyNatureName"]+'</option>');
         }
-    })
-    .catch(function (error) {
-      alert("select框内容获取错误，请检查程序");
-    });  
-}
-export function search(){
-    var customerInfoMod = {};
-    var formArray =$("#conditionForm").serializeArray();
-    $.each(formArray,function(i,item){
-        customerInfoMod[item.name] = item.value;     
-    });
-    axios.post("http://127.0.0.1:8080/customerInfoSearch/search" , customerInfoMod)
-    .then(function (resultList) {
-        return resultList.data;
     })
     .catch(function (error) {
       alert("select框内容获取错误，请检查程序");

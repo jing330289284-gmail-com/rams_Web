@@ -5,11 +5,15 @@ var oldForm_dataJson;
 var newForm_data;
 var newForm_dataJson;
 
+/**
+ * 画面初期化
+ */
 export function onload(){
   var onloadMol = {};
   onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
   onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
   onloadMol["shoriKbn"] = $("#shoriKbn").val();
+  //画面データの検索
     axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
     .then(function (resultMap) {
       var bankName = {};
@@ -17,13 +21,13 @@ export function onload(){
       for(let i = 0;i<bankName.length ; i++){
         $("#bankCode").append('<option value="'+(i+1)+'">'+resultMap.data.accountInfoMod.bankName[i]+'</option>');
       }
-      if(resultMap.data.accountInfoMod != ''){
+      if(resultMap.data.accountInfoMod !== ''){
         $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
         $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
         $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
         $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
         $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
-        if(resultMap.data.accountInfoMod["accountBelongsStatus"] != null && resultMap.data.accountInfoMod["accountBelongsStatus"] != ''){
+        if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
           $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
         }
         if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
@@ -31,6 +35,7 @@ export function onload(){
         }else if(resultMap.data.accountInfoMod["accountTypeStatus"] === '1'){
           $("#toza").attr("checked",true);
         }
+        //修正の場合
         if($("#shoriKbn").val() === 'shusei'){
           $("#bankBranchName").attr("readonly",false);
           $("#bankBranchCode").attr("readonly",false);
@@ -40,7 +45,7 @@ export function onload(){
           $("#toza").attr("disabled",false);
           oldForm_data = $("#bankForm").serializeArray();
           oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
-        }else if($("#shoriKbn").val() === "tsuika"){
+        }else if($("#shoriKbn").val() === "tsuika"){//追加の場合
           $("#bankBranchName").attr("readonly",true);
           $("#bankBranchCode").attr("readonly",true);
           $("#accountNo").attr("readonly",true);
@@ -57,16 +62,12 @@ export function onload(){
       alert("銀行名错误，请检查程序");
     });  
 }
+/**
+ * 銀行の選択と項目の活性
+ */
 export function canSelect(){
 	var val = $("#bankCode").val();
-    // $("#bankBranchName").attr("readonly",true);
-    // $("#bankBranchCode").attr("readonly",true);
-    // $("#accountNo").attr("readonly",true);
-    // $("#accountName").attr("readonly",true);
-    // $("#futsu").attr("disabled",true);
-    // $("#toza").attr("disabled",true);
-    // $("#toza").attr("disabled",true);
-	if(val != 0){
+	if(val !== 0){
         $("#bankBranchName").attr("readonly",false);
         $("#bankBranchCode").attr("readonly",false);
         $("#accountNo").attr("readonly",false);
@@ -89,6 +90,9 @@ export function canSelect(){
     $("#accountName").val("");
     $("#futsu").attr("checked",true);
 }
+/**
+ * 非活性になる
+ */
 export function setDisabled(){
     $("#bankBranchName").attr("readonly",true);
     $("#bankBranchCode").attr("readonly",true);
@@ -98,6 +102,9 @@ export function setDisabled(){
     $("#toza").attr("disabled",true);
     $('#futsu').attr("checked",true);
 }
+/**
+ * カタカナのチェック
+ */
 export function checkAccountName(){
   var katakana = /^[ァ-ロワヲンー]*$/;//片仮名の正規表現
   var accountName = document.getElementById("accountName");
@@ -112,15 +119,19 @@ export function checkAccountName(){
     return true;
   }
 }
+/**
+ * 支店名と支店番号の検索
+ * param 項目のid
+ */
 export function getBankBranchInfo(noORname){
   var pra = {};
   pra[noORname] = $('#'+noORname+'').val();
   pra["bankCode"] = $('#bankCode').val();
-  if($('#'+noORname+'').val() != ""){
+  if($('#'+noORname+'').val() !== ""){
     
     axios.post("http://127.0.0.1:8080/bankInfo/getBankBranchInfo",pra)
       .then(function (resultMap) {
-        if(resultMap.data != ''){
+        if(resultMap.data !== ''){
             $('#bankBranchCode').val(resultMap.data["bankBranchCode"]);
             $('#bankBranchName').val(resultMap.data["bankBranchName"]);
         }else{
@@ -137,12 +148,14 @@ export function getBankBranchInfo(noORname){
     $('#bankBranchName').val("");
   }
 }
-// 登录按钮
+/**
+ * 登録ブタン
+ */
 export function tokuro(){
   newForm_data = $("#bankForm").serializeArray();
   newForm_dataJson = JSON.stringify({ dataform: newForm_data });
   var result = checkAccountName();
-  if(newForm_dataJson != oldForm_dataJson && result){
+  if(newForm_dataJson !== oldForm_dataJson && result){
     var bankCol = {};
     var formArray =$("#bankForm").serializeArray();
     $.each(formArray,function(i,item){
@@ -153,7 +166,7 @@ export function tokuro(){
     axios.post("http://127.0.0.1:8080/bankInfo/toroku", bankCol)
     .then(function (result) {
       
-      if(result.data == true){
+      if(result.data === true){
         alert("登录完成");
         window.location.reload();
       }else{
@@ -164,7 +177,7 @@ export function tokuro(){
       alert("登录错误，请检查程序");
     });
   }else{
-    if(newForm_dataJson == oldForm_dataJson){
+    if(newForm_dataJson === oldForm_dataJson){
       alert("修正してありません!");
     }else if(!checkAccountName()){
       document.getElementById("bankInfoErorMsg").style = "visibility:visible";
@@ -172,6 +185,9 @@ export function tokuro(){
     }
   }   
 }
+/**
+ * 全部の項目を非活性になる
+ */
 export function setAllDisabled(){
   $("#bankBranchName").attr("disabled",true);
   $("#bankBranchCode").attr("disabled",true);
