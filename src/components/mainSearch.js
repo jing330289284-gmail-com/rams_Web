@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import Autosuggest from 'react-autosuggest';
-import './style.css';
+import '../asserts/css/development.css';
+import '../asserts/css/style.css';
 import $ from 'jquery'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -10,6 +11,7 @@ import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import * as dateUtils from './utils/dateUtils.js';
 
 registerLocale("ja", ja);
 
@@ -104,8 +106,10 @@ class mainSearch extends React.Component {
 		employeeNo: '',
 		employeeFristName: '',
 		emploryeeForm: '',
+		employeeStatus: '',
 		genderCode: '',
-		joinCompanyOfYear: '',
+		joinCompanyOfYearFrom: '',
+		joinCompanyOfYearTo: '',
 		ageFrom: '',
 		ageTo: '',
 		statusOfResidence: '',
@@ -124,6 +128,7 @@ class mainSearch extends React.Component {
 		japaneseLevels: [],
 		value: '',
 		suggestions: [],
+		employeeStatuss: [],
 		genders: [],
 		kadou: '',
 		developmentLanguageNo1: '',
@@ -144,7 +149,9 @@ class mainSearch extends React.Component {
 		employeeFristName: '',
 		emploryeeForm: '',
 		genderCode: '',
-		joinCompanyOfYear: '',
+		employeeStatus: '',
+		joinCompanyOfYearFrom: '',
+		joinCompanyOfYearTo: '',
 		ageFrom: '',
 		ageTo: '',
 		statusOfResidence: '',
@@ -272,13 +279,6 @@ class mainSearch extends React.Component {
 	};
 	//開発言語　終了
 
-	//入社年月
-	handleChange = date => {
-		this.setState({
-			joinCompanyOfYear: date
-		});
-	};
-
 	//初期化メソッド
 	componentDidMount() {
 		this.getNationalitys();//全部の国籍
@@ -287,11 +287,12 @@ class mainSearch extends React.Component {
 		this.getIntoCompany();//入社区分
 		this.getJapaneseLevel();//日本語レベル
 		this.getGender();//性別区別
+		this.getEmployee();//ステータス
+		this.getSiteMaster();//役割
 		this.clickButtonDisabled();
-		this.getSiteMaster();
+		
+
 	}
-
-
 	//検索
 	searchEmployee = () => {
 		alert( this.state.developement1Value);
@@ -299,8 +300,10 @@ class mainSearch extends React.Component {
 			employeeNo: this.state.employeeNo,
 			employeeFristName: this.state.employeeFristName,
 			emploryeeForm: this.state.emploryeeForm,
+			employeeStatus: this.state.employeeStatus,
 			genderCode: this.state.genderCode,
-			joinCompanyOfYear: this.state.joinCompanyOfYear,
+			joinCompanyOfYearFrom: this.state.joinCompanyOfYearFrom,
+			joinCompanyOfYearTo: this.state.joinCompanyOfYearTo,
 			ageFrom: this.state.ageFrom,
 			ageTo: this.state.ageTo,
 			statusOfResidence: this.state.statusOfResidence,
@@ -393,6 +396,25 @@ class mainSearch extends React.Component {
 			);
 	};
 
+/* employeesステータス */
+	getEmployee = () => {
+		axios.post("http://127.0.0.1:8080/getEmployee")
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						employeeStatuss: [{ code: '', name: '選択ください' }]
+							.concat(data.map(es => {
+								return { code: es.code, name: es.name }
+							}))
+					}
+				);
+			}
+			);
+	};
+
+
+
 	/* 性別区別 */
 	getGender = () => {
 		axios.post("http://127.0.0.1:8080/getGender")
@@ -444,7 +466,21 @@ class mainSearch extends React.Component {
 			}
 			);
 	};
+	//年月開始
+	state = {
+		raiseStartDate: new Date(),
+	}
 
+	//入社年月
+	inactiveJoinCompanyOfYearFrom = date => {
+		$("#joinCompanyOfYearFrom").val(date.getFullYear() + "/" + (date.getMonth() + 1));
+		dateUtils.getFullYearMonth("#time", date);
+	};
+
+	inactiveJoinCompanyOfYearTo = date => {
+		$("#joinCompanyOfYearTo").val(date.getFullYear() + "/" + (date.getMonth() + 1));
+		dateUtils.getFullYearMonth("#time", date);
+	};
 
 	//初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
@@ -486,10 +522,10 @@ class mainSearch extends React.Component {
 		);
 	}
 	render() {
-		const { employeeNo, employeeFristName, emploryeeForm, genderCode,
-			joinCompanyOfYear, ageFrom, ageTo, statusOfResidence, birthplaceOfcontroy,
+		const { employeeNo, employeeFristName, emploryeeForm, genderCode,employeeStatus,
+			joinCompanyOfYearFrom,joinCompanyOfYearTo, ageFrom, ageTo, statusOfResidence, birthplaceOfcontroy,
 			customer, japanease, siteRoleCode,
-			kadou, unitPriceFrom, unitPriceTo,
+			kadou, 
 			intoCompanyCode, employeeList } = this.state;
 		const {
 			developement1Value,
@@ -523,11 +559,10 @@ class mainSearch extends React.Component {
 		};
 		return (
 			<div >					
-					<Form id="bookFormID" inline >
-						<div style={{ "width": "1300px", "height": "220px" }}>
-							<Card.Body>
+					<Form   >
+						<div >
 								  <Form.Group>
-                                   <Row style={{ "width": "1100px" }}>
+                                   <Row >
 									<Col lg={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -571,6 +606,25 @@ class mainSearch extends React.Component {
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">ステータス</InputGroup.Text>
+											</InputGroup.Prepend>
+											<Form.Control as="select" size="sm"
+												onChange={this.valueChange}
+												name="employeeStatus" value={employeeStatus}
+												autoComplete="off">
+												{this.state.employeeStatuss.map(employeeStatus =>
+													<option key={employeeStatus.code} value={employeeStatus.code}>
+														{employeeStatus.name}
+													</option>
+												)}
+											</Form.Control>
+										</InputGroup>
+									</Col>
+									</Row>  
+									<Row >
+									<Col sm={3}>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
 												<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
 											</InputGroup.Prepend>
 											<Form.Control as="select" size="sm"
@@ -585,35 +639,10 @@ class mainSearch extends React.Component {
 											</Form.Control>
 										</InputGroup>
 									</Col>
-									</Row>  
-									<Row style={{ "width": "1100px" }}>
-									<Col sm={3}>
-										<InputGroup size="sm" className="mb-3">
-											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
-											</InputGroup.Prepend>
-											<nobr>
-												<DatePicker
-													dateFormat={"yyyy MM"}
-													autoComplete="off"
-													name="joinCompanyOfYear"
-													value={joinCompanyOfYear} size="sm"
-													locale="ja"
-													onChange={this.handleChange}
-													selected={this.state.joinCompanyOfYear}
-													showMonthYearPicker
-													showFullMonthYearPicker
-													className={"optionCss text-white form-control form-control-sm"}
-												/>
-											</nobr>
-										</InputGroup>
-									</Col>
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
 												<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-											</InputGroup.Prepend>
-											<nobr>
 												<Form.Control type="text" name="ageFrom"
 													value={ageFrom} autoComplete="off"
 													onChange={this.valueChange} size="sm"
@@ -623,7 +652,7 @@ class mainSearch extends React.Component {
 													onChange={this.valueChange} size="sm"
 													className={"fromToCss"  }
 												/>
-											</nobr>
+											</InputGroup.Prepend>
 										</InputGroup>
 									</Col>
 									<Col sm={3}>
@@ -661,7 +690,7 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
                                      </Row>
-									 <Row style={{ "width": "1100px" }}>
+									 <Row >
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -671,7 +700,7 @@ class mainSearch extends React.Component {
 												name="customer" autoComplete="off"
 												value={customer} size="sm"
 												onChange={this.valueChange}
-												className={"optionCss  text-white"}
+												className={"optionCss"}
 												placeholder="社お客様先" />
 										</InputGroup>
 									</Col>
@@ -727,12 +756,9 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
 									</Row>	
-																		
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Col sm={3}>
 											<Autosuggest
 												suggestions={developement1Suggestions}
 												onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
@@ -742,8 +768,6 @@ class mainSearch extends React.Component {
 												renderSuggestion={renderSuggestion}
 												inputProps={dlt1InputProps}
 											/>
-										</Col>
-										<Col sm={3}>
 											<Autosuggest
 												suggestions={developement2Suggestions}
 												onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
@@ -753,8 +777,6 @@ class mainSearch extends React.Component {
 												renderSuggestion={renderSuggestion}
 												inputProps={dlt2InputProps}
 											/>
-										</Col>
-										<Col sm={3}>
 											<Autosuggest
 												suggestions={developement3Suggestions}
 												onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
@@ -764,27 +786,79 @@ class mainSearch extends React.Component {
 												renderSuggestion={renderSuggestion}
 												inputProps={dlt3InputProps}
 											/>
-										</Col>
+										</InputGroup.Prepend>
+								
+												<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl id="joinCompanyOfYearFrom" name="joinCompanyOfYearFrom" value={joinCompanyOfYearFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.inactiveJoinCompanyOfYearFrom}
+												autoComplete="on"
+												className={"dateInput"}
+												dateFormat={"yyyy MM"}
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												locale="ja"
+											/> ～ 
+							                <FormControl id="joinCompanyOfYearTo" name="joinCompanyOfYearTo" value={joinCompanyOfYearTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.inactiveJoinCompanyOfYearTo}
+												autoComplete="on"
+												className={"dateInput"}
+												dateFormat={"yyyy MM"}
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												locale="ja"
+											/>
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
+											</InputGroup.Prepend>
+											<Form.Control as="select" size="sm"
+												onChange={this.valueChange}
+												name="kadou" value={kadou}
+												autoComplete="off" >　
+												<option value=""　>選択ください</option>
+												<option value="0">はい</option>
+												<option value="1">いいえ</option>
+											</Form.Control>
 									</InputGroup>
+									
 									<Col sm={4}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
-												<InputGroup.Text id="inputGroup-sizing-sm">単価範囲</InputGroup.Text>
+												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
 											</InputGroup.Prepend>
-											<nobr>
-												<Form.Control type="text" name="unitPriceFrom"
-													value={unitPriceFrom} autoComplete="off"
-													onChange={this.valueChange} size="sm"
-													className={"fromToCss2"}
-												/> ～ <Form.Control type="text" name="unitPriceTo"
-													value={unitPriceTo} autoComplete="off"
-													onChange={this.valueChange} size="sm"
-													className={"fromToCss2"}
-												/>
-											</nobr>
+											<FormControl id="joinCompanyOfYearFrom" name="joinCompanyOfYearFrom" value={joinCompanyOfYearFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.inactiveJoinCompanyOfYearFrom}
+												autoComplete="on"
+												className={"dateInput"}
+												dateFormat={"yyyy MM"}
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												locale="ja"
+											/> ～ 
+							                <FormControl id="joinCompanyOfYearTo" name="joinCompanyOfYearTo" value={joinCompanyOfYearTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+											<DatePicker
+												selected={this.state.raiseStartDate}
+												onChange={this.inactiveJoinCompanyOfYearTo}
+												autoComplete="on"
+												className={"dateInput"}
+												dateFormat={"yyyy MM"}
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												locale="ja"
+											/>
 										</InputGroup>
 									</Col>
-																	
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -801,10 +875,8 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
 									
-
 								</Form.Group>
 							
-							</Card.Body>
 						</div>
 						
 					</Form>
@@ -819,13 +891,22 @@ class mainSearch extends React.Component {
 							<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
 					</div>
-
+					
 					<Card.Body>
-						<div style={{ "float": "right" }} >
-							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} >詳細</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} >修正</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDelete} >削除</Button>
-						</div>
+						<div>
+							 <Row >
+								<Col sm={4}>
+							        <Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} >履歴書</Button>{' '}
+							        <Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} >在留カード</Button>{' '}							
+							    </Col>
+								<Col sm={6}></Col>
+								<Col sm={2}>
+							        <Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} >詳細</Button>{' '}
+							        <Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} >修正</Button>{' '}
+							    	<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDelete} >削除</Button>
+						        </Col>
+						    </Row>
+						</div>						
 						<div >
 							<BootstrapTable data={employeeList} selectRow={selectRowProp} className={"bg-white text-dark"} pagination={true} options={this.options}>
 								<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={getCaret} isKey>番号</TableHeaderColumn>

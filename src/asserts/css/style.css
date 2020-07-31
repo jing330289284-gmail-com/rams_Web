@@ -6,20 +6,29 @@
     font-weight: bold;
 }
 
+.changeColor {
+    color: black;
+    background-color: #F8F8F8 !important;
+}
+
 .optionCss {
-    width: 150px !important;
+    width: 130px !important;
 }
 
-.optionCssss {
-    width: 110px !important;
-}
-
-.fromToCss {
-    width: 65px !important;
+.fromToCss{
+    width: 80px !important;
 }
 
 .fromToCss2 {
-    width: 130px !important;
+    width: 115px !important;
+}
+
+.detailForm {
+    width: 1100px !important;
+}
+
+.font20 {
+    font-size: 10px
 }
 
 .dateInput {
@@ -34,12 +43,12 @@
     /* background-size:40px 30px; */
 }
 
-.arrow {
+/*.arrow {
     width: 0;
     height: 0;
     float: right;
     margin-top: 5px;
-    border-left: 5px solid transparent;
+    border-left: px solid transparent;
     border-right: 5px solid transparent;
     display: inline-block;
 }
@@ -51,20 +60,150 @@
 .arrow-down {
     border-top: 10px solid white;
 }
-
+*/
 
 body {
     font-family: Helvetica, sans-serif;
 }
 
-.react-autosuggest__container {
-    position: relative;
+
+
+/* ?¡è?¨¢?`??¡è¨°?????¡Á?¨ª?`??¡è?¡è?¡è??¡±????¨¦_?? */
+.fileContainer {
+  background: #fff;
+  box-shadow: none;
+  position: relative;
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.3s ease-in;
+  height: 160px;
+  float:left;
+  
 }
 
-.react-autosuggest__input {
+.fileContainer p:empty {
+  font-size: 12px;
+  margin: 0;
+}
+
+.fileContainer .uploadPicturesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  top: -51px;
+  width: 150px;
+  height: auto;
+}
+
+.uploadPicturesWrapper>div:empty {
+  height: 1px;
+}
+
+.fileContainer .uploadPictureContainer {
+  width: 150px;
+  height: 120px;
+  padding: 5px;
+  background: #edf2f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.fileContainer .deleteImage {
+  position: absolute;
+  right: unset;
+  top: unset;
+  border-radius: 0;
+  text-align: center;
+  cursor: pointer;
+  font-size: 26px;
+  font-weight: bold;
+  line-height: 30px;
+  width: 134px;
+  height: 30px;
+  left: 0;
+  bottom: -45px;
+  background-image: url(../images/img_96165.png);
+  background-position: left 4px top 3px;
+  background-repeat: no-repeat;
+  background-size: 17px 23px;
+  background-color: transparent;
+  color: black;
+  overflow: hidden;
+  text-indent: -156px;
+}
+
+.fileContainer .deleteImage:after {
+  content: "Delete image";
+  position: absolute;
+  right: -45px;
+  font-size: 16px;
+}
+
+.fileContainer .uploadPictureContainer img.uploadPicture {
+  width: 145px;
+  height: 130px;
+}
+
+.fileContainer .errorsContainer {
+  max-width: 150px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 10;
+  top: 35%;
+  background: rgba(255, 0, 0, 0.7);
+  padding: 10px;
+  text-align: center;
+  color: white;
+  margin: 0 auto;
+  width: 79%;
+  border-radius: 6px;
+}
+
+.fileContainer .errorsContainer:empty {
+  opacity: 0;
+}
+
+.fileContainer .chooseFileButton {
+  padding: 6px 23px;
+  background-color: #c1c1c1;
+  background-repeat: no-repeat;
+  background-position: 50% 23%;
+  background-size: 25%;
+  border-radius: 0;
+  color: white;
+  font-weight: 300;
+  font-size: 14px;
+  margin: 10px 0;
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  width: 95%;
+  height: 100%;
+}
+
+.fileContainer .chooseFileButton:hover {
+  background-color: #c1c1c1;
+  background-repeat: no-repeat;
+  background-position: 50% 23%;
+  background-size: 25%;
+}
+/* ?¡è?¨¢?`??¡è¨°?????¡Á?¨ª?`??¡è?¡è?¡è??¡±?????K?? */
+
+
+
+/* .react-autosuggest__input {
     width: 150px;
-    background-color: #343a40 !important;
-    color: #fff !important;
+    background-color: #343a40 ;
+    color: #fff ;
     height: calc(1.5em + .5rem + 2px);
     padding: .25rem .5rem;
     font-size: .875rem;
@@ -75,7 +214,7 @@ body {
     border: 1px solid #ced4da;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
-}
+} 
 
 .react-autosuggest__input--focused {
     outline: none;
@@ -134,4 +273,4 @@ body {
 
 .react-autosuggest__suggestion--highlighted {
     background-color: #007bff;
-}
+} */
