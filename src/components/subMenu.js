@@ -31,7 +31,7 @@ class SubMenu extends Component {
         this.setState({
             nowDate:(dateNow.getFullYear() + '年' + (month < 10 ? '0'+month: month) + '月'),
         })
-        document.getElementById("kanriSha").innerHTML = sessionStorage.getItem('authorityProperty') + "：" + sessionStorage.getItem('employeeName');
+        document.getElementById("kanriSha").innerHTML = sessionStorage.getItem('authorityName') + "：" + sessionStorage.getItem('employeeName');
     }
     render() {
         //お客様情報画面の追加パラメータ
