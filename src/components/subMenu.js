@@ -9,8 +9,8 @@ import signout from '../asserts/images/登出.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Subcost from './subCost'
 import Main from './main';
-import MainAdd from './mainAdd';
-import MainSearch from './mainSearch';
+import EmployeeAdd from './employeeAdd';
+import EmployeeSearch from './employeeSearch';
 import BankInfo from './bankInfo';
 import CustomerInfo from './CustomerInfo';
 import TopCustomerInfo from './topCustomerInfo';
@@ -101,7 +101,7 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="0">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>社員情報登録</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/mainSearch"><img alt="title" src={open}/>社員情報検索</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/employeeSearch"><img alt="title" src={open}/>社員情報検索</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInformation"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>単価情報検索</Link></ListGroup.Item>
                                                 </ListGroup>
@@ -173,8 +173,8 @@ class SubMenu extends Component {
                                 <Router>
                                     <Route exact path={`${this.props.match.url}/`} component={Main} />
                                     <Route exact path={`${this.props.match.url}/passwordReset`} component={Subcost} />
-                                    <Route exact path={`${this.props.match.url}/add`} component={MainAdd} />
-                                    <Route exact path={`${this.props.match.url}/mainSearch`} component={MainSearch} />
+                                    <Route exact path={`${this.props.match.url}/add`} component={EmployeeAdd} />
+                                    <Route exact path={`${this.props.match.url}/EmployeeSearch`} component={EmployeeSearch} />
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
                                     <Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
                                     <Route exact path={`${this.props.match.url}/siteInformation`} component={SiteInformation} />

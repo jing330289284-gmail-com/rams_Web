@@ -1,22 +1,39 @@
+/* 社員を追加 */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker"
 import * as dateUtils from './utils/dateUtils.js';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import BankInfo from './bankInfo';
+import SubCost from './subCost';
+import SiteInformation from './SiteInformation';
+import CustomerInfo from './CustomerInfo';
 
-class mainAdd extends React.Component {
+const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
+
+class employeeAdd extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		//this.saveEmployee = this.saveEmployee.bind(this);//登録
-		this.onDrop = this.onDrop.bind(this);//ImageUploaderを処理
+		this.saveEmployee = this.saveEmployee.bind(this);//登録
+		//this.onDrop = this.onDrop.bind(this);//ImageUploaderを処理
+		this.radioChangeEmployeeType = this.radioChangeEmployeeType.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+
 	}
 	//初期化
 	initialState = {
+		showBankInfoModal: false,//口座情報画面フラグ
+		showSubCostModal: false,//諸費用
+		showSiteInformationModal: false,//現場情報
+		showCustomerInfoModal: false,//上位お客様情報
+		//showCustomerInfoModal: false,//権限・PW設置
+
 		pictures: [],//ImageUploader
 		genders: [],//性別
 		intoCompanys: [],//入社区分
@@ -27,10 +44,10 @@ class mainAdd extends React.Component {
 		japaneseLevels: [],//日本語
 		residence: [],//在留資格
 		englishLevel: [],//英語
+		nationality: [],//出身地
 	};
 	//リセット化
 	resetState = {
-		employeeNo: '',//社員番号
 		employeeFristName: '',//社員氏
 		employeeLastName: '',//社員名
 		furigana1: '',//カタカナ1
@@ -46,6 +63,7 @@ class mainAdd extends React.Component {
 		retirementDate: "",//退職年月
 		comingToJapanOfYearAndMonth: "",//来日年月
 		//joinCompanyOfYear: "",//出身地TODO
+		birthplaceOfPrefecture: "",//出身地(県)
 		phone: "",//携帯電話
 		developmentLanguageNo1: "",//スキール1
 		developmentLanguageNo2: "",//スキール2
@@ -55,9 +73,10 @@ class mainAdd extends React.Component {
 		myNumber: "",//マイナンバー
 		certification1: "",//資格1
 		certification2: "",//資格2
-
 	};
-
+	saveEmployee = () => {
+		alert(1);
+	};
 	//リセット
 	resetBook = () => {
 		this.setState(() => this.resetState);
@@ -65,7 +84,7 @@ class mainAdd extends React.Component {
 	//onchange
 	valueChange = event => {
 		this.setState({
-			[event.target.name]: event.target.value
+			[event.target.name]: event.target.value,
 		})
 	}
 	//初期化メソッド
@@ -79,7 +98,10 @@ class mainAdd extends React.Component {
 		this.getJapaneseLevel();//日本語レベル
 		this.getVisa();//在留資格
 		this.getEnglishLevel();//英語
+		this.getNO();//採番番号
+		this.getNationalitys();//採番番号
 	}
+
 	/* 性別区別 */
 	getGender = () => {
 		var data = dateUtils.getdropDown("getGender");
@@ -131,6 +153,7 @@ class mainAdd extends React.Component {
 	/* 権限 */
 	getAuthority = () => {
 		var data = dateUtils.getdropDown("getAuthority");
+		data.shift()
 		this.setState(
 			{
 				authority: data
@@ -166,6 +189,27 @@ class mainAdd extends React.Component {
 			}
 		);
 	};
+	//採番番号
+	getNO = () => {
+		promise.then((value) => {
+			this.setState(
+				{
+					employeeNo: value
+				}
+			);
+		});
+	};
+
+	/* 出身地国 */
+	getNationalitys = () => {
+		var data = dateUtils.getdropDown("getNationalitys");
+		this.setState(
+			{
+				nationality: data
+			}
+		);
+
+	};
 	//ImageUploaderを処理　開始
 	onDrop(picture) {
 		this.setState({
@@ -180,6 +224,8 @@ class mainAdd extends React.Component {
 	//卒業年月
 	inactiveGraduationDate = date => {
 		$("#graduationDate").val(date.getFullYear() + "/" + (date.getMonth() + 1));
+		dateUtils.getFullYearMonth("#time5", date);
+
 	};
 	//退職年月
 	inactiveRetirementDate = (date) => {
@@ -223,33 +269,181 @@ class mainAdd extends React.Component {
 	};
 	//年月終了
 
+	//社員タイプが違う時に、色々な操作をします。
+	radioChangeEmployeeType = () => {
+		var val = $('input:radio[name="employeeType"]:checked').val();
+		if (val === '1') {
+			this.setState({ employeeNo: '', companyMailAddress: '', authority: [] });
+			$('input[type="email"]').prop('disabled', true);
+			$('#authorityCodeId').prop('disabled', true);
+		} else {
+			this.getNO();
+			this.getAuthority();
+			$('input[type="email"]').prop('disabled', false);
+			$('#authorityCodeId').prop('disabled', false);
+		}
+	}
+
+	//削除確認され？
+	valueChangeEmploryeeFormCode = () => {
+		var val = $('#emploryeeFormCodeID').val();
+		if (val === '3') {
+			$('#retirementDateId').prop('disabled', false);
+		} else {
+			$('#retirementDateId').prop('disabled', true);
+		}
+	}
+
+	valueChangeNationality = () => {
+		var val = $('#nationalityCodeId').val();
+		if (val === '3') {
+			$('#japaneaseLeveCodeId').val("5");
+		}
+	}
+
+	/**
+	* 小さい画面の閉め 
+	*/
+	handleHideModal = (Kbn) => {
+		if (Kbn === "bankInfo") {//口座情報
+			this.setState({ showBankInfoModal: false })
+		} else if (Kbn === "subCost") {//諸費用
+			this.setState({ showSubCostModal: false })
+		} else if (Kbn === "siteInformation") {//現場情報
+			this.setState({ showSiteInformationModal: false })
+		} else if (Kbn === "customerInfo") {//お客様
+			this.setState({ showCustomerInfoModal: false })
+		} else if (Kbn === "権限・PW設置") {//権限・PW設置TODO
+			this.setState({ showSubCostModal: false })
+		} else if (Kbn === "住所情報") {//住所情報
+			this.setState({ showSubCostModal: false })
+		}
+	}
+
+	/**
+ *  小さい画面の開き
+ */
+	handleShowModal = (Kbn) => {
+		if (Kbn === "bankInfo") {//口座情報
+			this.setState({ showBankInfoModal: true })
+		} else if (Kbn === "subCost") {//諸費用
+			this.setState({ showSubCostModal: true })
+		} else if (Kbn === "siteInformation") {//現場情報
+			this.setState({ showSiteInformationModal: true })
+		} else if (Kbn === "customerInfo") {//お客様
+			this.setState({ showCustomerInfoModal: true })
+		} else if (Kbn === "権限・PW設置") {//権限・PW設置TODO
+			this.setState({ showSubCostModal: true })
+		} else if (Kbn === "住所情報") {//住所情報
+			this.setState({ showSubCostModal: true })
+		}
+	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetOfName, age, japaneseCalendar,
 			genderStatus, intoCompanyCode, emploryeeFormCode, occupationCode, departmentCode, companyMailAddress,
-			graduationUniversity, graduationDate, joinCompanyOfYear, retirementDate, nationalityCode,
+			graduationUniversity, graduationDate, joinCompanyOfYear, retirementDate, nationalityCode, birthplaceOfPrefecture,
 			phone, comingToJapanOfYearAndMonth, authorityCode, japaneaseLeveCode, englishLeveCode,
 			residenceOfCode, developmentLanguageNo1, developmentLanguageNo2, developmentLanguageNo3,
 			residenceCardNoCode, periodOfStay, employmentInsuranceNo, myNumber,
 			subjectOfStudy, certification1, certification2 } = this.state;
 		return (
 			<div>
+				{/* 開始 */}
+				{/* 住所情報 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								{/* <Route exact path={`${this.props.match.url}/`} component={BankInfo} /> */}
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 口座情報 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								<Route exact path={`${this.props.match.url}/`} component={BankInfo} />
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 諸費用 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								<Route exact path={`${this.props.match.url}/`} component={SubCost} />
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 現場情報 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "siteInformation")} show={this.state.showSiteInformationModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								<Route exact path={`${this.props.match.url}/`} component={SiteInformation} />
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* お客様 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								<Route exact path={`${this.props.match.url}/`} component={CustomerInfo} />
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 権限・PW設置*/}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								{/* <Route exact path={`${this.props.match.url}/`} component={TopCustomerInfo} /> */}
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm">住所情報</Button>{' '}
-					<Button size="sm">口座情報</Button>{' '}
-					<Button size="sm">諸費用</Button>{' '}
-					<Button size="sm">現場情報</Button>{' '}
-					<Button size="sm">協力会社</Button>{' '}
-					<Button size="sm">権限・PW設置</Button>
+					<Button size="sm" >住所情報</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "siteInformation")}>現場情報</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "customerInfo")} >お客様</Button>{' '}
+					<Button size="sm" >権限・PW設置</Button>
 					<div>
-						<Form.Label>社員</Form.Label><Form.Check checked inline type="radio" name="employeeType" value="0" />
-						<Form.Label>協力</Form.Label><Form.Check inline type="radio" name="employeeType" value="1" />
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-
 				<Form onSubmit={this.saveEmployee} onReset={this.resetBook}>
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-						 		<ImageUploader
+						<ImageUploader
 							withIcon={false}
 							withPreview={true}
 							label=""
@@ -258,15 +452,14 @@ class mainAdd extends React.Component {
 							imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
 							maxFileSize={1048576}
 							fileSizeError=" file size is too big"
-						/> 
-
+						/>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl  value={employeeNo} autoComplete="off"　disabled
+									<FormControl value={employeeNo} autoComplete="off" disabled
 										onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
@@ -276,9 +469,9 @@ class mainAdd extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employeeFristName" />{' '}
+										onChange={this.valueChange} size="sm" name="employeeFristName" maxlength="3" />{' '}
 									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employeeLastName" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
@@ -294,7 +487,7 @@ class mainAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
@@ -332,7 +525,7 @@ class mainAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
@@ -374,19 +567,18 @@ class mainAdd extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="emploryeeFormCode" value={emploryeeFormCode}
-										autoComplete="off">
+										autoComplete="off" id="emploryeeFormCodeID">
 										{this.state.staffForms.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
 										)}
-
 									</Form.Control>
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
@@ -431,7 +623,7 @@ class mainAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">卒業学校</InputGroup.Text>
@@ -488,8 +680,8 @@ class mainAdd extends React.Component {
 
 						</Row>
 						<Row>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
+							<Col sm={4}>
+								<InputGroup size="sm" className="mb-3" >
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">退職年月</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -505,6 +697,7 @@ class mainAdd extends React.Component {
 											showFullMonthYearPicker
 											showDisabledMonthNavigation
 											locale="ja"
+											id="retirementDateId"
 										/>
 									</InputGroup.Append>
 								</InputGroup>
@@ -526,26 +719,33 @@ class mainAdd extends React.Component {
 											showFullMonthYearPicker
 											showDisabledMonthNavigation
 											locale="ja"
-
 										/>
 									</InputGroup.Append>
 									<FormControl id="time2" name="time2" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="出身地" value={nationalityCode} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="nationalityCode" />
-									<FormControl placeholder="出身地" value={nationalityCode} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="nationalityCode" />
+									<Form.Control as="select" size="sm"
+										onChange={this.valueChangeNationality}
+										name="nationalityCode" value={nationalityCode}
+										autoComplete="off" id="nationalityCodeId">
+										{this.state.nationality.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
+									<FormControl placeholder="出身地" value={birthplaceOfPrefecture} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="birthplaceOfPrefecture" />
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
@@ -555,7 +755,7 @@ class mainAdd extends React.Component {
 								</InputGroup>
 							</Col>
 
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">権限</InputGroup.Text>
@@ -563,7 +763,7 @@ class mainAdd extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
-										autoComplete="off">
+										autoComplete="off" id="authorityCodeId">
 										{this.state.authority.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -577,7 +777,7 @@ class mainAdd extends React.Component {
 					<Form.Label style={{ "color": "#FFD700" }}>スキール情報</Form.Label>
 					<Form.Group>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
@@ -585,7 +785,7 @@ class mainAdd extends React.Component {
 									<Form.Control as="select"
 										onChange={this.valueChange} size="sm"
 										name="japaneaseLeveCode" value={japaneaseLeveCode}
-										autoComplete="off">
+										autoComplete="off" id="japaneaseLeveCodeId">
 										{this.state.japaneseLevels.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
@@ -594,7 +794,7 @@ class mainAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
@@ -611,7 +811,7 @@ class mainAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
@@ -624,7 +824,7 @@ class mainAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={6}>
+							<Col sm={8}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">スキール</InputGroup.Text>
@@ -635,15 +835,20 @@ class mainAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="developmentLanguageNo2" />
 									<FormControl placeholder="スキール" value={developmentLanguageNo3} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="developmentLanguageNo3" />
+									<FormControl placeholder="スキール" value={developmentLanguageNo3} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="developmentLanguageNo4" />
+									<FormControl placeholder="スキール" value={developmentLanguageNo3} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="developmentLanguageNo5" />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="経験年数" value={employeeNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employeeNo" />
+									<FormControl placeholder="経験年数" autoComplete="off"
+										onChange={this.valueChange} size="sm" name="ýearsOfExperience" />
+									<FormControl id="time5" name="time5" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -652,7 +857,7 @@ class mainAdd extends React.Component {
 					<Form.Label style={{ "color": "#FFD700" }}>個人関連情報</Form.Label>
 					<Form.Group>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留資格 </InputGroup.Text>
@@ -669,7 +874,7 @@ class mainAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text>
@@ -702,7 +907,7 @@ class mainAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">雇用保険番号</InputGroup.Text>
@@ -711,7 +916,7 @@ class mainAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">マイナンバー</InputGroup.Text>
@@ -720,23 +925,23 @@ class mainAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="myNumber" />
 								</InputGroup>
 							</Col>
-							<Col sm={6}>
+						</Row>
+						<Row>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書</InputGroup.Text><Form.File id="exampleFormControlFile1" />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-						</Row>
-						<Row>
-							<Col sm={6}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text><Form.File id="exampleFormControlFile1" />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-							<Col sm={6}>
+							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text><Form.File id="exampleFormControlFile1" />
@@ -759,4 +964,4 @@ class mainAdd extends React.Component {
 		);
 	}
 }
-export default mainAdd;
+export default employeeAdd;

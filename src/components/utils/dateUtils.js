@@ -40,7 +40,7 @@ export function getdropDown(method) {
 	var array = [{ code: '', name: '選択ください' }];
 	$.ajax({
 		type: "POST",
-		url: "http://127.0.0.1:8080/"+method,
+		url: "http://127.0.0.1:8080/" + method,
 		async: false,
 		success: function (msg) {
 			for (let i in msg) {
@@ -50,3 +50,24 @@ export function getdropDown(method) {
 	});
 	return array;
 }
+
+//採番番号
+export async function getNO(columnName, typeName, table) {
+	var no;
+	var mo = {
+		columnName: columnName,
+		typeName: typeName,
+		name: table
+	};
+	await axios.post("http://127.0.0.1:8080/getNO", mo)
+		.then(response => {
+			if (response.data != null) {
+				no = response.data
+			}
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
+	return no;
+}
+
+

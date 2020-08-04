@@ -4,8 +4,8 @@ import Login from './components/login'
 import Subcost from './components/subCost'
 import SubMenu from './components/subMenu'
 import main from './components/main';
-import mainAdd from './components/mainAdd';
-import mainSearch from './components/mainSearch';
+import EmployeeAdd from './components/employeeAdd';
+import EmployeeSearch from './components/employeeSearch';
 import BankInfo from './components/bankInfo';
 import CustomerInfo from './components/CustomerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
@@ -22,8 +22,8 @@ function App() {
 				<Route path="/subMenu" component={SubMenu} />
 				<Route path="/subCost" component={Subcost} />
 				<Route path="/main" component={main} />
-				<Route path="/add" component={mainAdd} />
-				<Route path="/mainSearch" component={mainSearch} />
+				<Route path="/add" component={EmployeeAdd} />
+				<Route path="/employeeSearch" component={EmployeeSearch} />
 				<Route path="/bankInfo" component={BankInfo} />
 				<Route path="/customerInfo" component={CustomerInfo} />
 				<Route path="/topCustomerInfo" component={TopCustomerInfo} />

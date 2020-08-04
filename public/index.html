@@ -15,12 +15,41 @@
   <link rel="stylesheet" href="https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table-all.min.css" />
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css"
     integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+  <script src="./jquery.js"></script>
+  <script src="./colResizable-1.6.min.js"></script>
+
 </head>
 
+  <script type="text/javascript">
+	$(function(){	
+		$("table").colResizable({
+			liveDrag:true, 
+			gripInnerHtml:"<div class='grip'></div>", 
+			draggingClass:"dragging", 
+            resizeMode:'fit'
+        });
+    });	
+  </script>
+  
 <body>
 
   <div id="root"></div>
-
+  <!-- <div class="center" >
+		 <table  width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<th>header</th><th>header</th><th>header</th>
+			</tr>
+			<tr>
+				<td class="left">cell</td><td>cell</td><td class="right">cell</td>
+			</tr>
+			<tr>
+				<td class="left">cell</td><td>cell</td><td class="right">cell</td>
+			</tr>
+			<tr>
+				<td class="left bottom">cell</td><td class="bottom">cell</td><td class="bottom right">cell</td>
+			</tr>																	
+		</table>
+	</div>	 -->
 </body>
 
 </html>
