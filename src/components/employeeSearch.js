@@ -295,7 +295,6 @@ class mainSearch extends React.Component {
 	}
 	//検索
 	searchEmployee = () => {
-		alert( this.state.developement1Value);
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeFristName: this.state.employeeFristName,
@@ -310,9 +309,9 @@ class mainSearch extends React.Component {
 			birthplaceOfcontroy: this.state.birthplaceOfcontroy,
 			customer: this.state.customer,
 			japanease: this.state.japanease,
-			developmentLanguageNo1: this.state.value,
-			developmentLanguageNo2: this.state.value,
-			developmentLanguageNo3: this.state.value,
+			developmentLanguageNo1: this.state.developement1Value,
+			developmentLanguageNo2: this.state.developement2Value,
+			developmentLanguageNo3: this.state.developement3Value,
 			unitPriceFrom: this.state.unitPriceFrom,
 			unitPriceTo: this.state.unitPriceTo,
 		};
@@ -435,7 +434,7 @@ class mainSearch extends React.Component {
 
 	/* 社員形式 */
 	getStaffForms = () => {
-		axios.post("http://127.0.0.1:8080/getStaffForms")//url,条件
+		axios.post("http://127.0.0.1:8080/getStaffForms")
 			.then(response => response.data)
 			.then((data) => {
 				this.setState(
@@ -560,9 +559,10 @@ class mainSearch extends React.Component {
 		return (
 			<div >					
 					<Form   >
-						<div >
+						<div /* style={{ "width": "1300px", "height": "220px" }} */>
+							{/* <Card.Body> */}
 								  <Form.Group>
-                                   <Row >
+                                   <Row /* style={{ "width": "1100px" }} */>
 									<Col lg={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -621,7 +621,7 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
 									</Row>  
-									<Row >
+									<Row /* style={{ "width": "1100px" }} */>
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -653,6 +653,7 @@ class mainSearch extends React.Component {
 													className={"fromToCss"  }
 												/>
 											</InputGroup.Prepend>
+										
 										</InputGroup>
 									</Col>
 									<Col sm={3}>
@@ -690,7 +691,7 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
                                      </Row>
-									 <Row >
+									 <Row /* style={{ "width": "1100px" }} */>
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -787,8 +788,8 @@ class mainSearch extends React.Component {
 												inputProps={dlt3InputProps}
 											/>
 										</InputGroup.Prepend>
-								
-												<InputGroup.Prepend>
+										<InputGroup.Prepend>
+										      
 												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
 											</InputGroup.Prepend>
 											<FormControl id="joinCompanyOfYearFrom" name="joinCompanyOfYearFrom" value={joinCompanyOfYearFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />

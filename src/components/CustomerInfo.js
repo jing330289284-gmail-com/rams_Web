@@ -13,6 +13,7 @@ import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import * as utils from './utils/dateUtils.js';
 
 registerLocale('ja', ja);
 /**
@@ -25,31 +26,14 @@ function getSuggestions(value, datas) {
 	const escapedValue = escapeRegexCharacters(value.trim());
 	const regex = new RegExp('^' + escapedValue, 'i');
 
-	return datas.filter(data => regex.test(data.topCustomerName));
+	return datas.filter(data => regex.test(data.name));
 }
 function getSuggestionDlt1(suggestion) {
-	return suggestion.topCustomerName;
+	return suggestion.name;
 }
 function renderSuggestion(suggestion) {
 	return (
-		<span>{suggestion.topCustomerName}</span>
-	);
-}
-/**
- * 部門情報連想
- */
-function getSuggestionsDepartment(value, datas) {
-	const escapedValue = escapeRegexCharacters(value.trim());
-	const regex = new RegExp('^' + escapedValue, 'i');
-
-	return datas.filter(data => regex.test(data.customerDepartmentName));
-}
-function getSuggestionDlt2(suggestion) {
-	return suggestion.customerDepartmentName;
-}
-function renderSuggestionDepartment(suggestion) {
-	return (
-		<span>{suggestion.customerDepartmentName}</span>
+		<span>{suggestion.name}</span>
 	);
 }
 var oldForm_data;//画面初期のデータ
@@ -125,76 +109,80 @@ class CustomerInfo extends Component {
         var pro = this.props.location.state;
         $("#shoriKbn").val( pro.split("-")[0]);
         $("#customerNo").val( pro.split("-")[1]);
-
+        //上場会社
+        var listedCompany = utils.getdropDown("getListedCompany");
+        //お客様ランキン
+        var customerRanking = utils.getdropDown("selectCustomerRanking");
+        //会社性質
+        var companyNature = utils.getdropDown("selectCompanyNature");
+        //職位
+        var positionCode = utils.getdropDown("selectPosition");
+        for(let i = 0;i<listedCompany.length ; i++){
+            $("#listedCompany").append('<option value="'+listedCompany[i].code+'">'+listedCompany[i].name+'</option>');
+        }
+        for(let i = 0;i<customerRanking.length ; i++){
+            $("#customerRankingCode").append('<option value="'+customerRanking[i].code+'">'+customerRanking[i].name+'</option>');
+        }
+        for(let i = 0;i<companyNature.length ; i++){
+            $("#companyNatureCode").append('<option value="'+companyNature[i].code+'">'+companyNature[i].name+'</option>');
+        }
+        for(let i = 0;i<positionCode.length ; i++){
+            $("#positionCode").append('<option value="'+positionCode[i].code+'">'+positionCode[i].name+'</option>');
+        }
         if($("#shoriKbn").val() !== "shusei"){
             $("#toBankInfo").attr("disabled",true);
             $("#toCustomerInfo").attr("disabled",true);
           }
-            var customerInfoMod = {};
-            customerInfoMod["customerNo"] = $("#customerNo").val();
-            customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
-            await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
-            .then(resultMap => {
-                var customerRanking = {};
-                var companyNature = {};
-                var customerInfoMod;
-                var position = {};
-                var shoriKbn = $("#shoriKbn").val();
-                customerRanking = resultMap.data.selectModel.customerRanking;
-                companyNature = resultMap.data.selectModel.companyNature;
-                position = resultMap.data.selectModel.position;
-                customerInfoMod = resultMap.data.customerInfoMod;
-                for(let i = 0;i<customerRanking.length ; i++){
-                    $("#customerRankingCode").append('<option value="'+customerRanking[i]["customerRankingCode"]+'">'+customerRanking[i]["customerRankingName"]+'</option>');
+        var customerInfoMod = {};
+        customerInfoMod["customerNo"] = $("#customerNo").val();
+        customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
+        await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
+        .then(resultMap => {
+            var customerInfoMod;
+            var shoriKbn = $("#shoriKbn").val();
+            customerInfoMod = resultMap.data.customerInfoMod;
+            if(shoriKbn === 'tsuika'){
+                var customerNoSaiBan = resultMap.data.customerNoSaiBan;
+                $("#customerNo").val(customerNoSaiBan);
+                $("#customerNo").attr("readOnly",true);
+                this.setState({
+                    customerDepartmentList:resultMap.data.customerDepartmentInfoList,
+                })
+            }else{
+                $("#customerName").val(customerInfoMod.customerName);
+                $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
+                $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
+                $("#businessStartDate").val(customerInfoMod.businessStartDate);
+                $("#headOffice").val(customerInfoMod.headOffice);
+                $("#establishmentDate").val(customerInfoMod.establishmentDate);
+                $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
+                $("#listedCompany").val(customerInfoMod.listedCompany);
+                $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
+                $("#url").val(customerInfoMod.url);
+                $("#remark").val(customerInfoMod.remark);
+                this.setState({
+                    topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
+                    customerDepartmentList:resultMap.data.customerDepartmentInfoList,
+                })
+                oldForm_data = $("#customerForm").serializeArray();
+                oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
+                if(shoriKbn === 'sansho'){
+                    customerInfoJs.setDisabled();
                 }
-                for(let i = 0;i<companyNature.length ; i++){
-                    $("#companyNatureCode").append('<option value="'+companyNature[i]["companyNatureCode"]+'">'+companyNature[i]["companyNatureName"]+'</option>');
-                }
-                for(let i = 0;i<position.length ; i++){
-                    $("#position").append('<option value="'+position[i]["positionCode"]+'">'+position[i]["positionName"]+'</option>');
-                }
-                if(shoriKbn === 'tsuika'){
-                    var customerNoSaiBan = resultMap.data.customerNoSaiBan;
-                    $("#customerNo").val(customerNoSaiBan);
-                    $("#customerNo").attr("readOnly",true);
-                    this.setState({
-                        customerDepartmentList:resultMap.data.customerDepartmentInfoList,
-                    })
-                }else{
-                    $("#customerName").val(customerInfoMod.customerName);
-                    $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
-                    $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
-                    $("#businessStartDate").val(customerInfoMod.businessStartDate);
-                    $("#headOffice").val(customerInfoMod.headOffice);
-                    $("#establishmentDate").val(customerInfoMod.establishmentDate);
-                    $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
-                    $("#listedCompany").val(customerInfoMod.listedCompany);
-                    $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
-                    $("#url").val(customerInfoMod.url);
-                    $("#remark").val(customerInfoMod.remark);
-                    this.setState({
-                        topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
-                        customerDepartmentList:resultMap.data.customerDepartmentInfoList,
-                    })
-                    oldForm_data = $("#customerForm").serializeArray();
-                    oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
-                    if(shoriKbn === 'sansho'){
-                        customerInfoJs.setDisabled();
-                  }
-                }
-            })
-            .catch(function (error) {
-              alert("select框内容获取错误，请检查程序");
-            });  
+            }
+        })
+        .catch(function (error) {
+            alert("select框内容获取错误，请检查程序");
+        });  
     }
      /**
      * 上位お客様連想のデータ取得 
      */   
 	onDlt1SuggestionsFetchRequested = ({ value }) => {
-		const customerInfoMod = {
-			topCustomerName: value
+		const model = {
+			name: value
 		};
-		axios.post("http://127.0.0.1:8080/customerInfo/getTopCustomer", customerInfoMod)
+		axios.post("http://127.0.0.1:8080/selectTopCustomer", model)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -210,15 +198,15 @@ class CustomerInfo extends Component {
      * 部門連想のデータ取得 
      */   
 	onDltDepartmentSuggestionsFetchRequested = ({ value }) => {
-		const customerDepartmentInfoModel = {
-			customerDepartmentName: value
+		const model = {
+			name: value
 		};
-		axios.post("http://127.0.0.1:8080/customerInfo/selectDepartmentMaster", customerDepartmentInfoModel)
+		axios.post("http://127.0.0.1:8080/selectDepartmentMaster", model)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
 					this.setState({
-						customerDepartmentNameSuggestions: getSuggestionsDepartment(value, response.data)
+						customerDepartmentNameSuggestions: getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -306,14 +294,14 @@ class CustomerInfo extends Component {
      */
      handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
-            $("#position").val(row.position);
+            $("#positionCode").val(row.positionCode);
             $("#responsiblePerson").val(row.responsiblePerson);
             $("#mail").val(row.mail);
             this.setState({
                 customerDepartmentNameValue:row.customerDepartmentName
             })
         } else {
-            $("#position").val('');
+            $("#positionCode").val('');
             $("#responsiblePerson").val('');
             $("#mail").val('');
             this.setState({
@@ -542,8 +530,6 @@ class CustomerInfo extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">上場会社</InputGroup.Text>
                             </InputGroup.Prepend>
                                 <Form.Control as="select" placeholder="上場会社" id="listedCompany" name="listedCompany">
-                                <option value="0">はい</option>
-                                <option value="1">いいえ</option>
                                 </Form.Control>
                         </InputGroup>
                     </Col>
@@ -618,8 +604,8 @@ class CustomerInfo extends Component {
                                         onSuggestionsFetchRequested={this.onDltDepartmentSuggestionsFetchRequested}
                                         onSuggestionsClearRequested={this.onDltDepartmentSuggestionsClearRequested}
                                         onSuggestionSelected={this.onDltDepartmentSuggestionSelected}
-                                        getSuggestionValue={getSuggestionDlt2}
-                                        renderSuggestion={renderSuggestionDepartment}
+                                        getSuggestionValue={getSuggestionDlt1}
+                                        renderSuggestion={renderSuggestion}
                                         inputProps={customerDepartmentNameInputProps}                                    
                                     />
                         </InputGroup>
@@ -629,7 +615,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">職位</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="例：部長" id="position" name="position" />
+                                <Form.Control as="select" placeholder="例：部長" id="positionCode" name="positionCode" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -667,7 +653,7 @@ class CustomerInfo extends Component {
                         <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
                         <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
-                        <TableHeaderColumn dataField='position' headerAlign='center' dataAlign='center' width="190">職位</TableHeaderColumn>
+                        <TableHeaderColumn dataField='positionName' headerAlign='center' dataAlign='center' width="190">職位</TableHeaderColumn>
                         <TableHeaderColumn dataField='mail' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
                         <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="140">取引人数</TableHeaderColumn>
                     </BootstrapTable>

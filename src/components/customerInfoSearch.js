@@ -2,10 +2,10 @@ import React,{Component} from 'react';
 import {Row , Form , Col , InputGroup , Button , Table } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from "axios";
-import * as customerInfoSearchJs from '../components/CustomerInfoSearchJs.js';
 import { BrowserRouter as Router , Link  } from "react-router-dom";
 import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import * as utils from './utils/dateUtils.js';
 
 class CustomerInfoSearch extends Component {
     state = { 
@@ -19,7 +19,18 @@ class CustomerInfoSearch extends Component {
       * 画面の初期化
       */
     componentDidMount(){
-        customerInfoSearchJs.onload();
+        document.getElementById('shusei').className += " disabled";
+        document.getElementById('sakujo').className += " disabled";
+        //お客様ランキン
+        var customerRanking = utils.getdropDown("selectCustomerRanking");
+        //会社性質
+        var companyNature = utils.getdropDown("selectCompanyNature");
+        for(let i = 0;i<customerRanking.length ; i++){
+            $("#customerRankingCode").append('<option value="'+customerRanking[i].code+'">'+customerRanking[i].name+'</option>');
+        }
+        for(let i = 0;i<companyNature.length ; i++){
+            $("#companyNatureCode").append('<option value="'+companyNature[i].code+'">'+companyNature[i].name+'</option>');
+        }
     }
     /**
       * 稼働のフラグ変化
@@ -248,7 +259,6 @@ class CustomerInfoSearch extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
                             </InputGroup.Prepend>
                                 <Form.Control as="select" id="customerRankingCode" name="customerRankingCode">
-                                <option value=''>選択してください</option>
                                 </Form.Control>
                         </InputGroup>
                     </Col>
@@ -258,7 +268,6 @@ class CustomerInfoSearch extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
                             </InputGroup.Prepend>
                                 <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
-                                <option value=''>選択してください</option>
                                 </Form.Control>
                         </InputGroup>
                     </Col>

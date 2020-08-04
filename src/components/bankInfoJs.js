@@ -17,9 +17,9 @@ export function onload(){
     axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
     .then(function (resultMap) {
       var bankName = {};
-      bankName = resultMap.data.accountInfoMod.bankName;
+      bankName = resultMap.data.bankName;
       for(let i = 0;i<bankName.length ; i++){
-        $("#bankCode").append('<option value="'+(i+1)+'">'+resultMap.data.accountInfoMod.bankName[i]+'</option>');
+        $("#bankCode").append('<option value="'+bankName[i].code+'">'+bankName[i].name+'</option>');
       }
       if(resultMap.data.accountInfoMod !== ''){
         $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
@@ -124,16 +124,16 @@ export function checkAccountName(){
  * param 項目のid
  */
 export function getBankBranchInfo(noORname){
-  var pra = {};
-  pra[noORname] = $('#'+noORname+'').val();
-  pra["bankCode"] = $('#bankCode').val();
+  var sendMap = {};
+  sendMap[noORname] = $('#'+noORname+'').val();
+  sendMap["bankCode"] = $('#bankCode').val();
   if($('#'+noORname+'').val() !== ""){
     
-    axios.post("http://127.0.0.1:8080/bankInfo/getBankBranchInfo",pra)
+    axios.post("http://127.0.0.1:8080/getBankBranchInfo",sendMap)
       .then(function (resultMap) {
         if(resultMap.data !== ''){
-            $('#bankBranchCode').val(resultMap.data["bankBranchCode"]);
-            $('#bankBranchName').val(resultMap.data["bankBranchName"]);
+            $('#bankBranchCode').val(resultMap.data[0].code);
+            $('#bankBranchName').val(resultMap.data[0].name);
         }else{
           $('#bankBranchCode').val("");
           $('#bankBranchName').val("");
