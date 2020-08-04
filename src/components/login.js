@@ -25,6 +25,7 @@ class Login extends Component {
 				// this.context.router.push("/subCost")
 				sessionStorage.setItem('employeeNo', employeeModel["employeeNo"]);
 				sessionStorage.setItem('authorityName', employeeModel["authorityName"]);
+				sessionStorage.setItem('authorityCode', employeeModel["authorityCode"]);
 				sessionStorage.setItem('employeeName', employeeModel["employeeFristName"] + '' + employeeModel["employeeLastName"]);
 				if($("input[name='remeber']").is(":checked")){
 					sessionStorage.setItem('loginEmployeeNo', employeeModel["employeeNo"]);
