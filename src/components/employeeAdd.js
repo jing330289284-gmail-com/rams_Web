@@ -508,6 +508,9 @@ class employeeAdd extends React.Component {
 											onChange={this.inactiveAge}
 											autoComplete="on"
 											locale="ja"
+											showYearDropdown
+											yearDropdownItemNumber={25}
+											scrollableYearDropdown
 											className={"dateInput"}
 										/>
 									</InputGroup.Append>
