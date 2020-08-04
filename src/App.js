@@ -11,7 +11,7 @@ import CustomerInfo from './components/CustomerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
 import TechnologyTypeMaster from './components/technologyTypeMaster';
 import CustomerInfoSearch from './components/customerInfoSearch';
-import siteInformation from './components/SiteInformation';
+import siteInfo from './components/siteInfo';
 
 function App() {
 	return (
@@ -29,7 +29,7 @@ function App() {
 				<Route path="/topCustomerInfo" component={TopCustomerInfo} />
 				<Route path="/technologyTypeMaster" component={TechnologyTypeMaster} />
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
-				<Route path="/siteInformation" component={siteInformation} />
+				<Route path="/siteInfo" component={siteInfo} />
 			</div>
 		</Router>
 
