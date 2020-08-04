@@ -80,8 +80,6 @@ class mainSearch extends React.Component {
 
 		};
 	};
-
-
 	//onchange
 	valueChange = event => {
 		this.setState({
@@ -103,30 +101,12 @@ class mainSearch extends React.Component {
 		developement3Value: '',
 		developement3Suggestions: [],
 		employeeList: [],
-		employeeNo: '',
-		employeeFristName: '',
-		emploryeeForm: '',
-		employeeStatus: '',
-		genderCode: '',
-		joinCompanyOfYearFrom: '',
-		joinCompanyOfYearTo: '',
-		ageFrom: '',
-		ageTo: '',
-		statusOfResidence: '',
-		birthplaceOfcontroy: '',
-		customer: '',
-		japanease: '',
-		developmentLanguageNo: '',
-		salary: '',
-		unitPriceFrom: '',
-		unitPriceTo: '',
 		nationalitys: [],
 		japaneases: [],
 		visas: [],
 		staffForms: [],
 		intoCompanys: [],
 		japaneseLevels: [],
-		value: '',
 		suggestions: [],
 		employeeStatuss: [],
 		genders: [],
@@ -159,9 +139,6 @@ class mainSearch extends React.Component {
 		customer: '',
 		japanease: '',
 		developmentLanguageNo: '',
-		salaryTo: '',
-		unitPriceFrom: '',
-		unitPriceTo: '',
 		value: '',
 		suggestions: [],
 		kadou: '',
@@ -328,142 +305,81 @@ class mainSearch extends React.Component {
 
 	/* 国籍 */
 	getNationalitys = () => {
-		axios.post("http://127.0.0.1:8080/getNationalitys")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						nationalitys: [{ code: '', name: '選択ください' }]
-							.concat(data.map(na => {
-								return { code: na.code, name: na.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getNationalitys");
+		this.setState(
+			{
+				nationalitys: data
 			}
-			);
+		);
 	};
-
-
 
 	//在留資格
 	getVisa = () => {
-		axios.post("http://127.0.0.1:8080/getVisa")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						visas: [{ code: '', name: '選択ください' }]
-							.concat(data.map(vi => {
-								return { code: vi.code, name: vi.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getVisa");
+		this.setState(
+			{
+				visas: data
 			}
-			);
+		);
 	};
 	/* 入社区分 */
 	getIntoCompany = () => {
-		axios.post("http://127.0.0.1:8080/getIntoCompany")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						intoCompanys: [{ code: '', name: '選択ください' }]
-							.concat(data.map(ic => {
-								return { code: ic.code, name: ic.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getIntoCompany");
+		this.setState(
+			{
+				intoCompanys: data
 			}
-			);
+		);
 	};
 
 	/* 日本語レベル */
 	getJapaneseLevel = () => {
-		axios.post("http://127.0.0.1:8080/getJapaneseLevel")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						japaneseLevels: [{ code: '', name: '選択ください' }]
-							.concat(data.map(ja => {
-								return { code: ja.code, name: ja.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getJapaneseLevel");
+		this.setState(
+			{
+				japaneseLevels: data
 			}
-			);
+		);
 	};
-
-/* employeesステータス */
+    /* employeesステータス */
 	getEmployee = () => {
-		axios.post("http://127.0.0.1:8080/getEmployee")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						employeeStatuss: [{ code: '', name: '選択ください' }]
-							.concat(data.map(es => {
-								return { code: es.code, name: es.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getEmployee");
+		this.setState(
+			{
+				employeeStatuss: data
 			}
-			);
+		);
 	};
-
-
 
 	/* 性別区別 */
 	getGender = () => {
-		axios.post("http://127.0.0.1:8080/getGender")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						genders: [{ code: '', name: '選択ください' }]
-							.concat(data.map(ge => {
-								return { code: ge.code, name: ge.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getGender");
+		this.setState(
+			{
+				genders: data
 			}
-			);
+		);
 	};
 
 
 	/* 社員形式 */
 	getStaffForms = () => {
-		axios.post("http://127.0.0.1:8080/getStaffForms")
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						staffForms: [{ code: '', name: '選択ください' }]
-							.concat(data.map(st => {
-								return { code: st.code, name: st.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getStaffForms");
+		this.setState(
+			{
+				staffForms: data
 			}
-			);
+		);
 	};
 
 	/* 役割 */
 	getSiteMaster = () => {
-		axios.post("http://127.0.0.1:8080/getSiteMaster")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						siteMaster: [{ code: '', name: '選択ください' }]
-							.concat(data.map(sm => {
-								return { code: sm.code, name: sm.name }
-							}))
-					}
-				);
+		var data = dateUtils.getdropDown("getSiteMaster");
+		this.setState(
+			{
+				siteMaster: data
 			}
-			);
+		);
 	};
 	//年月開始
 	state = {
@@ -559,10 +475,9 @@ class mainSearch extends React.Component {
 		return (
 			<div >					
 					<Form   >
-						<div /* style={{ "width": "1300px", "height": "220px" }} */>
-							{/* <Card.Body> */}
+						<div >							
 								  <Form.Group>
-                                   <Row /* style={{ "width": "1100px" }} */>
+                                   <Row>
 									<Col lg={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -621,7 +536,7 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
 									</Row>  
-									<Row /* style={{ "width": "1100px" }} */>
+									<Row>
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -691,7 +606,7 @@ class mainSearch extends React.Component {
 										</InputGroup>
 									</Col>
                                      </Row>
-									 <Row /* style={{ "width": "1100px" }} */>
+									 <Row>
 									<Col sm={3}>
 										<InputGroup size="sm" className="mb-3">
 											<InputGroup.Prepend>
@@ -788,8 +703,7 @@ class mainSearch extends React.Component {
 												inputProps={dlt3InputProps}
 											/>
 										</InputGroup.Prepend>
-										<InputGroup.Prepend>
-										      
+										<InputGroup.Prepend>										      
 												<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
 											</InputGroup.Prepend>
 											<FormControl id="joinCompanyOfYearFrom" name="joinCompanyOfYearFrom" value={joinCompanyOfYearFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -827,14 +741,9 @@ class mainSearch extends React.Component {
 												<option value="0">はい</option>
 												<option value="1">いいえ</option>
 											</Form.Control>
-									</InputGroup>
-									
-									
-									
-								</Form.Group>
-							
-						</div>
-						
+									</InputGroup>		
+								</Form.Group>		
+						</div>						
 					</Form>
 					<div style={{ "textAlign": "center" }}>
 						<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
@@ -867,14 +776,14 @@ class mainSearch extends React.Component {
 							<BootstrapTable data={employeeList} selectRow={selectRowProp} className={"bg-white text-dark"} pagination={true} options={this.options}>
 								<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={getCaret} isKey>番号</TableHeaderColumn>
 								<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='80' dataField='employeeFristName'>社員名</TableHeaderColumn>
-								<TableHeaderColumn dataField='furigana'>カタカナ</TableHeaderColumn>
-								<TableHeaderColumn dataField='alphabetOfName'>ローマ字</TableHeaderColumn>
+								<TableHeaderColumn width='120' dataField='employeeFristName'>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='150'　dataField='furigana'>カタカナ</TableHeaderColumn>
+								<TableHeaderColumn width='90' dataField='alphabetOfName'>ローマ字</TableHeaderColumn>
 								<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={getCaret}>年齢</TableHeaderColumn>
-								<TableHeaderColumn dataField='joinCompanyOfYearandMonth'>入社年月</TableHeaderColumn>
-								<TableHeaderColumn 　width='130'　dataField='phoneNo'>電話番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='nearestStation'>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn dataField='visaTime'>ビザ期間</TableHeaderColumn>
+								<TableHeaderColumn width='90' dataField='joinCompanyOfYearandMonth'>入社年月</TableHeaderColumn>
+								<TableHeaderColumn 　width='125'　dataField='phoneNo'>電話番号</TableHeaderColumn>
+								<TableHeaderColumn width='120' dataField='nearestStation'>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='90' dataField='visaTime'>ビザ期間</TableHeaderColumn>
 							</BootstrapTable>
 						</div>
 					</Card.Body>

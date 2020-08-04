@@ -10,8 +10,9 @@ import * as dateUtils from './utils/dateUtils.js';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
-import SiteInformation from './SiteInformation';
+import SiteInformation from './siteInfo';
 import CustomerInfo from './CustomerInfo';
+import '../asserts/css/style.css';
 
 const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
 
@@ -351,7 +352,7 @@ class employeeAdd extends React.Component {
 				{/* 開始 */}
 				{/* 住所情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal}>
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal} dialogClassName="modal-jusho">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body className="show-grid">
@@ -364,7 +365,7 @@ class employeeAdd extends React.Component {
 				</Modal>
 				{/* 口座情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal}>
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body className="show-grid">
@@ -377,7 +378,7 @@ class employeeAdd extends React.Component {
 				</Modal>
 				{/* 諸費用 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal}>
+					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-subCost">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body className="show-grid">
@@ -390,7 +391,7 @@ class employeeAdd extends React.Component {
 				</Modal>
 				{/* 現場情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "siteInformation")} show={this.state.showSiteInformationModal}>
+					onHide={this.handleHideModal.bind(this, "siteInformation")} show={this.state.showSiteInformationModal} dialogClassName="modal-siteInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body className="show-grid">
@@ -401,22 +402,9 @@ class employeeAdd extends React.Component {
 						</div>
 					</Modal.Body>
 				</Modal>
-				{/* お客様 */}
-				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
-					<Modal.Header closeButton>
-					</Modal.Header>
-					<Modal.Body className="show-grid">
-						<div key={this.props.location.key} >
-							<Router>
-								<Route exact path={`${this.props.match.url}/`} component={CustomerInfo} />
-							</Router>
-						</div>
-					</Modal.Body>
-				</Modal>
 				{/* 権限・PW設置*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
+					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-kengen">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body className="show-grid">

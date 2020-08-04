@@ -30,7 +30,7 @@ function renderSuggestion(suggestion) {
 		<span>{suggestion.name}</span>
 	);
 }
-class SiteInformation extends Component {
+class siteInfo extends Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
@@ -42,6 +42,7 @@ class SiteInformation extends Component {
 		siteMaster: [],
 		payMaster: [],
 		topCustomer: [],
+		levelMaster: [],
 		customerMaster: [],
 		developementValue: '',
 		developementSuggestions: [],
@@ -146,6 +147,22 @@ class SiteInformation extends Component {
 			}
 			);
 	};
+	/* レベル */
+	getLevel = () => {
+		axios.post("http://127.0.0.1:8080/getLevel")//url,条件
+			.then(response => response.data)
+			.then((data) => {
+				this.setState(
+					{
+						levelMaster: [{ code: '', name: '選択してください' }]
+							.concat(data.map(lm => {
+								return { code: lm.code, name: lm.name }
+							}))
+					}
+				);
+			}
+			);
+	};
 	/* お客様 */
 	getCustomerMaster = () => {
 		axios.post("http://127.0.0.1:8080/getCustomerMaster")//url,条件
@@ -227,6 +244,7 @@ class SiteInformation extends Component {
 		this.getPayMaster();
 		this.getTopCustomer();
 		this.getCustomerMaster();
+		this.getLevel();
 		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
@@ -256,7 +274,7 @@ class SiteInformation extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["developlanguage"] = this.state.developementValue;
+		siteModel["developLanguage"] = this.state.developementValue;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
 			.then(function(result) {
 				if (result.data == true) {
@@ -279,7 +297,7 @@ class SiteInformation extends Component {
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 		};
-		const { time_1, time_2, workState, products, siteRoleCode, developementValue, developementSuggestions } = this.state;
+		const { time_1, time_2, workState, products, siteRoleCode,levelCode, developementValue, developementSuggestions } = this.state;
 		const dltInputProps = {
 			placeholder: "開発言語",
 			value: developementValue,
@@ -496,7 +514,7 @@ class SiteInformation extends Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={5}>
+								<Col sm={6}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
@@ -504,6 +522,22 @@ class SiteInformation extends Component {
 										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+									</InputGroup>
+
+								</Col>
+
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off">
+											{this.state.levelMaster.map(lm =>
+												<option key={lm.code} value={lm.code}>
+													{lm.name}
+												</option>
+											)}
+										</Form.Control>
 									</InputGroup>
 
 								</Col>
@@ -535,8 +569,8 @@ class SiteInformation extends Component {
 						<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
 						<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
 						<TableHeaderColumn width='60' dataField='unitPrice'>単価</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='developlanguage'>言語</TableHeaderColumn>
-						<TableHeaderColumn width='60' dataField='siteRoleCodeName'>役割</TableHeaderColumn>
+						<TableHeaderColumn width='90' dataField='developLanguage'>言語</TableHeaderColumn>
+						<TableHeaderColumn width='60' dataField='siteRoleName'>役割</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div>
@@ -544,5 +578,5 @@ class SiteInformation extends Component {
 	}
 }
 
-export default SiteInformation;
+export default siteInfo;
 
