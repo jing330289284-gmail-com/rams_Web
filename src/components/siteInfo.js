@@ -6,7 +6,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
-import '../asserts/css/SiteInformation.css';
+import '../asserts/css/style.css';
 import axios from 'axios';
 
 registerLocale('ja', ja);
