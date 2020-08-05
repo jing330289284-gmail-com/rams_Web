@@ -16,7 +16,7 @@ import CustomerInfo from './CustomerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
-import SiteInformation from './SiteInformation';
+import siteInfo from './siteInfo';
 
 class SubMenu extends Component {
     state = {
@@ -105,6 +105,7 @@ class SubMenu extends Component {
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to={employeeAddPath}><img alt="title" src={open}/>社員情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/employeeSearch"><img alt="title" src={open}/>社員情報検索</Link></ListGroup.Item>
+<<<<<<< HEAD
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -114,6 +115,11 @@ class SubMenu extends Component {
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInformation"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open}/>現場情報検索</Link></ListGroup.Item>
+=======
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>単価情報検索</Link></ListGroup.Item>
+
+>>>>>>> 3242642d3e1efc3f72c03cfcd33873d7a26385f0
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -187,7 +193,7 @@ class SubMenu extends Component {
                                     <Route exact path={`${this.props.match.url}/EmployeeSearch`} component={EmployeeSearch} />
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
                                     <Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
-                                    <Route exact path={`${this.props.match.url}/siteInformation`} component={SiteInformation} />
+                                    <Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
                                     <div className="container col-8">
                                     <div className="container col-10">
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />

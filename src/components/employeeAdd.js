@@ -10,7 +10,7 @@ import * as dateUtils from './utils/dateUtils.js';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
-import SiteInformation from './SiteInformation';
+import SiteInformation from './siteInfo';
 import CustomerInfo from './CustomerInfo';
 import '../asserts/css/style.css';
 
@@ -402,6 +402,7 @@ class employeeAdd extends React.Component {
 						</div>
 					</Modal.Body>
 				</Modal>
+<<<<<<< HEAD
 				{/* お客様 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-customerInfo">
@@ -415,6 +416,8 @@ class employeeAdd extends React.Component {
 						</div>
 					</Modal.Body>
 				</Modal>
+=======
+>>>>>>> 3242642d3e1efc3f72c03cfcd33873d7a26385f0
 				{/* 権限・PW設置*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-kengen">
