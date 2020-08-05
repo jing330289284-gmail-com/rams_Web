@@ -60,8 +60,8 @@ class SubCost extends Component {
     render() {
         const {RelatedEmployees} = this.state;
         return (
-          <div className="container col-10" style={{"background":"#f5f5f5"}}>
-          <div className="container col-7" style={{"background":"#f5f5f5"}}>
+          <div >
+          <div >
             <Form id="costForm">
               <Form.Group>
               {/* <Row>

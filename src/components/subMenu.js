@@ -42,6 +42,9 @@ class SubMenu extends Component {
         var topCustomerInfoPath = {
             pathname:'/subMenu/topCustomerInfo',state:"tsuika",
         }
+        var employeeAddPath = {
+            pathname:'/subMenu/add',state:"tsuika",
+        }
         return (
             <div>
                 <Row>
@@ -97,39 +100,39 @@ class SubMenu extends Component {
                         <ListGroup>
                                 <Accordion >
                                 <ListGroup.Item variant="secondary" block>
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="0"><img alt="title" src={openPage}/>社員管理関連</Accordion.Toggle>
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="0"><img alt="title" src={openPage}/>社員管理</Accordion.Toggle>
                                             <Accordion.Collapse eventKey="0">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>社員情報登録</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link to={employeeAddPath}><img alt="title" src={open}/>社員情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/employeeSearch"><img alt="title" src={open}/>社員情報検索</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>単価情報検索</Link></ListGroup.Item>
+
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="1"><img alt="title" src={openPage}/>お客様関連</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="1">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="2"><img alt="title" src={openPage}/>お客様</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="2">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to={customerInfoPath}><img alt="title" src={open}/>お客様情報登録</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link to={topCustomerInfoPath}><img alt="title" src={open}/>トップお客様登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/customerInfoSearch"><img alt="title" src={open}/>お客様情報検索</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
 
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="2"><img alt="title" src={openPage}/>給料と単価関連</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="2">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage}/>給料と単価</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="3">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>単価変動一覧</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>単価粗利検索</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>月次売上</Link></ListGroup.Item>                                                
                                                     </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage}/>営業送信</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="3">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="4"><img alt="title" src={openPage}/>営業送信</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="4">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>要員送信</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>案件情報送信</Link></ListGroup.Item>                                                
@@ -137,29 +140,30 @@ class SubMenu extends Component {
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="4"><img alt="title" src={openPage}/>非稼働関連</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="4">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage}/>非稼働</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="5">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>非待機一覧</Link></ListGroup.Item>                                             
                                                     </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage}/>マスタ登録</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="5">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage}/>マスタ登録</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="6">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>言語マスター</Link></ListGroup.Item>  
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>資格マスター</Link></ListGroup.Item>     
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>部署マスター</Link></ListGroup.Item>                                        
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>部署マスター</Link></ListGroup.Item>   
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>職位マスター</Link></ListGroup.Item>                                       
                                                     </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
-                                            <Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage}/>他の設定</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey="6">
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage}/>他の設定</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="7">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>システム設定</Link></ListGroup.Item>  
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/passwordReset"><img alt="title" src={open}/>パースワードリセット</Link></ListGroup.Item> 
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/passwordReset"><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>

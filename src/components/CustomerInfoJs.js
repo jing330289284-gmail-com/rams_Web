@@ -5,67 +5,6 @@ var oldForm_dataJson;//画面初期のデータのjson
 var newForm_data;//登録の際データ
 var newForm_dataJson;//登録の際データのjson
 
-// /**
-//  * 画面初期化
-//  */
-// export async function onload(){
-//   if($("#shoriKbn").val() !== "shusei"){
-//     $("#toBankInfo").attr("disabled",true);
-//     $("#toCustomerInfo").attr("disabled",true);
-//   }
-//     var customerInfoMod = {};
-//     customerInfoMod["customerNo"] = $("#customerNo").val();
-//     customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
-//     await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
-//     .then(function (resultMap) {
-//         var customerRanking = {};
-//         var companyNature = {};
-//         var customerInfoMod;
-//         var shoriKbn = $("#shoriKbn").val();
-//         customerRanking = resultMap.data.selectModel.customerRanking;
-//         companyNature = resultMap.data.selectModel.companyNature;
-//         customerInfoMod = resultMap.data.customerInfoMod;
-//         for(let i = 0;i<customerRanking.length ; i++){
-//             $("#customerRankingCode").append('<option value="'+customerRanking[i]["customerRankingCode"]+'">'+customerRanking[i]["customerRankingName"]+'</option>');
-//         }
-//         for(let i = 0;i<companyNature.length ; i++){
-//             $("#companyNatureCode").append('<option value="'+companyNature[i]["companyNatureCode"]+'">'+companyNature[i]["companyNatureName"]+'</option>');
-//         }
-//         if(shoriKbn === 'tsuika'){
-//             var customerNoSaiBan = resultMap.data.customerNoSaiBan;
-//             customerNoSaiBan =  parseInt(customerNoSaiBan.substring(1,4)) + 1;
-//             if(customerNoSaiBan < 10){
-//                 customerNoSaiBan = 'C00' + customerNoSaiBan;
-//             }else if(customerNoSaiBan >= 10 && customerNoSaiBan < 100){
-//                 customerNoSaiBan = 'C0' + customerNoSaiBan;
-//             }else if(customerNoSaiBan >=100){
-//                 customerNoSaiBan = 'C' + customerNoSaiBan;
-//             }
-//             $("#customerNo").val(customerNoSaiBan);
-//             $("#customerNo").attr("readOnly",true);
-//         }else{
-//             $("#customerName").val(customerInfoMod.customerName);
-//             $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
-//             $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
-//             $("#businessStartDate").val(customerInfoMod.businessStartDate);
-//             $("#headOffice").val(customerInfoMod.headOffice);
-//             $("#establishmentDate").val(customerInfoMod.establishmentDate);
-//             $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
-//             $("#listedCompany").val(customerInfoMod.listedCompany);
-//             $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
-//             $("#url").val(customerInfoMod.url);
-//             $("#remark").val(customerInfoMod.remark);
-//             oldForm_data = $("#customerForm").serializeArray();
-//             oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
-//             if(shoriKbn === 'sansho'){
-//               setDisabled();
-//           }
-//         }
-//     })
-//     .catch(function (error) {
-//       alert("select框内容获取错误，请检查程序");
-//     });  
-// }
 /**
  * 登録ボタン
  */
