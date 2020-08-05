@@ -6,43 +6,6 @@ var newForm_data;//登録の際データ
 var newForm_dataJson;//登録の際データのjson
 
 /**
- * 登録ボタン
- */
-export function toroku(){
-    newForm_data = $("#customerForm").serializeArray();
-    newForm_dataJson = JSON.stringify({ dataform: newForm_data });
-    if(newForm_dataJson !== oldForm_dataJson && $("#customerName").val() !== "" && $("#customerName").val() != null){
-        var customerInfoMod = {};
-        var formArray =$("#customerForm").serializeArray();
-        $.each(formArray,function(i,item){
-            customerInfoMod[item.name] = item.value;     
-        });
-        customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
-        customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
-        axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
-        .then(function (result) {
-          if(result.data === 0){
-            alert("登录完成");
-            window.location.reload();
-          }else if(result.data === 1){
-            alert("登录错误，请检查程序");
-          }else if(result.data === 2){
-            alert("上位お客様名前がお客様情報テーブルに存じません，データをチェックしてください");
-          }
-        })
-        .catch(function (error) {
-          alert("登录错误，请检查程序");
-        });
-      }else{
-          if(newForm_dataJson === oldForm_dataJson){
-            alert("修正してありません!");
-          }else if($("#customerName").val() === "" || $("#customerName").val() === null){
-            document.getElementById("erorMsg").style = "visibility:visible";
-          }
-        
-      }   
-}
-/**
  *　非活性になる
  */
 export function setDisabled(){

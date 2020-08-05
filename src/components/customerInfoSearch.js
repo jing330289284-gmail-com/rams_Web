@@ -22,11 +22,11 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shusei').className += " disabled";
         document.getElementById('sakujo').className += " disabled";
         //お客様ランキン
-        var customerRanking = utils.getdropDown("selectCustomerRanking");
+        var level = utils.getdropDown("getLevel");
         //会社性質
-        var companyNature = utils.getdropDown("selectCompanyNature");
-        for(let i = 0;i<customerRanking.length ; i++){
-            $("#customerRankingCode").append('<option value="'+customerRanking[i].code+'">'+customerRanking[i].name+'</option>');
+        var companyNature = utils.getdropDown("getCompanyNature");
+        for(let i = 0;i<level.length ; i++){
+            $("#levelCode").append('<option value="'+level[i].code+'">'+level[i].name+'</option>');
         }
         for(let i = 0;i<companyNature.length ; i++){
             $("#companyNatureCode").append('<option value="'+companyNature[i].code+'">'+companyNature[i].name+'</option>');
@@ -258,7 +258,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" id="customerRankingCode" name="customerRankingCode">
+                                <Form.Control as="select" id="levelCode" name="levelCode">
                                 </Form.Control>
                         </InputGroup>
                     </Col>

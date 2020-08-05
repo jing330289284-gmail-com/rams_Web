@@ -402,22 +402,6 @@ class employeeAdd extends React.Component {
 						</div>
 					</Modal.Body>
 				</Modal>
-<<<<<<< HEAD
-				{/* お客様 */}
-				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-customerInfo">
-					<Modal.Header closeButton>
-					</Modal.Header>
-					<Modal.Body className="show-grid">
-						<div key={this.props.location.key} >
-							<Router>
-								<Route exact path={`${this.props.match.url}/`} component={CustomerInfo} />
-							</Router>
-						</div>
-					</Modal.Body>
-				</Modal>
-=======
->>>>>>> 3242642d3e1efc3f72c03cfcd33873d7a26385f0
 				{/* 権限・PW設置*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-kengen">
