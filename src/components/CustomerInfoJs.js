@@ -1,9 +1,5 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;//画面初期のデータ
-var oldForm_dataJson;//画面初期のデータのjson
-var newForm_data;//登録の際データ
-var newForm_dataJson;//登録の際データのjson
 
 /**
  *　非活性になる
@@ -13,7 +9,7 @@ export function setDisabled(){
     $("#customerName").attr("disabled",true);
     $("#headOffice").attr("disabled",true);
     $("#establishmentDate").attr("disabled",true);
-    $("#customerRankingCode").attr("disabled",true);
+    $("#levelCode").attr("disabled",true);
     $("#listedCompany").attr("disabled",true);
     $("#companyNatureCode").attr("disabled",true);
     $("#url").attr("disabled",true);
@@ -30,7 +26,7 @@ export function reset(){
   $("#customerName").val("");
   $("#headOffice").val("");
   $("#establishmentDate").val("");
-  $("#customerRankingCode").val("0");
+  $("#levelCode").val("0");
   $("#listedCompany").val("0");
   $("#companyNatureCode").val("0");
   $("#url").val("");

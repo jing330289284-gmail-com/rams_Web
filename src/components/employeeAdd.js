@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
 import SiteInformation from './siteInfo';
-import CustomerInfo from './CustomerInfo';
+import CustomerInfo from './customerInfo';
 import '../asserts/css/style.css';
 
 const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));

@@ -7,7 +7,7 @@ import main from './components/main';
 import EmployeeAdd from './components/employeeAdd';
 import EmployeeSearch from './components/employeeSearch';
 import BankInfo from './components/bankInfo';
-import CustomerInfo from './components/CustomerInfo';
+import CustomerInfo from './components/customerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
 import TechnologyTypeMaster from './components/technologyTypeMaster';
 import CustomerInfoSearch from './components/customerInfoSearch';

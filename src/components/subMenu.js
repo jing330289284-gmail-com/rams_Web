@@ -2,17 +2,17 @@ import React,{Component} from 'react';
 import { Row,  Col , ListGroup , Accordion , Button , Navbar} from 'react-bootstrap';
 
 import title from '../asserts/images/title.png';
-import open from '../asserts/images/打开.png';
-import openPage from '../asserts/images/打开页面.png';
-import menu from '../asserts/images/菜单.png';
-import signout from '../asserts/images/登出.png';
+import open from '../asserts/images/open.png';
+import openPage from '../asserts/images/openPage.png';
+import menu from '../asserts/images/menu.png';
+import signout from '../asserts/images/signout.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Subcost from './subCost'
 import Main from './main';
 import EmployeeAdd from './employeeAdd';
 import EmployeeSearch from './employeeSearch';
 import BankInfo from './bankInfo';
-import CustomerInfo from './CustomerInfo';
+import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
