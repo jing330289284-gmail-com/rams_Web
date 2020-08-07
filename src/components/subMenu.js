@@ -15,6 +15,7 @@ import BankInfo from './bankInfo';
 import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import TechnologyTypeMaster from './technologyTypeMaster';
+import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 
@@ -160,7 +161,7 @@ class SubMenu extends Component {
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>言語マスター</Link></ListGroup.Item>  
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>資格マスター</Link></ListGroup.Item>     
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>部署マスター</Link></ListGroup.Item>   
+                                                    <ListGroup.Item variant="secondary"><Link　to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open}/>部署マスター</Link></ListGroup.Item>   
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>職位マスター</Link></ListGroup.Item>                                       
                                                     </ListGroup>
                                             </Accordion.Collapse>
@@ -193,6 +194,7 @@ class SubMenu extends Component {
                                     <div className="container col-10">
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
                                         <Route exact path={`${this.props.match.url}/technologyTypeMaster`} component={TechnologyTypeMaster} />
+                                        <Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
                                     </div>
                                     </div>
                                     <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />

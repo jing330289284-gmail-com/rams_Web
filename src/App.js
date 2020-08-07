@@ -10,6 +10,7 @@ import BankInfo from './components/bankInfo';
 import CustomerInfo from './components/customerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
 import TechnologyTypeMaster from './components/technologyTypeMaster';
+import CustomerDepartmentTypeMaster from './components/customerDepartmentTypeMaster';
 import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInfo from './components/siteInfo';
 
@@ -27,6 +28,7 @@ function App() {
 				<Route path="/bankInfo" component={BankInfo} />
 				<Route path="/customerInfo" component={CustomerInfo} />
 				<Route path="/topCustomerInfo" component={TopCustomerInfo} />
+				<Route path="/customerDepartmentTypeMaster" component={CustomerDepartmentTypeMaster} />
 				<Route path="/technologyTypeMaster" component={TechnologyTypeMaster} />
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
 				<Route path="/siteInfo" component={siteInfo} />
