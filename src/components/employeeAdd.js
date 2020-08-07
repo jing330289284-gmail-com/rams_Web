@@ -5,13 +5,14 @@ import axios from 'axios';
 import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker"
 import * as dateUtils from './utils/dateUtils.js';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
 import SiteInformation from './siteInfo';
 import '../asserts/css/style.css';
+import DatePicker from "react-datepicker";
+
 
 
 const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
@@ -543,7 +544,7 @@ class employeeAdd extends React.Component {
 							fileSizeError=" file size is too big"
 						/>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
@@ -552,7 +553,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
@@ -563,7 +564,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
@@ -576,7 +577,7 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
@@ -585,7 +586,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="alphabetName" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
@@ -609,7 +610,7 @@ class employeeAdd extends React.Component {
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
@@ -619,7 +620,7 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
@@ -636,7 +637,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
@@ -653,7 +654,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
@@ -672,7 +673,7 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
@@ -689,7 +690,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
@@ -706,7 +707,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
@@ -717,7 +718,7 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">卒業学校</InputGroup.Text>
@@ -728,7 +729,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="major" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">卒業年月</InputGroup.Text>
@@ -749,7 +750,7 @@ class employeeAdd extends React.Component {
 									</InputGroup.Append>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
@@ -771,10 +772,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="time" name="time" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
-
-						</Row>
-						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3" >
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">退職年月</InputGroup.Text>
@@ -796,7 +794,9 @@ class employeeAdd extends React.Component {
 									</InputGroup.Append>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+						</Row>
+						<Row>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">来日年月</InputGroup.Text>
@@ -818,7 +818,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="time2" name="time2" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
@@ -837,9 +837,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="birthplace" />
 								</InputGroup>
 							</Col>
-						</Row>
-						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
@@ -849,7 +847,7 @@ class employeeAdd extends React.Component {
 								</InputGroup>
 							</Col>
 
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">権限</InputGroup.Text>
@@ -871,7 +869,7 @@ class employeeAdd extends React.Component {
 					<Form.Label style={{ "color": "#FFD700" }}>スキール情報</Form.Label>
 					<Form.Group>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
@@ -888,7 +886,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
@@ -905,7 +903,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
@@ -914,6 +912,16 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="certification1" />
 									<FormControl placeholder="資格2" value={certification2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="certification2" />
+								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl placeholder="経験年数" autoComplete="off"
+										onChange={this.valueChange} size="sm" name="ýearsExperience" />
+									<FormControl id="time5" name="time5" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -935,23 +943,14 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="developLanguage5" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="経験年数" autoComplete="off"
-										onChange={this.valueChange} size="sm" name="ýearsExperience" />
-									<FormControl id="time5" name="time5" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-								</InputGroup>
-							</Col>
+
 						</Row>
 					</Form.Group>
 
 					<Form.Label style={{ "color": "#FFD700" }}>個人関連情報</Form.Label>
 					<Form.Group>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留資格 </InputGroup.Text>
@@ -968,7 +967,7 @@ class employeeAdd extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text>
@@ -977,7 +976,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="residenceCardNo" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
@@ -1001,7 +1000,7 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">雇用保険番号</InputGroup.Text>
@@ -1010,7 +1009,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">マイナンバー</InputGroup.Text>
@@ -1019,7 +1018,7 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="myNumber" />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text><Form.File id="residentCardInfo" name="residentCardInfo" />
