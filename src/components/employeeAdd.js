@@ -173,8 +173,8 @@ class employeeAdd extends React.Component {
 		this.getEnglishLevel();//英語
 		this.getNO();//採番番号
 		this.getNationalitys();//採番番号
-		//var pro = this.props.location.state;
-		//$("#shoriKbn").val(pro.split("-")[0]);
+		var pro = this.props.location.state;
+		$("#shoriKbn").val(pro.split("-")[0]);
 		//var pro = this.props.location.state;
 		//$("#shoriKbn").val(pro.split("-")[0]);
 	}
