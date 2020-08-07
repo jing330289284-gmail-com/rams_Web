@@ -6,6 +6,12 @@ import { BrowserRouter as Router , Link  } from "react-router-dom";
 import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/dateUtils.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker ,　{registerLocale} from "react-datepicker"
+import ja from 'date-fns/locale/ja';
+registerLocale('ja', ja);
 
 class CustomerInfoSearch extends Component {
     state = { 
@@ -13,23 +19,30 @@ class CustomerInfoSearch extends Component {
         customerInfoData:[],//テーブルのデータ
         currentPage: 1,//テーブルの第一ページ
         emploryeesPerPage: 5,//毎ページの項目数
-        selectRowNo:'',//選択した列のお客様番号
+        customerNo:'',//選択した列のお客様番号
+        rowNo:'',//選択した行番号
+        businessStartDate: new Date(),//取引開始の期日
      }
      /**
       * 画面の初期化
       */
     componentDidMount(){
         document.getElementById('shusei').className += " disabled";
-        document.getElementById('sakujo').className += " disabled";
+        $("#sakujo").attr("disabled",true);
         //お客様ランキン
-        var customerRanking = utils.getdropDown("selectCustomerRanking");
+        var level = utils.getdropDown("getLevel");
         //会社性質
-        var companyNature = utils.getdropDown("selectCompanyNature");
-        for(let i = 0;i<customerRanking.length ; i++){
-            $("#customerRankingCode").append('<option value="'+customerRanking[i].code+'">'+customerRanking[i].name+'</option>');
+        var companyNature = utils.getdropDown("getCompanyNature");
+        //支払サイト
+        var paymentsiteCode = utils.getdropDown("getPaymentsite");
+        for(let i = 0;i<level.length ; i++){
+            $("#levelCode").append('<option value="'+level[i].code+'">'+level[i].name+'</option>');
         }
         for(let i = 0;i<companyNature.length ; i++){
             $("#companyNatureCode").append('<option value="'+companyNature[i].code+'">'+companyNature[i].name+'</option>');
+        }
+        for(let i = 0;i<paymentsiteCode.length ; i++){
+            $("#paymentsiteCode").append('<option value="'+paymentsiteCode[i].code+'">'+paymentsiteCode[i].name+'</option>');
         }
     }
     /**
@@ -61,25 +74,6 @@ class CustomerInfoSearch extends Component {
         });  
     }
     /**
-      * 削除ボタン
-      */
-    onDeleteRow(rows) {
-        // ...
-        var customerInfoMod = {};
-        customerInfoMod["customerNo"] = rows.customerNo;
-        axios.post("http://127.0.0.1:8080/customerInfoSearch/delect" , customerInfoMod)
-        .then(result=> {
-            if(result.data){
-                alert("数据删除成功");
-            }else{
-                alert("数据删除失败");
-            }
-        })
-        .catch(function (error) {
-          alert("删除错误，请检查程序");
-        });
-    }
-    /**
       * 稼働テーブルの開き
       */
     isExpandableRow(row) {
@@ -106,28 +100,67 @@ class CustomerInfoSearch extends Component {
       */
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
-            document.getElementById('shusei').className = "btn btn-sm btn-primary";
-            document.getElementById('sakujo').className = "btn btn-sm btn-primary";
+            document.getElementById('shusei').className = "btn btn-sm btn-info";
+            $("#sakujo").attr("disabled",false);
             this.setState({
-                selectRowNo:row.customerNo,
+                customerNo:row.customerNo,
+                rowNo:row.rowNo,
             })
         } else {
-            document.getElementById('shusei').className = "btn btn-sm btn-primary disabled";
-            document.getElementById('sakujo').className = "btn btn-sm btn-primary disabled";
+            document.getElementById('shusei').className = "btn btn-sm btn-info disabled";
+            $("#sakujo").attr("disabled",true);
             this.setState({
-                selectRowNo:'',
+                customerNo:'',
+                rowNo:row.rowNo,
             })
         }
     }
     /**
-     * 行削除ボタン
+     * 行の削除
      */
-    handleDeleteButtonClick = (onClick) => {
-        // Custom your onClick event here,
-        // it's not necessary to implement this function if you have no any process before onClick
-        console.log('This is my custom function for DeleteButton click event');
-        onClick();
-      }
+    listDelete=()=>{
+        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+        var id = this.state.rowNo;
+        var customerInfoList = this.state.customerInfoData;
+        for(let i=customerInfoList.length-1; i>=0; i--){
+            if(customerInfoList[i].rowNo === id){
+                customerInfoList.splice(i,1);
+            }
+        }
+        if(customerInfoList.length !== 0){
+            for(let i=customerInfoList.length-1; i>=0; i--){
+                customerInfoList[i].rowNo = (i + 1);
+            }  
+        }
+        this.setState({
+            customerInfoData:customerInfoList,
+            rowNo:'',
+        })
+        var customerInfoMod = {};
+        customerInfoMod["customerNo"] = this.state.customerNo;
+        axios.post("http://127.0.0.1:8080/customerInfoSearch/delect", customerInfoMod)
+        .then(function (result) {
+            if(result.data === true){
+                alert("删除成功");
+            }else{
+                alert("删除失败");
+            }
+        })
+        .catch(function (error) {
+            alert("删除失败，请检查程序");
+        });
+    }
+    /**
+     * 取引開始のonChange 
+     */
+    businessStartDateChange = date => {
+        this.setState({
+            businessStartDate: date,
+        });
+            let month = date.getMonth() + 1;
+            $("#businessStartDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month));
+        
+        };
      /**
      * 稼働テーブル
      */
@@ -155,19 +188,6 @@ class CustomerInfoSearch extends Component {
         </div>
     );
     }
-     /**
-     * 行削除ボタン
-     */
-    createCustomDeleteButton = (onClick) => {
-        return (
-          <DeleteButton
-            btnText='削除'
-            btnContextual='btn-warning'
-            className='my-custom-class'
-            btnGlyphicon='glyphicon-edit'
-            onClick={ () => this.handleDeleteButtonClick(onClick) }/>
-        );
-      }
     render() {
         const { radioValue , customerInfoData }=this.state;
         //画面遷移のパラメータ（追加）
@@ -176,7 +196,7 @@ class CustomerInfoSearch extends Component {
           }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.selectRowNo,
+            pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.customerNo,
         }
         //テーブルの行の選択
         const selectRow = {
@@ -203,8 +223,6 @@ class CustomerInfoSearch extends Component {
         // alwaysShowAllBtns: true // Always show next and previous button
         // withFirstAndLast: false > Hide the going to First and Last page button
         expandRowBgColor: 'rgb(165, 165, 165)',
-        deleteBtn: this.createCustomDeleteButton,
-        onDeleteRow: this.onDeleteRow,
         };
         return (
            <div>
@@ -221,7 +239,7 @@ class CustomerInfoSearch extends Component {
                     </Col>
                 </Row>
                <Form id="conditionForm">
-                   <div className="container col-8">
+                   <div className="container col-9">
                    <Row>
                     <Col>
                         <InputGroup size="sm">
@@ -248,7 +266,12 @@ class CustomerInfoSearch extends Component {
                         </InputGroup>
                     </Col>
                     <Col>
-                        <Button size="sm" block onClick={this.search}>検索</Button>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                        </InputGroup>
                     </Col>
                     </Row>
                     <br/>
@@ -258,7 +281,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" id="customerRankingCode" name="customerRankingCode">
+                                <Form.Control as="select" id="levelCode" name="levelCode">
                                 </Form.Control>
                         </InputGroup>
                     </Col>
@@ -280,7 +303,29 @@ class CustomerInfoSearch extends Component {
                         </InputGroup>
                     </Col>
                     <Col>
-                        <Link to={tsuikaPath} className="btn btn-sm btn-primary btn-block">追加</Link>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <Form.Control placeholder="yyyydd" id="businessStartDate" readOnly name="businessStartDate" />
+                                <DatePicker
+                                selected={this.state.businessStartDate}
+                                onChange={this.businessStartDateChange}
+                                dateFormat={"yyyy MM"}
+                                autoComplete="on"
+                                locale="pt-BR"
+                                showYearDropdown
+                                yearDropdownItemNumber={15}
+                                scrollableYearDropdown
+                                showMonthYearPicker
+                                showFullMonthYearPicker
+                                // minDate={new Date()}
+                                showDisabledMonthNavigation
+                                className={"dateInput"}
+                                id="businessStartDateSelect"
+                                locale="ja"
+                                />
+                        </InputGroup>
                     </Col>
                     </Row>
                     <br/>
@@ -291,19 +336,26 @@ class CustomerInfoSearch extends Component {
                     </Col>
                     </Row>
                    </div>
+                    <div style={{ "textAlign": "center" }}>
+                            <Button onClick={this.search} size="sm" variant="info">
+                                <FontAwesomeIcon icon={faSearch} /> 検索
+                            </Button>{' '}
+                            <Link to={tsuikaPath} className="btn btn-sm btn-info">
+                                <FontAwesomeIcon icon={faSave} />追加
+                            </Link>{' '}
+                            <Button size="sm" variant="info" type="reset">
+                                <FontAwesomeIcon icon={faUndo} /> Reset
+                            </Button>
+                        </div>
                </Form>
                <Form>
                 <br/>
                     <Row>
-                        <Col sm={1}>
+                        <Col sm={10}>
                         </Col>
-                        <Col sm={8}>
-                        
-                        </Col>
-                        <Col sm={1}></Col>
                         <Col sm={2}>
-                                <Link to={shuseiPath} className="btn btn-sm btn-primary" id="shusei">修正</Link>
-                                <Button size="sm" id="sakujo" >删除</Button>
+                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei">修正</Link>
+                                <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} >删除</Button>
                         </Col>
                     </Row>
                         { radioValue === "haveOperator" ?
@@ -320,25 +372,24 @@ class CustomerInfoSearch extends Component {
                             selectRow={ selectRow }
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
-                            deleteRow
                              >
-                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true } headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo' dataSort={ true } headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice' dataSort={ true } headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true }headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                                <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='headOffice'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow={true}>
-                                <TableHeaderColumn isKey dataField='rowNo' dataSort={ true } headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo' dataSort={ true } headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice' dataSort={ true } headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName' dataSort={ true } headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName' dataSort={ true } headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options }>
+                                <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='headOffice'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName'  headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                             </BootstrapTable>
                         }
                 </Form>

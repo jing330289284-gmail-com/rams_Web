@@ -2,17 +2,17 @@ import React,{Component} from 'react';
 import { Row,  Col , ListGroup , Accordion , Button , Navbar} from 'react-bootstrap';
 
 import title from '../asserts/images/title.png';
-import open from '../asserts/images/打开.png';
-import openPage from '../asserts/images/打开页面.png';
-import menu from '../asserts/images/菜单.png';
-import signout from '../asserts/images/登出.png';
+import open from '../asserts/images/open.png';
+import openPage from '../asserts/images/openPage.png';
+import menu from '../asserts/images/menu.png';
+import signout from '../asserts/images/signout.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Subcost from './subCost'
 import Main from './main';
 import EmployeeAdd from './employeeAdd';
 import EmployeeSearch from './employeeSearch';
 import BankInfo from './bankInfo';
-import CustomerInfo from './CustomerInfo';
+import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
@@ -106,9 +106,15 @@ class SubMenu extends Component {
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to={employeeAddPath}><img alt="title" src={open}/>社員情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/employeeSearch"><img alt="title" src={open}/>社員情報検索</Link></ListGroup.Item>
+                                                </ListGroup>
+                                            </Accordion.Collapse>
+                                </ListGroup.Item>
+                                <ListGroup.Item variant="secondary" block>
+                                            <Accordion.Toggle as={Button} variant="link" eventKey="1"><img alt="title" src={openPage}/>現場</Accordion.Toggle>
+                                            <Accordion.Collapse eventKey="1">
+                                                <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/add"><img alt="title" src={open}/>単価情報検索</Link></ListGroup.Item>
-
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open}/>現場情報検索</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>

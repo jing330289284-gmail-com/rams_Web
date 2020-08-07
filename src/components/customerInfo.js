@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , Modal} from 'react-bootstrap';
-import * as customerInfoJs from '../components/CustomerInfoJs.js';
+import {Row , Form , Col , InputGroup , Button , Modal , Card} from 'react-bootstrap';
+import * as customerInfoJs from '../components/customerInfoJs.js';
 import $ from 'jquery';
 import BankInfo from './bankInfo';
 import Autosuggest from 'react-autosuggest';
@@ -36,10 +36,6 @@ function renderSuggestion(suggestion) {
 		<span>{suggestion.name}</span>
 	);
 }
-var oldForm_data;//画面初期のデータ
-var oldForm_dataJson;//画面初期のデータのjson
-var newForm_data;//登録の際データ
-var newForm_dataJson;//登録の際データのjson
 
 class CustomerInfo extends Component {
     state = {
@@ -50,6 +46,8 @@ class CustomerInfo extends Component {
         topCustomerSuggestions:[],//上位お客様連想の数列
         topCustomerValue:'',//上位お客様項目の値
         topCustomerName:'',//上位お客様のname
+        rowNo:'',//行のコード
+        customerDepartmentCode:'',//部門コード
         customerDepartmentName:'',//部門のname
         customerDepartmentNameValue:'',//部門の項目値
         customerDepartmentNameSuggestions:[],//部門の連想数列
@@ -109,25 +107,32 @@ class CustomerInfo extends Component {
         var pro = this.props.location.state;
         $("#shoriKbn").val( pro.split("-")[0]);
         $("#customerNo").val( pro.split("-")[1]);
+        $("#sakujo").attr("disabled",true);
         //上場会社
-        var listedCompany = utils.getdropDown("getListedCompany");
+        var listedCompanyFlag = utils.getdropDown("getListedCompany");
+        listedCompanyFlag.shift();
         //お客様ランキン
-        var customerRanking = utils.getdropDown("selectCustomerRanking");
+        var levelCode = utils.getdropDown("getLevel");
         //会社性質
-        var companyNature = utils.getdropDown("selectCompanyNature");
+        var companyNature = utils.getdropDown("getCompanyNature");
         //職位
-        var positionCode = utils.getdropDown("selectPosition");
-        for(let i = 0;i<listedCompany.length ; i++){
-            $("#listedCompany").append('<option value="'+listedCompany[i].code+'">'+listedCompany[i].name+'</option>');
+        var positionCode = utils.getdropDown("getPosition");
+        //支払サイト
+        var paymentsiteCode = utils.getdropDown("getPaymentsite");
+        for(let i = 0;i<listedCompanyFlag.length ; i++){
+            $("#listedCompanyFlag").append('<option value="'+listedCompanyFlag[i].code+'">'+listedCompanyFlag[i].name+'</option>');
         }
-        for(let i = 0;i<customerRanking.length ; i++){
-            $("#customerRankingCode").append('<option value="'+customerRanking[i].code+'">'+customerRanking[i].name+'</option>');
+        for(let i = 0;i<levelCode.length ; i++){
+            $("#levelCode").append('<option value="'+levelCode[i].code+'">'+levelCode[i].name+'</option>');
         }
         for(let i = 0;i<companyNature.length ; i++){
             $("#companyNatureCode").append('<option value="'+companyNature[i].code+'">'+companyNature[i].name+'</option>');
         }
         for(let i = 0;i<positionCode.length ; i++){
             $("#positionCode").append('<option value="'+positionCode[i].code+'">'+positionCode[i].name+'</option>');
+        }
+        for(let i = 0;i<paymentsiteCode.length ; i++){
+            $("#paymentsiteCode").append('<option value="'+paymentsiteCode[i].code+'">'+paymentsiteCode[i].name+'</option>');
         }
         if($("#shoriKbn").val() !== "shusei"){
             $("#toBankInfo").attr("disabled",true);
@@ -156,16 +161,18 @@ class CustomerInfo extends Component {
                 $("#headOffice").val(customerInfoMod.headOffice);
                 $("#establishmentDate").val(customerInfoMod.establishmentDate);
                 $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
-                $("#listedCompany").val(customerInfoMod.listedCompany);
+                $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
                 $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
                 $("#url").val(customerInfoMod.url);
                 $("#remark").val(customerInfoMod.remark);
                 this.setState({
-                    topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
                     customerDepartmentList:resultMap.data.customerDepartmentInfoList,
                 })
-                oldForm_data = $("#customerForm").serializeArray();
-                oldForm_dataJson = JSON.stringify({ dataform: oldForm_data });
+                if(resultMap.data.customerInfoMod.topCustomerName !== '' && resultMap.data.customerInfoMod.topCustomerName !== null){
+                    this.setState({
+                        topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
+                    })
+                }
                 if(shoriKbn === 'sansho'){
                     customerInfoJs.setDisabled();
                 }
@@ -182,7 +189,7 @@ class CustomerInfo extends Component {
 		const model = {
 			name: value
 		};
-		axios.post("http://127.0.0.1:8080/selectTopCustomer", model)
+		axios.post("http://127.0.0.1:8080/getTopCustomerDrop", model)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -201,7 +208,7 @@ class CustomerInfo extends Component {
 		const model = {
 			name: value
 		};
-		axios.post("http://127.0.0.1:8080/selectDepartmentMaster", model)
+		axios.post("http://127.0.0.1:8080/getDepartmentMaster", model)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -234,7 +241,7 @@ class CustomerInfo extends Component {
      */
     onDlt1SuggestionSelected = (event, { suggestion }) => {
 		this.setState({
-			topCustomerValue: suggestion.topCustomerName
+			topCustomerValue: suggestion.name
 		});
     };
     /**
@@ -242,7 +249,7 @@ class CustomerInfo extends Component {
      */
     onDltDepartmentSuggestionSelected = (event, { suggestion }) => {
 		this.setState({
-			customerDepartmentNameValue: suggestion.customerDepartmentName,
+			customerDepartmentNameValue: suggestion.name,
 		});
     };
     /**
@@ -266,6 +273,8 @@ class CustomerInfo extends Component {
      */
     meisaiToroku =()=>{
         var customerDepartmentInfoModel = {};
+        var positionCode=document.getElementById("positionCode");
+        var index=positionCode.selectedIndex;
         var formArray =$("#customerDepartmentForm").serializeArray();
         $.each(formArray,function(i,item){
             customerDepartmentInfoModel[item.name] = item.value;     
@@ -273,42 +282,147 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["updateUser"] = sessionStorage.getItem('employeeNo');
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
         customerDepartmentInfoModel['customerDepartmentName'] = $("#customerDepartmentName").val();
-        axios.post("http://127.0.0.1:8080/customerInfo/meisaiToroku" , customerDepartmentInfoModel)
-        .then(result => {
-            if(result.data[0].resultCode === "1"){
-                alert("登録错误，请检查程序"); 
-            }else if(result.data[0].resultCode === "0"){
+        customerDepartmentInfoModel['positionName'] = (positionCode.options[index].text === "選択ください" ? '' : positionCode.options[index].text);
+        customerDepartmentInfoModel["rowNo"] = (this.state.customerDepartmentList.length === 0 ? 1 : this.state.customerDepartmentList.length + 1);
+        if($("#customerDepartmentName").val() !== '' && $("#positionCode").val() !== ''){
+            if(this.state.rowNo !== null && this.state.rowNo !== ''){//行更新
+                let rowNo = this.state.rowNo;
+                var departmentList = this.state.customerDepartmentList;
+                customerDepartmentInfoModel.rowNo = rowNo;
+                for(let i=departmentList.length-1; i>=0; i--){
+                    if(departmentList[i].rowNo === rowNo){
+                        departmentList[i] = customerDepartmentInfoModel;
+                    }
+                }
                 this.setState({
-                    customerDepartmentList : result.data,
+                    customerDepartmentList:departmentList,
                 })
-            }else if(result.data[0].resultCode === "2"){
-                alert("部門が部門マスタに存在しません"); 
+            }else{//行追加
+                this.setState({
+                    customerDepartmentList:[...this.state.customerDepartmentList,customerDepartmentInfoModel],
+                })
+                this.setState({
+                    customerDepartmentNameValue:'',
+                })
+                $("#positionCode").val('');
+                $("#responsiblePerson").val('');
+                $("#customerDepartmentMail").val('');
             }
-        })
-        .catch(function (error) {
-        alert("查询错误，请检查程序");
-        });  
+        }
     }
     /**
+     * 登録ボタン
+     */
+    toroku=()=>{
+        if($("#customerName").val() !== "" && $("#customerName").val() != null){
+            var customerInfoMod = {};
+            var formArray =$("#customerForm").serializeArray();
+            $.each(formArray,function(i,item){
+                customerInfoMod[item.name] = item.value;     
+            });
+            customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
+            customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
+            customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
+            customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
+            axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
+            .then(function (result) {
+            if(result.data === 0){
+                alert("登录完成");
+                window.location.reload();
+            }else if(result.data === 1){
+                alert("登录错误，请检查程序");
+            }else if(result.data === 2){
+                alert("上位お客様名前がお客様情報テーブルに存じません，データをチェックしてください");
+            }else if(result.data === 3){
+                alert("部署が登録失敗しました。");
+            }else if(result.data === 4){
+                alert("部署が部署マスタに存在しません。");
+            }
+            })
+            .catch(function (error) {
+            alert("登录错误，请检查程序");
+            });
+        }else{
+            if($("#customerName").val() === "" || $("#customerName").val() === null){
+                document.getElementById("erorMsg").style = "visibility:visible";
+            } 
+        }  
+    }
+    /**
+     * 行の削除
+     */
+    listDelete=()=>{
+        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+        var id = this.state.rowNo;
+        var departmentList = this.state.customerDepartmentList;
+        for(let i=departmentList.length-1; i>=0; i--){
+            if(departmentList[i].rowNo === id){
+                departmentList.splice(i,1);
+            }
+        }
+        if(departmentList.length !== 0){
+            for(let i=departmentList.length-1; i>=0; i--){
+                departmentList[i].rowNo = (i + 1);
+            }  
+        }
+        this.setState({
+            customerDepartmentList:departmentList,
+            rowNo:'',
+        })
+        var customerDepartmentInfoModel = {};
+        customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
+        customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
+        if($("#shoriKbn").val() === "shusei"){
+            axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelect", customerDepartmentInfoModel)
+            .then(function (result) {
+                if(result.data === true){
+                    alert("删除成功");
+                }else{
+                    alert("删除失败");
+                }
+            })
+            .catch(function (error) {
+                alert("删除失败，请检查程序");
+            });
+        }
+    }
+        /**
      * 行Selectファンクション
      */
      handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
             $("#positionCode").val(row.positionCode);
             $("#responsiblePerson").val(row.responsiblePerson);
-            $("#mail").val(row.mail);
+            $("#customerDepartmentMail").val(row.customerDepartmentMail);
             this.setState({
-                customerDepartmentNameValue:row.customerDepartmentName
+                customerDepartmentNameValue:row.customerDepartmentName,
+                rowNo:row.rowNo,
+                customerDepartmentCode:row.customerDepartmentCode,
             })
+            $("#sakujo").attr("disabled",false);
         } else {
             $("#positionCode").val('');
             $("#responsiblePerson").val('');
-            $("#mail").val('');
+            $("#customerDepartmentMail").val('');
             this.setState({
-                customerDepartmentNameValue:''
+                customerDepartmentNameValue:'',
+                rowNo:'',
+                customerDepartmentCode:'',
             })
+            $("#sakujo").attr("disabled",true);
         }
     }
+    renderShowsTotal(start, to, total) {
+        if(total === 0){
+            return (<></>);
+        }else{
+            return (
+                <p>
+                ページ： { start } /{ to }, トータル件数： { total }&nbsp;&nbsp;
+                </p>
+            );
+            }
+      }
     render() {
         const {topCustomerSuggestions , topCustomerValue , customerDepartmentNameSuggestions , customerDepartmentNameValue , customerDepartmentList} = this.state;
         //上位お客様連想
@@ -347,13 +461,9 @@ class CustomerInfo extends Component {
         firstPage: 'First', // First page button text
         lastPage: 'Last', // Last page button text
         paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-        // paginationPosition: 'top'  // default is bottom, top and both is all available
         hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-        // alwaysShowAllBtns: true // Always show next and previous button
-        // withFirstAndLast: false > Hide the going to First and Last page button
         expandRowBgColor: 'rgb(165, 165, 165)',
         deleteBtn: this.createCustomDeleteButton,
-        onDeleteRow: this.onDeleteRow,
         };
         return (
             <div style={{"background":"#f5f5f5"}}>
@@ -362,7 +472,7 @@ class CustomerInfo extends Component {
                 onHide={this.handleHideModal.bind(this,"bankInfo")} show={this.state.showBankInfoModal}>
                 <Modal.Header closeButton>
                 </Modal.Header>
-                <Modal.Body className="show-grid">
+                <Modal.Body >
                 <div key={this.props.location.key} >
                                 <Router>
                                     <Route exact path={`${this.props.match.url}/`} component={BankInfo} />
@@ -415,7 +525,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="お客様番号" id="customerNo" name="customerNo" readOnly/>
+                                <Form.Control maxLength="6" placeholder="お客様番号" id="customerNo" name="customerNo" readOnly/>
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -423,7 +533,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：LYC株式会社" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font  color="red"
+                                <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font  color="red"
 				style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                         </InputGroup>
                     </Col>
@@ -432,7 +542,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">略称</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="LYC" id="customerAbbreviation" name="customerAbbreviation" />
+                                <Form.Control placeholder="LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -440,7 +550,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">代表取締役</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：中山毛石" id="representative" name="representative" />
+                                <Form.Control placeholder="例：中山毛石" maxLength="20" id="representative" name="representative" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -450,7 +560,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：秋葉原駅" id="headOffice" name="headOffice" />
+                                <Form.Control placeholder="例：秋葉原駅" maxLength="20" id="headOffice" name="headOffice" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -465,6 +575,9 @@ class CustomerInfo extends Component {
                                 dateFormat={"yyyy MM"}
                                 autoComplete="on"
                                 locale="pt-BR"
+                                showYearDropdown
+                                yearDropdownItemNumber={15}
+                                scrollableYearDropdown
                                 showMonthYearPicker
                                 showFullMonthYearPicker
                                 // minDate={new Date()}
@@ -487,6 +600,9 @@ class CustomerInfo extends Component {
                                 dateFormat={"yyyy MM"}
                                 autoComplete="on"
                                 locale="pt-BR"
+                                showYearDropdown
+                                yearDropdownItemNumber={15}
+                                scrollableYearDropdown
                                 showMonthYearPicker
                                 showFullMonthYearPicker
                                 // minDate={new Date()}
@@ -521,7 +637,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="お客様ランキング" id="customerRankingCode" name="customerRankingCode" />
+                                <Form.Control as="select" placeholder="お客様ランキング" id="levelCode" name="levelCode" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -529,7 +645,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上場会社</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="上場会社" id="listedCompany" name="listedCompany">
+                                <Form.Control as="select" placeholder="上場会社" id="listedCompanyFlag" name="listedCompanyFlag">
                                 </Form.Control>
                         </InputGroup>
                     </Col>
@@ -546,42 +662,48 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="www.lyc.co.jp" id="url" name="url" />
+                                <Form.Control maxLength="" placeholder="www.lyc.co.jp" id="url" name="url" />
                         </InputGroup>
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={4}>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">購買担当</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="購買担当" id="PurchasingManagers" name="PurchasingManagers" />
+                                <Form.Control maxLength="20" placeholder="例：田中" id="purchasingManagers" name="purchasingManagers" />
                         </InputGroup>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">メール</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="メール" id="PurchasingManagersOfmail" name="PurchasingManagersOfmail" />
+                                <Form.Control maxLength="50" placeholder="xxxxxxxxx@xxx.xxx.com" id="purchasingManagersMail" name="purchasingManagersMail" />
                         </InputGroup>
                     </Col>
-                    <Col sm={4}>
+                    <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                        </InputGroup>
+                    </Col>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="備考" id="remark" name="remark" />
+                                <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
                         </InputGroup>
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={5}></Col>
-                        <Col sm={1} className="text-center">
-                                <Button block size="sm" onClick={customerInfoJs.toroku}  variant="primary" id="toroku" type="button">
-                                    登録
-                                </Button>
+                        <Col sm={11} className="text-center">
+                                
                         </Col>
                         <Col sm={1} className="text-center">
                                 <Button  block size="sm" id="reset" onClick={customerInfoJs.reset} >
@@ -623,7 +745,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：田中一郎" id="responsiblePerson" name="responsiblePerson" />
+                                <Form.Control maxLength="20" placeholder="例：田中一郎" id="responsiblePerson" name="responsiblePerson" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -631,7 +753,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">メール</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="xxxxxx@xx.com" id="mail" name="mail" />
+                                <Form.Control maxLength="50" placeholder="xxxxxx@xx.com" id="customerDepartmentMail" name="customerDepartmentMail" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -639,7 +761,7 @@ class CustomerInfo extends Component {
                     <Col sm={5}></Col>
                         <Col sm={1} className="text-center">
                                 <Button block size="sm" onClick={this.meisaiToroku} variant="primary" id="meisaiToroku" type="button">
-                                    明細登録
+                                    部署登録
                                 </Button>
                         </Col>
                         <Col sm={1} className="text-center">
@@ -648,20 +770,39 @@ class CustomerInfo extends Component {
                                 </Button>
                         </Col>
                 </Row>
+                <Card.Body>
                 <Row>
-                    <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } deleteRow={true} data={customerDepartmentList}>
+                    <Col sm={11}></Col>
+                    <Col sm={1}>
+                    <Button size="sm" block onClick={this.listDelete} variant="info" id="sakujo" type="button">
+                        删除
+                    </Button>
+                    </Col>
+                </Row>
+                    <div>
+                    <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } data={customerDepartmentList}>
                         <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
                         <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
                         <TableHeaderColumn dataField='positionName' headerAlign='center' dataAlign='center' width="190">職位</TableHeaderColumn>
-                        <TableHeaderColumn dataField='mail' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
+                        <TableHeaderColumn dataField='customerDepartmentMail' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
                         <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="140">取引人数</TableHeaderColumn>
                     </BootstrapTable>
-                </Row>
+                    </div>
+                
+                </Card.Body>
                 <input type="hidden" id="employeeNo" name="employeeNo"/>
                 <input type="hidden" id="shoriKbn" name="shoriKbn"/>
                 </Form>
             </div>
+                <Row>
+                    <Col sm={11}></Col>
+                    <Col sm={1}>
+                        <Button size="sm" block onClick={this.toroku}  variant="primary" id="toroku" type="button">
+                            登録
+                        </Button>
+                    </Col>
+                </Row>
             </div>
         );
     }

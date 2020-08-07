@@ -755,7 +755,7 @@ class mainSearch extends React.Component {
 								<Link to={shuseiPath} className="btn btn-info btn-sm disabled-link" id="clickButton" >修正</Link>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={e =>
 									window.confirm("Are you sure you wish to delete this item?") &&
-									this.employeeDelete
+									this.employeeDelete()
 								}>削除</Button>
 							</div>
 						</Col>

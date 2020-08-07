@@ -173,8 +173,8 @@ class employeeAdd extends React.Component {
 		this.getEnglishLevel();//英語
 		this.getNO();//採番番号
 		this.getNationalitys();//採番番号
-		var pro = this.props.location.state;
-		$("#shoriKbn").val(pro.split("-")[0]);
+		//var pro = this.props.location.state;
+		//$("#shoriKbn").val(pro.split("-")[0]);
 		//var pro = this.props.location.state;
 		//$("#shoriKbn").val(pro.split("-")[0]);
 	}
@@ -504,6 +504,20 @@ class employeeAdd extends React.Component {
 					</Modal.Body>
 				</Modal>
 				{/*　 終了 */}
+				{/* 権限・PW設置*/}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal} dialogClassName="modal-kengen">
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body className="show-grid">
+						<div key={this.props.location.key} >
+							<Router>
+								{/* <Route exact path={`${this.props.match.url}/`} component={TopCustomerInfo} /> */}
+							</Router>
+						</div>
+					</Modal.Body>
+				</Modal>
+				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
 					<Button size="sm" >住所情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
