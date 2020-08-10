@@ -246,7 +246,6 @@ class mainSearch extends React.Component {
 	};
 	//　　削除ボタン
 	employeeDelete = () => {
-		alert(this.state.rowSelectEmployeeNo);
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
 		};
@@ -281,6 +280,7 @@ class mainSearch extends React.Component {
 			$('button[name="clickButton"]').prop('disabled', false);
 			$('#update').removeClass('disabled');
 			$('#detail').removeClass('disabled');
+			$('#delete').removeClass('disabled');
 		} else {
 			this.setState(
 				{
@@ -290,6 +290,8 @@ class mainSearch extends React.Component {
 			$('button[name="clickButton"]').prop('disabled', true);
 			$('#update').addClass('disabled');
 			$('#detail').addClass('disabled');
+			$('#delete').addClass('disabled');
+
 		}
 	}
 
@@ -355,7 +357,7 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl name="employeeFristName"　value={employeeFristName} autoComplete="off"　onChange={this.valueChange} size="sm"　placeholder="社員名" />
+										<FormControl name="employeeFristName" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" placeholder="社員名" />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -585,8 +587,8 @@ class mainSearch extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()
-								}><FontAwesomeIcon icon={faTrash} /> 削除</Button>
+								{/* <Button size="sm" variant="info" name="clickButton" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()}><FontAwesomeIcon icon={faTrash} /> 削除</Button>、 */}
+								<Link className="btn btn-info btn-sm disabled" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
 							</div>
 						</Col>
 					</Row>

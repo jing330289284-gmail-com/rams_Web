@@ -17,8 +17,6 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 
 
-
-
 const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
 
 class employee extends React.Component {
@@ -94,7 +92,7 @@ class employee extends React.Component {
 		experienceYears: "",//　経験年数
 		temporary_experienceYears: "",
 	};
-	//登録
+	//　　登録
 	insertEmployee = () => {
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
@@ -145,7 +143,70 @@ class employee extends React.Component {
 			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 		};
-		axios.post("http://127.0.0.1:8080/employee/addEmployeeInfo", emp)
+		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
+			.then(response => {
+				console.log(response);
+				if (response.data != null) {
+					alert(response.data)
+					window.location.reload();
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+　　　　//更新ボタン
+	updateEmployee = () => {
+		alert(1)
+		const emp = {
+			//employeeNo: this.state.employeeNo,//ピクチャ
+			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
+			employeeNo: this.state.employeeNo,//社員番号
+			employeeFristName: this.state.employeeFristName,//社員氏
+			employeeLastName: this.state.employeeLastName,//社員名
+			furigana1: this.state.furigana1,//　　カタカナ
+			furigana2: this.state.furigana2,//　　カタカナ
+			alphabetName: this.state.alphabetName,//　　ローマ字
+			age: this.state.age,//年齢
+			japaneseCalendar: this.state.japaneseCalendar,//和暦
+			genderStatus: this.state.genderStatus,//性別
+			intoCompanyCode: this.state.intoCompanyCode,//入社区分
+			employeeFormCode: this.state.employeeFormCode,//社員形式
+			occupationCode: this.state.occupationCode,//職種
+			departmentCode: this.state.departmentCode,//部署
+			companyMail: this.state.companyMail,//社内メール
+			graduationUniversity: this.state.graduationUniversity,//卒業学校
+			major: this.state.major,//専門
+			graduationYearAndMonth: this.state.graduationYearAndMonth,//卒業年月
+			intoCompanyYearAndMonth: this.state.intoCompanyYearAndMonth,//入社年月
+			retirementYearAndMonth: this.state.retirementYearAndMonth,//退職年月
+			comeToJapanYearAndMonth: this.state.comeToJapanYearAndMonth,//来日年月
+			nationalityCode: this.state.nationalityCode,//出身地
+			birthplace: this.state.birthplace,//出身県
+			phoneNo: this.state.phoneNo,//携帯電話
+			authorityCode: $("#authorityCodeId").val(),//権限
+			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
+			englishLevelCode: this.state.englishLevelCode,//英語
+			certification1: this.state.certification1,//資格1
+			certification2: this.state.certification2,//資格2
+			developLanguage1: this.state.developLanguage1,//スキール1
+			developLanguage2: this.state.developLanguage2,//スキール2
+			developLanguage3: this.state.developLanguage3,//スキール3
+			developLanguage4: this.state.developLanguage4,//スキール4
+			developLanguage5: this.state.developLanguage5,//スキール5
+			residenceCode: this.state.residenceCode,//在留資格
+			residenceCardNo: this.state.residenceCardNo,//在留カード
+			stayPeriod: this.state.stayPeriod,//在留期間
+			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
+			myNumber: this.state.myNumber,//マイナンバー
+			residentCardInfo: $("#residentCardInfo").val(),//在留カード
+			resumeInfo1: $("#residentCardInfo").val(),//履歴書
+			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
+			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
+			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			passportInfo: this.state.passportInfo,//パスポート
+			updateUser: sessionStorage.getItem('employeeName'),//更新者
+		};
+		axios.post("http://127.0.0.1:8080/employee/updateEmployee", emp)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
@@ -604,21 +665,21 @@ class employee extends React.Component {
 
 
 	valueChangeEmployeeFormCode = (event) => {
-		const value=event.target.value;
+		const value = event.target.value;
 		if (value === "3") {
 			this.setState({ retirementYearAndMonthDisabled: true })
-		} else{
-			this.setState({ retirementYearAndMonthDisabled: false,retirementYearAndMonth: "" })
+		} else {
+			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "" })
 		}
 	}
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, age, japaneseCalendar,genderStatus, major, intoCompanyCode, 
-			employeeFormCode, occupationCode, departmentCode, companyMail,graduationUniversity, graduationYearAndMonth, intoCompanyYearAndMonth, retirementYearAndMonth, 
-			nationalityCode, birthplace,phoneNo, comeToJapanYearAndMonth, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, graduationYearAndMonth, intoCompanyYearAndMonth, retirementYearAndMonth,
+			nationalityCode, birthplace, phoneNo, comeToJapanYearAndMonth, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, stayPeriod, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2,
 			time4, temporary_stayPeriod, temporary_experienceYears, experienceYears, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions,
-			developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,retirementYearAndMonthDisabled
+			developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions, retirementYearAndMonthDisabled
 		} = this.state;
 		const dlt1InputProps = {
 			placeholder: "開発言語1",
@@ -738,7 +799,7 @@ class employee extends React.Component {
 						<Form.Label>協力</Form.Label><Form.Check onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={this.insertEmployee } onReset={this.resetBook}>
+				<Form onSubmit={sessionStorage.getItem('id') ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
