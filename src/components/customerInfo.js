@@ -6,7 +6,6 @@ import BankInfo from './bankInfo';
 import Autosuggest from 'react-autosuggest';
 import '../asserts/css/login.css';
 import TopCustomerInfo from './topCustomerInfo';
-import { BrowserRouter as Router, Route } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
@@ -53,7 +52,8 @@ class CustomerInfo extends Component {
         customerDepartmentNameSuggestions:[],//部門の連想数列
         customerDepartmentList:[],//部門情報数列
         accountInfo:{},//口座情報のデータ
-        shoriKbn:''//処理区分
+        actionType:'',//処理区分
+        topCustomerInfo:{},//上位お客様情報データ
      }
     /**
      *  設立のonChange
@@ -107,7 +107,7 @@ class CustomerInfo extends Component {
      */
     async componentDidMount(){
         var pro = this.props.location.state;
-        $("#shoriKbn").val( pro.actionType);
+        $("#actionType").val( pro.actionType);
         $("#customerNo").val( pro.customerNo);
         $("#sakujo").attr("disabled",true);
         //上場会社
@@ -136,22 +136,22 @@ class CustomerInfo extends Component {
         for(let i = 0;i<paymentsiteCode.length ; i++){
             $("#paymentsiteCode").append('<option value="'+paymentsiteCode[i].code+'">'+paymentsiteCode[i].name+'</option>');
         }
-        if($("#shoriKbn").val() !== "update"){
+        if($("#actionType").val() !== "update"){
             $("#toBankInfo").attr("disabled",true);
             $("#toCustomerInfo").attr("disabled",true);
           }
         this.setState({
-            shoriKbn:$("#shoriKbn").val(),
+            actionType:$("#actionType").val(),
         })
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
-        customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
+        customerInfoMod["actionType"] = $("#actionType").val();
         await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
         .then(resultMap => {
             var customerInfoMod;
-            var shoriKbn = $("#shoriKbn").val();
+            var actionType = $("#actionType").val();
             customerInfoMod = resultMap.data.customerInfoMod;
-            if(shoriKbn === 'addTo'){
+            if(actionType === 'addTo'){
                 var customerNoSaiBan = resultMap.data.customerNoSaiBan;
                 $("#customerNo").val(customerNoSaiBan);
                 $("#customerNo").attr("readOnly",true);
@@ -178,7 +178,7 @@ class CustomerInfo extends Component {
                         topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
                     })
                 }
-                if(shoriKbn === 'sansho'){
+                if(actionType === 'sansho'){
                     customerInfoJs.setDisabled();
                 }
             }
@@ -284,7 +284,7 @@ class CustomerInfo extends Component {
         $.each(formArray,function(i,item){
             customerDepartmentInfoModel[item.name] = item.value;     
         });
-        customerDepartmentInfoModel["shoriKbn"] = $("#shoriKbn").val();
+        customerDepartmentInfoModel["actionType"] = $("#actionType").val();
         customerDepartmentInfoModel["updateUser"] = sessionStorage.getItem('employeeNo');
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
         customerDepartmentInfoModel['customerDepartmentName'] = $("#customerDepartmentName").val();
@@ -300,7 +300,7 @@ class CustomerInfo extends Component {
                         departmentList[i] = customerDepartmentInfoModel;
                     }
                 }
-                if($("#shoriKbn").val() ==="update"){
+                if($("#actionType").val() ==="update"){
                     axios.post("http://127.0.0.1:8080/customerInfo/meisaiUpdate", customerDepartmentInfoModel)
                     .then(result => {
                         if(result.data === 0){
@@ -343,8 +343,10 @@ class CustomerInfo extends Component {
             });
             customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
             customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
-            customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
+            customerInfoMod["actionType"] = $("#actionType").val();
             customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
+            customerInfoMod["accountInfo"] = this.state.accountInfo;
+            customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
             axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
             .then(function (result) {
             if(result.data === 0){
@@ -395,7 +397,7 @@ class CustomerInfo extends Component {
             var customerDepartmentInfoModel = {};
             customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
             customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
-            if($("#shoriKbn").val() === "update"){
+            if($("#actionType").val() === "update"){
                 axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                 .then(function (result) {
                     if(result.data === true){
@@ -436,6 +438,26 @@ class CustomerInfo extends Component {
             $("#sakujo").attr("disabled",true);
         }
     }
+    /**
+     * ポップアップ口座情報の取得
+     */
+    accountInfoGet=(kozaTokuro)=>{
+        this.setState({
+            accountInfo:kozaTokuro,
+            showBankInfoModal:false,
+        })
+        console.log(kozaTokuro);
+    }
+    /**
+     * ポップアップ上位お客様情報の取得
+     */
+    topCustomerInfoGet=(topCustomerToroku)=>{
+        this.setState({
+            topCustomerInfo:topCustomerToroku,
+            showCustomerInfoModal:false,
+        })
+        console.log(topCustomerToroku);
+    }
     renderShowsTotal(start, to, total) {
         if(total === 0){
             return (<></>);
@@ -449,7 +471,7 @@ class CustomerInfo extends Component {
       }
     render() {
         const {topCustomerSuggestions , topCustomerValue , customerDepartmentNameSuggestions , customerDepartmentNameValue , customerDepartmentList , accountInfo
-         , shoriKbn} = this.state;
+         , actionType , topCustomerInfo} = this.state;
         //上位お客様連想
         const topcustomerInputProps = {
 			placeholder: "例：富士通",
@@ -501,19 +523,15 @@ class CustomerInfo extends Component {
                 <Modal.Header closeButton>
                 </Modal.Header>
                 <Modal.Body >
-                            <BankInfo accountInfo={accountInfo} shoriKbn={shoriKbn}/>
+                            <BankInfo accountInfo={accountInfo} actionType={actionType} kozaTokuro={this.accountInfoGet}/>
                 </Modal.Body>
                 </Modal>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" 
                 onHide={this.handleHideModal.bind(this,"customerInfo")} show={this.state.showCustomerInfoModal}>
                 <Modal.Header closeButton>
                 </Modal.Header>
-                <Modal.Body className="show-grid">
-                <div key={this.props.location.key} >
-                                <Router>
-                                    <Route exact path={`${this.props.match.url}/`} component={TopCustomerInfo} />
-                                </Router>
-                            </div>
+                <Modal.Body>
+                            <TopCustomerInfo topCustomerInfo={topCustomerInfo} actionType={actionType} topCustomerToroku={this.topCustomerInfoGet}/>
                 </Modal.Body>
                 </Modal>
                 <Row inline="true">
@@ -816,7 +834,7 @@ class CustomerInfo extends Component {
                 
                 </Card.Body>
                 <input type="hidden" id="employeeNo" name="employeeNo"/>
-                <input type="hidden" id="shoriKbn" name="shoriKbn"/>
+                <input type="hidden" id="actionType" name="actionType"/>
                 </Form>
             </div>
                 <Row>

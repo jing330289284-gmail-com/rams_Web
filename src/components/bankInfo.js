@@ -31,8 +31,8 @@ class BankInfo extends Component {
         for(let i = 0;i<bankCode.length ; i++){
             $("#bankCode").append('<option value="'+bankCode[i].code+'">'+bankCode[i].name+'</option>');
         }
-        var shoriKbn = this.props.shoriKbn;
-        var accountInfo = this.props.accountInfo;
+        var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
+        var accountInfo = this.props.accountInfo;//父画面のパラメータ（画面既存口座情報）
         if(!$.isEmptyObject(accountInfo)){
             $("#bankBranchName").val(accountInfo["bankBranchName"]);
             $("#bankBranchCode").val(accountInfo["bankBranchCode"]);
@@ -46,12 +46,13 @@ class BankInfo extends Component {
                 $("#futsu").attr("checked",true);
             }else if(accountInfo["accountTypeStatus"] === '1'){
                 $("#toza").attr("checked",true);
-            }
-        }else if($.isEmptyObject(accountInfo) && shoriKbn === "shusei"){
+            } 
+            bankInfoJs.takeDisabled();
+        }else if($.isEmptyObject(accountInfo) && actionType === "update"){
             var onloadMol = {};
             onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
             onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
-            onloadMol["shoriKbn"] = $("#shoriKbn").val();
+            onloadMol["actionType"] = $("#actionType").val();
             //画面データの検索
               axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
               .then(function (resultMap) {
@@ -70,7 +71,7 @@ class BankInfo extends Component {
                       $("#toza").attr("checked",true);
                     }
                     //修正の場合
-                    if(shoriKbn === 'shusei'){
+                    if(actionType === 'update'){
                       $("#bankBranchName").attr("readonly",false);
                       $("#bankBranchCode").attr("readonly",false);
                       $("#accountNo").attr("readonly",false);
@@ -84,7 +85,23 @@ class BankInfo extends Component {
               alert("口座情報获取错误，请检查程序");
             });  
         }
-
+    }
+    /**
+     * 口座登録ボタン
+     */
+    kozaTokuro(){
+        var result = bankInfoJs.checkAccountName();
+        if(result){
+            var accountInfo = {};
+            var formArray =$("#bankForm").serializeArray();
+            $.each(formArray,function(i,item){
+                accountInfo[item.name] = item.value;     
+            });
+            this.props.kozaTokuro(accountInfo);
+        }else{
+            document.getElementById("bankInfoErorMsg").style = "visibility:visible";
+            document.getElementById("bankInfoErorMsg").innerHTML = "口座名義人をカタカナで入力してください"
+        }   
     }
     render() {
         return (
@@ -188,7 +205,7 @@ class BankInfo extends Component {
                     <Row>
                         <Col sm={3}></Col>
                         <Col sm={3} className="text-center">
-                                <Button block size="sm" onClick={bankInfoJs.tokuro}  variant="primary" id="toroku" type="button">
+                                <Button block size="sm" onClick={this.kozaTokuro.bind(this)}  variant="primary" id="toroku" type="button">
                                 登録
                                 </Button>
                         </Col>

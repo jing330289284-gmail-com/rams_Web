@@ -18,6 +18,7 @@ import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
+import PasswordSet from './passwordSet';
 
 class SubMenu extends Component {
     state = {
@@ -37,15 +38,15 @@ class SubMenu extends Component {
     render() {
         //お客様情報画面の追加パラメータ
         var customerInfoPath = {
-            pathname:'/subMenu/customerInfo',state:"tsuika",
+            pathname:'/subMenu/customerInfo',state:{actionType:'addTo'},
           }
-          //上位お客様情報画面の追加パラメータ
-        var topCustomerInfoPath = {
-            pathname:'/subMenu/topCustomerInfo',state:"tsuika",
-        }
-        //　　　社員情報登録
+        //社員情報登録
         var employeeAddPath = {
-            pathname:'/subMenu/add',state:"tsuika",
+            pathname:'/subMenu/add',state:{actionType:'addTo'},
+        }
+        //社員情報登録
+        var passwordSetPath = {
+            pathname:'/subMenu/passwordSet',state:{actionType:'update' , fatherMenu:'subMenu'},
         }
         return (
             <div>
@@ -171,7 +172,7 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="7">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>システム設定</Link></ListGroup.Item>  
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/passwordReset"><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
+                                                    <ListGroup.Item variant="secondary"><Link to={passwordSetPath}><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -184,7 +185,7 @@ class SubMenu extends Component {
                             <div key={this.props.location.key}>
                                 <Router>
                                     <Route exact path={`${this.props.match.url}/`} component={Main} />
-                                    <Route exact path={`${this.props.match.url}/passwordReset`} component={Subcost} />
+                                    <Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
                                     <Route exact path={`${this.props.match.url}/add`} component={EmployeeAdd} />
                                     <Route exact path={`${this.props.match.url}/EmployeeSearch`} component={EmployeeSearch} />
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
@@ -195,10 +196,9 @@ class SubMenu extends Component {
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
                                         <Route exact path={`${this.props.match.url}/technologyTypeMaster`} component={TechnologyTypeMaster} />
                                         <Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
+                                        <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
                                     </div>
                                     </div>
-                                    <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
-                                    
                                 </Router>
                             </div>
                         </Col>
