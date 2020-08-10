@@ -2,7 +2,7 @@ const $ = require('jquery');
 const axios = require('axios');
 
 
-//年月を取得
+//　年月を取得
 export function getFullYearMonth(id, date) {
 	$(id).val("0年0月");
 	var today = new Date();
@@ -35,7 +35,7 @@ export function getFullYearMonth(id, date) {
 	}
 }
 
-//ドロップダウン
+//　ドロップダウン
 export function getdropDown(method) {
 	var array = [{ code: '', name: '選択ください' }];
 	$.ajax({
@@ -51,7 +51,7 @@ export function getdropDown(method) {
 	return array;
 }
 
-//採番番号
+//　採番番号
 export async function getNO(columnName, typeName, table) {
 	var no;
 	var mo = {
@@ -68,6 +68,37 @@ export async function getNO(columnName, typeName, table) {
 			console.error("Error - " + error);
 		});
 	return no;
+}
+
+
+export function escapeRegexCharacters(str) {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function getSuggestionDlt1(suggestion) {
+	return suggestion.name;
+}
+export function getSuggestions(value, datas) {
+	const escapedValue = escapeRegexCharacters(value.trim());
+	const regex = new RegExp('^' + escapedValue, 'i');
+	return datas.filter(data => regex.test(data.name));
+}
+export function renderSuggestion(suggestion) {
+	return (
+		suggestion.name
+	);
+}
+
+//　　　テーブルのsort
+export　function getCaret(direction) {
+	if (direction === 'asc') {
+		return　"▲";
+	}
+	if (direction === 'desc') {
+		return "▼"
+		;
+	}
+	return "▲/▼";
 }
 
 
