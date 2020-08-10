@@ -2,38 +2,55 @@ const $ = require('jquery');
 const axios = require('axios');
 
 
-//　年月を取得
-export function getFullYearMonth(id, date) {
-	$(id).val("0年0月");
-	var today = new Date();
-	var year = today.getFullYear() - date.getFullYear();
-	var month = today.getMonth() - date.getMonth();
-	var day = today.getDate() - date.getDate();
-	if (year >= 0) {
-		if (year > 0 && month < 0) {
-			if (day > 0) {
-				$(id).val((year - 1) + "年" + (month + 12) + "月");
-			}
-			else {
-				$(id).val((year - 1) + "年" + (month + 11) + "月");
-			}
-		}
-		if (month >= 0) {
+//　 時間段を取得
+export function getFullYearMonth(date, now) {
+	var returnYears = 0;
+	var returnMonths = 0;
+	var yearmonth = -1;
+	var keyYear = date.getFullYear();
+	var keyMonth = date.getMonth();
+	var keyDay = date.getDate();
+	var nowYear = now.getFullYear();
+	var nowMonth = now.getMonth() + 1;
+	var nowDay = now.getDate();
+	var yearDiff = nowYear - keyYear;
+	var monthDiff = nowMonth - keyMonth;
+	var dayDiff = nowDay - keyDay;
 
-			if (day >= 0) {
-				$(id).val(year + "年" + month + "月");
-			}
-			else {
-				if (year === 0 && month === 0) {
-					$(id).val("0年0月");
-				}
-				else {
-					$(id).val(year + "年" + (month - 1) + "月");
-				}
-			}
-		}
+	if (yearDiff < 0) {
+		return "0年0月";
 	}
+
+	if (yearDiff === 0 && monthDiff < 0) {
+		return "0年0月";
+	}
+
+	if (yearDiff === 0 && monthDiff === 0 && dayDiff < 0) {
+		return "0年0月";
+	}
+
+	returnYears = yearDiff;
+	if (monthDiff < 0) {
+		returnYears = returnYears - 1;
+		monthDiff = 12 + monthDiff;
+	}
+
+	returnMonths = monthDiff
+	if (dayDiff < 0) {
+		returnMonths = returnMonths - 1;
+	}
+	yearmonth = returnYears + "年" + returnMonths + "月";
+	return yearmonth;
 }
+
+
+//　ド時間プラグインの値をセット
+export function setFullYearMonth(date) {
+	var month = date.getMonth() + 1;
+	var value = date.getFullYear() + '' + (month < 10 ? '0' + month : month);
+	return value;
+}
+
 
 //　ドロップダウン
 export function getdropDown(method) {
@@ -43,14 +60,32 @@ export function getdropDown(method) {
 		url: "http://127.0.0.1:8080/" + method,
 		async: false,
 		success: function (msg) {
-			for (let i in msg) {
+			for (var i in msg) {
 				array.push(msg[i])
 			}
 		}
 	});
 	return array;
 }
-
+//　ドロップダウン  多くメソッド
+export function getPublicDropDown(methodArray) {
+	var outArray = [];
+	for (var i = 0; i < methodArray.length; i++) {
+		$.ajax({
+			type: "POST",
+			url: "http://127.0.0.1:8080/" + methodArray[i],
+			async: false,
+			success: function (msg) {
+				var array = [{ code: '', name: '選択ください' }];
+				for (var i in msg) {
+					array.push(msg[i])
+				}
+				outArray.push(array);
+			}
+		});
+	}
+	return outArray;
+}
 //　採番番号
 export async function getNO(columnName, typeName, table) {
 	var no;
@@ -70,12 +105,11 @@ export async function getNO(columnName, typeName, table) {
 	return no;
 }
 
-
 export function escapeRegexCharacters(str) {
 	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-export function getSuggestionDlt1(suggestion) {
+export function getSuggestionDlt(suggestion) {
 	return suggestion.name;
 }
 export function getSuggestions(value, datas) {
@@ -90,13 +124,13 @@ export function renderSuggestion(suggestion) {
 }
 
 //　　　テーブルのsort
-export　function getCaret(direction) {
+export function getCaret(direction) {
 	if (direction === 'asc') {
-		return　"▲";
+		return "▲";
 	}
 	if (direction === 'desc') {
 		return "▼"
-		;
+			;
 	}
 	return "▲/▼";
 }
