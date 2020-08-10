@@ -120,35 +120,38 @@ class CustomerInfoSearch extends Component {
      */
     listDelete=()=>{
         //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-        var id = this.state.rowNo;
-        var customerInfoList = this.state.customerInfoData;
-        for(let i=customerInfoList.length-1; i>=0; i--){
-            if(customerInfoList[i].rowNo === id){
-                customerInfoList.splice(i,1);
-            }
-        }
-        if(customerInfoList.length !== 0){
+        var a = window.confirm("削除していただきますか？");
+        if(a){
+            var id = this.state.rowNo;
+            var customerInfoList = this.state.customerInfoData;
             for(let i=customerInfoList.length-1; i>=0; i--){
-                customerInfoList[i].rowNo = (i + 1);
-            }  
-        }
-        this.setState({
-            customerInfoData:customerInfoList,
-            rowNo:'',
-        })
-        var customerInfoMod = {};
-        customerInfoMod["customerNo"] = this.state.customerNo;
-        axios.post("http://127.0.0.1:8080/customerInfoSearch/delect", customerInfoMod)
-        .then(function (result) {
-            if(result.data === true){
-                alert("删除成功");
-            }else{
-                alert("删除失败");
+                if(customerInfoList[i].rowNo === id){
+                    customerInfoList.splice(i,1);
+                }
             }
-        })
-        .catch(function (error) {
-            alert("删除失败，请检查程序");
-        });
+            if(customerInfoList.length !== 0){
+                for(let i=customerInfoList.length-1; i>=0; i--){
+                    customerInfoList[i].rowNo = (i + 1);
+                }  
+            }
+            this.setState({
+                customerInfoData:customerInfoList,
+                rowNo:'',
+            })
+            var customerInfoMod = {};
+            customerInfoMod["customerNo"] = this.state.customerNo;
+            axios.post("http://127.0.0.1:8080/customerInfoSearch/delect", customerInfoMod)
+            .then(function (result) {
+                if(result.data === true){
+                    alert("删除成功");
+                }else{
+                    alert("删除失败");
+                }
+            })
+            .catch(function (error) {
+                alert("删除失败，请检查程序");
+            });
+        }
     }
     /**
      * 取引開始のonChange 
@@ -192,11 +195,11 @@ class CustomerInfoSearch extends Component {
         const { radioValue , customerInfoData }=this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
-            pathname:'/subMenu/customerInfo',state:"tsuika",
+            pathname:'/subMenu/customerInfo',state:{actionType:'addTo'},
           }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname:'/subMenu/customerInfo',state:"shusei"  + '-' + this.state.customerNo,
+            pathname:'/subMenu/customerInfo',state:{actionType:'update' , customerNo:this.state.customerNo},
         }
         //テーブルの行の選択
         const selectRow = {

@@ -48,7 +48,7 @@ export function onloadPage(){
   $("#youin").attr("disabled",true);
   var costModel = {};
   costModel["employeeNo"] = $("#employeeNo").val();
-  costModel["shoriKbn"] = $("#shoriKbn").val();
+  costModel["actionType"] = $("#actionType").val();
   axios.post("http://127.0.0.1:8080/subCost/loadCost", costModel)
   .then(function (resultMap) {
     var resultList = resultMap.data.dataList.dataList;

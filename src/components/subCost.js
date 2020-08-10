@@ -39,13 +39,13 @@ class SubCost extends Component {
      */
     componentDidMount(){
       var employeeNo = sessionStorage.getItem('employeeNo');
-      var shoriKbn = sessionStorage.getItem('shoriKbn');
+      var actionType = sessionStorage.getItem('actionType');
       $("#employeeNo").val("LYC001")
-      $("#shoriKbn").val("shusei")
-      if($("#shoriKbn").val() === "shosai"){
+      $("#actionType").val("update")
+      if($("#actionType").val() === "shosai"){
         SubCostJs.onloadPage();
         SubCostJs.setDisabled();
-      }else if($("#shoriKbn").val() === "shusei"){
+      }else if($("#actionType").val() === "update"){
         SubCostJs.onloadPage();
       }
     }
@@ -294,7 +294,7 @@ class SubCost extends Component {
                 </Row>
             </Form.Group>
             <input type="hidden" id="employeeNo" name="employeeNo"/>
-            <input type="hidden" id="shoriKbn" name="shoriKbn"/>
+            <input type="hidden" id="actionType" name="actionType"/>
             <input type="hidden" id="RelatedEmployees" name="RelatedEmployees"/>
           </Form>
           </div>

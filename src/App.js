@@ -13,6 +13,7 @@ import TechnologyTypeMaster from './components/technologyTypeMaster';
 import CustomerDepartmentTypeMaster from './components/customerDepartmentTypeMaster';
 import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInfo from './components/siteInfo';
+import PasswordSet from './components/passwordSet';
 
 function App() {
 	return (
@@ -31,6 +32,7 @@ function App() {
 				<Route path="/technologyTypeMaster" component={TechnologyTypeMaster} />
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
 				<Route path="/siteInfo" component={siteInfo} />
+				<Route path="/passwordSet" component={PasswordSet} />
 			</div>
 		</Router>
 

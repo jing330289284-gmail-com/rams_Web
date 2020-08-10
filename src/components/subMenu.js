@@ -18,6 +18,7 @@ import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
+import PasswordSet from './passwordSet';
 
 class SubMenu extends Component {
     state = {
@@ -37,11 +38,11 @@ class SubMenu extends Component {
     render() {
         //お客様情報画面の追加パラメータ
         var customerInfoPath = {
-            pathname:'/subMenu/customerInfo',state:"tsuika",
+            pathname:'/subMenu/customerInfo',state:{actionType:'addTo'},
           }
-          //上位お客様情報画面の追加パラメータ
-        var topCustomerInfoPath = {
-            pathname:'/subMenu/topCustomerInfo',state:"tsuika",
+        //社員情報登録
+        var passwordSetPath = {
+            pathname:'/subMenu/passwordSet',state:{actionType:'update' , fatherMenu:'subMenu'},
         }
         return (
             <div>
@@ -167,7 +168,7 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="7">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>システム設定</Link></ListGroup.Item>  
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/passwordReset"><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
+                                                    <ListGroup.Item variant="secondary"><Link to={passwordSetPath}><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -183,6 +184,7 @@ class SubMenu extends Component {
                                     <Route exact path={`${this.props.match.url}/passwordReset`} component={Subcost} />
                                     <Route exact path={`${this.props.match.url}/employee`} component={Employee} />
                                     <Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
+                                    <Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
                                     <Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
                                     <Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
@@ -191,10 +193,9 @@ class SubMenu extends Component {
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
                                         <Route exact path={`${this.props.match.url}/technologyTypeMaster`} component={TechnologyTypeMaster} />
                                         <Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
+                                        <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
                                     </div>
                                     </div>
-                                    <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
-                                    
                                 </Router>
                             </div>
                         </Col>

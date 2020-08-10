@@ -15,7 +15,7 @@ import * as dateUtils from './utils/dateUtils.js';
 import { Link } from "react-router-dom";
 
 registerLocale("ja", ja);
-class mainSearch extends React.Component {
+class employeeSearch extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
@@ -611,4 +611,4 @@ class mainSearch extends React.Component {
 		);
 	}
 }
-export default mainSearch;
+export default employeeSearch;
