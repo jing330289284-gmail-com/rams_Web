@@ -52,6 +52,8 @@ class CustomerInfo extends Component {
         customerDepartmentNameValue:'',//部門の項目値
         customerDepartmentNameSuggestions:[],//部門の連想数列
         customerDepartmentList:[],//部門情報数列
+        accountInfo:{},//口座情報のデータ
+        shoriKbn:''//処理区分
      }
     /**
      *  設立のonChange
@@ -105,8 +107,8 @@ class CustomerInfo extends Component {
      */
     async componentDidMount(){
         var pro = this.props.location.state;
-        $("#shoriKbn").val( pro.split("-")[0]);
-        $("#customerNo").val( pro.split("-")[1]);
+        $("#shoriKbn").val( pro.actionType);
+        $("#customerNo").val( pro.customerNo);
         $("#sakujo").attr("disabled",true);
         //上場会社
         var listedCompanyFlag = utils.getdropDown("getListedCompany");
@@ -134,10 +136,13 @@ class CustomerInfo extends Component {
         for(let i = 0;i<paymentsiteCode.length ; i++){
             $("#paymentsiteCode").append('<option value="'+paymentsiteCode[i].code+'">'+paymentsiteCode[i].name+'</option>');
         }
-        if($("#shoriKbn").val() !== "shusei"){
+        if($("#shoriKbn").val() !== "update"){
             $("#toBankInfo").attr("disabled",true);
             $("#toCustomerInfo").attr("disabled",true);
           }
+        this.setState({
+            shoriKbn:$("#shoriKbn").val(),
+        })
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
         customerInfoMod["shoriKbn"] = $("#shoriKbn").val();
@@ -146,7 +151,7 @@ class CustomerInfo extends Component {
             var customerInfoMod;
             var shoriKbn = $("#shoriKbn").val();
             customerInfoMod = resultMap.data.customerInfoMod;
-            if(shoriKbn === 'tsuika'){
+            if(shoriKbn === 'addTo'){
                 var customerNoSaiBan = resultMap.data.customerNoSaiBan;
                 $("#customerNo").val(customerNoSaiBan);
                 $("#customerNo").attr("readOnly",true);
@@ -279,6 +284,7 @@ class CustomerInfo extends Component {
         $.each(formArray,function(i,item){
             customerDepartmentInfoModel[item.name] = item.value;     
         });
+        customerDepartmentInfoModel["shoriKbn"] = $("#shoriKbn").val();
         customerDepartmentInfoModel["updateUser"] = sessionStorage.getItem('employeeNo');
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
         customerDepartmentInfoModel['customerDepartmentName'] = $("#customerDepartmentName").val();
@@ -294,9 +300,24 @@ class CustomerInfo extends Component {
                         departmentList[i] = customerDepartmentInfoModel;
                     }
                 }
-                this.setState({
-                    customerDepartmentList:departmentList,
-                })
+                if($("#shoriKbn").val() ==="update"){
+                    axios.post("http://127.0.0.1:8080/customerInfo/meisaiUpdate", customerDepartmentInfoModel)
+                    .then(result => {
+                        if(result.data === 0){
+                            this.setState({
+                                customerDepartmentList:departmentList,
+                            })
+                        }else if(result.data === 2){
+                            alert("部門が部門マスタに存在しません");
+                        }else{
+                            alert("更新が失敗しました");
+                        }
+                    })
+                }else{
+                    this.setState({
+                        customerDepartmentList:departmentList,
+                    })
+                }
             }else{//行追加
                 this.setState({
                     customerDepartmentList:[...this.state.customerDepartmentList,customerDepartmentInfoModel],
@@ -353,38 +374,41 @@ class CustomerInfo extends Component {
      */
     listDelete=()=>{
         //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-        var id = this.state.rowNo;
-        var departmentList = this.state.customerDepartmentList;
-        for(let i=departmentList.length-1; i>=0; i--){
-            if(departmentList[i].rowNo === id){
-                departmentList.splice(i,1);
-            }
-        }
-        if(departmentList.length !== 0){
+        var a = window.confirm("削除していただきますか？");
+        if(a){
+            var id = this.state.rowNo;
+            var departmentList = this.state.customerDepartmentList;
             for(let i=departmentList.length-1; i>=0; i--){
-                departmentList[i].rowNo = (i + 1);
-            }  
-        }
-        this.setState({
-            customerDepartmentList:departmentList,
-            rowNo:'',
-        })
-        var customerDepartmentInfoModel = {};
-        customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
-        customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
-        if($("#shoriKbn").val() === "shusei"){
-            axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelect", customerDepartmentInfoModel)
-            .then(function (result) {
-                if(result.data === true){
-                    alert("删除成功");
-                }else{
-                    alert("删除失败");
+                if(departmentList[i].rowNo === id){
+                    departmentList.splice(i,1);
                 }
+            }
+            if(departmentList.length !== 0){
+                for(let i=departmentList.length-1; i>=0; i--){
+                    departmentList[i].rowNo = (i + 1);
+                }  
+            }
+            this.setState({
+                customerDepartmentList:departmentList,
+                rowNo:'',
             })
-            .catch(function (error) {
-                alert("删除失败，请检查程序");
-            });
-        }
+            var customerDepartmentInfoModel = {};
+            customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
+            customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
+            if($("#shoriKbn").val() === "update"){
+                axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+                .then(function (result) {
+                    if(result.data === true){
+                        alert("删除成功");
+                    }else{
+                        alert("删除失败");
+                    }
+                })
+                .catch(function (error) {
+                    alert("删除失败，请检查程序");
+                });
+            }
+        }    
     }
         /**
      * 行Selectファンクション
@@ -424,7 +448,8 @@ class CustomerInfo extends Component {
             }
       }
     render() {
-        const {topCustomerSuggestions , topCustomerValue , customerDepartmentNameSuggestions , customerDepartmentNameValue , customerDepartmentList} = this.state;
+        const {topCustomerSuggestions , topCustomerValue , customerDepartmentNameSuggestions , customerDepartmentNameValue , customerDepartmentList , accountInfo
+         , shoriKbn} = this.state;
         //上位お客様連想
         const topcustomerInputProps = {
 			placeholder: "例：富士通",
@@ -441,6 +466,9 @@ class CustomerInfo extends Component {
             id:"customerDepartmentName",
             
         };
+        const accountPath = {
+            pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
+        }
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -463,21 +491,17 @@ class CustomerInfo extends Component {
         paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
         hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
         expandRowBgColor: 'rgb(165, 165, 165)',
-        deleteBtn: this.createCustomDeleteButton,
         };
         return (
+
             <div style={{"background":"#f5f5f5"}}>
-            <div style={{"background":"#f5f5f5"}}>
+            <div>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" 
                 onHide={this.handleHideModal.bind(this,"bankInfo")} show={this.state.showBankInfoModal}>
                 <Modal.Header closeButton>
                 </Modal.Header>
                 <Modal.Body >
-                <div key={this.props.location.key} >
-                                <Router>
-                                    <Route exact path={`${this.props.match.url}/`} component={BankInfo} />
-                                </Router>
-                            </div>
+                            <BankInfo accountInfo={accountInfo} shoriKbn={shoriKbn}/>
                 </Modal.Body>
                 </Modal>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" 
@@ -515,7 +539,7 @@ class CustomerInfo extends Component {
                         <Col sm={4}>
                         </Col>
                         <Col sm={7}>
-                        <p id="erorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★がついてる項目を入力してください！</p>
+                            <p id="erorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★がついてる項目を入力してください！</p>
                         </Col>
                 </Row>
                 <Form id="customerForm">

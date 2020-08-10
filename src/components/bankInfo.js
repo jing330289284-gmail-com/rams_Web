@@ -2,9 +2,18 @@ import React,{Component} from 'react';
 import {Row , Form , Col , InputGroup , Button , Navbar , OverlayTrigger , Tooltip} from 'react-bootstrap';
 import * as bankInfoJs from '../components/bankInfoJs.js';
 import $ from 'jquery';
+import * as utils from './utils/dateUtils.js';
+import axios from 'axios';
 
 class BankInfo extends Component {
-    state = {  }
+
+    state = { 
+        accountInfo:{},//口座情報のデータ
+    }
+
+    constructor(props){
+        super(props);
+    }
 
     componentDidMount(){
         if($("#customerNo").val() === '' || $("#customerNo").val() === null){//社員の場合
@@ -16,7 +25,66 @@ class BankInfo extends Component {
             $("#accountBelongsStatus").val("1")
             document.getElementById("No").innerHTML  = "お客様：" + $("#customerName").val();
         }
-        bankInfoJs.onload();//画面初期化
+        //銀行名
+        var bankCode = utils.getdropDown("getBankInfo");
+        bankCode[0].name = "銀行を選択してください";
+        for(let i = 0;i<bankCode.length ; i++){
+            $("#bankCode").append('<option value="'+bankCode[i].code+'">'+bankCode[i].name+'</option>');
+        }
+        var shoriKbn = this.props.shoriKbn;
+        var accountInfo = this.props.accountInfo;
+        if(!$.isEmptyObject(accountInfo)){
+            $("#bankBranchName").val(accountInfo["bankBranchName"]);
+            $("#bankBranchCode").val(accountInfo["bankBranchCode"]);
+            $("#accountNo").val(accountInfo["accountNo"]);
+            $("#accountName").val(accountInfo["accountName"]);
+            $("#bankCode").val(accountInfo["bankCode"]);   
+            if(accountInfo["accountBelongsStatus"] !== null && accountInfo["accountBelongsStatus"] !== ''){
+                $("#accountBelongsStatus").val(accountInfo["accountBelongsStatus"]);
+            }
+            if(accountInfo["accountTypeStatus"] === '0'){
+                $("#futsu").attr("checked",true);
+            }else if(accountInfo["accountTypeStatus"] === '1'){
+                $("#toza").attr("checked",true);
+            }
+        }else if($.isEmptyObject(accountInfo) && shoriKbn === "shusei"){
+            var onloadMol = {};
+            onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
+            onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
+            onloadMol["shoriKbn"] = $("#shoriKbn").val();
+            //画面データの検索
+              axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
+              .then(function (resultMap) {
+                if(resultMap.data.accountInfoMod !== ''){
+                    $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
+                    $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
+                    $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
+                    $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
+                    $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
+                    if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
+                      $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
+                    }
+                    if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
+                      $("#futsu").attr("checked",true);
+                    }else if(resultMap.data.accountInfoMod["accountTypeStatus"] === '1'){
+                      $("#toza").attr("checked",true);
+                    }
+                    //修正の場合
+                    if(shoriKbn === 'shusei'){
+                      $("#bankBranchName").attr("readonly",false);
+                      $("#bankBranchCode").attr("readonly",false);
+                      $("#accountNo").attr("readonly",false);
+                      $("#accountName").attr("readonly",false);
+                      $("#futsu").attr("disabled",false);
+                      $("#toza").attr("disabled",false);
+                    }
+                  }
+              })
+              .catch(function (error) {
+              alert("口座情報获取错误，请检查程序");
+            });  
+        }
+
     }
     render() {
         return (
@@ -59,7 +127,6 @@ class BankInfo extends Component {
                                     <InputGroup.Text id="inputGroup-sizing-sm">銀行名：</InputGroup.Text>
                                 </InputGroup.Prepend>
                                     <Form.Control id="bankCode" name="bankCode" as="select" onChange={bankInfoJs.canSelect}>
-                                        <option value="0">銀行を選んでください</option>
                                     </Form.Control>
                             </InputGroup>
                         </Col>
@@ -77,7 +144,10 @@ class BankInfo extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">支店名：</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                    <Form.Control readOnly placeholder="例：浦和支店" onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchName")} id="bankBranchName" maxLength="20" name="bankBranchName"/>
+                                    <Form.Control readOnly 
+                                    placeholder="例：浦和支店" 
+                                    onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchName")} 
+                                    id="bankBranchName" maxLength="20" name="bankBranchName"/>
                             </InputGroup>
                         </Col>
                         <Col>

@@ -67,7 +67,7 @@ export function onload(){
  */
 export function canSelect(){
 	var val = $("#bankCode").val();
-	if(val !== 0){
+	if(val !== ''){
         $("#bankBranchName").attr("readonly",false);
         $("#bankBranchCode").attr("readonly",false);
         $("#accountNo").attr("readonly",false);
