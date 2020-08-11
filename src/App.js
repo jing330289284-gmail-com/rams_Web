@@ -11,9 +11,11 @@ import CustomerInfo from './components/customerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
 import TechnologyTypeMaster from './components/technologyTypeMaster';
 import CustomerDepartmentTypeMaster from './components/customerDepartmentTypeMaster';
+import ManageSituation from './components/manageSituation';
 import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInfo from './components/siteInfo';
 import PasswordSet from './components/passwordSet';
+
 
 function App() {
 	return (
@@ -32,6 +34,7 @@ function App() {
 				<Route path="/technologyTypeMaster" component={TechnologyTypeMaster} />
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
 				<Route path="/siteInfo" component={siteInfo} />
+				<Route path="/manageSituation" component={ManageSituation} />
 				<Route path="/passwordSet" component={PasswordSet} />
 			</div>
 		</Router>
