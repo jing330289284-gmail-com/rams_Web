@@ -184,16 +184,16 @@ class SubMenu extends Component {
                                     <Route exact path={`${this.props.match.url}/passwordReset`} component={Subcost} />
                                     <Route exact path={`${this.props.match.url}/employee`} component={Employee} />
                                     <Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
-                                    <Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
                                     <Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
                                     <Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
+                                    <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
                                     <div className="container col-8">
                                     <div className="container col-10">
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
                                         <Route exact path={`${this.props.match.url}/technologyTypeMaster`} component={TechnologyTypeMaster} />
                                         <Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
-                                        <Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
+                                        <Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
                                     </div>
                                     </div>
                                 </Router>
