@@ -86,6 +86,27 @@ export function getPublicDropDown(methodArray) {
 	}
 	return outArray;
 }
+
+/* 
+export function getNO2(columnName, typeName, table) {
+	var no;
+	var mo = {
+		columnName: columnName,
+		typeName: typeName,
+		name: table
+	};
+	$.ajax({
+		type: "POST",
+		data:mo,
+		url: "http://127.0.0.1:8080/getNO",
+		async: false,
+		success: function (msg) {
+			alert(msg)
+				no = msg
+		}
+	});
+	return　no;
+} */
 //　採番番号
 export async function getNO(columnName, typeName, table) {
 	var no;
@@ -104,6 +125,7 @@ export async function getNO(columnName, typeName, table) {
 		});
 	return no;
 }
+
 
 export function escapeRegexCharacters(str) {
 	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

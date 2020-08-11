@@ -16,9 +16,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 
-
-const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
-
 class employee extends React.Component {
 	constructor(props) {
 		super(props);
@@ -125,11 +122,11 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
-			developLanguage1: this.state.developLanguage1,//スキール1
-			developLanguage2: this.state.developLanguage2,//スキール2
-			developLanguage3: this.state.developLanguage3,//スキール3
-			developLanguage4: this.state.developLanguage4,//スキール4
-			developLanguage5: this.state.developLanguage5,//スキール5
+			developLanguage1: this.state.developement1Value,//スキール1
+			developLanguage2: this.state.developement2Value,//スキール2
+			developLanguage3: this.state.developement3Value,//スキール3
+			developLanguage4: this.state.developement4Value,//スキール4
+			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: this.state.stayPeriod,//在留期間
@@ -148,15 +145,14 @@ class employee extends React.Component {
 				console.log(response);
 				if (response.data != null) {
 					alert(response.data)
-					window.location.reload();
+					this.getNO();//採番番号
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
 	};
-　　　　//更新ボタン
+	//更新ボタン
 	updateEmployee = () => {
-		alert(1)
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -188,11 +184,11 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
-			developLanguage1: this.state.developLanguage1,//スキール1
-			developLanguage2: this.state.developLanguage2,//スキール2
-			developLanguage3: this.state.developLanguage3,//スキール3
-			developLanguage4: this.state.developLanguage4,//スキール4
-			developLanguage5: this.state.developLanguage5,//スキール5
+			developLanguage1: this.state.developement1Value,//スキール1
+			developLanguage2: this.state.developement2Value,//スキール2
+			developLanguage3: this.state.developement3Value,//スキール3
+			developLanguage4: this.state.developement4Value,//スキール4
+			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: this.state.stayPeriod,//在留期間
@@ -348,6 +344,7 @@ class employee extends React.Component {
 
 	//　採番番号
 	getNO = () => {
+		const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
 		promise.then((value) => {
 			this.setState(
 				{
@@ -667,9 +664,9 @@ class employee extends React.Component {
 	valueChangeEmployeeFormCode = (event) => {
 		const value = event.target.value;
 		if (value === "3") {
-			this.setState({ retirementYearAndMonthDisabled: true })
+			this.setState({ retirementYearAndMonthDisabled: true, employeeFormCode: event.target.value })
 		} else {
-			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "" })
+			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "", employeeFormCode: event.target.value })
 		}
 	}
 	render() {
@@ -799,7 +796,7 @@ class employee extends React.Component {
 						<Form.Label>協力</Form.Label><Form.Check onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={sessionStorage.getItem('id') ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
+				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
@@ -815,22 +812,15 @@ class employee extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={employeeNo} autoComplete="off" disabled
-										onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
+									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1162,10 +1152,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select"
-										onChange={this.valueChange} size="sm"
-										name="englishLevelCode" value={englishLevelCode}
-										autoComplete="off" id="englishLeveCodeId">
+									<Form.Control as="select" onChange={this.valueChange} size="sm" name="englishLevelCode" value={englishLevelCode} autoComplete="off" id="englishLeveCodeId">
 										{this.state.englishLeveCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
@@ -1179,10 +1166,8 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="資格1" value={certification1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="certification1" />
-									<FormControl placeholder="資格2" value={certification2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="certification2" />
+									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1" />
+									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" />
 								</InputGroup>
 							</Col>
 
@@ -1375,14 +1360,15 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-					<div style={{ "textAlign": "center" }}>
+					{sessionStorage.getItem('actionType') === "detail" ? "" : <div style={{ "textAlign": "center" }}>
 						<Button size="sm" variant="info" type="submit">
-							<FontAwesomeIcon icon={faSave} /> 登録
-                        </Button>{' '}
+							<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
+						</Button>{' '}
 						<Button size="sm" variant="info" type="reset">
 							<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
-					</div>
+					</div>}
+
 				</Form>
 			</div>
 		);

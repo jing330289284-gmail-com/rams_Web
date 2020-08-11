@@ -587,7 +587,6 @@ class employeeSearch extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
-								{/* <Button size="sm" variant="info" name="clickButton" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()}><FontAwesomeIcon icon={faTrash} /> 削除</Button>、 */}
 								<Link className="btn btn-info btn-sm disabled" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
 							</div>
 						</Col>
