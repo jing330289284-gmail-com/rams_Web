@@ -12,17 +12,19 @@ import SubCost from './subCost';
 import SiteInformation from './siteInfo';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import Autosuggest from 'react-autosuggest';
 
 
 const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
 
-class employeeAdd extends React.Component {
+class employee extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		this.saveEmployee = this.saveEmployee.bind(this);//登録
+		this.insertEmployee = this.insertEmployee.bind(this);//登録
 		this.onDrop = this.onDrop.bind(this);//ImageUploaderを処理
 		this.radioChangeEmployeeType = this.radioChangeEmployeeType.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
@@ -43,6 +45,14 @@ class employeeAdd extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
+		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
+		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
+	};
+	//　　リセット
+	resetBook = () => {
+		this.setState(() => this.resetState);
 	};
 	//リセット化
 	resetState = {
@@ -64,11 +74,6 @@ class employeeAdd extends React.Component {
 		//intoCompanyYearAndMonth: "",//出身地TODO
 		nationalityCode: "",//　　出身地(県)
 		phoneNo: "",//携帯電話
-		developLanguage1: "",//　　スキール1
-		developLanguage2: "",//　　スキール2
-		developLanguage3: "",//　　スキール3
-		developLanguage4: "",//　　スキール4
-		developLanguage5: "",//　　スキール5
 		residenceCardNo: "",//　　在留カード
 		employmentInsuranceNo: "",//　　雇用保険番号
 		myNumber: "",//　　マイナンバー
@@ -77,18 +82,26 @@ class employeeAdd extends React.Component {
 		resumeRemark1: "",//　　履歴書備考1
 		resumeRemark2: "",//　　履歴書備考2
 		stayPeriod: "",//　　stayPeriod
-
-
+		temporary_comeToJapanYearAndMonth: "",
+		temporary_intoCompanyYearAndMonth: "",
+		temporary_stayPeriod: "",
+		temporary_age: "",
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
+		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '', value: '', suggestions: [],
+		experienceYears: "",//　経験年数
+		temporary_experienceYears: "",
 	};
-	//登録
-	saveEmployee = () => {
+	//　　登録
+	insertEmployee = () => {
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
-			furigana: this.state.furigana1 + this.state.furigana2,//　　カタカナ
+			furigana1: this.state.furigana1,//　　カタカナ
+			furigana2: this.state.furigana2,//　　カタカナ
 			alphabetName: this.state.alphabetName,//　　ローマ字
 			age: this.state.age,//年齢
 			japaneseCalendar: this.state.japaneseCalendar,//和暦
@@ -130,21 +143,81 @@ class employeeAdd extends React.Component {
 			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 		};
-		axios.post("http://127.0.0.1:8080/employee/addEmployeeInfo", emp)
+		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
 			.then(response => {
 				console.log(response);
 				if (response.data != null) {
 					alert(response.data)
+					window.location.reload();
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
 	};
-	//　　リセット
-	resetBook = () => {
-		this.setState(() => this.resetState);
-
+　　　　//更新ボタン
+	updateEmployee = () => {
+		alert(1)
+		const emp = {
+			//employeeNo: this.state.employeeNo,//ピクチャ
+			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
+			employeeNo: this.state.employeeNo,//社員番号
+			employeeFristName: this.state.employeeFristName,//社員氏
+			employeeLastName: this.state.employeeLastName,//社員名
+			furigana1: this.state.furigana1,//　　カタカナ
+			furigana2: this.state.furigana2,//　　カタカナ
+			alphabetName: this.state.alphabetName,//　　ローマ字
+			age: this.state.age,//年齢
+			japaneseCalendar: this.state.japaneseCalendar,//和暦
+			genderStatus: this.state.genderStatus,//性別
+			intoCompanyCode: this.state.intoCompanyCode,//入社区分
+			employeeFormCode: this.state.employeeFormCode,//社員形式
+			occupationCode: this.state.occupationCode,//職種
+			departmentCode: this.state.departmentCode,//部署
+			companyMail: this.state.companyMail,//社内メール
+			graduationUniversity: this.state.graduationUniversity,//卒業学校
+			major: this.state.major,//専門
+			graduationYearAndMonth: this.state.graduationYearAndMonth,//卒業年月
+			intoCompanyYearAndMonth: this.state.intoCompanyYearAndMonth,//入社年月
+			retirementYearAndMonth: this.state.retirementYearAndMonth,//退職年月
+			comeToJapanYearAndMonth: this.state.comeToJapanYearAndMonth,//来日年月
+			nationalityCode: this.state.nationalityCode,//出身地
+			birthplace: this.state.birthplace,//出身県
+			phoneNo: this.state.phoneNo,//携帯電話
+			authorityCode: $("#authorityCodeId").val(),//権限
+			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
+			englishLevelCode: this.state.englishLevelCode,//英語
+			certification1: this.state.certification1,//資格1
+			certification2: this.state.certification2,//資格2
+			developLanguage1: this.state.developLanguage1,//スキール1
+			developLanguage2: this.state.developLanguage2,//スキール2
+			developLanguage3: this.state.developLanguage3,//スキール3
+			developLanguage4: this.state.developLanguage4,//スキール4
+			developLanguage5: this.state.developLanguage5,//スキール5
+			residenceCode: this.state.residenceCode,//在留資格
+			residenceCardNo: this.state.residenceCardNo,//在留カード
+			stayPeriod: this.state.stayPeriod,//在留期間
+			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
+			myNumber: this.state.myNumber,//マイナンバー
+			residentCardInfo: $("#residentCardInfo").val(),//在留カード
+			resumeInfo1: $("#residentCardInfo").val(),//履歴書
+			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
+			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
+			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			passportInfo: this.state.passportInfo,//パスポート
+			updateUser: sessionStorage.getItem('employeeName'),//更新者
+		};
+		axios.post("http://127.0.0.1:8080/employee/updateEmployee", emp)
+			.then(response => {
+				console.log(response);
+				if (response.data != null) {
+					alert(response.data)
+					window.location.reload();
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
 	};
+
 	//onchange
 	valueChange = event => {
 		this.setState({
@@ -162,112 +235,117 @@ class employeeAdd extends React.Component {
 		}
 	}
 	//初期化メソッド
-	componentDidMount() {
-		this.getGender();//性別区別
-		this.getIntoCompany();//入社区分
-		this.getStaffForms();//社員形式
-		this.getOccupation();//職種
-		this.getDepartment();//部署
-		this.getAuthority();//権限
-		this.getJapaneseLevel();//日本語レベル
-		this.getVisa();//在留資格
-		this.getEnglishLevel();//英語
-		this.getNO();//採番番号
-		this.getNationalitys();//採番番号
-		//var pro = this.props.location.state;
-		//$("#shoriKbn").val(pro.split("-")[0]);
-		//var pro = this.props.location.state;
-		//$("#shoriKbn").val(pro.split("-")[0]);
+	async componentDidMount() {
+		this.getDropDownｓ();//全部のドロップダウン
+		const { location } = this.props
+		var actionType = '';
+		var id = '';
+		if (location.state) {
+			actionType = location.state.actionType;
+			sessionStorage.setItem('actionType', actionType);
+			id = location.state.id;
+			sessionStorage.setItem('id', id);
+		} else {
+			actionType = sessionStorage.getItem('actionType');
+			id = sessionStorage.getItem('id');
+		}
+		if (actionType === 'update') {
+			this.getEmployeeByEmployeeNo(id);
+		} else if (actionType === 'detail') {
+			this.getEmployeeByEmployeeNo(id);
+		} else {
+			this.getNO();//採番番号
+		}
 	}
 
-	//　性別区別
-	getGender = () => {
-		var data = dateUtils.getdropDown("getGender");
+	getDropDownｓ = () => {
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys"]
+		var data = dateUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				genderStatuss: data
-			}
-		);
-	};
-	//　入社区分 
-
-	getIntoCompany = () => {
-		var data = dateUtils.getdropDown("getIntoCompany");
-		this.setState(
-			{
-				intoCompanyCodes: data
-			}
-		);
-	};
-	//　 社員形式 
-	getStaffForms = () => {
-		var data = dateUtils.getdropDown("getStaffForms");
-		this.setState(
-			{
-				employeeFormCodes: data
+				genderStatuss: data[0],//　性別区別
+				intoCompanyCodes: data[1],//　入社区分 
+				employeeFormCodes: data[2],//　 社員形式 
+				occupationCodes: data[3],//　職種
+				departmentCodes: data[4],//　 部署 
+				authorityCodes: data[5].slice(1),//　 権限 
+				japaneaseLevelCodes: data[6],//　日本語  
+				residenceCodes: data[7],//　在留資格
+				englishLeveCodes: data[8],//　英語
+				nationalityCodes: data[9]//　 出身地国
 			}
 		);
 	};
 
-	//　職種
-	getOccupation = () => {
-		var data = dateUtils.getdropDown("getOccupation");
-		this.setState(
-			{
-				occupationCodes: data
-			}
-		);
-	};
-
-	//　 部署 
-	getDepartment = () => {
-		var data = dateUtils.getdropDown("getDepartment");
-		this.setState(
-			{
-				departmentCodes: data
-			}
-		);
-	};
-
-	//　 権限 
 	getAuthority = () => {
-		var data = dateUtils.getdropDown("getAuthority");
-		data.shift()
+		var methodArray = ["getAuthority"]
+		var data = dateUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				authorityCodes: data
+				authorityCodes: data[0].slice(1),//　 権限 
 			}
 		);
 	};
 
-	//　日本語 
-	getJapaneseLevel = () => {
-		var data = dateUtils.getdropDown("getJapaneseLevel");
-		this.setState(
-			{
-				japaneaseLevelCodes: data
-			}
-		);
+	getEmployeeByEmployeeNo = employeeNo => {
+		const emp = {
+			employeeNo: employeeNo
+		};
+		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
+			.then(response => response.data)
+			.then((data) => {
+				this.setState({
+					//employeeNo: date.employeeNo,//ピクチャ
+					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
+					employeeNo: data.employeeNo,//社員番号
+					employeeFristName: data.employeeFristName,//社員氏
+					employeeLastName: data.employeeLastName,//社員名
+					furigana1: data.furigana1,//　　カタカナ
+					furigana2: data.furigana2,//　　カタカナ
+					alphabetName: data.alphabetName,//　　ローマ字
+					age: data.age,//年齢
+					japaneseCalendar: data.japaneseCalendar,//和暦
+					genderStatus: data.genderStatus,//性別
+					intoCompanyCode: data.intoCompanyCode,//入社区分
+					employeeFormCode: data.employeeFormCode,//社員形式
+					occupationCode: data.occupationCode,//職種
+					departmentCode: data.departmentCode,//部署
+					companyMail: data.companyMail,//社内メール
+					graduationUniversity: data.graduationUniversity,//卒業学校
+					major: data.major,//専門
+					graduationYearAndMonth: data.graduationYearAndMonth,//卒業年月
+					intoCompanyYearAndMonth: data.intoCompanyYearAndMonth,//入社年月
+					retirementYearAndMonth: data.retirementYearAndMonth,//退職年月
+					comeToJapanYearAndMonth: data.comeToJapanYearAndMonth,//来日年月
+					nationalityCode: data.nationalityCode,//出身地
+					birthplace: data.birthplace,//出身県
+					phoneNo: data.phoneNo,//携帯電話
+					authorityCode: $("#authorityCodeId").val(),//権限
+					japaneseLevelCode: data.japaneseLevelCode,//日本語
+					englishLevelCode: data.englishLevelCode,//英語
+					certification1: data.certification1,//資格1
+					certification2: data.certification2,//資格2
+					developLanguage1: data.developLanguage1,//　スキール1
+					developLanguage2: data.developLanguage2,//スキール2
+					developLanguage3: data.developLanguage3,//スキール3
+					developLanguage4: data.developLanguage4,//スキール4
+					developLanguage5: data.developLanguage5,//スキール5
+					residenceCode: data.residenceCode,//在留資格
+					residenceCardNo: data.residenceCardNo,//在留カード
+					stayPeriod: data.stayPeriod,//在留期間
+					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
+					myNumber: data.myNumber,//マイナンバー
+					residentCardInfo: data.residentCardInfo,//在留カード
+					//resumeInfo1: "rrr",//履歴書
+					resumeRemark1: data.resumeRemark1,//履歴書備考1
+					resumeInfo2: data.resumeInfo2,//履歴書2
+					resumeRemark2: data.resumeRemark2,//履歴書備考1
+					passportInfo: data.passportInfo,//パスポート
+					updateUser: sessionStorage.getItem('employeeName'),//更新者
+				});
+			});
 	};
 
-	//　在留資格
-	getVisa = () => {
-		var data = dateUtils.getdropDown("getVisa");
-		this.setState(
-			{
-				residenceCodes: data
-			}
-		);
-	};
-	//　英語
-	getEnglishLevel = () => {
-		var data = dateUtils.getdropDown("getEnglishLevel");
-		this.setState(
-			{
-				englishLeveCodes: data
-			}
-		);
-	};
 	//　採番番号
 	getNO = () => {
 		promise.then((value) => {
@@ -279,15 +357,6 @@ class employeeAdd extends React.Component {
 		});
 	};
 
-	//　 出身地国
-	getNationalitys = () => {
-		var data = dateUtils.getdropDown("getNationalitys");
-		this.setState(
-			{
-				nationalityCodes: data
-			}
-		);
-	};
 	//ImageUploaderを処理　開始
 	onDrop(picture) {
 		this.setState({
@@ -296,57 +365,60 @@ class employeeAdd extends React.Component {
 	}
 	//ImageUploaderを処理　終了
 	//　　年月開始
-	state = {
-		raiseStartDate: new Date(),
-	}
 	//　　卒業年月
 	inactiveGraduationYearAndMonth = date => {
-		let month = date.getMonth() + 1;
 		this.setState(
 			{
-				graduationYearAndMonth: date.getFullYear() + '' + (month < 10 ? '0' + month : month)
+				graduationYearAndMonth: dateUtils.setFullYearMonth(date),
+				temporary_experienceYears: (this.state.temporary_experienceYears === undefined) ? dateUtils.getFullYearMonth(date, new Date()) : this.state.temporary_experienceYears
 			}
 		);
-		dateUtils.getFullYearMonth("#time5", date);
+	};
+	//　　経験年数
+	inactiveYearsExperience = date => {
+		this.setState(
+			{
+				experienceYears: dateUtils.setFullYearMonth(date),
+				temporary_experienceYears: dateUtils.getFullYearMonth(date, new Date())
+			}
+		);
 	};
 	//　　退職年月
 	inactiveRetirementYearAndMonth = (date) => {
-		let month = date.getMonth() + 1;
 		this.setState(
 			{
-				retirementYearAndMonth: date.getFullYear() + '' + (month < 10 ? '0' + month : month)
+				retirementYearAndMonth: dateUtils.setFullYearMonth(date)
 			}
 		);
 	};
 	//　　入社年月
 	inactiveJoinCompanyOfYear = date => {
-		let month = date.getMonth() + 1;
 		this.setState(
 			{
-				intoCompanyYearAndMonth: date.getFullYear() + '' + (month < 10 ? '0' + month : month)
+				intoCompanyYearAndMonth: dateUtils.setFullYearMonth(date),
+				temporary_intoCompanyYearAndMonth: dateUtils.getFullYearMonth(date, new Date())
 			}
 		);
-		dateUtils.getFullYearMonth("#time", date);
 	};
 	//　　来日年月
 	inactiveComingToJapanOfYearAndMonthr = date => {
-		let month = date.getMonth() + 1;
 		this.setState(
 			{
-				comeToJapanYearAndMonth: date.getFullYear() + '' + (month < 10 ? '0' + month : month)
+				comeToJapanYearAndMonth: dateUtils.setFullYearMonth(date),
+				temporary_comeToJapanYearAndMonth: dateUtils.getFullYearMonth(date, new Date())
+
 			}
 		);
-		dateUtils.getFullYearMonth("#time2", date);
 	};
 	//　　在留期間
 	inactiveStayPeriod = date => {
-		let month = date.getMonth() + 1;
 		this.setState(
 			{
-				stayPeriod: date.getFullYear() + '' + (month < 10 ? '0' + month : month)
+				stayPeriod: dateUtils.setFullYearMonth(date),
+				temporary_stayPeriod: dateUtils.getFullYearMonth(new Date(), date)
 			}
 		);
-		dateUtils.getFullYearMonth("#time3", date);
+
 	};
 	//　　年齢と和暦
 	inactiveAge = date => {
@@ -368,8 +440,8 @@ class employeeAdd extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
-
 	};
+
 	//　　年月終了
 
 	//社員タイプが違う時に、色々な操作をします。
@@ -420,26 +492,224 @@ class employeeAdd extends React.Component {
 			this.setState({ showSubCostModal: true })
 		}
 	}
-	//テスト
-	onModalRef = ref => {
-		this.modal = ref
-	}
+	//　　開発言語　開始
+	onDevelopement1Change = (event, { newValue }) => {
+		this.setState({
+			developement1Value: newValue
+		});
+	};
 
-	onCallback = msg => {
-		alert(msg);
+	onDevelopement2Change = (event, { newValue }) => {
+		this.setState({
+			developement2Value: newValue
+		});
+	};
+
+	onDevelopement3Change = (event, { newValue }) => {
+		this.setState({
+			developement3Value: newValue
+		});
+	};
+
+	onDevelopement4Change = (event, { newValue }) => {
+		this.setState({
+			developement4Value: newValue
+		});
+	};
+
+	onDevelopement5Change = (event, { newValue }) => {
+		this.setState({
+			developement5Value: newValue
+		});
+	};
+
+
+	onDlt1SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo1: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement1Suggestions: dateUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt1SuggestionsClearRequested = () => {
+		this.setState({
+			developement1Suggestions: []
+		});
+	};
+
+	onDlt1SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement1Value: suggestion.name
+		});
+	};
+
+	onDlt2SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo2: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement2Suggestions: dateUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt3SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo3: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement3Suggestions: dateUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+	onDlt4SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo4: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement4Suggestions: dateUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+	onDlt5SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo5: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement5Suggestions: dateUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt2SuggestionsClearRequested = () => {
+		this.setState({
+			developement2Suggestions: []
+		});
+	};
+
+	onDlt3SuggestionsClearRequested = () => {
+		this.setState({
+			developement3Suggestions: []
+		});
+	};
+
+	onDlt4SuggestionsClearRequested = () => {
+		this.setState({
+			developement4Suggestions: []
+		});
+	};
+
+	onDlt5SuggestionsClearRequested = () => {
+		this.setState({
+			developement5Suggestions: []
+		});
+	};
+
+	onDlt2SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement2Value: suggestion.name
+		});
+	};
+
+	onDlt3SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement3Value: suggestion.name
+		});
+	};
+
+	onDlt4SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement4Value: suggestion.name
+		});
+	};
+
+	onDlt5SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement5Value: suggestion.name
+		});
+	};
+	//　　開発言語　終了
+
+
+	valueChangeEmployeeFormCode = (event) => {
+		const value = event.target.value;
+		if (value === "3") {
+			this.setState({ retirementYearAndMonthDisabled: true })
+		} else {
+			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "" })
+		}
 	}
 	render() {
-
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, age, japaneseCalendar,
-			genderStatus, major, intoCompanyCode, employeeFormCode, occupationCode, departmentCode, companyMail,
-			graduationUniversity, graduationYearAndMonth, intoCompanyYearAndMonth, retirementYearAndMonth, nationalityCode, birthplace,
-			phoneNo, comeToJapanYearAndMonth, authorityCode, japaneseLevelCode, englishLevelCode,
-			residenceCode, developLanguage1, developLanguage2, developLanguage3, developLanguage4, developLanguage5,
-			residenceCardNo, stayPeriod, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2, time4 } = this.state;
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, graduationYearAndMonth, intoCompanyYearAndMonth, retirementYearAndMonth,
+			nationalityCode, birthplace, phoneNo, comeToJapanYearAndMonth, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
+			residenceCardNo, stayPeriod, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2,
+			time4, temporary_stayPeriod, temporary_experienceYears, experienceYears, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions,
+			developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions, retirementYearAndMonthDisabled
+		} = this.state;
+		const dlt1InputProps = {
+			placeholder: "開発言語1",
+			value: developement1Value,
+			onChange: this.onDevelopement1Change
+		};
+		const dlt2InputProps = {
+			placeholder: "開発言語2",
+			value: developement2Value,
+			onChange: this.onDevelopement2Change
+		};
+		const dlt3InputProps = {
+			placeholder: "開発言語3",
+			value: developement3Value,
+			onChange: this.onDevelopement3Change
+		};
+		const dlt4InputProps = {
+			placeholder: "開発言語4",
+			value: developement4Value,
+			onChange: this.onDevelopement4Change
+		};
+		const dlt5InputProps = {
+			placeholder: "開発言語5",
+			value: developement5Value,
+			onChange: this.onDevelopement5Change
+		};
 		return (
 			<div>
-				{/* <SubCost onRef={this.onModalRef} onCallback={this.onCallback} /> */}
 				<input type="hidden" id="shoriKbn" name="shoriKbn" />
+				<input type="hidden" id="update" name="update" />
 				{/*　 開始 */}
 				{/*　 住所情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
@@ -513,7 +783,6 @@ class employeeAdd extends React.Component {
 					<Modal.Body className="show-grid">
 						<div key={this.props.location.key} >
 							<Router>
-								{/* <Route exact path={`${this.props.match.url}/`} component={TopCustomerInfo} /> */}
 							</Router>
 						</div>
 					</Modal.Body>
@@ -530,7 +799,7 @@ class employeeAdd extends React.Component {
 						<Form.Label>協力</Form.Label><Form.Check onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={this.saveEmployee} onReset={this.resetBook}>
+				<Form onSubmit={sessionStorage.getItem('id') ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
@@ -594,7 +863,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="time4" value={time4} name="time4" placeholder="年齢" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveAge}
 											autoComplete="on"
 											locale="ja"
@@ -602,6 +871,7 @@ class employeeAdd extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											className={"dateInput"}
+											maxDate={new Date()}
 										/>
 									</InputGroup.Append>
 									<FormControl placeholder="0" id="age" value={age} autoComplete="off" onChange={this.valueChange} size="sm" name="age" readOnly />
@@ -615,7 +885,7 @@ class employeeAdd extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="和暦" value={japaneseCalendar} autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" />
+									<FormControl placeholder="和暦" value={japaneseCalendar} autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" readOnly />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -660,9 +930,9 @@ class employeeAdd extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
+										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
-										autoComplete="off" id="employeeFormCodeID">
+										autoComplete="off" >
 										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -737,7 +1007,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="graduationYearAndMonth" name="graduationYearAndMonth" value={graduationYearAndMonth} placeholder="卒業年月" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveGraduationYearAndMonth}
 											autoComplete="on"
 											className={"dateInput"}
@@ -758,7 +1028,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="intoCompanyYearAndMonth" name="intoCompanyYearAndMonth" value={intoCompanyYearAndMonth} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveJoinCompanyOfYear}
 											autoComplete="on"
 											className={"dateInput"}
@@ -769,7 +1039,7 @@ class employeeAdd extends React.Component {
 											locale="ja"
 										/>
 									</InputGroup.Append>
-									<FormControl id="time" name="time" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -780,7 +1050,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="retirementYearAndMonth" name="retirementYearAndMonth" value={retirementYearAndMonth} placeholder="退職年月" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveRetirementYearAndMonth}
 											autoComplete="on"
 											className={"dateInput"}
@@ -790,6 +1060,7 @@ class employeeAdd extends React.Component {
 											showDisabledMonthNavigation
 											locale="ja"
 											id="retirementDateId"
+											disabled={retirementYearAndMonthDisabled ? false : true}
 										/>
 									</InputGroup.Append>
 								</InputGroup>
@@ -804,7 +1075,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="comeToJapanYearAndMonth" value={comeToJapanYearAndMonth} name="comeToJapanYearAndMonth" placeholder="来日年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveComingToJapanOfYearAndMonthr}
 											autoComplete="on"
 											className={"dateInput"}
@@ -815,7 +1086,7 @@ class employeeAdd extends React.Component {
 											locale="ja"
 										/>
 									</InputGroup.Append>
-									<FormControl id="time2" name="time2" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -914,33 +1185,82 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange} size="sm" name="certification2" />
 								</InputGroup>
 							</Col>
+
+						</Row>
+						<Row>
+							<Col sm={6}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
+										<Autosuggest
+											suggestions={developement1Suggestions}
+											onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt1SuggestionSelected}
+											getSuggestionValue={dateUtils.getSuggestionDlt}
+											renderSuggestion={dateUtils.renderSuggestion}
+											inputProps={dlt1InputProps}
+										/>
+										<Autosuggest
+											suggestions={developement2Suggestions}
+											onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt2SuggestionSelected}
+											getSuggestionValue={dateUtils.getSuggestionDlt}
+											renderSuggestion={dateUtils.renderSuggestion}
+											inputProps={dlt2InputProps}
+										/>
+										<Autosuggest
+											suggestions={developement3Suggestions}
+											onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt3SuggestionSelected}
+											getSuggestionValue={dateUtils.getSuggestionDlt}
+											renderSuggestion={dateUtils.renderSuggestion}
+											inputProps={dlt3InputProps}
+										/>
+
+										<Autosuggest
+											suggestions={developement4Suggestions}
+											onSuggestionsFetchRequested={this.onDlt4SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt4SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt4SuggestionSelected}
+											getSuggestionValue={dateUtils.getSuggestionDlt}
+											renderSuggestion={dateUtils.renderSuggestion}
+											inputProps={dlt4InputProps}
+										/>
+										<Autosuggest
+											suggestions={developement5Suggestions}
+											onSuggestionsFetchRequested={this.onDlt5SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt5SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt5SuggestionSelected}
+											getSuggestionValue={dateUtils.getSuggestionDlt}
+											renderSuggestion={dateUtils.renderSuggestion}
+											inputProps={dlt5InputProps}
+										/>
+									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="経験年数" autoComplete="off"
-										onChange={this.valueChange} size="sm" name="ýearsExperience" />
-									<FormControl id="time5" name="time5" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={8}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">スキール</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="スキール1" value={developLanguage1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="developLanguage1" />
-									<FormControl placeholder="スキール2" value={developLanguage2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="developLanguage2" />
-									<FormControl placeholder="スキール3" value={developLanguage3} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="developLanguage3" />
-									<FormControl placeholder="スキール4" value={developLanguage4} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="developLanguage4" />
-									<FormControl placeholder="スキール5" value={developLanguage5} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="developLanguage5" />
+									<FormControl id="experienceYears" value={experienceYears} name="experienceYears" placeholder="経験年数" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<InputGroup.Append>
+										<DatePicker
+											selected={new Date()}
+											onChange={this.inactiveYearsExperience}
+											autoComplete="on"
+											className={"dateInput"}
+											dateFormat={"yyyy MM"}
+											showMonthYearPicker
+											showFullMonthYearPicker
+											showDisabledMonthNavigation
+											locale="ja"
+										/>
+									</InputGroup.Append>
+									<FormControl name="temporary_experienceYears" value={temporary_experienceYears} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 
@@ -959,9 +1279,9 @@ class employeeAdd extends React.Component {
 										onChange={this.valueChange}
 										name="residenceCode" value={residenceCode}
 										autoComplete="off">
-										{this.state.residenceCodes.map(vi =>
-											<option key={vi.code} value={vi.code}>
-												{vi.name}
+										{this.state.residenceCodes.map(data =>
+											<option key={data.code} value={data.code}>
+												{data.name}
 											</option>
 										)}
 									</Form.Control>
@@ -984,7 +1304,7 @@ class employeeAdd extends React.Component {
 									<FormControl id="stayPeriod" value={stayPeriod} name="stayPeriod" placeholder="在留期間" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 									<InputGroup.Append>
 										<DatePicker
-											selected={this.state.raiseStartDate}
+											selected={new Date()}
 											onChange={this.inactiveStayPeriod}
 											autoComplete="on"
 											className={"dateInput"}
@@ -995,7 +1315,7 @@ class employeeAdd extends React.Component {
 											locale="ja"
 										/>
 									</InputGroup.Append>
-									<FormControl id="time3" name="time3" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1030,12 +1350,12 @@ class employeeAdd extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><Form.File id="resumeInfo1" name="resumeInfo1" />
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1 " name="resumeInfo1" ></input>
 									</InputGroup.Prepend>
+
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" />
 								</InputGroup>
-
 							</Col>
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
@@ -1055,20 +1375,17 @@ class employeeAdd extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-
 					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" variant="success" type="submit">
-							登録
+						<Button size="sm" variant="info" type="submit">
+							<FontAwesomeIcon icon={faSave} /> 登録
                         </Button>{' '}
-						<Button size="sm" type="reset" variant="success"  >
-							リセット
+						<Button size="sm" variant="info" type="reset">
+							<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
 					</div>
 				</Form>
-
-
 			</div>
 		);
 	}
 }
-export default employeeAdd;
+export default employee;

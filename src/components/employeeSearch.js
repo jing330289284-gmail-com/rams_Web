@@ -10,20 +10,17 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import * as dateUtils from './utils/dateUtils.js';
 import { Link } from "react-router-dom";
 
-
 registerLocale("ja", ja);
-
-class mainSearch extends React.Component {
+class employeeSearch extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
-		this.employeeDetail = this.employeeDetail.bind(this);
 		this.options = {
 			defaultSortName: 'rowNo',
 			defaultSortOrder: 'dsc',
@@ -52,56 +49,16 @@ class mainSearch extends React.Component {
 
 	//初期化データ
 	initialState = {
-		employeeFormCodes: [],
-		employeeStatuss: [],
-		genderStatuss: [],
-		residenceCodes: [],
-		nationalitys: [],
-		intoCompanyCodes: [],
-		japaneseLevels: [],
-		siteMaster: [],
-		developement1Value: '',
-		developement1Suggestions: [],
-		developement2Value: '',
-		developement2Suggestions: [],
-		developement3Value: '',
-		developement3Suggestions: [],
-		suggestions: [],
-		developmentLanguageNo1: '',
-		developmentLanguageNo2: '',
-		developmentLanguageNo3: '',
-		employeeList: [],
-
+		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', employeeList: [],
 	};
 	//リセット　reset
 	resetStates = {
-		employeeNo: '',
-		employeeFristName: '',
-		employeeFormCode: '',
-		employeeStatus: '',
-		genderStatus: '',
-		ageFrom: '',
-		ageTo: '',
-		residenceCode: '',
-		nationalityCode: '',
-		customer: '',
-		intoCompanyCode: '',
-		japaneaseLeveCode: '',
-		siteRoleCode: '',
-		developement1Value: '',
-		developement1Suggestions: [],
-		developement2Value: '',
-		developement2Suggestions: [],
-		developement3Value: '',
-		developement3Suggestions: [],
-		developmentLanguageNo1: '',
-		developmentLanguageNo2: '',
-		developmentLanguageNo3: '',
-		value: '',
-		suggestions: [],
-		intoCompanyYearAndMonthFrom: '',
-		intoCompanyYearAndMonthTo: '',
-		kadou: '',
+		employeeNo: '', employeeFristName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
+		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', value: '', suggestions: [],
 	};
 	//開発言語　開始
 	onDevelopement1Change = (event, { newValue }) => {
@@ -128,7 +85,6 @@ class mainSearch extends React.Component {
 		};
 		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
 			.then(response => {
-				console.log(response);
 				if (response.data != null) {
 					this.setState({
 						developement1Suggestions: dateUtils.getSuggestions(value, response.data)
@@ -137,8 +93,6 @@ class mainSearch extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
-
-
 	};
 
 	onDlt1SuggestionsClearRequested = () => {
@@ -159,7 +113,6 @@ class mainSearch extends React.Component {
 		};
 		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
 			.then(response => {
-				console.log(response);
 				if (response.data != null) {
 					this.setState({
 						developement2Suggestions: dateUtils.getSuggestions(value, response.data)
@@ -185,7 +138,6 @@ class mainSearch extends React.Component {
 				console.error("Error - " + error);
 			});
 	};
-
 
 	onDlt2SuggestionsClearRequested = () => {
 		this.setState({
@@ -214,98 +166,32 @@ class mainSearch extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		this.getStaffForms();//社員形式
-		this.getEmployee();//ステータス
-		this.getGender();//性別区別
-		this.getVisa();//在留資格
-		this.getNationalitys();//全部の国籍
-		this.getIntoCompany();//入社区分
-		this.getJapaneseLevel();//日本語レベル
-		this.getSiteMaster();//役割
+		this.getDropDownｓ();//全部のドロップダウン
 		this.clickButtonDisabled();
 	}
-	/* 社員形式 */
-	getStaffForms = () => {
-		var data = dateUtils.getdropDown("getStaffForms");
+	//全部のドロップダウン
+	getDropDownｓ = () => {
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys"]
+		var data = dateUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				employeeFormCodes: data
-			}
-		);
-	};
-	/* employeesステータス */
-	getEmployee = () => {
-		var data = dateUtils.getdropDown("getEmployee");
-		this.setState(
-			{
-				employeeStatuss: data
-			}
-		);
-	};
-	/* 性別区別 */
-	getGender = () => {
-		var data = dateUtils.getdropDown("getGender");
-		this.setState(
-			{
-				genderStatuss: data
+				genderStatuss: data[0],//　性別区別
+				intoCompanyCodes: data[1],//　入社区分 
+				employeeFormCodes: data[2],//　 社員形式 
+				siteMaster: data[3],//　　役割
+				employeeStatuss: data[4],//　 employeesステータス
+				japaneaseLevelCodes: data[5],//　日本語  
+				residenceCodes: data[6],//　在留資格
+				nationalityCodes: data[7]//　 出身地国
 			}
 		);
 	};
 
-
-	//在留資格
-	getVisa = () => {
-		var data = dateUtils.getdropDown("getVisa");
-		this.setState(
-			{
-				residenceCodes: data
-			}
-		);
-	};
-	/* 国籍 */
-	getNationalitys = () => {
-		var data = dateUtils.getdropDown("getNationalitys");
-		this.setState(
-			{
-				nationalitys: data
-			}
-		);
-	};
-
-	/* 入社区分 */
-	getIntoCompany = () => {
-		var data = dateUtils.getdropDown("getIntoCompany");
-		this.setState(
-			{
-				intoCompanyCodes: data
-			}
-		);
-	};
-
-	/* 日本語レベル */
-	getJapaneseLevel = () => {
-		var data = dateUtils.getdropDown("getJapaneseLevel");
-		this.setState(
-			{
-				japaneseLevels: data
-			}
-		);
-	};
-	/* 役割 */
-	getSiteMaster = () => {
-		var data = dateUtils.getdropDown("getSiteMaster");
-		this.setState(
-			{
-				siteMaster: data
-			}
-		);
-	};
 	//初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
 		$('button[name="clickButton"]').prop('disabled', true);
-		//$('Link[name="clickButton"]').prop('disabled', true);
-
 	};
+
 	//検索s
 	searchEmployee = () => {
 		var intoCompanyYearAndMonthFrom = $('#intoCompanyYearAndMonthFrom').val();
@@ -342,47 +228,38 @@ class mainSearch extends React.Component {
 			);
 	}
 
-
-
-	//年月開始
-	state = {
-		raiseStartDate: new Date(),
-	}
-
-	//入社年月
-	inactiveintoCompanyYearAndMonthFrom = date => {
-		$("#intoCompanyYearAndMonthFrom").val(date.getFullYear() + "/" + (date.getMonth() + 1));
-		dateUtils.getFullYearMonth("#time", date);
+	//　入社年月form
+	inactiveintoCompanyYearAndMonthFrom = (date) => {
+		this.setState(
+			{
+				intoCompanyYearAndMonthFrom: dateUtils.setFullYearMonth(date)
+			}
+		);
 	};
-
-	inactiveintoCompanyYearAndMonthTo = date => {
-		$("#intoCompanyYearAndMonthTo").val(date.getFullYear() + "/" + (date.getMonth() + 1));
-		dateUtils.getFullYearMonth("#time", date);
+	//　入社年月To
+	inactiveintoCompanyYearAndMonthTo = (date) => {
+		this.setState(
+			{
+				intoCompanyYearAndMonthTo: dateUtils.setFullYearMonth(date)
+			}
+		);
 	};
-
-
-
-	//詳細ボタン
-	employeeDetail = () => {
-		alert("詳細画面");
-	};
-
-	//修正ボタン
-	employeeUpdate = () => {
-		const emp = {
-			employeeNo: $('#rowSelectEmployeeNo').val()
-		};
-	};
-	//削除ボタン
+	//　　削除ボタン
 	employeeDelete = () => {
 		const emp = {
-			employeeNo: $('#rowSelectEmployeeNo').val()
+			employeeNo: this.state.rowSelectEmployeeNo,
 		};
 		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
 					alert("数据删除成功");
 					this.searchEmployee();
+					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
+					this.setState(
+						{
+							rowSelectEmployeeNo: ''
+						}
+					);
 				} else {
 					alert("数据删除失败");
 				}
@@ -392,18 +269,29 @@ class mainSearch extends React.Component {
 			});
 	};
 
-
-
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
-		console.log(row.employeeNo);
-		$('#rowSelectEmployeeNo').val(row.employeeNo);
 		if (isSelected) {
+			this.setState(
+				{
+					rowSelectEmployeeNo: row.employeeNo
+				}
+			);
 			$('button[name="clickButton"]').prop('disabled', false);
-			$('#clickButton').removeClass('disabled-link');
+			$('#update').removeClass('disabled');
+			$('#detail').removeClass('disabled');
+			$('#delete').removeClass('disabled');
 		} else {
+			this.setState(
+				{
+					rowSelectEmployeeNo: ''
+				}
+			);
 			$('button[name="clickButton"]').prop('disabled', true);
-			$('#clickButton').addClass('disabled-link');
+			$('#update').addClass('disabled');
+			$('#detail').addClass('disabled');
+			$('#delete').addClass('disabled');
+
 		}
 	}
 
@@ -414,12 +302,10 @@ class mainSearch extends React.Component {
 			</p>
 		);
 	}
+
 	render() {
-		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus,
-			intoCompanyYearAndMonthFrom, intoCompanyYearAndMonthTo, ageFrom, ageTo, residenceCode, nationalityCode,
-			customer, japaneaseLeveCode, siteRoleCode,
-			kadou,
-			intoCompanyCode, employeeList } = this.state;
+		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, intoCompanyYearAndMonthFrom, intoCompanyYearAndMonthTo, ageFrom, ageTo,
+			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList } = this.state;
 		const {
 			developement1Value,
 			developement1Suggestions,
@@ -450,18 +336,10 @@ class mainSearch extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleRowSelect
 		};
-		//画面遷移のパラメータ（追加）
-		const tsuikaPath = {
-			pathname: '/subMenu/add', state: "tsuika",
-		}
 		//画面遷移のパラメータ（修正）
-		var shuseiPath = {
-			pathname: '/subMenu/add', state: "shusei" + '-' + $('#rowSelectEmployeeNo').val(),
-		}
 		return (
-
 			<div >
-				<input type="hidden" id="rowSelectEmployeeNo" />
+				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
 				<Form >
 					<div >
 						<Form.Group>
@@ -471,11 +349,7 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="inlineFormInputGroup"
-											name="employeeNo" autoComplete="off"
-											value={employeeNo} size="sm"
-											onChange={this.valueChange}
-											placeholder="社員番号" />
+										<FormControl name="employeeNo" autoComplete="off" value={employeeNo} size="sm" onChange={this.valueChange} placeholder="社員番号" />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -483,10 +357,7 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="inlineFormInputGroup" name="employeeFristName"
-											value={employeeFristName} autoComplete="off"
-											onChange={this.valueChange} size="sm"
-											placeholder="社員名" />
+										<FormControl name="employeeFristName" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" placeholder="社員名" />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -498,9 +369,9 @@ class mainSearch extends React.Component {
 											onChange={this.valueChange}
 											name="employeeFormCode" value={employeeFormCode}
 											autoComplete="off">
-											{this.state.employeeFormCodes.map(st =>
-												<option key={st.code} value={st.code}>
-													{st.name}
+											{this.state.employeeFormCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -511,13 +382,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
-											name="employeeStatus" value={employeeStatus}
-											autoComplete="off">
-											{this.state.employeeStatuss.map(employeeStatus =>
-												<option key={employeeStatus.code} value={employeeStatus.code}>
-													{employeeStatus.name}
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeStatus" value={employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -530,13 +398,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
-											name="genderStatus" value={genderStatus}
-											autoComplete="off">
-											{this.state.genderStatuss.map(gender =>
-												<option key={gender.code} value={gender.code}>
-													{gender.name}
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="genderStatus" value={genderStatus} autoComplete="off">
+											{this.state.genderStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -546,17 +411,9 @@ class mainSearch extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-											<Form.Control type="text" name="ageFrom"
-												value={ageFrom} autoComplete="off"
-												onChange={this.valueChange} size="sm"
-												className={"fromToCss"}
-											/> ～ <Form.Control type="text" name="ageTo"
-												value={ageTo} autoComplete="off"
-												onChange={this.valueChange} size="sm"
-												className={"fromToCss"}
-											/>
+											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm" className={"fromToCss"}
+											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" className={"fromToCss"} />
 										</InputGroup.Prepend>
-
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -564,13 +421,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">在留資格</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
-											name="residenceCode" value={residenceCode}
-											autoComplete="off">
-											{this.state.residenceCodes.map(vi =>
-												<option key={vi.code} value={vi.code}>
-													{vi.name}
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="residenceCode" value={residenceCode} autoComplete="off">
+											{this.state.residenceCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -581,13 +435,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select"
-											onChange={this.valueChange} size="sm"
-											name="nationalityCode" value={nationalityCode}
-											autoComplete="off">
-											{this.state.nationalitys.map(na =>
-												<option key={na.code} value={na.code}>
-													{na.name}
+										<Form.Control as="select" onChange={this.valueChange} size="sm" name="nationalityCode" value={nationalityCode} autoComplete="off">
+											{this.state.nationalityCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -600,12 +451,7 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control type="text"
-											name="customer" autoComplete="off"
-											value={customer} size="sm"
-											onChange={this.valueChange}
-											className={"optionCss"}
-											placeholder="社お客様先" />
+										<Form.Control type="text" name="customer" autoComplete="off" value={customer} size="sm" onChange={this.valueChange} className={"optionCss"} placeholder="社お客様先" />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -613,13 +459,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select"
-											onChange={this.valueChange} size="sm"
-											name="intoCompanyCode" value={intoCompanyCode}
-											autoComplete="off">
-											{this.state.intoCompanyCodes.map(ic =>
-												<option key={ic.code} value={ic.code}>
-													{ic.name}
+										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode} autoComplete="off">
+											{this.state.intoCompanyCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -630,13 +473,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select"
-											onChange={this.valueChange} size="sm"
-											name="japaneaseLeveCode" value={japaneaseLeveCode}
-											autoComplete="off">
-											{this.state.japaneseLevels.map(ja =>
-												<option key={ja.code} value={ja.code}>
-													{ja.name}
+										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneaseLeveCode" value={japaneaseLeveCode} autoComplete="off">
+											{this.state.japaneaseLevelCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -647,13 +487,10 @@ class mainSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
-											name="siteRoleCode" value={siteRoleCode}
-											autoComplete="off">
-											{this.state.siteMaster.map(sm =>
-												<option key={sm.code} value={sm.code}>
-													{sm.name}
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="siteRoleCode" value={siteRoleCode} autoComplete="off">
+											{this.state.siteMaster.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -668,7 +505,7 @@ class mainSearch extends React.Component {
 										onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
 										onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
 										onSuggestionSelected={this.onDlt1SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt1}
+										getSuggestionValue={dateUtils.getSuggestionDlt}
 										renderSuggestion={dateUtils.renderSuggestion}
 										inputProps={dlt1InputProps}
 									/>
@@ -677,7 +514,7 @@ class mainSearch extends React.Component {
 										onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
 										onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
 										onSuggestionSelected={this.onDlt2SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt1}
+										getSuggestionValue={dateUtils.getSuggestionDlt}
 										renderSuggestion={dateUtils.renderSuggestion}
 										inputProps={dlt2InputProps}
 									/>
@@ -686,7 +523,7 @@ class mainSearch extends React.Component {
 										onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
 										onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
 										onSuggestionSelected={this.onDlt3SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt1}
+										getSuggestionValue={dateUtils.getSuggestionDlt}
 										renderSuggestion={dateUtils.renderSuggestion}
 										inputProps={dlt3InputProps}
 									/>
@@ -694,9 +531,9 @@ class mainSearch extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl id="intoCompanyYearAndMonthFrom" name="intoCompanyYearAndMonthFrom" value={intoCompanyYearAndMonthFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+								<FormControl name="intoCompanyYearAndMonthFrom" value={intoCompanyYearAndMonthFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								<DatePicker
-									selected={this.state.raiseStartDate}
+									selected={new Date()}
 									onChange={this.inactiveintoCompanyYearAndMonthFrom}
 									autoComplete="on"
 									className={"dateInput"}
@@ -705,9 +542,9 @@ class mainSearch extends React.Component {
 									showFullMonthYearPicker
 									showDisabledMonthNavigation
 									locale="ja"
-								/>～<FormControl id="intoCompanyYearAndMonthTo" name="intoCompanyYearAndMonthTo" value={intoCompanyYearAndMonthTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+								/>～<FormControl name="intoCompanyYearAndMonthTo" value={intoCompanyYearAndMonthTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								<DatePicker
-									selected={this.state.raiseStartDate}
+									selected={new Date()}
 									onChange={this.inactiveintoCompanyYearAndMonthTo}
 									autoComplete="on"
 									className={"dateInput"}
@@ -720,10 +557,7 @@ class mainSearch extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control as="select" size="sm"
-									onChange={this.valueChange}
-									name="kadou" value={kadou}
-									autoComplete="off" >
+								<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
 									<option value=""　>選択ください</option>
 									<option value="0">はい</option>
 									<option value="1">いいえ</option>
@@ -736,7 +570,7 @@ class mainSearch extends React.Component {
 					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
-					<Link to={tsuikaPath} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
+					<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
 					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
@@ -745,18 +579,16 @@ class mainSearch extends React.Component {
 				<div>
 					<Row >
 						<Col sm={4}>
-							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} >履歴書</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} >在留カード</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} ><FontAwesomeIcon icon={faDownload} /> 履歴書</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" onClick={this.employeeUpdate} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 						</Col>
 						<Col sm={6}></Col>
 						<Col sm={2}>
 							<div style={{ "float": "right" }}>
-								<Button size="sm" variant="info" name="clickButton" onClick={this.employeeDetail} >詳細</Button>{' '}
-								<Link to={shuseiPath} className="btn btn-info btn-sm disabled-link" id="clickButton" >修正</Link>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={e =>
-									window.confirm("Are you sure you wish to delete this item?") &&
-									this.employeeDelete()
-								}>削除</Button>
+								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
+								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
+								{/* <Button size="sm" variant="info" name="clickButton" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()}><FontAwesomeIcon icon={faTrash} /> 削除</Button>、 */}
+								<Link className="btn btn-info btn-sm disabled" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
 							</div>
 						</Col>
 					</Row>
@@ -775,9 +607,8 @@ class mainSearch extends React.Component {
 						<TableHeaderColumn width='90' dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
-
 			</div >
 		);
 	}
 }
-export default mainSearch;
+export default employeeSearch;

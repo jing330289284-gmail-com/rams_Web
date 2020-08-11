@@ -4,7 +4,7 @@ import Login from './components/login'
 import Subcost from './components/subCost'
 import SubMenu from './components/subMenu'
 import main from './components/main';
-import EmployeeAdd from './components/employeeAdd';
+import Employee from './components/employee';
 import EmployeeSearch from './components/employeeSearch';
 import BankInfo from './components/bankInfo';
 import CustomerInfo from './components/customerInfo';
@@ -19,12 +19,11 @@ function App() {
 	return (
 		<Router>
 			<div style={{ "backgroundColor": "#f5f5f5" }}>
-
 				<Route exact path="/" component={Login} />
 				<Route path="/subMenu" component={SubMenu} />
 				<Route path="/subCost" component={Subcost} />
 				<Route path="/main" component={main} />
-				<Route path="/add" component={EmployeeAdd} />
+				<Route path="/employee"  component={Employee} />
 				<Route path="/employeeSearch" component={EmployeeSearch} />
 				<Route path="/bankInfo" component={BankInfo} />
 				<Route path="/customerInfo" component={CustomerInfo} />
@@ -38,6 +37,8 @@ function App() {
 		</Router>
 
 	);
+
+
 }
 
 export default App;
