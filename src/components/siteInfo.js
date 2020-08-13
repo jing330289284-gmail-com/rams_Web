@@ -1,35 +1,17 @@
 import React, { Component } from 'react';
 import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import Autosuggest from 'react-autosuggest';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
+import * as dateUtils from './utils/dateUtils.js';
+import Select from 'react-select';
 
 registerLocale('ja', ja);
 
-function escapeRegexCharacters(str) {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function getSuggestions(value, datas) {
-	const escapedValue = escapeRegexCharacters(value.trim());
-	const regex = new RegExp('^' + escapedValue, 'i');
-
-	return datas.filter(data => regex.test(data.name));
-}
-function getSuggestionDlt(suggestion) {
-	return suggestion.name;
-}
-
-function renderSuggestion(suggestion) {
-	return (
-		<span>{suggestion.name}</span>
-	);
-}
 class siteInfo extends Component {
 	constructor(props) {
 		super(props);
@@ -37,19 +19,20 @@ class siteInfo extends Component {
 		this.onchange = this.onchange.bind(this);
 	}
 	initialState = {
-		time_1: '',
-		time_2: '',
+		payOffRange1: '',
+		payOffRange2: '',
 		siteMaster: [],
-		payMaster: [],
-		topCustomer: [],
+		payOffRangeStatus: [],
+		topCustomerMaster: [],
 		levelMaster: [],
 		customerMaster: [],
-		developementValue: '',
-		developementSuggestions: [],
-		developmentLanguageNo: '',
-		suggestions: []
+		developLanguageMaster: []
 	};
 
+	handleChange = selectedOption => {
+		this.setState({ selectedOption });
+		console.log(`Option selected:`, selectedOption);
+	};
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -57,12 +40,12 @@ class siteInfo extends Component {
 	}
 
 	fixed = event => {
-		$("#time_2").prop('disabled', false);
+		$("#payOffRange2").prop('disabled', false);
 		this.onchange(event);
 
 		if (event.target.value == 0) {
-			this.setState({ "time_2": event.target.value })
-			$("#time_2").prop('disabled', true);
+			this.setState({ "payOffRange2": event.target.value })
+			$("#payOffRange2").prop('disabled', true);
 		}
 	}
 	workState = event => {
@@ -76,124 +59,22 @@ class siteInfo extends Component {
 		bonusStartDate: new Date(),
 		raiseStartDate: new Date(),
 	}
-	//開発言語　開始
-	onDevelopementChange = (event, { newValue }) => {
-		this.setState({
-			developementValue: newValue
-		});
-	};
 
-	onDltSuggestionsFetchRequested = ({ value }) => {
-		const emp = {
-			developmentLanguageNo: value
-		};
-		axios.post("http://localhost:8080/getTechnologyType", emp)
-			.then(response => {
-				console.log(response);
-				if (response.data != null) {
-					this.setState({
-						developementSuggestions: getSuggestions(value, response.data)
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
+	//全部のドロップダウン
+	getDropDowns = () => {
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage"]
+		var data = dateUtils.getPublicDropDown(methodArray);
+		this.setState(
+			{
+				payOffRangeStatus: data[0],//　精算時間
+				siteMaster: data[1],//　役割
+				levelMaster: data[2],//　レベル
+				customerMaster: data[3],//お客様
+				topCustomerMaster: data[4],//トップお客様
+				developLanguageMaster: data[5],//開発言語
 
-
-	};
-
-	onDltSuggestionsClearRequested = () => {
-		this.setState({
-			developementSuggestions: []
-		});
-	};
-
-	onDltSuggestionSelected = (event, { suggestion }) => {
-		this.setState({
-			developementValue: suggestion.name
-		});
-	};
-
-	//開発言語　終了
-	/* 役割 */
-	getSiteMaster = () => {
-		axios.post("http://127.0.0.1:8080/getSiteMaster")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						siteMaster: [{ code: '', name: '選択してください' }]
-							.concat(data.map(sm => {
-								return { code: sm.code, name: sm.name }
-							}))
-					}
-				);
 			}
-			);
-	};
-	/* トップお客様 */
-	getTopCustomer = () => {
-		axios.post("http://127.0.0.1:8080/getTopCustomer")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						topCustomer: [{ code: '', name: '選択してください' }]
-							.concat(data.map(tc => {
-								return { code: tc.code, name: tc.name }
-							}))
-					}
-				);
-			}
-			);
-	};
-	/* レベル */
-	getLevel = () => {
-		axios.post("http://127.0.0.1:8080/getLevel")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						levelMaster: [{ code: '', name: '選択してください' }]
-							.concat(data.map(lm => {
-								return { code: lm.code, name: lm.name }
-							}))
-					}
-				);
-			}
-			);
-	};
-	/* お客様 */
-	getCustomerMaster = () => {
-		axios.post("http://127.0.0.1:8080/getCustomerMaster")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						customerMaster: [{ code: '', name: '選択してください' }]
-							.concat(data.map(cm => {
-								return { code: cm.code, name: cm.name }
-							}))
-					}
-				);
-			}
-			);
-	};
-	/* 精算時間 */
-	getPayMaster = () => {
-		axios.post("http://127.0.0.1:8080/getPayMaster")//url,条件
-			.then(response => response.data)
-			.then((data) => {
-				this.setState(
-					{
-						payMaster: [{ code: '', name: '選択してください' }]
-							.concat(data.map(tm => {
-								return { code: tm.code, name: tm.name }
-							}))
-					}
-				);
-			}
-			);
+		);
 	};
 	//日期更改
 	inactive = date => {
@@ -240,11 +121,7 @@ class siteInfo extends Component {
 	};
 	// 页面加载
 	componentDidMount() {
-		this.getSiteMaster();
-		this.getPayMaster();
-		this.getTopCustomer();
-		this.getCustomerMaster();
-		this.getLevel();
+		this.getDropDowns();//全部のドロップダウン
 		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
 			.then(response => {
 				if (response.data != null) {
@@ -259,12 +136,12 @@ class siteInfo extends Component {
 	}
 	//登録処理
 	tokuro = () => {
-		if ($("#time_2").val() < $("#time_1").val()) {
+		if ($("#payOffRange2").val() < $("#payOffRange1").val()) {
 			alert("正しい期間を選択してください");
 			return false;
 		}
-		if ('0' != $("#time_1").val()) {
-			if ($("#time_2").val() == $("#time_1").val()) {
+		if ('0' != $("#payOffRange1").val()) {
+			if ($("#payOffRange2").val() == $("#payOffRange1").val()) {
 				alert("固定を選択してくださいます");
 				return false;
 			}
@@ -274,7 +151,6 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["developLanguage"] = this.state.developementValue;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
 			.then(function(result) {
 				if (result.data == true) {
@@ -297,12 +173,8 @@ class siteInfo extends Component {
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 		};
-		const { time_1, time_2, workState, products, siteRoleCode,levelCode, developementValue, developementSuggestions } = this.state;
-		const dltInputProps = {
-			placeholder: "開発言語",
-			value: developementValue,
-			onChange: this.onDevelopementChange
-		};
+		const { payOffRange1, payOffRange2, workState, products, siteRoleCode, levelCode, customer, topCustomer, developLanguage } = this.state;
+
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
 				<div style={{ "background": "#f5f5f5" }}>
@@ -354,13 +226,12 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="customerNo" name="customerNo" onChange={this.onchange} >
-											{this.state.customerMaster.map(cm =>
-												<option key={cm.code} value={cm.code}>
-													{cm.name}
-												</option>
-											)}
-										</Form.Control>
+										<Select
+											name="customerNo"
+											value={customer}
+											onChange={this.handleChange}
+											options={this.state.customerMaster}
+										/>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -368,13 +239,12 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="topCustomerNo" name="topCustomerNo" onChange={this.onchange} >
-											{this.state.topCustomer.map(tc =>
-												<option key={tc.code} value={tc.code}>
-													{tc.name}
-												</option>
-											)}
-										</Form.Control>
+										<Select
+											name="topCustomerNo"
+											value={topCustomer}
+											onChange={this.handleChange}
+											options={this.state.topCustomerMaster}
+										/>
 									</InputGroup>
 								</Col>
 							</Row>
@@ -392,28 +262,27 @@ class siteInfo extends Component {
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
-
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select"
 											onChange={this.fixed}
-											id="time_1" name="time_1" value={time_1}
+											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off">
-											{this.state.payMaster.map(tm =>
-												<option key={tm.code} value={tm.code}>
-													{tm.name}
+											{this.state.payOffRangeStatus.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
 										〜
 												<Form.Control as="select"
 											onChange={this.onchange}
-											id="time_2" name="time_2" value={time_2}
+											id="payOffRange2" name="payOffRange2" value={payOffRange2}
 											autoComplete="off">
-											{this.state.payMaster.map(tm =>
-												<option key={tm.code} value={tm.code}>
-													{tm.name}
+											{this.state.payOffRangeStatus.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
 												</option>
 											)}
 										</Form.Control>
@@ -424,14 +293,11 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Autosuggest
-											suggestions={developementSuggestions}
-											onSuggestionsFetchRequested={this.onDltSuggestionsFetchRequested}
-											onSuggestionsClearRequested={this.onDltSuggestionsClearRequested}
-											onSuggestionSelected={this.onDltSuggestionSelected}
-											getSuggestionValue={getSuggestionDlt}
-											renderSuggestion={renderSuggestion}
-											inputProps={dltInputProps}
+										<Select
+											name="developLanguage"
+											value={developLanguage}
+											onChange={this.handleChange}
+											options={this.state.developLanguageMaster}
 										/>
 									</InputGroup>
 								</Col>
@@ -441,9 +307,9 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
-											{this.state.siteMaster.map(sm =>
-												<option key={sm.code} value={sm.code}>
-													{sm.name}
+											{this.state.siteMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
 												</option>
 											)}
 										</Form.Control>
@@ -532,9 +398,9 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off">
-											{this.state.levelMaster.map(lm =>
-												<option key={lm.code} value={lm.code}>
-													{lm.name}
+											{this.state.levelMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
 												</option>
 											)}
 										</Form.Control>
