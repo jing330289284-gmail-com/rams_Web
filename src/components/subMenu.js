@@ -18,6 +18,7 @@ import TechnologyTypeMaster from './technologyTypeMaster';
 import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
+import ManageSituation from './manageSituation';
 import PasswordSet from './passwordSet';
 
 class SubMenu extends Component {
@@ -140,8 +141,9 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="4">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>要員送信</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>案件情報送信</Link></ListGroup.Item>                                                
-                                                    </ListGroup>
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>案件情報送信</Link></ListGroup.Item>  
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/manageSituation"><img alt="title" src={open}/>営業状況確認一覧</Link></ListGroup.Item>
+                                                </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
                                 <ListGroup.Item variant="secondary">
@@ -188,6 +190,7 @@ class SubMenu extends Component {
                                     <Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
                                     <Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
                                     <Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
+                                    <Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
                                     <div className="container col-8">
                                     <div className="container col-10">
                                         <Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
