@@ -38,7 +38,7 @@ class SubMenu extends Component {
     render() {
         //お客様情報画面の追加パラメータ
         var customerInfoPath = {
-            pathname:'/subMenu/customerInfo',state:{actionType:'addTo'},
+            pathname:'/subMenu/customerInfo',state:{actionType:'insert'},
           }
         //社員情報登録
         var passwordSetPath = {
@@ -111,7 +111,6 @@ class SubMenu extends Component {
                                             <Accordion.Toggle as={Button} variant="link" eventKey="1"><img alt="title" src={openPage}/>現場</Accordion.Toggle>
                                             <Accordion.Collapse eventKey="1">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open}/>現場情報検索</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
@@ -130,8 +129,8 @@ class SubMenu extends Component {
                                             <Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage}/>給料と単価</Accordion.Toggle>
                                             <Accordion.Collapse eventKey="3">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>単価粗利検索</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>月次売上</Link></ListGroup.Item>                                                
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>個人売上一覧</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>売上検索一覧</Link></ListGroup.Item>                                                
                                                     </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -139,8 +138,9 @@ class SubMenu extends Component {
                                             <Accordion.Toggle as={Button} variant="link" eventKey="4"><img alt="title" src={openPage}/>営業送信</Accordion.Toggle>
                                             <Accordion.Collapse eventKey="4">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>要員送信</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>案件情報送信</Link></ListGroup.Item>                                                
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>営業状況確認一覧</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>提案送信</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link><img alt="title" src={open}/>要員提案送信</Link></ListGroup.Item>                                                
                                                     </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
@@ -167,8 +167,7 @@ class SubMenu extends Component {
                                             <Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage}/>他の設定</Accordion.Toggle>
                                             <Accordion.Collapse eventKey="7">
                                                 <ListGroup variant="flush">
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>システム設定</Link></ListGroup.Item>  
-                                                    <ListGroup.Item variant="secondary"><Link to={passwordSetPath}><img alt="title" src={open}/>パースワード設定</Link></ListGroup.Item> 
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open}/>システム設定</Link></ListGroup.Item>   
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>

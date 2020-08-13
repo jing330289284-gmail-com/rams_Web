@@ -3,6 +3,7 @@ import {Row , Form , Col , InputGroup , Button } from 'react-bootstrap';
 import * as TopCustomerInfoJs from '../components/topCustomerInfoJs.js';
 import $ from 'jquery';
 import axios from 'axios';
+import * as utils from './utils/dateUtils.js';
 
 class TopCustomerInfo extends Component {
     state = {  }
@@ -15,42 +16,33 @@ class TopCustomerInfo extends Component {
         if(!$.isEmptyObject(topCustomerInfo)){
             document.getElementById("topCustomerNo").innerHTML = topCustomerInfo.topCustomerNo;
             $("#topCustomerAbbreviation").val(topCustomerInfo.topCustomerAbbreviation);
-            $("#topCustomerName").val(topCustomerInfo.topCustomerName);
+            $("#topTopCustomerName").val(topCustomerInfo.topCustomerName);
             $("#topUrl").val(topCustomerInfo.url);
             $("#topRemark").val(topCustomerInfo.remark);
         }else if($.isEmptyObject(topCustomerInfo)){
-            var topCustomerMod = {};
-            topCustomerMod["actionType"] = $("#actionType").val();
-            topCustomerMod["topCustomerNo"] = $("#topCustomerNo").val();
-            axios.post("http://127.0.0.1:8080/topCustomerInfo/onloadPage", topCustomerMod)
-            .then(function (resultMap) {
-                var topCustomerMod = resultMap.data.topCustomerMod;
-                if(actionType === 'addTo'){
-                    var TopCustomerNoSaiBan = resultMap.data.TopCustomerNoSaiBan;
-                    TopCustomerNoSaiBan =  parseInt(TopCustomerNoSaiBan.substring(1,4)) + 1;
-                    if(TopCustomerNoSaiBan < 10){
-                        TopCustomerNoSaiBan = 'T00' + TopCustomerNoSaiBan;
-                    }else if(TopCustomerNoSaiBan >= 10 && TopCustomerNoSaiBan < 100){
-                        TopCustomerNoSaiBan = 'T0' + TopCustomerNoSaiBan;
-                    }else if(TopCustomerNoSaiBan >=100){
-                        TopCustomerNoSaiBan = 'T' + TopCustomerNoSaiBan;
-                    }
-                    document.getElementById("topCustomerNo").innerHTML = TopCustomerNoSaiBan;
-                    $("#topCustomerNo").attr("readOnly",true);
-                }else{
-                    document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
-                    $("#topCustomerName").val(topCustomerMod.topCustomerName);
-                    $("#topCustomerAbbreviation").val(topCustomerMod.topCustomerAbbreviation);
-                    $("#topUrl").val(topCustomerMod.url);
-                    $("#topRemark").val(topCustomerMod.remark);
-                    if(actionType === 'sansho'){
-                        TopCustomerInfoJs.setDisabled();
-                    }
-                }
-            })
-            .catch(function(){
-                alert("页面加载错误，请检查程序");
-            })
+            if(actionType === 'insert' || $("#topCustomerName").val() === '' || $("#topCustomerName").val() === null){
+               var topCustomerNo = utils.getNO("topCustomerNo","T","T008TopCustomerInfo");
+               document.getElementById("topCustomerNo").innerHTML = topCustomerNo;
+            }else if(actionType !== "insert" && $("#topCustomerName").val() !== '' && $("#topCustomerName").val() !== null){
+                var topCustomerMod = {};
+                topCustomerMod["actionType"] = $("#actionType").val();
+                topCustomerMod["topCustomerNo"] = $("#topCustomerNo").val();
+                axios.post("http://127.0.0.1:8080/topCustomerInfo/onloadPage", topCustomerMod)
+                .then(function (resultMap) {
+                        document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
+                        $("#topCustomerName").val(topCustomerMod.topCustomerName);
+                        $("#topCustomerAbbreviation").val(topCustomerMod.topCustomerAbbreviation);
+                        $("#topUrl").val(topCustomerMod.url);
+                        $("#topRemark").val(topCustomerMod.remark);
+                        if(actionType === 'detail'){
+                            TopCustomerInfoJs.setDisabled();
+                        }      
+                })
+                .catch(function(){
+                    alert("页面加载错误，请检查程序");
+                })
+            }
+            
             }
     }
     /**-
@@ -61,7 +53,7 @@ class TopCustomerInfo extends Component {
             var topCustomerInfo = {};
             topCustomerInfo["topCustomerNo"] = document.getElementById("topCustomerNo").innerHTML;
             topCustomerInfo["topCustomerAbbreviation"] = $("#topCustomerAbbreviation").val();
-            topCustomerInfo["topCustomerName"] = $("#topCustomerName").val();
+            topCustomerInfo["topCustomerName"] = $("#topTopCustomerName").val();
             topCustomerInfo["url"] = $("#topUrl").val();
             topCustomerInfo["remark"] = $("#topRemark").val();
             this.props.topCustomerToroku(topCustomerInfo);
@@ -104,7 +96,7 @@ class TopCustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：富士通" id="topCustomerName" name="topCustomerName" /><font  color="red"
+                                <Form.Control placeholder="例：富士通" id="topTopCustomerName" name="topTopCustomerName" /><font  color="red"
 				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                         </InputGroup>
                     </Col>

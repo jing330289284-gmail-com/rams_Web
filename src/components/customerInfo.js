@@ -13,6 +13,8 @@ import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/dateUtils.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 registerLocale('ja', ja);
 /**
@@ -110,18 +112,19 @@ class CustomerInfo extends Component {
         $("#actionType").val( pro.actionType);
         $("#customerNo").val( pro.customerNo);
         $("#sakujo").attr("disabled",true);
+        var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite"]
+        var selectDataList = utils.getPublicDropDown(methodArray);
         //上場会社
-        var listedCompanyFlag = utils.getdropDown("getListedCompany");
-        listedCompanyFlag.shift();
+        var listedCompanyFlag = selectDataList[0];
         //お客様ランキン
-        var levelCode = utils.getdropDown("getLevel");
+        var levelCode = selectDataList[1];
         //会社性質
-        var companyNature = utils.getdropDown("getCompanyNature");
+        var companyNature = selectDataList[2];
         //職位
-        var positionCode = utils.getdropDown("getPosition");
+        var positionCode = selectDataList[3];
         //支払サイト
-        var paymentsiteCode = utils.getdropDown("getPaymentsite");
-        for(let i = 0;i<listedCompanyFlag.length ; i++){
+        var paymentsiteCode = selectDataList[4];
+        for(let i = 1;i<listedCompanyFlag.length ; i++){
             $("#listedCompanyFlag").append('<option value="'+listedCompanyFlag[i].code+'">'+listedCompanyFlag[i].name+'</option>');
         }
         for(let i = 0;i<levelCode.length ; i++){
@@ -151,7 +154,7 @@ class CustomerInfo extends Component {
             var customerInfoMod;
             var actionType = $("#actionType").val();
             customerInfoMod = resultMap.data.customerInfoMod;
-            if(actionType === 'addTo'){
+            if(actionType === 'insert'){
                 var customerNoSaiBan = resultMap.data.customerNoSaiBan;
                 $("#customerNo").val(customerNoSaiBan);
                 $("#customerNo").attr("readOnly",true);
@@ -165,9 +168,13 @@ class CustomerInfo extends Component {
                 $("#businessStartDate").val(customerInfoMod.businessStartDate);
                 $("#headOffice").val(customerInfoMod.headOffice);
                 $("#establishmentDate").val(customerInfoMod.establishmentDate);
-                $("#customerRankingCode").val(customerInfoMod.customerRankingCode);
+                $("#levelCode").val(customerInfoMod.levelCode);
                 $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
                 $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
+                $("#representative").val(customerInfoMod.representative);
+                $("#paymentsiteCode").val(customerInfoMod.paymentsiteCode);
+                $("#purchasingManagersMail").val(customerInfoMod.purchasingManagersMail);
+                $("#purchasingManagers").val(customerInfoMod.purchasingManagers);
                 $("#url").val(customerInfoMod.url);
                 $("#remark").val(customerInfoMod.remark);
                 this.setState({
@@ -178,7 +185,7 @@ class CustomerInfo extends Component {
                         topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
                     })
                 }
-                if(actionType === 'sansho'){
+                if(actionType === 'detail'){
                     customerInfoJs.setDisabled();
                 }
             }
@@ -375,7 +382,6 @@ class CustomerInfo extends Component {
      * 行の削除
      */
     listDelete=()=>{
-        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
         var a = window.confirm("削除していただきますか？");
         if(a){
             var id = this.state.rowNo;
@@ -393,7 +399,12 @@ class CustomerInfo extends Component {
             this.setState({
                 customerDepartmentList:departmentList,
                 rowNo:'',
+                customerDepartmentNameValue:'',
+                customerDepartmentCode:'',
             })
+            $("#positionCode").val('');
+            $("#responsiblePerson").val('');
+            $("#customerDepartmentMail").val('');
             var customerDepartmentInfoModel = {};
             customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
             customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
@@ -412,7 +423,7 @@ class CustomerInfo extends Component {
             }
         }    
     }
-        /**
+    /**
      * 行Selectファンクション
      */
      handleRowSelect = (row, isSelected, e) => {
@@ -441,12 +452,12 @@ class CustomerInfo extends Component {
     /**
      * ポップアップ口座情報の取得
      */
-    accountInfoGet=(kozaTokuro)=>{
+    accountInfoGet=(accountTokuro)=>{
         this.setState({
-            accountInfo:kozaTokuro,
+            accountInfo:accountTokuro,
             showBankInfoModal:false,
         })
-        console.log(kozaTokuro);
+        console.log(accountTokuro);
     }
     /**
      * ポップアップ上位お客様情報の取得
@@ -500,6 +511,9 @@ class CustomerInfo extends Component {
             clickToExpand: true,// click to expand row, default is false
             onSelect:this.handleRowSelect,
         };
+        //テーブルの列の選択
+        const selectRowDetail = {
+        };
         //テーブルの定義
         const options = {
         page: 1,  // which page you want to show as default
@@ -523,7 +537,7 @@ class CustomerInfo extends Component {
                 <Modal.Header closeButton>
                 </Modal.Header>
                 <Modal.Body >
-                            <BankInfo accountInfo={accountInfo} actionType={actionType} kozaTokuro={this.accountInfoGet}/>
+                            <BankInfo accountInfo={accountInfo} actionType={actionType} accountTokuro={this.accountInfoGet}/>
                 </Modal.Body>
                 </Modal>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" 
@@ -537,7 +551,7 @@ class CustomerInfo extends Component {
                 <Row inline="true">
                     <Col  className="text-center">
                     <h2>お客様情報</h2>
-                    </Col>
+                    </Col> 
                 </Row>
                 <Row>
                     <Col sm={5}></Col>
@@ -622,7 +636,6 @@ class CustomerInfo extends Component {
                                 scrollableYearDropdown
                                 showMonthYearPicker
                                 showFullMonthYearPicker
-                                // minDate={new Date()}
                                 showDisabledMonthNavigation
                                 className={"dateInput"}
                                 id="establishmentDateSelect"
@@ -748,8 +761,8 @@ class CustomerInfo extends Component {
                                 
                         </Col>
                         <Col sm={1} className="text-center">
-                                <Button  block size="sm" id="reset" onClick={customerInfoJs.reset} >
-                                    リセット
+                                <Button  block size="sm" variant="info" id="reset" onClick={customerInfoJs.reset} >
+                                <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                         </Col>
                 </Row>
@@ -802,13 +815,13 @@ class CustomerInfo extends Component {
                 <Row>
                     <Col sm={5}></Col>
                         <Col sm={1} className="text-center">
-                                <Button block size="sm" onClick={this.meisaiToroku} variant="primary" id="meisaiToroku" type="button">
-                                    部署登録
+                                <Button block size="sm" onClick={this.meisaiToroku} variant="info" id="meisaiToroku" type="button">
+                                <FontAwesomeIcon icon={faSave} />部署登録
                                 </Button>
                         </Col>
                         <Col sm={1} className="text-center">
-                                <Button  block size="sm" id="meisaiReset" >
-                                    リセット
+                                <Button  block size="sm" variant="info" id="meisaiReset" >
+                                <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                         </Col>
                 </Row>
@@ -822,7 +835,7 @@ class CustomerInfo extends Component {
                     </Col>
                 </Row>
                     <div>
-                    <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } data={customerDepartmentList}>
+                    <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} pagination={ true } options={ options } data={customerDepartmentList} className={"bg-white text-dark"}>
                         <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
                         <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
@@ -831,7 +844,6 @@ class CustomerInfo extends Component {
                         <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="140">取引人数</TableHeaderColumn>
                     </BootstrapTable>
                     </div>
-                
                 </Card.Body>
                 <input type="hidden" id="employeeNo" name="employeeNo"/>
                 <input type="hidden" id="actionType" name="actionType"/>
@@ -840,9 +852,15 @@ class CustomerInfo extends Component {
                 <Row>
                     <Col sm={11}></Col>
                     <Col sm={1}>
-                        <Button size="sm" block onClick={this.toroku}  variant="primary" id="toroku" type="button">
-                            登録
+                        {actionType === "update" ? 
+                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
+                            <FontAwesomeIcon icon={faSave} />更新
                         </Button>
+                        :
+                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
+                            <FontAwesomeIcon icon={faSave} />登録
+                        </Button>
+                    }
                     </Col>
                 </Row>
             </div>

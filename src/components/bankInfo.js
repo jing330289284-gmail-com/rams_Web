@@ -7,9 +7,7 @@ import axios from 'axios';
 
 class BankInfo extends Component {
 
-    state = { 
-        accountInfo:{},//口座情報のデータ
-    }
+    state = {}
 
     constructor(props){
         super(props);
@@ -48,48 +46,61 @@ class BankInfo extends Component {
                 $("#toza").attr("checked",true);
             } 
             bankInfoJs.takeDisabled();
-        }else if($.isEmptyObject(accountInfo) && actionType === "update"){
-            var onloadMol = {};
-            onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
-            onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
-            onloadMol["actionType"] = $("#actionType").val();
-            //画面データの検索
-              axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
-              .then(function (resultMap) {
-                if(resultMap.data.accountInfoMod !== ''){
-                    $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
-                    $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
-                    $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
-                    $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
-                    $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
-                    if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
-                      $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
-                    }
-                    if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
-                      $("#futsu").attr("checked",true);
-                    }else if(resultMap.data.accountInfoMod["accountTypeStatus"] === '1'){
-                      $("#toza").attr("checked",true);
-                    }
-                    //修正の場合
-                    if(actionType === 'update'){
-                      $("#bankBranchName").attr("readonly",false);
-                      $("#bankBranchCode").attr("readonly",false);
-                      $("#accountNo").attr("readonly",false);
-                      $("#accountName").attr("readonly",false);
-                      $("#futsu").attr("disabled",false);
-                      $("#toza").attr("disabled",false);
-                    }
-                  }
-              })
-              .catch(function (error) {
-              alert("口座情報获取错误，请检查程序");
-            });  
+        }else{
+            if(actionType !== "insert"){
+                var onloadMol = {};
+                onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
+                onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
+                onloadMol["actionType"] = $("#actionType").val();
+                //画面データの検索
+                  axios.post("http://127.0.0.1:8080/bankInfo/getBankInfo",onloadMol)
+                  .then(function (resultMap) {
+                    if(resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null){
+                        $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
+                        $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
+                        $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
+                        $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
+                        $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
+                        if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
+                          $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
+                        }
+                        if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
+                          $("#futsu").attr("checked",true);
+                        }else if(resultMap.data.accountInfoMod["accountTypeStatus"] === '1'){
+                          $("#toza").attr("checked",true);
+                        }
+                        //修正の場合
+                        if(actionType === 'update'){
+                          $("#bankBranchName").attr("readonly",false);
+                          $("#bankBranchCode").attr("readonly",false);
+                          $("#accountNo").attr("readonly",false);
+                          $("#accountName").attr("readonly",false);
+                          $("#futsu").attr("disabled",false);
+                          $("#toza").attr("disabled",false);
+                        }
+                      }
+                  })
+                  .catch(function (error) {
+                  alert("口座情報获取错误，请检查程序");
+                });  
+                if(actionType === "detail"){//詳細の場合
+                    $("#bankCode").attr("disabled",true);
+                    $("#bankBranchName").attr("disabled",true);
+                    $("#bankBranchCode").attr("disabled",true);
+                    $("#accountNo").attr("disabled",true);
+                    $("#accountName").attr("disabled",true);
+                    $("#futsu").attr("disabled",true);
+                    $("#toza").attr("disabled",true);
+                    $("#accountToroku").attr("disabled",true);
+                    $("#accountReset").attr("disabled",true);
+                }
+            }
         }
     }
     /**
      * 口座登録ボタン
      */
-    kozaTokuro(){
+    accountTokuro(){
         var result = bankInfoJs.checkAccountName();
         if(result){
             var accountInfo = {};
@@ -97,7 +108,7 @@ class BankInfo extends Component {
             $.each(formArray,function(i,item){
                 accountInfo[item.name] = item.value;     
             });
-            this.props.kozaTokuro(accountInfo);
+            this.props.accountTokuro(accountInfo);
         }else{
             document.getElementById("bankInfoErorMsg").style = "visibility:visible";
             document.getElementById("bankInfoErorMsg").innerHTML = "口座名義人をカタカナで入力してください"
@@ -141,7 +152,7 @@ class BankInfo extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">銀行名：</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
                                 </InputGroup.Prepend>
                                     <Form.Control id="bankCode" name="bankCode" as="select" onChange={bankInfoJs.canSelect}>
                                     </Form.Control>
@@ -159,7 +170,7 @@ class BankInfo extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">支店名：</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
                                 </InputGroup.Prepend>
                                     <Form.Control readOnly 
                                     placeholder="例：浦和支店" 
@@ -170,7 +181,7 @@ class BankInfo extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">支店番号：</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
                                 </InputGroup.Prepend>
                                     <Form.Control placeholder="010" onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode"/>
                             </InputGroup>
@@ -180,7 +191,7 @@ class BankInfo extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">口座番号：</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
                                 </InputGroup.Prepend>
                                     <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="9" name="accountNo"/>
                             </InputGroup>
@@ -188,7 +199,7 @@ class BankInfo extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">口座名義人：</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">口座名義人</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <OverlayTrigger
                                     overlay={
@@ -205,12 +216,12 @@ class BankInfo extends Component {
                     <Row>
                         <Col sm={3}></Col>
                         <Col sm={3} className="text-center">
-                                <Button block size="sm" onClick={this.kozaTokuro.bind(this)}  variant="primary" id="toroku" type="button">
+                                <Button block size="sm" onClick={this.accountTokuro.bind(this)}  variant="primary" id="accountToroku" type="button">
                                 登録
                                 </Button>
                         </Col>
                         <Col sm={3} className="text-center">
-                                <Button onClick={bankInfoJs.setDisabled} block size="sm" type="reset" id="reset" value="Reset" >
+                                <Button onClick={bankInfoJs.setDisabled} block size="sm" type="reset" id="accountReset" value="Reset" >
                                 リセット
                                 </Button>
                         </Col>

@@ -14,10 +14,25 @@ export function setDisabled(){
     $("#companyNatureCode").attr("disabled",true);
     $("#url").attr("disabled",true);
     $("#remark").attr("disabled",true);
+    $("#topCustomerNameShita").attr("disabled",true);
+    $("#customerAbbreviation").attr("disabled",true);
+    $("#businessStartDate").attr("disabled",true);
+    $("#listedCompanyFlag").attr("disabled",true);
+    $("#representative").attr("disabled",true);
+    $("#paymentsiteCode").attr("disabled",true);
     $("#toroku").attr("disabled",true);
     $("#reset").attr("disabled",true);
-    $("#toBankInfo").attr("disabled",true);
-    $("#toCustomerInfo").attr("disabled",true);
+    $("#meisaiToroku").attr("disabled",true);
+    $("#meisaiReset").attr("disabled",true);
+    $("#purchasingManagersMail").attr("disabled",true);
+    $("#purchasingManagers").attr("disabled",true);
+    $("#topCustomer").attr("disabled",true);
+    $("#customerDepartmentName").attr("disabled",true);
+    $("#positionCode").attr("disabled",true);
+    $("#responsiblePerson").attr("disabled",true);
+    $("#customerDepartmentMail").attr("disabled",true);
+    $("#toBankInfo").attr("disabled",false);
+    $("#toCustomerInfo").attr("disabled",false);
 }
 /**
  * リセットブタン
