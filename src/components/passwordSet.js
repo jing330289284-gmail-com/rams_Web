@@ -5,7 +5,7 @@ import axios from 'axios';
 
 class PasswordSet extends Component {
     state = { 
-        fatherMenu:'',
+        fatherMenu:'',//サブメニュー画面からのフラグ
      }
 
     /**
