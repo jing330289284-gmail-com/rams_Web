@@ -19,6 +19,7 @@ import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
+import siteSearch from './siteSearch';
 import PasswordSet from './passwordSet';
 
 class SubMenu extends Component {
@@ -113,7 +114,7 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open}/>現場情報登録</Link></ListGroup.Item>
-                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open}/>現場情報検索</Link></ListGroup.Item>
+                                                    <ListGroup.Item variant="secondary"><Link to="/subMenu/siteSearch"><img alt="title" src={open}/>現場情報検索</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                 </ListGroup.Item>
