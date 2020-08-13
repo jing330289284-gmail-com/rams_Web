@@ -1,5 +1,4 @@
 const $ = require('jquery');
-const axios = require('axios');
 
 
 //　 時間段を取得
@@ -87,26 +86,6 @@ export function getPublicDropDown(methodArray) {
 	return outArray;
 }
 
-/* 
-export function getNO2(columnName, typeName, table) {
-	var no;
-	var mo = {
-		columnName: columnName,
-		typeName: typeName,
-		name: table
-	};
-	$.ajax({
-		type: "POST",
-		data:mo,
-		url: "http://127.0.0.1:8080/getNO",
-		async: false,
-		success: function (msg) {
-			alert(msg)
-				no = msg
-		}
-	});
-	return　no;
-} */
 //　採番番号
 export async function getNO(columnName, typeName, table) {
 	var no;
@@ -115,14 +94,18 @@ export async function getNO(columnName, typeName, table) {
 		typeName: typeName,
 		name: table
 	};
-	await axios.post("http://127.0.0.1:8080/getNO", mo)
-		.then(response => {
-			if (response.data != null) {
-				no = response.data
+	$.ajax({
+		type: "POST",
+		url: "http://127.0.0.1:8080/getNO",
+		data: JSON.stringify(mo),
+		contentType: "application/json",
+		async: false,
+		success: function (data) {
+			if (data != null) {
+				no = data
 			}
-		}).catch((error) => {
-			console.error("Error - " + error);
-		});
+		}
+	});
 	return no;
 }
 
@@ -157,4 +140,32 @@ export function getCaret(direction) {
 	return "▲/▼";
 }
 
+export function formateDate(datetime, flag) {
+	if (datetime !== undefined) {
+		function addDateZero(num) {
+			return (num < 10 ? "0" + num : num);
+		}
+		let d = new Date(datetime);
+		let formatdatetime
+		if (flag === true) {
+			formatdatetime = d.getFullYear() + '' + addDateZero(d.getMonth() + 1) + '' + addDateZero(d.getDate());
+		} else {
+			formatdatetime = d.getFullYear() + '' + addDateZero(d.getMonth() + 1);
+		}
+		return formatdatetime;
+	}
+}
+
+export function converToLocalTime(serverDate, flag) {
+	if (flag === true) {
+		var pattern = /(\d{4})(\d{2})(\d{2})/;;
+		var dt = new Date(serverDate.replace(pattern, '$1-$2-$3'));
+		return dt;
+	} else {
+		var pattern = /(\d{4})(\d{2})/;;
+		var dt = new Date(serverDate.replace(pattern, '$1-$2'));
+		return dt;
+	}
+
+}
 

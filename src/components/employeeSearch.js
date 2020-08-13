@@ -194,8 +194,6 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
-		var intoCompanyYearAndMonthFrom = $('#intoCompanyYearAndMonthFrom').val();
-		var intoCompanyYearAndMonthTo = $('#intoCompanyYearAndMonthTo').val();
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeFristName: this.state.employeeFristName,
@@ -213,8 +211,8 @@ class employeeSearch extends React.Component {
 			developLanguage1: this.state.developement1Value,
 			developLanguage2: this.state.developement2Value,
 			developLanguage3: this.state.developement3Value,
-			intoCompanyYearAndMonthFrom: intoCompanyYearAndMonthFrom,
-			intoCompanyYearAndMonthTo: intoCompanyYearAndMonthTo,
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo ,
 			kadou: this.state.kadou,
 		};
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
@@ -227,12 +225,17 @@ class employeeSearch extends React.Component {
 			}
 			);
 	}
+     
+	state = {
+		intoCompanyYearAndMonthFrom: new Date(),
+		intoCompanyYearAndMonthTo: new Date()
+	};
 
 	//　入社年月form
 	inactiveintoCompanyYearAndMonthFrom = (date) => {
 		this.setState(
 			{
-				intoCompanyYearAndMonthFrom: dateUtils.setFullYearMonth(date)
+			intoCompanyYearAndMonthFrom: date
 			}
 		);
 	};
@@ -240,7 +243,7 @@ class employeeSearch extends React.Component {
 	inactiveintoCompanyYearAndMonthTo = (date) => {
 		this.setState(
 			{
-				intoCompanyYearAndMonthTo: dateUtils.setFullYearMonth(date)
+			intoCompanyYearAndMonthTo: date
 			}
 		);
 	};
@@ -304,7 +307,7 @@ class employeeSearch extends React.Component {
 	}
 
 	render() {
-		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, intoCompanyYearAndMonthFrom, intoCompanyYearAndMonthTo, ageFrom, ageTo,
+		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus,ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList } = this.state;
 		const {
 			developement1Value,
@@ -336,7 +339,8 @@ class employeeSearch extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleRowSelect
 		};
-		//画面遷移のパラメータ（修正）
+
+
 		return (
 			<div >
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
@@ -411,8 +415,8 @@ class employeeSearch extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm" className={"fromToCss"}
-											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" className={"fromToCss"} />
+											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm" 
+											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm"  />
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -497,72 +501,80 @@ class employeeSearch extends React.Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
-									<Autosuggest
-										suggestions={developement1Suggestions}
-										onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
-										onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
-										onSuggestionSelected={this.onDlt1SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt}
-										renderSuggestion={dateUtils.renderSuggestion}
-										inputProps={dlt1InputProps}
-									/>
-									<Autosuggest
-										suggestions={developement2Suggestions}
-										onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
-										onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
-										onSuggestionSelected={this.onDlt2SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt}
-										renderSuggestion={dateUtils.renderSuggestion}
-										inputProps={dlt2InputProps}
-									/>
-									<Autosuggest
-										suggestions={developement3Suggestions}
-										onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
-										onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
-										onSuggestionSelected={this.onDlt3SuggestionSelected}
-										getSuggestionValue={dateUtils.getSuggestionDlt}
-										renderSuggestion={dateUtils.renderSuggestion}
-										inputProps={dlt3InputProps}
-									/>
-								</InputGroup.Prepend>
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
-								</InputGroup.Prepend>
-								<FormControl name="intoCompanyYearAndMonthFrom" value={intoCompanyYearAndMonthFrom} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-								<DatePicker
-									selected={new Date()}
-									onChange={this.inactiveintoCompanyYearAndMonthFrom}
-									autoComplete="on"
-									className={"dateInput"}
-									dateFormat={"yyyy MM"}
-									showMonthYearPicker
-									showFullMonthYearPicker
-									showDisabledMonthNavigation
-									locale="ja"
-								/>～<FormControl name="intoCompanyYearAndMonthTo" value={intoCompanyYearAndMonthTo} placeholder="入社年月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
-								<DatePicker
-									selected={new Date()}
-									onChange={this.inactiveintoCompanyYearAndMonthTo}
-									autoComplete="on"
-									className={"dateInput"}
-									dateFormat={"yyyy MM"}
-									showMonthYearPicker
-									showFullMonthYearPicker
-									showDisabledMonthNavigation
-									locale="ja"
-								/>
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
-									<option value=""　>選択ください</option>
-									<option value="0">はい</option>
-									<option value="1">いいえ</option>
-								</Form.Control>
-							</InputGroup>
+							<Row>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
+											<Autosuggest
+												suggestions={developement1Suggestions}
+												onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt1SuggestionSelected}
+												getSuggestionValue={dateUtils.getSuggestionDlt}
+												renderSuggestion={dateUtils.renderSuggestion}
+												inputProps={dlt1InputProps}
+											/>
+											<Autosuggest
+												suggestions={developement2Suggestions}
+												onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt2SuggestionSelected}
+												getSuggestionValue={dateUtils.getSuggestionDlt}
+												renderSuggestion={dateUtils.renderSuggestion}
+												inputProps={dlt2InputProps}
+											/>
+											<Autosuggest
+												suggestions={developement3Suggestions}
+												onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt3SuggestionSelected}
+												getSuggestionValue={dateUtils.getSuggestionDlt}
+												renderSuggestion={dateUtils.renderSuggestion}
+												inputProps={dlt3InputProps}
+											/>
+										</InputGroup.Prepend>
+									</InputGroup>
+								</Col>
+
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text><DatePicker
+												selected={this.state.intoCompanyYearAndMonthFrom}
+												onChange={this.inactiveintoCompanyYearAndMonthFrom}
+												locale="ja"
+												dateFormat="yyyy/MM"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												id="datePicker"
+												className="form-control form-control-sm"
+											/>～<DatePicker
+												selected={this.state.intoCompanyYearAndMonthTo}
+												onChange={this.inactiveintoCompanyYearAndMonthTo}
+												locale="ja"
+												dateFormat="yyyy/MM"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												id="datePicker"
+												className="form-control form-control-sm"
+											/>
+										</InputGroup.Prepend>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
+											<option value=""　>選択ください</option>
+											<option value="0">はい</option>
+											<option value="1">いいえ</option>
+										</Form.Control>
+									</InputGroup>
+								</Col>
+							</Row>
 						</Form.Group>
 					</div>
 				</Form>

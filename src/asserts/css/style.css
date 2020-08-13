@@ -1,46 +1,39 @@
 .pageNumCss {
-    width: 45px !important;
-    border: 1px solid #17A2B8;
-    color: #17A2B8;
-    text-align: center;
-    font-weight: bold;
+  width: 45px !important;
+  border: 1px solid #17A2B8;
+  color: #17A2B8;
+  text-align: center;
+  font-weight: bold;
 }
 
 .changeColor {
-    color: black;
-    background-color: #F8F8F8 !important;
+  color: black;
+  background-color: #F8F8F8 !important;
 }
 
 .optionCss {
-    width: 130px !important;
+  width: 130px !important;
 }
 
-.fromToCss{
-    width: 80px !important;
-}
-
-.fromToCss2 {
-    width: 115px !important;
-}
 
 .detailForm {
-    width: 1100px !important;
+  width: 1100px !important;
 }
 
 .font20 {
-    font-size: 10px
+  font-size: 10px
 }
 
 .dateInput {
-    border: 0px;
-    background-position: 3px;
-    width: 27px;
-    height: 20px;
-    line-height: 40px;
-    font-size: 0px;
-    overflow: hidden;
-    /*  background: url(a1.png) no-repeat; */
-    /* background-size:40px 30px; */
+  border: 0px;
+  background-position: 3px;
+  width: 27px;
+  height: 20px;
+  line-height: 40px;
+  font-size: 0px;
+  overflow: hidden;
+  /*  background: url(a1.png) no-repeat; */
+  /* background-size:40px 30px; */
 }
 
 /*.arrow {
@@ -63,12 +56,11 @@
 */
 
 body {
-    font-family: Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 
 
 
-/* ??¿½?¿½??¿½?¿½?`???¿½è¨°??????¿½?¿½??¿½?¿½?`???¿½?¿½??¿½?¿½??¿½?¿½???¿½?¿½?????¿½?¿½_?? */
 .fileContainer {
   background: #fff;
   box-shadow: none;
@@ -81,8 +73,8 @@ body {
   flex-direction: column;
   transition: all 0.3s ease-in;
   height: 160px;
-  float:left;
-  
+  float: left;
+
 }
 
 .fileContainer p:empty {
@@ -196,109 +188,44 @@ body {
   background-position: 50% 23%;
   background-size: 25%;
 }
-.modal-jusho{
+
+.modal-jusho {
   width: 40%;
   max-width: none !important;
 }
-.modal-bankInfo{
+
+.modal-bankInfo {
   width: 30%;
   max-width: none !important;
 }
-.modal-subCost{
+
+.modal-subCost {
   width: 50%;
   max-width: none !important;
 }
-.modal-siteInfo{
+
+.modal-siteInfo {
   width: 70%;
   max-width: none !important;
 }
-.modal-customerInfo{
+
+.modal-customerInfo {
   width: 80%;
   max-width: none !important;
 }
-.modal-kengen{
+
+.modal-kengen {
   width: 40%;
   max-width: none !important;
-} 
-/* ??¿½?¿½??¿½?¿½?`???¿½è¨°??????¿½?¿½??¿½?¿½?`???¿½?¿½??¿½?¿½??¿½?¿½???¿½?¿½?????K?? */
-
-
-
-/* .react-autosuggest__input {
-    width: 150px;
-    background-color: #343a40 ;
-    color: #fff ;
-    height: calc(1.5em + .5rem + 2px);
-    padding: .25rem .5rem;
-    font-size: .875rem;
-    line-height: 1.5;
-    border-radius: .2rem;
-    font-weight: 400;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-
-} 
-
-.react-autosuggest__input--focused {
-    outline: none;
 }
 
-.react-autosuggest__input--open {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.react-autosuggest__suggestions-container {
-    text-rendering: auto;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-indent: 0px;
-    text-shadow: none;
-    text-align: start;
-    -webkit-appearance: menulist;
-    align-items: center;
-    white-space: pre;
-    -webkit-rtl-ordering: logical;
-    cursor: default;
-    font: 400 13.3333px Arial;
+#datePicker {
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
 
 }
 
-.react-autosuggest__suggestions-container--open {
-    display: block;
-    position: absolute;
-    top: 30px;
-    width: 150px;
-    border: 1px solid #aaa;
-    color: #fff !important;
-    font-family: Helvetica, sans-serif;
-    font-weight: 300;
-    font-size: .875rem;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    z-index: 2;
-    font-family: inherit;
-    letter-spacing: normal;
-    word-spacing: normal;
-
-}
-
-.react-autosuggest__suggestions-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-.react-autosuggest__suggestion {
-    cursor: pointer;
-    padding: 5px 10px;
-}
-
-.react-autosuggest__suggestion--highlighted {
-    background-color: #007bff;
-} */
-
-/* .disabled-link {
-  pointer-events: none;
-} */
