@@ -3,43 +3,49 @@ const $ = require('jquery');
 
 //　 時間段を取得
 export function getFullYearMonth(date, now) {
-	var returnYears = 0;
-	var returnMonths = 0;
-	var yearmonth = -1;
-	var keyYear = date.getFullYear();
-	var keyMonth = date.getMonth();
-	var keyDay = date.getDate();
-	var nowYear = now.getFullYear();
-	var nowMonth = now.getMonth() + 1;
-	var nowDay = now.getDate();
-	var yearDiff = nowYear - keyYear;
-	var monthDiff = nowMonth - keyMonth;
-	var dayDiff = nowDay - keyDay;
+	if (date !== undefined && date !== null && date !== "") {
+		var returnYears = 0;
+		var returnMonths = 0;
+		var yearmonth = -1;
+		var keyYear = date.getFullYear();
+		var keyMonth = date.getMonth();
+		var keyDay = date.getDate();
+		var nowYear = now.getFullYear();
+		var nowMonth = now.getMonth() + 1;
+		var nowDay = now.getDate();
+		var yearDiff = nowYear - keyYear;
+		var monthDiff = nowMonth - keyMonth;
+		var dayDiff = nowDay - keyDay;
 
-	if (yearDiff < 0) {
-		return "0年0月";
+		if (yearDiff < 0) {
+			return "0年0月";
+		}
+
+		if (yearDiff === 0 && monthDiff < 0) {
+			return "0年0月";
+		}
+
+		if (yearDiff === 0 && monthDiff === 0 && dayDiff < 0) {
+			return "0年0月";
+		}
+
+		returnYears = yearDiff;
+		if (monthDiff < 0) {
+			returnYears = returnYears - 1;
+			monthDiff = 12 + monthDiff;
+		}
+
+		returnMonths = monthDiff
+		if (dayDiff < 0) {
+			returnMonths = returnMonths - 1;
+		}
+		yearmonth = returnYears + "年" + returnMonths + "月";
+		return yearmonth;
+	}else {
+		return "";
 	}
 
-	if (yearDiff === 0 && monthDiff < 0) {
-		return "0年0月";
-	}
 
-	if (yearDiff === 0 && monthDiff === 0 && dayDiff < 0) {
-		return "0年0月";
-	}
-
-	returnYears = yearDiff;
-	if (monthDiff < 0) {
-		returnYears = returnYears - 1;
-		monthDiff = 12 + monthDiff;
-	}
-
-	returnMonths = monthDiff
-	if (dayDiff < 0) {
-		returnMonths = returnMonths - 1;
-	}
-	yearmonth = returnYears + "年" + returnMonths + "月";
-	return yearmonth;
 }
 
 
@@ -141,7 +147,7 @@ export function getCaret(direction) {
 }
 
 export function formateDate(datetime, flag) {
-	if (datetime !== undefined) {
+	if (datetime !== undefined && datetime !== null && datetime !== "") {
 		function addDateZero(num) {
 			return (num < 10 ? "0" + num : num);
 		}
@@ -153,19 +159,26 @@ export function formateDate(datetime, flag) {
 			formatdatetime = d.getFullYear() + '' + addDateZero(d.getMonth() + 1);
 		}
 		return formatdatetime;
+	} else {
+		return "";
 	}
 }
 
 export function converToLocalTime(serverDate, flag) {
-	if (flag === true) {
-		var pattern = /(\d{4})(\d{2})(\d{2})/;;
-		var dt = new Date(serverDate.replace(pattern, '$1-$2-$3'));
-		return dt;
+	if (serverDate !== undefined && serverDate !== null && serverDate !== "") {
+		if (flag === true) {
+			var pattern = /(\d{4})(\d{2})(\d{2})/;
+			var dt = new Date(serverDate.replace(pattern, '$1-$2-$3'));
+			return dt;
+		} else {
+			var pattern = /(\d{4})(\d{2})/;
+			var dt = new Date(serverDate.replace(pattern, '$1-$2'));
+			return dt;
+		}
 	} else {
-		var pattern = /(\d{4})(\d{2})/;;
-		var dt = new Date(serverDate.replace(pattern, '$1-$2'));
-		return dt;
+		return "";
 	}
+
 
 }
 

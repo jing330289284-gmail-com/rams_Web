@@ -63,7 +63,7 @@ class employee extends React.Component {
 		furigana1: '',//　　カタカナ1
 		furigana2: '',//　　カタカナ2
 		alphabetName: '',//　　ローマ字
-		age: '',//　　年齢
+		temporary_age: '',//　　年齢
 		birthday: '',//　　年齢
 		japaneseCalendar: "",　　//和暦
 		companyMail: "",　　//社内メール
@@ -97,7 +97,6 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-		alert(this.state.birthday)
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -107,7 +106,7 @@ class employee extends React.Component {
 			furigana1: this.state.furigana1,//　　カタカナ
 			furigana2: this.state.furigana2,//　　カタカナ
 			alphabetName: this.state.alphabetName,//　　ローマ字
-			birthday: dateUtils.formateDate(this.state.birthday,true),//年齢
+			birthday: dateUtils.formateDate(this.state.birthday, true),//年齢
 			japaneseCalendar: this.state.japaneseCalendar,//和暦
 			genderStatus: this.state.genderStatus,//性別
 			intoCompanyCode: this.state.intoCompanyCode,//入社区分
@@ -117,10 +116,10 @@ class employee extends React.Component {
 			companyMail: this.state.companyMail,//社内メール
 			graduationUniversity: this.state.graduationUniversity,//卒業学校
 			major: this.state.major,//専門
-			graduationYearAndMonth: dateUtils.formateDate(this.state.graduationYearAndMonth,false),//卒業年月
-			intoCompanyYearAndMonth: dateUtils.formateDate(this.state.intoCompanyYearAndMonth,false),//入社年月
-			retirementYearAndMonth: dateUtils.formateDate(this.state.retirementYearAndMonth,false),//退職年月
-			comeToJapanYearAndMonth: dateUtils.formateDate(this.state.comeToJapanYearAndMonth,false),//来日年月
+			graduationYearAndMonth: dateUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
+			intoCompanyYearAndMonth: dateUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
+			retirementYearAndMonth: dateUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
+			comeToJapanYearAndMonth: dateUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
@@ -136,7 +135,7 @@ class employee extends React.Component {
 			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
-			stayPeriod: dateUtils.formateDate(this.state.stayPeriod,false),//在留期間
+			stayPeriod: dateUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
 			residentCardInfo: $("#residentCardInfo").val(),//在留カード
@@ -171,7 +170,7 @@ class employee extends React.Component {
 			furigana1: this.state.furigana1,//　　カタカナ
 			furigana2: this.state.furigana2,//　　カタカナ
 			alphabetName: this.state.alphabetName,//　　ローマ字
-			birthday: this.state.birthday,//年齢
+			birthday: dateUtils.formateDate(this.state.birthday, true),//年齢
 			japaneseCalendar: this.state.japaneseCalendar,//和暦
 			genderStatus: this.state.genderStatus,//性別
 			intoCompanyCode: this.state.intoCompanyCode,//入社区分
@@ -181,10 +180,10 @@ class employee extends React.Component {
 			companyMail: this.state.companyMail,//社内メール
 			graduationUniversity: this.state.graduationUniversity,//卒業学校
 			major: this.state.major,//専門
-			graduationYearAndMonth: this.state.graduationYearAndMonth,//卒業年月
-			intoCompanyYearAndMonth: this.state.intoCompanyYearAndMonth,//入社年月
-			retirementYearAndMonth: this.state.retirementYearAndMonth,//退職年月
-			comeToJapanYearAndMonth: this.state.comeToJapanYearAndMonth,//来日年月
+			graduationYearAndMonth: dateUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
+			intoCompanyYearAndMonth: dateUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
+			retirementYearAndMonth: dateUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
+			comeToJapanYearAndMonth: dateUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
@@ -200,7 +199,7 @@ class employee extends React.Component {
 			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
-			stayPeriod: this.state.stayPeriod,//在留期間
+			stayPeriod: dateUtils.formateDate(this.state.stayPeriod, true),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
 			residentCardInfo: $("#residentCardInfo").val(),//在留カード
@@ -307,7 +306,8 @@ class employee extends React.Component {
 					furigana1: data.furigana1,//　　カタカナ
 					furigana2: data.furigana2,//　　カタカナ
 					alphabetName: data.alphabetName,//　　ローマ字
-					birthday: dateUtils.converToLocalTime(data.birthday,true),//年齢
+					birthday: dateUtils.converToLocalTime(data.birthday, true) ,//年齢
+					temporary_age: dateUtils.converToLocalTime(data.birthday, true)===""? "":Math.ceil((new Date().getTime() - dateUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,//和暦
 					genderStatus: data.genderStatus,//性別
 					intoCompanyCode: data.intoCompanyCode,//入社区分
@@ -317,10 +317,14 @@ class employee extends React.Component {
 					companyMail: data.companyMail,//社内メール
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
-					graduationYearAndMonth: dateUtils.converToLocalTime(data.graduationYearAndMonth,false),//卒業年月
-					//intoCompanyYearAndMonth: data.intoCompanyYearAndMonth,//入社年月
-					//retirementYearAndMonth: data.retirementYearAndMonth,//退職年月
-					//comeToJapanYearAndMonth: data.comeToJapanYearAndMonth,//来日年月
+					graduationYearAndMonth: dateUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
+					temporary_graduationYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
+					intoCompanyYearAndMonth: dateUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),//入社年月
+					temporary_intoCompanyYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
+					retirementYearAndMonth: dateUtils.converToLocalTime(data.retirementYearAndMonth, false),//退職年月
+					temporary_retirementYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
+					comeToJapanYearAndMonth: dateUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),//来日年月
+					temporary_comeToJapanYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
 					nationalityCode: data.nationalityCode,//出身地
 					birthplace: data.birthplace,//出身県
 					phoneNo: data.phoneNo,//携帯電話
@@ -336,7 +340,9 @@ class employee extends React.Component {
 					developLanguage5: data.developLanguage5,//スキール5
 					residenceCode: data.residenceCode,//在留資格
 					residenceCardNo: data.residenceCardNo,//在留カード
-					//stayPeriod: data.stayPeriod,//在留期間
+					stayPeriod: dateUtils.converToLocalTime(data.stayPeriod, false),//在留期間
+					temporary_stayPeriod: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.stayPeriod, false), new Date()),
+
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
 					residentCardInfo: data.residentCardInfo,//在留カード
@@ -385,7 +391,7 @@ class employee extends React.Component {
 		var birthDayTime = date.getTime();
 		var nowTime = new Date().getTime();
 		this.setState({
-			age: Math.ceil((nowTime - birthDayTime) / 31536000000),
+			temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
 			birthday: date
 		});
 		//http://ap.hutime.org/cal/ 西暦と和暦の変換
@@ -729,7 +735,7 @@ class employee extends React.Component {
 	}
 
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_experienceYears, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
@@ -881,7 +887,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM/dd"
 										/>
 									</InputGroup.Append>
-									<FormControl placeholder="0" id="age" value={age} autoComplete="off" onChange={this.valueChange} size="sm" name="age" readOnly />
+									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
 									</InputGroup.Prepend>
