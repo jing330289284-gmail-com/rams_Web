@@ -14,6 +14,7 @@ import CustomerDepartmentTypeMaster from './components/customerDepartmentTypeMas
 import ManageSituation from './components/manageSituation';
 import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInfo from './components/siteInfo';
+import siteSearch from './components/siteSearch';
 import PasswordSet from './components/passwordSet';
 
 
@@ -25,7 +26,7 @@ function App() {
 				<Route path="/subMenu" component={SubMenu} />
 				<Route path="/subCost" component={Subcost} />
 				<Route path="/main" component={main} />
-				<Route path="/employee"  component={Employee} />
+				<Route path="/employee" component={Employee} />
 				<Route path="/employeeSearch" component={EmployeeSearch} />
 				<Route path="/bankInfo" component={BankInfo} />
 				<Route path="/customerInfo" component={CustomerInfo} />
@@ -35,6 +36,7 @@ function App() {
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
 				<Route path="/siteInfo" component={siteInfo} />
 				<Route path="/manageSituation" component={ManageSituation} />
+				<Route path="/siteSearch" component={siteSearch} />
 				<Route path="/passwordSet" component={PasswordSet} />
 			</div>
 		</Router>

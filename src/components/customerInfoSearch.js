@@ -7,7 +7,7 @@ import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/dateUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faSearch , faEdit , faTrash , faList } from '@fortawesome/free-solid-svg-icons';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
@@ -28,13 +28,16 @@ class CustomerInfoSearch extends Component {
       */
     componentDidMount(){
         document.getElementById('shusei').className += " disabled";
+        document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled",true);
+        var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite"]
+        var selectDataList = utils.getPublicDropDown(methodArray);
         //お客様ランキン
-        var level = utils.getdropDown("getLevel");
+        var level = selectDataList[0];
         //会社性質
-        var companyNature = utils.getdropDown("getCompanyNature");
+        var companyNature = selectDataList[1];
         //支払サイト
-        var paymentsiteCode = utils.getdropDown("getPaymentsite");
+        var paymentsiteCode = selectDataList[2];
         for(let i = 0;i<level.length ; i++){
             $("#levelCode").append('<option value="'+level[i].code+'">'+level[i].name+'</option>');
         }
@@ -101,6 +104,7 @@ class CustomerInfoSearch extends Component {
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
             document.getElementById('shusei').className = "btn btn-sm btn-info";
+            document.getElementById('shosai').className = "btn btn-sm btn-info";
             $("#sakujo").attr("disabled",false);
             this.setState({
                 customerNo:row.customerNo,
@@ -108,6 +112,7 @@ class CustomerInfoSearch extends Component {
             })
         } else {
             document.getElementById('shusei').className = "btn btn-sm btn-info disabled";
+            document.getElementById('shosai').className = "btn btn-sm btn-info disabled";
             $("#sakujo").attr("disabled",true);
             this.setState({
                 customerNo:'',
@@ -195,11 +200,14 @@ class CustomerInfoSearch extends Component {
         const { radioValue , customerInfoData }=this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
-            pathname:'/subMenu/customerInfo',state:{actionType:'addTo'},
+            pathname:'/subMenu/customerInfo',state:{actionType:'insert'},
           }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
             pathname:'/subMenu/customerInfo',state:{actionType:'update' , customerNo:this.state.customerNo},
+        }
+        var shosaiPath = {
+            pathname:'/subMenu/customerInfo',state:{actionType:'detail' , customerNo:this.state.customerNo},
         }
         //テーブルの行の選択
         const selectRow = {
@@ -357,8 +365,9 @@ class CustomerInfoSearch extends Component {
                         <Col sm={10}>
                         </Col>
                         <Col sm={2}>
-                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei">修正</Link>
-                                <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} >删除</Button>
+                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>
+                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>
+                                <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
                         </Col>
                     </Row>
                         { radioValue === "haveOperator" ?
@@ -375,6 +384,7 @@ class CustomerInfoSearch extends Component {
                             selectRow={ selectRow }
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
+                            className={"bg-white text-dark"}
                              >
                                 <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
@@ -385,7 +395,7 @@ class CustomerInfoSearch extends Component {
                                 <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options }>
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } className={"bg-white text-dark"}>
                                 <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
