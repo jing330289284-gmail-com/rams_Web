@@ -57,7 +57,7 @@ class SubCost extends Component {
     componentDidMount(){
     var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
     var subCostInfo = this.props.subCostInfo;//父画面のパラメータ（画面既存諸費用情報）
-    var methodArray = ["getInsuranceStatus","getInsurance","getStaffForms","getHousingStatus"];
+    var methodArray = ["getInsurance","getInsurance","getStaffForms","getHousingStatus"];
     //選択肢を取得
     var selectList = utils.getPublicDropDown(methodArray);
     //社会保険フラグ
@@ -385,22 +385,24 @@ class SubCost extends Component {
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">次のボーナス月</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="nextBonusMonth" name="nextBonusMonth"  maxLength="2" readOnly/>
                             <InputGroup.Append>
+                            <InputGroup.Prepend>
                             <DatePicker
                                 selected={this.state.bonusStartDate}
-                                onChange={this.bonusChange}
-                                dateFormat={"yyyy MM"}
-                                autoComplete="on"
+                                onChange={this.bonusChange}  
+                                autoComplete="off"
                                 locale="pt-BR"
                                 showMonthYearPicker
                                 showFullMonthYearPicker
                                 minDate={new Date()}
                                 showDisabledMonthNavigation
-                                className={"dateInput"}
-                                id="NextBonusDate"
+                                className="form-control form-control-sm"
+                                id="customerInfoDatePicker"
+                                name="nextBonusMonth"
+                                dateFormat={"yyyy/MM"}
                                 locale="ja"
                                 />
+                                </InputGroup.Prepend>
                             </InputGroup.Append>
                         </InputGroup>
                     </Col>
@@ -409,7 +411,6 @@ class SubCost extends Component {
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">次回に昇給月</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="nextRaiseMonth" name="nextRaiseMonth" maxLength="2" readOnly/>
                             <InputGroup.Append>
                             <DatePicker
                                 selected={this.state.raiseStartDate}
@@ -421,8 +422,10 @@ class SubCost extends Component {
                                 showFullMonthYearPicker
                                 minDate={new Date()}
                                 showDisabledMonthNavigation
-                                className={"dateInput"}
-                                id="NextBonusDate"
+                                className="form-control form-control-sm"
+                                id="customerInfoDatePicker"
+                                dateFormat={"yyyy/MM"}
+                                name="nextRaiseMonth"
                                 locale="ja"
                                 />
                             </InputGroup.Append>
@@ -510,7 +513,6 @@ class SubCost extends Component {
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">反映年月</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="reflectYearAndMonth" name="reflectYearAndMonth" readOnly/>
                             <InputGroup.Append>
                             <DatePicker
                                 selected={this.state.reflectStartDate}
@@ -522,8 +524,10 @@ class SubCost extends Component {
                                 showFullMonthYearPicker
                                 minDate={new Date()}
                                 showDisabledMonthNavigation
-                                className={"dateInput"}
-                                id="reflectStartDate"
+                                className="form-control form-control-sm"
+                                id="customerInfoDatePicker"
+                                dateFormat={"yyyy/MM"}
+                                name="reflectYearAndMonth"
                                 locale="ja"
                                 /><font id="mark" color="red"
 				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
@@ -564,7 +568,7 @@ class SubCost extends Component {
                         </div>
                     </Col>
                 </Row>
-            <div className="container col-9">
+            <div>
                 <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } data={subCostList}>
                     <TableHeaderColumn isKey dataField='datePeriod' headerAlign='center' dataAlign='center' width='190'>年月</TableHeaderColumn>
                     <TableHeaderColumn dataField='employeeFormName' headerAlign='center' dataAlign='center' width="130">社員形式</TableHeaderColumn>
