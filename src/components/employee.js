@@ -803,7 +803,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordSetTo={this.passwordSetInfoGet} />					</Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordToroku={this.passwordSetInfoGet} />					</Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
