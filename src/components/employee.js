@@ -306,8 +306,8 @@ class employee extends React.Component {
 					furigana1: data.furigana1,//　　カタカナ
 					furigana2: data.furigana2,//　　カタカナ
 					alphabetName: data.alphabetName,//　　ローマ字
-					birthday: dateUtils.converToLocalTime(data.birthday, true) ,//年齢
-					temporary_age: dateUtils.converToLocalTime(data.birthday, true)===""? "":Math.ceil((new Date().getTime() - dateUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
+					birthday: dateUtils.converToLocalTime(data.birthday, true),//年齢
+					temporary_age: dateUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - dateUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,//和暦
 					genderStatus: data.genderStatus,//性別
 					intoCompanyCode: data.intoCompanyCode,//入社区分
@@ -876,7 +876,7 @@ class employee extends React.Component {
 										<DatePicker
 											selected={this.state.birthday}
 											onChange={this.inactiveBirthday}
-											autoComplete="on"
+											autoComplete="off"
 											locale="ja"
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
@@ -1027,6 +1027,8 @@ class employee extends React.Component {
 											showFullMonthYearPicker
 											id="datePicker"
 											className="form-control form-control-sm"
+											autoComplete="off"
+
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_graduationYearAndMonth" value={temporary_graduationYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -1048,6 +1050,8 @@ class employee extends React.Component {
 											showFullMonthYearPicker
 											id="datePicker"
 											className="form-control form-control-sm"
+											autoComplete="off"
+
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -1069,6 +1073,8 @@ class employee extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
+											autoComplete="off"
+
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -1091,6 +1097,8 @@ class employee extends React.Component {
 											showFullMonthYearPicker
 											id="datePicker"
 											className="form-control form-control-sm"
+											autoComplete="off"
+
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -1202,6 +1210,8 @@ class employee extends React.Component {
 											showFullMonthYearPicker
 											id="datePicker"
 											className="form-control form-control-sm"
+											autoComplete="off"
+
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_experienceYears" value={temporary_experienceYears} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
@@ -1317,6 +1327,8 @@ class employee extends React.Component {
 											showFullMonthYearPicker
 											id="datePicker"
 											className="form-control form-control-sm"
+											autoComplete="off"
+
 										/>
 
 									</InputGroup.Append>
