@@ -148,7 +148,7 @@ export function getCaret(direction) {
 /**
  * 前到后时间格式
  * @param {*} datetime 日本时间时间戳
- * @param {*} flag 判断是年月还是年月日
+ * @param {*} flag 判断是年月(false)还是年月日(true)
  * @return 年月或年月日（没有/）或空
  */
 export function formateDate(datetime, flag) {
@@ -171,7 +171,7 @@ export function formateDate(datetime, flag) {
 /**
  * 后到前时间格式
  * @param {*} serverDate 数据库的时间
- * @param {*} flag 判断是年月还是年月日
+ * @param {*} flag 判断是年月(false)还是年月日(true)
  * @retur 日本时间戳
  */
 export function converToLocalTime(serverDate, flag) {
