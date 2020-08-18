@@ -21,7 +21,7 @@ class CustomerInfoSearch extends Component {
         emploryeesPerPage: 5,//毎ページの項目数
         customerNo:'',//選択した列のお客様番号
         rowNo:'',//選択した行番号
-        businessStartDate: new Date(),//取引開始の期日
+        businessStartDate: '',//取引開始の期日
      }
      /**
       * 画面の初期化
@@ -318,12 +318,11 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="yyyydd" id="businessStartDate" readOnly name="businessStartDate" />
                                 <DatePicker
                                 selected={this.state.businessStartDate}
                                 onChange={this.businessStartDateChange}
-                                dateFormat={"yyyy MM"}
-                                autoComplete="on"
+                                dateFormat={"yyyy/MM"}
+                                autoComplete="off"
                                 locale="pt-BR"
                                 showYearDropdown
                                 yearDropdownItemNumber={15}
@@ -332,8 +331,9 @@ class CustomerInfoSearch extends Component {
                                 showFullMonthYearPicker
                                 // minDate={new Date()}
                                 showDisabledMonthNavigation
-                                className={"dateInput"}
-                                id="businessStartDateSelect"
+                                className="form-control form-control-sm"
+                                id="customerInfoSearchDatePicker"
+                                name="businessStartDate"
                                 locale="ja"
                                 />
                         </InputGroup>
