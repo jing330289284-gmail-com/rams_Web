@@ -28,7 +28,7 @@ class siteInfo extends Component {
 		customerMaster: [],
 		developLanguageMaster: []
 	};
-
+	//联想框用
 	handleChange = selectedOption => {
 		this.setState({ selectedOption });
 		console.log(`Option selected:`, selectedOption);
@@ -43,23 +43,40 @@ class siteInfo extends Component {
 		$("#payOffRange2").prop('disabled', false);
 		this.onchange(event);
 
-		if (event.target.value == 0) {
+		if (event.target.value === 0) {
 			this.setState({ "payOffRange2": event.target.value })
 			$("#payOffRange2").prop('disabled', true);
 		}
 	}
 	workState = event => {
-		$("#endDateCalendar").toggle(true);
+		$("#admissionEndDate").attr("readOnly", false);
+		this.setState({ "admissionEndDate": '' })
 		this.onchange(event);
-		if (event.target.value == 1) {
-			$("#endDateCalendar").toggle(false);
+		if (event.target.value === 0) {
+			$("#admissionEndDate").attr("readOnly", true);
 		}
 	}
 	state = {
-		bonusStartDate: new Date(),
-		raiseStartDate: new Date(),
+		admissionStartDate: new Date(),
+		admissionEndDate: new Date()
 	}
-
+	//　入場年月
+	admissionStartDate = (date) => {
+		this.setState(
+			{
+				admissionStartDate: date,
+				time: dateUtils.getFullYearMonth(date, new Date())
+			}
+		);
+	};
+	//　退場年月
+	admissionEndDate = (date) => {
+		this.setState(
+			{
+				admissionEndDate: date,
+			}
+		);
+	};
 	//全部のドロップダウン
 	getDropDowns = () => {
 		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage"]
@@ -75,49 +92,6 @@ class siteInfo extends Component {
 
 			}
 		);
-	};
-	//日期更改
-	inactive = date => {
-		$("#time").val("0年0月");
-		this.setState({
-			bonusStartDate: date,
-		});
-		$("#admissionStartDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
-		var today = new Date();
-		var year = today.getFullYear() - date.getFullYear();
-		var month = today.getMonth() - date.getMonth();
-		var day = today.getDate() - date.getDate();
-		if (year >= 0) {
-			if (year > 0 && month < 0) {
-				if (day > 0) {
-					$("#time").val((year - 1) + "年" + (month + 12) + "月");
-				}
-				else {
-					$("#time").val((year - 1) + "年" + (month + 11) + "月");
-				}
-			}
-			if (month >= 0) {
-
-				if (day >= 0) {
-					$("#time").val(year + "年" + month + "月");
-				}
-				else {
-					if (year == 0 && month == 0) {
-						$("#time").val("0年0月");
-					}
-					else {
-						$("#time").val(year + "年" + (month - 1) + "月");
-					}
-				}
-			}
-		}
-	};
-	//日期更改
-	raiseChange = date => {
-		this.setState({
-			raiseStartDate: date,
-		});
-		$("#admissionEndDate").val(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate());
 	};
 	// 页面加载
 	componentDidMount() {
@@ -141,7 +115,7 @@ class siteInfo extends Component {
 			return false;
 		}
 		if ('0' != $("#payOffRange1").val()) {
-			if ($("#payOffRange2").val() == $("#payOffRange1").val()) {
+			if ($("#payOffRange2").val() === $("#payOffRange1").val()) {
 				alert("固定を選択してくださいます");
 				return false;
 			}
@@ -151,9 +125,10 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
+		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
 			.then(function(result) {
-				if (result.data == true) {
+				if (result.data === true) {
 					alert("登录完成");
 				} else {
 					alert("登录错误，请检查程序");
@@ -173,7 +148,7 @@ class siteInfo extends Component {
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 		};
-		const { payOffRange1, payOffRange2, workState, products, siteRoleCode, levelCode, customer, topCustomer, developLanguage } = this.state;
+		const { payOffRange1, payOffRange2, workState, products, siteRoleCode, levelCode, customer, topCustomer, developLanguage, time } = this.state;
 
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
@@ -294,7 +269,8 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Select
-											name="developLanguage"
+											name="developLanguageCode"
+											id="developLanguageCode"
 											value={developLanguage}
 											onChange={this.handleChange}
 											options={this.state.developLanguageMaster}
@@ -315,8 +291,6 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-
-
 							</Row>
 							<Row>
 								<Col sm={2}>
@@ -333,19 +307,16 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="admissionStartDate" name="admissionStartDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.onchange} readOnly />
-										<InputGroup.Append>
-											<DatePicker
-												selected={this.state.raiseStartDate}
-												onChange={this.inactive}
-												autoComplete="on"
-												locale="pt-BR"
-												className={"dateInput"}
-												id="beginDate"
-												locale="ja"
-											/>
-										</InputGroup.Append>
-										<FormControl id="time" name="time" placeholder="0" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<DatePicker
+											selected={this.state.admissionStartDate}
+											onChange={this.admissionStartDate}
+											dateFormat="yyyy/MM/dd"
+											name="admissionStartDate"
+											className="form-control form-control-sm"
+											id="datePicker"
+											locale="ja"
+										/>
+										<FormControl id="time" name="time" value={time} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -354,8 +325,8 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="workState" name="workState" value={workState} onChange={this.workState}>
-											<option value="0">終了</option>
-											<option value="1">稼働中</option>
+											<option value="0">稼働中</option>
+											<option value="1">終了</option>
 										</Form.Control>
 									</InputGroup>
 								</Col>
@@ -364,18 +335,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="admissionEndDate" name="admissionEndDate" placeholder="YYYY/MM/DD" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.onchange} readOnly />
-										<InputGroup.Append>
+										<InputGroup.Prepend>
 											<DatePicker
-												selected={this.state.raiseStartDate}
-												onChange={this.raiseChange}
-												autoComplete="on"
-												locale="pt-BR"
-												className={"dateInput"}
-												id="endDateCalendar"
+												selected={this.state.admissionEndDate}
+												onChange={this.admissionEndDate}
+												dateFormat="yyyy/MM/dd"
+												name="admissionEndDate"
+												className="form-control form-control-sm"
+												id="admissionEndDate"
 												locale="ja"
+												readOnly={true}
 											/>
-										</InputGroup.Append>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 							</Row>
@@ -435,7 +406,7 @@ class siteInfo extends Component {
 						<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
 						<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
 						<TableHeaderColumn width='60' dataField='unitPrice'>単価</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='developLanguage'>言語</TableHeaderColumn>
+						<TableHeaderColumn width='90' dataField='developLanguageName'>言語</TableHeaderColumn>
 						<TableHeaderColumn width='60' dataField='siteRoleName'>役割</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
