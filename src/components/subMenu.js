@@ -173,6 +173,15 @@ class SubMenu extends Component {
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
+								<ListGroup.Item variant="secondary">
+									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+									<Accordion.Collapse eventKey="8">
+										<ListGroup variant="flush">
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />履歴検索</Link></ListGroup.Item>
+										</ListGroup>
+									</Accordion.Collapse>
+								</ListGroup.Item>
 							</Accordion>
 						</ListGroup>
 					</Col>

@@ -154,7 +154,7 @@ class CustomerInfo extends Component {
                 $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
                 $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
                 $("#businessStartDate").val(customerInfoMod.businessStartDate);
-                $("#headOffice").val(customerInfoMod.headOffice);
+                $("#stationCode").val(customerInfoMod.stationCode);
                 $("#establishmentDate").val(customerInfoMod.establishmentDate);
                 $("#levelCode").val(customerInfoMod.levelCode);
                 $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
@@ -345,6 +345,7 @@ class CustomerInfo extends Component {
             $("#responsiblePerson").val(row.responsiblePerson);
             $("#customerDepartmentMail").val(row.customerDepartmentMail);
             $("#customerDepartmentName").val(row.customerDepartmentCode);
+            $("input[name='customerDepartmentName']").val(row.customerDepartmentCode);
             this.setState({
                 rowNo:row.rowNo,
                 customerDepartmentCode:row.customerDepartmentCode,
@@ -427,7 +428,7 @@ class CustomerInfo extends Component {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
         }
         const ExampleCustomInput = ({ value, onClick }) => (
-            <Button onClick={onClick} block size="sm" variant="secondary">
+            <Button onClick={onClick} block size="sm" id="dateButton" variant="secondary">
               {value.length > 0 ? value :  "時間を選択してください"}
             </Button>
           );
@@ -545,7 +546,7 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：秋葉原駅" maxLength="20" id="headOffice" name="headOffice" />
+                                <Form.Control placeholder="例：秋葉原駅" maxLength="20" id="stationCode" name="stationCode" />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>

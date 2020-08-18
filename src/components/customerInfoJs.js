@@ -7,7 +7,7 @@ const axios = require('axios');
 export function setDisabled(){
     $("#customerNo").attr("disabled",true);
     $("#customerName").attr("disabled",true);
-    $("#headOffice").attr("disabled",true);
+    $("#stationCode").attr("disabled",true);
     $("#establishmentDate").attr("disabled",true);
     $("#levelCode").attr("disabled",true);
     $("#listedCompany").attr("disabled",true);
@@ -33,13 +33,14 @@ export function setDisabled(){
     $("#customerDepartmentMail").attr("disabled",true);
     $("#toBankInfo").attr("disabled",false);
     $("#toCustomerInfo").attr("disabled",false);
+    $("#dateButton").attr("disabled",true);
 }
 /**
  * リセットブタン
  */
 export function reset(){
   $("#customerName").val("");
-  $("#headOffice").val("");
+  $("#stationCode").val("");
   $("#establishmentDate").val("");
   $("#levelCode").val("0");
   $("#listedCompany").val("0");

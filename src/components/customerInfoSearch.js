@@ -273,7 +273,7 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="秋葉原" id="headOffice" name="headOffice"/>
+                                <Form.Control placeholder="秋葉原" id="stationCode" name="stationCode"/>
                         </InputGroup>
                     </Col>
                     <Col>
@@ -390,7 +390,7 @@ class CustomerInfoSearch extends Component {
                                 <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='stationCode'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
                                 <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
                                 <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
@@ -400,7 +400,7 @@ class CustomerInfoSearch extends Component {
                                 <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='headOffice'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='stationCode'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
                                 <TableHeaderColumn dataField='companyNatureName'  headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
                                 <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                             </BootstrapTable>

@@ -57,7 +57,7 @@ class SubCost extends Component {
     componentDidMount(){
     var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
     var subCostInfo = this.props.subCostInfo;//父画面のパラメータ（画面既存諸費用情報）
-    var methodArray = ["getInsurance","getInsurance","getStaffForms","getHousingStatus"];
+    var methodArray = ["getInsurance","getBonus","getStaffForms","getHousingStatus"];
     //選択肢を取得
     var selectList = utils.getPublicDropDown(methodArray);
     //社会保険フラグ
