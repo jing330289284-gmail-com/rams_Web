@@ -27,29 +27,43 @@ class SubCost extends Component {
      * ボーナス期日の変化
      */
     bonusChange = date => {
-    this.setState({
-        bonusStartDate: date,
-    });
-    $("#nextBonusMonth").val(date.getMonth() + 1);
-    
+        if(date !== null){
+            this.setState({
+                bonusStartDate: date,
+            });
+        }else{
+            this.setState({
+                bonusStartDate: '',
+            });
+        }
     };
     /**
      * 昇給期日の変化
      */
     raiseChange = date => {
-    this.setState({
-        raiseStartDate: date,
-    });
-    $("#nextRaiseMonth").val(date.getMonth() + 1);
+        if(date !== null){
+            this.setState({
+                raiseStartDate: date,
+            });
+        }else{
+            this.setState({
+                raiseStartDate: '',
+            });
+        }
     };
     /**
      * 昇給期日の変化
      */
     reflectStartDateChange = date => {
-        this.setState({
-            reflectStartDate: date,
-    });
-    $("#reflectYearAndMonth").val(utils.setFullYearMonth(date));
+        if(date !== null){
+            this.setState({
+                reflectStartDate: date,
+            });
+        }else{
+            this.setState({
+                reflectStartDate: '',
+            });
+        }
     };
      /**
      * 画面の初期化
@@ -97,15 +111,17 @@ class SubCost extends Component {
         $("#lastTimeBonusAmount").val(subCostInfo.lastTimeBonusAmount);
         $("#scheduleOfBonusAmount").val(subCostInfo.scheduleOfBonusAmount);
         $("#waitingCost").val(subCostInfo.waitingCost);
-        $("#nextBonusMonth").val(subCostInfo.nextBonusMonth);
-        $("#nextRaiseMonth").val(subCostInfo.nextRaiseMonth);
+        this.setState({
+            bonusStartDate:utils.converToLocalTime(subCostInfo.nextBonusMonth,false),
+            raiseStartDate:utils.converToLocalTime(subCostInfo.nextRaiseMonth,false),
+            reflectStartDate:utils.converToLocalTime(subCostInfo.reflectYearAndMonth,false),
+        })
         $("#leaderAllowanceAmount").val(subCostInfo.leaderAllowanceAmount);
         $("#otherAllowance").val(subCostInfo.otherAllowance);
         $("#otherAllowanceAmount").val(subCostInfo.otherAllowanceAmount);
         $("#subCostRemark").val(subCostInfo.remark);
         $("#totalAmount").val(subCostInfo.totalAmount);
         $("#subCostEmployeeFormCode").val(subCostInfo.employeeFormCode);
-        $("#reflectYearAndMonth").val(subCostInfo.totalAmount);
         $("#housingStatus").val(subCostInfo.housingStatus);
         $("#housingAllowance").val(subCostInfo.housingAllowance);
     }else{
@@ -160,6 +176,9 @@ class SubCost extends Component {
             $.each(formArray,function(i,item){
                 subCostInfo[item.name] = item.value;     
             });
+            subCostInfo["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate,false);
+            subCostInfo["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate,false);
+            subCostInfo["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate,false);
             subCostInfo["employeeFormCode"] = $("#subCostEmployeeFormCode").val();
             subCostInfo["remark"] = $("#subCostRemark").val();
             this.props.subCostTokuro(subCostInfo);
