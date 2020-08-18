@@ -145,7 +145,12 @@ export function getCaret(direction) {
 	}
 	return "▲/▼";
 }
-
+/**
+ * 前到后时间格式
+ * @param {*} datetime 日本时间时间戳
+ * @param {*} flag 判断是年月还是年月日
+ * @return 年月或年月日（没有/）或空
+ */
 export function formateDate(datetime, flag) {
 	if (datetime !== undefined && datetime !== null && datetime !== "") {
 		function addDateZero(num) {
@@ -163,7 +168,12 @@ export function formateDate(datetime, flag) {
 		return "";
 	}
 }
-
+/**
+ * 后到前时间格式
+ * @param {*} serverDate 数据库的时间
+ * @param {*} flag 判断是年月还是年月日
+ * @retur 日本时间戳
+ */
 export function converToLocalTime(serverDate, flag) {
 	if (serverDate !== undefined && serverDate !== null && serverDate !== "") {
 		if (flag === true) {
