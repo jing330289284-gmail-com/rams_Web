@@ -48,9 +48,9 @@ class employee extends React.Component {
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
-		accountInfo: {},//口座情報のデータ
-		subCostInfo: {},//諸費用のデータ
-		siteInfo: {},//現場情報のデータ
+		accountInfo: null,//口座情報のデータ
+		subCostInfo: null,//諸費用のデータ
+		siteInfo: null,//現場情報のデータ
 	};
 	//　　リセット
 	resetBook = () => {
@@ -795,8 +795,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} siteInfoTo={this.siteInfoGet} />
-					</Modal.Body>
+						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" siteInfoTo={this.siteInfoGet} />					</Modal.Body>
 				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
@@ -804,8 +803,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} passwordSetTo={this.passwordSetInfoGet} />
-					</Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordSetTo={this.passwordSetInfoGet} />					</Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
