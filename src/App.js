@@ -9,7 +9,7 @@ import EmployeeSearch from './components/employeeSearch';
 import BankInfo from './components/bankInfo';
 import CustomerInfo from './components/customerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
-import TechnologyTypeMaster from './components/technologyTypeMaster';
+import masterInsert from './components/masterInsert';
 import CustomerDepartmentTypeMaster from './components/customerDepartmentTypeMaster';
 import ManageSituation from './components/manageSituation';
 import CustomerInfoSearch from './components/customerInfoSearch';
@@ -32,7 +32,7 @@ function App() {
 				<Route path="/customerInfo" component={CustomerInfo} />
 				<Route path="/topCustomerInfo" component={TopCustomerInfo} />
 				<Route path="/customerDepartmentTypeMaster" component={CustomerDepartmentTypeMaster} />
-				<Route path="/technologyTypeMaster" component={TechnologyTypeMaster} />
+				<Route path="/masterInsert" component={masterInsert} />
 				<Route path="/customerInfoSearch" component={CustomerInfoSearch} />
 				<Route path="/siteInfo" component={siteInfo} />
 				<Route path="/manageSituation" component={ManageSituation} />

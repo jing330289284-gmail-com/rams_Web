@@ -14,7 +14,7 @@ import EmployeeSearch from './employeeSearch';
 import BankInfo from './bankInfo';
 import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
-import TechnologyTypeMaster from './technologyTypeMaster';
+import masterInsert from './masterInsert';
 import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
@@ -155,13 +155,13 @@ class SubMenu extends Component {
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />マスタ登録</Accordion.Toggle>
+									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />マスター</Accordion.Toggle>
 									<Accordion.Collapse eventKey="6">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open} />言語マスター</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />資格マスター</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />部署マスター</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />職位マスター</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />マスター登録</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />マスター削除</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
@@ -169,7 +169,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage} />他の設定</Accordion.Toggle>
 									<Accordion.Collapse eventKey="7">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/technologyTypeMaster"><img alt="title" src={open} />システム設定</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />システム設定</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
@@ -203,8 +203,8 @@ class SubMenu extends Component {
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
-										<Route exact path={`${this.props.match.url}/technologyTypeMaster`} component={TechnologyTypeMaster} />
 										<Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
+										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
 										<Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
 									</div>
 								</div>

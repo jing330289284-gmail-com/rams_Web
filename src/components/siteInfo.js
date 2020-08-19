@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -97,7 +97,7 @@ class siteInfo extends Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						products: response.data
+						siteData: response.data
 					});
 				}
 			}).catch((error) => {
@@ -146,7 +146,7 @@ class siteInfo extends Component {
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 		};
-		const { payOffRange1, payOffRange2, workState, products, employeeName, siteRoleCode, levelCode, customer, topCustomer, developLanguage, time } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, employeeName, siteRoleCode, levelCode, customer, topCustomer, developLanguage, time } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -275,6 +275,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Select
+											id="customerNo"
 											name="customerNo"
 											value={customer}
 											onChange={this.handleChange}
@@ -288,6 +289,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Select
+											id="topCustomerNo"
 											name="topCustomerNo"
 											value={topCustomer}
 											onChange={this.handleChange}
@@ -413,17 +415,30 @@ class siteInfo extends Component {
 							</Row>
 						</Form.Group>
 					</Form>
-					<BootstrapTable selectRow={selectRow} data={products} pagination={true} options={this.options} >
-						<TableHeaderColumn dataField='workDate' isKey>期間</TableHeaderColumn>
-						<TableHeaderColumn dataField='systemName'>システム</TableHeaderColumn>
-						<TableHeaderColumn dataField='location'>場所</TableHeaderColumn>
-						<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
-						<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
-						<TableHeaderColumn dataField='unitPrice'>単価</TableHeaderColumn>
-						<TableHeaderColumn dataField='developLanguageName'>言語</TableHeaderColumn>
-						<TableHeaderColumn dataField='siteRoleName'>役割</TableHeaderColumn>
-						<TableHeaderColumn dataField='remark'>備考</TableHeaderColumn>
-					</BootstrapTable>
+					<Row>
+						<Col sm={10}>
+						</Col>
+						<Col sm={2}>
+							<div style={{ "float": "right" }}>
+								<Button variant="info" size="sm" id="revise"><FontAwesomeIcon icon={faEdit} />修正</Button>
+								{' '}
+								<Button variant="info" size="sm" id="delete"><FontAwesomeIcon icon={faEdit} />削除</Button>
+							</div>
+						</Col>
+					</Row>
+					<div>
+						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} >
+							<TableHeaderColumn dataField='workDate' isKey>期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName'>システム</TableHeaderColumn>
+							<TableHeaderColumn dataField='location'>場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice'>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName'>言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName'>役割</TableHeaderColumn>
+							<TableHeaderColumn dataField='remark'>備考</TableHeaderColumn>
+						</BootstrapTable>
+					</div>
 				</div>
 			</div >
 		)
