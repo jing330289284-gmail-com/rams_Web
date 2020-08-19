@@ -301,7 +301,7 @@ class employeeSearch extends React.Component {
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
-				から {start} まで {to}, 総計{total}
+				{start}から  {to}まで , 総計{total}
 			</p>
 		);
 	}

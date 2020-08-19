@@ -189,8 +189,8 @@ body {
   background-size: 25%;
 }
 
-.modal-jusho {
-  width: 40%;
+.modal-passwordSet {
+  width: 30%;
   max-width: none !important;
 }
 
@@ -200,12 +200,12 @@ body {
 }
 
 .modal-subCost {
-  width: 50%;
+  width: 90%;
   max-width: none !important;
 }
 
 .modal-siteInfo {
-  width: 70%;
+  width: 80%;
   max-width: none !important;
 }
 

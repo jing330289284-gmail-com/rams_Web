@@ -31,25 +31,27 @@ class PasswordSet extends Component {
             document.getElementById("passwordEmployeeNo").innerHTML =  this.props.employeeNo;
         // }
         if(actionType === "update"){
-            if(password !== null && password !== ''){
-                $("#newPassword").val(password);
-            }
-            document.getElementById("passwordSetText").innerHTML = "既存パスワード";
-        }else{
-            $("#newPassword").attr("disabled",true);
-            $("#passwordCheck").attr("disabled",true);
-            if(password !== null && password !== ''){
-                $("#password").val(password);
-            }
-        }   
+            // if(password !== null && password !== ''){
+            //     $("#newPassword").val(password);
+            // }
+            document.getElementById("passwordSetText").innerHTML = "新しいパスワード";
+        }
+        // else{
+        //     $("#newPassword").attr("disabled",true);
+        //     $("#passwordCheck").attr("disabled",true);
+        //     if(password !== null && password !== ''){
+        //         $("#password").val(password);
+        //     }
+        // }   
     }
     /**
      * パスワード登録
      */
     passwordToroku=()=>{
         var actionType=this.props.actionType;
-        if(actionType =='update'){
         if($("#newPassword").val() === $("#passwordCheck").val()){
+        if(actionType =='update'){
+        
             // if(this.state.fatherMenu === "subMenu"){//サブメニューからの場合
             //     var emp = {};
             //     emp["employeeNo"] = sessionStorage.getItem('employeeNo');
@@ -71,14 +73,18 @@ class PasswordSet extends Component {
             // }else{//社員情報登録からの場合
                 this.props.passwordToroku($("#newPassword").val());
             //}
-        }else{
-            document.getElementById("passwordSetErorMsg").style = "visibility:visible";
-            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード再確認と新しいパスワードが間違いため、チェックしてください"
+            
+        }
+        if(actionType =='insert'){
+            this.props.passwordToroku($("#newPassword").val());
         }
     }
-    if(actionType =='insert'){
-        this.props.passwordToroku($("#oldPassword").val());
-    }
+        else{
+            document.getElementById("passwordSetErorMsg").style = "visibility:visible";
+            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード再確認と新しいパスワードが間違いため、チェックしてください"
+     }
+    
+   
 }
     render() {
         return (
@@ -118,18 +124,8 @@ class PasswordSet extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="passwordSetText">パスワード設定</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control type="password" id="oldPassword" name="oldPassword" /><font  color="red"
+                                <Form.Control type="password" id="newPassword" name="newPassword" /><font  color="red"
 				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
-                        </InputGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroup-sizing-sm">新しいパスワード</InputGroup.Text>
-                            </InputGroup.Prepend>
-                                <Form.Control type="password" id="newPassword" name="newPassword" />
                         </InputGroup>
                     </Col>
                 </Row>
@@ -143,6 +139,16 @@ class PasswordSet extends Component {
                         </InputGroup>
                     </Col>
                 </Row>
+                {/* <Row>
+                    <Col>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroup-sizing-sm">パスワード再確認</InputGroup.Text>
+                            </InputGroup.Prepend>
+                                <Form.Control type="password" id="passwordCheck" name="passwordCheck" />
+                        </InputGroup>
+                    </Col>
+                </Row> */}
                 <Row>
                     <Col sm={3}></Col>
                         <Col sm={3} className="text-center">

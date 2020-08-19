@@ -97,6 +97,8 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
+		alert(this.state.subCostInfo)
+		console.log(this.state.subCostInfo);
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -145,10 +147,9 @@ class employee extends React.Component {
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
 			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
-			accountInfo: this.state.accountInfo,
-			subCostInfo: this.state.subCostInfo,
-			siteInfo: this.state.siteInfo,
-
+			accountInfo: this.state.accountInfo,//口座情報
+			subCostInfo: this.state.subCostInfo,//諸費用
+			siteInfo: this.state.siteInfo,//現場情報
 		};
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
 			.then(response => {
@@ -342,7 +343,6 @@ class employee extends React.Component {
 					residenceCardNo: data.residenceCardNo,//在留カード
 					stayPeriod: dateUtils.converToLocalTime(data.stayPeriod, false),//在留期間
 					temporary_stayPeriod: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.stayPeriod, false), new Date()),
-
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
 					residentCardInfo: data.residentCardInfo,//在留カード
@@ -388,24 +388,34 @@ class employee extends React.Component {
 	};
 	//　　年齢と和暦
 	inactiveBirthday = date => {
-		var birthDayTime = date.getTime();
-		var nowTime = new Date().getTime();
-		this.setState({
-			temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
-			birthday: date
-		});
-		//http://ap.hutime.org/cal/ 西暦と和暦の変換
-		const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-		axios.get("http://ap.hutime.org/cal/?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1")
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						japaneseCalendar: response.data
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
+		if (date !== undefined && date !== null && date !== "") {
+			var birthDayTime = date.getTime();
+			var nowTime = new Date().getTime();
+			this.setState({
+				temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
+				birthday: date
 			});
+			//http://ap.hutime.org/cal/ 西暦と和暦の変換
+			const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+			axios.get("http://ap.hutime.org/cal/?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1")
+				.then(response => {
+					if (response.data != null) {
+						this.setState({
+							japaneseCalendar: response.data
+						});
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		} else {
+			this.setState({
+				temporary_age: "0",
+				birthday: "",
+				japaneseCalendar: ""
+			});
+		}
+
+
 	};
 	//　　卒業年月
 	inactiveGraduationYearAndMonth = date => {
@@ -485,12 +495,12 @@ class employee extends React.Component {
 		ポップアップ口座情報の取得
 	 */
 
-	accountInfoGet = (kozaTokuro) => {
+	accountInfoGet = (accountTokuro) => {
 		this.setState({
-			accountInfo: kozaTokuro,
+			accountInfo: accountTokuro,
 			showBankInfoModal: false,
 		})
-		console.log(kozaTokuro);
+		console.log(accountTokuro);
 	}
 
 	/* 
@@ -777,7 +787,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} kozaTokuro={this.accountInfoGet} />
+						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/*　 諸費用 */}
@@ -786,7 +796,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} subCostTokuro={this.subCostInfoGet} />
+						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName+this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/*　 現場情報 */}
@@ -795,15 +805,15 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" siteInfoTo={this.siteInfoGet} />					</Modal.Body>
+						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName+this.state.employeeLastName} siteInfoTo={this.siteInfoGet} />	</Modal.Body>
 				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-siteInfo">
+					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-passwordSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordToroku={this.passwordSetInfoGet} />					</Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
