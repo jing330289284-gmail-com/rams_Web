@@ -10,7 +10,7 @@ import { faSave, faUndo, faSearch , faEdit } from '@fortawesome/free-solid-svg-i
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import axios from 'axios';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 registerLocale('ja', ja);
 
 class SubCost extends Component {

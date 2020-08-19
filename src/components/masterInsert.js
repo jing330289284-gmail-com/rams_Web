@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import * as dateUtils from './utils/dateUtils.js';
+import * as publicUtils from './utils/publicUtils.js';
 import { Row, Form, Col, InputGroup, Button } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
@@ -22,7 +22,7 @@ class masterInsert extends Component {
 	//全部のドロップダウン
 	getDropDowns = () => {
 		var methodArray = ["getMasterStatus"]
-		var data = dateUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
 				masterStatus: data[0],//　精算時間

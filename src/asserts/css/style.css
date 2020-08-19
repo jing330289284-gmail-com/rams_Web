@@ -32,28 +32,8 @@
   line-height: 40px;
   font-size: 0px;
   overflow: hidden;
-  /*  background: url(a1.png) no-repeat; */
-  /* background-size:40px 30px; */
 }
 
-/*.arrow {
-    width: 0;
-    height: 0;
-    float: right;
-    margin-top: 5px;
-    border-left: px solid transparent;
-    border-right: 5px solid transparent;
-    display: inline-block;
-}
-
-.arrow-up {
-    border-bottom: 10px solid white;
-}
-
-.arrow-down {
-    border-top: 10px solid white;
-}
-*/
 
 body {
   font-family: Helvetica, sans-serif;

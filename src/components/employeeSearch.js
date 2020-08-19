@@ -11,7 +11,7 @@ import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
-import * as dateUtils from './utils/dateUtils.js';
+import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
 
 registerLocale("ja", ja);
@@ -87,7 +87,7 @@ class employeeSearch extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement1Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement1Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -115,7 +115,7 @@ class employeeSearch extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement2Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement2Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -131,7 +131,7 @@ class employeeSearch extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement3Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement3Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -172,7 +172,7 @@ class employeeSearch extends React.Component {
 	//全部のドロップダウン
 	getDropDownｓ = () => {
 		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys"]
-		var data = dateUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
 				genderStatuss: data[0],//　性別区別
@@ -511,8 +511,8 @@ class employeeSearch extends React.Component {
 												onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
 												onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
 												onSuggestionSelected={this.onDlt1SuggestionSelected}
-												getSuggestionValue={dateUtils.getSuggestionDlt}
-												renderSuggestion={dateUtils.renderSuggestion}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
 												inputProps={dlt1InputProps}
 											/>
 											<Autosuggest
@@ -520,8 +520,8 @@ class employeeSearch extends React.Component {
 												onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
 												onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
 												onSuggestionSelected={this.onDlt2SuggestionSelected}
-												getSuggestionValue={dateUtils.getSuggestionDlt}
-												renderSuggestion={dateUtils.renderSuggestion}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
 												inputProps={dlt2InputProps}
 											/>
 											<Autosuggest
@@ -529,8 +529,8 @@ class employeeSearch extends React.Component {
 												onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
 												onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
 												onSuggestionSelected={this.onDlt3SuggestionSelected}
-												getSuggestionValue={dateUtils.getSuggestionDlt}
-												renderSuggestion={dateUtils.renderSuggestion}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
 												inputProps={dlt3InputProps}
 											/>
 										</InputGroup.Prepend>
@@ -606,12 +606,12 @@ class employeeSearch extends React.Component {
 				</div>
 				<div >
 					<BootstrapTable data={employeeList} selectRow={selectRowProp} className={"bg-white text-dark"} pagination={true} options={this.options}>
-						<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={dateUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' dataField='employeeFristName'>社員名</TableHeaderColumn>
 						<TableHeaderColumn width='150' dataField='furigana'>カタカナ</TableHeaderColumn>
 						<TableHeaderColumn width='90' dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={dateUtils.getCaret}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
 						<TableHeaderColumn width='90' dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 						<TableHeaderColumn width='125' dataField='phoneNo'>電話番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' dataField='nearestStation'>寄り駅</TableHeaderColumn>

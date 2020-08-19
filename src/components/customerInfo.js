@@ -12,7 +12,7 @@ import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';

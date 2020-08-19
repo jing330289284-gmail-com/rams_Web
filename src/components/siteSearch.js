@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
-import * as dateUtils from './utils/dateUtils.js';
+import * as publicUtils from './utils/publicUtils.js';
 import Select from 'react-select';
 
 registerLocale('ja', ja);
@@ -64,7 +64,7 @@ class siteSearch extends Component {
 		this.setState(
 			{
 				admissionStartDate: date,
-				time: dateUtils.getFullYearMonth(date, new Date())
+				time: publicUtils.getFullYearMonth(date, new Date())
 			}
 		);
 	};
@@ -79,7 +79,7 @@ class siteSearch extends Component {
 	//全部のドロップダウン
 	getDropDowns = () => {
 		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage"]
-		var data = dateUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
 				payOffRangeStatus: data[0],//　精算時間
