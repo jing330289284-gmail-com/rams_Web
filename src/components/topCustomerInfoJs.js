@@ -12,6 +12,7 @@ export function reset(){
  */
 export function setDisabled(){
     $("#topCustomerNo").attr("disabled",true);
+    $("#topCustomerAbbreviation").attr("disabled",true);
     $("#topCustomerName").attr("disabled",true);
     $("#topUrl").attr("disabled",true);
     $("#topRemark").attr("disabled",true);

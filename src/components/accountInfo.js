@@ -51,7 +51,7 @@ class BankInfo extends Component {
                 var onloadMol = {};
                 onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
-                onloadMol["actionType"] = $("#actionType").val();
+                onloadMol["actionType"] = actionType;
                 //画面データの検索
                   axios.post("http://127.0.0.1:8080/bankInfo/onloadPage",onloadMol)
                   .then(function (resultMap) {

@@ -32,7 +32,7 @@ export function setDisabled(){
     $("#responsiblePerson").attr("disabled",true);
     $("#customerDepartmentMail").attr("disabled",true);
     $("#toBankInfo").attr("disabled",false);
-    $("#toCustomerInfo").attr("disabled",false);
+    $("#toCustomerInfo").attr("disabled",true);
     $("#dateButton").attr("disabled",true);
 }
 /**
