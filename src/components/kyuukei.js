@@ -3,7 +3,7 @@ import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bo
 import * as TopCustomerInfoJs from '../components/topCustomerInfoJs.js';
 import $ from 'jquery';
 import axios from 'axios';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 

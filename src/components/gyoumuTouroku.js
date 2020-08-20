@@ -5,7 +5,7 @@ import axios from 'axios';
 import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
-import * as dateUtils from './utils/dateUtils.js';
+import * as dateUtils from './utils/publicUtils.js';
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
 import SiteInfo from './siteInfo';
