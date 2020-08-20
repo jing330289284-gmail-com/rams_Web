@@ -86,6 +86,12 @@ class employee extends React.Component {
 		myNumber: "",//　　マイナンバー
 		certification1: "",//　　資格1
 		certification2: "",//　　資格2
+		duties: "",//役割
+		postcode1: "",//　　郵便番号1
+		postcode2: "",//　　郵便番号2
+		firstHalfAddress: "",
+		lastHalfAddress: "",
+		nearestStation: "",
 		resumeRemark1: "",//　　履歴書備考1
 		resumeRemark2: "",//　　履歴書備考2
 		stayPeriod: "",//　　stayPeriod
@@ -133,6 +139,12 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
+			duties: this.state.duties,//役割
+			postcode1: this.state.postcode1,//郵便番号1
+			postcode2: this.state.postcode2,//郵便番号2
+			firstHalfAddress: this.state.firstHalfAddress,
+			lastHalfAddress: this.state.lastHalfAddress,
+			nearestStation: this.state.nearestStation,
 			developLanguage1: this.state.developement1Value,//スキール1
 			developLanguage2: this.state.developement2Value,//スキール2
 			developLanguage3: this.state.developement3Value,//スキール3
@@ -199,6 +211,12 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
+			duties: this.state.duties,//役割
+			postcode1: this.state.postcode1,//郵便番号1
+			postcode2: this.state.postcode2,//郵便番号2
+			firstHalfAddress: this.state.firstHalfAddress,
+			lastHalfAddress: this.state.lastHalfAddress,
+			nearestStation: this.state.nearestStation,
 			developLanguage1: this.state.developement1Value,//スキール1
 			developLanguage2: this.state.developement2Value,//スキール2
 			developLanguage3: this.state.developement3Value,//スキール3
@@ -353,6 +371,12 @@ class employee extends React.Component {
 					englishLevelCode: data.englishLevelCode,//英語
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
+					duties: data.duties,//役割
+					postcode1: data.postcode1,//郵便番号1
+					postcode2: data.postcode2,//郵便番号2
+					firstHalfAddress: data.firstHalfAddress,
+					lastHalfAddress: data.lastHalfAddress,
+					nearestStation: data.nearestStation,
 					//developement1Value: data.developLanguage1,//　スキール1
 					//developement2Value: data.developLanguage2,//スキール2
 					//developement3Value: data.developLanguage3,//スキール3
@@ -781,7 +805,7 @@ class employee extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, duties, postcode1, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled
 		} = this.state;
@@ -1247,28 +1271,17 @@ class employee extends React.Component {
 									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
+
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
-									<InputGroup.Append>
-										<DatePicker
-											selected={this.state.yearsOfExperience}
-											onChange={this.inactiveyearsOfExperience}
-											locale="ja"
-											dateFormat="yyyy/MM"
-											showMonthYearPicker
-											showFullMonthYearPicker
-											id="datePicker"
-											className="form-control form-control-sm"
-											autoComplete="off"
-											disabled={detailDisabled ? false : true}
-										/>
-									</InputGroup.Append>
-									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl placeholder="役割" value={duties} autoComplete="off" onChange={this.valueChange} size="sm" name="duties" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
+
+
 
 						</Row>
 						<Row>
@@ -1330,13 +1343,72 @@ class employee extends React.Component {
 											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt5InputProps}
 											id="developement5"
-											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-
-
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">経験年数</InputGroup.Text>
+									</InputGroup.Prepend>
+									<InputGroup.Append>
+										<DatePicker
+											selected={this.state.yearsOfExperience}
+											onChange={this.inactiveyearsOfExperience}
+											locale="ja"
+											dateFormat="yyyy/MM"
+											showMonthYearPicker
+											showFullMonthYearPicker
+											id="datePicker"
+											className="form-control form-control-sm"
+											autoComplete="off"
+											disabled={detailDisabled ? false : true}
+										/>
+									</InputGroup.Append>
+									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+								</InputGroup>
+							</Col>
+						</Row>
+					</Form.Group>
+					<Form.Label style={{ "color": "#FFD700" }}>住所情報</Form.Label>
+					<Form.Group>
+						<Row>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={postcode1} autoComplete="off" onChange={this.valueChange} size="sm" name="postcode1" id="postcode1" maxlength="3" disabled={detailDisabled ? false : true}/>―
+									<FormControl value={postcode2} autoComplete="off" onChange={this.valueChange} size="sm" name="postcode2" id="postcode2" maxlength="4" disabled={detailDisabled ? false : true}/>
+								</InputGroup>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={firstHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="firstHalfAddress" id="firstHalfAddress"　disabled={detailDisabled ? false : true} />
+								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">以降住所：</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" disabled={detailDisabled ? false : true}/>
+								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={nearestStation} autoComplete="off" onChange={this.valueChange} size="sm" name="nearestStation" id="nearestStation" disabled={detailDisabled ? false : true}/>
+								</InputGroup>
+							</Col>
 						</Row>
 					</Form.Group>
 
