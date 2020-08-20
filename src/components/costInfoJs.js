@@ -24,16 +24,18 @@ export function setDisabled(){
   $("#insuranceFee").attr("disabled",true);
   $("#hokenCheckYes").attr("disabled",true)
   $("#hokenCheckNo").attr("disabled",true)
-  $("#remark").attr("disabled",true)
+  $("#subCostRemark").attr("disabled",true)
   $("#waitingCost").attr("disabled",true)
   $("#nextBonusMonth").attr("disabled",true)
   $("#nextRaiseMonth").attr("disabled",true)
   $("#reflectYearAndMonth").attr("disabled",true)
   $("#subCostEmployeeFormCode").attr("disabled",true)
   $("#toroku").attr("disabled",true)
+  $("#shusei").attr("disabled",true)
   $("#reset").attr("disabled",true)
   $("#otherAllowance").attr("disabled",true)
   $("#otherAllowanceAmount").attr("disabled",true)
+  $("#housingStatus").attr("disabled",true)
 }
 /**
  * 社会保険計算
@@ -75,7 +77,7 @@ export async function jidoujisan(){
  * ボーナス項目の活性
  */
 export function bonusCanInput(){
-  if($("#BonusFlag").val() === "1"){
+  if($("#bonusFlag").val() === "1"){
     $("#lastTimeBonusAmount").attr('readOnly' , false);
     $("#scheduleOfBonusAmount").attr('readOnly' , false);
     totalKeisan();

@@ -16,12 +16,13 @@ registerLocale('ja', ja);
 class SubCost extends Component {
 
     state = {
-        bonusStartDate: new Date(),//ボーナスの期日
-        raiseStartDate: new Date(),//昇給の期日
-        reflectStartDate: new Date(),//反映年月
+        bonusStartDate: '',//ボーナスの期日
+        raiseStartDate: '',//昇給の期日
+        reflectStartDate: '',//反映年月
         RelatedEmployees:'',//要員
         subCostList:[],//テーブルのデータ
         subCostInfo:'',//入力データ
+        actionType:'',//処理区分
     }
     /**
      * ボーナス期日の変化
@@ -71,7 +72,8 @@ class SubCost extends Component {
     componentDidMount(){
     var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
     var subCostInfo = this.props.subCostInfo;//父画面のパラメータ（画面既存諸費用情報）
-    var methodArray = ["getInsurance","getBonus","getStaffForms","getHousingStatus"];
+    var employeeNo = this.props.employeeNo;//父画面のパラメータ（画面既存諸費用情報）
+    var methodArray = ["getInsurance","getBonus","getStaffForms","getHousing"];
     //選択肢を取得
     var selectList = utils.getPublicDropDown(methodArray);
     //社会保険フラグ
@@ -83,7 +85,7 @@ class SubCost extends Component {
     //住宅ステータス
     var housingStatus = selectList[3];
     $("#shusei").attr("disabled",true);
-    document.getElementById("employeeName").innerHTML  = $("#employeeName").val();
+    document.getElementById("employeeName").innerHTML  = (isNaN(this.props.employeeName) ? '' : this.props.employeeName);
     for(let i = 1;i<SocialInsuranceFlag.length ; i++){
         $("#SocialInsuranceFlag").append('<option value="'+SocialInsuranceFlag[i].code+'">'+SocialInsuranceFlag[i].name+'</option>');
     }
@@ -127,9 +129,9 @@ class SubCost extends Component {
     }else{
         if(actionType !== "insert"){
             var costModel = {};
-            costModel["employeeNo"] = $("#employeeNo").val();
+            costModel["employeeNo"] = employeeNo;
             axios.post("http://127.0.0.1:8080/subCost/onload", costModel)
-            .then(function (resultMap) {
+            .then(resultMap => {
                 this.setState({
                     subCostList:resultMap.data.subCostList,
                 })
@@ -139,6 +141,9 @@ class SubCost extends Component {
             });
             if(actionType === "detail"){
                 SubCostJs.setDisabled();
+                this.setState({
+                    actionType:"detail"
+                })
             }
         }else if (actionType === "insert"){
             $("#subCostEmployeeFormCode").val($("#employeeFormCode").val());
@@ -170,12 +175,13 @@ class SubCost extends Component {
     subCostTokuro(){
         if($("#totalAmount").val() !== '' && 
             $("#totalAmount").val() !== null && !isNaN($("#totalAmount").val()) &&
-            $("#reflectYearAndMonth").val() !== null && $("#reflectYearAndMonth").val() !== ''){
+            this.state.reflectStartDate !== ''){
             var subCostInfo = {};
             var formArray =$("#costForm").serializeArray();
             $.each(formArray,function(i,item){
                 subCostInfo[item.name] = item.value;     
             });
+            subCostInfo["updatedReflectYearAndMonth"] = $("#updatedReflectYearAndMonth").val();
             subCostInfo["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate,false);
             subCostInfo["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate,false);
             subCostInfo["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate,false);
@@ -187,7 +193,7 @@ class SubCost extends Component {
             $("#totalAmount").val() === null || isNaN($("#totalAmount").val())){
                 document.getElementById("subCostErorMsg").innerHTML = "入力してあるデータに不正があるため、チェックしてください！";
                 document.getElementById("subCostErorMsg").style = "visibility:visible";    
-            } else if($("#reflectYearAndMonth").val() !== null || $("#reflectYearAndMonth").val() !== ''){
+            } else if(this.state.reflectStartDate === ''){
                 document.getElementById("subCostErorMsg").innerHTML = "反映年月を入力してください！";
                 document.getElementById("subCostErorMsg").style = "visibility:visible";    
             }
@@ -197,39 +203,18 @@ class SubCost extends Component {
      * 行Selectファンクション
      */
     handleRowSelect = (row, isSelected, e) => {
-        if (row.datePeriod === this.state.subCostList[this.state.subCostList.length - 1] && isSelected) {
-            this.setState({
-                subCostInfo:row,
-            })
-        } else if(isSelected) {
-            $("#salary").val('');
-            $("#SocialInsuranceFlag").val('0');
-            $("#welfarePensionAmount").val('');
-            $("#healthInsuranceAmount").val('');
-            $("#insuranceFeeAmount").val('');
-            $("#transportationExpenses").val('');
-            $("#bonusFlag").val('0');
-            if($("#bonusFlag").val() === "0"){
-              $("#lastTimeBonusAmount").attr('readOnly' , true);
-              $("#scheduleOfBonusAmount").attr('readOnly' , true);
+        if (isSelected) {
+            if(row.datePeriod === this.state.subCostList[this.state.subCostList.length - 1].datePeriod){
+                this.setState({
+                    subCostInfo:row,
+                })
+                $("#shusei").attr("disabled",false);
             }
-            $("#lastTimeBonusAmount").val('');
-            $("#scheduleOfBonusAmount").val('');
-            $("#waitingCost").val('');
-            $("#nextBonusMonth").val('');
-            $("#nextRaiseMonth").val('');
-            $("#leaderAllowanceAmount").val('');
-            $("#otherAllowance").val('');
-            $("#otherAllowanceAmount").val('');
-            $("#subCostRemark").val('');
-            $("#totalAmount").val('');
-            $("#subCostEmployeeFormCode").val('');
-            $("#reflectYearAndMonth").val('');
-            $("#housingStatus").val('');
-            $("#housingAllowance").val('');
-            $("#shusei").attr("disabled",false);
         }
     }
+    /**
+     * 明細修正ボタン
+     */
     meisaiShusei=()=>{
         var subCostInfo = this.state.subCostInfo;
         $("#salary").val(subCostInfo.salary);
@@ -243,24 +228,27 @@ class SubCost extends Component {
           $("#lastTimeBonusAmount").attr('readOnly' , false);
           $("#scheduleOfBonusAmount").attr('readOnly' , false);
         }
+        this.setState({
+            bonusStartDate:utils.converToLocalTime(subCostInfo.nextBonusMonth,false),
+            raiseStartDate:utils.converToLocalTime(subCostInfo.nextRaiseMonth,false),
+            reflectStartDate:utils.converToLocalTime(subCostInfo.reflectYearAndMonth,false),
+        })
         $("#lastTimeBonusAmount").val(subCostInfo.lastTimeBonusAmount);
         $("#scheduleOfBonusAmount").val(subCostInfo.scheduleOfBonusAmount);
         $("#waitingCost").val(subCostInfo.waitingCost);
-        $("#nextBonusMonth").val(subCostInfo.nextBonusMonth);
-        $("#nextRaiseMonth").val(subCostInfo.nextRaiseMonth);
         $("#leaderAllowanceAmount").val(subCostInfo.leaderAllowanceAmount);
         $("#otherAllowance").val(subCostInfo.otherAllowance);
         $("#otherAllowanceAmount").val(subCostInfo.otherAllowanceAmount);
         $("#subCostRemark").val(subCostInfo.remark);
         $("#totalAmount").val(subCostInfo.totalAmount);
         $("#subCostEmployeeFormCode").val(subCostInfo.employeeFormCode);
-        $("#reflectYearAndMonth").val(subCostInfo.totalAmount);
         $("#housingStatus").val(subCostInfo.housingStatus);
         $("#housingAllowance").val(subCostInfo.housingAllowance);
+        $("#updatedReflectYearAndMonth").val(subCostInfo.reflectYearAndMonth);
         $("#shusei").attr("disabled",true);
     }
     render() {
-        const {RelatedEmployees , subCostList} = this.state;
+        const {RelatedEmployees , subCostList , actionType} = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -269,6 +257,9 @@ class SubCost extends Component {
             clickToSelect: true,  // click to select, default is false
             clickToExpand: true,// click to expand row, default is false
             onSelect:this.handleRowSelect,
+        };
+        //テーブルの列の選択(詳細)
+        const selectRowDetail = {
         };
         //テーブルの定義
         const options = {
@@ -420,6 +411,7 @@ class SubCost extends Component {
                                 name="nextBonusMonth"
                                 dateFormat={"yyyy/MM"}
                                 locale="ja"
+                                disabled={actionType === "detail" ? true : false}
                                 />
                                 </InputGroup.Prepend>
                             </InputGroup.Append>
@@ -446,6 +438,7 @@ class SubCost extends Component {
                                 dateFormat={"yyyy/MM"}
                                 name="nextRaiseMonth"
                                 locale="ja"
+                                disabled={actionType === "detail" ? true : false}
                                 />
                             </InputGroup.Append>
                         </InputGroup>
@@ -537,17 +530,18 @@ class SubCost extends Component {
                                 selected={this.state.reflectStartDate}
                                 onChange={this.reflectStartDateChange}
                                 dateFormat={"yyyy MM"}
-                                autoComplete="on"
+                                autoComplete="off"
                                 locale="pt-BR"
                                 showMonthYearPicker
                                 showFullMonthYearPicker
-                                minDate={new Date()}
+                                // minDate={new Date()}
                                 showDisabledMonthNavigation
                                 className="form-control form-control-sm"
                                 id="customerInfoDatePicker"
                                 dateFormat={"yyyy/MM"}
                                 name="reflectYearAndMonth"
                                 locale="ja"
+                                disabled={actionType === "detail" ? true : false}
                                 /><font id="mark" color="red"
 				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                             </InputGroup.Append>
@@ -579,16 +573,16 @@ class SubCost extends Component {
                 </Row>
             </Form.Group>
                 <Row>
-                    <Col sm={9}>
+                    <Col sm={11}>
                     </Col>
                     <Col sm={1}>
                         <div style={{ "float": "right" }}>
-                            <Button variant="info" size="sm" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Button>
+                            <Button variant="info" size="sm" onClick={this.meisaiShusei} id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Button>
                         </div>
                     </Col>
                 </Row>
             <div>
-                <BootstrapTable selectRow={ selectRow } pagination={ true } options={ options } data={subCostList}>
+                <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} pagination={ true } options={ options } data={subCostList}>
                     <TableHeaderColumn isKey dataField='datePeriod' headerAlign='center' dataAlign='center' width='190'>年月</TableHeaderColumn>
                     <TableHeaderColumn dataField='employeeFormName' headerAlign='center' dataAlign='center' width="130">社員形式</TableHeaderColumn>
                     <TableHeaderColumn dataField='salary' headerAlign='center' dataAlign='center' width="230">給料</TableHeaderColumn>
@@ -599,6 +593,7 @@ class SubCost extends Component {
             <input type="hidden" id="employeeNo" name="employeeNo"/>
             <input type="hidden" id="actionType" name="actionType"/>
             <input type="hidden" id="RelatedEmployees" name="RelatedEmployees"/>
+            <input type="hidden" id="updatedReflectYearAndMonth" name="updatedReflectYearAndMonth"/>
           </Form>
           </div>
           </div>

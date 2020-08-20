@@ -570,6 +570,7 @@ class CustomerInfo extends Component {
                                 className="form-control form-control-sm"
                                 name="establishmentDate"
                                 locale="ja"
+                                disabled={actionType === "detail" ? true : false}
                                 />
                         </InputGroup>
                     </Col>
@@ -593,6 +594,7 @@ class CustomerInfo extends Component {
                                 name="businessStartDate"
                                 className="form-control form-control-sm"
                                 locale="ja"
+                                disabled={actionType === "detail" ? true : false}
                                 />
                         </InputGroup>
                     </Col>
@@ -601,15 +603,6 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
-                                {/* <Autosuggest
-                                    suggestions={topCustomerSuggestions}
-                                    onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
-                                    onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
-                                    onSuggestionSelected={this.onDlt1SuggestionSelected}
-                                    getSuggestionValue={getSuggestionDlt1}
-                                    renderSuggestion={renderSuggestion}
-                                    inputProps={topcustomerInputProps}                                    
-                                /> */}
                                 <Select
                                     inputId="topCustomer"
                                     name="topCustomer"
@@ -702,7 +695,7 @@ class CustomerInfo extends Component {
                 </Row>
                 </Form>
                 <hr style={{height:"1px",border:"none",borderTop:"1px solid #555555"}} /> 
-                <Form.Text className="text-muted">部門情報</Form.Text>
+                <Form.Text style={{ "color": "#FFD700" }}>部門情報</Form.Text>
                 <Form id="customerDepartmentForm">
                 <Row>
                     <Col sm={3}>
@@ -710,15 +703,6 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
                             </InputGroup.Prepend>
-                                {/* <Autosuggest
-                                        suggestions={customerDepartmentNameSuggestions}
-                                        onSuggestionsFetchRequested={this.onDltDepartmentSuggestionsFetchRequested}
-                                        onSuggestionsClearRequested={this.onDltDepartmentSuggestionsClearRequested}
-                                        onSuggestionSelected={this.onDltDepartmentSuggestionSelected}
-                                        getSuggestionValue={getSuggestionDlt1}
-                                        renderSuggestion={renderSuggestion}
-                                        inputProps={customerDepartmentNameInputProps}                                    
-                                    /> */}
                                 <Select
                                     inputId="customerDepartmentName"
                                     name="customerDepartmentName"
