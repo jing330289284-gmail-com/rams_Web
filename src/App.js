@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from './components/login'
-import Subcost from './components/subCost'
+import Subcost from './components/costInfo'
 import SubMenu from './components/subMenu'
 import main from './components/main';
 import Employee from './components/employee';
 import EmployeeSearch from './components/employeeSearch';
-import BankInfo from './components/bankInfo';
+import BankInfo from './components/accountInfo';
 import CustomerInfo from './components/customerInfo';
 import TopCustomerInfo from './components/topCustomerInfo';
 import masterInsert from './components/masterInsert';

@@ -7,11 +7,9 @@ import openPage from '../asserts/images/openPage.png';
 import menu from '../asserts/images/menu.png';
 import signout from '../asserts/images/signout.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Subcost from './subCost'
 import Main from './main';
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
-import BankInfo from './bankInfo';
 import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import masterInsert from './masterInsert';
@@ -193,10 +191,8 @@ class SubMenu extends Component {
 						<div key={this.props.location.key}>
 							<Router>
 								<Route exact path={`${this.props.match.url}/`} component={Main} />
-								<Route exact path={`${this.props.match.url}/passwordReset`} component={Subcost} />
 								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
-								<Route exact path={`${this.props.match.url}/bankInfo`} component={BankInfo} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />
