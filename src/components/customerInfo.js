@@ -12,7 +12,7 @@ import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
@@ -40,23 +40,29 @@ class CustomerInfo extends Component {
      *  設立のonChange
      */
     establishmentDateChange = date => {
-    this.setState({
-        establishmentDate: date,
-    });
-        let month = date.getMonth() + 1;
-        $("#establishmentDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month));
-    
+        if(date !== null){
+            this.setState({
+                establishmentDate: date,
+            });
+        }else{
+            this.setState({
+                establishmentDate: '',
+            });
+        }
     };
     /**
      * 取引開始のonChange 
      */
     businessStartDateChange = date => {
-        this.setState({
-            businessStartDate: date,
-        });
-            let month = date.getMonth() + 1;
-            $("#businessStartDate").val(date.getFullYear() + '' + (month < 10 ? '0'+month: month));
-        
+        if(date !== null){
+            this.setState({
+                businessStartDate: date,
+            });
+        }else{
+            this.setState({
+                businessStartDate: '',
+            });
+        }
         };
      constructor(props){
          super(props);
@@ -151,11 +157,8 @@ class CustomerInfo extends Component {
                 })
             }else{
                 $("#customerName").val(customerInfoMod.customerName);
-                $("#topCustomerNameShita").val(customerInfoMod.topCustomerName);
                 $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
-                $("#businessStartDate").val(customerInfoMod.businessStartDate);
                 $("#stationCode").val(customerInfoMod.stationCode);
-                $("#establishmentDate").val(customerInfoMod.establishmentDate);
                 $("#levelCode").val(customerInfoMod.levelCode);
                 $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
                 $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
@@ -165,14 +168,15 @@ class CustomerInfo extends Component {
                 $("#purchasingManagers").val(customerInfoMod.purchasingManagers);
                 $("#url").val(customerInfoMod.url);
                 $("#remark").val(customerInfoMod.remark);
+                var topCustomerValue = {};
+                topCustomerValue["value"] = customerInfoMod.topCustomerNo;
+                topCustomerValue["label"] = customerInfoMod.topCustomerName;
                 this.setState({
+                    topCustomerValue:topCustomerValue,
+                    businessStartDate:utils.converToLocalTime(customerInfoMod.businessStartDate,false),
+                    establishmentDate:utils.converToLocalTime(customerInfoMod.establishmentDate,false),
                     customerDepartmentList:resultMap.data.customerDepartmentInfoList,
                 })
-                if(resultMap.data.customerInfoMod.topCustomerName !== '' && resultMap.data.customerInfoMod.topCustomerName !== null){
-                    this.setState({
-                        topCustomerValue:resultMap.data.customerInfoMod.topCustomerName,
-                    })
-                }
                 if(actionType === 'detail'){
                     customerInfoJs.setDisabled();
                 }
@@ -182,16 +186,6 @@ class CustomerInfo extends Component {
             alert("select框内容获取错误，请检查程序");
         });  
     }
-    /**
-     * 連想チェンジ
-     */
-    handleChange = selectedOption => {
-        this.setState({ 
-            selectedOption ,
-            topCustomerNo:selectedOption.value,
-        });
-		console.log(`Option selected:`, selectedOption);
-	};
     
     /**
      *  部門連想のデータ取得
@@ -262,6 +256,8 @@ class CustomerInfo extends Component {
                 customerInfoMod[item.name] = item.value;     
             });
             customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
+            customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate,false);
+            customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate,false);
             customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
             customerInfoMod["actionType"] = $("#actionType").val();
             customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
@@ -336,6 +332,26 @@ class CustomerInfo extends Component {
             }
         }    
     }
+        /**
+     * 連想チェンジ
+     */
+    topCustomerHandleChange = selectedOption => {
+        this.setState({ 
+            topCustomerValue:selectedOption,
+            topCustomerNo:selectedOption.value,
+        });
+		console.log(`Option selected:`, selectedOption);
+    };
+    
+        /**
+     * 連想チェンジ
+     */
+    handleChange = selectedOption => {
+        this.setState({ 
+            customerDepartmentValue:selectedOption,
+        });
+		console.log(`Option selected:`, selectedOption);
+	};
     /**
      * 行Selectファンクション
      */
@@ -344,9 +360,11 @@ class CustomerInfo extends Component {
             $("#positionCode").val(row.positionCode);
             $("#responsiblePerson").val(row.responsiblePerson);
             $("#customerDepartmentMail").val(row.customerDepartmentMail);
-            $("#customerDepartmentName").val(row.customerDepartmentCode);
-            $("input[name='customerDepartmentName']").val(row.customerDepartmentCode);
+            var customerDepartmentDrop = {};
+            customerDepartmentDrop["value"] = row.customerDepartmentCode;
+            customerDepartmentDrop["label"] = row.customerDepartmentName;
             this.setState({
+                customerDepartmentValue:customerDepartmentDrop,
                 rowNo:row.rowNo,
                 customerDepartmentCode:row.customerDepartmentCode,
             })
@@ -356,7 +374,11 @@ class CustomerInfo extends Component {
             $("#responsiblePerson").val('');
             $("#customerDepartmentMail").val('');
             $("#customerDepartmentName").val('');
+            var customerDepartmentValue = {};
+            customerDepartmentValue["label"] = "";
+            customerDepartmentValue["value"] = "";
             this.setState({
+                customerDepartmentValue:customerDepartmentValue,
                 rowNo:'',
                 customerDepartmentCode:'',
             })
@@ -390,6 +412,7 @@ class CustomerInfo extends Component {
             this.setState({
                 topCustomerDrop:[...this.state.topCustomerDrop,ModelClass],
                 topCustomerInfo:topCustomerToroku,
+                topCustomerValue:ModelClass,
                 showCustomerInfoModal:false,
             })
         }
@@ -406,32 +429,11 @@ class CustomerInfo extends Component {
             }
       }
     render() {
-        const { topCustomerValue , topCustomerInfo , customerDepartmentNameValue , customerDepartmentList , accountInfo
+        const { topCustomerValue , topCustomerInfo , customerDepartmentNameValue , selectedValue , customerDepartmentList , accountInfo
          , actionType , topCustomerNo} = this.state;
-        //上位お客様連想
-        const topcustomerInputProps = {
-			placeholder: "例：富士通",
-			value: topCustomerValue,
-            onChange: this.onDevelopement1Change,
-            id:"topCustomerNameShita",
-            
-        };
-        //部門の連想
-        const customerDepartmentNameInputProps = {
-			placeholder: "例：第一事業部",
-			value: customerDepartmentNameValue,
-            onChange: this.onDevelopementDepartmentChange,
-            id:"customerDepartmentName",
-            
-        };
         const accountPath = {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
         }
-        const ExampleCustomInput = ({ value, onClick }) => (
-            <Button onClick={onClick} block size="sm" id="dateButton" variant="secondary">
-              {value.length > 0 ? value :  "時間を選択してください"}
-            </Button>
-          );
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -556,9 +558,7 @@ class CustomerInfo extends Component {
                             </InputGroup.Prepend>
                                 <DatePicker
                                 selected={this.state.establishmentDate}
-                                customInput={<ExampleCustomInput />}
                                 onChange={this.establishmentDateChange}
-                                placeholderText="時間を選択してください"
                                 dateFormat="yyyy/MM"
                                 autoComplete="off"
                                 locale="pt-BR"
@@ -582,7 +582,6 @@ class CustomerInfo extends Component {
                                 <DatePicker
                                 selected={this.state.businessStartDate}
                                 onChange={this.businessStartDateChange}
-                                customInput={<ExampleCustomInput />}
                                 dateFormat="yyyy/MM"
                                 autoComplete="off"
                                 locale="pt-BR"
@@ -613,10 +612,10 @@ class CustomerInfo extends Component {
                                     inputProps={topcustomerInputProps}                                    
                                 /> */}
                                 <Select
-                                    id="topCustomer"
+                                    inputId="topCustomer"
                                     name="topCustomer"
                                     value={topCustomerValue}
-                                    onChange={this.handleChange}
+                                    onChange={this.topCustomerHandleChange}
                                     options={this.state.topCustomerDrop}
                                 />
                         </InputGroup>
@@ -722,9 +721,9 @@ class CustomerInfo extends Component {
                                         inputProps={customerDepartmentNameInputProps}                                    
                                     /> */}
                                 <Select
-                                    id="customerDepartmentName"
+                                    inputId="customerDepartmentName"
                                     name="customerDepartmentName"
-                                    value={customerDepartmentNameValue}
+                                    value={this.state.customerDepartmentValue !== null ? this.state.customerDepartmentValue : customerDepartmentNameValue}
                                     onChange={this.handleChange}
                                     options={this.state.customerDepartmentNameDrop}
                                 />

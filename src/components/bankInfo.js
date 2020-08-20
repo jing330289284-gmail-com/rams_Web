@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {Row , Form , Col , InputGroup , Button , Navbar , OverlayTrigger , Tooltip} from 'react-bootstrap';
 import * as bankInfoJs from '../components/bankInfoJs.js';
 import $ from 'jquery';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 
 class BankInfo extends Component {

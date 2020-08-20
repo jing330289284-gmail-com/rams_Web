@@ -5,7 +5,7 @@ import axios from 'axios';
 import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
-import * as dateUtils from './utils/dateUtils.js';
+import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './bankInfo';
 import SubCost from './subCost';
 import SiteInfo from './siteInfo';
@@ -92,11 +92,12 @@ class employee extends React.Component {
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '', value: '', suggestions: [],
 		yearsOfExperience: "",//　経験年数
-		temporary_experienceYears: "",
+		temporary_yearsOfExperience: "",
 		temporary_retirementYearAndMonth: ""
 	};
 	//　　登録
 	insertEmployee = () => {
+		alert(publicUtils.formateDate(this.state.birthday, true))
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -106,7 +107,7 @@ class employee extends React.Component {
 			furigana1: this.state.furigana1,//　　カタカナ
 			furigana2: this.state.furigana2,//　　カタカナ
 			alphabetName: this.state.alphabetName,//　　ローマ字
-			birthday: dateUtils.formateDate(this.state.birthday, true),//年齢
+			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
 			japaneseCalendar: this.state.japaneseCalendar,//和暦
 			genderStatus: this.state.genderStatus,//性別
 			intoCompanyCode: this.state.intoCompanyCode,//入社区分
@@ -116,10 +117,10 @@ class employee extends React.Component {
 			companyMail: this.state.companyMail,//社内メール
 			graduationUniversity: this.state.graduationUniversity,//卒業学校
 			major: this.state.major,//専門
-			graduationYearAndMonth: dateUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
-			intoCompanyYearAndMonth: dateUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
-			retirementYearAndMonth: dateUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
-			comeToJapanYearAndMonth: dateUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
+			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
+			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
+			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
+			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
@@ -135,7 +136,7 @@ class employee extends React.Component {
 			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
-			stayPeriod: dateUtils.formateDate(this.state.stayPeriod, false),//在留期間
+			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
 			residentCardInfo: $("#residentCardInfo").val(),//在留カード
@@ -145,9 +146,11 @@ class employee extends React.Component {
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
 			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
-			accountInfo: this.state.accountInfo,
-			subCostInfo: this.state.subCostInfo,
-			siteInfo: this.state.siteInfo,
+			accountInfo: this.state.accountInfo,//口座情報
+			subCostInfo: this.state.subCostInfo,//諸費用
+			siteInfo: this.state.siteInfo,//現場情報
+			password: this.state.passwordSetInfo,//pw設定
+			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 
 		};
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
@@ -170,7 +173,7 @@ class employee extends React.Component {
 			furigana1: this.state.furigana1,//　　カタカナ
 			furigana2: this.state.furigana2,//　　カタカナ
 			alphabetName: this.state.alphabetName,//　　ローマ字
-			birthday: dateUtils.formateDate(this.state.birthday, true),//年齢
+			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
 			japaneseCalendar: this.state.japaneseCalendar,//和暦
 			genderStatus: this.state.genderStatus,//性別
 			intoCompanyCode: this.state.intoCompanyCode,//入社区分
@@ -180,10 +183,10 @@ class employee extends React.Component {
 			companyMail: this.state.companyMail,//社内メール
 			graduationUniversity: this.state.graduationUniversity,//卒業学校
 			major: this.state.major,//専門
-			graduationYearAndMonth: dateUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
-			intoCompanyYearAndMonth: dateUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
-			retirementYearAndMonth: dateUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
-			comeToJapanYearAndMonth: dateUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
+			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
+			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
+			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
+			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
@@ -199,7 +202,7 @@ class employee extends React.Component {
 			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
-			stayPeriod: dateUtils.formateDate(this.state.stayPeriod, true),//在留期間
+			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
 			residentCardInfo: $("#residentCardInfo").val(),//在留カード
@@ -209,6 +212,12 @@ class employee extends React.Component {
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
 			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
+			accountInfo: this.state.accountInfo,//口座情報
+			subCostInfo: this.state.subCostInfo,//諸費用
+			siteInfo: this.state.siteInfo,//現場情報
+			password: this.state.passwordSetInfo,//pw設定
+			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
+
 		};
 		axios.post("http://127.0.0.1:8080/employee/updateEmployee", emp)
 			.then(response => {
@@ -263,7 +272,7 @@ class employee extends React.Component {
 
 	getDropDownｓ = () => {
 		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys"]
-		var data = dateUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
 				genderStatuss: data[0],//　性別区別
@@ -282,7 +291,7 @@ class employee extends React.Component {
 
 	getAuthority = () => {
 		var methodArray = ["getAuthority"]
-		var data = dateUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
 				authorityCodes: data[0].slice(1),//　 権限 
@@ -306,8 +315,8 @@ class employee extends React.Component {
 					furigana1: data.furigana1,//　　カタカナ
 					furigana2: data.furigana2,//　　カタカナ
 					alphabetName: data.alphabetName,//　　ローマ字
-					birthday: dateUtils.converToLocalTime(data.birthday, true),//年齢
-					temporary_age: dateUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - dateUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
+					birthday: publicUtils.converToLocalTime(data.birthday, true),//年齢
+					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,//和暦
 					genderStatus: data.genderStatus,//性別
 					intoCompanyCode: data.intoCompanyCode,//入社区分
@@ -317,14 +326,14 @@ class employee extends React.Component {
 					companyMail: data.companyMail,//社内メール
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
-					graduationYearAndMonth: dateUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
-					temporary_graduationYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
-					intoCompanyYearAndMonth: dateUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),//入社年月
-					temporary_intoCompanyYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
-					retirementYearAndMonth: dateUtils.converToLocalTime(data.retirementYearAndMonth, false),//退職年月
-					temporary_retirementYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
-					comeToJapanYearAndMonth: dateUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),//来日年月
-					temporary_comeToJapanYearAndMonth: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
+					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
+					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
+					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),//入社年月
+					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
+					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),//退職年月
+					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
+					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),//来日年月
+					temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
 					nationalityCode: data.nationalityCode,//出身地
 					birthplace: data.birthplace,//出身県
 					phoneNo: data.phoneNo,//携帯電話
@@ -333,16 +342,15 @@ class employee extends React.Component {
 					englishLevelCode: data.englishLevelCode,//英語
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
-					developLanguage1: data.developLanguage1,//　スキール1
-					developLanguage2: data.developLanguage2,//スキール2
-					developLanguage3: data.developLanguage3,//スキール3
-					developLanguage4: data.developLanguage4,//スキール4
-					developLanguage5: data.developLanguage5,//スキール5
+					developement1Value: data.developLanguage1,//　スキール1
+					developement2Value: data.developLanguage2,//スキール2
+					developement3Value: data.developLanguage3,//スキール3
+					developement4Value: data.developLanguage4,//スキール4
+					developement5Value: data.developLanguage5,//スキール5
 					residenceCode: data.residenceCode,//在留資格
 					residenceCardNo: data.residenceCardNo,//在留カード
-					stayPeriod: dateUtils.converToLocalTime(data.stayPeriod, false),//在留期間
-					temporary_stayPeriod: dateUtils.getFullYearMonth(dateUtils.converToLocalTime(data.stayPeriod, false), new Date()),
-
+					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),//在留期間
+					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
 					residentCardInfo: data.residentCardInfo,//在留カード
@@ -352,13 +360,15 @@ class employee extends React.Component {
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
 					passportInfo: data.passportInfo,//パスポート
 					updateUser: sessionStorage.getItem('employeeName'),//更新者
+					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
+					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
 			});
 	};
 
 	//　採番番号
 	getNO = () => {
-		const promise = Promise.resolve(dateUtils.getNO("employeeNo", "LYC", "T001Employee"));
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", "LYC", "T001Employee"));
 		promise.then((value) => {
 			this.setState(
 				{
@@ -388,32 +398,42 @@ class employee extends React.Component {
 	};
 	//　　年齢と和暦
 	inactiveBirthday = date => {
-		var birthDayTime = date.getTime();
-		var nowTime = new Date().getTime();
-		this.setState({
-			temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
-			birthday: date
-		});
-		//http://ap.hutime.org/cal/ 西暦と和暦の変換
-		const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-		axios.get("http://ap.hutime.org/cal/?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1")
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						japaneseCalendar: response.data
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
+		if (date !== undefined && date !== null && date !== "") {
+			var birthDayTime = date.getTime();
+			var nowTime = new Date().getTime();
+			this.setState({
+				temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
+				birthday: date
 			});
+			//http://ap.hutime.org/cal/ 西暦と和暦の変換
+			const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+			axios.get("http://ap.hutime.org/cal/?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1")
+				.then(response => {
+					if (response.data != null) {
+						this.setState({
+							japaneseCalendar: response.data
+						});
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		} else {
+			this.setState({
+				temporary_age: "0",
+				birthday: "",
+				japaneseCalendar: ""
+			});
+		}
+
+
 	};
 	//　　卒業年月
 	inactiveGraduationYearAndMonth = date => {
 		this.setState(
 			{
 				graduationYearAndMonth: date,
-				temporary_graduationYearAndMonth: dateUtils.getFullYearMonth(date, new Date()),
-				temporary_experienceYears: (this.state.yearsOfExperience === undefined) ? dateUtils.getFullYearMonth(date, new Date()) : this.state.temporary_experienceYears
+				temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(date, new Date()),
+				temporary_yearsOfExperience: (this.state.yearsOfExperience === undefined) ? publicUtils.getFullYearMonth(date, new Date()) : this.state.temporary_yearsOfExperience
 			}
 		);
 	};
@@ -422,7 +442,7 @@ class employee extends React.Component {
 		this.setState(
 			{
 				intoCompanyYearAndMonth: date,
-				temporary_intoCompanyYearAndMonth: dateUtils.getFullYearMonth(date, new Date())
+				temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(date, new Date())
 			}
 		);
 	};
@@ -431,7 +451,7 @@ class employee extends React.Component {
 		this.setState(
 			{
 				retirementYearAndMonth: date,
-				temporary_retirementYearAndMonth: dateUtils.getFullYearMonth(date, new Date()),
+				temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(date, new Date()),
 
 			}
 		);
@@ -441,17 +461,17 @@ class employee extends React.Component {
 		this.setState(
 			{
 				comeToJapanYearAndMonth: date,
-				temporary_comeToJapanYearAndMonth: dateUtils.getFullYearMonth(date, new Date())
+				temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(date, new Date())
 
 			}
 		);
 	};
 	//　　経験年数
-	inactiveExperienceYears = date => {
+	inactiveyearsOfExperience = date => {
 		this.setState(
 			{
 				yearsOfExperience: date,
-				temporary_experienceYears: dateUtils.getFullYearMonth(date, new Date())
+				temporary_yearsOfExperience: publicUtils.getFullYearMonth(date, new Date())
 			}
 		);
 	};
@@ -460,7 +480,7 @@ class employee extends React.Component {
 		this.setState(
 			{
 				stayPeriod: date,
-				temporary_stayPeriod: dateUtils.getFullYearMonth(new Date(), date)
+				temporary_stayPeriod: publicUtils.getFullYearMonth(new Date(), date)
 			}
 		);
 	};
@@ -485,43 +505,43 @@ class employee extends React.Component {
 		ポップアップ口座情報の取得
 	 */
 
-	accountInfoGet = (kozaTokuro) => {
+	accountInfoGet = (accountTokuro) => {
 		this.setState({
-			accountInfo: kozaTokuro,
+			accountInfo: accountTokuro,
 			showBankInfoModal: false,
 		})
-		console.log(kozaTokuro);
+		console.log(accountTokuro);
 	}
 
 	/* 
 	ポップアップ諸費用の取得
  　　　*/
-	subCostInfoGet = (subCostInfoTo) => {
+	subCostInfoGet = (subCostInfoTokuro) => {
 		this.setState({
-			subCostInfo: subCostInfoTo,
+			subCostInfo: subCostInfoTokuro,
 			showSubCostModal: false,
 		})
-		console.log(subCostInfoTo);
+		console.log(subCostInfoTokuro);
 	}
 	/* 
 	ポップアップ現場情報の取得
  　　　*/
-	siteInfoGet = (siteInfoTo) => {
+	siteInfoGet = (siteInfoTokuro) => {
 		this.setState({
-			subCostInfo: siteInfoTo,
+			subCostInfo: siteInfoTokuro,
 			showSiteInfoModal: false,
 		})
-		console.log(siteInfoTo);
+		console.log(siteInfoTokuro);
 	}
 	/* 
 	ポップアップPW設定の取得
  　　　*/
-	passwordSetInfoGet = (passwordSetTo) => {
+	passwordSetInfoGet = (passwordSetTokuro) => {
 		this.setState({
-			subCostInfo: passwordSetTo,
+			passwordSetInfo: passwordSetTokuro,
 			showPasswordSetModal: false,
 		})
-		console.log(passwordSetTo);
+		console.log(passwordSetTokuro);
 	}
 
 	/**
@@ -593,7 +613,7 @@ class employee extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement1Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement1Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -621,7 +641,7 @@ class employee extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement2Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement2Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -637,7 +657,7 @@ class employee extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement3Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement3Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -652,7 +672,7 @@ class employee extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement4Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement4Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -667,7 +687,7 @@ class employee extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						developement5Suggestions: dateUtils.getSuggestions(value, response.data)
+						developement5Suggestions: publicUtils.getSuggestions(value, response.data)
 					});
 				}
 			}).catch((error) => {
@@ -737,7 +757,7 @@ class employee extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_experienceYears, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, actionType
 		} = this.state;
@@ -777,7 +797,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} kozaTokuro={this.accountInfoGet} />
+						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/*　 諸費用 */}
@@ -786,7 +806,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} subCostTokuro={this.subCostInfoGet} />
+						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/*　 現場情報 */}
@@ -795,15 +815,15 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" siteInfoTo={this.siteInfoGet} />					</Modal.Body>
+						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} siteInfoTokuro={this.siteInfoGet} />	</Modal.Body>
 				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-siteInfo">
+					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-passwordSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName="liulintao" passwordSetTo={this.passwordSetInfoGet} />					</Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
@@ -811,6 +831,7 @@ class employee extends React.Component {
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "siteInfo")}>現場情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>PB情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
 						<Form.Label>協力</Form.Label><Form.Check onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
@@ -1201,7 +1222,7 @@ class employee extends React.Component {
 									<InputGroup.Append>
 										<DatePicker
 											selected={this.state.yearsOfExperience}
-											onChange={this.inactiveExperienceYears}
+											onChange={this.inactiveyearsOfExperience}
 											locale="ja"
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
@@ -1209,10 +1230,9 @@ class employee extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
-
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_experienceYears" value={temporary_experienceYears} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
 								</InputGroup>
 							</Col>
 
@@ -1227,8 +1247,8 @@ class employee extends React.Component {
 											onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
 											onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
 											onSuggestionSelected={this.onDlt1SuggestionSelected}
-											getSuggestionValue={dateUtils.getSuggestionDlt}
-											renderSuggestion={dateUtils.renderSuggestion}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt1InputProps}
 											id="developement1"
 										/>
@@ -1237,8 +1257,8 @@ class employee extends React.Component {
 											onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
 											onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
 											onSuggestionSelected={this.onDlt2SuggestionSelected}
-											getSuggestionValue={dateUtils.getSuggestionDlt}
-											renderSuggestion={dateUtils.renderSuggestion}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt2InputProps}
 											id="developement2"
 										/>
@@ -1247,8 +1267,8 @@ class employee extends React.Component {
 											onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
 											onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
 											onSuggestionSelected={this.onDlt3SuggestionSelected}
-											getSuggestionValue={dateUtils.getSuggestionDlt}
-											renderSuggestion={dateUtils.renderSuggestion}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt3InputProps}
 											id="developement3"
 										/>
@@ -1258,8 +1278,8 @@ class employee extends React.Component {
 											onSuggestionsFetchRequested={this.onDlt4SuggestionsFetchRequested}
 											onSuggestionsClearRequested={this.onDlt4SuggestionsClearRequested}
 											onSuggestionSelected={this.onDlt4SuggestionSelected}
-											getSuggestionValue={dateUtils.getSuggestionDlt}
-											renderSuggestion={dateUtils.renderSuggestion}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt4InputProps}
 											id="developement4"
 										/>
@@ -1268,8 +1288,8 @@ class employee extends React.Component {
 											onSuggestionsFetchRequested={this.onDlt5SuggestionsFetchRequested}
 											onSuggestionsClearRequested={this.onDlt5SuggestionsClearRequested}
 											onSuggestionSelected={this.onDlt5SuggestionSelected}
-											getSuggestionValue={dateUtils.getSuggestionDlt}
-											renderSuggestion={dateUtils.renderSuggestion}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
 											inputProps={dlt5InputProps}
 											id="developement5"
 										/>

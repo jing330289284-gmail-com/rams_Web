@@ -4,7 +4,7 @@ import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker"
-import * as dateUtils from './utils/dateUtils.js';
+import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
@@ -342,7 +342,7 @@ class manageSituation extends React.Component {
 				<div >
 					<BootstrapTable className={"bg-white text-dark"} options={options} data={ this.state.salesSituationLists } pagination
   ignoreSinglePage cellEdit={ cellEdit }>
-						<TableHeaderColumn width='8%' dataField='any' dataFormat={ this.indexN } dataAlign='center' autoValue dataSort={true} caretRender={dateUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='8%' dataField='any' dataFormat={ this.indexN } dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeNo' editable={ false }>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeName' editable={ false }>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='7%' dataField='siteRoleCode' editable={ false }>役割</TableHeaderColumn>

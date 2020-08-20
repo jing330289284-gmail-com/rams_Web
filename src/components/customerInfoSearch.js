@@ -5,7 +5,7 @@ import axios from "axios";
 import { BrowserRouter as Router , Link  } from "react-router-dom";
 import {BootstrapTable, TableHeaderColumn , DeleteButton} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import * as utils from './utils/dateUtils.js';
+import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch , faEdit , faTrash , faList } from '@fortawesome/free-solid-svg-icons';
 import "react-datepicker/dist/react-datepicker.css";
