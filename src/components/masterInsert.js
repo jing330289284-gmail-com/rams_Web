@@ -21,11 +21,11 @@ class masterInsert extends Component {
 
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getMasterStatus"]
+		var methodArray = ["getMaster"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				masterStatus: data[0],//　精算時間
+				masterStatus: data[0],//　名称
 			}
 		);
 	};
@@ -51,17 +51,18 @@ class masterInsert extends Component {
      * 登録ボタン
      */
 	toroku = () => {
-		var technologyTypeMod = {};
-		technologyTypeMod["technologytypeCode"] = $("#technologytypeCode").val();
-		technologyTypeMod["technologytypeName"] = $("#technologytypeName").val();
-		technologyTypeMod["updateUser"] = sessionStorage.getItem("employeeNo");
-		axios.post("http://127.0.0.1:8080/technologyTypeMaster/toroku", technologyTypeMod)
+		var masterModel = {};
+		var formArray = $("#masterInsertForm").serializeArray();
+		$.each(formArray, function(i, item) {
+			masterModel[item.name] = item.value;
+		});
+		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
+		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
 			.then(function(result) {
 				if (result.data) {
 					alert("登录成功");
-					window.location.reload();
 				} else {
-					alert("開発言語已存在");
+					alert("データが存在しています");
 				}
 			})
 			.catch(function(error) {
@@ -82,10 +83,10 @@ class masterInsert extends Component {
 					<Col sm={4}>
 					</Col>
 					<Col sm={7}>
-						<p id="technologyTypeMasterErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
+						<p id="masterInsertErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
 					</Col>
 				</Row>
-				<Form id="technologyTypeMasterForm">
+				<Form id="masterInsertForm">
 					<Row>
 						<Col>
 							<InputGroup size="sm" className="mb-3">
@@ -108,7 +109,7 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control placeholder="名称" id="technologytypeName" name="technologytypeName" />
+								<Form.Control placeholder="データ" id="data" name="data" />
 							</InputGroup>
 						</Col>
 					</Row>
