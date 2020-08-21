@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
 
-class Kyuukei extends Component {
+class BreakTime extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -352,4 +352,4 @@ class Kyuukei extends Component {
     }
 }
 
-export default Kyuukei;
+export default BreakTime;
