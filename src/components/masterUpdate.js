@@ -6,7 +6,6 @@ import $ from 'jquery';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class masterInsert extends Component {
 
@@ -73,7 +72,6 @@ class masterInsert extends Component {
 
 	render() {
 		const { master } = this.state;
-		const options = ['Option 1', 'Option 2'];
 		return (
 			<div className="container col-7">
 				<Row inline="true">
@@ -82,7 +80,8 @@ class masterInsert extends Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col sm={4}></Col>
+					<Col sm={4}>
+					</Col>
 					<Col sm={7}>
 						<p id="masterInsertErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
 					</Col>
@@ -94,15 +93,12 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
 								</InputGroup.Prepend>
-					
-								<Autocomplete
-									id="custom-input-demo"
-									options={options}
-									renderInput={(params) => (
-										<div ref={params.InputProps.ref}>
-											<input style={{ width: 239 }} type="text" {...params.inputProps} />
-										</div>
-									)}
+								<Select
+									name="master"
+									id="master"
+									value={master}
+									onChange={this.handleChange}
+									options={this.state.masterStatus}
 								/>
 							</InputGroup>
 						</Col>
@@ -118,16 +114,16 @@ class masterInsert extends Component {
 						</Col>
 					</Row>
 					<Row>
-						<Col sm={1}></Col>
-						<Col sm={4} className="text-center">
-							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+						<Col sm={3}></Col>
+						<Col sm={3} className="text-center">
+							<Button block size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
 								<FontAwesomeIcon icon={faSave} />登録
 							</Button>
 						</Col>
-						<Col sm={5} className="text-center">
-							<Button size="sm" type="reset" variant="info" >
+						<Col sm={3} className="text-center">
+							<Button block size="sm" type="reset" variant="info" >
 								<FontAwesomeIcon icon={faUndo} /> リセット
-                           </Button>
+                                    </Button>
 						</Col>
 					</Row>
 				</Form>
