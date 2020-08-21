@@ -300,43 +300,6 @@ class CustomerInfo extends Component {
         var a = window.confirm("削除していただきますか？");
         if(a){
             $("#delectBtn").click();
-            // var id = this.state.rowNo;
-            // var departmentList = this.state.customerDepartmentList;
-            // for(let i=departmentList.length-1; i>=0; i--){
-            //     if(departmentList[i].rowNo === id){
-            //         departmentList.splice(i,1);
-            //     }
-            // }
-            // if(departmentList.length !== 0){
-            //     for(let i=departmentList.length-1; i>=0; i--){
-            //         departmentList[i].rowNo = (i + 1);
-            //     }  
-            // }
-            // this.setState({
-            //     customerDepartmentList:departmentList,
-            //     rowNo:'',
-            //     customerDepartmentNameValue:'',
-            //     customerDepartmentCode:'',
-            // })
-            // $("#positionCode").val('');
-            // $("#responsiblePerson").val('');
-            // $("#customerDepartmentMail").val('');
-            // var customerDepartmentInfoModel = {};
-            // customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
-            // customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
-            // if($("#actionType").val() === "update"){
-            //     axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
-            //     .then(function (result) {
-            //         if(result.data === true){
-            //             alert("删除成功");
-            //         }else{
-            //             alert("删除失败");
-            //         }
-            //     })
-            //     .catch(function (error) {
-            //         alert("删除失败，请检查程序");
-            //     });
-            // }
         }    
     }
         /**
@@ -435,17 +398,13 @@ class CustomerInfo extends Component {
             );
             }
       }
-      handleDeleteButtonClick = (onClick) => {
-        // Custom your onClick event here,
-        // it's not necessary to implement this function if you have no any process before onClick
-        console.log('This is my custom function for DeleteButton click event');
-        onClick();
-      }
+      //隠した削除ボタン
       createCustomDeleteButton = (onClick) => {
         return (
-            <Button variant="info" id="delectBtn" hidden onClick={ () => this.handleDeleteButtonClick(onClick) } >删除</Button>
+            <Button variant="info" id="delectBtn" hidden onClick={ onClick } >删除</Button>
         );
       }
+      //隠した削除ボタンの実装
       onDeleteRow =(rows)=>{
         // ...
         var id = this.state.rowNo;
@@ -486,7 +445,8 @@ class CustomerInfo extends Component {
             });
         }
       }
-      customConfirm(next, dropRowKeys) {
+      //削除前のデフォルトお知らせの削除
+    customConfirm(next, dropRowKeys) {
         const dropRowKeysStr = dropRowKeys.join(',');
         next();
       }
