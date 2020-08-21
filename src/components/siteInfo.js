@@ -44,8 +44,7 @@ class siteInfo extends Component {
 	fixed = event => {
 		$("#payOffRange2").prop('disabled', false);
 		this.onchange(event);
-
-		if (event.target.value === 0) {
+		if (event.target.value === "0") {
 			this.setState({ "payOffRange2": event.target.value })
 			$("#payOffRange2").prop('disabled', true);
 		}
@@ -78,12 +77,12 @@ class siteInfo extends Component {
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				payOffRangeStatus: data[0],//　精算時間
+				payOffRangeStatus: data[0].slice(1),//　精算時間
 				siteMaster: data[1],//　役割
 				levelMaster: data[2],//　レベル
-				customerMaster: data[3],//お客様
-				topCustomerMaster: data[4],//トップお客様
-				developLanguageMaster: data[5],//開発言語
+				customerMaster: data[3].slice(1),//お客様
+				topCustomerMaster: data[4].slice(1),//トップお客様
+				developLanguageMaster: data[5].slice(1),//開発言語
 
 			}
 		);
@@ -331,7 +330,7 @@ class siteInfo extends Component {
 											<Form.Control as="select"
 											onChange={this.onchange}
 											id="payOffRange2" name="payOffRange2" value={payOffRange2}
-											autoComplete="off">
+											autoComplete="off" disabled>
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -403,12 +402,12 @@ class siteInfo extends Component {
 							<Row>
 								<Col sm={4}></Col>
 								<Col sm={2} className="text-center">
-									<Button block size="sm" type="reset" variant="info" >
+									<Button size="sm" type="reset" variant="info" >
 										<FontAwesomeIcon icon={faUndo} /> リセット
                                     </Button>
 								</Col>
 								<Col sm={2} className="text-center">
-									<Button block size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
+									<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
 										<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
 									</Button>
 								</Col>
