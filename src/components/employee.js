@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './accountInfo';
 import SubCost from './costInfo';
-import SiteInfo from './siteInfo';
 import PbInfo from './pbInfo';
 import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';
@@ -32,7 +31,6 @@ class employee extends React.Component {
 	initialState = {
 		showBankInfoModal: false,//口座情報画面フラグ
 		showSubCostModal: false,//諸費用
-		showSiteInfoModal: false,//現場情報
 		showpasswordSetModal: false,//PW設定
 		showPbInfoModal: false,//pb情報
 		pictures: [],//ImageUploader
@@ -52,7 +50,6 @@ class employee extends React.Component {
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
 		subCostInfo: null,//諸費用のデータ
-		siteInfo: null,//現場情報のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		pbInfo: null,//pb情報
 
@@ -164,7 +161,6 @@ class employee extends React.Component {
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
-			siteInfo: this.state.siteInfo,//現場情報
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			pbInfo: this.state.pbInfo,//pb情報
@@ -236,7 +232,6 @@ class employee extends React.Component {
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
-			siteInfo: this.state.siteInfo,//現場情報
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			pbInfo: this.state.pbInfo,//pb情報
@@ -559,16 +554,6 @@ class employee extends React.Component {
 		console.log(subCostInfoTokuro);
 	}
 	/* 
-	ポップアップ現場情報の取得
- 　　　*/
-	siteInfoGet = (siteInfoTokuro) => {
-		this.setState({
-			subCostInfo: siteInfoTokuro,
-			showSiteInfoModal: false,
-		})
-		console.log(siteInfoTokuro);
-	}
-	/* 
 	ポップアップPW設定の取得
  　　　*/
 	passwordSetInfoGet = (passwordSetTokuro) => {
@@ -596,9 +581,7 @@ class employee extends React.Component {
 			this.setState({ showBankInfoModal: false })
 		} else if (kbn === "subCost") {//　　諸費用
 			this.setState({ showSubCostModal: false })
-		} else if (kbn === "siteInfo") {//　　現場情報
-			this.setState({ showSiteInfoModal: false })
-		} else if (kbn === "passwordSet") {//PW設定
+		}  else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: false })
 		} else if (kbn === "pbInfo") {//pb情報
 			this.setState({ showPbInfoModal: false })
@@ -613,9 +596,7 @@ class employee extends React.Component {
 			this.setState({ showBankInfoModal: true })
 		} else if (kbn === "subCost") {//　　諸費用
 			this.setState({ showSubCostModal: true })
-		} else if (kbn === "siteInfo") {//　　現場情報
-			this.setState({ showSiteInfoModal: true })
-		} else if (kbn === "passwordSet") {//PW設定
+		}  else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: true })
 		} else if (kbn === "pbInfo") {//pb情報
 			this.setState({ showPbInfoModal: true })
@@ -834,7 +815,7 @@ class employee extends React.Component {
 			value: developement5Value,
 			onChange: this.onDevelopement5Change
 		};
-		const { accountInfo, subCostInfo, siteInfo, passwordSetInfo, pbInfo, actionType } = this.state;
+		const { accountInfo, subCostInfo, passwordSetInfo, pbInfo, actionType } = this.state;
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -857,21 +838,13 @@ class employee extends React.Component {
 						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
 					</Modal.Body>
 				</Modal>
-				{/*　 現場情報 */}
-				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "siteInfo")} show={this.state.showSiteInfoModal} dialogClassName="modal-siteInfo">
-					<Modal.Header closeButton>
-					</Modal.Header>
-					<Modal.Body >
-						<SiteInfo siteInfo={siteInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} siteInfoTokuro={this.siteInfoGet} />	</Modal.Body>
-				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-passwordSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
 
 				{/*　 pb情報*/}
@@ -880,13 +853,12 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
+						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "siteInfo")}>現場情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>PB情報</Button>{' '}
 					<div>
