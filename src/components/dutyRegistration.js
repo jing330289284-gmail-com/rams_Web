@@ -16,10 +16,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 
-import Kyuukei from './kyuukei';
+import BreakTime from './breakTime';
 
 
-class GyoumuTouroku extends React.Component {
+class DutyRegistration extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
@@ -833,7 +833,7 @@ class GyoumuTouroku extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<Kyuukei accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} kozaTokuro={this.accountInfoGet} />
+						<BreakTime accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} kozaTokuro={this.accountInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/* 終了 */}
@@ -1435,4 +1435,4 @@ class GyoumuTouroku extends React.Component {
 		);
 	}
 }
-export default GyoumuTouroku;
+export default DutyRegistration;

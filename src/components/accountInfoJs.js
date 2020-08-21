@@ -1,9 +1,5 @@
 const $ = require('jquery');
 const axios = require('axios');
-var oldForm_data;
-var oldForm_dataJson;
-var newForm_data;
-var newForm_dataJson;
 
 /**
  * 銀行の選択と項目の活性

@@ -13,14 +13,14 @@ import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import TopCustomerInfo from './topCustomerInfo';
 import masterInsert from './masterInsert';
-import CustomerDepartmentTypeMaster from './customerDepartmentTypeMaster';
+import masterUpdate from './masterUpdate';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import PasswordSet from './passwordSet';
-import GyoumuTouroku from './gyoumuTouroku';
-import Kyuukei from './kyuukei';
+import DutyRegistration from './dutyRegistration';
+import BreakTime from './breakTime';
 
 class SubMenu extends Component {
 	state = {
@@ -158,9 +158,8 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />マスター</Accordion.Toggle>
 									<Accordion.Collapse eventKey="6">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />部署マスター</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />マスター登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterUpdate"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />マスター削除</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
@@ -177,7 +176,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
 									<Accordion.Collapse eventKey="8">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/gyoumuTouroku/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyRegistration/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />履歴検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
@@ -198,13 +197,13 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
-								<Route exact path={`${this.props.match.url}/gyoumuTouroku`} component={GyoumuTouroku} />
-								<Route exact path={`${this.props.match.url}/kyuukei`} component={Kyuukei} />
+								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
+								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
-										<Route exact path={`${this.props.match.url}/customerDepartmentTypeMaster`} component={CustomerDepartmentTypeMaster} />
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
+										<Route exact path={`${this.props.match.url}/masterUpdate`} component={masterUpdate} />
 										<Route exact path={`${this.props.match.url}/passwordSet`} component={PasswordSet} />
 									</div>
 								</div>
