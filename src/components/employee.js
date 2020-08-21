@@ -16,7 +16,7 @@ import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
-
+import Select from 'react-select';
 
 class employee extends React.Component {
 	constructor(props) {
@@ -30,6 +30,7 @@ class employee extends React.Component {
 	}
 	//初期化
 	initialState = {
+		siteMaster: [],
 		showBankInfoModal: false,//口座情報画面フラグ
 		showSubCostModal: false,//諸費用
 		showSiteInfoModal: false,//現場情報
@@ -55,7 +56,7 @@ class employee extends React.Component {
 		siteInfo: null,//現場情報のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		pbInfo: null,//pb情報
-
+		station: [],//
 	};
 	//　　リセット
 	resetBook = () => {
@@ -86,7 +87,7 @@ class employee extends React.Component {
 		myNumber: "",//　　マイナンバー
 		certification1: "",//　　資格1
 		certification2: "",//　　資格2
-		duties: "",//役割
+		siteRoleCode: "",//役割
 		postcode1: "",//　　郵便番号1
 		postcode2: "",//　　郵便番号2
 		firstHalfAddress: "",
@@ -108,6 +109,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
+		alert( this.state.siteRoleCode)
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -139,9 +141,8 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
-			duties: this.state.duties,//役割
-			postcode1: this.state.postcode1,//郵便番号1
-			postcode2: this.state.postcode2,//郵便番号2
+			siteRoleCode: this.state.siteRoleCode,//役割
+			postcode: this.state.postcode1+this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			nearestStation: this.state.nearestStation,
@@ -211,9 +212,8 @@ class employee extends React.Component {
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
-			duties: this.state.duties,//役割
-			postcode1: this.state.postcode1,//郵便番号1
-			postcode2: this.state.postcode2,//郵便番号2
+			siteRoleCode: this.state.siteRoleCode,//役割
+			postcode: this.state.postcode1+this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			nearestStation: this.state.nearestStation,
@@ -299,7 +299,7 @@ class employee extends React.Component {
 	}
 
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys","getSiteMaster","getStation"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -312,7 +312,9 @@ class employee extends React.Component {
 				japaneaseLevelCodes: data[6],//　日本語  
 				residenceCodes: data[7],//　在留資格
 				englishLeveCodes: data[8],//　英語
-				nationalityCodes: data[9]//　 出身地国
+				nationalityCodes: data[9],//　 出身地国
+				siteMaster: data[10],//　役割
+				station: data[11],//　駅
 			}
 		);
 	};
@@ -371,9 +373,8 @@ class employee extends React.Component {
 					englishLevelCode: data.englishLevelCode,//英語
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
-					duties: data.duties,//役割
-					postcode1: data.postcode1,//郵便番号1
-					postcode2: data.postcode2,//郵便番号2
+					siteRoleCode: data.siteRoleCode,//役割
+					postcode: data.postcode1+data.postcode2,//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					nearestStation: data.nearestStation,
@@ -805,7 +806,7 @@ class employee extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, duties, postcode1, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode1, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled
 		} = this.state;
@@ -1273,12 +1274,18 @@ class employee extends React.Component {
 							</Col>
 
 							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="役割" value={duties} autoComplete="off" onChange={this.valueChange} size="sm" name="duties" disabled={detailDisabled ? false : true} />
-								</InputGroup>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select"  name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+											{this.state.siteMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
 							</Col>
 
 
@@ -1406,7 +1413,13 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={nearestStation} autoComplete="off" onChange={this.valueChange} size="sm" name="nearestStation" id="nearestStation" disabled={detailDisabled ? false : true}/>
+									<Select
+											id="nearestStation"
+											name="nearestStation"
+											value={nearestStation}
+											onChange={this.valueChange}
+											options={this.state.station}
+										/>
 								</InputGroup>
 							</Col>
 						</Row>
