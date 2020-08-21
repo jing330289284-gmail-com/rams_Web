@@ -19,8 +19,8 @@ import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import PasswordSet from './passwordSet';
-import GyoumuTouroku from './gyoumuTouroku';
-import Kyuukei from './kyuukei';
+import DutyRegistration from './dutyRegistration';
+import BreakTime from './breakTime';
 
 class SubMenu extends Component {
 	state = {
@@ -177,7 +177,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
 									<Accordion.Collapse eventKey="8">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/gyoumuTouroku/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyRegistration/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />履歴検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
@@ -198,8 +198,8 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
-								<Route exact path={`${this.props.match.url}/gyoumuTouroku`} component={GyoumuTouroku} />
-								<Route exact path={`${this.props.match.url}/kyuukei`} component={Kyuukei} />
+								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
+								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
