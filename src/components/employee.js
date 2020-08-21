@@ -854,7 +854,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeName={this.state.employeeFristName + this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
+						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
 					</Modal.Body>
 				</Modal>
 				{/*　 現場情報 */}

@@ -85,7 +85,8 @@ class SubCost extends Component {
     //住宅ステータス
     var housingStatus = selectList[3];
     $("#shusei").attr("disabled",true);
-    document.getElementById("employeeName").innerHTML  = (isNaN(this.props.employeeName) ? '' : this.props.employeeName);
+    document.getElementById("employeeName").innerHTML  = (this.props.employeeFristName === undefined ? '' : this.props.employeeFristName) + '' + (this.props.employeeLastName === undefined ? '' : this.props.employeeLastName);
+    //document.getElementById("employeeName").innerHTML  = (isNaN(this.props.employeeName) ? '' : this.props.employeeName);
     for(let i = 1;i<SocialInsuranceFlag.length ; i++){
         $("#SocialInsuranceFlag").append('<option value="'+SocialInsuranceFlag[i].code+'">'+SocialInsuranceFlag[i].name+'</option>');
     }
