@@ -30,10 +30,10 @@ class PasswordSet extends Component {
         // }else{//社員情報登録からの場合
             actionType = this.props.actionType;//父画面のパラメータ（処理区分）
             password = this.props.password;//父画面のパラメータ（画面既存の新パスワード）
-            if(this.props.employeeFirstName===undefined||this.props.employeeLastName===undefined){
+            if(this.props.employeeFristName===undefined||this.props.employeeLastName===undefined){
                 $('#passwordEmployeeName').val(" "); 
              }else{
-                 document.getElementById("passwordEmployeeName").innerHTML =  this.props.employeeFirstName + this.props.employeeLastName;
+                 document.getElementById("passwordEmployeeName").innerHTML =  this.props.employeeFristName + this.props.employeeLastName;
                 }
             
             document.getElementById("passwordEmployeeNo").innerHTML =  this.props.employeeNo;
@@ -61,7 +61,7 @@ class PasswordSet extends Component {
         var reg = /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$@!%*#?&])[A-Za-z\d$@!%*#?&]{8,}$/;
         var actionType=this.props.actionType;
         if(!reg.test($("#newPassword").val())){
-            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード格式再確認してください" 
+            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード書式再確認してください";
             document.getElementById("passwordSetErorMsg").style = "visibility:visible";
         }
         else{
