@@ -347,6 +347,7 @@ class CustomerInfoSearch extends Component {
                     </Col>
                     </Row>
                    </div>
+                   <br/>
                     <div style={{ "textAlign": "center" }}>
                             <Button onClick={this.search} size="sm" variant="info">
                                 <FontAwesomeIcon icon={faSearch} /> 検索
@@ -365,9 +366,11 @@ class CustomerInfoSearch extends Component {
                         <Col sm={10}>
                         </Col>
                         <Col sm={2}>
-                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>
-                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>
+                            <div style={{ "float": "right" }}>
+                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>{' '}
+                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>{' '}
                                 <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
+                            </div>
                         </Col>
                     </Row>
                         { radioValue === "haveOperator" ?

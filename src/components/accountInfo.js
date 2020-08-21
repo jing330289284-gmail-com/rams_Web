@@ -4,10 +4,14 @@ import * as bankInfoJs from './accountInfoJs.js';
 import $ from 'jquery';
 import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 class BankInfo extends Component {
 
-    state = {}
+    state = {
+        actionType:'',//処理区分
+    }
 
     constructor(props){
         super(props);
@@ -30,6 +34,9 @@ class BankInfo extends Component {
             $("#bankCode").append('<option value="'+bankCode[i].code+'">'+bankCode[i].name+'</option>');
         }
         var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
+        this.setState({
+            actionType:actionType,//処理区分
+        })
         var accountInfo = this.props.accountInfo;//父画面のパラメータ（画面既存口座情報）
         if(!$.isEmptyObject(accountInfo)){
             $("#bankBranchName").val(accountInfo["bankBranchName"]);
@@ -115,6 +122,7 @@ class BankInfo extends Component {
         }   
     }
     render() {
+        const {actionType} =this.state;
         return (
             <div  >
             <div  >
@@ -216,13 +224,19 @@ class BankInfo extends Component {
                     <Row>
                         <Col sm={3}></Col>
                         <Col sm={3} className="text-center">
-                                <Button block size="sm" onClick={this.accountTokuro.bind(this)}  variant="primary" id="accountToroku" type="button">
-                                登録
-                                </Button>
+                        {actionType === "update" ? 
+                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
+                            <FontAwesomeIcon icon={faSave} />更新
+                        </Button>
+                        :
+                        <Button block size="sm" onClick={this.accountTokuro.bind(this)}  variant="info" id="accountToroku" type="button">
+                        <FontAwesomeIcon icon={faSave} />登録
+                        </Button>
+                    }
                         </Col>
                         <Col sm={3} className="text-center">
-                                <Button onClick={bankInfoJs.setDisabled} block size="sm" type="reset" id="accountReset" value="Reset" >
-                                リセット
+                                <Button onClick={bankInfoJs.setDisabled} block variant="info" size="sm" type="reset" id="accountReset" value="Reset" >
+                                <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                         </Col>
                     </Row> 
