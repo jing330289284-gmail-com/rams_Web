@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class PasswordSet extends Component {
     state = { 
-        //fatherMenu:'',//サブメニュー画面からのフラグ
         actionType:'',
      }
      constructor(props){
@@ -20,16 +19,13 @@ class PasswordSet extends Component {
     componentDidMount(){
         var actionType = '';
         var password = '';
-       
-        // if(this.props.location.state.actionType !== null && this.props.location.state.actionType !== ''){//サブメニューからの場合
-        //     actionType = this.props.location.state.actionType;
-        //     document.getElementById("passwordEmployeeName").innerHTML =  sessionStorage.getItem('employeeName');
-        //     this.setState({
-        //         fatherMenu:this.props.location.state.fatherMenu,
-        //     })
-        // }else{//社員情報登録からの場合
+        //社員情報登録からの場合
             actionType = this.props.actionType;//父画面のパラメータ（処理区分）
-            password = this.props.password;//父画面のパラメータ（画面既存の新パスワード）
+            password = this.props.passwordSetInfo;//父画面のパラメータ（画面既存の新パスワード）
+            if(password !== null && password !== ''){
+                $("#newPassword").val(password);
+                $("#passwordCheck").val(password);
+            }
             if(this.props.employeeFristName===undefined||this.props.employeeLastName===undefined){
                 $('#passwordEmployeeName').val(" "); 
              }else{
@@ -40,19 +36,11 @@ class PasswordSet extends Component {
           
         // }
         if(actionType === "update"){
-            // if(password !== null && password !== ''){
-            //     $("#newPassword").val(password);
-            // }
+
             document.getElementById("passwordSetText").innerHTML = "新しいパスワード";
             document.getElementById("toroku").innerHTML = "更新";
         }
-        // else{
-        //     $("#newPassword").attr("disabled",true);
-        //     $("#passwordCheck").attr("disabled",true);
-        //     if(password !== null && password !== ''){
-        //         $("#password").val(password);
-        //     }
-        // }   
+
     }
     /**
      * パスワード登録
@@ -67,29 +55,7 @@ class PasswordSet extends Component {
         else{
         if($("#newPassword").val() === $("#passwordCheck").val()){
         if(actionType =='update'){
-        
-            // if(this.state.fatherMenu === "subMenu"){//サブメニューからの場合
-            //     var emp = {};
-            //     emp["employeeNo"] = sessionStorage.getItem('employeeNo');
-            //     emp["password"] = $("#newPassword").val();
-            //     emp["oldPassword"] = $("#oldPassword").val();
-            //     axios.post("http://127.0.0.1:8080/resetPassword", emp)
-            //     .then(function (result) {
-            //         if(result.data){
-            //             alert("パスワードリセット成功しました");
-            //             window.location.reload();
-            //         }else{
-            //             document.getElementById("passwordSetErorMsg").style = "visibility:visible";
-            //             document.getElementById("passwordSetErorMsg").innerHTML = "既存パスワードが間違いため、パスワードリセットができません"
-            //         }
-            //     })
-            //     .catch(function(){
-            //         alert("页面加载错误，请检查程序");
-            //     })
-            // }else{//社員情報登録からの場合
-                this.props.passwordToroku($("#newPassword").val());
-            //}
-            
+                this.props.passwordToroku($("#newPassword").val());         
         }
         if(actionType =='insert'){
             this.props.passwordToroku($("#newPassword").val());
@@ -158,16 +124,6 @@ class PasswordSet extends Component {
                     </Col>
                     <font>{'\u00A0'}{'\u00A0'}{'\u00A0'}</font>
                 </Row>
-                {/* <Row>
-                    <Col>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroup-sizing-sm">パスワード再確認</InputGroup.Text>
-                            </InputGroup.Prepend>
-                                <Form.Control type="password" id="passwordCheck" name="passwordCheck" />
-                        </InputGroup>
-                    </Col>
-                </Row> */}
                 <Row>
                     <Col sm={3}></Col>
                         <Col sm={3} className="text-center">
@@ -176,7 +132,7 @@ class PasswordSet extends Component {
                                 </Button>
                         </Col>
                         <Col sm={3} className="text-center">
-                                <Button  block size="sm" id="reset"  variant="info">
+                                <Button  block size="sm" id="reset" type="reset" variant="info">
                                 <FontAwesomeIcon icon={faEdit} />リセット
                                 </Button>
                         </Col>
