@@ -106,7 +106,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-		alert( this.state.siteRoleCode)
+		alert(this.state.siteRoleCode);
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -369,7 +369,8 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: data.postcode1+data.postcode2,//郵便番号
+					postcode1: data.postcode,//郵便番号
+					postcode2: data.postcode,//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					nearestStation: data.nearestStation,
@@ -1250,7 +1251,7 @@ class employee extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select"  name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+										<Form.Control as="select"  name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off">
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
