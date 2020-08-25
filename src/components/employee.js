@@ -369,11 +369,11 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode1: data.postcode,//郵便番号
-					postcode2: data.postcode,//郵便番号
+					postcode1: data.postcode.substring(0,3),//郵便番号
+					postcode2: data.postcode.substring(3),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
-					nearestStation: data.nearestStation,
+					nearestStation: data.stationName,
 					//developement1Value: data.developLanguage1,//　スキール1
 					//developement2Value: data.developLanguage2,//スキール2
 					//developement3Value: data.developLanguage3,//スキール3
@@ -1387,7 +1387,6 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Select
-											id="nearestStation"
 											name="nearestStation"
 											value={nearestStation}
 											onChange={this.valueChange}
