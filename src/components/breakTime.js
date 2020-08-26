@@ -27,9 +27,11 @@ class BreakTime extends Component {
 			breakTimeNightMinuteEnd: [],//　　お昼分まで
 		};
 		
-		for (var i = 0; i < 24; i++)	{
+		for (var i = 0; i <= 14; i++)	{
 			this.state.breakTimeDayHourStart[i] = i.toString();
 			this.state.breakTimeDayHourEnd[i] = i.toString();
+		}
+		for (var i = 15; i < 24; i++)	{
 			this.state.breakTimeNightHourStart[i] = i.toString();
 			this.state.breakTimeNightHourEnd[i] = i.toString();
 		}
@@ -114,12 +116,13 @@ class BreakTime extends Component {
 		$("#breakTimeSumHour").val(Number($("#breakTimeDaybreakTimeHour").val()) + Number($("#breakTimeNightbreakTimeHour").val()));
 	}
     /**-
-     * 上位お客様情報登録ボタン
+     * 登録ボタン
      */
     breakTimeRegister(){
         var breakTimeInfo = {};
         var actionType = this.state.actionType;
         breakTimeInfo["employeeNo"] = sessionStorage.getItem('employeeNo');
+        breakTimeInfo["breakTimeIsConst"] = $("#isConst").val();
         breakTimeInfo["breakTimeYearMonth"] = utils.formateDate($("#breakTimeDate").val(), false);
         breakTimeInfo["breakTimeDayStart"] = $("#breakTimeDayHourStart").val().padStart(2,"0") + $("#breakTimeDayMinuteStart").val().padEnd(2,"0");
         breakTimeInfo["breakTimeDayEnd"] = $("#breakTimeDayHourEnd").val().padStart(2,"0") + $("#breakTimeDayMinuteEnd").val().padEnd(2,"0");
@@ -137,10 +140,6 @@ class BreakTime extends Component {
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
-                    var methodArray = ["getTopCustomerDrop"]
-                    var selectDataList = utils.getPublicDropDown(methodArray);
-                    var topCustomerDrop = selectDataList[0];
-                    this.props.topCustomerToroku(breakTimeInfo);
                 }else{
                     alert("更新失败");
                 }
@@ -149,6 +148,26 @@ class BreakTime extends Component {
                 alert("更新错误，请检查程序");
             })
         }    
+	}
+	isConst ()	{
+		var isConst = $("#isConst").val();
+		var isDisable = false;
+		if (isConst == 0)	{
+			isDisable = true;
+		}
+		else if (isConst == 1)	{
+			isDisable = false;
+		}
+		$("#breakTimeDate").prop( "disabled", isDisable );
+		$("#breakTimeDayHourStart").prop( "disabled", isDisable );
+		$("#breakTimeDayMinuteStart").prop( "disabled", isDisable );
+		$("#breakTimeDayHourEnd").prop( "disabled", isDisable );
+		$("#breakTimeDayMinuteEnd").prop( "disabled", isDisable );
+		$("#breakTimeNightHourStart").prop( "disabled", isDisable );
+		$("#breakTimeNightMinuteStart").prop( "disabled", isDisable );
+		$("#breakTimeNightHourEnd").prop( "disabled", isDisable );
+		$("#breakTimeNightMinuteEnd").prop( "disabled", isDisable );
+		$("#toroku").prop( "disabled", isDisable );
 	}
     render() {
         const {actionType} = this.state;
@@ -162,14 +181,14 @@ class BreakTime extends Component {
                 </Row>
                 <Form id="topCustomerInfoForm">
                 <Row inline="true" className="justify-content-md-center">
-                    <Col xs lg="3" className="text-center">
+                    <Col xs lg="4" className="text-center">
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間固定</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control id="isConst" name="isConst" as="select" >
-									<option>1</option>
-									<option>2</option>
+                                <Form.Control id="isConst" name="isConst" as="select" onChange={this.isConst} >
+									<option value="1">はい</option>
+									<option value="0">いいえ</option>
                                 </Form.Control>
                         </InputGroup>
                     </Col>
