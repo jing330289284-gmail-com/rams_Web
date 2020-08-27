@@ -857,7 +857,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
+						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>

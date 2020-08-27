@@ -218,7 +218,7 @@ export function converToLocalTime(serverDate, flag) {
 
 }
 
-// yyyy/mm/dd hh:mm→yyyymmddhhmm
+
 export function timeToStr(date) {
 	if (date !== undefined && date !== null && date !== "") {
 		function addDateZero(num) {
@@ -241,6 +241,7 @@ export function strToTime(datetime) {
 		return "";
 	}
 };
+
 //誕生日ー年齢計算
 export function birthday_age(age) {
 	if(age !== undefined && age !== null && age !== ""){
