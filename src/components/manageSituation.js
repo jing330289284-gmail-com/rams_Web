@@ -7,6 +7,10 @@ import DatePicker from "react-datepicker"
 import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave ,faEnvelope,faIdCard,faBuilding,faDownload} from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
+/* import FileSaver from 'file-saver' */
 
 class manageSituation extends React.Component {
 	constructor(props) {
@@ -21,8 +25,8 @@ class manageSituation extends React.Component {
 		interviewDate1: '',　// 面接1日付
 		interviewDate2Show: '',　// 面接1日付
 		interviewDate2: '',　// 面接2日付
-		intreviewPalace1: '',　// 面接1場所
-		intreviewPalace2: '',　// 面接2場所
+		stationCode1: '',　// 面接1場所
+		stationCode2: '',　// 面接2場所
 		interviewCustomer1: '',　// 面接1客様
 		interviewCustomer2: '',　// 面接2客様
 		hopeLowestPrice: '',　// 希望単価min
@@ -36,6 +40,7 @@ class manageSituation extends React.Component {
 		salesProgressCodes: [],// ステータス
 		allCustomer: [],// お客様レコード用
 		editFlag: false,// 確定客様編集flag
+		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
 		salesYearAndMonth: new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
 		updateUser: sessionStorage.getItem('employeeName'),//更新者
@@ -46,6 +51,11 @@ class manageSituation extends React.Component {
 		salesPersons: [],// 全部営業
 		customers: [],// 全部お客様　画面入力用
 		getstations: [], // 全部場所
+		totalPersons: '',// 合計人数
+		decidedPersons: '',// 確定人数
+		linkDisableFlag:true,// linkDisableFlag
+		name:'',
+		resume2Name:''
 	};
 
 	// 初期表示のレコードを取る
@@ -61,14 +71,25 @@ class manageSituation extends React.Component {
 		axios.post("http://127.0.0.1:8080/salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
+					console.log(result.data);
+					var totalPersons=result.data.length;
+					var decidedPersons=0;
+					if(totalPersons!==0){
+						for(var i = 0; i < result.data.length; i++){
+							if(result.data[i].salesProgressCode==='3'){
+								decidedPersons=decidedPersons+1;
+							}
+						}
+					}
+					
 					this.setState({
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
 						interviewDate1: '',　// 面接1日付
 						interviewDate2Show: '',　// 面接1日付
 						interviewDate2: '',　// 面接2日付
-						intreviewPalace1: '',　// 面接1場所
-						intreviewPalace2: '',　// 面接2場所
+						stationCode1: '',　// 面接1場所
+						stationCode2: '',　// 面接2場所
 						interviewCustomer1: '',　// 面接1客様
 						interviewCustomer2: '',　// 面接2客様
 						hopeLowestPrice: '',　// 希望単価min
@@ -80,6 +101,8 @@ class manageSituation extends React.Component {
 								},
 						readFlag: true,
 						updateBtnflag: false,
+						totalPersons: totalPersons,// 合計人数
+						decidedPersons: decidedPersons,// 確定人数
 					});
 				} else {
 					alert("FAIL");
@@ -148,7 +171,12 @@ class manageSituation extends React.Component {
 
 	// table編集保存
 	afterSaveCell = (row) => {
-		if (!(row.salesProgressCode === '2')) {
+		if (row.salesProgressCode === '3'||row.salesProgressCode === '5') {
+			row.customer = '';
+				alert("単価とお客様を入力してください");
+			alert(row.salesProgressCode);
+			alert(this.state.salesProgressCode);
+		}else{
 			row.customer = '0';
 		}
 	};
@@ -250,6 +278,7 @@ class manageSituation extends React.Component {
 
 	// レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
+		console.log(e);
 		if(isSelected){
 			this.setState({
 				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
@@ -257,8 +286,8 @@ class manageSituation extends React.Component {
 				interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
 				interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
 				interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
-				intreviewPalace1: row.interviewLocation1 === null ? '' : row.interviewLocation1,
-				intreviewPalace2: row.interviewLocation2 === null ? '' : row.interviewLocation2,
+				stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
+				stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
 				interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
 				interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
 				hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
@@ -266,10 +295,12 @@ class manageSituation extends React.Component {
 				salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
 				salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
 				remark: row.remark === null ? '' : row.remark,
-				editFlag: row.salesProgressCode === '2' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				editFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5'? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				priceEditFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5'? true: false,// 確定単価編集flag
 				updateBtnflag: isSelected,
 				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
 				readFlag:row.employeeNo===this.state.employeeNo && !this.state.readFlag ? false:true, 
+				linkDisableFlag:false,
 			});
 		}else{
 			this.setState({
@@ -278,8 +309,8 @@ class manageSituation extends React.Component {
 				interviewDate1Show:'',
 				interviewDate2:'',
 				interviewDate2Show:'',
-				intreviewPalace1:'',
-				intreviewPalace2:'',
+				stationCode1:'',
+				stationCode2:'',
 				interviewCustomer1:'',
 				interviewCustomer2:'',
 				hopeLowestPrice:'',
@@ -287,10 +318,11 @@ class manageSituation extends React.Component {
 				salesPriorityStatus:'',
 				salesProgressCode:'',
 				remark:'',
-				editFlag: row.salesProgressCode === '2' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				editFlag: row.salesProgressCode === '3' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
-				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
+				salesStaff:'',
 				readFlag:true, 
+				linkDisableFlag:true,
 			});			
 		}
 	}
@@ -304,12 +336,6 @@ class manageSituation extends React.Component {
 	}
 
 	render() {
-		let buttonDiv;
-		if (!this.state.readFlag && this.state.updateBtnflag) {
-			buttonDiv = (<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState}>更新</Button></div>)
-		} else {
-			buttonDiv = (<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState}>解除</Button></div>)
-		}
 
 		const selectRow = {
 			mode: 'radio',
@@ -409,7 +435,7 @@ class manageSituation extends React.Component {
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
-										name="intreviewPalace1" value={this.state.intreviewPalace1}
+										name="stationCode1" value={this.state.stationCode1}
 										autoComplete="off" disabled={this.state.readFlag}>
 										{this.state.getstations.map(date =>
 											<option key={date.code} value={date.code}>
@@ -464,7 +490,7 @@ class manageSituation extends React.Component {
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
-										name="intreviewPalace2" value={this.state.intreviewPalace2}
+										name="stationCode2" value={this.state.stationCode2}
 										autoComplete="off" disabled={this.state.readFlag}>
 										{this.state.getstations.map(date =>
 											<option key={date.code} value={date.code}>
@@ -500,9 +526,15 @@ class manageSituation extends React.Component {
 									</InputGroup.Prepend>
 									<FormControl value={this.state.hopeLowestPrice} autoComplete="off" name="hopeLowestPrice"
 										style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
-									<font style={{ marginLeft: "10px", marginRight: "10px" }}>～</font>
+									<InputGroup.Append>
+										<InputGroup.Text id="basic-addon1">万円</InputGroup.Text>
+									</InputGroup.Append>
+									<font style={{ marginLeft: "10px", marginRight: "10px",marginTop: "5px" }}>～</font>
 									<FormControl value={this.state.hopeHighestPrice} autoComplete="off" name="hopeHighestPrice"
 										style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
+									<InputGroup.Append>
+										<InputGroup.Text id="basic-addon2">万円</InputGroup.Text>
+									</InputGroup.Append>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -534,24 +566,43 @@ class manageSituation extends React.Component {
 						</Row>
 					</Form.Group>
 					<div>
-						{buttonDiv}
+						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState}>
+							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag?"更新":"解除"}</Button></div>
 					</div>
 
 					<Row>
-						<Col sm={1}>
-							<font style={{ whiteSpace: 'nowrap' }}>合計：1人</font>
+					    <Col sm={1}>
+							{/* <InputGroup size="sm" >
+								<InputGroup.Prepend style={{ height: '31px' }} >
+									<InputGroup.Checkbox />
+								</InputGroup.Prepend>
+								<InputGroup.Append>
+									<InputGroup.Text >選択</InputGroup.Text>
+								</InputGroup.Append>
+							</InputGroup> */}
+							<div >
+							<span style={{whiteSpace: 'nowrap' }}> 選択送信 <Form.Check inline type="checkbox" /></span>
+							</div>
 						</Col>
 						<Col sm={1}>
-							<font style={{ whiteSpace: 'nowrap' }}>確定：0人</font>
+							<font style={{ whiteSpace: 'nowrap' }}>合計：{this.state.totalPersons}人</font>
 						</Col>
-						<Col sm={5}></Col>
+						<Col sm={1}>
+							<font style={{ whiteSpace: 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
+						</Col>
+						<Col sm={4}></Col>
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" >お客様送信</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" >個人情報</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" >現場情報</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" >履歴書1</Button>
-								<Button size="sm" variant="info" name="clickButton" >履歴書2</Button>
+								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
+								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
+								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
+								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
+								{/* <Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}> */}
+								<Button onClick={this.handleDownload} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>{/* </Link> */}
+								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Button size="sm" variant="info" name="clickButton"  disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload}/>履歴書2</Button></Link>
 							</div>
 						</Col>
 					</Row>
@@ -563,8 +614,7 @@ class manageSituation extends React.Component {
 						pagination
 						options={options}
 						selectRow={selectRow}
-						cellEdit={cellEdit}
-						trClassName={this.rowClassNameFormat}>
+						cellEdit={cellEdit}>
 						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} >番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
@@ -574,13 +624,13 @@ class manageSituation extends React.Component {
 						<TableHeaderColumn width='5%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
 						<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} editable={{ type: 'select', options: { values: this.state.salesProgressCodes } }} >ステータス</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='customer' dataFormat={this.formatCustome.bind(this)} editable={this.state.editFlag}>確定客様</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='price' >確定単価</TableHeaderColumn>
+						<TableHeaderColumn width='8%' dataField='price' editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} editable={{ type: 'select', options: { values: this.state.salesPersons } }}>営業担当</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewLocation1' hidden={true}>面接1場所</TableHeaderColumn>
+						<TableHeaderColumn dataField='stationCode1' hidden={true}>面接1場所</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewCustomer1' hidden={true}>面接1客様</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewDate2' hidden={true}> 面接2日付</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewLocation2' hidden={true}>面接2場所</TableHeaderColumn>
+						<TableHeaderColumn dataField='stationCode2' hidden={true}>面接2場所</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewCustomer2' hidden={true}>面接2客様</TableHeaderColumn>
 						<TableHeaderColumn dataField='hopeLowestPrice' hidden={true}>希望単価min</TableHeaderColumn>
 						<TableHeaderColumn dataField='hopeHighestPrice' hidden={true}>希望単価max</TableHeaderColumn>
