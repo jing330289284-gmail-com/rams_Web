@@ -28,7 +28,6 @@ class DutyRegistration extends React.Component {
 		this.onDrop = this.onDrop.bind(this);//ImageUploaderを処理
 		this.radioChangeEmployeeType = this.radioChangeEmployeeType.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
-		sessionStorage.setItem("userLastName","test1234");
 	}
 	//初期化
 	initialState = {
@@ -36,7 +35,7 @@ class DutyRegistration extends React.Component {
 		showSubCostModal: false,//諸費用
 		showSiteInfoModal: false,//現場情報
 		showpasswordSetModal: false,//PW設定
-		showKyuukeiModal: false,//休憩時間画面フラグ
+		showbreakTimeModal: false,//休憩時間画面フラグ
 		pictures: [],//ImageUploader
 		genderStatuss: [],//性別
 		intoCompanyCodes: [],//　　入社区分
@@ -532,10 +531,10 @@ class DutyRegistration extends React.Component {
 		ポップアップ休憩時間の取得
 	 */
 
-	kyuukeiGet = (kozaTokuro) => {
+	breakTimeGet = (kozaTokuro) => {
 		this.setState({
 			accountInfo: kozaTokuro,
-			showkyuukeiModal: false,
+			showbreakTimeModal: false,
 		})
 		console.log(kozaTokuro);
 	}
@@ -552,8 +551,8 @@ class DutyRegistration extends React.Component {
 			this.setState({ showSiteInfoModal: false })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: false })
-		} else if (kbn === "kyuukei") {//PW設定
-			this.setState({ showKyuukeiModal: false })
+		} else if (kbn === "breakTime") {//PW設定
+			this.setState({ showbreakTimeModal: false })
 		}
 	}
 
@@ -569,8 +568,8 @@ class DutyRegistration extends React.Component {
 			this.setState({ showSiteInfoModal: true })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: true })
-		} else if (kbn === "kyuukei") {//PW設定
-			this.setState({ showKyuukeiModal: true })
+		} else if (kbn === "breakTime") {//PW設定
+			this.setState({ showbreakTimeModal: true })
 		}
 	}
 	//　　開発言語　開始
@@ -829,7 +828,7 @@ class DutyRegistration extends React.Component {
 				</Modal>
 				{/*　 休憩時間 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "kyuukei")} show={this.state.showKyuukeiModal} dialogClassName="modal-kyuukei">
+					onHide={this.handleHideModal.bind(this, "breakTime")} show={this.state.showbreakTimeModal} dialogClassName="modal-breakTime">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -838,7 +837,7 @@ class DutyRegistration extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "kyuukei")}>休憩時間</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "breakTime")}>休憩時間</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "siteInfo")}>現場情報</Button>{' '}

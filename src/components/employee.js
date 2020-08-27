@@ -106,8 +106,8 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-		alert( this.state.siteRoleCode)
-		const emp = {
+    const formData = new FormData()
+	const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
@@ -153,12 +153,8 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
-			residentCardInfo: $("#residentCardInfo").val(),//在留カード
-			resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
-			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
-			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
@@ -166,7 +162,12 @@ class employee extends React.Component {
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			pbInfo: this.state.pbInfo,//pb情報
 		};
-		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
+		formData.append('emp', JSON.stringify(emp))
+		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
+		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
+		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
+		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
+		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
 					this.getNO();//採番番号
@@ -246,6 +247,7 @@ class employee extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+			window.location.reload();
 	};
 
 	//onchange
@@ -369,10 +371,11 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: data.postcode1+data.postcode2,//郵便番号
+					postcode1: data.postcode.substring(0,3),//郵便番号
+					postcode2: data.postcode.substring(3),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
-					nearestStation: data.nearestStation,
+					nearestStation: data.stationName,
 					//developement1Value: data.developLanguage1,//　スキール1
 					//developement2Value: data.developLanguage2,//スキール2
 					//developement3Value: data.developLanguage3,//スキール3
@@ -854,7 +857,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
+						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
@@ -867,7 +870,7 @@ class employee extends React.Component {
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
+				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
@@ -1250,7 +1253,7 @@ class employee extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select"  name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+										<Form.Control as="select"  name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off">
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -1386,7 +1389,6 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Select
-											id="nearestStation"
 											name="nearestStation"
 											value={nearestStation}
 											onChange={this.valueChange}
@@ -1481,7 +1483,7 @@ class employee extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1 " name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
 									</InputGroup.Prepend>
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled={detailDisabled ? false : true} />

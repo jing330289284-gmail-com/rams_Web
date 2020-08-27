@@ -199,6 +199,11 @@ body {
   max-width: none !important;
 }
 
+.modal-breakTime {
+  width: 50%;
+  max-width: none !important;
+}
+
 #datePicker {
   background-repeat: no-repeat;
   background-position: 10px 7px;
