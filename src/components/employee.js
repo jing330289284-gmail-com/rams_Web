@@ -246,6 +246,7 @@ class employee extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+			window.location.reload();
 	};
 
 	//onchange
