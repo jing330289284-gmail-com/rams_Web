@@ -10,7 +10,7 @@ import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
-import Select from 'react-select';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 registerLocale('ja', ja);
 
@@ -30,11 +30,7 @@ class siteInfo extends Component {
 		customerMaster: [],
 		developLanguageMaster: []
 	};
-	//联想框用
-	handleChange = selectedOption => {
-		this.setState({ selectedOption });
-		console.log(`Option selected:`, selectedOption);
-	};
+
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -120,6 +116,7 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
+		siteModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
 		siteModel["employeeNo"] = this.props.employeeNo;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
@@ -273,12 +270,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
+										<Autocomplete
 											id="customerNo"
 											name="customerNo"
 											value={customer}
-											onChange={this.handleChange}
 											options={this.state.customerMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="お客様名" type="text" {...params.inputProps}
+														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>
@@ -287,12 +290,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
+										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
 											value={topCustomer}
-											onChange={this.handleChange}
 											options={this.state.topCustomerMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="トップお客様名" type="text" {...params.inputProps}
+														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>
@@ -344,12 +353,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
-											name="developLanguageCode"
+										<Autocomplete
 											id="developLanguageCode"
+											name="developLanguageCode"
 											value={developLanguage}
-											onChange={this.handleChange}
 											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="開発言語" type="text" {...params.inputProps}
+														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>

@@ -252,3 +252,16 @@ export function birthday_age(age) {
 	var value = (year-age) + '' + (month < 10 ? '0' + month : month)+ '' +(day < 10 ? '0' + day : day);}
 	return value;
 }
+/**
+ * 联想框label的value取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function labelGetValue(name, list) {
+	for (var i in list) {
+		if (name === list[i].name) {
+			return list[i].code;
+		}
+	}
+}
