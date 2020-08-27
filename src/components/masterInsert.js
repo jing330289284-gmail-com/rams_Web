@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+import TextField from '@material-ui/core/TextField';
 import * as publicUtils from './utils/publicUtils.js';
-import { Row, Form, Col, InputGroup, Button } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,7 +26,7 @@ class masterInsert extends Component {
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				masterStatus: data[0],//　名称
+				masterStatus: data[0].slice(1),//　名称
 			}
 		);
 	};
@@ -42,12 +42,6 @@ class masterInsert extends Component {
 		this.getDropDowns();//全部のドロップダウン
 	}
 
-	//联想框用
-	handleChange = selectedOption => {
-		this.setState({ selectedOption });
-		console.log(`Option selected:`, selectedOption);
-	};
-
     /**
      * 登録ボタン
      */
@@ -57,6 +51,7 @@ class masterInsert extends Component {
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
+		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
 		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
 			.then(function(result) {
@@ -73,7 +68,6 @@ class masterInsert extends Component {
 
 	render() {
 		const { master } = this.state;
-		const options = ['Option 1', 'Option 2'];
 		return (
 			<div className="container col-7">
 				<Row inline="true">
@@ -92,15 +86,18 @@ class masterInsert extends Component {
 						<Col>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm">名　称</InputGroup.Text>
 								</InputGroup.Prepend>
-					
 								<Autocomplete
-									id="custom-input-demo"
-									options={options}
+									id="master"
+									name="master"
+									value={master}
+									options={this.state.masterStatus}
+									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input style={{ width: 239 }} type="text" {...params.inputProps} />
+											<input placeholder="マスター名" type="text" {...params.inputProps}
+												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
 								/>
@@ -113,7 +110,7 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control placeholder="データ" id="data" name="data" />
+								<FormControl placeholder="データ" id="data" name="data" />
 							</InputGroup>
 						</Col>
 					</Row>

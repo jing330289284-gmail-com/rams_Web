@@ -41,7 +41,7 @@ export function getFullYearMonth(date, now) {
 		}
 		yearmonth = returnYears + "年" + returnMonths + "月";
 		return yearmonth;
-	}else {
+	} else {
 		return "";
 	}
 
@@ -64,7 +64,7 @@ export function getdropDown(method) {
 		type: "POST",
 		url: "http://127.0.0.1:8080/" + method,
 		async: false,
-		success: function (msg) {
+		success: function(msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -80,7 +80,7 @@ export function getPublicDropDown(methodArray) {
 			type: "POST",
 			url: "http://127.0.0.1:8080/" + methodArray[i],
 			async: false,
-			success: function (msg) {
+			success: function(msg) {
 				var array = [{ code: '', name: '選択ください' }];
 				for (var i in msg) {
 					array.push(msg[i])
@@ -106,7 +106,7 @@ export async function getNO(columnName, typeName, table) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function (data) {
+		success: function(data) {
 			if (data != null) {
 				no = data
 			}
@@ -188,7 +188,17 @@ export function converToLocalTime(serverDate, flag) {
 	} else {
 		return "";
 	}
-
-
 }
-
+/**
+ * 联想框label的value取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function labelGetValue(name, list) {
+	for (var i in list) {
+		if (name === list[i].name) {
+			return list[i].code;
+		}
+	}
+}
