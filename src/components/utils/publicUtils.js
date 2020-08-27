@@ -241,4 +241,13 @@ export function strToTime(datetime) {
 		return "";
 	}
 };
-
+//誕生日ー年齢計算
+export function birthday_age(age) {
+	if(age !== undefined && age !== null && age !== ""){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth() + 1;
+	var day = date.getDate();
+	var value = (year-age) + '' + (month < 10 ? '0' + month : month)+ '' +(day < 10 ? '0' + day : day);}
+	return value;
+}
