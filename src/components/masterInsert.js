@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+import TextField from '@material-ui/core/TextField';
 import * as publicUtils from './utils/publicUtils.js';
-import { Row, Form, Col, InputGroup, Button } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class masterInsert extends Component {
 
@@ -25,7 +26,7 @@ class masterInsert extends Component {
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				masterStatus: data[0],//　名称
+				masterStatus: data[0].slice(1),//　名称
 			}
 		);
 	};
@@ -41,12 +42,6 @@ class masterInsert extends Component {
 		this.getDropDowns();//全部のドロップダウン
 	}
 
-	//联想框用
-	handleChange = selectedOption => {
-		this.setState({ selectedOption });
-		console.log(`Option selected:`, selectedOption);
-	};
-
     /**
      * 登録ボタン
      */
@@ -56,6 +51,7 @@ class masterInsert extends Component {
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
+		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
 		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
 			.then(function(result) {
@@ -80,8 +76,7 @@ class masterInsert extends Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col sm={4}>
-					</Col>
+					<Col sm={4}></Col>
 					<Col sm={7}>
 						<p id="masterInsertErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
 					</Col>
@@ -91,14 +86,20 @@ class masterInsert extends Component {
 						<Col>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm">名　称</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Select
-									name="master"
+								<Autocomplete
 									id="master"
+									name="master"
 									value={master}
-									onChange={this.handleChange}
 									options={this.state.masterStatus}
+									getOptionLabel={(option) => option.name}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input placeholder="マスター名" type="text" {...params.inputProps}
+												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+										</div>
+									)}
 								/>
 							</InputGroup>
 						</Col>
@@ -109,21 +110,21 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control placeholder="データ" id="data" name="data" />
+								<FormControl placeholder="データ" id="data" name="data" />
 							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
-						<Col sm={3}></Col>
-						<Col sm={3} className="text-center">
-							<Button block size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+						<Col sm={1}></Col>
+						<Col sm={4} className="text-center">
+							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
 								<FontAwesomeIcon icon={faSave} />登録
 							</Button>
 						</Col>
-						<Col sm={3} className="text-center">
-							<Button block size="sm" type="reset" variant="info" >
+						<Col sm={5} className="text-center">
+							<Button size="sm" type="reset" variant="info" >
 								<FontAwesomeIcon icon={faUndo} /> リセット
-                                    </Button>
+                           </Button>
 						</Col>
 					</Row>
 				</Form>

@@ -41,7 +41,7 @@ export function getFullYearMonth(date, now) {
 		}
 		yearmonth = returnYears + "年" + returnMonths + "月";
 		return yearmonth;
-	}else {
+	} else {
 		return "";
 	}
 
@@ -64,7 +64,7 @@ export function getdropDown(method) {
 		type: "POST",
 		url: "http://127.0.0.1:8080/" + method,
 		async: false,
-		success: function (msg) {
+		success: function(msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -80,11 +80,37 @@ export function getPublicDropDown(methodArray) {
 			type: "POST",
 			url: "http://127.0.0.1:8080/" + methodArray[i],
 			async: false,
-			success: function (msg) {
+			success: function(msg) {
 				var array = [{ code: '', name: '選択ください' }];
 				for (var i in msg) {
 					array.push(msg[i])
 				}
+				outArray.push(array);
+			}
+		});
+	}
+	return outArray;
+}
+
+//　ドロップダウン  多くメソッド react-bootstrap-table---->select専用
+export function getPublicDropDownRtBtSpTleOnly(methodArray) {
+	var outArray = [];
+	for (var i = 0; i < methodArray.length; i++) {
+		$.ajax({
+			type: "POST",
+			url: "http://127.0.0.1:8080/" + methodArray[i],
+			async: false,
+			success: function (msg) {
+				var array = [{ value: '', text: '選択ください' }];
+					for (var k in msg) {
+					    var arrayDetail1 = { value: '', text:''}
+						if(msg[k].code!==null){
+							arrayDetail1 = { value: msg[k].code, text:msg[k].name}
+						}else{
+							arrayDetail1 = { value: msg[k].value, text:msg[k].label}
+						}
+						array.push(arrayDetail1)
+					}
 				outArray.push(array);
 			}
 		});
@@ -106,7 +132,7 @@ export async function getNO(columnName, typeName, table) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function (data) {
+		success: function(data) {
 			if (data != null) {
 				no = data
 			}
@@ -188,7 +214,51 @@ export function converToLocalTime(serverDate, flag) {
 	} else {
 		return "";
 	}
-
-
 }
 
+export function timeToStr(date) {
+	if (date !== undefined && date !== null && date !== "") {
+		function addDateZero(num) {
+			return (num < 10 ? "0" + num : num);
+		}
+		let d = new Date(date);
+		return d.getFullYear() + '' + addDateZero(d.getMonth() + 1) + '' + addDateZero(d.getDate()) + '' +
+			addDateZero(d.getHours()) + '' + addDateZero(d.getMinutes());
+	} else {
+		return "";
+	}
+};
+
+// yyyymmddhhmm→yyyy/mm/dd hh:mm
+export function strToTime(datetime) {
+	if (datetime !== undefined && datetime !== null && datetime !== "") {
+		var pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})/;
+		return datetime.replace(pattern, '$1/$2/$3 $4:$5');
+	} else {
+		return "";
+	}
+};
+
+//誕生日ー年齢計算
+export function birthday_age(age) {
+	if(age !== undefined && age !== null && age !== ""){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth() + 1;
+	var day = date.getDate();
+	var value = (year-age) + '' + (month < 10 ? '0' + month : month)+ '' +(day < 10 ? '0' + day : day);}
+	return value;
+}
+/**
+ * 联想框label的value取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function labelGetValue(name, list) {
+	for (var i in list) {
+		if (name === list[i].name) {
+			return list[i].code;
+		}
+	}
+}

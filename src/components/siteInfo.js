@@ -10,7 +10,7 @@ import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
-import Select from 'react-select';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 registerLocale('ja', ja);
 
@@ -30,11 +30,7 @@ class siteInfo extends Component {
 		customerMaster: [],
 		developLanguageMaster: []
 	};
-	//联想框用
-	handleChange = selectedOption => {
-		this.setState({ selectedOption });
-		console.log(`Option selected:`, selectedOption);
-	};
+
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -44,8 +40,7 @@ class siteInfo extends Component {
 	fixed = event => {
 		$("#payOffRange2").prop('disabled', false);
 		this.onchange(event);
-
-		if (event.target.value === 0) {
+		if (event.target.value === "0") {
 			this.setState({ "payOffRange2": event.target.value })
 			$("#payOffRange2").prop('disabled', true);
 		}
@@ -78,12 +73,12 @@ class siteInfo extends Component {
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				payOffRangeStatus: data[0],//　精算時間
+				payOffRangeStatus: data[0].slice(1),//　精算時間
 				siteMaster: data[1],//　役割
 				levelMaster: data[2],//　レベル
-				customerMaster: data[3],//お客様
-				topCustomerMaster: data[4],//トップお客様
-				developLanguageMaster: data[5],//開発言語
+				customerMaster: data[3].slice(1),//お客様
+				topCustomerMaster: data[4].slice(1),//トップお客様
+				developLanguageMaster: data[5].slice(1),//開発言語
 
 			}
 		);
@@ -121,6 +116,7 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
+		siteModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
 		siteModel["employeeNo"] = this.props.employeeNo;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
@@ -274,12 +270,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
+										<Autocomplete
 											id="customerNo"
 											name="customerNo"
 											value={customer}
-											onChange={this.handleChange}
 											options={this.state.customerMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="お客様名" type="text" {...params.inputProps}
+														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>
@@ -288,12 +290,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
+										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
 											value={topCustomer}
-											onChange={this.handleChange}
 											options={this.state.topCustomerMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="トップお客様名" type="text" {...params.inputProps}
+														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>
@@ -331,7 +339,7 @@ class siteInfo extends Component {
 											<Form.Control as="select"
 											onChange={this.onchange}
 											id="payOffRange2" name="payOffRange2" value={payOffRange2}
-											autoComplete="off">
+											autoComplete="off" disabled>
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -345,12 +353,18 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Select
-											name="developLanguageCode"
+										<Autocomplete
 											id="developLanguageCode"
+											name="developLanguageCode"
 											value={developLanguage}
-											onChange={this.handleChange}
 											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="開発言語" type="text" {...params.inputProps}
+														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
 										/>
 									</InputGroup>
 								</Col>
@@ -403,12 +417,12 @@ class siteInfo extends Component {
 							<Row>
 								<Col sm={4}></Col>
 								<Col sm={2} className="text-center">
-									<Button block size="sm" type="reset" variant="info" >
+									<Button size="sm" type="reset" variant="info" >
 										<FontAwesomeIcon icon={faUndo} /> リセット
                                     </Button>
 								</Col>
 								<Col sm={2} className="text-center">
-									<Button block size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
+									<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
 										<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
 									</Button>
 								</Col>

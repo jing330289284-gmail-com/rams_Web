@@ -200,10 +200,17 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["actionType"] = $("#actionType").val();
         customerDepartmentInfoModel["updateUser"] = sessionStorage.getItem('employeeNo');
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
-        customerDepartmentInfoModel['customerDepartmentName'] = $("#customerDepartmentName").val();
+        var customerDepartmentName = "";
+        var customerDepartmentCode = document.getElementsByName("customerDepartmentName")[0].value;
+        this.state.customerDepartmentNameDrop.map(function(item,index){
+            if(item.value === customerDepartmentCode){
+                customerDepartmentName = item.label;
+            }
+        })
+        customerDepartmentInfoModel['customerDepartmentName'] = customerDepartmentName;
         customerDepartmentInfoModel['positionName'] = (positionCode.options[index].text === "選択ください" ? '' : positionCode.options[index].text);
         customerDepartmentInfoModel["rowNo"] = (this.state.customerDepartmentList.length === 0 ? 1 : this.state.customerDepartmentList.length + 1);
-        if($("#customerDepartmentName").val() !== '' && $("#positionCode").val() !== ''){
+        if(document.getElementsByName("customerDepartmentName")[0].value !== '' && $("#positionCode").val() !== ''){
             if(this.state.rowNo !== null && this.state.rowNo !== ''){//行更新
                 let rowNo = this.state.rowNo;
                 var departmentList = this.state.customerDepartmentList;
@@ -292,43 +299,7 @@ class CustomerInfo extends Component {
     listDelete=()=>{
         var a = window.confirm("削除していただきますか？");
         if(a){
-            var id = this.state.rowNo;
-            var departmentList = this.state.customerDepartmentList;
-            for(let i=departmentList.length-1; i>=0; i--){
-                if(departmentList[i].rowNo === id){
-                    departmentList.splice(i,1);
-                }
-            }
-            if(departmentList.length !== 0){
-                for(let i=departmentList.length-1; i>=0; i--){
-                    departmentList[i].rowNo = (i + 1);
-                }  
-            }
-            this.setState({
-                customerDepartmentList:departmentList,
-                rowNo:'',
-                customerDepartmentNameValue:'',
-                customerDepartmentCode:'',
-            })
-            $("#positionCode").val('');
-            $("#responsiblePerson").val('');
-            $("#customerDepartmentMail").val('');
-            var customerDepartmentInfoModel = {};
-            customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
-            customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
-            if($("#actionType").val() === "update"){
-                axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
-                .then(function (result) {
-                    if(result.data === true){
-                        alert("删除成功");
-                    }else{
-                        alert("删除失败");
-                    }
-                })
-                .catch(function (error) {
-                    alert("删除失败，请检查程序");
-                });
-            }
+            $("#delectBtn").click();
         }    
     }
         /**
@@ -427,6 +398,58 @@ class CustomerInfo extends Component {
             );
             }
       }
+      //隠した削除ボタン
+      createCustomDeleteButton = (onClick) => {
+        return (
+            <Button variant="info" id="delectBtn" hidden onClick={ onClick } >删除</Button>
+        );
+      }
+      //隠した削除ボタンの実装
+      onDeleteRow =(rows)=>{
+        // ...
+        var id = this.state.rowNo;
+        var departmentList = this.state.customerDepartmentList;
+        for(let i=departmentList.length-1; i>=0; i--){
+            if(departmentList[i].rowNo === id){
+                departmentList.splice(i,1);
+            }
+        }
+        if(departmentList.length !== 0){
+            for(let i=departmentList.length-1; i>=0; i--){
+                departmentList[i].rowNo = (i + 1);
+            }  
+        }
+        this.setState({
+            customerDepartmentList:departmentList,
+            rowNo:'',
+            customerDepartmentNameValue:'',
+            customerDepartmentCode:'',
+        })
+        $("#positionCode").val('');
+        $("#responsiblePerson").val('');
+        $("#customerDepartmentMail").val('');
+        var customerDepartmentInfoModel = {};
+        customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
+        customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
+        if($("#actionType").val() === "update"){
+            axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+            .then(function (result) {
+                if(result.data === true){
+                    alert("删除成功");
+                }else{
+                    alert("删除失败");
+                }
+            })
+            .catch(function (error) {
+                alert("删除失败，请检查程序");
+            });
+        }
+      }
+      //削除前のデフォルトお知らせの削除
+    customConfirm(next, dropRowKeys) {
+        const dropRowKeysStr = dropRowKeys.join(',');
+        next();
+      }
     render() {
         const { topCustomerValue , topCustomerInfo , customerDepartmentNameValue , selectedValue , customerDepartmentList , accountInfo
          , actionType , topCustomerNo} = this.state;
@@ -458,6 +481,9 @@ class CustomerInfo extends Component {
         paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
         hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
         expandRowBgColor: 'rgb(165, 165, 165)',
+        deleteBtn: this.createCustomDeleteButton,
+        onDeleteRow: this.onDeleteRow,
+        handleConfirmDeleteRow: this.customConfirm,
         };
         return (
 
@@ -561,6 +587,7 @@ class CustomerInfo extends Component {
                                 dateFormat="yyyy/MM"
                                 autoComplete="off"
                                 locale="pt-BR"
+                                placeholderText="期日を選択してください"
                                 id="customerInfoDatePicker"
                                 yearDropdownItemNumber={15}
                                 scrollableYearDropdown
@@ -585,6 +612,7 @@ class CustomerInfo extends Component {
                                 dateFormat="yyyy/MM"
                                 autoComplete="off"
                                 locale="pt-BR"
+                                placeholderText="期日を選択してください"
                                 id="customerInfoDatePicker"
                                 yearDropdownItemNumber={15}
                                 scrollableYearDropdown
@@ -609,6 +637,7 @@ class CustomerInfo extends Component {
                                     value={topCustomerValue}
                                     onChange={this.topCustomerHandleChange}
                                     options={this.state.topCustomerDrop}
+                                    isDisabled={actionType === "detail" ? true : false}
                                 />
                         </InputGroup>
                     </Col>
@@ -709,6 +738,7 @@ class CustomerInfo extends Component {
                                     value={this.state.customerDepartmentValue !== null ? this.state.customerDepartmentValue : customerDepartmentNameValue}
                                     onChange={this.handleChange}
                                     options={this.state.customerDepartmentNameDrop}
+                                    isDisabled={actionType === "detail" ? true : false}
                                 />
                         </InputGroup>
                     </Col>
@@ -760,7 +790,7 @@ class CustomerInfo extends Component {
                     </Col>
                 </Row>
                     <div>
-                    <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} pagination={ true } options={ options } data={customerDepartmentList} className={"bg-white text-dark"}>
+                    <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} pagination={ true } options={ options } deleteRow data={customerDepartmentList} className={"bg-white text-dark"}>
                         <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
                         <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
@@ -775,8 +805,8 @@ class CustomerInfo extends Component {
                 </Form>
             </div>
                 <Row>
-                    <Col sm={11}></Col>
-                    <Col sm={1}>
+                    <Col sm={5}></Col>
+                    <Col sm={2}>
                         {actionType === "update" ? 
                         <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
                             <FontAwesomeIcon icon={faSave} />更新

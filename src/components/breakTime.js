@@ -11,32 +11,37 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
 
-class Kyuukei extends Component {
+class BreakTime extends Component {
 	constructor() {
 		super();
 		this.state = {
 	        actionType:'',//処理区分
-			kyuukeiDayHourStart: [],//　　お昼時から
-			kyuukeiDayMinuteStart: [],//　　お昼分から
-			kyuukeiDayHourEnd: [],//　　お昼時まで
-			kyuukeiDayMinuteEnd: [],//　　お昼分まで
-			kyuukeiNightHourStart: [],//　　お昼時から
-			kyuukeiNightMinuteStart: [],//　　お昼分から
-			kyuukeiNightHourEnd: [],//　　お昼時まで
-			kyuukeiNightMinuteEnd: [],//　　お昼分まで
+			breakTimeDate: new Date(),
+			breakTimeDayHourStart: [],//　　お昼時から
+			breakTimeDayMinuteStart: [],//　　お昼分から
+			breakTimeDayHourEnd: [],//　　お昼時まで
+			breakTimeDayMinuteEnd: [],//　　お昼分まで
+			breakTimeNightHourStart: [],//　　お昼時から
+			breakTimeNightMinuteStart: [],//　　お昼分から
+			breakTimeNightHourEnd: [],//　　お昼時まで
+			breakTimeNightMinuteEnd: [],//　　お昼分まで
 		};
-		for (var i = 0; i < 24; i++)	{
-			this.state.kyuukeiDayHourStart[i] = i.toString();
-			this.state.kyuukeiDayHourEnd[i] = i.toString();
-			this.state.kyuukeiNightHourStart[i] = i.toString();
-			this.state.kyuukeiNightHourEnd[i] = i.toString();
+		
+		for (var i = 0; i <= 14; i++)	{
+			this.state.breakTimeDayHourStart[i] = i.toString();
+			this.state.breakTimeDayHourEnd[i] = i.toString();
+		}
+		for (var i = 15; i < 24; i++)	{
+			this.state.breakTimeNightHourStart[i] = i.toString();
+			this.state.breakTimeNightHourEnd[i] = i.toString();
 		}
 		for (var i = 0; i < 60; i+=15)	{
-			this.state.kyuukeiDayMinuteStart[i] = i.toString();
-			this.state.kyuukeiDayMinuteEnd[i] = i.toString();
-			this.state.kyuukeiNightMinuteStart[i] = i.toString();
-			this.state.kyuukeiNightMinuteEnd[i] = i.toString();
+			this.state.breakTimeDayMinuteStart[i] = i.toString();
+			this.state.breakTimeDayMinuteEnd[i] = i.toString();
+			this.state.breakTimeNightMinuteStart[i] = i.toString();
+			this.state.breakTimeNightMinuteEnd[i] = i.toString();
 		}
+		
 	}
     /**
      * 画面の初期化
@@ -44,9 +49,10 @@ class Kyuukei extends Component {
     componentDidMount(){
         var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
         var topCustomerNo = this.props.topCustomerNo;//父画面のパラメータ（画面既存上位お客様情報）
-		$("#kyuukeiUser").val(sessionStorage.getItem("userLastName"));
+		$("#breakTimeUser").val(sessionStorage.getItem("employeeName"));
+		this.calculateTime();
+		console.log(sessionStorage);
         var topCustomerInfo = this.props.topCustomerInfo;
-		console.log(topCustomerInfo);
 //        if(!$.isEmptyObject(topCustomerInfo)){//上位お客様追加でも修正したい場合
 //            document.getElementById("topCustomerNo").innerHTML = topCustomerInfo.topCustomerNo;
 //            $("#topCustomerName").val(topCustomerInfo.topCustomerName);
@@ -92,47 +98,77 @@ class Kyuukei extends Component {
 //            TopCustomerInfoJs.setDisabled();
 //        }
     }
+	calculateTime ()	{
+		var breakTimeDayHourStart = Number($("#breakTimeDayHourStart").val());
+		var breakTimeDayHourEnd = Number($("#breakTimeDayHourEnd").val());
+		var breakTimeDayMinuteStart = Number($("#breakTimeDayMinuteStart").val());
+		var breakTimeDayMinuteEnd = Number($("#breakTimeDayMinuteEnd ").val());
+		var breakTimeNightHourStart = Number($("#breakTimeNightHourStart").val());
+		var breakTimeNightHourEnd = Number($("#breakTimeNightHourEnd").val());
+		var breakTimeNightMinuteStart = Number($("#breakTimeNightMinuteStart").val());
+		var breakTimeNightMinuteEnd = Number($("#breakTimeNightMinuteEnd ").val());
+		
+		var breakTimeDaybreakTimeHour = breakTimeDayHourEnd * 60 + breakTimeDayMinuteEnd - breakTimeDayHourStart * 60 - breakTimeDayMinuteStart;
+		var breakTimeNightbreakTimeHour = breakTimeNightHourEnd * 60 + breakTimeNightMinuteEnd - breakTimeNightHourStart * 60 - breakTimeNightMinuteStart;
+
+		$("#breakTimeDaybreakTimeHour").val(breakTimeDaybreakTimeHour / 60);
+		$("#breakTimeNightbreakTimeHour").val(breakTimeNightbreakTimeHour / 60);
+		$("#breakTimeSumHour").val(Number($("#breakTimeDaybreakTimeHour").val()) + Number($("#breakTimeNightbreakTimeHour").val()));
+	}
     /**-
-     * 上位お客様情報登録ボタン
+     * 登録ボタン
      */
-    topCustomerToroku(){
-        if($("#topCustomerName").val() !== "" && $("#topCustomerName").val() != null){
-            var topCustomerInfo = {};
-            var actionType = this.state.actionType;
-            topCustomerInfo["topCustomerNo"] = document.getElementById("topCustomerNo").innerHTML;
-            topCustomerInfo["topCustomerAbbreviation"] = $("#topCustomerAbbreviation").val();
-            topCustomerInfo["topCustomerName"] = $("#topCustomerName").val();
-            topCustomerInfo["url"] = $("#topUrl").val();
-            topCustomerInfo["remark"] = $("#topRemark").val();
-            topCustomerInfo["updateUser"] = sessionStorage.getItem('employeeNo');
-            if(actionType === "update"){
-                topCustomerInfo["actionType"] = "update";
-                axios.post("http://127.0.0.1:8080/topCustomerInfo/toroku", topCustomerInfo)
-                .then(resultMap => {
-                    if(resultMap.data){
-                        alert("更新成功");
-                        var methodArray = ["getTopCustomerDrop"]
-                        var selectDataList = utils.getPublicDropDown(methodArray);
-                        var topCustomerDrop = selectDataList[0];
-                        this.props.topCustomerToroku(topCustomerDrop);
-                    }else{
-                        alert("更新失败");
-                    }
-                })
-                .catch(function(){
-                    alert("更新错误，请检查程序");
-                })
-            }else if(actionType === "insert"){
-                this.props.topCustomerToroku(topCustomerInfo);
-            }
-        }else{
-            if($("#topCustomerName").val() === "" || $("#topCustomerName").val() === null){
-                document.getElementById("topCustomerInfoErorMsg").style = "visibility:visible";
-                document.getElementById("topCustomerInfoErorMsg").innerHTML = "★がついてる項目を入力してください！"
-            }
-            
-        } 
-    }
+    breakTimeRegister(){
+        var breakTimeInfo = {};
+        var actionType = this.state.actionType;
+        breakTimeInfo["employeeNo"] = sessionStorage.getItem('employeeNo');
+        breakTimeInfo["breakTimeIsConst"] = $("#isConst").val();
+        breakTimeInfo["breakTimeYearMonth"] = utils.formateDate($("#breakTimeDate").val(), false);
+        breakTimeInfo["breakTimeDayStart"] = $("#breakTimeDayHourStart").val().padStart(2,"0") + $("#breakTimeDayMinuteStart").val().padEnd(2,"0");
+        breakTimeInfo["breakTimeDayEnd"] = $("#breakTimeDayHourEnd").val().padStart(2,"0") + $("#breakTimeDayMinuteEnd").val().padEnd(2,"0");
+        breakTimeInfo["breakTimeNightStart"] = $("#breakTimeNightHourStart").val().padStart(2,"0") + $("#breakTimeNightMinuteStart").val().padEnd(2,"0");
+        breakTimeInfo["breakTimeNightEnd"] = $("#breakTimeNightHourEnd").val().padStart(2,"0") + $("#breakTimeNightMinuteEnd").val().padEnd(2,"0");
+        breakTimeInfo["breakTimeDaybreakTimeHour"] = $("#breakTimeDaybreakTimeHour").val();
+        breakTimeInfo["breakTimeNightbreakTimeHour"] = $("#breakTimeNightbreakTimeHour").val();
+        breakTimeInfo["breakTimeSumHour"] = $("#breakTimeSumHour").val();
+        breakTimeInfo["updateUser"] = sessionStorage.getItem('employeeNo');
+		console.log(breakTimeInfo);
+		actionType = "insert";
+        if(actionType === "insert"){
+            breakTimeInfo["actionType"] = "insert";
+            axios.post("http://127.0.0.1:8080/dutyRegistration/breakTimeInsert", breakTimeInfo)
+            .then(resultMap => {
+                if(resultMap.data){
+                    alert("更新成功");
+                }else{
+                    alert("更新失败");
+                }
+            })
+            .catch(function(){
+                alert("更新错误，请检查程序");
+            })
+        }    
+	}
+	isConst ()	{
+		var isConst = $("#isConst").val();
+		var isDisable = false;
+		if (isConst == 0)	{
+			isDisable = true;
+		}
+		else if (isConst == 1)	{
+			isDisable = false;
+		}
+		$("#breakTimeDate").prop( "disabled", isDisable );
+		$("#breakTimeDayHourStart").prop( "disabled", isDisable );
+		$("#breakTimeDayMinuteStart").prop( "disabled", isDisable );
+		$("#breakTimeDayHourEnd").prop( "disabled", isDisable );
+		$("#breakTimeDayMinuteEnd").prop( "disabled", isDisable );
+		$("#breakTimeNightHourStart").prop( "disabled", isDisable );
+		$("#breakTimeNightMinuteStart").prop( "disabled", isDisable );
+		$("#breakTimeNightHourEnd").prop( "disabled", isDisable );
+		$("#breakTimeNightMinuteEnd").prop( "disabled", isDisable );
+		$("#toroku").prop( "disabled", isDisable );
+	}
     render() {
         const {actionType} = this.state;
         return (
@@ -145,43 +181,42 @@ class Kyuukei extends Component {
                 </Row>
                 <Form id="topCustomerInfoForm">
                 <Row inline="true" className="justify-content-md-center">
-                    <Col xs lg="7" className="text-center">
+                    <Col xs lg="4" className="text-center">
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間固定</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control id="isConst" name="isConst" as="select" >
-									<option>1</option>
-									<option>2</option>
+                                <Form.Control id="isConst" name="isConst" as="select" onChange={this.isConst} >
+									<option value="1">はい</option>
+									<option value="0">いいえ</option>
                                 </Form.Control>
                         </InputGroup>
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={6}>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
 	                        <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">氏名</InputGroup.Text>
 	                        </InputGroup.Prepend>
-                            <Form.Control readOnly id="kyuukeiUser" name="kyuukeiUser" />
+                            <Form.Control readOnly id="breakTimeUser" name="breakTimeUser" />
                         </InputGroup>
                     </Col>
-                    <Col sm={6}>
+                    <Col sm={4}>
                         <InputGroup size="sm" className="mb-3">
 	                        <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
 	                        </InputGroup.Prepend>
 							<InputGroup.Append>
 								<DatePicker
-									selected={new Date()} 
+									selected={this.state.breakTimeDate}
+									onChange={date => {this.setState({breakTimeDate: date});}} 
 									locale="ja"
 									dateFormat="yyyy/MM"
 									showMonthYearPicker
-									showFullMonthYearPicker
-									id="kyuukeiDate"
+									id="breakTimeDate"
 									className="form-control form-control-sm"
 									autoComplete="off"
-									readonly
 								/>
 							</InputGroup.Append>
                         </InputGroup>
@@ -193,8 +228,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">お昼</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiDayHourStart" name="kyuukeiDayHourStart" as="select" >
-								{this.state.kyuukeiDayHourStart.map(data =>
+                            <Form.Control id="breakTimeDayHourStart" name="breakTimeDayHourStart" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeDayHourStart.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -203,8 +238,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiDayMinuteStart" name="kyuukeiDayMinuteStart" as="select" >
-								{this.state.kyuukeiDayMinuteStart.map(data =>
+                            <Form.Control id="breakTimeDayMinuteStart" name="breakTimeDayMinuteStart" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeDayMinuteStart.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -216,8 +251,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">~</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiDayHourEnd" name="kyuukeiDayHourEnd" as="select" >
-								{this.state.kyuukeiDayHourEnd.map(data =>
+                            <Form.Control id="breakTimeDayHourEnd" name="breakTimeDayHourEnd" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeDayHourEnd.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -226,8 +261,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiDayMinuteEnd" name="kyuukeiDayMinuteEnd" as="select" >
-								{this.state.kyuukeiDayMinuteEnd.map(data =>
+                            <Form.Control id="breakTimeDayMinuteEnd" name="breakTimeDayMinuteEnd" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeDayMinuteEnd.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -239,10 +274,9 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiDayKyuukeiHour" name="kyuukeiDayKyuukeiHour" as="select" >
-                            </Form.Control>
+                            <Form.Control readOnly id="breakTimeDaybreakTimeHour" name="breakTimeDaybreakTimeHour" />
                             <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
+	                            <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
                         </InputGroup>
                     </Col>
@@ -253,8 +287,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">夜　</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightHourStart" name="kyuukeiNightHourStart" as="select" >
-								{this.state.kyuukeiNightHourStart.map(data =>
+                            <Form.Control id="breakTimeNightHourStart" name="breakTimeNightHourStart" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeNightHourStart.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -263,8 +297,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightMinuteStart" name="kyuukeiNightMinuteStart" as="select" >
-								{this.state.kyuukeiNightMinuteStart.map(data =>
+                            <Form.Control id="breakTimeNightMinuteStart" name="breakTimeNightMinuteStart" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeNightMinuteStart.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -276,8 +310,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">~</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightHourEnd" name="kyuukeiNightHourEnd" as="select" >
-								{this.state.kyuukeiNightHourEnd.map(data =>
+                            <Form.Control id="breakTimeNightHourEnd" name="breakTimeNightHourEnd" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeNightHourEnd.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -286,8 +320,8 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightMinuteEnd" name="kyuukeiNightMinuteEnd" as="select" >
-								{this.state.kyuukeiNightMinuteEnd.map(data =>
+                            <Form.Control id="breakTimeNightMinuteEnd" name="breakTimeNightMinuteEnd" as="select" onChange={this.calculateTime} >
+								{this.state.breakTimeNightMinuteEnd.map(data =>
 									<option value={data}>
 										{data}
 									</option>
@@ -299,8 +333,7 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightKyuukeiHour" name="kyuukeiNightKyuukeiHour" as="select" >
-                            </Form.Control>
+                            <Form.Control readOnly id="breakTimeNightbreakTimeHour" name="breakTimeNightbreakTimeHour" />
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -315,8 +348,7 @@ class Kyuukei extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">合計</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control id="kyuukeiNightKyuukeiHour" name="kyuukeiNightKyuukeiHour" as="select" >
-                            </Form.Control>
+                            <Form.Control readOnly id="breakTimeSumHour" name="breakTimeSumHour" />
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -327,13 +359,13 @@ class Kyuukei extends Component {
                     <Col sm={3}></Col>
                     {actionType === "update" ? 
                         <Col sm={3} className="text-center">
-                            <Button block size="sm" onClick={this.topCustomerToroku.bind(this)} variant="info" id="update" type="button">
+                            <Button block size="sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="update" type="button">
                             <FontAwesomeIcon icon={faSave} />更新
                             </Button>
                         </Col>
                         :
                         <Col sm={3} className="text-center">
-                                <Button block size="sm" onClick={this.topCustomerToroku.bind(this)} variant="info" id="toroku" type="button">
+                                <Button block size="sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="toroku" type="button">
                                 <FontAwesomeIcon icon={faSave} /> 登録
                                 </Button>
                         </Col>
@@ -352,4 +384,4 @@ class Kyuukei extends Component {
     }
 }
 
-export default Kyuukei;
+export default BreakTime;

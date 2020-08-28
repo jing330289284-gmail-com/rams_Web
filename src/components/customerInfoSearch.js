@@ -127,7 +127,18 @@ class CustomerInfoSearch extends Component {
         //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
         var a = window.confirm("削除していただきますか？");
         if(a){
-            var id = this.state.rowNo;
+            $("#delectBtn").click();    
+        }
+    }
+    //隠した削除ボタン
+    createCustomDeleteButton = (onClick) => {
+        return (
+            <Button variant="info" id="delectBtn" hidden onClick={ onClick } >删除</Button>
+        );
+      }
+      //隠した削除ボタンの実装
+      onDeleteRow =(rows)=>{
+        var id = this.state.rowNo;
             var customerInfoList = this.state.customerInfoData;
             for(let i=customerInfoList.length-1; i>=0; i--){
                 if(customerInfoList[i].rowNo === id){
@@ -147,16 +158,26 @@ class CustomerInfoSearch extends Component {
             customerInfoMod["customerNo"] = this.state.customerNo;
             axios.post("http://127.0.0.1:8080/customerInfoSearch/delect", customerInfoMod)
             .then(function (result) {
-                if(result.data === true){
+                if(result.data === 0){
                     alert("删除成功");
-                }else{
+                }else if(result.data === 1){
                     alert("删除失败");
+                }else if(result.data === 2){
+                    alert("お客様が現場に使っている");
+                }else if(result.data === 3){
+                    alert("上位お客様の下位お客様が複数ある");
+                }else if(result.data === 4){
+                    alert("上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し");
                 }
             })
             .catch(function (error) {
                 alert("删除失败，请检查程序");
             });
-        }
+      }
+    //削除前のデフォルトお知らせの削除
+    customConfirm(next, dropRowKeys) {
+        const dropRowKeysStr = dropRowKeys.join(',');
+        next();
     }
     /**
      * 取引開始のonChange 
@@ -229,11 +250,11 @@ class CustomerInfoSearch extends Component {
         firstPage: 'First', // First page button text
         lastPage: 'Last', // Last page button text
         paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-        // paginationPosition: 'top'  // default is bottom, top and both is all available
         hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-        // alwaysShowAllBtns: true // Always show next and previous button
-        // withFirstAndLast: false > Hide the going to First and Last page button
         expandRowBgColor: 'rgb(165, 165, 165)',
+        deleteBtn: this.createCustomDeleteButton,
+        onDeleteRow: this.onDeleteRow,
+        handleConfirmDeleteRow: this.customConfirm,
         };
         return (
            <div>
@@ -347,6 +368,7 @@ class CustomerInfoSearch extends Component {
                     </Col>
                     </Row>
                    </div>
+                   <br/>
                     <div style={{ "textAlign": "center" }}>
                             <Button onClick={this.search} size="sm" variant="info">
                                 <FontAwesomeIcon icon={faSearch} /> 検索
@@ -365,9 +387,11 @@ class CustomerInfoSearch extends Component {
                         <Col sm={10}>
                         </Col>
                         <Col sm={2}>
-                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>
-                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>
+                            <div style={{ "float": "right" }}>
+                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>{' '}
+                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>{' '}
                                 <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
+                            </div>
                         </Col>
                     </Row>
                         { radioValue === "haveOperator" ?
