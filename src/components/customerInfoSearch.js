@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 registerLocale('ja', ja);
+axios.defaults.withCredentials=true;
 
 class CustomerInfoSearch extends Component {
     state = { 
@@ -271,7 +272,7 @@ class CustomerInfoSearch extends Component {
                     </Col>
                 </Row>
                <Form id="conditionForm">
-                   <div className="container col-9">
+                   <div className="container">
                    <Row>
                     <Col>
                         <InputGroup size="sm">

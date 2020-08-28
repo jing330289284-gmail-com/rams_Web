@@ -4,12 +4,31 @@ import title from '../asserts/images/title.png';
 import $ from 'jquery'
 import axios from 'axios';
 import SubMenu from './subMenu'
-import { Row,  Col , Form , Button} from 'react-bootstrap';
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { Row,  Col , Form , Button , InputGroup , FormControl} from 'react-bootstrap';
+import { BrowserRouter as Router, Redirect, Route, Link } from "react-router-dom";
+axios.defaults.withCredentials=true;
 
 class Login extends Component {
 	state = {
 		loginFlag:false,//ログインの成功フラグ
+		yztime:59,
+		loading: false,
+		buttonText:"SMSを発信する",
+		btnDisable:false,
+		phoneNo:'',
+		time:60,
+	}
+	componentWillMount(){
+		$("#sendVerificationCode").attr("disabled",true);
+		$("#login").attr("disabled",true);
+		axios.post("http://127.0.0.1:8080/login/init")
+		.then(resultMap =>{
+			if(resultMap.data){
+				this.setState({
+					loginFlag:true,
+				})
+			}
+		})
 	}
 	/**
 	 * ログインボタン
@@ -18,40 +37,102 @@ class Login extends Component {
 		var loginModel = {};
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
+		loginModel["phoneNo"] = $("#phoneNo").val();
+		loginModel["verificationCode"] = $("#verificationCode").val();
 		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(resultMap =>{
 			var employeeModel = resultMap.data.employeeModel;		
 			if(employeeModel !== null){//ログイン成功
-				// this.context.router.push("/subCost")
-				sessionStorage.setItem('employeeNo', employeeModel["employeeNo"]);
-				sessionStorage.setItem('authorityName', employeeModel["authorityName"]);
-				sessionStorage.setItem('authorityCode', employeeModel["authorityCode"]);
-				sessionStorage.setItem('employeeName', employeeModel["employeeFristName"] + '' + employeeModel["employeeLastName"]);
-				if($("input[name='remeber']").is(":checked")){
-					sessionStorage.setItem('loginEmployeeNo', employeeModel["employeeNo"]);
-				}else{
-					sessionStorage.setItem('loginEmployeeNo', '');
-				}
 				this.setState({
 					loginFlag:true,
 				})
 			}else{//ログイン失敗
-				alert("账号或密码输入错误");
+				alert("入力した社員番号やパスワードや認証番号が間違いため、ログインできません");
 			}
 			})
 			.catch(function (error) {
 				alert("登录错误，请检查程序");
 			});
 	}
+	 setReadOnly=()=>{
+		 if($("#employeeNo").val() !== null && $("#password").val() !== null &&
+		 	$("#employeeNo").val() !== '' && $("#password").val() !== ''){
+				$("#phoneNo").attr("readOnly",false);
+				this.setState({
+					phoneNo:$("#phoneNo").val(),
+				})
+				if($("#phoneNo").val().length > 10){
+					$("#sendVerificationCode").attr("disabled",false);
+				}else{
+					$("#sendVerificationCode").attr("disabled",true);
+				}
+		 }else{
+			$("#phoneNo").attr("readOnly",true);
+		 }
+	 }
+	//  sendVerificationCode=()=>{
+	// 	 var loginModel = {};
+	// 	 loginModel["employeeNo"] = $("#employeeNo").val();
+	// 	 loginModel["phoneNo"] = $("#phoneNo").val();
+	// 	axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
+	// 	.then(resultMap =>{
+	// 		if(!resultMap.data){
+	// 			alert("この社員番号の電話番号は間違いため、認証番号の発送はできません");
+	// 		}else{
+	// 			$("#verificationCode").attr("readOnly",false);
+	// 			$("#login").attr("disabled",false);
+	// 		}
+	// 	})
+	//  }
 	/**
 	 * 画面初期化
-	 * remeberボックスの使用
 	 */
 	componentDidMount(){
-		var employeeNo = sessionStorage.getItem('loginEmployeeNo');
-		$("#employeeNo").val(employeeNo);
 	}
     render() {
+		const {phoneNo} = this.state;
+		let timeChange;
+		let ti = this.state.time;
+		//关键在于用ti取代time进行计算和判断，因为time在render里不断刷新，但在方法中不会进行刷新
+		const clock =()=>{
+		  if (ti > 0) {
+			//当ti>0时执行更新方法
+			 ti = ti - 1;
+			 this.setState({
+				time: ti,
+				buttonText: ti + "s後再発行",
+			  });
+		  }else{
+			//当ti=0时执行终止循环方法
+			clearInterval(timeChange);
+			this.setState({
+			  btnDisable: false,
+			  time: 60,
+			  buttonText: "发送验证码",
+			});
+		  }
+		};
+	
+		const sendCode = () =>{
+		  var loginModel = {};
+		  loginModel["employeeNo"] = $("#employeeNo").val();
+		  loginModel["phoneNo"] = $("#phoneNo").val();
+			axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
+			.then(resultMap =>{
+				if(!resultMap.data){
+					alert("この社員番号の電話番号は間違いため、認証番号の発送はできません");
+				}else{
+					this.setState({
+						btnDisable: true,
+						buttonText: "60s後再発行",
+					  });
+					$("#verificationCode").attr("readOnly",false);
+					$("#login").attr("disabled",false);
+					//每隔一秒执行一次clock方法
+		  			timeChange = setInterval(clock,1000);
+				}
+			})
+		};
 		if(this.state.loginFlag){
 			return (
 				<Route path="/" component={Login}>
@@ -70,15 +151,28 @@ class Login extends Component {
 				<Form className="form-signin" id="loginForm">
 					<Form.Group controlId="formBasicEmail" >
 						{/* <img className="mb-4" alt="title" src={title}/> */}
-						<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" required/>
-						<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" required/>
+						<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required/>
+						<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} required/>
 					</Form.Group>
-						<Form.Group　className="text-center">
-							<Form.Check id="remeber" name="remeber" type="checkbox" label="Remeber me" />
-						</Form.Group>
-					<Button variant="primary" onClick={this.login} className="btn btn-lg btn-primary btn-block" type="button">
+					<Form.Control size="sm" id="phoneNo" name="phoneNo" maxLength="11" type="text" placeholder="電話番号" onChange={this.setReadOnly} maxLength="11" readOnly required/>
+					<InputGroup className="mb-3" size="sm">
+						<FormControl
+						size="sm"
+						placeholder="検証番号"
+						id="verificationCode" name="verificationCode"
+						readOnly
+						required
+						/>
+						<InputGroup.Append>
+						<Button size="sm" variant="info" id="sendVerificationCode" disabled={phoneNo === '' ? true : this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
+						</InputGroup.Append>
+					</InputGroup>
+					<Button variant="primary" id="login" onClick={this.login} block type="button">
 						ログイン
 					</Button>
+				</Form>
+				<Form className="form-check">
+
 				</Form>
 				</div>
 				)

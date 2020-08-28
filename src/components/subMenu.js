@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Row, Col, ListGroup, Accordion, Button, Navbar } from 'react-bootstrap';
-
 import title from '../asserts/images/title.png';
 import open from '../asserts/images/open.png';
 import openPage from '../asserts/images/openPage.png';
 import menu from '../asserts/images/menu.png';
 import signout from '../asserts/images/signout.png';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link , Redirect} from "react-router-dom";
 import Main from './main';
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
@@ -21,6 +20,8 @@ import siteSearch from './siteSearch';
 import PasswordSet from './passwordSet';
 import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
+import axios from 'axios';
+axios.defaults.withCredentials=true;
 
 class SubMenu extends Component {
 	state = {
@@ -35,7 +36,12 @@ class SubMenu extends Component {
 		this.setState({
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月'),
 		})
-		document.getElementById("kanriSha").innerHTML = sessionStorage.getItem('authorityName') + "：" + sessionStorage.getItem('employeeName');
+		axios.post("http://127.0.0.1:8080/subMenu/init")
+		.then(resultMap =>{
+			if(resultMap.data){
+				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
+			}
+		})
 	}
 	render() {
 		//お客様情報画面の追加パラメータ
@@ -189,7 +195,7 @@ class SubMenu extends Component {
 					<Col sm={9} id="page">
 						<div key={this.props.location.key}>
 							<Router>
-								<Route exact path={`${this.props.match.url}/`} component={Main} />
+								<Route exact path={`${this.props.match.url}/`} component={Employee} />
 								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
