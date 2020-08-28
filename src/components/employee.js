@@ -106,8 +106,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-    const formData = new FormData()
-	const emp = {
+		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
@@ -153,8 +152,12 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
+			residentCardInfo: $("#residentCardInfo").val(),//在留カード
+			resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
+			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			passportInfo: this.state.passportInfo,//パスポート
 			updateUser: sessionStorage.getItem('employeeName'),//更新者
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
@@ -162,12 +165,7 @@ class employee extends React.Component {
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			pbInfo: this.state.pbInfo,//pb情報
 		};
-		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
-		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
-		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
-		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
-		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
+		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
 			.then(response => {
 				if (response.data != null) {
 					this.getNO();//採番番号
@@ -853,24 +851,24 @@ class employee extends React.Component {
 
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "pbInfo")} show={this.state.showPbInfoModal} >
+					onHide={this.handleHideModal.bind(this, "pbInfo")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">>
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoToroku={this.pbInfoGet} /></Modal.Body>
+						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
 					<Button size="sm" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>PB情報</Button>{' '}
+					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook} enctype="multipart/form-data">
+				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
@@ -1483,7 +1481,7 @@ class employee extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1 " name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
 									</InputGroup.Prepend>
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled={detailDisabled ? false : true} />
