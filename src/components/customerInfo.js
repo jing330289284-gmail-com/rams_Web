@@ -15,7 +15,7 @@ import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Select from 'react-select';
-
+axios.defaults.withCredentials=true;
 registerLocale('ja', ja);
 
 class CustomerInfo extends Component {
@@ -198,7 +198,6 @@ class CustomerInfo extends Component {
             customerDepartmentInfoModel[item.name] = item.value;     
         });
         customerDepartmentInfoModel["actionType"] = $("#actionType").val();
-        customerDepartmentInfoModel["updateUser"] = sessionStorage.getItem('employeeNo');
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
         var customerDepartmentName = "";
         var customerDepartmentCode = document.getElementsByName("customerDepartmentName")[0].value;
@@ -264,7 +263,6 @@ class CustomerInfo extends Component {
             customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
             customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate,false);
             customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate,false);
-            customerInfoMod["updateUser"] = sessionStorage.getItem('employeeNo');
             customerInfoMod["actionType"] = $("#actionType").val();
             customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
             customerInfoMod["accountInfo"] = this.state.accountInfo;

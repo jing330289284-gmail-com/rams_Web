@@ -6,6 +6,7 @@ import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+axios.defaults.withCredentials=true;
 
 class BankInfo extends Component {
 
@@ -60,7 +61,7 @@ class BankInfo extends Component {
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                  axios.post("http://127.0.0.1:8080/bankInfo/onloadPage",onloadMol)
+                  axios.post("http://127.0.0.1:8080/bankInfo/init",onloadMol)
                   .then(function (resultMap) {
                     if(resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null){
                         $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);

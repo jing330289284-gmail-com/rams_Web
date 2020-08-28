@@ -12,6 +12,7 @@ import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
 registerLocale('ja', ja);
+axios.defaults.withCredentials=true;
 
 class SubCost extends Component {
 
@@ -131,7 +132,7 @@ class SubCost extends Component {
         if(actionType !== "insert"){
             var costModel = {};
             costModel["employeeNo"] = employeeNo;
-            axios.post("http://127.0.0.1:8080/subCost/onload", costModel)
+            axios.post("http://127.0.0.1:8080/subCost/init", costModel)
             .then(resultMap => {
                 this.setState({
                     subCostList:resultMap.data.subCostList,

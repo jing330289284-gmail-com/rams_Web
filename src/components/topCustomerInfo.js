@@ -5,7 +5,8 @@ import $ from 'jquery';
 import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+axios.defaults.withCredentials=true;
 
 class TopCustomerInfo extends Component {
     state = {
@@ -32,7 +33,7 @@ class TopCustomerInfo extends Component {
             if(topCustomerNo !== null && topCustomerNo !== '' && topCustomerNo !== undefined){
                 var topCustomerMod = {};
                 topCustomerMod["topCustomerNo"] = topCustomerNo;
-                axios.post("http://127.0.0.1:8080/topCustomerInfo/onloadPage", topCustomerMod)
+                axios.post("http://127.0.0.1:8080/topCustomerInfo/init", topCustomerMod)
                     .then(resultMap => {
                         topCustomerMod = resultMap.data.topCustomerMod;
                         document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
@@ -76,7 +77,6 @@ class TopCustomerInfo extends Component {
             topCustomerInfo["topCustomerName"] = $("#topCustomerName").val();
             topCustomerInfo["url"] = $("#topUrl").val();
             topCustomerInfo["remark"] = $("#topRemark").val();
-            topCustomerInfo["updateUser"] = sessionStorage.getItem('employeeNo');
             if(actionType === "update"){
                 topCustomerInfo["actionType"] = "update";
                 axios.post("http://127.0.0.1:8080/topCustomerInfo/toroku", topCustomerInfo)
