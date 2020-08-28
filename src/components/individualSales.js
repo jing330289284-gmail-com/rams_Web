@@ -55,6 +55,12 @@ class individualSales extends Component {
 				}
 			}
 			);
+    }
+    	//onchange
+	valueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value
+		})
 	}
 	componentDidMount(){
 		var date = new Date();
@@ -101,7 +107,7 @@ render (){
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="sysYear"as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value={fiscalYear}/>
+                            <FormControl id="sysYear" as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.valueChange}/>
                         </InputGroup>
                     </Col>
 				</Row>
@@ -109,8 +115,8 @@ render (){
                 <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" size="sm" name="employeeFirstName" value={employeeFirstName} maxlength="3" />{' '}
-									<FormControl placeholder="社員名" size="sm" name="employeeLastName" value={employeeLastName} maxlength="3" />
+									<FormControl placeholder="社員氏" size="sm" name="employeeFirstName" value={this.state.employeeFirstName} onChange={this.valueChange} maxlength="3" />{' '}
+									<FormControl placeholder="社員名" size="sm" name="employeeLastName" value={this.state.employeeLastName} onChange={this.valueChange}  maxlength="3" />
                                     <font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
@@ -119,7 +125,7 @@ render (){
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl  id="subCostEmployeeFormCode" name="subCostEmployeeFormCode" value={employeeNo} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl  id="subCostEmployeeFormCode" name="subCostEmployeeFormCode" value={this.state.employeeNo} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                         </InputGroup>
                     </Col>
                     <Col sm={7}>
