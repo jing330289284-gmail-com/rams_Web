@@ -10,10 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autosuggest from 'react-autosuggest';
 import { faSave, faUndo, faSearch , faEdit } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-
+import axios from 'axios';
 class individualSales extends Component {
     state = { 
-		actionType:'',
+        actionType:'',
+        employeeNo:'',
+        fiscalYear:'',
+        employeeFirstName:'',
+        employeeLastName:'',
 		individualSales_startYearAndMonth:'',
 		individualSales_endYearAndMonth:'',
      }
@@ -33,7 +37,25 @@ class individualSales extends Component {
 
 		};
     }
-
+	searchEmployee = () => {
+		const empInfo = {
+			employeeNo: this.state.employeeNo,
+			employeeFirstName: this.state.employeeFirstName,
+			employeeLastName: this.state.employeeLastName,
+            fiscalYear:this.state.sysYear,
+            startYearAndMonth:this.state.individualSales_startYearAndMonth,
+            endYearAndMonth:this.state.individualSales_endYearAndMonth,
+		};
+		axios.post("http://127.0.0.1:8080/personalSales/searchEmpDetails", empInfo)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({ employeeList: response.data })
+				} else {
+					alert("err")
+				}
+			}
+			);
+	}
 	componentDidMount(){
 		var date = new Date();
 		var year = date.getFullYear();
@@ -79,27 +101,25 @@ render (){
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="sysYear"as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl id="sysYear"as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value={fiscalYear}/>
                         </InputGroup>
                     </Col>
 				</Row>
 				<Row>
+                <Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
+									<FormControl placeholder="社員氏" size="sm" name="employeeFirstName" value={employeeFirstName} maxlength="3" />{' '}
+									<FormControl placeholder="社員名" size="sm" name="employeeLastName" value={employeeLastName} maxlength="3" />
+                                    <font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+								</InputGroup>
+							</Col>
                     <Col sm={2}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">氏名</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl id="otherAllowance" maxLength="20" name="otherAllowance" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-							<font id="mark" color="red"
-				                style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
-                        </InputGroup>
-                    </Col>
-                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl  id="subCostEmployeeFormCode" name="subCostEmployeeFormCode" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl  id="subCostEmployeeFormCode" name="subCostEmployeeFormCode" value={employeeNo} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                         </InputGroup>
                     </Col>
                     <Col sm={7}>
@@ -146,7 +166,7 @@ render (){
                 </Row>
 				<Row>
 					<Col  className="text-center">
-					<Button variant="info" size="sm" onClick={this.meisaiShusei} id="shusei"><FontAwesomeIcon icon={faSearch} />検索</Button>
+					<Button variant="info" size="sm" id="shusei"　onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>
                     </Col> 
                 </Row>
 				<br/>
