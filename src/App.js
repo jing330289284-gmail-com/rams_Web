@@ -16,6 +16,7 @@ import CustomerInfoSearch from './components/customerInfoSearch';
 import siteInfo from './components/siteInfo';
 import siteSearch from './components/siteSearch';
 import PasswordSet from './components/passwordSet';
+import individualSales from './components/individualSales';
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
 				<Route path="/manageSituation" component={ManageSituation} />
 				<Route path="/siteSearch" component={siteSearch} />
 				<Route path="/passwordSet" component={PasswordSet} />
+				<Route path="/individualSales" component={individualSales} />
 			</div>
 		</Router>
 
