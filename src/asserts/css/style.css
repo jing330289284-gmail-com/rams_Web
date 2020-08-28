@@ -269,6 +269,9 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
-
+.modal-pbinfoSet {
+  width: 50%;
+  max-width: none !important;
+}
 
  
