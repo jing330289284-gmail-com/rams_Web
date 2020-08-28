@@ -106,6 +106,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
+   		const formData = new FormData()
 		const emp = {
 			//employeeNo: this.state.employeeNo,//ピクチャ
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -165,6 +166,12 @@ class employee extends React.Component {
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			pbInfo: this.state.pbInfo,//pb情報
 		};
+		formData.append('emp', JSON.stringify(emp))
+		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
+		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
+		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
+		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
+		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", emp)
 			.then(response => {
 				if (response.data != null) {
@@ -868,7 +875,7 @@ class employee extends React.Component {
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
-				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook}>
+				<Form onSubmit={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<ImageUploader
@@ -1481,7 +1488,7 @@ class employee extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1 " name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
 									</InputGroup.Prepend>
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled={detailDisabled ? false : true} />
