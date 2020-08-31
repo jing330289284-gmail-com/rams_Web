@@ -43,14 +43,18 @@ class SubMenu extends Component {
 			}
 		})
 	}
+	logout=()=>{
+		axios.post("http://127.0.0.1:8080/subMenu/logout")
+		.then(resultMap =>{
+			if(resultMap.data){
+				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
+			}
+		})
+	}
 	render() {
 		//お客様情報画面の追加パラメータ
 		var customerInfoPath = {
 			pathname: '/subMenu/customerInfo', state: { actionType: 'insert' },
-		}
-		//社員情報登録
-		var passwordSetPath = {
-			pathname: '/subMenu/passwordSet', state: { actionType: 'update', fatherMenu: 'subMenu' },
 		}
 		return (
 			<div>
@@ -70,7 +74,7 @@ class SubMenu extends Component {
 					<Col sm={1}>
 					</Col>
 					<Col sm={1}>
-						<Link to="/" id="logout"><img alt="title" src={signout} />sign out</Link>
+						<Link to="/" id="logout" onClick={this.logout}><img alt="title" src={signout} />sign out</Link>
 					</Col>
 				</Row>
 				<Row>

@@ -15,7 +15,6 @@ class Login extends Component {
 		loading: false,
 		buttonText:"SMSを発信する",
 		btnDisable:false,
-		phoneNo:'',
 		time:60,
 	}
 	componentWillMount(){
@@ -37,7 +36,6 @@ class Login extends Component {
 		var loginModel = {};
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
-		loginModel["phoneNo"] = $("#phoneNo").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
 		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(resultMap =>{
@@ -54,43 +52,12 @@ class Login extends Component {
 				alert("登录错误，请检查程序");
 			});
 	}
-	 setReadOnly=()=>{
-		 if($("#employeeNo").val() !== null && $("#password").val() !== null &&
-		 	$("#employeeNo").val() !== '' && $("#password").val() !== ''){
-				$("#phoneNo").attr("readOnly",false);
-				this.setState({
-					phoneNo:$("#phoneNo").val(),
-				})
-				if($("#phoneNo").val().length > 10){
-					$("#sendVerificationCode").attr("disabled",false);
-				}else{
-					$("#sendVerificationCode").attr("disabled",true);
-				}
-		 }else{
-			$("#phoneNo").attr("readOnly",true);
-		 }
-	 }
-	//  sendVerificationCode=()=>{
-	// 	 var loginModel = {};
-	// 	 loginModel["employeeNo"] = $("#employeeNo").val();
-	// 	 loginModel["phoneNo"] = $("#phoneNo").val();
-	// 	axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
-	// 	.then(resultMap =>{
-	// 		if(!resultMap.data){
-	// 			alert("この社員番号の電話番号は間違いため、認証番号の発送はできません");
-	// 		}else{
-	// 			$("#verificationCode").attr("readOnly",false);
-	// 			$("#login").attr("disabled",false);
-	// 		}
-	// 	})
-	//  }
 	/**
 	 * 画面初期化
 	 */
 	componentDidMount(){
 	}
     render() {
-		const {phoneNo} = this.state;
 		let timeChange;
 		let ti = this.state.time;
 		//关键在于用ti取代time进行计算和判断，因为time在render里不断刷新，但在方法中不会进行刷新
@@ -116,22 +83,28 @@ class Login extends Component {
 		const sendCode = () =>{
 		  var loginModel = {};
 		  loginModel["employeeNo"] = $("#employeeNo").val();
-		  loginModel["phoneNo"] = $("#phoneNo").val();
-			axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
-			.then(resultMap =>{
-				if(!resultMap.data){
-					alert("この社員番号の電話番号は間違いため、認証番号の発送はできません");
-				}else{
-					this.setState({
-						btnDisable: true,
-						buttonText: "60s後再発行",
-					  });
-					$("#verificationCode").attr("readOnly",false);
-					$("#login").attr("disabled",false);
-					//每隔一秒执行一次clock方法
-		  			timeChange = setInterval(clock,1000);
-				}
-			})
+		  loginModel["password"] = $("#password").val();
+		  if($("#employeeNo").val() !== null && $("#password").val() !== null && 
+		  		$("#employeeNo").val() !== '' && $("#password").val() !== ''){
+					axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
+					.then(resultMap =>{
+						if(!resultMap.data){
+							alert("社員番号またはパスワードが間違いため、認証番号は発送できません");
+						}else{
+							this.setState({
+								btnDisable: true,
+								buttonText: "60s後再発行",
+							  });
+							$("#verificationCode").attr("readOnly",false);
+							$("#login").attr("disabled",false);
+							//每隔一秒执行一次clock方法
+							  timeChange = setInterval(clock,1000);
+						}
+					})
+		  } else if($("#employeeNo").val() === null || $("#password").val() === null || 
+		  				$("#employeeNo").val() === '' || $("#password").val() === ''){
+							alert("社員番号とパスワードを入力してください。");
+		  }
 		};
 		if(this.state.loginFlag){
 			return (
@@ -154,7 +127,6 @@ class Login extends Component {
 						<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required/>
 						<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} required/>
 					</Form.Group>
-					<Form.Control size="sm" id="phoneNo" name="phoneNo" maxLength="11" type="text" placeholder="電話番号" onChange={this.setReadOnly} maxLength="11" readOnly required/>
 					<InputGroup className="mb-3" size="sm">
 						<FormControl
 						size="sm"
@@ -164,7 +136,7 @@ class Login extends Component {
 						required
 						/>
 						<InputGroup.Append>
-						<Button size="sm" variant="info" id="sendVerificationCode" disabled={phoneNo === '' ? true : this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
+						<Button size="sm" variant="info" id="sendVerificationCode" disabled={this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
 						</InputGroup.Append>
 					</InputGroup>
 					<Button variant="primary" id="login" onClick={this.login} block type="button">
