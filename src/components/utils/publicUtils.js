@@ -262,3 +262,41 @@ export function labelGetValue(name, list) {
 		}
 	}
 }
+
+	//Download 方法
+	// param resumeInfo  備考：resumeInfoのフォーマットは下記です
+	// src/main/resources/file/LYC078_姜下載/姜下載_履歴書1.xlsx
+	export function  handleDownload (resumeInfo)  {
+		console.log(resumeInfo);
+		//src/main/resources/file/
+		var resumeInfos= new Array();
+		resumeInfos=resumeInfo.split("/"); 
+		var pathInfo =resumeInfos.slice(-3);
+		var strPath= pathInfo.join('/');
+		console.log(resumeInfos);
+		var xhr = new XMLHttpRequest();
+        xhr.open('post', 'http://127.0.0.1:8080/download', true);
+		xhr.responseType = 'blob';
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+        xhr.onload = function () {
+            if (this.status === 200) {
+				var blob = this.response;
+				if(blob.size===0){
+					alert('no resume');
+				}else{
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					//设置文件名称
+					a.download = resumeInfos[5];
+					a.click();
+					a.remove();
+				}
+
+            }
+        }
+         xhr.send(JSON.stringify({
+           "name" : strPath,
+        }));
+
+	}

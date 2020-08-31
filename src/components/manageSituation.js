@@ -8,9 +8,9 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave ,faEnvelope,faIdCard,faBuilding,faDownload} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faBuilding, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
-/* import FileSaver from 'file-saver' */
+axios.defaults.withCredentials=true;
 
 class manageSituation extends React.Component {
 	constructor(props) {
@@ -53,9 +53,12 @@ class manageSituation extends React.Component {
 		getstations: [], // 全部場所
 		totalPersons: '',// 合計人数
 		decidedPersons: '',// 確定人数
-		linkDisableFlag:true,// linkDisableFlag
-		name:'',
-		resume2Name:''
+		linkDisableFlag: true,// linkDisableFlag
+		admissionStartDate:'', // record開始時間
+		customerNo:'', // 該当レコードおきゃくNO
+		unitPrice:'', // 該当レコード単価
+		resumeInfo1:'',	
+		resumeInfo2:'',
 	};
 
 	// 初期表示のレコードを取る
@@ -72,16 +75,16 @@ class manageSituation extends React.Component {
 			.then(result => {
 				if (result.data != null) {
 					console.log(result.data);
-					var totalPersons=result.data.length;
-					var decidedPersons=0;
-					if(totalPersons!==0){
-						for(var i = 0; i < result.data.length; i++){
-							if(result.data[i].salesProgressCode==='3'){
-								decidedPersons=decidedPersons+1;
+					var totalPersons = result.data.length;
+					var decidedPersons = 0;
+					if (totalPersons !== 0) {
+						for (var i = 0; i < result.data.length; i++) {
+							if (result.data[i].salesProgressCode === '3') {
+								decidedPersons = decidedPersons + 1;
 							}
 						}
 					}
-					
+
 					this.setState({
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
@@ -97,8 +100,8 @@ class manageSituation extends React.Component {
 						remark: '',　// 備考 
 						salesPriorityStatus: '',
 						style: {
-									"color": ""
-								},
+							"color": ""
+						},
 						readFlag: true,
 						updateBtnflag: false,
 						totalPersons: totalPersons,// 合計人数
@@ -114,7 +117,7 @@ class manageSituation extends React.Component {
 	}
 
 	getDropDowns = () => {
-		var methodArray = ["getSalesPriorityStatus","getCustomer", "getStation"]
+		var methodArray = ["getSalesPriorityStatus", "getCustomer", "getStation"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		data[1].shift();
 		data[1].unshift({ value: '', label: '選択ください' })
@@ -144,41 +147,70 @@ class manageSituation extends React.Component {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
-			return statuss[i].text;
-			} 
+				return statuss[i].text;
+			}
 		}
 	}
 
 	// レコードおきゃく表示
-	formatCustome(cell) {
-		var allCustomers = this.state.allCustomer;
- 		for (var i in allCustomers) {
+	formatCustome(cell,row) {
+		if(row.salesProgressCode === '3' || row.salesProgressCode === '5'){
+					var allCustomers = this.state.allCustomer;
+		for (var i in allCustomers) {
 			if (cell === allCustomers[i].value) {
-			return allCustomers[i].text;
-			} 
-		} 
+				return allCustomers[i].text;
+			}
+		}
+		}else{
+			return '';
+		}
+
 	}
 
 	// レコードおきゃく表示
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
- 		for (var i in salesPersons) {
+		for (var i in salesPersons) {
 			if (cell === salesPersons[i].value) {
-			return salesPersons[i].text;
-			} 
-		} 
+				return salesPersons[i].text;
+			}
+		}
 	}
 
 	// table編集保存
 	afterSaveCell = (row) => {
-		if (row.salesProgressCode === '3'||row.salesProgressCode === '5') {
-			row.customer = '';
-				alert("単価とお客様を入力してください");
-			alert(row.salesProgressCode);
-			alert(this.state.salesProgressCode);
+		if (row.salesProgressCode === '3' || row.salesProgressCode === '5') {
+			if(row.customer ==='' || row.customer ===undefined){
+				row.customer = '';
+			}
+			this.setState({
+				customerNo: row.customer,
+				unitPrice: row.price
+			})
+			// 
+			if(row.customer !=='' && row.price!=='' && row.customer !==undefined && row.price!==undefined){
+				alert(row.customer);
+				alert(row.price);
+				row.customerNo=row.customer;
+				row.updateUser=sessionStorage.getItem('employeeName');
+				row.unitPrice=row.price;
+				row.salesYearAndMonth=this.state.salesYearAndMonth;
+				axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
+					.then(result => {
+						if (result.data != null) {
+							this.getSalesSituation(this.state.salesYearAndMonth)
+						} else {
+							alert("FAIL");
+						}
+					})
+					.catch(function (error) {
+						alert("ERR");
+					});
+			}
 		}else{
-			row.customer = '0';
+			row.customer = 'noedit';
 		}
+
 	};
 
 	// 行番号
@@ -215,8 +247,8 @@ class manageSituation extends React.Component {
 				alert("エラーメッセージはMSG009")
 			} else {
 				/* alert(this.state.interviewDate1);
-				alert(this.state.interviewDate1Show);
-				alert(this.state.salesYearAndMonth); */
+				alert(this.state.interviewDate1Show);*/
+				alert(this.state.salesYearAndMonth); 
 				axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
 					.then(result => {
 						if (result.data != null) {
@@ -279,7 +311,7 @@ class manageSituation extends React.Component {
 	// レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
 		console.log(e);
-		if(isSelected){
+		if (isSelected) {
 			this.setState({
 				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
 				interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
@@ -295,39 +327,45 @@ class manageSituation extends React.Component {
 				salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
 				salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
 				remark: row.remark === null ? '' : row.remark,
-				editFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5'? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
-				priceEditFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5'? true: false,// 確定単価編集flag
+				editFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				priceEditFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
 				updateBtnflag: isSelected,
 				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
-				readFlag:row.employeeNo===this.state.employeeNo && !this.state.readFlag ? false:true, 
-				linkDisableFlag:false,
+				readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
+				linkDisableFlag: false,
+				admissionStartDate: row.admissionStartDate === null ? '' : row.admissionStartDate,
+				customerNo: row.customer === null ? '' : row.customer,
+				unitPrice:row.price === null ? '' : row.price,
+				resumeInfo1:row.resumeInfo1 === null ? '' : row.resumeInfo1,	
+				resumeInfo2:row.resumeInfo2 === null ? '' : row.resumeInfo2,
+
 			});
-		}else{
+		} else {
 			this.setState({
-				employeeNo:'',
-				interviewDate1:'',
-				interviewDate1Show:'',
-				interviewDate2:'',
-				interviewDate2Show:'',
-				stationCode1:'',
-				stationCode2:'',
-				interviewCustomer1:'',
-				interviewCustomer2:'',
-				hopeLowestPrice:'',
-				hopeHighestPrice:'',
-				salesPriorityStatus:'',
-				salesProgressCode:'',
-				remark:'',
+				employeeNo: '',
+				interviewDate1: '',
+				interviewDate1Show: '',
+				interviewDate2: '',
+				interviewDate2Show: '',
+				stationCode1: '',
+				stationCode2: '',
+				interviewCustomer1: '',
+				interviewCustomer2: '',
+				hopeLowestPrice: '',
+				hopeHighestPrice: '',
+				salesPriorityStatus: '',
+				salesProgressCode: '',
+				remark: '',
 				editFlag: row.salesProgressCode === '3' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
-				salesStaff:'',
-				readFlag:true, 
-				linkDisableFlag:true,
-			});			
+				salesStaff: '',
+				readFlag: true,
+				linkDisableFlag: true,
+			});
 		}
 	}
 
-	renderShowsTotal=(start, to, total) => { 
+	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
 				{start}から  {to}まで , 総計{total}
@@ -335,8 +373,42 @@ class manageSituation extends React.Component {
 		);
 	}
 
-	render() {
+/* 	handleDownload1 = (resumeInfo) => {
+		publicUtils.handleDownload(resumeInfo);
+	} */
+	// react download Excel
+/* 	handleDownload = (resumeInfo) => {
+		var resumeInfos= new Array();
+		console.log(resumeInfo);
+		resumeInfos=resumeInfo.split("/"); 
+		console.log(resumeInfos);
+		axios({
+			method: "POST", //请求方式
+			url: "http://127.0.0.1:8080/download", //下载地址
+			data: { name: resumeInfos[6] }, //请求内容
+			responseType: 'arraybuffer'
+		})
+			.then((response) => {
+				console.log(response); if (response.data.byteLength === 0) {
+					alert('no resume');
+				} else {
+					let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+					let downloadElement = document.createElement('a');
+					let href = window.URL.createObjectURL(blob); // 创建下载的链接
+					downloadElement.href = href;
+					downloadElement.download = resumeInfos[6]; // 下载后文件名
+					document.body.appendChild(downloadElement);
+					downloadElement.click(); // 点击下载
+					document.body.removeChild(downloadElement); // 下载完成移除元素
+					window.URL.revokeObjectURL(href); // 释放掉blob对象
+				}
+			}).catch((error) => {
+				alert('文件下载失败', error);
+			});
 
+	} */
+
+	render() {
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -422,7 +494,7 @@ class manageSituation extends React.Component {
 											className="form-control form-control-sm"
 											dateFormat="MM/dd HH:mm"
 											minDate={new Date()}
-											id={this.state.readFlag ?'datePickerReadonly':'datePicker2'}
+											id={this.state.readFlag ? 'datePickerReadonly' : 'datePicker2'}
 											readOnly={this.state.readFlag}
 										/>
 									</InputGroup.Append>
@@ -477,7 +549,7 @@ class manageSituation extends React.Component {
 											className="form-control form-control-sm"
 											dateFormat="MM/dd HH:mm"
 											minDate={new Date()}
-											id={this.state.readFlag ?'datePickerReadonly':'datePicker2'}
+											id={this.state.readFlag ? 'datePickerReadonly' : 'datePicker2'}
 											readOnly={this.state.readFlag}
 										/>
 									</InputGroup.Append>
@@ -498,7 +570,7 @@ class manageSituation extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									</InputGroup>
+								</InputGroup>
 							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -529,7 +601,7 @@ class manageSituation extends React.Component {
 									<InputGroup.Append>
 										<InputGroup.Text id="basic-addon1">万円</InputGroup.Text>
 									</InputGroup.Append>
-									<font style={{ marginLeft: "10px", marginRight: "10px",marginTop: "5px" }}>～</font>
+									<font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>～</font>
 									<FormControl value={this.state.hopeHighestPrice} autoComplete="off" name="hopeHighestPrice"
 										style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
 									<InputGroup.Append>
@@ -567,11 +639,11 @@ class manageSituation extends React.Component {
 					</Form.Group>
 					<div>
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState}>
-							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag?"更新":"解除"}</Button></div>
+							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? "更新" : "解除"}</Button></div>
 					</div>
 
 					<Row>
-					    <Col sm={1}>
+						<Col sm={1}>
 							{/* <InputGroup size="sm" >
 								<InputGroup.Prepend style={{ height: '31px' }} >
 									<InputGroup.Checkbox />
@@ -581,7 +653,7 @@ class manageSituation extends React.Component {
 								</InputGroup.Append>
 							</InputGroup> */}
 							<div >
-							<span style={{whiteSpace: 'nowrap' }}> 選択送信 <Form.Check inline type="checkbox" /></span>
+								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" /></span>
 							</div>
 						</Col>
 						<Col sm={1}>
@@ -594,15 +666,14 @@ class manageSituation extends React.Component {
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
+									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
+									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
 								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
-								{/* <Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}> */}
-								<Button onClick={this.handleDownload} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>{/* </Link> */}
+									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
+								<Button onClick={publicUtils.handleDownload.bind(this,this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-								<Button size="sm" variant="info" name="clickButton"  disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload}/>履歴書2</Button></Link>
+									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button></Link>
 							</div>
 						</Col>
 					</Row>
@@ -614,8 +685,9 @@ class manageSituation extends React.Component {
 						pagination
 						options={options}
 						selectRow={selectRow}
-						cellEdit={cellEdit}>
-						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} >番号</TableHeaderColumn>
+						cellEdit={cellEdit}
+						trClassName="customClass" >
+						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='7%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
@@ -636,6 +708,9 @@ class manageSituation extends React.Component {
 						<TableHeaderColumn dataField='hopeHighestPrice' hidden={true}>希望単価max</TableHeaderColumn>
 						<TableHeaderColumn dataField='remark' hidden={true}>備考</TableHeaderColumn>
 						<TableHeaderColumn dataField='salesPriorityStatus' hidden={true}>優先度</TableHeaderColumn>
+						<TableHeaderColumn dataField='admissionStartDate' hidden={true}>開始時間</TableHeaderColumn>
+						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div>

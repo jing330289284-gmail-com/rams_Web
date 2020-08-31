@@ -273,5 +273,9 @@ body {
   width: 50%;
   max-width: none !important;
 }
-
+/* 営業画面TABLE　HEIGHT　固定　ｂｙ　姜 */
+.customClass {
+    height: 49px;
+    line-height: 39px;
+}
  
