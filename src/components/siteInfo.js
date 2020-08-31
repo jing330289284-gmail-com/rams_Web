@@ -116,7 +116,9 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
+		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
+		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
+		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
 		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
 		siteModel["employeeNo"] = this.props.employeeNo;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
