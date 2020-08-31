@@ -81,7 +81,6 @@ class employee extends React.Component {
 		intoCompanyYearAndMonth: "",//　　入社年月
 		retirementYearAndMonth: "",//　　退職年月
 		comeToJapanYearAndMonth: "",//　　来日年月
-		//intoCompanyYearAndMonth: "",//出身地TODO
 		birthplace: "",//　　出身地(県)
 		phoneNo: "",//携帯電話
 		residenceCardNo: "",//　　在留カード
@@ -306,6 +305,7 @@ class employee extends React.Component {
 				}
 			);
 		} else {
+			$('#pbInfo').prop('disabled', true);
 			this.getNO();//採番番号
 		}
 	}
@@ -541,11 +541,19 @@ class employee extends React.Component {
 			this.setState({ employeeNo: '', companyMail: '', authorityCodes: [] });
 			$('input[type="email"]').prop('disabled', true);
 			$('#authorityCodeId').prop('disabled', true);
+			$('#bankInfo').prop('disabled', true);
+			$('#subCost').prop('disabled', true);
+			$('#passwordSet').prop('disabled', true);
+			$('#pbInfo').prop('disabled', false);
 		} else {
 			this.getNO();
 			this.getAuthority();
 			$('input[type="email"]').prop('disabled', false);
 			$('#authorityCodeId').prop('disabled', false);
+			$('#bankInfo').prop('disabled', false);
+			$('#subCost').prop('disabled', false);
+			$('#passwordSet').prop('disabled', false);
+			$('#pbInfo').prop('disabled', true);
 		}
 	}
 
@@ -876,10 +884,10 @@ class employee extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
+					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
+					<Button size="sm" id="pbInfo" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
