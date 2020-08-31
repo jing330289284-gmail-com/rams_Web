@@ -1496,21 +1496,35 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={8}>
+
+
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
 									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
+
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled={detailDisabled ? false : true} />
+								</InputGroup>
+							</Col>
 
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text><Form.File id="resumeInfo2" name="resumeInfo2" disabled={detailDisabled ? false : true} />
-										</InputGroup.Prepend>
-										<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
-											onChange={this.valueChange} size="sm" name="resumeRemark2" disabled={detailDisabled ? false : true} />
-									</InputGroup>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text><Form.File id="resumeInfo2" name="resumeInfo2" disabled={detailDisabled ? false : true} />
+									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
+
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
+									<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeRemark2" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
 
