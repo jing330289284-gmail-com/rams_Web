@@ -134,7 +134,7 @@ class CustomerInfoSearch extends Component {
     //隠した削除ボタン
     createCustomDeleteButton = (onClick) => {
         return (
-            <Button variant="info" id="delectBtn" hidden onClick={ onClick } >删除</Button>
+            <Button variant="info" id="delectBtn"hidden　　onClick={ onClick } >删除</Button>
         );
       }
       //隠した削除ボタンの実装
