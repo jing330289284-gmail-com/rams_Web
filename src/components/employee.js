@@ -180,7 +180,7 @@ class employee extends React.Component {
 					this.setState({ "show": true, "method": "post" });
 					setTimeout(() => this.setState({ "show": false }), 3000);
 					window.location.reload();
-					this.getNO();//採番番号
+					this.getNO("LYC");//採番番号
 				} else {
 					this.setState({ "show": false });
 				}
@@ -306,7 +306,7 @@ class employee extends React.Component {
 			);
 		} else {
 			$('#pbInfo').prop('disabled', true);
-			this.getNO();//採番番号
+			this.getNO('LYC');//採番番号
 		}
 	}
 
@@ -415,8 +415,8 @@ class employee extends React.Component {
 	};
 
 	//　採番番号
-	getNO = () => {
-		const promise = Promise.resolve(publicUtils.getNO("employeeNo", "LYC", "T001Employee"));
+	getNO = (ｓｔｒ) => {
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", ｓｔｒ, "T001Employee"));
 		promise.then((value) => {
 			this.setState(
 				{
@@ -538,15 +538,16 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ employeeNo: '', companyMail: '', authorityCodes: [] });
+			this.setState({ companyMail: '', authorityCodes: [] });
 			$('input[type="email"]').prop('disabled', true);
 			$('#authorityCodeId').prop('disabled', true);
 			$('#bankInfo').prop('disabled', true);
 			$('#subCost').prop('disabled', true);
 			$('#passwordSet').prop('disabled', true);
 			$('#pbInfo').prop('disabled', false);
+			this.getNO("BP");
 		} else {
-			this.getNO();
+			this.getNO("LYC");
 			this.getAuthority();
 			$('input[type="email"]').prop('disabled', false);
 			$('#authorityCodeId').prop('disabled', false);
