@@ -81,7 +81,6 @@ class employee extends React.Component {
 		intoCompanyYearAndMonth: "",//　　入社年月
 		retirementYearAndMonth: "",//　　退職年月
 		comeToJapanYearAndMonth: "",//　　来日年月
-		//intoCompanyYearAndMonth: "",//出身地TODO
 		birthplace: "",//　　出身地(県)
 		phoneNo: "",//携帯電話
 		residenceCardNo: "",//　　在留カード
@@ -181,7 +180,7 @@ class employee extends React.Component {
 					this.setState({ "show": true, "method": "post" });
 					setTimeout(() => this.setState({ "show": false }), 3000);
 					window.location.reload();
-					this.getNO();//採番番号
+					this.getNO("LYC");//採番番号
 				} else {
 					this.setState({ "show": false });
 				}
@@ -306,7 +305,8 @@ class employee extends React.Component {
 				}
 			);
 		} else {
-			this.getNO();//採番番号
+			$('#pbInfo').prop('disabled', true);
+			this.getNO('LYC');//採番番号
 		}
 	}
 
@@ -415,8 +415,8 @@ class employee extends React.Component {
 	};
 
 	//　採番番号
-	getNO = () => {
-		const promise = Promise.resolve(publicUtils.getNO("employeeNo", "LYC", "T001Employee"));
+	getNO = (ｓｔｒ) => {
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", ｓｔｒ, "T001Employee"));
 		promise.then((value) => {
 			this.setState(
 				{
@@ -538,14 +538,23 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ employeeNo: '', companyMail: '', authorityCodes: [] });
+			this.setState({ companyMail: '', authorityCodes: [] });
 			$('input[type="email"]').prop('disabled', true);
 			$('#authorityCodeId').prop('disabled', true);
+			$('#bankInfo').prop('disabled', true);
+			$('#subCost').prop('disabled', true);
+			$('#passwordSet').prop('disabled', true);
+			$('#pbInfo').prop('disabled', false);
+			this.getNO("BP");
 		} else {
-			this.getNO();
+			this.getNO("LYC");
 			this.getAuthority();
 			$('input[type="email"]').prop('disabled', false);
 			$('#authorityCodeId').prop('disabled', false);
+			$('#bankInfo').prop('disabled', false);
+			$('#subCost').prop('disabled', false);
+			$('#passwordSet').prop('disabled', false);
+			$('#pbInfo').prop('disabled', true);
 		}
 	}
 
@@ -876,10 +885,10 @@ class employee extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
-					<Button size="sm" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
+					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
+					<Button size="sm" id="pbInfo" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
@@ -1496,21 +1505,35 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={8}>
+
+
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
 									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
+
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled={detailDisabled ? false : true} />
+								</InputGroup>
+							</Col>
 
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text><Form.File id="resumeInfo2" name="resumeInfo2" disabled={detailDisabled ? false : true} />
-										</InputGroup.Prepend>
-										<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
-											onChange={this.valueChange} size="sm" name="resumeRemark2" disabled={detailDisabled ? false : true} />
-									</InputGroup>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text><Form.File id="resumeInfo2" name="resumeInfo2" disabled={detailDisabled ? false : true} />
+									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
+
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
+									<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeRemark2" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
 

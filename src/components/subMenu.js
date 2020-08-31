@@ -5,8 +5,7 @@ import open from '../asserts/images/open.png';
 import openPage from '../asserts/images/openPage.png';
 import menu from '../asserts/images/menu.png';
 import signout from '../asserts/images/signout.png';
-import { BrowserRouter as Router, Route, Link , Redirect} from "react-router-dom";
-import Main from './main';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
@@ -21,11 +20,22 @@ import PasswordSet from './passwordSet';
 import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
 import axios from 'axios';
+import $ from 'jquery';
 axios.defaults.withCredentials=true;
 
 class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日
+	}
+	componentWillMount(){
+		axios.post("http://127.0.0.1:8080/subMenu/init")
+		.then(resultMap =>{
+			if(resultMap.data !== null && resultMap.data !== ''){
+				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
+			}else{
+				this.props.history.push("/");
+			}
+		})
 	}
     /**
      * 画面の初期化
@@ -36,19 +46,11 @@ class SubMenu extends Component {
 		this.setState({
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月'),
 		})
-		axios.post("http://127.0.0.1:8080/subMenu/init")
-		.then(resultMap =>{
-			if(resultMap.data){
-				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
-			}
-		})
 	}
 	logout=()=>{
 		axios.post("http://127.0.0.1:8080/subMenu/logout")
 		.then(resultMap =>{
-			if(resultMap.data){
-				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
-			}
+			alert("ログアウトしました");
 		})
 	}
 	render() {
@@ -69,7 +71,7 @@ class SubMenu extends Component {
 					<Col sm={5}>
 						<h1>
 							売上請求管理システム
-                        </h1>
+						</h1>
 					</Col>
 					<Col sm={1}>
 					</Col>
@@ -93,15 +95,15 @@ class SubMenu extends Component {
 					</Col>
 				</Row>
 				{/* <Row className="clearfix" style={{marginBottom: "10px"}}>
-                    <Col sm={2}></Col>
-                    <Col sm={7}>
-                    <Form.Group >
-                        <Form.Label column sm="2">
-                        年月日
-                        </Form.Label>
-                    </Form.Group>
-                    </Col>
-                </Row> */}
+					<Col sm={2}></Col>
+					<Col sm={7}>
+					<Form.Group >
+						<Form.Label column sm="2">
+						年月日
+						</Form.Label>
+					</Form.Group>
+					</Col>
+				</Row> */}
 				<hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
 				<Row>
 					<Col sm={2} >
@@ -225,7 +227,7 @@ class SubMenu extends Component {
 				<br />
 			</div>
 		);
-	}
+	}	
 }
 
 export default SubMenu;
