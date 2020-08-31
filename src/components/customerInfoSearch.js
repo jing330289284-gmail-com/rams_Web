@@ -407,6 +407,7 @@ class CustomerInfoSearch extends Component {
                                 text:"稼動者"
                               } }
                             selectRow={ selectRow }
+                            deleteRow
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
                             className={"bg-white text-dark"}
@@ -420,7 +421,7 @@ class CustomerInfoSearch extends Component {
                                 <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } className={"bg-white text-dark"}>
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow className={"bg-white text-dark"}>
                                 <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
