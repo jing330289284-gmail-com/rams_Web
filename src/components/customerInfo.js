@@ -92,9 +92,10 @@ class CustomerInfo extends Component {
      * 画面の初期化 
      */
     async componentDidMount(){
-        var pro = this.props.location.state;
-        $("#actionType").val( pro.actionType);
-        $("#customerNo").val( pro.customerNo);
+        this.setState({
+            actionType:this.props.location.state,
+        })
+        $("#customerNo").val( this.props.location.customerNo);
         $("#sakujo").attr("disabled",true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite" , "getTopCustomerDrop" , "getDepartmentMasterDrop"]
         var selectDataList = utils.getPublicDropDown(methodArray);
@@ -133,19 +134,16 @@ class CustomerInfo extends Component {
         for(let i = 0;i<paymentsiteCode.length ; i++){
             $("#paymentsiteCode").append('<option value="'+paymentsiteCode[i].code+'">'+paymentsiteCode[i].name+'</option>');
         }
-        if($("#actionType").val() !== "update"){
+        if(this.state.actionType !== "update"){
             $("#toBankInfo").attr("disabled",true);
           }
-        this.setState({
-            actionType:$("#actionType").val(),
-        })
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
-        customerInfoMod["actionType"] = $("#actionType").val();
+        customerInfoMod["actionType"] = this.state.actionType;
         await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
         .then(resultMap => {
             var customerInfoMod;
-            var actionType = $("#actionType").val();
+            var actionType = this.state.actionType;
             customerInfoMod = resultMap.data.customerInfoMod;
             if(actionType === 'insert'){
                 var customerNoSaiBan = resultMap.data.customerNoSaiBan;
@@ -197,7 +195,7 @@ class CustomerInfo extends Component {
         $.each(formArray,function(i,item){
             customerDepartmentInfoModel[item.name] = item.value;     
         });
-        customerDepartmentInfoModel["actionType"] = $("#actionType").val();
+        customerDepartmentInfoModel["actionType"] = this.state.actionType;
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
         var customerDepartmentName = "";
         var customerDepartmentCode = document.getElementsByName("customerDepartmentName")[0].value;
@@ -219,7 +217,7 @@ class CustomerInfo extends Component {
                         departmentList[i] = customerDepartmentInfoModel;
                     }
                 }
-                if($("#actionType").val() ==="update"){
+                if(this.state.actionType ==="update"){
                     axios.post("http://127.0.0.1:8080/customerInfo/meisaiUpdate", customerDepartmentInfoModel)
                     .then(result => {
                         if(result.data === 0){
@@ -263,7 +261,7 @@ class CustomerInfo extends Component {
             customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
             customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate,false);
             customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate,false);
-            customerInfoMod["actionType"] = $("#actionType").val();
+            customerInfoMod["actionType"] = this.state.actionType;
             customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
             customerInfoMod["accountInfo"] = this.state.accountInfo;
             customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
@@ -429,7 +427,7 @@ class CustomerInfo extends Component {
         var customerDepartmentInfoModel = {};
         customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
-        if($("#actionType").val() === "update"){
+        if(this.state.actionType === "update"){
             axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
             .then(function (result) {
                 if(result.data === true){
@@ -799,7 +797,6 @@ class CustomerInfo extends Component {
                     </div>
                 </Card.Body>
                 <input type="hidden" id="employeeNo" name="employeeNo"/>
-                <input type="hidden" id="actionType" name="actionType"/>
                 </Form>
             </div>
                 <Row>
