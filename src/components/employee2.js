@@ -62,6 +62,8 @@ class employee extends React.Component {
 	};
 	//　　リセット
 	resetBook = () => {
+		//window.location.reload();
+		//this.setState(() => this.resetState);
 		window.location.href = window.location.href
 	};
 	//リセット化
@@ -237,8 +239,12 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
+			//residentCardInfo: $("#residentCardInfo").val(),//在留カード
+			//resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
+			//resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			//passportInfo: this.state.passportInfo,//パスポート
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
@@ -257,12 +263,14 @@ class employee extends React.Component {
 				if (response.data != null) {
 					this.setState({ "show": true, "method": "put" });
 					setTimeout(() => this.setState({ "show": false }), 3000);
+					/*//window.location.reload();*/
 				} else {
 					this.setState({ "show": false });
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+		/*//window.location.reload();*/
 	};
 
 	//onchange
@@ -386,8 +394,8 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					//postcode1: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
-					//postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
+					//postcode1: data.postcode.substring(0,3),//　　郵便番号
+					//postcode2: data.postcode.substring(3),//　　郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					nearestStation: data.stationName,
@@ -790,6 +798,8 @@ class employee extends React.Component {
 		});
 	};
 	//　　開発言語　終了
+
+
 	valueChangeEmployeeFormCode = (event) => {
 		const value = event.target.value;
 		if (value === "3") {
@@ -836,7 +846,7 @@ class employee extends React.Component {
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
 				<div style={{ "display": this.state.show ? "block" : "none" }}>
-					<MyToast show={this.state.show} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+					<MyToast show={this.state.show} message={this.state.method === "put" ? "Book Updated Successfully." : "Book Saved Successfully."} type={"success"} />
 				</div>
 				{/*　 開始 */}
 				{/*　 口座情報 */}

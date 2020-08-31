@@ -23,7 +23,19 @@ class employeeSearch extends React.Component {
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
+		this.options = {
+			defaultSortName: 'rowNo',
+			defaultSortOrder: 'dsc',
+			sizePerPage: 5,
+			pageStartIndex: 1,
+			paginationSize: 2,
+			prePage: 'Prev',
+			nextPage: 'Next',
+			hideSizePerPage: true,
+			alwaysShowAllBtns: true,
+			paginationShowsTotal: this.renderShowsTotal,
 
+		};
 	};
 	//onchange
 	valueChange = event => {
@@ -202,7 +214,7 @@ class employeeSearch extends React.Component {
 			developLanguage2: this.state.developement2Value,
 			developLanguage3: this.state.developement3Value,
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo ,
 			kadou: this.state.kadou,
 		};
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
@@ -215,7 +227,7 @@ class employeeSearch extends React.Component {
 			}
 			);
 	}
-
+     
 	state = {
 		intoCompanyYearAndMonthFrom: new Date(),
 		intoCompanyYearAndMonthTo: new Date()
@@ -225,7 +237,7 @@ class employeeSearch extends React.Component {
 	inactiveintoCompanyYearAndMonthFrom = (date) => {
 		this.setState(
 			{
-				intoCompanyYearAndMonthFrom: date
+			intoCompanyYearAndMonthFrom: date
 			}
 		);
 	};
@@ -233,7 +245,7 @@ class employeeSearch extends React.Component {
 	inactiveintoCompanyYearAndMonthTo = (date) => {
 		this.setState(
 			{
-				intoCompanyYearAndMonthTo: date
+			intoCompanyYearAndMonthTo: date
 			}
 		);
 	};
@@ -252,61 +264,17 @@ class employeeSearch extends React.Component {
 							rowSelectEmployeeNo: ''
 						}
 					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
+					 this.setState({"show":true});
+                     setTimeout(() => this.setState({"show":false}), 3000);
 				} else {
-					this.setState({ "show": false });
+					 this.setState({"show":false});
 					//alert("数据删除失败");
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				alert("删除错误，请检查程序");
 			});
 	};
-
-	employeeDelete = () => {
-		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-		var a = window.confirm("削除していただきますか？");
-		if (a) {
-			$("#delectBtn").click();
-		}
-	}
-	//隠した削除ボタン
-	createCustomDeleteButton = (onClick) => {
-		return (
-			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
-		);
-	}
-	//隠した削除ボタンの実装
-	onDeleteRow = (rows) => {
-		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
-		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
-			.then(result => {
-				if (result.data) {
-					this.searchEmployee();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
-				} else {
-					this.setState({ "show": false });
-				}
-			})
-			.catch(function(error) {
-				alert("删除错误，请检查程序");
-			});
-	}
-	//削除前のデフォルトお知らせの削除
-	customConfirm(next, dropRowKeys) {
-		const dropRowKeysStr = dropRowKeys.join(',');
-		next();
-	}
 
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
@@ -343,7 +311,7 @@ class employeeSearch extends React.Component {
 	}
 
 	render() {
-		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
+		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus,ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList } = this.state;
 		const {
 			developement1Value,
@@ -373,41 +341,16 @@ class employeeSearch extends React.Component {
 			bgColor: 'pink',
 			hideSelectColumn: true,
 			clickToSelect: true,
-			onSelect: this.handleRowSelect,
+			onSelect: this.handleRowSelect
 		};
-		//テーブルの行の選択
-		const selectRow = {
-			mode: 'radio',
-			bgColor: 'pink',
-			hideSelectColumn: true,
-			clickToSelect: true,  // click to select, default is false
-			clickToExpand: true,// click to expand row, default is false
-			onSelect: this.handleRowSelect,
-		};
-		//テーブルの定義
-		const options = {
-			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as default
-			pageStartIndex: 1, // where to start counting the pages
-			paginationSize: 3,  // the pagination bar size.
-			prePage: 'Prev', // Previous page button text
-			nextPage: 'Next', // Next page button text
-			firstPage: 'First', // First page button text
-			lastPage: 'Last', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-			expandRowBgColor: 'rgb(165, 165, 165)',
-			deleteBtn: this.createCustomDeleteButton,
-			onDeleteRow: this.onDeleteRow,
-			handleConfirmDeleteRow: this.customConfirm,
-		};
+
 
 		return (
 			<div >
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
-				<div style={{ "display": this.state.show ? "block" : "none" }}>
-					<MyToast show={this.state.show} message={"削除成功！"} type={"danger"} />
-				</div>
+				 <div style={{"display":this.state.show ? "block" : "none"}}>
+                    <MyToast show = {this.state.show} message = {"削除成功！"} type = {"danger"}/>
+                </div>
 				<Form >
 					<div >
 						<Form.Group>
@@ -479,8 +422,8 @@ class employeeSearch extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
-											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
+											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm" 
+											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm"  />
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -663,13 +606,13 @@ class employeeSearch extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
-								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
+								<Link className="btn btn-info btn-sm disabled" onClick={e => window.confirm("Are you sure you wish to delete this item?") && this.employeeDelete()} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
 							</div>
 						</Col>
 					</Row>
 				</div>
 				<div >
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow}>
+					<BootstrapTable data={employeeList} selectRow={selectRowProp} className={"bg-white text-dark"} pagination={true} options={this.options}>
 						<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' dataField='employeeFristName'>社員名</TableHeaderColumn>
