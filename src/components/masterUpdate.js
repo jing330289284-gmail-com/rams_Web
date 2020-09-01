@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import $ from 'jquery';
@@ -8,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-class masterInsert extends Component {
+class masterUpdate extends Component {
 
 	constructor(props) {
 		super(props);
@@ -17,7 +18,8 @@ class masterInsert extends Component {
 	}
 
 	initialState = {
-		masterStatus: []
+		masterStatus: [],
+		code: ''
 	};
 
 	//全部のドロップダウン
@@ -41,22 +43,52 @@ class masterInsert extends Component {
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
 	}
+	//明细查询
+	selectMaster = (event) => {
+		this.setState({
+			[event.target.name]: event.target.value
+		}, () => {
+			axios.post("http://127.0.0.1:8080/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+				.then(response => {
+					if (response.data != null) {
+						this.setState({
+							masterData: response.data
+						});
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		})
 
+	}
+
+	/**
+   * 行Selectファンクション
+   */
+	handleRowSelect = (row, isSelected) => {
+		if (isSelected) {
+			this.setState({
+				code: row.code
+			})
+			$("#data").attr("disabled", false);
+		}
+	}
     /**
      * 登録ボタン
      */
-	toroku = () => {
+	update = () => {
 		var masterModel = {};
-		var formArray = $("#masterInsertForm").serializeArray();
+		var formArray = $("#masterUpdateForm").serializeArray();
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
-		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
+		masterModel["code"] = this.state.code;
+		axios.post("http://127.0.0.1:8080/masterUpdate/update", masterModel)
 			.then(function(result) {
 				if (result.data) {
-					alert("登录成功");
+					alert("修正成功");
 				} else {
 					alert("データが存在しています");
 				}
@@ -67,7 +99,25 @@ class masterInsert extends Component {
 	}
 
 	render() {
-		const { master } = this.state;
+		this.options = {
+			sizePerPage: 5,
+			pageStartIndex: 1,
+			paginationSize: 2,
+			prePage: '<<',
+			nextPage: '>>',
+			hideSizePerPage: true,
+			alwaysShowAllBtns: true,
+		};
+		const { master, masterData } = this.state;
+		//テーブルの列の選択
+		const selectRow = {
+			mode: 'radio',
+			bgColor: 'pink',
+			hideSelectColumn: true,
+			clickToSelect: true,  // click to select, default is false
+			clickToExpand: true,// click to expand row, default is false
+			onSelect: this.handleRowSelect,
+		};
 		return (
 			<div className="container col-7">
 				<Row inline="true">
@@ -78,10 +128,10 @@ class masterInsert extends Component {
 				<Row>
 					<Col sm={4}></Col>
 					<Col sm={7}>
-						<p id="masterInsertErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
+						<p id="masterUpdateErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
 					</Col>
 				</Row>
-				<Form id="masterInsertForm">
+				<Form id="masterUpdateForm">
 					<Row>
 						<Col>
 							<InputGroup size="sm" className="mb-3">
@@ -100,6 +150,7 @@ class masterInsert extends Component {
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
+									onChange={this.selectMaster}
 								/>
 							</InputGroup>
 						</Col>
@@ -110,14 +161,14 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" />
+								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} disabled />
 							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
 						<Col sm={1}></Col>
 						<Col sm={4} className="text-center">
-							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+							<Button size="sm" onClick={this.update} variant="info" id="update" type="button" >
 								<FontAwesomeIcon icon={faSave} />修正
 							</Button>
 						</Col>
@@ -127,10 +178,17 @@ class masterInsert extends Component {
                            </Button>
 						</Col>
 					</Row>
+					<br />
+					<div>
+						<BootstrapTable selectRow={selectRow} data={masterData} pagination={true} options={this.options} >
+							<TableHeaderColumn dataField='code' width='90' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn dataField='data'>名称</TableHeaderColumn>
+						</BootstrapTable>
+					</div>
 				</Form>
 			</div>
 		);
 	}
 }
 
-export default masterInsert;
+export default masterUpdate;
