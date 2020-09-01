@@ -156,12 +156,8 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
-			residentCardInfo: $("#residentCardInfo").val(),//在留カード
-			resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
-			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
-			passportInfo: this.state.passportInfo,//パスポート
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定

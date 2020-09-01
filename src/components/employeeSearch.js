@@ -368,13 +368,7 @@ class employeeSearch extends React.Component {
 			value: developement3Value,
 			onChange: this.onDevelopement3Change
 		};
-		const selectRowProp = {
-			mode: 'radio',
-			bgColor: 'pink',
-			hideSelectColumn: true,
-			clickToSelect: true,
-			onSelect: this.handleRowSelect,
-		};
+
 		//テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -386,7 +380,7 @@ class employeeSearch extends React.Component {
 		};
 		//テーブルの定義
 		const options = {
-			page: 1,  // which page you want to show as default
+			page: 1, 
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.

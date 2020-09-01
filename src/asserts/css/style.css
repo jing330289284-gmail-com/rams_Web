@@ -278,5 +278,8 @@ body {
     height: 49px;
     line-height: 39px;
 }
- 
+.react-bs-table-tool-bar 
+ {
+    display: none;
+}
  
