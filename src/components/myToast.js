@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Toast} from 'react-bootstrap';
 
-export default class MyToast extends Component {
+export default class myToast extends Component {
     render() {
         const toastCss = {
             position: 'fixed',

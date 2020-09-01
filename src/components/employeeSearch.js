@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
-import MyToast from './MyToast';
+import MyToast from './myToast';
 
 
 registerLocale("ja", ja);
