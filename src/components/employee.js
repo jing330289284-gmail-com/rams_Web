@@ -315,7 +315,7 @@ class employee extends React.Component {
 	}
 
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation","getCustomer"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -331,6 +331,7 @@ class employee extends React.Component {
 				nationalityCodes: data[9],//　 出身地国
 				siteMaster: data[10],//　役割
 				station: data[11].slice(1),//　駅
+				customer: data[12].slice(1),//BP所属
 			}
 		);
 	};
@@ -885,7 +886,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo pbInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+						<PbInfo pbInfo={pbInfo} customer={this.state.customer} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>

@@ -7,10 +7,11 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as utils from './utils/publicUtils.js';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class pbInfo extends React.Component {
     state = { 
-	    customerName:[],//BP所属
+	    customer:[],//BP所属
 		bpSalesProgress:[],//営業状況
 		bpBelongCustomerCode:'',//選択中のBP所属
         bpUnitPrice: '',//単価
@@ -80,7 +81,7 @@ class pbInfo extends React.Component {
 	  $("#bpRemark").val("");
 	}
     render() {
-	const { actionType} = this.state;
+	const { actionType,customer,bpBelongCustomerCode} = this.state;
         return (
             <div>
                 <Row inline="true">
@@ -106,25 +107,37 @@ class pbInfo extends React.Component {
                 </Row>
                 <Row>
                     <Col sm={6}>
-                    	<InputGroup size="sm" className="mb-3">
-							<InputGroup.Prepend>
-								<InputGroup.Text id="inputGroup-sizing-sm">BP所属{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
-						        <Form.Control type="text" id="bpBelongCustomerCode"a name="bpBelongCustomerCode" />
-                      		</InputGroup.Prepend>
-						</InputGroup>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="pbInfoSetText">BP所属</InputGroup.Text>
+										<Autocomplete
+											id="bpBelongCustomerCode"
+											name="bpBelongCustomerCode"
+											value={bpBelongCustomerCode}
+											options={this.props.customer}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="BP所属" type="text" {...params.inputProps}
+														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+								</InputGroup.Prepend>
+							</InputGroup>
 	                </Col>
                     <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
-								<InputGroup.Text id="inputGroup-sizing-sm">BP単価{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
+								<InputGroup.Text id="pbInfoSetText">BP単価{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
 	                 	        <Form.Control type="text" id="bpUnitPrice"a name="bpUnitPrice" maxlength='5'/>
-								<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
+								<InputGroup.Text id="pbInfoSetText">万円</InputGroup.Text>
 							</InputGroup.Prepend>
                         </InputGroup>
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
+                    <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="pbInfoSetText">営業状況</InputGroup.Text>
@@ -133,7 +146,7 @@ class pbInfo extends React.Component {
                             </InputGroup.Prepend> 
                         </InputGroup>
                     </Col>
-                    <Col>
+                    <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="pbInfoSetText">所属現場終年月</InputGroup.Text>                       
@@ -162,7 +175,7 @@ class pbInfo extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
+                    <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">備考{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
