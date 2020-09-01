@@ -237,44 +237,17 @@ class employeeSearch extends React.Component {
 			}
 		);
 	};
-	//　　削除ボタン
-	employeeDelete = () => {
-		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
-		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
-			.then(result => {
-				if (result.data) {
-					this.searchEmployee();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
-				} else {
-					this.setState({ "show": false });
-					//alert("数据删除失败");
-				}
-			})
-			.catch(function(error) {
-				alert("删除错误，请检查程序");
-			});
-	};
-
 	employeeDelete = () => {
 		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
-			$("#delectBtn").click();
+			$("#deleteBtn").click();
 		}
 	}
 	//隠した削除ボタン
 	createCustomDeleteButton = (onClick) => {
 		return (
-			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
+			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
 		);
 	}
 	//隠した削除ボタンの実装
@@ -302,7 +275,7 @@ class employeeSearch extends React.Component {
 				alert("删除错误，请检查程序");
 			});
 	}
-	//削除前のデフォルトお知らせの削除
+	//　　削除前のデフォルトお知らせの削除
 	customConfirm(next, dropRowKeys) {
 		const dropRowKeysStr = dropRowKeys.join(',');
 		next();
