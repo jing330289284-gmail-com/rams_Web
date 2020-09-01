@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 import Select from 'react-select';
-import MyToast from './MyToast';
+import MyToast from './myToast';
 
 axios.defaults.withCredentials = true;
 

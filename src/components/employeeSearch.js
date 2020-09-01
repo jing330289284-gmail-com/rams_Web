@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
-import MyToast from './MyToast';
+import MyToast from './myToast';
 
 
 registerLocale("ja", ja);
@@ -669,17 +669,17 @@ class employeeSearch extends React.Component {
 					</Row>
 				</div>
 				<div >
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow}>
-						<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' dataField='employeeFristName'>社員名</TableHeaderColumn>
-						<TableHeaderColumn width='150' dataField='furigana'>カタカナ</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-						<TableHeaderColumn width='125' dataField='phoneNo'>電話番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' dataField='nearestStation'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
+					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
+						<TableHeaderColumn width='95'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeFristName'>社員名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='furigana'>カタカナ</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='alphabetName'>ローマ字</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='phoneNo'>電話番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='nearestStation'>寄り駅</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
