@@ -17,6 +17,7 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 import Select from 'react-select';
 import MyToast from './MyToast';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 axios.defaults.withCredentials = true;
 
@@ -49,6 +50,7 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
+		
 		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
@@ -57,7 +59,7 @@ class employee extends React.Component {
 		subCostInfo: null,//諸費用のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		pbInfo: null,//pb情報
-		station: [],//
+		station: [],//駅
 		show: false
 	};
 	//　　リセット
@@ -328,7 +330,7 @@ class employee extends React.Component {
 				englishLeveCodes: data[8],//　英語
 				nationalityCodes: data[9],//　 出身地国
 				siteMaster: data[10],//　役割
-				station: data[11],//　駅
+				station: data[11].slice(1),//　駅
 			}
 		);
 	};
@@ -1414,14 +1416,21 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Select
-										name="nearestStation"
-										value={nearestStation}
-										onChange={this.valueChange}
-										options={this.state.station}
-									/>
-								</InputGroup>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="nearestStationNo"
+											name="nearestStationNo"
+											value={nearestStation}
+											options={this.state.station}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="最寄駅" type="text" {...params.inputProps}
+														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+									</InputGroup>
 							</Col>
 						</Row>
 					</Form.Group>
