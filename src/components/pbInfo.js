@@ -11,12 +11,12 @@ import * as utils from './utils/publicUtils.js';
 class pbInfo extends React.Component {
     state = { 
 	    customerName:[],//BP所属
-        unitPrice: '',//単価
-        reflectStartDate: '',//営業状況
-        salesProgress:[],//営業状況
-		salesProgressOnSelect: '',//選択中の営業状況
+		bpSalesProgress:[],//営業状況
+		bpBelongCustomerCode:'',//選択中のBP所属
+        bpUnitPrice: '',//単価
+		bpSalesProgressCode: '',//選択中の営業状況
         bpOtherCompanyAdmissionEndDate:'',//所属現場終年月
-        remark:'',//備考
+        bpRemark:'',//備考
 		pbInfo:'',//入力データ
 		actionType:'',//処理区分
      }
@@ -40,28 +40,44 @@ class pbInfo extends React.Component {
 	    var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
 		var pbInfo = this.props.pbInfo;//父画面のパラメータ（画面既存諸費用情報）
 //営業状況リスト取得
-	    var salesProgress = utils.getdropDown("getSalesProgress");
-        for(let i = 1;i<salesProgress.length ; i++){
-            $("#salesProgress").append('<option value="'+salesProgress[i].code+'">'+salesProgress[i].name+'</option>');
+	    var bpSalesProgress = utils.getdropDown("getSalesProgress");
+        for(let i = 1;i<bpSalesProgress.length ; i++){
+            $("#bpSalesProgressCode").append('<option value="'+bpSalesProgress[i].code+'">'+bpSalesProgress[i].name+'</option>');
         }
- 		$("#salesProgress").find("option[value='4']").attr("selected",true);
-            pbInfo = this.props.pbInfo;//父画面のパラメータ（画面既存の新パスワード）
+ 		$("#bpSalesProgressCode").find("option[value='4']").attr("selected",true);
             if(this.props.employeeFristName===undefined||this.props.employeeLastName===undefined){
                 $('#pbInfoEmployeeName').val(" "); 
              }else{
                  document.getElementById("pbInfoEmployeeName").innerHTML =  this.props.employeeFristName + this.props.employeeLastName;
                 }
-    }
+    if(!$.isEmptyObject(pbInfo)){
+		$("#bpBelongCustomerCode").val(pbInfo.bpBelongCustomerCode);
+        $("#bpUnitPrice").val(pbInfo.bpUnitPrice);
+		$("#bpSalesProgressCode").val(pbInfo.bpSalesProgressCode);
+		 this.setState({
+            bpOtherCompanyAdmissionEndDate:utils.converToLocalTime(pbInfo.bpOtherCompanyAdmissionEndDate,false),
+        })
+
+		$("#bpRemark").val(pbInfo.bpRemark);
+		}    
+	}
     /**
  	* 登録ボタン
      */
     pbInfoTokuro=()=>{
-          	pbInfo["customerName"] = $("#customerName").val();
-            pbInfo["unitPrice"] = $("#unitPrice").val();
-            pbInfo["salesProgressName"] = $("#salesProgressName").val();
+			var pbInfo = {};
+          	pbInfo["bpBelongCustomerCode"] = $("#bpBelongCustomerCode").val();
+            pbInfo["bpUnitPrice"] = $("#bpUnitPrice").val();
+            pbInfo["bpSalesProgressCode"] = $("#bpSalesProgressCode").val();
             pbInfo["bpOtherCompanyAdmissionEndDate"] = utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate,false);
             pbInfo["bpRemark"] = $("#bpRemark").val();
             this.props.pbInfoTokuro(pbInfo);
+	}
+	reset=()=>{
+	  $("#bpBelongCustomerCode").val("");
+	  $("#bpUnitPrice").val("");
+	  $("#bpSalesProgressCode").val("4");
+	  $("#bpRemark").val("");
 	}
     render() {
 	const { actionType} = this.state;
@@ -93,7 +109,7 @@ class pbInfo extends React.Component {
                     	<InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
 								<InputGroup.Text id="inputGroup-sizing-sm">BP所属{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
-						        <Form.Control type="pbInfo" id="customerName"a name="customerName" />
+						        <Form.Control type="text" id="bpBelongCustomerCode"a name="bpBelongCustomerCode" />
                       		</InputGroup.Prepend>
 						</InputGroup>
 	                </Col>
@@ -101,7 +117,7 @@ class pbInfo extends React.Component {
                         <InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
 								<InputGroup.Text id="inputGroup-sizing-sm">BP単価{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
-	                 	        <Form.Control type="pbInfo" id="unitPrice"a name="unitPrice" maxlength='5'/>
+	                 	        <Form.Control type="text" id="bpUnitPrice"a name="bpUnitPrice" maxlength='5'/>
 								<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
 							</InputGroup.Prepend>
                         </InputGroup>
@@ -112,7 +128,7 @@ class pbInfo extends React.Component {
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="pbInfoSetText">営業状況</InputGroup.Text>
-								<Form.Control id="salesProgress" name="salesProgress" as="select" >
+								<Form.Control id="bpSalesProgressCode" name="bpSalesProgressCode" as="select" >
                           		</Form.Control>
                             </InputGroup.Prepend> 
                         </InputGroup>
@@ -150,8 +166,8 @@ class pbInfo extends React.Component {
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">備考{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
-                                <Form.Control type="pbInfo" id="pbInfoCheck"a name="pbInfoCheck" />
-                            </InputGroup.Prepend>
+                                <FormControl id="bpRemark" placeholder="例：XXXXX" name="bpRemark" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+                        	</InputGroup.Prepend>
                         </InputGroup>                       
                     </Col>
                 </Row>
@@ -163,7 +179,7 @@ class pbInfo extends React.Component {
                                 </Button>
                         </Col>
                         <Col sm={3} className="text-center">
-                                <Button  block size="sm" id="reset" type="reset" variant="info">
+                                <Button  block size="sm" id="reset" type="reset" variant="info" value="Reset" onclick="reset">
                                 <FontAwesomeIcon icon={faEdit} />リセット
                                 </Button>
                         </Col>

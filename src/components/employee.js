@@ -114,6 +114,7 @@ class employee extends React.Component {
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
+			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: this.state.furigana1,//　　カタカナ
@@ -166,7 +167,7 @@ class employee extends React.Component {
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
-			pbInfo: this.state.pbInfo,//pb情報
+			pbInfo: this.state.pbInfo//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -194,6 +195,7 @@ class employee extends React.Component {
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
+			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: this.state.furigana1,//　　カタカナ
@@ -283,6 +285,7 @@ class employee extends React.Component {
 	//初期化メソッド
 	async componentDidMount() {
 		this.getDropDownｓ();//全部のドロップダウン
+		this.radioChangeEmployeeType();
 		const { location } = this.props
 		var actionType = '';
 		var id = '';
@@ -305,7 +308,6 @@ class employee extends React.Component {
 				}
 			);
 		} else {
-			$('#pbInfo').prop('disabled', true);
 			this.getNO('LYC');//採番番号
 		}
 	}
@@ -881,13 +883,13 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+						<PbInfo pbInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
 					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
-					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")}>PW設定</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={detailDisabled ? false : true} >PW設定</Button>{' '}
 					<Button size="sm" id="pbInfo" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
@@ -1278,7 +1280,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off">
+									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off"　disabled={detailDisabled ? false : true}>
 										{this.state.siteMaster.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
