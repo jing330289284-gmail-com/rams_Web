@@ -21,6 +21,7 @@ import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
 import axios from 'axios';
 import $ from 'jquery';
+import salesSendLetter from './salesSendLetter';
 axios.defaults.withCredentials=true;
 
 class SubMenu extends Component {
@@ -211,6 +212,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
 								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
+								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/topCustomerInfo`} component={TopCustomerInfo} />
