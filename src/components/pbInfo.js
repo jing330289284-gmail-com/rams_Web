@@ -11,7 +11,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class pbInfo extends React.Component {
     state = { 
-	    customer:[],//BP所属
 		bpSalesProgress:[],//営業状況
 		bpBelongCustomerCode:'',//選択中のBP所属
         bpUnitPrice: '',//単価
@@ -81,7 +80,7 @@ class pbInfo extends React.Component {
 	  $("#bpRemark").val("");
 	}
     render() {
-	const { actionType,customer,bpBelongCustomerCode} = this.state;
+	const { actionType,bpBelongCustomerCode} = this.state;
         return (
             <div>
                 <Row inline="true">
@@ -109,7 +108,7 @@ class pbInfo extends React.Component {
                     <Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="pbInfoSetText">BP所属</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
 										<Autocomplete
 											id="bpBelongCustomerCode"
 											name="bpBelongCustomerCode"

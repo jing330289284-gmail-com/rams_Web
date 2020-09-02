@@ -139,7 +139,7 @@ class employee extends React.Component {
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: $("#authorityCodeId").val(),//権限
+			authorityCode: 1,//権限
 			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
@@ -357,6 +357,7 @@ class employee extends React.Component {
 					//employeeNo: date.employeeNo,//ピクチャ
 					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 					employeeNo: data.employeeNo,//社員番号
+					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
 					employeeLastName: data.employeeLastName,//社員名
 					furigana1: data.furigana1,//　　カタカナ
