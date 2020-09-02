@@ -5,7 +5,7 @@ import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap
 import $ from 'jquery';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class masterInsert extends Component {
@@ -17,7 +17,7 @@ class masterInsert extends Component {
 	}
 
 	initialState = {
-		masterStatus: []
+		masterStatus: [],
 	};
 
 	//全部のドロップダウン
@@ -32,14 +32,23 @@ class masterInsert extends Component {
 	};
 
 	onchange = event => {
+		$("#toroku").prop('disabled', false);
+		$("#data").prop('disabled', false);
 		this.setState({
 			[event.target.name]: event.target.value
+		}, () => {
+			if ($("#master").val() === "") {
+				$("#toroku").prop('disabled', true);
+				$("#data").prop('disabled', true);
+			}
 		})
 	}
 
 	// 页面加载
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
+		$("#toroku").prop('disabled', true);
+		$("#data").prop('disabled', true);
 	}
 
     /**
@@ -52,7 +61,6 @@ class masterInsert extends Component {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
 		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
 			.then(function(result) {
 				if (result.data) {
@@ -92,6 +100,7 @@ class masterInsert extends Component {
 									id="master"
 									name="master"
 									value={master}
+									onChange={this.onchange}
 									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
@@ -110,21 +119,16 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" />
+								<FormControl placeholder="データ" id="data" name="data" disabled={this.state.master === "" ? true : false} />
 							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
-						<Col sm={1}></Col>
+						<Col sm={4}></Col>
 						<Col sm={4} className="text-center">
 							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
 								<FontAwesomeIcon icon={faSave} />登録
 							</Button>
-						</Col>
-						<Col sm={5} className="text-center">
-							<Button size="sm" type="reset" variant="info" >
-								<FontAwesomeIcon icon={faUndo} /> リセット
-                           </Button>
 						</Col>
 					</Row>
 				</Form>

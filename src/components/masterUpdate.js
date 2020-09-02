@@ -6,7 +6,7 @@ import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap
 import $ from 'jquery';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class masterUpdate extends Component {
@@ -42,9 +42,15 @@ class masterUpdate extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
+		$("#update").prop('disabled', true);
+		$("#delete").prop('disabled', true);
+		$("#data").prop('disabled', true);
 	}
 	//明细查询
 	selectMaster = (event) => {
+		this.setState({
+			data: '',
+		})
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
@@ -59,22 +65,31 @@ class masterUpdate extends Component {
 					console.error("Error - " + error);
 				});
 		})
-
 	}
 
 	/**
    * 行Selectファンクション
    */
 	handleRowSelect = (row, isSelected) => {
+		$("#update").prop('disabled', true);
+		$("#delete").prop('disabled', true);
+		$("#data").prop('disabled', true);
+		this.setState({
+			data: '',
+		})
 		if (isSelected) {
 			this.setState({
-				code: row.code
+				code: row.code,
+				data: row.data,
 			})
-			$("#data").attr("disabled", false);
+
+			$("#update").prop('disabled', false);
+			$("#delete").prop('disabled', false);
+			$("#data").prop('disabled', false);
 		}
 	}
     /**
-     * 登録ボタン
+     * 修正ボタン
      */
 	update = () => {
 		var masterModel = {};
@@ -83,7 +98,6 @@ class masterUpdate extends Component {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		masterModel["updateUser"] = sessionStorage.getItem("employeeNo");
 		masterModel["code"] = this.state.code;
 		axios.post("http://127.0.0.1:8080/masterUpdate/update", masterModel)
 			.then(function(result) {
@@ -98,15 +112,42 @@ class masterUpdate extends Component {
 			});
 	}
 
+	/**
+	 * 削除ボタン
+	 */
+	delete = (event) => {
+		var a = window.confirm("削除していただきますか？");
+		if (a) {
+			var masterModel = {};
+			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
+			masterModel["code"] = this.state.code;
+			axios.post("http://127.0.0.1:8080/masterUpdate/delete", masterModel)
+				.then(function(result) {
+					if (result.data) {
+						alert("削除成功");
+						this.selectMaster(event);
+					} else {
+						alert("削除失敗");
+					}
+				})
+				.catch(function(error) {
+					alert("页面加载错误，请检查程序");
+				});
+		}
+	}
+
 	render() {
 		this.options = {
-			sizePerPage: 5,
-			pageStartIndex: 1,
-			paginationSize: 2,
-			prePage: '<<',
-			nextPage: '>>',
-			hideSizePerPage: true,
-			alwaysShowAllBtns: true,
+			page: 1,  // which page you want to show as default
+			sizePerPage: 5,  // which size per page you want to locate as default
+			pageStartIndex: 1, // where to start counting the pages
+			paginationSize: 3,  // the pagination bar size.
+			prePage: 'まえ', // Previous page button text
+			nextPage: 'つぎ', // Next page button text
+			firstPage: '最初', // First page button text
+			lastPage: '最後', // Last page button text
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
+			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
 		const { master, masterData } = this.state;
 		//テーブルの列の選択
@@ -144,6 +185,7 @@ class masterUpdate extends Component {
 									value={master}
 									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
+									clearOnBlur
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
 											<input placeholder="マスター名" type="text" {...params.inputProps}
@@ -161,28 +203,28 @@ class masterUpdate extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} disabled />
+								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} value={this.state.data} disabled />
 							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
-						<Col sm={1}></Col>
+						<Col sm={2}></Col>
 						<Col sm={4} className="text-center">
 							<Button size="sm" onClick={this.update} variant="info" id="update" type="button" >
-								<FontAwesomeIcon icon={faSave} />修正
+								<FontAwesomeIcon icon={faEdit} />修正
 							</Button>
 						</Col>
-						<Col sm={5} className="text-center">
-							<Button size="sm" type="reset" variant="info" >
-								<FontAwesomeIcon icon={faUndo} /> リセット
+						<Col sm={4} className="text-center">
+							<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" >
+								<FontAwesomeIcon icon={faTrash} /> 削除
                            </Button>
 						</Col>
 					</Row>
 					<br />
 					<div>
 						<BootstrapTable selectRow={selectRow} data={masterData} pagination={true} options={this.options} >
-							<TableHeaderColumn dataField='code' width='90' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='data'>名称</TableHeaderColumn>
+							<TableHeaderColumn dataField='code' width='60' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn dataField='data' headerAlign='center'>名称</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</Form>

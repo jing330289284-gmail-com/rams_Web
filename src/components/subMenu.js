@@ -173,7 +173,6 @@ class SubMenu extends Component {
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />マスター登録</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterUpdate"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerDepartmentTypeMaster"><img alt="title" src={open} />マスター削除</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
