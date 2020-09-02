@@ -13,8 +13,8 @@ import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
-import Select from 'react-select';
+import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 axios.defaults.withCredentials=true;
 registerLocale('ja', ja);
 
@@ -34,6 +34,7 @@ class CustomerInfo extends Component {
         accountInfo:null,//口座情報のデータ
         actionType:'',//処理区分
         topCustomerInfo:null,//上位お客様情報データ
+        stationCode:[],//本社場所
      }
     /**
      *  設立のonChange
@@ -93,11 +94,11 @@ class CustomerInfo extends Component {
      */
     async componentDidMount(){
         this.setState({
-            actionType:this.props.location.state,
+            actionType:this.props.location.state.actionType,
         })
         $("#customerNo").val( this.props.location.customerNo);
         $("#sakujo").attr("disabled",true);
-        var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite" , "getTopCustomerDrop" , "getDepartmentMasterDrop"]
+        var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite" , "getTopCustomer" , "getDepartmentMasterDrop" , "getStation"]
         var selectDataList = utils.getPublicDropDown(methodArray);
         //上場会社
         var listedCompanyFlag = selectDataList[0];
@@ -111,13 +112,17 @@ class CustomerInfo extends Component {
         var paymentsiteCode = selectDataList[4];
         var topCustomerDrop = [];
         var customerDepartmentNameDrop = [];
+        var stationCode = [];
         topCustomerDrop = selectDataList[5];
         topCustomerDrop.shift();
         customerDepartmentNameDrop = selectDataList[6];
         customerDepartmentNameDrop.shift();
+        stationCode = selectDataList[7];
+        stationCode.shift();
         this.setState({
             topCustomerDrop:topCustomerDrop,
             customerDepartmentNameDrop:customerDepartmentNameDrop,
+            stationCode:stationCode,
         })
         for(let i = 1;i<listedCompanyFlag.length ; i++){
             $("#listedCompanyFlag").append('<option value="'+listedCompanyFlag[i].code+'">'+listedCompanyFlag[i].name+'</option>');
@@ -139,13 +144,13 @@ class CustomerInfo extends Component {
           }
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
-        customerInfoMod["actionType"] = this.state.actionType;
+        customerInfoMod["actionType"] = this.props.location.state.actionType;
         await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage" , customerInfoMod)
         .then(resultMap => {
             var customerInfoMod;
             var actionType = this.state.actionType;
             customerInfoMod = resultMap.data.customerInfoMod;
-            if(actionType === 'insert'){
+            if(actionType === "insert"){
                 var customerNoSaiBan = resultMap.data.customerNoSaiBan;
                 $("#customerNo").val(customerNoSaiBan);
                 $("#customerNo").attr("readOnly",true);
@@ -165,11 +170,7 @@ class CustomerInfo extends Component {
                 $("#purchasingManagers").val(customerInfoMod.purchasingManagers);
                 $("#url").val(customerInfoMod.url);
                 $("#remark").val(customerInfoMod.remark);
-                var topCustomerValue = {};
-                topCustomerValue["value"] = customerInfoMod.topCustomerNo;
-                topCustomerValue["label"] = customerInfoMod.topCustomerName;
                 this.setState({
-                    topCustomerValue:topCustomerValue,
                     businessStartDate:utils.converToLocalTime(customerInfoMod.businessStartDate,false),
                     establishmentDate:utils.converToLocalTime(customerInfoMod.establishmentDate,false),
                     customerDepartmentList:resultMap.data.customerDepartmentInfoList,
@@ -197,17 +198,13 @@ class CustomerInfo extends Component {
         });
         customerDepartmentInfoModel["actionType"] = this.state.actionType;
         customerDepartmentInfoModel['customerNo'] = $("#customerNo").val();
-        var customerDepartmentName = "";
-        var customerDepartmentCode = document.getElementsByName("customerDepartmentName")[0].value;
-        this.state.customerDepartmentNameDrop.map(function(item,index){
-            if(item.value === customerDepartmentCode){
-                customerDepartmentName = item.label;
-            }
-        })
+        var customerDepartmentName = $("#customerDepartmentName").val();
+        var customerDepartmentCode = utils.labelGetValue($("#customerDepartmentName").val(),this.state.customerDepartmentNameDrop);
         customerDepartmentInfoModel['customerDepartmentName'] = customerDepartmentName;
+        customerDepartmentInfoModel['customerDepartmentCode'] = customerDepartmentCode;
         customerDepartmentInfoModel['positionName'] = (positionCode.options[index].text === "選択ください" ? '' : positionCode.options[index].text);
         customerDepartmentInfoModel["rowNo"] = (this.state.customerDepartmentList.length === 0 ? 1 : this.state.customerDepartmentList.length + 1);
-        if(document.getElementsByName("customerDepartmentName")[0].value !== '' && $("#positionCode").val() !== ''){
+        if($("#customerDepartmentName").val() !== '' && $("#positionCode").val() !== ''){
             if(this.state.rowNo !== null && this.state.rowNo !== ''){//行更新
                 let rowNo = this.state.rowNo;
                 var departmentList = this.state.customerDepartmentList;
@@ -240,8 +237,10 @@ class CustomerInfo extends Component {
                     customerDepartmentList:[...this.state.customerDepartmentList,customerDepartmentInfoModel],
                 })
                 this.setState({
-                    customerDepartmentNameValue:'',
+                    customerDepartmentValue:null,
                 })
+                $("#customerDepartmentName").val('');
+                document.getElementsByName("customerDepartmentName")[0].value = '';
                 $("#positionCode").val('');
                 $("#responsiblePerson").val('');
                 $("#customerDepartmentMail").val('');
@@ -258,7 +257,7 @@ class CustomerInfo extends Component {
             $.each(formArray,function(i,item){
                 customerInfoMod[item.name] = item.value;     
             });
-            customerInfoMod["topCustomerName"] = $("#topCustomerNameShita").val();
+            customerInfoMod["topCustomerNo"] = utils.labelGetValue( $("#topCustomer").val(),this.state.topCustomerDrop);
             customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate,false);
             customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate,false);
             customerInfoMod["actionType"] = this.state.actionType;
@@ -298,39 +297,17 @@ class CustomerInfo extends Component {
             $("#delectBtn").click();
         }    
     }
-        /**
-     * 連想チェンジ
-     */
-    topCustomerHandleChange = selectedOption => {
-        this.setState({ 
-            topCustomerValue:selectedOption,
-            topCustomerNo:selectedOption.value,
-        });
-		console.log(`Option selected:`, selectedOption);
-    };
     
-        /**
-     * 連想チェンジ
-     */
-    handleChange = selectedOption => {
-        this.setState({ 
-            customerDepartmentValue:selectedOption,
-        });
-		console.log(`Option selected:`, selectedOption);
-	};
     /**
      * 行Selectファンクション
      */
      handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
             $("#positionCode").val(row.positionCode);
+            $("#customerDepartmentName").val(row.customerDepartmentName);
             $("#responsiblePerson").val(row.responsiblePerson);
             $("#customerDepartmentMail").val(row.customerDepartmentMail);
-            var customerDepartmentDrop = {};
-            customerDepartmentDrop["value"] = row.customerDepartmentCode;
-            customerDepartmentDrop["label"] = row.customerDepartmentName;
             this.setState({
-                customerDepartmentValue:customerDepartmentDrop,
                 rowNo:row.rowNo,
                 customerDepartmentCode:row.customerDepartmentCode,
             })
@@ -340,11 +317,8 @@ class CustomerInfo extends Component {
             $("#responsiblePerson").val('');
             $("#customerDepartmentMail").val('');
             $("#customerDepartmentName").val('');
-            var customerDepartmentValue = {};
-            customerDepartmentValue["label"] = "";
-            customerDepartmentValue["value"] = "";
             this.setState({
-                customerDepartmentValue:customerDepartmentValue,
+                customerDepartmentValue:'',
                 rowNo:'',
                 customerDepartmentCode:'',
             })
@@ -367,21 +341,42 @@ class CustomerInfo extends Component {
     topCustomerInfoGet=(topCustomerToroku)=>{
         if(this.state.topCustomerNo !== null && this.state.topCustomerNo !== '' && this.state.topCustomerNo !== undefined){
             console.log(topCustomerToroku);//上位お客様更新の場合
+            var topCustomerDrop = this.state.topCustomerDrop;
+            for(let i=topCustomerDrop.length-1; i>=0; i--){
+                if(topCustomerDrop[i].code === topCustomerToroku.topCustomerNo){
+                    var top = {};
+                    top["code"] = topCustomerToroku.topCustomerNo;
+                    top["name"] = topCustomerToroku.topCustomerName;
+                    topCustomerDrop[i] = top;
+                }
+            }
             this.setState({
-                topCustomerDrop:topCustomerToroku,
+                topCustomerDrop:topCustomerDrop,
+                topCustomerInfo:topCustomerToroku,
                 showCustomerInfoModal:false,
             })
         }else{//上位お客様追加の場合
             var ModelClass = {};
-            ModelClass["value"] = topCustomerToroku.topCustomerNo;
-            ModelClass["label"] = topCustomerToroku.topCustomerName;
+            ModelClass["code"] = topCustomerToroku.topCustomerNo;
+            ModelClass["name"] = topCustomerToroku.topCustomerName;
             this.setState({
                 topCustomerDrop:[...this.state.topCustomerDrop,ModelClass],
                 topCustomerInfo:topCustomerToroku,
-                topCustomerValue:ModelClass,
                 showCustomerInfoModal:false,
             })
         }
+    }
+    /**
+     * 上位お客様番号の取得
+     */
+    getTopCustomerNo =(event)=>{
+        this.setState({
+			[event.target.name]: event.target.value
+		}, () => {
+            this.setState({
+                topCustomerNo:utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop)
+            })
+		})
     }
     renderShowsTotal(start, to, total) {
         if(total === 0){
@@ -447,7 +442,7 @@ class CustomerInfo extends Component {
         next();
       }
     render() {
-        const { topCustomerValue , topCustomerInfo , customerDepartmentNameValue , selectedValue , customerDepartmentList , accountInfo
+        const { topCustomerValue , topCustomerInfo , stationCodeValue , customerDepartmentList , accountInfo
          , actionType , topCustomerNo} = this.state;
         const accountPath = {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
@@ -569,7 +564,19 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：秋葉原駅" maxLength="20" id="stationCode" name="stationCode" />
+                            <Autocomplete
+                                id="stationCode"
+                                name="stationCode"
+                                value={stationCodeValue}
+                                options={this.state.stationCode}
+                                getOptionLabel={(option) => option.name}
+                                renderInput={(params) => (
+                                    <div ref={params.InputProps.ref}>
+                                        <input placeholder="例：秋葉原駅" type="text" {...params.inputProps}
+                                            style={{ width: 258, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                    </div>
+                                )}
+                            />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -627,13 +634,19 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Select
-                                    inputId="topCustomer"
+                            	<Autocomplete
+                                    id="topCustomer"
                                     name="topCustomer"
                                     value={topCustomerValue}
-                                    onChange={this.topCustomerHandleChange}
                                     options={this.state.topCustomerDrop}
-                                    isDisabled={actionType === "detail" ? true : false}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input placeholder="上位お客様名" type="text" {...params.inputProps}
+                                                style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        </div>
+                                    )}
+                                    onChange={this.getTopCustomerNo}
                                 />
                         </InputGroup>
                     </Col>
@@ -728,13 +741,18 @@ class CustomerInfo extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Select
-                                    inputId="customerDepartmentName"
+                                <Autocomplete
+                                    id="customerDepartmentName"
                                     name="customerDepartmentName"
-                                    value={this.state.customerDepartmentValue !== null ? this.state.customerDepartmentValue : customerDepartmentNameValue}
-                                    onChange={this.handleChange}
+                                    value={this.state.customerDepartmentValue}
                                     options={this.state.customerDepartmentNameDrop}
-                                    isDisabled={actionType === "detail" ? true : false}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input placeholder="お客様部門" type="text" {...params.inputProps}
+                                                style={{ width: 250, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        </div>
+                                    )}
                                 />
                         </InputGroup>
                     </Col>
@@ -781,7 +799,7 @@ class CustomerInfo extends Component {
                     <Col sm={11}></Col>
                     <Col sm={1}>
                     <Button size="sm" block onClick={this.listDelete} variant="info" id="sakujo" type="button">
-                        删除
+                    <FontAwesomeIcon icon={faTrash} />删除
                     </Button>
                     </Col>
                 </Row>

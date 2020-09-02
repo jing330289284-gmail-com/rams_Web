@@ -11,6 +11,7 @@ import { faSave, faUndo, faSearch , faEdit , faTrash , faList } from '@fortaweso
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 registerLocale('ja', ja);
 axios.defaults.withCredentials=true;
 
@@ -23,6 +24,8 @@ class CustomerInfoSearch extends Component {
         customerNo:'',//選択した列のお客様番号
         rowNo:'',//選択した行番号
         businessStartDate: '',//取引開始の期日
+        stationCode:[],//本社場所
+        topCustomerDrop:[],//上位お客様連想の数列
      }
      /**
       * 画面の初期化
@@ -31,7 +34,7 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shusei').className += " disabled";
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled",true);
-        var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite"]
+        var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite" , "getStation" , "getTopCustomer"]
         var selectDataList = utils.getPublicDropDown(methodArray);
         //お客様ランキン
         var level = selectDataList[0];
@@ -39,6 +42,14 @@ class CustomerInfoSearch extends Component {
         var companyNature = selectDataList[1];
         //支払サイト
         var paymentsiteCode = selectDataList[2];
+        var stationCode = selectDataList[3];
+        stationCode.shift();
+        var topCustomerDrop = selectDataList[4];
+        topCustomerDrop.shift();
+        this.setState({
+            stationCode:stationCode,
+            topCustomerDrop:topCustomerDrop,
+        })
         for(let i = 0;i<level.length ; i++){
             $("#levelCode").append('<option value="'+level[i].code+'">'+level[i].name+'</option>');
         }
@@ -67,6 +78,8 @@ class CustomerInfoSearch extends Component {
         $.each(formArray,function(i,item){
             customerInfoMod[item.name] = item.value;     
         });
+        customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val() , this.state.topCustomerDrop);
+        customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val() , this.state.stationCode);
         axios.post("http://127.0.0.1:8080/customerInfoSearch/search" , customerInfoMod)
         .then(resultList => {
             this.setState({
@@ -219,7 +232,7 @@ class CustomerInfoSearch extends Component {
     );
     }
     render() {
-        const { radioValue , customerInfoData }=this.state;
+        const { radioValue , customerInfoData , stationCodeValue , topCustomerValue}=this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
             pathname:'/subMenu/customerInfo',state:{actionType:'insert'},
@@ -295,7 +308,19 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="秋葉原" id="stationCode" name="stationCode"/>
+                            <Autocomplete
+                                id="stationCode"
+                                name="stationCode"
+                                value={stationCodeValue}
+                                options={this.state.stationCode}
+                                getOptionLabel={(option) => option.name}
+                                renderInput={(params) => (
+                                    <div ref={params.InputProps.ref}>
+                                        <input placeholder="例：秋葉原駅" type="text" {...params.inputProps}
+                                            style={{ width: 170, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                    </div>
+                                )}
+                            />
                         </InputGroup>
                     </Col>
                     <Col>
@@ -332,7 +357,19 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
-                                <Form.Control placeholder="例：富士通" id="topCustomerName" name="topCustomerName"/>
+                            <Autocomplete
+                                    id="topCustomer"
+                                    name="topCustomer"
+                                    value={topCustomerValue}
+                                    options={this.state.topCustomerDrop}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input placeholder="上位お客様名" type="text" {...params.inputProps}
+                                                style={{ width: 160, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        </div>
+                                    )}
+                                />
                         </InputGroup>
                     </Col>
                     <Col>

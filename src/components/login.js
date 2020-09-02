@@ -132,9 +132,6 @@ class Login extends Component {
 					ログイン
 				</Button>
 			</Form>
-			<Form className="form-check">
-
-			</Form>
 			</div>
 			)
 		}

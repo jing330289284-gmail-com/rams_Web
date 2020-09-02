@@ -202,7 +202,7 @@ class SubMenu extends Component {
 					<Col sm={9} id="page">
 						<div key={this.props.location.key}>
 							<Router>
-								<Route exact path={`${this.props.match.url}/`} component={Employee} />
+								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />

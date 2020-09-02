@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
-import MyToast from './MyToast';
+import MyToast from './myToast';
 
 
 registerLocale("ja", ja);
@@ -237,44 +237,17 @@ class employeeSearch extends React.Component {
 			}
 		);
 	};
-	//　　削除ボタン
-	employeeDelete = () => {
-		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
-		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
-			.then(result => {
-				if (result.data) {
-					this.searchEmployee();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
-				} else {
-					this.setState({ "show": false });
-					//alert("数据删除失败");
-				}
-			})
-			.catch(function(error) {
-				alert("删除错误，请检查程序");
-			});
-	};
-
 	employeeDelete = () => {
 		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
-			$("#delectBtn").click();
+			$("#deleteBtn").click();
 		}
 	}
 	//隠した削除ボタン
 	createCustomDeleteButton = (onClick) => {
 		return (
-			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
+			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
 		);
 	}
 	//隠した削除ボタンの実装
@@ -302,7 +275,7 @@ class employeeSearch extends React.Component {
 				alert("删除错误，请检查程序");
 			});
 	}
-	//削除前のデフォルトお知らせの削除
+	//　　削除前のデフォルトお知らせの削除
 	customConfirm(next, dropRowKeys) {
 		const dropRowKeysStr = dropRowKeys.join(',');
 		next();
@@ -368,13 +341,7 @@ class employeeSearch extends React.Component {
 			value: developement3Value,
 			onChange: this.onDevelopement3Change
 		};
-		const selectRowProp = {
-			mode: 'radio',
-			bgColor: 'pink',
-			hideSelectColumn: true,
-			clickToSelect: true,
-			onSelect: this.handleRowSelect,
-		};
+
 		//テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -386,7 +353,7 @@ class employeeSearch extends React.Component {
 		};
 		//テーブルの定義
 		const options = {
-			page: 1,  // which page you want to show as default
+			page: 1, 
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
@@ -669,17 +636,17 @@ class employeeSearch extends React.Component {
 					</Row>
 				</div>
 				<div >
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow}>
-						<TableHeaderColumn width='95' dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' dataField='employeeFristName'>社員名</TableHeaderColumn>
-						<TableHeaderColumn width='150' dataField='furigana'>カタカナ</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-						<TableHeaderColumn width='125' dataField='phoneNo'>電話番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' dataField='nearestStation'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
+					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
+						<TableHeaderColumn width='95'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeFristName'>社員名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='furigana'>カタカナ</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='alphabetName'>ローマ字</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='phoneNo'>電話番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='nearestStation'>寄り駅</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
