@@ -27,6 +27,7 @@ class DutyRegistration extends React.Component {
 		super(props);
 		this.state = {
 			weekDay: {0: "日", 1: "月", 2: "火", 3: "水", 4: "木", 5: "金", 6: "土"},
+			isWorkMap: ["休憩", "出勤"],
 			dateData: [],
 			year: new Date().getFullYear(),
 			month: (new Date().getMonth() + 1).toString().padStart(2, "0"),
@@ -48,11 +49,10 @@ class DutyRegistration extends React.Component {
 	resetState = {
 	};
 	//初期化メソッド
-	async componentDidMount() {
+	componentDidMount() {
 		var dateData = [];
 		for (var i = 0; i < 31; i++)	{
 			dateData[i] = {};
-			dateData[i]['isWork'] = "出勤";
 			dateData[i]['day'] = i + 1;
 			dateData[i]['week'] = this.state.weekDay[new Date(this.state.year + "/" + this.state.month +"/" + (i + 1)).getDay()];
 			dateData[i]['startHour'] = "";
@@ -63,6 +63,12 @@ class DutyRegistration extends React.Component {
 			dateData[i]['workHour'] = "";
 			dateData[i]['workContent'] = "";
 			dateData[i]['remark'] = "";
+			if (dateData[i]['week'] === "土" || dateData[i]['week'] === "日")	{
+				dateData[i]['isWork'] = this.state.isWorkMap[0];				
+			}
+			else	{
+				dateData[i]['isWork'] = this.state.isWorkMap[1];				
+			}
 		}
 		this.setState({ dateData: dateData })
 		console.log(new Date("2020/08/02").getDay());
@@ -84,6 +90,17 @@ class DutyRegistration extends React.Component {
 		if (kbn === "breakTime") {//PW設定
 			this.setState({ showbreakTimeModal: true })
 		}
+	}
+	rowClassNameFormat( row, rowIdx) {
+		var baseCss = " dutyRegistration-DataTableRow ";
+		if (row["week"] === "土" || row["week"] === "日")	{
+			return baseCss + 'dutyRegistration-DataTableSleep';
+		}
+		return baseCss;
+	}
+	columnClassNameFormat( fieldValue, row, rowIdx, colIdx) {
+		var baseCss = " dutyRegistration-DataTableTd ";
+		return baseCss;
 	}
 	onSubmit = (event) =>	{
 		console.log(this.state.dateData);
@@ -118,9 +135,7 @@ class DutyRegistration extends React.Component {
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-						</Row>
-						<Row>
-							<Col sm={3} md={{ span: 3, offset: 9 }}>
+							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">会社名：</InputGroup.Text>
@@ -129,9 +144,9 @@ class DutyRegistration extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Row>
+						<Row className="align-items-center">
 							<Col sm={3} md={{ span: 3, offset: 4 }}>
-								<InputGroup size="sm" className="mb-3">
+								<InputGroup size="lg" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.year}年{this.state.month}月　作業報告書</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -147,20 +162,18 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={3} md={{ span: 3, offset: 9 }}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">業務名称：</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+								</InputGroup>
+							</Col>
+							<Col sm={3} md={{ span: 3, offset: 6 }}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
 								</InputGroup>
@@ -171,18 +184,18 @@ class DutyRegistration extends React.Component {
 								<Button size="sm">PDF</Button>
 							</Col>
 						</Row>
-						<BootstrapTable className={"bg-white text-dark"} data={this.state.dateData} pagination={true} options={this.options}  cellEdit={ this.cellEditProp }>
-							<TableHeaderColumn width='120' dataField='isWork'>出勤・休憩</TableHeaderColumn>
-							<TableHeaderColumn width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
-							<TableHeaderColumn width='60' dataField='week' editable={false}>曜日</TableHeaderColumn>
-							<TableHeaderColumn width='120' dataField='startHour'>作業開始時刻</TableHeaderColumn>
-							<TableHeaderColumn width='50' dataField='startMinute'></TableHeaderColumn>
-							<TableHeaderColumn width='120' dataField='endHour'>作業終了時刻</TableHeaderColumn>
-							<TableHeaderColumn width='50' dataField='endMinute'></TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='sleepHour' editable={false}>休憩時間</TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='workHour' editable={false}>作業時間</TableHeaderColumn>
-							<TableHeaderColumn width='100' dataField='workContent'>作業内容</TableHeaderColumn>
-							<TableHeaderColumn width='120' dataField='remark'>備考</TableHeaderColumn>
+						<BootstrapTable className={"dutyRegistration-DataTable"} trClassName={ this.rowClassNameFormat } data={this.state.dateData} pagination={true} options={this.options}  cellEdit={ this.cellEditProp }>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='isWork' editable={{ type: 'select', options: { values: this.state.isWorkMap } }}>出勤・休憩</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='60' dataField='week' editable={false}>曜日</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='startHour' colSpan='1'>作業開始時刻</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='startMinute'></TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='endHour'>作業終了時刻</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='endMinute'></TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='100' dataField='sleepHour' editable={false}>休憩時間</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='100' dataField='workHour' editable={false}>作業時間</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='100' dataField='workContent'>作業内容</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='remark'>備考</TableHeaderColumn>
 						</BootstrapTable>
 						<Row>
 							<Col sm={3}>

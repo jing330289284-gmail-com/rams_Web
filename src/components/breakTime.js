@@ -121,7 +121,7 @@ class BreakTime extends Component {
     breakTimeRegister(){
         var breakTimeInfo = {};
         var actionType = this.state.actionType;
-        breakTimeInfo["employeeNo"] = sessionStorage.getItem('employeeNo');
+        breakTimeInfo["employeeNo"] = $("#breakTimeUser").val();
         breakTimeInfo["breakTimeIsConst"] = $("#isConst").val();
         breakTimeInfo["breakTimeYearMonth"] = utils.formateDate($("#breakTimeDate").val(), false);
         breakTimeInfo["breakTimeDayStart"] = $("#breakTimeDayHourStart").val().padStart(2,"0") + $("#breakTimeDayMinuteStart").val().padEnd(2,"0");
