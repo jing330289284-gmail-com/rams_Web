@@ -17,6 +17,7 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 import Select from 'react-select';
 import MyToast from './myToast';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 axios.defaults.withCredentials = true;
 
@@ -49,6 +50,7 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
+		
 		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
@@ -57,7 +59,7 @@ class employee extends React.Component {
 		subCostInfo: null,//諸費用のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		pbInfo: null,//pb情報
-		station: [],//
+		station: [],//駅
 		show: false
 	};
 	//　　リセット
@@ -114,6 +116,7 @@ class employee extends React.Component {
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
+			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: this.state.furigana1,//　　カタカナ
@@ -136,7 +139,7 @@ class employee extends React.Component {
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: $("#authorityCodeId").val(),//権限
+			authorityCode: 1,//権限
 			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
@@ -156,13 +159,17 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
+			residentCardInfo: $("#residentCardInfo").val(),//在留カード
+			resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
+			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			passportInfo: this.state.passportInfo,//パスポート
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
-			pbInfo: this.state.pbInfo,//pb情報
+			pbInfo: this.state.pbInfo//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -190,6 +197,7 @@ class employee extends React.Component {
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
+			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: this.state.furigana1,//　　カタカナ
@@ -307,7 +315,7 @@ class employee extends React.Component {
 	}
 
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation","getCustomer"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -322,7 +330,8 @@ class employee extends React.Component {
 				englishLeveCodes: data[8],//　英語
 				nationalityCodes: data[9],//　 出身地国
 				siteMaster: data[10],//　役割
-				station: data[11],//　駅
+				station: data[11].slice(1),//　駅
+				customer: data[12].slice(1),//BP所属
 			}
 		);
 	};
@@ -348,6 +357,7 @@ class employee extends React.Component {
 					//employeeNo: date.employeeNo,//ピクチャ
 					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 					employeeNo: data.employeeNo,//社員番号
+					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
 					employeeLastName: data.employeeLastName,//社員名
 					furigana1: data.furigana1,//　　カタカナ
@@ -877,7 +887,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo passwordSetInfo={pbInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+						<PbInfo pbInfo={pbInfo} customer={this.state.customer} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
@@ -1408,14 +1418,21 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Select
-										name="nearestStation"
-										value={nearestStation}
-										onChange={this.valueChange}
-										options={this.state.station}
-									/>
-								</InputGroup>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="nearestStationNo"
+											name="nearestStationNo"
+											value={nearestStation}
+											options={this.state.station}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="最寄駅" type="text" {...params.inputProps}
+														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+									</InputGroup>
 							</Col>
 						</Row>
 					</Form.Group>
