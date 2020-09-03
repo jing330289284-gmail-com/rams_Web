@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './accountInfo';
 import SubCost from './costInfo';
-import PbInfo from './pbInfo';
+import BpInfoModel from './bpInfo';
 import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
@@ -58,7 +58,7 @@ class employee extends React.Component {
 		accountInfo: null,//口座情報のデータ
 		subCostInfo: null,//諸費用のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
-		pbInfo: null,//pb情報
+		bpInfoModel: null,//pb情報
 		station: [],//駅
 		show: false
 	};
@@ -112,6 +112,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
+		alert(this.state.bpInfoModel)
 		const formData = new FormData()
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -159,17 +160,13 @@ class employee extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
 			myNumber: this.state.myNumber,//マイナンバー
-			residentCardInfo: $("#residentCardInfo").val(),//在留カード
-			resumeInfo1: $("#residentCardInfo").val(),//履歴書
 			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
-			resumeInfo2: $("#residentCardInfo").val(),//履歴書2
 			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
-			passportInfo: this.state.passportInfo,//パスポート
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
-			pbInfo: this.state.pbInfo//pb情報
+			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -246,7 +243,7 @@ class employee extends React.Component {
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
-			pbInfo: this.state.pbInfo,//pb情報
+			bpInfoModel: this.state.bpInfoModel,//pb情報
 
 		};
 		formData.append('emp', JSON.stringify(emp))
@@ -550,7 +547,7 @@ class employee extends React.Component {
 			$('#bankInfo').prop('disabled', true);
 			$('#subCost').prop('disabled', true);
 			$('#passwordSet').prop('disabled', true);
-			$('#pbInfo').prop('disabled', false);
+			$('#bpInfoModel').prop('disabled', false);
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
@@ -560,7 +557,7 @@ class employee extends React.Component {
 			$('#bankInfo').prop('disabled', false);
 			$('#subCost').prop('disabled', false);
 			$('#passwordSet').prop('disabled', false);
-			$('#pbInfo').prop('disabled', true);
+			$('#bpInfoModel').prop('disabled', true);
 		}
 	}
 
@@ -600,8 +597,9 @@ class employee extends React.Component {
 	ポップアップpb情報の取得
  　　　*/
 	pbInfoGet = (pbInfoGetTokuro) => {
+		alert(pbInfoGetTokuro)
 		this.setState({
-			pbInfo: pbInfoGetTokuro,
+			bpInfoModel: pbInfoGetTokuro,
 			showPbInfoModal: false,
 		})
 		console.log(pbInfoGetTokuro);
@@ -616,7 +614,7 @@ class employee extends React.Component {
 			this.setState({ showSubCostModal: false })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: false })
-		} else if (kbn === "pbInfo") {//pb情報
+		} else if (kbn === "bpInfoModel") {//pb情報
 			this.setState({ showPbInfoModal: false })
 		}
 	}
@@ -631,7 +629,7 @@ class employee extends React.Component {
 			this.setState({ showSubCostModal: true })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: true })
-		} else if (kbn === "pbInfo") {//pb情報
+		} else if (kbn === "bpInfoModel") {//pb情報
 			this.setState({ showPbInfoModal: true })
 		}
 	}
@@ -880,7 +878,7 @@ class employee extends React.Component {
 			value: developement5Value,
 			onChange: this.onDevelopement5Change
 		};
-		const { accountInfo, subCostInfo, passwordSetInfo, pbInfo, actionType } = this.state;
+		const { accountInfo, subCostInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -917,18 +915,18 @@ class employee extends React.Component {
 
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "pbInfo")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">>
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">>
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PbInfo pbInfo={pbInfo} customer={this.state.customer} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+						<BpInfoModel bpInfoModel={bpInfoModel} customer={this.state.customer} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
 					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={detailDisabled ? false : true} >PW設定</Button>{' '}
-					<Button size="sm" id="pbInfo" onClick={this.handleShowModal.bind(this, "pbInfo")}>BP情報</Button>{' '}
+					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")}>BP情報</Button>{' '}
 					<div>
 						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
 						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />

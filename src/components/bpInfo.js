@@ -1,15 +1,15 @@
-import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , OverlayTrigger , Popover , Navbar} from 'react-bootstrap';
-import $, { isNumeric } from 'jquery';
+import React from 'react';
+import {Row , Form , Col , InputGroup , Button , FormControl } from 'react-bootstrap';
+import $ from 'jquery';
 import * as publicUtils from './utils/publicUtils.js';
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { registerLocale } from "react-datepicker"
-import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import DatePicker from "react-datepicker"
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-class pbInfo extends React.Component {
+class bpInfo extends React.Component {
     state = { 
 		bpSalesProgress:[],//営業状況
 		bpBelongCustomerCode:'',//選択中のBP所属
@@ -17,7 +17,7 @@ class pbInfo extends React.Component {
 		bpSalesProgressCode: '',//選択中の営業状況
         bpOtherCompanyAdmissionEndDate:'',//所属現場終年月
         bpRemark:'',//備考
-		pbInfo:'',//入力データ
+		bpInfo:'',//入力データ
 		actionType:'',//処理区分
      }
      constructor(props){
@@ -38,7 +38,7 @@ class pbInfo extends React.Component {
      */
     componentDidMount(){
 	    var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
-		var pbInfo = this.props.pbInfo;//父画面のパラメータ（画面既存諸費用情報）
+		var bpInfo = this.props.bpInfo;//父画面のパラメータ（画面既存諸費用情報）
 //営業状況リスト取得
 	    var bpSalesProgress = utils.getdropDown("getSalesProgress");
         for(let i = 1;i<bpSalesProgress.length ; i++){
@@ -50,28 +50,28 @@ class pbInfo extends React.Component {
              }else{
                  document.getElementById("pbInfoEmployeeName").innerHTML =  this.props.employeeFristName + this.props.employeeLastName;
                 }
-    if(!$.isEmptyObject(pbInfo)){
-		$("#bpBelongCustomerCode").val(pbInfo.bpBelongCustomerCode);
-        $("#bpUnitPrice").val(pbInfo.bpUnitPrice);
-		$("#bpSalesProgressCode").val(pbInfo.bpSalesProgressCode);
+    if(!$.isEmptyObject(bpInfo)){
+		$("#bpBelongCustomerCode").val(bpInfo.bpBelongCustomerCode);
+        $("#bpUnitPrice").val(bpInfo.bpUnitPrice);
+		$("#bpSalesProgressCode").val(bpInfo.bpSalesProgressCode);
 		 this.setState({
-            bpOtherCompanyAdmissionEndDate:utils.converToLocalTime(pbInfo.bpOtherCompanyAdmissionEndDate,false),
+            bpOtherCompanyAdmissionEndDate:utils.converToLocalTime(bpInfo.bpOtherCompanyAdmissionEndDate,false),
         })
 
-		$("#bpRemark").val(pbInfo.bpRemark);
+		$("#bpRemark").val(bpInfo.bpRemark);
 		}    
 	}
     /**
  	* 登録ボタン
      */
     pbInfoTokuro=()=>{
-			var pbInfo = {};
-          	pbInfo["bpBelongCustomerCode"] = $("#bpBelongCustomerCode").val();
-            pbInfo["bpUnitPrice"] = $("#bpUnitPrice").val();
-            pbInfo["bpSalesProgressCode"] = $("#bpSalesProgressCode").val();
-            pbInfo["bpOtherCompanyAdmissionEndDate"] = utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate,false);
-            pbInfo["bpRemark"] = $("#bpRemark").val();
-            this.props.pbInfoTokuro(pbInfo);
+			var bpInfoModel = {};
+          	bpInfoModel["bpBelongCustomerCode"] = $("#bpBelongCustomerCode").val();
+            bpInfoModel["bpUnitPrice"] = $("#bpUnitPrice").val();
+            bpInfoModel["bpSalesProgressCode"] = $("#bpSalesProgressCode").val();
+            bpInfoModel["bpOtherCompanyAdmissionEndDate"] = utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate,false);
+            bpInfoModel["bpRemark"] = $("#bpRemark").val();
+            this.props.pbInfoTokuro(bpInfoModel);
 	}
 	reset=()=>{
 	  $("#bpBelongCustomerCode").val("");
@@ -177,7 +177,7 @@ class pbInfo extends React.Component {
                     <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroup-sizing-sm">備考{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}</InputGroup.Text>
+                                <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
                                 <FormControl id="bpRemark" placeholder="例：XXXXX" name="bpRemark" type="text" aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
                         	</InputGroup.Prepend>
                         </InputGroup>                       
@@ -202,4 +202,4 @@ class pbInfo extends React.Component {
     }
 }
 
-export default pbInfo;
+export default bpInfo;
