@@ -50,7 +50,6 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
-
 		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
@@ -112,7 +111,6 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-		alert(this.state.bpInfoModel)
 		const formData = new FormData()
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -140,7 +138,7 @@ class employee extends React.Component {
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: 1,//権限
+			authorityCode: $('input:radio[name="employeeType"]:checked').val()==="0"?$("#authorityCodeId").val():"0",//権限
 			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
