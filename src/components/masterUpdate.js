@@ -182,14 +182,13 @@ class masterUpdate extends Component {
 								<Autocomplete
 									id="master"
 									name="master"
-
+									value={master}
 									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									clearOnBlur
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
 											<input placeholder="マスター名" type="text" {...params.inputProps}
-																				value={"master"}
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
