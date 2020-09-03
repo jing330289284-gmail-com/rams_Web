@@ -278,8 +278,34 @@ body {
     height: 49px;
     line-height: 39px;
 }
+
 .react-bs-table-tool-bar 
  {
     display: none;
 }
- 
+
+.dutyRegistration-DataTable .table td {
+	padding: 5px 5px 5px 5px;
+}
+.dutyRegistration-DataTableTh {
+	background-color: #4eacfe;
+}
+.dutyRegistration-DataTableTd {
+	/*padding: 5px 5px 5px 5px;*/
+}
+.dutyRegistration-DataTableRow {
+    line-height: 20px;
+}
+.dutyRegistration-DataTableSleep {
+	background-color: #b6b2b2;
+	color: red;
+}
+.dutyRegistration-DataTableEditingCell input {
+    height: 20px;
+	padding: 1px 1px 1px 4px;
+} 
+.dutyRegistration-DataTableEditingCell select {
+    height: 20px;
+	padding: 0px 0px 0px 0px;
+	font-size: 14px;
+} 
