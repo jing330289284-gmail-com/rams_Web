@@ -50,7 +50,7 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
-		
+
 		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
@@ -315,7 +315,7 @@ class employee extends React.Component {
 	}
 
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation","getCustomer"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -814,10 +814,44 @@ class employee extends React.Component {
 		}
 	}
 
+	//　　郵便番号検索API
+	valueChangepostcode =(event)  => {
+		  var postcode = document.getElementById("postcode").value;
+		//alert(postcode);
+		if (postcode !== undefined && postcode !== null && postcode !== "") {
+				alert()
+			//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
+			 axios.post("https://zipcloud.ibsnet.co.jp/api/search?zipcode=1360072")
+				.then(response => {
+					alert(response)
+					if (response.data != null) {
+						alert(response.data);
+						/*this.setState({
+							firstHalfAddress: response.data.results.address1,
+							lastHalfAddress: ""
+						});*/
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		} else {
+								alert(1)
+
+			this.setState({
+				firstHalfAddress: "",
+				lastHalfAddress: ""
+			});
+		}
+
+
+	};
+
+
+
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode1, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled
 		} = this.state;
@@ -1284,7 +1318,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off"　disabled={detailDisabled ? false : true}>
+									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" disabled={detailDisabled ? false : true}>
 										{this.state.siteMaster.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1392,8 +1426,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode1} autoComplete="off" onChange={this.valueChange} size="sm" name="postcode1" id="postcode1" maxlength="3" disabled={detailDisabled ? false : true} />―
-									<FormControl value={postcode2} autoComplete="off" onChange={this.valueChange} size="sm" name="postcode2" id="postcode2" maxlength="4" disabled={detailDisabled ? false : true} />
+									<FormControl value={postcode} autoComplete="off" onChange={this.valueChangepostcode} size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />―
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1418,21 +1451,21 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="nearestStationNo"
-											name="nearestStationNo"
-											value={nearestStation}
-											options={this.state.station}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="最寄駅" type="text" {...params.inputProps}
-														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
-									</InputGroup>
+									</InputGroup.Prepend>
+									<Autocomplete
+										id="nearestStationNo"
+										name="nearestStationNo"
+										value={nearestStation}
+										options={this.state.station}
+										getOptionLabel={(option) => option.name}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="最寄駅" type="text" {...params.inputProps}
+													style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
+									/>
+								</InputGroup>
 							</Col>
 						</Row>
 					</Form.Group>
