@@ -17,7 +17,7 @@ import MyToast from './myToast';
 
 
 registerLocale("ja", ja);
-class employeeSearch extends React.Component {
+class dutyManagement extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
@@ -31,152 +31,10 @@ class employeeSearch extends React.Component {
 			[event.target.name]: event.target.value
 		})
 	}
-
-	//reset
-	resetBook = () => {
-		this.setState(() => this.resetStates);
-	};
-
 	//初期化データ
 	initialState = {
-		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
-		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
-		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', employeeList: [],
+		employeeNo:'',employeeName:'', customerName:'', stationName:'', payOffRange:'', workTime:'', workTotalTimeHaveData:'', employeeWorkTimeHaveData:'', updateTime:'',status:'',employeeList: [],
 	};
-	//リセット　reset
-	resetStates = {
-		employeeNo: '', employeeFristName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
-		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
-		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
-		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', value: '', suggestions: [],
-	};
-	//開発言語　開始
-	onDevelopement1Change = (event, { newValue }) => {
-		this.setState({
-			developement1Value: newValue
-		});
-	};
-
-	onDevelopement2Change = (event, { newValue }) => {
-		this.setState({
-			developement2Value: newValue
-		});
-	};
-
-	onDevelopement3Change = (event, { newValue }) => {
-		this.setState({
-			developement3Value: newValue
-		});
-	};
-
-	onDlt1SuggestionsFetchRequested = ({ value }) => {
-		const emp = {
-			developmentLanguageNo1: value
-		};
-		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						developement1Suggestions: publicUtils.getSuggestions(value, response.data)
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
-	};
-
-	onDlt1SuggestionsClearRequested = () => {
-		this.setState({
-			developement1Suggestions: []
-		});
-	};
-
-	onDlt1SuggestionSelected = (event, { suggestion }) => {
-		this.setState({
-			developement1Value: suggestion.name
-		});
-	};
-
-	onDlt2SuggestionsFetchRequested = ({ value }) => {
-		const emp = {
-			developmentLanguageNo2: value
-		};
-		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						developement2Suggestions: publicUtils.getSuggestions(value, response.data)
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
-	};
-
-	onDlt3SuggestionsFetchRequested = ({ value }) => {
-		const emp = {
-			developmentLanguageNo3: value
-		};
-		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						developement3Suggestions: publicUtils.getSuggestions(value, response.data)
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
-	};
-
-	onDlt2SuggestionsClearRequested = () => {
-		this.setState({
-			developement2Suggestions: []
-		});
-	};
-
-	onDlt3SuggestionsClearRequested = () => {
-		this.setState({
-			developement3Suggestions: []
-		});
-	};
-
-	onDlt2SuggestionSelected = (event, { suggestion }) => {
-		this.setState({
-			developement2Value: suggestion.name
-		});
-	};
-
-	onDlt3SuggestionSelected = (event, { suggestion }) => {
-		this.setState({
-			developement3Value: suggestion.name
-		});
-	};
-	//開発言語　終了
-
-	//初期化メソッド
-	componentDidMount() {
-		this.getDropDownｓ();//全部のドロップダウン
-		this.clickButtonDisabled();
-	}
-	//全部のドロップダウン
-	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				genderStatuss: data[0],//　性別区別
-				intoCompanyCodes: data[1],//　入社区分 
-				employeeFormCodes: data[2],//　 社員形式 
-				siteMaster: data[3],//　　役割
-				employeeStatuss: data[4],//　 employeesステータス
-				japaneaseLevelCodes: data[5],//　日本語  
-				residenceCodes: data[6],//　在留資格
-				nationalityCodes: data[7]//　 出身地国
-			}
-		);
-	};
-
 	//初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
 		$('button[name="clickButton"]').prop('disabled', true);
@@ -186,24 +44,15 @@ class employeeSearch extends React.Component {
 	searchEmployee = () => {
 		const emp = {
 			employeeNo: this.state.employeeNo,
-			employeeFristName: this.state.employeeFristName,
-			employeeFormCode: this.state.employeeFormCode,
-			employeeStatus: this.state.employeeStatus,
-			genderStatus: this.state.genderStatus,
-			ageFrom: publicUtils.birthday_age(this.state.ageFrom),
-			ageTo: publicUtils.birthday_age(this.state.ageTo),
-			residenceCode: this.state.residenceCode,
-			nationalityCode: this.state.nationalityCode,
-			customer: this.state.customer,
-			intoCompanyCode: this.state.intoCompanyCode,
-			japaneaseLeveCode: this.state.japaneaseLeveCode,
-			siteRoleCode: this.state.siteRoleCode,
-			developLanguage1: this.state.developement1Value,
-			developLanguage2: this.state.developement2Value,
-			developLanguage3: this.state.developement3Value,
-			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
-			kadou: this.state.kadou,
+			employeeName: this.state.employeeName,
+			customerName: this.state.customerName,
+			stationName: this.state.stationName,
+			payOffRange: this.state.payOffRange,
+			workTime: this.state.workTime,
+			workTotalTimeHaveData: this.state.workTotalTimeHaveData,
+			employeeWorkTimeHaveData: this.state.employeeWorkTimeHaveData,
+			updateTime: this.state.updateTime,
+			status: this.state.status,
 		};
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 			.then(response => {
@@ -217,70 +66,17 @@ class employeeSearch extends React.Component {
 	}
 
 	state = {
-		intoCompanyYearAndMonthFrom: new Date(),
-		intoCompanyYearAndMonthTo: new Date()
+		yearAndMonth: new Date()
 	};
 
 	//　入社年月form
-	inactiveintoCompanyYearAndMonthFrom = (date) => {
+	inactiveYearAndMonth = (date) => {
 		this.setState(
 			{
-				intoCompanyYearAndMonthFrom: date
+				yearAndMonth: date
 			}
 		);
 	};
-	//　入社年月To
-	inactiveintoCompanyYearAndMonthTo = (date) => {
-		this.setState(
-			{
-				intoCompanyYearAndMonthTo: date
-			}
-		);
-	};
-	employeeDelete = () => {
-		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-		var a = window.confirm("削除していただきますか？");
-		if (a) {
-			$("#deleteBtn").click();
-		}
-	}
-	//隠した削除ボタン
-	createCustomDeleteButton = (onClick) => {
-		return (
-			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
-		);
-	}
-	//隠した削除ボタンの実装
-	onDeleteRow = (rows) => {
-		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
-		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
-			.then(result => {
-				if (result.data) {
-					this.searchEmployee();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
-				} else {
-					this.setState({ "show": false });
-				}
-			})
-			.catch(function(error) {
-				alert("删除错误，请检查程序");
-			});
-	}
-	//　　削除前のデフォルトお知らせの削除
-	customConfirm(next, dropRowKeys) {
-		const dropRowKeysStr = dropRowKeys.join(',');
-		next();
-	}
-
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
@@ -316,32 +112,8 @@ class employeeSearch extends React.Component {
 	}
 
 	render() {
-		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
-			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList } = this.state;
-		const {
-			developement1Value,
-			developement1Suggestions,
-			developement2Value,
-			developement2Suggestions,
-			developement3Value,
-			developement3Suggestions
-		} = this.state;
-		const dlt1InputProps = {
-			placeholder: "開発言語1",
-			value: developement1Value,
-			onChange: this.onDevelopement1Change
-		};
-		const dlt2InputProps = {
-			placeholder: "開発言語2",
-			value: developement2Value,
-			onChange: this.onDevelopement2Change
-		};
-		const dlt3InputProps = {
-			placeholder: "開発言語3",
-			value: developement3Value,
-			onChange: this.onDevelopement3Change
-		};
-
+		const {employeeNo, employeeName, customerName, stationName, payOffRange, workTime, workTotalTimeHaveData,
+			employeeWorkTimeHaveData, updateTime, status,employeeList} = this.state;
 		//テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -370,30 +142,18 @@ class employeeSearch extends React.Component {
 		};
 
 		return (
-			<div >
+			<div>
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
-				<div style={{ "display": this.state.show ? "block" : "none" }}>
-					<MyToast show={this.state.show} message={"削除成功！"} type={"danger"} />
-				</div>
 				<Form >
-					<div >
+					<div>
 						<Form.Group>
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
-												selected={this.state.intoCompanyYearAndMonthFrom}
-												onChange={this.inactiveintoCompanyYearAndMonthFrom}
-												locale="ja"
-												dateFormat="yyyy/MM"
-												showMonthYearPicker
-												showFullMonthYearPicker
-												id="datePicker"
-												className="form-control form-control-sm"
-											/>～<DatePicker
-												selected={this.state.intoCompanyYearAndMonthTo}
-												onChange={this.inactiveintoCompanyYearAndMonthTo}
+												selected={this.state.yearAndMonth}
+												onChange={this.inactiveYearAndMonth}
 												locale="ja"
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
@@ -409,7 +169,7 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">時間登録ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
+										<Form.Control as="select" size="sm" onChange={this.valueChange} name="status" value={status} autoComplete="off" >
 											<option value="0">すべて</option>
 											<option value="1">未</option>
 											<option value="2">済み</option>
@@ -418,39 +178,32 @@ class employeeSearch extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
+								<Col sm={3}>
+									<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
+										<FontAwesomeIcon icon={faSearch} /> 検索
+				                    </Button>{' '}
+								</Col>
 							</Row>
 						</Form.Group>
 					</div>
 				</Form>
-				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
-						<FontAwesomeIcon icon={faSearch} /> 検索
-                        </Button>{' '}
-					<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
-					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
-						<FontAwesomeIcon icon={faUndo} /> Reset
-                        </Button>
-				</div>
-
-				<div>
-
-				</div>
 				<div >
 					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
 						<TableHeaderColumn width='95'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeFristName'>社員名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='furigana'>カタカナ</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='age' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='phoneNo'>電話番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='nearestStation'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>所属お客様</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='workTotalTimeHaveData'>アップロード</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeWorkTimeHaveData'>登録済み</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='status'>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
 		);
 	}
 }
-export default employeeSearch;
+export default dutyManagement;
