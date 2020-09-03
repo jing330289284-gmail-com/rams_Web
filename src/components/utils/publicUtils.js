@@ -1,4 +1,5 @@
 const $ = require('jquery');
+const axios = require('axios');
 
 
 //　 時間段を取得
@@ -100,17 +101,17 @@ export function getPublicDropDownRtBtSpTleOnly(methodArray) {
 			type: "POST",
 			url: "http://127.0.0.1:8080/" + methodArray[i],
 			async: false,
-			success: function (msg) {
+			success: function(msg) {
 				var array = [{ value: '', text: '選択ください' }];
-					for (var k in msg) {
-					    var arrayDetail1 = { value: '', text:''}
-						if(msg[k].code!==null){
-							arrayDetail1 = { value: msg[k].code, text:msg[k].name}
-						}else{
-							arrayDetail1 = { value: msg[k].value, text:msg[k].label}
-						}
-						array.push(arrayDetail1)
+				for (var k in msg) {
+					var arrayDetail1 = { value: '', text: '' }
+					if (msg[k].code !== null) {
+						arrayDetail1 = { value: msg[k].code, text: msg[k].name }
+					} else {
+						arrayDetail1 = { value: msg[k].value, text: msg[k].label }
 					}
+					array.push(arrayDetail1)
+				}
 				outArray.push(array);
 			}
 		});
@@ -241,12 +242,13 @@ export function strToTime(datetime) {
 
 //誕生日ー年齢計算
 export function birthday_age(age) {
-	if(age !== undefined && age !== null && age !== ""){
-	var date = new Date();
-	var year = date.getFullYear();
-	var month = date.getMonth() + 1;
-	var day = date.getDate();
-	var value = (year-age) + '' + (month < 10 ? '0' + month : month)+ '' +(day < 10 ? '0' + day : day);}
+	if (age !== undefined && age !== null && age !== "") {
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		var value = (year - age) + '' + (month < 10 ? '0' + month : month) + '' + (day < 10 ? '0' + day : day);
+	}
 	return value;
 }
 /**
@@ -263,40 +265,81 @@ export function labelGetValue(name, list) {
 	}
 }
 
-	//Download 方法
-	// param resumeInfo  備考：resumeInfoのフォーマットは下記です
-	// src/main/resources/file/LYC078_姜下載/姜下載_履歴書1.xlsx
-	export function  handleDownload (resumeInfo)  {
-		console.log(resumeInfo);
-		//src/main/resources/file/
-		var resumeInfos= new Array();
-		resumeInfos=resumeInfo.split("/"); 
-		var pathInfo =resumeInfos.slice(-3);
-		var strPath= pathInfo.join('/');
-		console.log(resumeInfos);
-		var xhr = new XMLHttpRequest();
-        xhr.open('post', 'http://127.0.0.1:8080/download', true);
-		xhr.responseType = 'blob';
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-        xhr.onload = function () {
-            if (this.status === 200) {
-				var blob = this.response;
-				if(blob.size===0){
-					alert('no resume');
-				}else{
-					var a = document.createElement('a');
-					var url = window.URL.createObjectURL(blob);
-					a.href = url;
-					//设置文件名称
-					a.download = resumeInfos[5];
-					a.click();
-					a.remove();
-				}
-
-            }
-        }
-         xhr.send(JSON.stringify({
-           "name" : strPath,
-        }));
-
+//Download 方法
+// param resumeInfo  備考：resumeInfoのフォーマットは下記です
+// src/main/resources/file/LYC078_姜下載/姜下載_履歴書1.xlsx
+export function handleDownload(resumeInfo) {
+	console.log(resumeInfo);
+	//src/main/resources/file/
+	var resumeInfos = new Array();
+	resumeInfos = resumeInfo.split("/");
+	var pathInfo = resumeInfos.slice(-3);
+	var strPath = pathInfo.join('/');
+	console.log(resumeInfos);
+	var xhr = new XMLHttpRequest();
+	xhr.open('post', 'http://127.0.0.1:8080/download', true);
+	xhr.responseType = 'blob';
+	xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+	xhr.onload = function() {
+		if (this.status === 200) {
+			var blob = this.response;
+			if (blob.size === 0) {
+				alert('no resume');
+			} else {
+				var a = document.createElement('a');
+				var url = window.URL.createObjectURL(blob);
+				a.href = url;
+				//设置文件名称
+				a.download = resumeInfos[5];
+				a.click();
+				a.remove();
+			}
+		}
 	}
+	xhr.send(JSON.stringify({
+		"name": strPath,
+	}));
+
+}
+
+/**
+//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
+* 郵便番号のApi
+*/
+export async function postcodeApi() {
+	var postcode = document.getElementById("postcode").value;
+	if (postcode !== undefined && postcode !== null && postcode !== "") {
+		await axios.post("/postcodeApi/search?zipcode="+postcode)
+			.then(function(result) {
+				if(result.data.status===200){
+					$("#firstHalfAddress").val(result.data.results[0].address1+result.data.results[0].address2+result.data.results[0].address3);
+				}else{
+					alert("必須パラメータが指定されていません。")//一時的な情報、後で修正します。
+				}
+					
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	} else {
+	}
+}
+
+//　　年齢と和暦
+export async function calApi(date) {
+    var birthDayTime = date.getTime();
+    var nowTime = new Date().getTime();
+    $("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
+    //http://ap.hutime.org/cal/ 西暦と和暦の変換
+    const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();　　　　
+    await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function (result) {
+      console.log(result.data);
+      if (result.data != null) {
+        $("#japaneseCalendar").val(result.data);
+      }
+    }).catch((error) => {
+      console.error("Error - " + error);
+    });
+ 
+};
+
+	
