@@ -266,39 +266,41 @@ export function labelGetValue(name, list) {
 }
 
 //Download 方法
-// param resumeInfo  備考：resumeInfoのフォーマットは下記です
+// param path  備考：ファイルのフォーマットは下記です
 // src/main/resources/file/LYC078_姜下載/姜下載_履歴書1.xlsx
-export function handleDownload(resumeInfo) {
-	console.log(resumeInfo);
-	//src/main/resources/file/
-	var resumeInfos = new Array();
-	resumeInfos = resumeInfo.split("/");
-	var pathInfo = resumeInfos.slice(-3);
-	var strPath = pathInfo.join('/');
-	console.log(resumeInfos);
-	var xhr = new XMLHttpRequest();
-	xhr.open('post', 'http://127.0.0.1:8080/download', true);
-	xhr.responseType = 'blob';
-	xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-	xhr.onload = function() {
-		if (this.status === 200) {
-			var blob = this.response;
-			if (blob.size === 0) {
-				alert('no resume');
-			} else {
-				var a = document.createElement('a');
-				var url = window.URL.createObjectURL(blob);
-				a.href = url;
-				//设置文件名称
-				a.download = resumeInfos[5];
-				a.click();
-				a.remove();
+export function handleDownload(path) {
+	if (path !== undefined && path !== null && path !== "") {
+		console.log(path);
+		//src/main/resources/file/
+		var NewPath = new Array();
+		NewPath = path.split("/");
+		var pathInfo = NewPath.slice(-3);
+		var strPath = pathInfo.join('/');
+		console.log(NewPath);
+		var xhr = new XMLHttpRequest();
+		xhr.open('post', 'http://127.0.0.1:8080/download', true);
+		xhr.responseType = 'blob';
+		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+		xhr.onload = function() {
+			if (this.status === 200) {
+				var blob = this.response;
+				if (blob.size === 0) {
+					alert('no resume');
+				} else {
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					//设置文件名称
+					a.download = NewPath[5];
+					a.click();
+					a.remove();
+				}
 			}
 		}
+		xhr.send(JSON.stringify({
+			"name": strPath,
+		}));
 	}
-	xhr.send(JSON.stringify({
-		"name": strPath,
-	}));
 
 }
 
@@ -309,14 +311,14 @@ export function handleDownload(resumeInfo) {
 export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
-		await axios.post("/postcodeApi/search?zipcode="+postcode)
+		await axios.post("/postcodeApi/search?zipcode=" + postcode)
 			.then(function(result) {
-				if(result.data.status===200){
-					$("#firstHalfAddress").val(result.data.results[0].address1+result.data.results[0].address2+result.data.results[0].address3);
-				}else{
+				if (result.data.status === 200) {
+					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
+				} else {
 					alert("必須パラメータが指定されていません。")//一時的な情報、後で修正します。
 				}
-					
+
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -326,20 +328,20 @@ export async function postcodeApi() {
 
 //　　年齢と和暦
 export async function calApi(date) {
-    var birthDayTime = date.getTime();
-    var nowTime = new Date().getTime();
-    $("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
-    //http://ap.hutime.org/cal/ 西暦と和暦の変換
-    const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();　　　　
-    await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function (result) {
-      console.log(result.data);
-      if (result.data != null) {
-        $("#japaneseCalendar").val(result.data);
-      }
-    }).catch((error) => {
-      console.error("Error - " + error);
-    });
- 
+	var birthDayTime = date.getTime();
+	var nowTime = new Date().getTime();
+	$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
+	//http://ap.hutime.org/cal/ 西暦と和暦の変換
+	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function(result) {
+		console.log(result.data);
+		if (result.data != null) {
+			$("#japaneseCalendar").val(result.data);
+		}
+	}).catch((error) => {
+		console.error("Error - " + error);
+	});
+
 };
 
-	
+
