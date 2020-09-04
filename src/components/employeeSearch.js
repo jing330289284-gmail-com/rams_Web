@@ -653,7 +653,7 @@ class employeeSearch extends React.Component {
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
-						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>履歴書2</TableHeaderColumn>
+						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
