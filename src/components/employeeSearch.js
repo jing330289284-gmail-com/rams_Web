@@ -639,7 +639,7 @@ class employeeSearch extends React.Component {
 						</Col>
 					</Row>
 				</div>
-				<div >
+				<div >   
 					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#B1F9D0' }} striped hover condensed >
 						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
