@@ -1,12 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router } from "react-router-dom";
-import Main from './components/mainIn'
+import { BrowserRouter as Router , Route} from "react-router-dom";
+import Main from './components/mainIn';
+import Login2 from './components/login2';
+import PasswordReset from './components/passwordReset';
 
 function App() {
 	return (
 		<Router>
 			<div style={{ "backgroundColor": "#f5f5f5" }}>
 				<Main/>
+				<Route exact path="/login2" component={Login2} />
+				<Route exact path="/passwordReset" component={PasswordReset} />
 			</div>
 		</Router>
 

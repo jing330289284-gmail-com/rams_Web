@@ -34,7 +34,13 @@ html,
 .form-signin {
   width: 100%;
   max-width: 330px;
-  padding: 15px;
+  padding: 5px;
+  margin: auto;
+}
+.passwordForm {
+  width: 100%;
+  max-width: 630px;
+  padding: -1px;
   margin: auto;
 }
 .form-signin .form-control {
