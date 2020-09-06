@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -30,6 +30,8 @@ class siteSearch extends Component {
 		developLanguageMaster: [], // 開発言語
 		getstations: [], // 場所
 		typeOfIndustryMaster: [], // 業種
+		employeeStatuss: [], // 社員区分
+		customer:''
 	};
 
 	onchange = event => {
@@ -69,7 +71,7 @@ class siteSearch extends Component {
 	};
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry"]
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployee"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -80,6 +82,8 @@ class siteSearch extends Component {
 				topCustomerMaster: data[4].slice(1),//トップお客様
 				developLanguageMaster: data[5].slice(1),//開発言語
 				typeOfIndustryMaster: data[6].slice(1),//業種
+				employeeStatuss: data[7],// 社員区分
+
 			}
 		);
 	};
@@ -136,13 +140,16 @@ class siteSearch extends Component {
 	}
 	render() {
 		this.options = {
-			sizePerPage: 5,
-			pageStartIndex: 1,
-			paginationSize: 2,
-			prePage: '<<',
-			nextPage: '>>',
-			hideSizePerPage: true,
-			alwaysShowAllBtns: true,
+			page: 1,  // which page you want to show as default
+			sizePerPage: 5,  // which size per page you want to locate as default
+			pageStartIndex: 1, // where to start counting the pages
+			paginationSize: 3,  // the pagination bar size.
+			prePage: 'まえ', // Previous page button text
+			nextPage: 'つぎ', // Next page button text
+			firstPage: '最初', // First page button text
+			lastPage: '最後', // Last page button text
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
+			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
 		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, customer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod } = this.state;
 		//テーブルの列の選択
@@ -182,13 +189,14 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員ステータス</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="employeeStatus" name="employeeStatus" value={employeeStatus}
-											onChange={this.onchange}>
-											<option>選択してくだいさい</option>
-											<option value="0">社員</option>
-											<option value="1">協力</option>
+										<Form.Control as="select" size="sm" onChange={this.onchange} name="employeeStatus" value={employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
@@ -230,7 +238,6 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											value={customer}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (

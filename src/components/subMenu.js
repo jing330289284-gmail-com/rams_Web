@@ -22,6 +22,7 @@ import BreakTime from './breakTime';
 import axios from 'axios';
 import $ from 'jquery';
 import salesSendLetter from './salesSendLetter';
+import dutyManagement from './dutyManagement';
 axios.defaults.withCredentials=true;
 
 class SubMenu extends Component {
@@ -163,7 +164,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
 									<Accordion.Collapse eventKey="5">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />勤務管理</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyManagement"><img alt="title" src={open} />勤務管理</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />残業代一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
@@ -213,6 +214,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
+								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />

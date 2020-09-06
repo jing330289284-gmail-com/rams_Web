@@ -15,11 +15,10 @@ import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
-import Select from 'react-select';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials=true;
 
 
 class employee extends React.Component {
@@ -50,7 +49,6 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
-
 		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
 		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
 		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
@@ -91,8 +89,7 @@ class employee extends React.Component {
 		certification1: "",//　　資格1
 		certification2: "",//　　資格2
 		siteRoleCode: "",//役割
-		postcode1: "",//　　郵便番号1
-		postcode2: "",//　　郵便番号2
+		postcode: "",//　　郵便番号1
 		firstHalfAddress: "",
 		lastHalfAddress: "",
 		nearestStation: "",
@@ -112,7 +109,6 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = () => {
-		alert(this.state.bpInfoModel)
 		const formData = new FormData()
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -140,13 +136,13 @@ class employee extends React.Component {
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: 1,//権限
+			authorityCode: $('input:radio[name="employeeType"]:checked').val()==="0"?$("#authorityCodeId").val():"0",//権限
 			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
 			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode1 + this.state.postcode2,//郵便番号
+			postcode: this.state.postcode + this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			nearestStation: this.state.nearestStation,
@@ -223,7 +219,7 @@ class employee extends React.Component {
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
 			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode1 + this.state.postcode2,//郵便番号
+			postcode: this.state.postcode + this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			nearestStation: this.state.nearestStation,
@@ -389,7 +385,7 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					//postcode1: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
+					//postcode: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
 					//postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
@@ -450,24 +446,10 @@ class employee extends React.Component {
 	//　　年齢と和暦
 	inactiveBirthday = date => {
 		if (date !== undefined && date !== null && date !== "") {
-			var birthDayTime = date.getTime();
-			var nowTime = new Date().getTime();
+			publicUtils.calApi(date);
 			this.setState({
-				temporary_age: Math.ceil((nowTime - birthDayTime) / 31536000000),
 				birthday: date
 			});
-			//http://ap.hutime.org/cal/ 西暦と和暦の変換
-			const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-			axios.get("http://ap.hutime.org/cal/?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1")
-				.then(response => {
-					if (response.data != null) {
-						this.setState({
-							japaneseCalendar: response.data
-						});
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
 		} else {
 			this.setState({
 				temporary_age: "0",
@@ -475,8 +457,6 @@ class employee extends React.Component {
 				japaneseCalendar: ""
 			});
 		}
-
-
 	};
 	//　　卒業年月
 	inactiveGraduationYearAndMonth = date => {
@@ -812,40 +792,6 @@ class employee extends React.Component {
 		}
 	}
 
-	//　　郵便番号検索API
-	valueChangepostcode =(event)  => {
-		  var postcode = document.getElementById("postcode").value;
-		//alert(postcode);
-		if (postcode !== undefined && postcode !== null && postcode !== "") {
-				alert()
-			//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
-			 axios.post("https://zipcloud.ibsnet.co.jp/api/search?zipcode=1360072")
-				.then(response => {
-					alert(response)
-					if (response.data != null) {
-						alert(response.data);
-						/*this.setState({
-							firstHalfAddress: response.data.results.address1,
-							lastHalfAddress: ""
-						});*/
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
-		} else {
-								alert(1)
-
-			this.setState({
-				firstHalfAddress: "",
-				lastHalfAddress: ""
-			});
-		}
-
-
-	};
-
-
-
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1003,7 +949,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
+									<FormControl placeholder="0" id="temporary_age"  value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -1014,7 +960,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="和暦" value={japaneseCalendar} autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" readOnly />
+									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" readOnly />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1424,7 +1370,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode} autoComplete="off" onChange={this.valueChangepostcode} size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />―
+									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1434,7 +1380,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled={detailDisabled ? false : true} />
+									<FormControl value={firstHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
