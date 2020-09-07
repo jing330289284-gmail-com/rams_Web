@@ -14,6 +14,7 @@ import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@
 import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
 import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 
 
 registerLocale("ja", ja);
@@ -23,7 +24,6 @@ class employeeSearch extends React.Component {
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
-
 	};
 	//onchange
 	valueChange = event => {
@@ -207,10 +207,11 @@ class employeeSearch extends React.Component {
 		};
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 			.then(response => {
-				if (response.data != null) {
-					this.setState({ employeeList: response.data })
+				if (response.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true,errorsMessageValue:response.data.errorsMessage});
+					/*setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);*/
 				} else {
-					alert("err")
+					this.setState({ employeeList: response.data.data,"errorsMessageShow": false })
 				}
 			}
 			);
@@ -254,6 +255,9 @@ class employeeSearch extends React.Component {
 	onDeleteRow = (rows) => {
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
+			resumeInfo1: this.state.resumeInfo1,
+			resumeInfo2: this.state.resumeInfo2,
+			residentCardInfo: this.state.residentCardInfo,
 		};
 		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
 			.then(result => {
@@ -265,10 +269,10 @@ class employeeSearch extends React.Component {
 							rowSelectEmployeeNo: ''
 						}
 					);
-					this.setState({ "show": true });
-					setTimeout(() => this.setState({ "show": false }), 3000);
+					this.setState({ "ｍyToastShow": true });
+					setTimeout(() => this.setState({ "ｍyToastShow": false }), 3000);
 				} else {
-					this.setState({ "show": false });
+					this.setState({ "ｍyToastShow": false });
 				}
 			})
 			.catch(function(error) {
@@ -292,7 +296,9 @@ class employeeSearch extends React.Component {
 					resumeInfo2: row.resumeInfo2,
 				}
 			);
-			$('button[name="clickButton"]').prop('disabled', false);
+			$('#resumeInfo1').prop('disabled', false);
+			$('#resumeInfo2').prop('disabled', false);
+			$('#residentCardInfo').prop('disabled', false);
 			$('#update').removeClass('disabled');
 			$('#detail').removeClass('disabled');
 			$('#delete').removeClass('disabled');
@@ -302,11 +308,12 @@ class employeeSearch extends React.Component {
 					rowSelectEmployeeNo: ''
 				}
 			);
-			$('button[name="clickButton"]').prop('disabled', true);
+			$('#resumeInfo1').prop('disabled', true);
+			$('#resumeInfo2').prop('disabled', true);
+			$('#residentCardInfo').prop('disabled', true);
 			$('#update').addClass('disabled');
 			$('#detail').addClass('disabled');
 			$('#delete').addClass('disabled');
-
 		}
 	}
 
@@ -320,7 +327,7 @@ class employeeSearch extends React.Component {
 
 	render() {
 		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
-			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList } = this.state;
+			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList,errorsMessageValue } = this.state;
 		const {
 			developement1Value,
 			developement1Suggestions,
@@ -375,8 +382,11 @@ class employeeSearch extends React.Component {
 		return (
 			<div >
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
-				<div style={{ "display": this.state.show ? "block" : "none" }}>
-					<MyToast show={this.state.show} message={"削除成功！"} type={"danger"} />
+				<div style={{ "display": this.state.ｍyToastShow ? "block" : "none" }}>
+					<MyToast ｍyToastShow={this.state.ｍyToastShow} message={"削除成功！"} type={"danger"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
 				<Form >
 					<div >
@@ -625,9 +635,9 @@ class employeeSearch extends React.Component {
 				<div>
 					<Row >
 						<Col sm={4}>
-							<Button size="sm" variant="info" name="clickButton" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 						</Col>
 						<Col sm={6}></Col>
 						<Col sm={2}>
@@ -639,7 +649,7 @@ class employeeSearch extends React.Component {
 						</Col>
 					</Row>
 				</div>
-				<div >   
+				<div >
 					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#B1F9D0' }} striped hover condensed >
 						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Toast} from 'react-bootstrap';
 
-export default class myToast extends Component {
+export default class errorsMessageToast extends Component {
     render() {
         const toastCss = {
             position: 'fixed',
@@ -12,8 +12,8 @@ export default class myToast extends Component {
         };
 
         return (
-            <div style={this.props.ｍyToastShow ? toastCss : null}>
-                <Toast className={`border text-white ${this.props.type === "success" ? "border-success bg-success" : "border-danger bg-danger"}`} ｍyToastShow={this.props.ｍyToastShow}>
+            <div style={this.props.errorsMessageShow ? toastCss : null}>
+                <Toast  errorsMessageShow={this.props.errorsMessageShow}>
                     <Toast.Body>
                         {this.props.message}
                     </Toast.Body>
