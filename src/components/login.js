@@ -3,9 +3,7 @@ import '../asserts/css/login.css';
 import title from '../asserts/images/title.png';
 import $ from 'jquery'
 import axios from 'axios';
-import SubMenu from './subMenu'
 import { Row,  Col , Form , Button , InputGroup , FormControl} from 'react-bootstrap';
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 axios.defaults.withCredentials=true;
 
 class Login extends Component {
@@ -112,7 +110,6 @@ class Login extends Component {
 				</Row>
 			<Form className="form-signin" id="loginForm">
 				<Form.Group controlId="formBasicEmail" >
-					{/* <img className="mb-4" alt="title" src={title}/> */}
 					<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required/>
 					<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} required/>
 				</Form.Group>

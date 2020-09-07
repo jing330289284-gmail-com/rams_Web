@@ -29,8 +29,8 @@ class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日
 	}
-	componentWillMount(){
-		axios.post("http://127.0.0.1:8080/subMenu/init")
+	async componentWillMount(){
+		await axios.post("http://127.0.0.1:8080/subMenu/init")
 		.then(resultMap =>{
 			if(resultMap.data !== null && resultMap.data !== ''){
 				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
