@@ -10,15 +10,20 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faEnvelope, faIdCard, faBuilding, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
-axios.defaults.withCredentials=true;
+import TableSelect from './TableSelect';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+axios.defaults.withCredentials = true;
+
 
 class manageSituation extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 	}
+
 	//初期化
 	initialState = {
+		rowNo: '',// 明細番号
 		employeeNo: '',// 社員NO
 		yearMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2))).getTime(),
 		interviewDate1Show: '',　// 面接1日付
@@ -43,7 +48,7 @@ class manageSituation extends React.Component {
 		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
 		salesYearAndMonth: new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
-		updateUser: sessionStorage.getItem('employeeName'),//更新者
+		// updateUser: sessionStorage.getItem('employeeName'),//更新者
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
 		salesStaff: '',// 営業担当
@@ -54,11 +59,11 @@ class manageSituation extends React.Component {
 		totalPersons: '',// 合計人数
 		decidedPersons: '',// 確定人数
 		linkDisableFlag: true,// linkDisableFlag
-		admissionStartDate:'', // record開始時間
-		customerNo:'', // 該当レコードおきゃくNO
-		unitPrice:'', // 該当レコード単価
-		resumeInfo1:'',	
-		resumeInfo2:'',
+		admissionStartDate: '', // record開始時間
+		customerNo: '', // 該当レコードおきゃくNO
+		unitPrice: '', // 該当レコード単価
+		resumeInfo1: '',
+		resumeInfo2: '',
 	};
 
 	// 初期表示のレコードを取る
@@ -111,7 +116,7 @@ class manageSituation extends React.Component {
 					alert("FAIL");
 				}
 			})
-			.catch(function (error) {
+			.catch(function(error) {
 				alert("ERR");
 			});
 	}
@@ -153,20 +158,41 @@ class manageSituation extends React.Component {
 	}
 
 	// レコードおきゃく表示
-	formatCustome(cell,row) {
-		if(row.salesProgressCode === '3' || row.salesProgressCode === '5'){
-					var allCustomers = this.state.allCustomer;
-		for (var i in allCustomers) {
-			if (cell === allCustomers[i].value) {
-				return allCustomers[i].text;
-			}
-		}
-		}else{
+	formatCustome = (cell) => {
+		//cell=this.refs.customerTable.state.selectCustomerNo;
+
+		var allCustomers = this.state.allCustomer;
+		console.log(cell);
+		if (cell === '') {
 			return '';
+		} else {
+			for (var i in allCustomers) {
+				if (cell === allCustomers[i].value) {
+					return allCustomers[i].text;
+				}
+			}
 		}
 
 	}
+	getCustomerNo = (no) => {
+		this.state.salesSituationLists[this.state.rowNo - 1].customer = no;
+		this.formatCustome(no);
+		this.afterSaveCell(this.state.salesSituationLists[this.state.rowNo - 1]);
+	}
 
+	getSalesProgressCode = (no) => {
+		this.state.salesSituationLists[this.state.rowNo - 1].salesProgressCode = no;
+		if (!(no === '3' || no === '5')) {
+			this.state.salesSituationLists[this.state.rowNo - 1].customer = '';
+			this.formatCustome(no);
+		}
+		this.formatType(no);
+	}
+
+	getSalesStaff = (no) => {
+		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
+		this.formatStaff(no);
+	}
 	// レコードおきゃく表示
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
@@ -180,7 +206,7 @@ class manageSituation extends React.Component {
 	// table編集保存
 	afterSaveCell = (row) => {
 		if (row.salesProgressCode === '3' || row.salesProgressCode === '5') {
-			if(row.customer ==='' || row.customer ===undefined){
+			if (row.customer === '' || row.customer === undefined) {
 				row.customer = '';
 			}
 			this.setState({
@@ -188,13 +214,13 @@ class manageSituation extends React.Component {
 				unitPrice: row.price
 			})
 			// 
-			if(row.customer !=='' && row.price!=='' && row.customer !==undefined && row.price!==undefined){
+			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined) {
 				alert(row.customer);
 				alert(row.price);
-				row.customerNo=row.customer;
-				row.updateUser=sessionStorage.getItem('employeeName');
-				row.unitPrice=row.price;
-				row.salesYearAndMonth=this.state.salesYearAndMonth;
+				row.customerNo = row.customer;
+				// row.updateUser = sessionStorage.getItem('employeeName');
+				row.unitPrice = row.price;
+				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
 					.then(result => {
 						if (result.data != null) {
@@ -203,11 +229,11 @@ class manageSituation extends React.Component {
 							alert("FAIL");
 						}
 					})
-					.catch(function (error) {
+					.catch(function(error) {
 						alert("ERR");
 					});
 			}
-		}else{
+		} else {
 			row.customer = 'noedit';
 		}
 
@@ -248,7 +274,7 @@ class manageSituation extends React.Component {
 			} else {
 				/* alert(this.state.interviewDate1);
 				alert(this.state.interviewDate1Show);*/
-				alert(this.state.salesYearAndMonth); 
+				alert(this.state.salesYearAndMonth);
 				axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
 					.then(result => {
 						if (result.data != null) {
@@ -257,7 +283,7 @@ class manageSituation extends React.Component {
 							alert("FAIL");
 						}
 					})
-					.catch(function (error) {
+					.catch(function(error) {
 						alert("ERR");
 					});
 			}
@@ -269,7 +295,23 @@ class manageSituation extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
-	}
+	};
+/*		autoValueChange = (event,values) => {
+		this.setState({
+			[event.target.name]: values.value,
+		})
+	};*/
+	handleTag = ({ target }, fieldName) => {
+    const { value } = target;
+    switch (fieldName) {
+      case 'stationCode1':
+		this.setState({
+			stationCode1: this.state.getstations.find((v) => (v.name === value)).code,
+		})
+        break;
+      default:
+    }
+  };
 
 	// numbre only
 	valueChangeNUmberOnly = event => {
@@ -313,6 +355,7 @@ class manageSituation extends React.Component {
 		console.log(e);
 		if (isSelected) {
 			this.setState({
+				rowNo: row.rowNo === null ? '' : row.rowNo,
 				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
 				interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
 				interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
@@ -335,9 +378,9 @@ class manageSituation extends React.Component {
 				linkDisableFlag: false,
 				admissionStartDate: row.admissionStartDate === null ? '' : row.admissionStartDate,
 				customerNo: row.customer === null ? '' : row.customer,
-				unitPrice:row.price === null ? '' : row.price,
-				resumeInfo1:row.resumeInfo1 === null ? '' : row.resumeInfo1,	
-				resumeInfo2:row.resumeInfo2 === null ? '' : row.resumeInfo2,
+				unitPrice: row.price === null ? '' : row.price,
+				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
+				resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
 
 			});
 		} else {
@@ -354,11 +397,11 @@ class manageSituation extends React.Component {
 				hopeLowestPrice: '',
 				hopeHighestPrice: '',
 				salesPriorityStatus: '',
-				salesProgressCode: '',
+				//salesProgressCode: '',
 				remark: '',
 				editFlag: row.salesProgressCode === '3' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
-				salesStaff: '',
+				//salesStaff: '',
 				readFlag: true,
 				linkDisableFlag: true,
 			});
@@ -373,40 +416,40 @@ class manageSituation extends React.Component {
 		);
 	}
 
-/* 	handleDownload1 = (resumeInfo) => {
-		publicUtils.handleDownload(resumeInfo);
-	} */
+	/* 	handleDownload1 = (resumeInfo) => {
+			publicUtils.handleDownload(resumeInfo);
+		} */
 	// react download Excel
-/* 	handleDownload = (resumeInfo) => {
-		var resumeInfos= new Array();
-		console.log(resumeInfo);
-		resumeInfos=resumeInfo.split("/"); 
-		console.log(resumeInfos);
-		axios({
-			method: "POST", //请求方式
-			url: "http://127.0.0.1:8080/download", //下载地址
-			data: { name: resumeInfos[6] }, //请求内容
-			responseType: 'arraybuffer'
-		})
-			.then((response) => {
-				console.log(response); if (response.data.byteLength === 0) {
-					alert('no resume');
-				} else {
-					let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-					let downloadElement = document.createElement('a');
-					let href = window.URL.createObjectURL(blob); // 创建下载的链接
-					downloadElement.href = href;
-					downloadElement.download = resumeInfos[6]; // 下载后文件名
-					document.body.appendChild(downloadElement);
-					downloadElement.click(); // 点击下载
-					document.body.removeChild(downloadElement); // 下载完成移除元素
-					window.URL.revokeObjectURL(href); // 释放掉blob对象
-				}
-			}).catch((error) => {
-				alert('文件下载失败', error);
-			});
-
-	} */
+	/* 	handleDownload = (resumeInfo) => {
+			var resumeInfos= new Array();
+			console.log(resumeInfo);
+			resumeInfos=resumeInfo.split("/"); 
+			console.log(resumeInfos);
+			axios({
+				method: "POST", //请求方式
+				url: "http://127.0.0.1:8080/download", //下载地址
+				data: { name: resumeInfos[6] }, //请求内容
+				responseType: 'arraybuffer'
+			})
+				.then((response) => {
+					console.log(response); if (response.data.byteLength === 0) {
+						alert('no resume');
+					} else {
+						let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+						let downloadElement = document.createElement('a');
+						let href = window.URL.createObjectURL(blob); // 创建下载的链接
+						downloadElement.href = href;
+						downloadElement.download = resumeInfos[6]; // 下载后文件名
+						document.body.appendChild(downloadElement);
+						downloadElement.click(); // 点击下载
+						document.body.removeChild(downloadElement); // 下载完成移除元素
+						window.URL.revokeObjectURL(href); // 释放掉blob对象
+					}
+				}).catch((error) => {
+					alert('文件下载失败', error);
+				});
+	
+		} */
 
 	render() {
 		const selectRow = {
@@ -435,6 +478,9 @@ class manageSituation extends React.Component {
 			paginationShowsTotal: this.renderShowsTotal,
 		};
 
+		const tableSelect1 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={1} onUpdate={onUpdate} {...props} />);
+		const tableSelect2 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={2} onUpdate={onUpdate} {...props} />);
+		const tableSelect3 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={3} onUpdate={onUpdate} {...props} />);
 		return (
 			<div>
 				<Form onSubmit={this.savealesSituation}>
@@ -505,16 +551,19 @@ class manageSituation extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="stationCode1" value={this.state.stationCode1}
-										autoComplete="off" disabled={this.state.readFlag}>
-										{this.state.getstations.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
+									<Autocomplete
+									    name="stationCode1" 
+										options={this.state.getstations}
+										getOptionLabel={(option) => option.name}
+										value={this.state.getstations.find(v => v.code === this.state.stationCode1) || {}}
+										 onSelect={(event) => this.handleTag(event, 'stationCode1')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="選択してください" type="text" {...params.inputProps}
+													id="stationCode1" style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
 										)}
-									</Form.Control>
+									/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -638,7 +687,7 @@ class manageSituation extends React.Component {
 						</Row>
 					</Form.Group>
 					<div>
-						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState}>
+						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
 							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? "更新" : "解除"}</Button></div>
 					</div>
 
@@ -665,15 +714,14 @@ class manageSituation extends React.Component {
 						<Col sm={4}></Col>
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
+								<Link to={{ pathname: '/subMenu/TableSelect', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
 								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
 								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
-								<Button onClick={publicUtils.handleDownload.bind(this,this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button></Link>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
 							</div>
 						</Col>
 					</Row>
@@ -687,17 +735,19 @@ class manageSituation extends React.Component {
 						selectRow={selectRow}
 						cellEdit={cellEdit}
 						trClassName="customClass" >
-						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn width='8%' dataField='rowNo' /*dataFormat={this.indexN}*/ dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='7%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
-						<TableHeaderColumn width='7%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
+						<TableHeaderColumn width='6%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
 						<TableHeaderColumn width='5%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
-						<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} editable={{ type: 'select', options: { values: this.state.salesProgressCodes } }} >ステータス</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='customer' dataFormat={this.formatCustome.bind(this)} editable={this.state.editFlag}>確定客様</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='price' editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} editable={{ type: 'select', options: { values: this.state.salesPersons } }}>営業担当</TableHeaderColumn>
+						<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}/*editable={{ type: 'select', options: { values: this.state.salesProgressCodes } }} */>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }} editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
+					/* editable={this.state.editFlag} */>確定客様</TableHeaderColumn>
+						<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
+							editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}/*editable={{ type: 'select', options: { values: this.state.salesPersons } }}*/>営業担当</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
 						<TableHeaderColumn dataField='stationCode1' hidden={true}>面接1場所</TableHeaderColumn>
 						<TableHeaderColumn dataField='interviewCustomer1' hidden={true}>面接1客様</TableHeaderColumn>
