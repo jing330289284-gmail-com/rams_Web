@@ -79,7 +79,7 @@ class manageSituation extends React.Component {
 		axios.post("http://127.0.0.1:8080/salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
-					console.log(result.data);
+					// console.log(result.data);
 					var totalPersons = result.data.length;
 					var decidedPersons = 0;
 					if (totalPersons !== 0) {
@@ -124,8 +124,6 @@ class manageSituation extends React.Component {
 	getDropDowns = () => {
 		var methodArray = ["getSalesPriorityStatus", "getCustomer", "getStation"]
 		var data = publicUtils.getPublicDropDown(methodArray);
-		data[1].shift();
-		data[1].unshift({ value: '', label: '選択ください' })
 		this.setState(
 			{
 				salesPriorityStatuss: data[0],//　営業優先度 
@@ -162,7 +160,7 @@ class manageSituation extends React.Component {
 		//cell=this.refs.customerTable.state.selectCustomerNo;
 
 		var allCustomers = this.state.allCustomer;
-		console.log(cell);
+		// console.log(cell);
 		if (cell === '') {
 			return '';
 		} else {
@@ -296,22 +294,38 @@ class manageSituation extends React.Component {
 			[event.target.name]: event.target.value,
 		})
 	};
-/*		autoValueChange = (event,values) => {
-		this.setState({
-			[event.target.name]: values.value,
-		})
-	};*/
+	/*		autoValueChange = (event,values) => {
+			this.setState({
+				[event.target.name]: values.value,
+			})
+		};*/
 	handleTag = ({ target }, fieldName) => {
-    const { value } = target;
-    switch (fieldName) {
-      case 'stationCode1':
-		this.setState({
-			stationCode1: this.state.getstations.find((v) => (v.name === value)).code,
-		})
-        break;
-      default:
-    }
-  };
+		const { value } = target;
+		console.log(this.state.customers.find((v) => (v.name === value)));
+		switch (fieldName) {
+			case 'stationCode1':
+				this.setState({
+					stationCode1: this.state.getstations.find((v) => (v.name === value)) !== undefined ? this.state.getstations.find((v) => (v.name === value)).code : this.state.stationCode1,
+				})
+				break;
+			case 'stationCode2':
+				this.setState({
+					stationCode2: this.state.getstations.find((v) => (v.name === value)) !== undefined ? this.state.getstations.find((v) => (v.name === value)).code : this.state.stationCode2,
+				})
+				break;
+			case 'interviewCustomer1':
+				this.setState({
+					interviewCustomer1: this.state.customers.find((v) => (v.name === value)) !== undefined ? this.state.customers.find((v) => (v.name === value)).code : this.state.interviewCustomer1,
+				})
+				break;
+			case 'interviewCustomer2':
+				this.setState({
+					interviewCustomer2: this.state.customers.find((v) => (v.name === value)) !== undefined ? this.state.customers.find((v) => (v.name === value)).code : this.state.interviewCustomer2,
+				})
+				break;
+			default:
+		}
+	};
 
 	// numbre only
 	valueChangeNUmberOnly = event => {
@@ -352,7 +366,7 @@ class manageSituation extends React.Component {
 
 	// レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
-		console.log(e);
+		// console.log(e);
 		if (isSelected) {
 			this.setState({
 				rowNo: row.rowNo === null ? '' : row.rowNo,
@@ -552,15 +566,17 @@ class manageSituation extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									    name="stationCode1" 
+										disabled={this.state.readFlag}
+										name="stationCode1"
 										options={this.state.getstations}
 										getOptionLabel={(option) => option.name}
 										value={this.state.getstations.find(v => v.code === this.state.stationCode1) || {}}
-										 onSelect={(event) => this.handleTag(event, 'stationCode1')}
+										onSelect={(event) => this.handleTag(event, 'stationCode1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="選択してください" type="text" {...params.inputProps}
-													id="stationCode1" style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													id="stationCode1"
+													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -571,16 +587,21 @@ class manageSituation extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="interviewCustomer1" value={this.state.interviewCustomer1}
-										autoComplete="off" disabled={this.state.readFlag}>
-										{this.state.customers.map(date =>
-											<option key={date.value} value={date.value}>
-												{date.label}
-											</option>
+									<Autocomplete
+										disabled={this.state.readFlag}
+										name="interviewCustomer1"
+										options={this.state.customers}
+										getOptionLabel={(option) => option.name}
+										value={this.state.customers.find(v => v.code === this.state.interviewCustomer1) || {}}
+										onSelect={(event) => this.handleTag(event, 'interviewCustomer1')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="選択してください" type="text" {...params.inputProps}
+													id="interviewCustomer1"
+													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+											</div>
 										)}
-									</Form.Control>
+									/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -609,16 +630,21 @@ class manageSituation extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="stationCode2" value={this.state.stationCode2}
-										autoComplete="off" disabled={this.state.readFlag}>
-										{this.state.getstations.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
+									<Autocomplete
+										disabled={this.state.readFlag}
+										name="stationCode2"
+										options={this.state.getstations}
+										getOptionLabel={(option) => option.name}
+										value={this.state.getstations.find(v => v.code === this.state.stationCode2) || {}}
+										onSelect={(event) => this.handleTag(event, 'stationCode2')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="選択してください" type="text" {...params.inputProps}
+													id="stationCode2"
+													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+											</div>
 										)}
-									</Form.Control>
+									/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -626,16 +652,21 @@ class manageSituation extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="interviewCustomer2" value={this.state.interviewCustomer2}
-										autoComplete="off" disabled={this.state.readFlag}>
-										{this.state.customers.map(date =>
-											<option key={date.value} value={date.value}>
-												{date.label}
-											</option>
+									<Autocomplete
+										disabled={this.state.readFlag}
+										name="interviewCustomer2"
+										options={this.state.customers}
+										getOptionLabel={(option) => option.name}
+										value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || {}}
+										onSelect={(event) => this.handleTag(event, 'interviewCustomer2')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="選択してください" type="text" {...params.inputProps}
+													id="interviewCustomer2"
+													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+											</div>
 										)}
-									</Form.Control>
+									/>
 								</InputGroup>
 							</Col>
 						</Row>
