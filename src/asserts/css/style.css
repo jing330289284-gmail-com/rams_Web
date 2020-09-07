@@ -219,8 +219,8 @@ body {
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
-  background-color: #e9ecef;/* color��gray */
-  width: 125px;/* �c�Ə󋵉�ʐ�p�@�J�����_�[��TIME���\�����߂ɁA�T�C�Y�ύX */
+  background-color: #e9ecef;/* color?��?��gray */
+  width: 125px;/* ?��c?��Ə󋵉�ʐ�p?��@?��J?��?��?��?��?��_?��[?��?��TIME?��?��?��\?��?��?��?��?��߂ɁA?��T?��C?��Y?��ύX */
 }
 
 #datePicker2 {
@@ -229,8 +229,8 @@ body {
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
-  background-color: white;/* color��white */
-  width: 125px;/* �c�Ə󋵉�ʐ�p�@�J�����_�[��TIME���\�����߂ɁA�T�C�Y�ύX */
+  background-color: white;/* color?��?��white */
+  width: 125px;/* ?��c?��Ə󋵉�ʐ�p?��@?��J?��?��?��?��?��_?��[?��?��TIME?��?��?��\?��?��?��?��?��߂ɁA?��T?��C?��Y?��ύX */
 }
 
 #admissionStartDate {
@@ -273,10 +273,10 @@ body {
   width: 50%;
   max-width: none !important;
 }
-/* �c�Ɖ��TABLE�@HEIGHT�@�Œ�@�����@�I */
+/* ?��c?��Ɖ�?��TABLE?��@HEIGHT?��@?��Œ�@?��?��?��?��?��@?��I */
 .customClass {
-    height: 49px;
-    line-height: 39px;
+    line-height: 20px;
+    padding: 0px;
 }
 
 .react-bs-table-tool-bar 
