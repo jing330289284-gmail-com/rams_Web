@@ -20,6 +20,7 @@ class siteSearch extends Component {
 		this.state = this.initialState;//初期化
 		this.onchange = this.onchange.bind(this);
 	}
+	//初期化
 	initialState = {
 		payOffRange1: '',// 単価1
 		payOffRange2: '',// 単価2
@@ -31,7 +32,6 @@ class siteSearch extends Component {
 		getstations: [], // 場所
 		typeOfIndustryMaster: [], // 業種
 		employeeStatuss: [], // 社員区分
-		customer: ''
 	};
 
 	onchange = event => {
@@ -232,7 +232,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="お客様名" type="text" {...params.inputProps}
+													<input placeholder="  お客様名" type="text" {...params.inputProps}
 														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}

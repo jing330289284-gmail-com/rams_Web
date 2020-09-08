@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
 import * as publicUtils from './utils/publicUtils.js';
 import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -15,9 +16,11 @@ class masterInsert extends Component {
 		this.state = this.initialState;//初期化
 		this.onchange = this.onchange.bind(this);
 	}
-
+	//初期化
 	initialState = {
-		masterStatus: [],
+		masterStatus: [],//マスター名
+		myToastShow: false,
+		errorsMessageShow: false,
 	};
 
 	//全部のドロップダウン
@@ -26,7 +29,7 @@ class masterInsert extends Component {
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				masterStatus: data[0].slice(1),//　名称
+				masterStatus: data[0].slice(1),//　マスター名称
 			}
 		);
 	};
@@ -56,28 +59,37 @@ class masterInsert extends Component {
      */
 	toroku = () => {
 		var masterModel = {};
+		//画面输入信息取得
 		var formArray = $("#masterInsertForm").serializeArray();
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		axios.post("http://127.0.0.1:8080/masterInsert/toroku", masterModel)
-			.then(function(result) {
-				if (result.data) {
-					alert("登录成功");
+			.then(result => {
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					alert("データが存在しています");
+					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					window.location.reload();
 				}
-			})
-			.catch(function(error) {
-				alert("页面加载错误，请检查程序");
+			}).catch((error) => {
+				console.error("Error - " + error);
 			});
 	}
 
 	render() {
-		const { master } = this.state;
+		const { master, errorsMessageValue } = this.state;
 		return (
+
 			<div className="container col-7">
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={"登録成功！"} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<Row inline="true">
 					<Col className="text-center">
 						<h2>共通マスター登録</h2>
@@ -105,7 +117,7 @@ class masterInsert extends Component {
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="マスター名" type="text" {...params.inputProps}
+											<input placeholder="  マスター名" type="text" {...params.inputProps}
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
