@@ -209,7 +209,6 @@ class employeeSearch extends React.Component {
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true,errorsMessageValue:response.data.errorsMessage});
-					/*setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);*/
 				} else {
 					this.setState({ employeeList: response.data.data,"errorsMessageShow": false })
 				}
@@ -269,10 +268,10 @@ class employeeSearch extends React.Component {
 							rowSelectEmployeeNo: ''
 						}
 					);
-					this.setState({ "ｍyToastShow": true });
-					setTimeout(() => this.setState({ "ｍyToastShow": false }), 3000);
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
-					this.setState({ "ｍyToastShow": false });
+					this.setState({ "myToastShow": false });
 				}
 			})
 			.catch(function(error) {
@@ -382,8 +381,8 @@ class employeeSearch extends React.Component {
 		return (
 			<div >
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
-				<div style={{ "display": this.state.ｍyToastShow ? "block" : "none" }}>
-					<MyToast ｍyToastShow={this.state.ｍyToastShow} message={"削除成功！"} type={"danger"} />
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={"削除成功！"} type={"danger"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />

@@ -17,6 +17,8 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import ErrorsMessageToast from './errorsMessageToast';
+
 
 axios.defaults.withCredentials=true;
 
@@ -58,7 +60,8 @@ class employee extends React.Component {
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		bpInfoModel: null,//pb情報
 		station: [],//駅
-		show: false
+		myToastShow: false,
+		errorsMessageShow: false,
 	};
 	//　　リセット
 	resetBook = () => {
@@ -172,13 +175,13 @@ class employee extends React.Component {
 		//formData.append('pictures', $('.pi').get(0).files[0])
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 			.then(result => {
-				if (result.data) {
-					this.setState({ "show": true, "method": "post" });
-					setTimeout(() => this.setState({ "show": false }), 3000);
+				if (result.data.errorsMessage!= null) {
+					this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+				} else {
+					this.setState({ "myToastShow": true, "method": "post","errorsMessageShow": false  });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
 					this.getNO("LYC");//採番番号
-				} else {
-					this.setState({ "show": false });
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -251,10 +254,10 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
-					this.setState({ "show": true, "method": "put" });
-					setTimeout(() => this.setState({ "show": false }), 3000);
+					this.setState({ "myToastShow": true, "method": "put" });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
-					this.setState({ "show": false });
+					this.setState({ "myToastShow": false });
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -797,7 +800,7 @@ class employee extends React.Component {
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled
+			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled,errorsMessageValue
 		} = this.state;
 		const dlt1InputProps = {
 			placeholder: "開発言語1",
@@ -828,8 +831,11 @@ class employee extends React.Component {
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
-				<div style={{ "display": this.state.show ? "block" : "none" }}>
-					<MyToast show={this.state.show} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
 				{/*　 開始 */}
 				{/*　 口座情報 */}
