@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -30,6 +30,8 @@ class siteSearch extends Component {
 		developLanguageMaster: [], // 開発言語
 		getstations: [], // 場所
 		typeOfIndustryMaster: [], // 業種
+		employeeStatuss: [], // 社員区分
+		customer: ''
 	};
 
 	onchange = event => {
@@ -69,7 +71,7 @@ class siteSearch extends Component {
 	};
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry"]
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployee"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -80,26 +82,15 @@ class siteSearch extends Component {
 				topCustomerMaster: data[4].slice(1),//トップお客様
 				developLanguageMaster: data[5].slice(1),//開発言語
 				typeOfIndustryMaster: data[6].slice(1),//業種
+				employeeStatuss: data[7],// 社員区分
 			}
 		);
 	};
 	// 页面加载
 	componentDidMount() {
-		var employeeName = this.props.employeeName//父画面のパラメータ（社員名）
-		this.setState({ "employeeName": employeeName })
 		this.getDropDowns();//全部のドロップダウン
-		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						siteData: response.data
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
 	}
-	//登録処理
+	//検索処理
 	tokuro = () => {
 		if ($("#payOffRange2").val() < $("#payOffRange1").val()) {
 			alert("正しい期間を選択してください");
@@ -111,40 +102,46 @@ class siteSearch extends Component {
 				return false;
 			}
 		}
-		var siteModel = {};
+		var SiteSearchModel = {};
 		var formArray = $("#siteForm").serializeArray();
 		$.each(formArray, function(i, item) {
-			siteModel[item.name] = item.value;
+			SiteSearchModel[item.name] = item.value;
 		});
-		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
-		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
-		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
-		siteModel["employeeNo"] = this.props.employeeNo;
-		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
-			.then(function(result) {
-				if (result.data === true) {
-					alert("登录完成");
-					sessionStorage.setItem('actionType', 'update');
-				} else {
-					alert("登录错误，请检查程序");
+		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
+		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
+		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
+		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
+		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
+		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
+		if ($("#dataAcquisitionPeriod").val() === '1') {
+			SiteSearchModel["dataAcquisitionPeriod"] = publicUtils.setFullYearMonth(new Date());
+		}
+
+		axios.post("http://127.0.0.1:8080/getSiteSearchInfo", SiteSearchModel)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						siteData: response.data
+					});
 				}
-			})
-			.catch(function(error) {
-				alert("登录错误，请检查程序");
+			}).catch((error) => {
+				console.error("Error - " + error);
 			});
 	}
 	render() {
 		this.options = {
-			sizePerPage: 5,
-			pageStartIndex: 1,
-			paginationSize: 2,
-			prePage: '<<',
-			nextPage: '>>',
-			hideSizePerPage: true,
-			alwaysShowAllBtns: true,
+			page: 1,  // which page you want to show as default
+			sizePerPage: 5,  // which size per page you want to locate as default
+			pageStartIndex: 1, // where to start counting the pages
+			paginationSize: 3,  // the pagination bar size.
+			prePage: 'まえ', // Previous page button text
+			nextPage: 'つぎ', // Next page button text
+			firstPage: '最初', // First page button text
+			lastPage: '最後', // Last page button text
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
+			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, customer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod } = this.state;
+		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -182,13 +179,14 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員ステータス</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="employeeStatus" name="employeeStatus" value={employeeStatus}
-											onChange={this.onchange}>
-											<option>選択してくだいさい</option>
-											<option value="0">社員</option>
-											<option value="1">協力</option>
+										<Form.Control as="select" size="sm" onChange={this.onchange} name="employeeStatus" value={employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
@@ -199,7 +197,7 @@ class siteSearch extends Component {
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="employeeForm" name="employeeForm" value={employeeForm}
 											onChange={this.onchange}>
-											<option>選択してくだいさい</option>
+											<option value="">選択してくだいさい</option>
 											<option value="0">在職</option>
 											<option value="1">離職済み</option>
 										</Form.Control>
@@ -230,7 +228,6 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											value={customer}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -268,9 +265,9 @@ class siteSearch extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">BP会社</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
-											id="customerNo"
-											name="customerNo"
-											value={customer}
+											id="bpCustomerNo"
+											name="bpCustomerNo"
+											value={bpCustomer}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -358,11 +355,11 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">&emsp;単&emsp;価&emsp;</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="unitPrice1" name="unitPrice1" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 										〜
-										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl id="unitPrice2" name="unitPrice2" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -402,6 +399,7 @@ class siteSearch extends Component {
 												className="form-control form-control-sm"
 												id="admissionStartDate"
 												locale="ja"
+												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>〜
 										<DatePicker
 												selected={this.state.admissionEndDate}
@@ -411,7 +409,7 @@ class siteSearch extends Component {
 												className="form-control form-control-sm"
 												id="admissionEndDate"
 												locale="ja"
-												disabled={this.state.workState === "0" ? true : false}
+												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>
@@ -423,7 +421,7 @@ class siteSearch extends Component {
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="dataAcquisitionPeriod" name="dataAcquisitionPeriod" value={dataAcquisitionPeriod}
 											onChange={this.onchange}>
-											<option value="0">すべて</option>
+											<option value="">すべて</option>
 											<option value="1">最新(システム年月)</option>
 										</Form.Control>
 									</InputGroup>
@@ -447,11 +445,11 @@ class siteSearch extends Component {
 					</Form>
 					<div>
 						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} >
-							<TableHeaderColumn dataField='No' width='58' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='No' width='80' headerAlign='center'>所属</TableHeaderColumn>
+							<TableHeaderColumn dataField='rowNo' width='58' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeFrom' width='80' headerAlign='center'>所属</TableHeaderColumn>
 							<TableHeaderColumn dataField='workDate' width='203' headerAlign='center'>期間</TableHeaderColumn>
 							<TableHeaderColumn dataField='employeeName' headerAlign='center'>氏名</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' width='120'>システム・評価</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' width='120'>システム</TableHeaderColumn>
 							<TableHeaderColumn dataField='station'>場所</TableHeaderColumn>
 							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
 							<TableHeaderColumn dataField='unitPrice' width='70'>単価</TableHeaderColumn>
