@@ -146,6 +146,8 @@ class manageSituation extends React.Component {
 		// レコードdropdown用
 		var methodArrayTleOnly = ["getSalesStatus", "getSalesPerson", "getCustomer"]
 		var dataTleOnly = publicUtils.getPublicDropDownRtBtSpTleOnly(methodArrayTleOnly);
+		dataTleOnly[0].shift();
+		dataTleOnly[1].shift();
 		dataTleOnly[2].shift();
 		dataTleOnly[2].unshift({ value: '', text: '' })
 		this.setState(
