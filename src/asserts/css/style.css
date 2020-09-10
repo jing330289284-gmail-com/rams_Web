@@ -309,3 +309,7 @@ body {
 	padding: 0px 0px 0px 0px;
 	font-size: 14px;
 } 
+.auto:focus{
+    background: #FFFFFF;
+    outline: 3px solid #B8D7F8;
+}

@@ -4,47 +4,40 @@ import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 axios.defaults.withCredentials = true;
 
-const currencies = ['USD', 'GBP', 'EUR'];
-
-/* const cellEditProp = {
-  mode: 'click'
-}; */
-/*  const temp=[{code:'qqq',name:'125'},{code:'qqq',name:'125'}]; */
 class TableSelect extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state={
-			allOption:[],
-			selectedValue:'',
-			everyWidth:0,
+		this.state = {
+			allOption: [],
+			selectedValue: '',
+			everyWidth: 0,
 		}
 		this.updateData = this.updateData.bind(this);
 	}
-		componentDidMount() {
-					if(this.props.flag===1){
+	componentDidMount() {
+		if (this.props.flag === 1) {
 			this.setState({
-			allOption:this.props.dropdowns.state.allCustomer,
-			selectedValue:this.props.dropdowns.state.customerNo,
-			everyWidth:133,
+				allOption: this.props.dropdowns.state.allCustomer,
+				selectedValue: this.props.dropdowns.state.customerNo,
+				everyWidth: 133,
 			})
-		}else if(this.props.flag===2){
+		} else if (this.props.flag === 2) {
 			this.setState({
-			allOption:this.props.dropdowns.state.salesProgressCodes,
-			selectedValue:this.props.dropdowns.state.salesProgressCode,
-			everyWidth:120,
+				allOption: this.props.dropdowns.state.salesProgressCodes,
+				selectedValue: this.props.dropdowns.state.salesProgressCode,
+				everyWidth: 120,
 			})
-		}else if(this.props.flag===3){
+		} else if (this.props.flag === 3) {
 			this.setState({
-			allOption:this.props.dropdowns.state.salesPersons,
-			selectedValue:this.props.dropdowns.state.salesStaff,
-			everyWidth:105,
+				allOption: this.props.dropdowns.state.salesPersons,
+				selectedValue: this.props.dropdowns.state.salesStaff,
+				everyWidth: 105,
 			})
 		}
-		}
-	
+	}
+
 	focus() {
 		this.refs.inputRef.focus();
 	}
@@ -53,14 +46,14 @@ class TableSelect extends React.Component {
 	}
 
 	onchange = (event, values) => {
-		if(this.props.flag===1){
+		if (this.props.flag === 1) {
 			this.props.dropdowns.getCustomerNo(values === null ? this.props.dropdowns.state.customerNo : values.value);
-		}else if(this.props.flag===2){
+		} else if (this.props.flag === 2) {
 			this.props.dropdowns.getSalesProgressCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.value);
-		}else if(this.props.flag===3){
+		} else if (this.props.flag === 3) {
 			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.value);
 		}
-		
+
 	}
 
 	render() {
@@ -76,7 +69,7 @@ class TableSelect extends React.Component {
 					getOptionLabel={(option) => option.text}
 					renderInput={(params) => (
 						<div ref={params.InputProps.ref}>
-							<input /* placeholder="選択してください" */  type="text" {...params.inputProps}
+							<input /* placeholder="選択してください" */ type="text" {...params.inputProps}
 								style={{ width: this.state.everyWidth, height: 20, borderColor: "", borderWidth: 0 }} />
 						</div>
 					)}
