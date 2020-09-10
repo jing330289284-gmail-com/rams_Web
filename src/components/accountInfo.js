@@ -6,12 +6,18 @@ import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials=true;
 
 class BankInfo extends Component {
 
     state = {
         actionType:'',//処理区分
+        message:'',
+        type:'',
+        myToastShow: false,
+        errorsMessageShow: false,
+        errorsMessageValue:'',
     }
 
     constructor(props){
@@ -118,14 +124,16 @@ class BankInfo extends Component {
             });
             this.props.accountTokuro(accountInfo);
         }else{
-            document.getElementById("bankInfoErorMsg").style = "visibility:visible";
-            document.getElementById("bankInfoErorMsg").innerHTML = "口座名義人をカタカナで入力してください"
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:'口座名義人をカタカナで入力してください'});
         }   
     }
     render() {
-        const {actionType} =this.state;
+        const {actionType , errorsMessageValue} =this.state;
         return (
             <div  >
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
             <div  >
                 {/* <Row>
                         <Col sm={2}></Col>
@@ -137,13 +145,6 @@ class BankInfo extends Component {
                     <Col  className="text-center">
                     <h2>口座情報</h2>
                     </Col>
-                </Row>
-                <Row>
-                        <Col sm={2}>
-                        </Col>
-                        <Col sm={9}>
-                        <p id="bankInfoErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">1</p>
-                        </Col>
                 </Row>
                 <Form id="bankForm">
                 <Row>

@@ -10,6 +10,7 @@ import { faSave, faUndo, faSearch , faEdit } from '@fortawesome/free-solid-svg-i
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import axios from 'axios';
+import ErrorsMessageToast from './errorsMessageToast';
 import * as utils from './utils/publicUtils.js';
 registerLocale('ja', ja);
 axios.defaults.withCredentials=true;
@@ -24,6 +25,11 @@ class SubCost extends Component {
         subCostList:[],//テーブルのデータ
         subCostInfo:'',//入力データ
         actionType:'',//処理区分
+        message:'',
+        type:'',
+        myToastShow: false,
+        errorsMessageShow: false,
+        errorsMessageValue:'',
     }
     /**
      * ボーナス期日の変化
@@ -138,8 +144,8 @@ class SubCost extends Component {
                     subCostList:resultMap.data.subCostList,
                 })
             })
-            .catch(function (error) {
-                alert("查询错误，请检查程序");
+            .catch(error=> {
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
             if(actionType === "detail"){
                 SubCostJs.setDisabled();
@@ -193,11 +199,9 @@ class SubCost extends Component {
         }else{
             if($("#totalAmount").val() === '' || 
             $("#totalAmount").val() === null || isNaN($("#totalAmount").val())){
-                document.getElementById("subCostErorMsg").innerHTML = "入力してあるデータに不正があるため、チェックしてください！";
-                document.getElementById("subCostErorMsg").style = "visibility:visible";    
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"入力してあるデータに不正があるため、チェックしてください！"});   
             } else if(this.state.reflectStartDate === ''){
-                document.getElementById("subCostErorMsg").innerHTML = "反映年月を入力してください！";
-                document.getElementById("subCostErorMsg").style = "visibility:visible";    
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"反映年月を入力してください！"});   
             }
         }   
     }
@@ -249,8 +253,44 @@ class SubCost extends Component {
         $("#updatedReflectYearAndMonth").val(subCostInfo.reflectYearAndMonth);
         $("#shusei").attr("disabled",true);
     }
+    /**
+ * 社会保険計算
+ */
+async jidoujisan(){
+    var salary = document.getElementById("salary").value;
+    if($("#SocialInsuranceFlag").val() === "1"){
+      if(salary === ''){
+        this.setState({ "errorsMessageShow": true,errorsMessageValue:"給料を入力してください"});   
+        $("#SocialInsuranceFlag").val("0");
+      }else if(salary === '0'){
+        this.setState({ "errorsMessageShow": true,errorsMessageValue:"給料を0以上に入力してください"});   
+        $("#SocialInsuranceFlag").val("0");
+      }else{
+        /**
+         * https://asia-northeast1-tsunagi-all.cloudfunctions.net/
+         * 社会保険計算
+         */
+        await axios.post("/api/getSocialInsurance202003?salary="+salary+"&kaigo=0")
+        .then(result=> {
+          $("#welfarePensionAmount").val(result.data.pension.payment);
+          $("#healthInsuranceAmount").val(result.data.insurance.payment);
+          $("#insuranceFeeAmount").val(result.data.insurance.payment + result.data.pension.payment);
+        })
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
+          $("#SocialInsuranceFlag").val("0");
+        });
+      }
+      SubCostJs.totalKeisan();
+    }else{
+      $("#welfarePensionAmount").val('');
+      $("#healthInsuranceAmount").val('');
+      $("#insuranceFeeAmount").val('');
+      SubCostJs.totalKeisan();
+    }
+  }
     render() {
-        const {RelatedEmployees , subCostList , actionType} = this.state;
+        const {RelatedEmployees , subCostList , actionType , message , type , errorsMessageValue} = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -279,27 +319,17 @@ class SubCost extends Component {
         };
         return (
           <div >
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
           <div >
             <Form id="costForm">
               <Form.Group>
-              {/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}>
-                        <img className="mb-4" alt="title" src={title}/>
-                    </Col>
-              </Row> */}
               <Row inline="true">
                 <Col  className="text-center">
                  <h2>諸費用</h2>
                 </Col>
               </Row>
-              <Row>
-                        <Col sm={3}>
-                        </Col>
-                        <Col sm={7}>
-                        <p id="subCostErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★</p>
-                        </Col>
-                </Row>
               </Form.Group>
               <Form.Group>
                     <Row>
@@ -329,7 +359,7 @@ class SubCost extends Component {
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">社会保険</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl as="select" id="SocialInsuranceFlag" name="SocialInsuranceFlag" onChange={SubCostJs.jidoujisan}>
+                            <FormControl as="select" id="SocialInsuranceFlag" name="SocialInsuranceFlag" onChange={this.jidoujisan}>
                             </FormControl>
                         </InputGroup>
                     </Col>

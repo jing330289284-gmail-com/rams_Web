@@ -14,9 +14,9 @@ import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 axios.defaults.withCredentials=true;
 registerLocale('ja', ja);
 
@@ -41,6 +41,8 @@ class CustomerInfo extends Component {
         errorsMessageShow: false,
         errorsMessageValue:'',
         stationCode:'',
+        message:'',
+        type:'',
      }
     /**
      *  設立のonChange
@@ -189,8 +191,8 @@ class CustomerInfo extends Component {
                 }
             }
         })
-        .catch(function (error) {
-            alert("select框内容获取错误，请检查程序");
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
         });  
     }
     
@@ -230,10 +232,12 @@ class CustomerInfo extends Component {
                             this.setState({
                                 customerDepartmentList:departmentList,
                             })
+                            this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"処理成功"});
+				            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         }else if(result.data === 2){
-                            alert("部門が部門マスタに存在しません");
+                            this.setState({ "errorsMessageShow": true,errorsMessageValue:"部門が部門マスタに存在しません"});
                         }else{
-                            alert("更新が失敗しました");
+                            this.setState({ "errorsMessageShow": true,errorsMessageValue:"更新が失敗しました"});
                         }
                     })
                 }else{
@@ -277,21 +281,16 @@ class CustomerInfo extends Component {
             axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
             .then(result => {
             if(result.data.errorsMessage === null){
-                this.setState({ "myToastShow": true, "method": "post","errorsMessageShow": false  });
+                this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"処理成功"});
 				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 window.location.reload();
             }else{
                 this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
             }
             })
-            .catch(function (error) {
-            alert("登录错误，请检查程序");
+            .catch(error=> {
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
-        // }else{
-        //     if($("#customerName").val() === "" || $("#customerName").val() === null){
-        //         document.getElementById("erorMsg").style = "visibility:visible";
-        //     } 
-        // }  
     }
     /**
      * 行の削除
@@ -421,15 +420,17 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
         if(this.state.actionType === "update"){
             axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
-            .then(function (result) {
+            .then(result=> {
                 if(result.data === true){
-                    alert("删除成功");
+                    this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"削除成功"});
+                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }else{
-                    alert("删除失败");
+                    this.setState({ "myToastShow": true, "type": "fail","errorsMessageShow": false,message:'削除失敗'});
+				    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }
             })
             .catch(function (error) {
-                alert("删除失败，请检查程序");
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
         }
       }
@@ -461,7 +462,7 @@ class CustomerInfo extends Component {
 	};
     render() {
         const { topCustomerInfo , stationCodeValue , customerDepartmentList , accountInfo
-         , actionType , topCustomerNo , errorsMessageValue} = this.state;
+         , actionType , topCustomerNo , errorsMessageValue , message , type} = this.state;
         const accountPath = {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
         }
@@ -497,7 +498,7 @@ class CustomerInfo extends Component {
         return (
             <div style={{"background":"#f5f5f5"}}>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
 				</div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
@@ -537,13 +538,6 @@ class CustomerInfo extends Component {
                     <Col sm={2}>
                         
                     </Col>
-                </Row>
-                <Row>
-                        <Col sm={4}>
-                        </Col>
-                        <Col sm={7}>
-                            <p id="erorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★がついてる項目を入力してください！</p>
-                        </Col>
                 </Row>
                 <Form id="customerForm">
                 <Row>
@@ -588,6 +582,7 @@ class CustomerInfo extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
                             <Autocomplete
+                                disabled={this.state.actionType === "detail" ? true : false}
                                 id="stationCode"
                                 name="stationCode"
                                 value={this.state.stationCodeDrop.find((v) => (v.code === this.state.stationCode)) || {}}
@@ -659,6 +654,7 @@ class CustomerInfo extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
                             	<Autocomplete
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     id="topCustomer"
                                     name="topCustomer"
                                     value={this.state.topCustomerDrop.find((v) => (v.code === this.state.topCustomerNo)) || {}}
@@ -768,6 +764,7 @@ class CustomerInfo extends Component {
                                 <Autocomplete
                                     id="customerDepartmentName"
                                     name="customerDepartmentName"
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     options={this.state.customerDepartmentNameDrop}
                                     getOptionLabel={(option) => option.name}
                                     value={this.state.customerDepartmentNameDrop.find((v) => (v.code === this.state.customerDepartmentCode)) || {}}

@@ -60,10 +60,8 @@ export function checkAccountName(){
   var accountName = document.getElementById("accountName");
   
   if(!katakana.test(accountName.value)){
-    accountName.className += " border-danger";
     return false;
   }else{
-    accountName.className = " form-control";
     return true;
   }
 }

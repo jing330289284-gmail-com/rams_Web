@@ -38,42 +38,6 @@ export function setDisabled(){
   $("#housingStatus").attr("disabled",true)
 }
 /**
- * 社会保険計算
- */
-export async function jidoujisan(){
-  var salary = document.getElementById("salary").value;
-  if($("#SocialInsuranceFlag").val() === "1"){
-    if(salary === ''){
-      alert("请输入给料");
-      $("#SocialInsuranceFlag").val("0");
-    }else if(salary === '0'){
-      alert("给料不能为0");
-      $("#SocialInsuranceFlag").val("0");
-    }else{
-      /**
-       * https://asia-northeast1-tsunagi-all.cloudfunctions.net/
-       * 社会保険計算
-       */
-      await axios.post("/api/getSocialInsurance202003?salary="+salary+"&kaigo=0")
-      .then(function (result) {
-        $("#welfarePensionAmount").val(result.data.pension.payment);
-        $("#healthInsuranceAmount").val(result.data.insurance.payment);
-        $("#insuranceFeeAmount").val(result.data.insurance.payment + result.data.pension.payment);
-      })
-      .catch(function (error) {
-        alert("保险计算错误，请检查程序");
-        $("#SocialInsuranceFlag").val("0");
-      });
-    }
-    totalKeisan();
-  }else{
-    $("#welfarePensionAmount").val('');
-    $("#healthInsuranceAmount").val('');
-    $("#insuranceFeeAmount").val('');
-    totalKeisan();
-  }
-}
-/**
  * ボーナス項目の活性
  */
 export function bonusCanInput(){

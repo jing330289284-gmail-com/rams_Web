@@ -6,11 +6,18 @@ import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import ErrorsMessageToast from './errorsMessageToast';
+import MyToast from './myToast';
 axios.defaults.withCredentials=true;
 
 class TopCustomerInfo extends Component {
     state = {
         actionType:'',//処理区分
+        errorsMessageShow: false,
+        errorsMessageValue:'',
+        myToastShow: false,
+        message:'',
+        type:'',
     }
     /**
      * 画面の初期化
@@ -45,8 +52,8 @@ class TopCustomerInfo extends Component {
                             actionType:'update',
                         })
                     })
-                    .catch(function(){
-                        alert("页面加载错误，请检查程序");
+                    .catch(error=>{
+                        this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
                     })
             }else{
                 var topCustomerNo = "";
@@ -82,44 +89,45 @@ class TopCustomerInfo extends Component {
                 axios.post("http://127.0.0.1:8080/topCustomerInfo/toroku", topCustomerInfo)
                 .then(resultMap => {
                     if(resultMap.data){
-                        alert("更新成功");
+                        this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"更新成功"});
+				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         var methodArray = ["getTopCustomerDrop"]
                         var selectDataList = utils.getPublicDropDown(methodArray);
                         var topCustomerDrop = selectDataList[0];
                         this.props.topCustomerToroku(topCustomerDrop);
                     }else{
-                        alert("更新失败");
+                        this.setState({ "myToastShow": true, "type": "fail","errorsMessageShow": false,message:"更新失败"});
+				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     }
                 })
                 .catch(function(){
-                    alert("更新错误，请检查程序");
+                    this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
                 })
             }else if(actionType === "insert"){
                 this.props.topCustomerToroku(topCustomerInfo);
             }
         }else{
             if($("#topCustomerName").val() === "" || $("#topCustomerName").val() === null){
-                document.getElementById("topCustomerInfoErorMsg").style = "visibility:visible";
-                document.getElementById("topCustomerInfoErorMsg").innerHTML = "★がついてる項目を入力してください！"
+                this.setState({ "myToastShow": true, "type": "fail","errorsMessageShow": false,message:"上位お客様名前を入力してください！"});
+				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
             }
             
         } 
     }
     render() {
-        const {actionType} = this.state;
+        const {actionType , errorsMessageValue , message , type} = this.state;
         return (
             <div >
+                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
             <div >
                 <Row inline="true">
                     <Col  className="text-center">
                     <h2>上位お客様情報</h2>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={4}>
-                    </Col>
-                    <Col sm={7}>
-                    <p id="topCustomerInfoErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★</p>
                     </Col>
                 </Row>
                 <Form id="topCustomerInfoForm">
