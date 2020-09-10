@@ -70,7 +70,7 @@ class masterInsert extends Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
 				}
@@ -82,7 +82,6 @@ class masterInsert extends Component {
 	render() {
 		const { master, errorsMessageValue } = this.state;
 		return (
-
 			<div className="container col-7">
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"登録成功！"} type={"success"} />

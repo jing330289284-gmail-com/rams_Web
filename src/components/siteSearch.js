@@ -5,12 +5,13 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import ErrorsMessageToast from './errorsMessageToast';
 
 registerLocale('ja', ja);
 
@@ -39,7 +40,7 @@ class siteSearch extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
-
+	//时间精算 入力框1固定的时候2也变成固定且为非活性
 	fixed = event => {
 		$("#payOffRange2").prop('disabled', false);
 		this.onchange(event);
@@ -48,7 +49,7 @@ class siteSearch extends Component {
 			$("#payOffRange2").prop('disabled', true);
 		}
 	}
-
+	//时间入力框初始值
 	state = {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date()
@@ -92,16 +93,6 @@ class siteSearch extends Component {
 	}
 	//検索処理
 	tokuro = () => {
-		if ($("#payOffRange2").val() < $("#payOffRange1").val()) {
-			alert("正しい期間を選択してください");
-			return false;
-		}
-		if ('0' != $("#payOffRange1").val()) {
-			if ($("#payOffRange2").val() === $("#payOffRange1").val()) {
-				alert("固定を選択してくださいます");
-				return false;
-			}
-		}
 		var SiteSearchModel = {};
 		var formArray = $("#siteForm").serializeArray();
 		$.each(formArray, function(i, item) {
@@ -119,11 +110,15 @@ class siteSearch extends Component {
 
 		axios.post("http://127.0.0.1:8080/getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
-				if (response.data != null) {
+				if (response.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+				}
+				if (response.data.data != null) {
 					this.setState({
-						siteData: response.data
+						siteData: response.data.data,"errorsMessageShow": false 
 					});
 				}
+
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -141,7 +136,7 @@ class siteSearch extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod } = this.state;
+		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -153,6 +148,9 @@ class siteSearch extends Component {
 		};
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<div style={{ "background": "#f5f5f5" }}>
 					<Form id="siteForm">
 						<Form.Group>
@@ -252,7 +250,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="トップお客様名" type="text" {...params.inputProps}
+													<input placeholder="  トップお客様名" type="text" {...params.inputProps}
 														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -272,7 +270,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="BP会社名" type="text" {...params.inputProps}
+													<input placeholder="  BP会社名" type="text" {...params.inputProps}
 														style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -293,7 +291,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="駅名" type="text" {...params.inputProps}
+													<input placeholder="  駅名" type="text" {...params.inputProps}
 														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -317,7 +315,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="業種" type="text" {...params.inputProps}
+													<input placeholder="  業種" type="text" {...params.inputProps}
 														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -375,7 +373,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語" type="text" {...params.inputProps}
+													<input placeholder="  開発言語" type="text" {...params.inputProps}
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -428,34 +426,29 @@ class siteSearch extends Component {
 								</Col>
 							</Row>
 
-							<Row>
-								<Col sm={4}></Col>
-								<Col sm={2} className="text-center">
-									<Button size="sm" type="reset" variant="info" >
-										<FontAwesomeIcon icon={faUndo} /> リセット
-                                    </Button>
-								</Col>
-								<Col sm={2} className="text-center">
-									<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
-										<FontAwesomeIcon icon={faSave} /> 検索
+							<div style={{ "textAlign": "center" }}>
+								<Button size="sm" type="reset" variant="info" >
+									<FontAwesomeIcon icon={faUndo} /> リセット
+                                    </Button>{' '}
+								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
+									<FontAwesomeIcon icon={faSearch} /> 検索
 									</Button>
-								</Col>
-							</Row>
+							</div>
 						</Form.Group>
 					</Form>
 					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} >
-							<TableHeaderColumn dataField='rowNo' width='58' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeFrom' width='80' headerAlign='center'>所属</TableHeaderColumn>
-							<TableHeaderColumn dataField='workDate' width='203' headerAlign='center'>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeName' headerAlign='center'>氏名</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' width='120'>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='station'>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' width='70'>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName'>言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='workTime'>勤務時間</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' width='65'>役割</TableHeaderColumn>
+						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+							<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }} headerAlign='center'>所属</TableHeaderColumn>
+							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} headerAlign='center'>期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} headerAlign='center'>氏名</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム</TableHeaderColumn>
+							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70'>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65'>役割</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</div>
