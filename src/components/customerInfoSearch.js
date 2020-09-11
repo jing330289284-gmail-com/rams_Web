@@ -483,16 +483,12 @@ class CustomerInfoSearch extends Component {
         );
     }
     renderShowsTotal(start, to, total) {
-        if(total === 0){
-            return (<></>);
-        }else{
-            return (
-                <p>
-                ページ： { start } /{ to }, トータル件数： { total }&nbsp;&nbsp;
-                </p>
-            );
-            }
-      }
+    return (
+        <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+            {start}から  {to}まで , 総計{total}
+        </p>
+    );
+}
 }
 
 export default CustomerInfoSearch;
