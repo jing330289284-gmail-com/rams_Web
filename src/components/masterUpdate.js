@@ -20,7 +20,8 @@ class masterUpdate extends Component {
 
 	initialState = {
 		masterStatus: [],
-		code: ''
+		code: '',
+		flag: true//活性非活性flag
 	};
 
 	//全部のドロップダウン
@@ -43,9 +44,6 @@ class masterUpdate extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
-		$("#update").prop('disabled', true);
-		$("#delete").prop('disabled', true);
-		$("#data").prop('disabled', true);
 	}
 	//明细查询
 	selectMaster = (event) => {
@@ -75,9 +73,7 @@ class masterUpdate extends Component {
    * 行Selectファンクション
    */
 	handleRowSelect = (row, isSelected) => {
-		$("#update").prop('disabled', true);
-		$("#delete").prop('disabled', true);
-		$("#data").prop('disabled', true);
+		this.setState({ flag: true });
 		this.setState({
 			data: '',
 		})
@@ -86,10 +82,7 @@ class masterUpdate extends Component {
 				code: row.code,
 				data: row.data,
 			})
-
-			$("#update").prop('disabled', false);
-			$("#delete").prop('disabled', false);
-			$("#data").prop('disabled', false);
+			this.setState({ flag: false });
 		}
 	}
     /**
@@ -213,15 +206,15 @@ class masterUpdate extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} value={this.state.data} disabled />
+								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} value={this.state.data} disabled={this.state.flag === true ? true : false} />
 							</InputGroup>
 						</Col>
 					</Row>
 					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" onClick={this.update} variant="info" id="update" type="button" >
+						<Button size="sm" onClick={this.update} variant="info" id="update" type="button" disabled={this.state.flag === true ? true : false} >
 							<FontAwesomeIcon icon={faEdit} />修正
 							</Button>{' '}
-						<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" >
+						<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" disabled={this.state.flag === true ? true : false} >
 							<FontAwesomeIcon icon={faTrash} /> 削除
                            </Button>
 					</div>

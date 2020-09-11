@@ -21,6 +21,7 @@ class masterInsert extends Component {
 		masterStatus: [],//マスター名
 		myToastShow: false,
 		errorsMessageShow: false,
+		flag: true//活性非活性flag
 	};
 
 	//全部のドロップダウン
@@ -35,14 +36,11 @@ class masterInsert extends Component {
 	};
 
 	onchange = event => {
-		$("#toroku").prop('disabled', false);
-		$("#data").prop('disabled', false);
-		this.setState({
-			[event.target.name]: event.target.value
-		}, () => {
+		this.setState({ flag: false });
+		this.setState({ [event.target.name]: event.target.value }
+		, () => {
 			if ($("#master").val() === "") {
-				$("#toroku").prop('disabled', true);
-				$("#data").prop('disabled', true);
+				this.setState({ flag: true });
 			}
 		})
 	}
@@ -50,8 +48,6 @@ class masterInsert extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
-		$("#toroku").prop('disabled', true);
-		$("#data").prop('disabled', true);
 	}
 
     /**
@@ -130,14 +126,14 @@ class masterInsert extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
 								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" disabled={this.state.master === "" ? true : false} />
+								<FormControl placeholder="データ" id="data" name="data" disabled={this.state.flag === true ? true : false} />
 							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
 						<Col sm={4}></Col>
 						<Col sm={4} className="text-center">
-							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button" disabled={this.state.flag === true ? true : false}>
 								<FontAwesomeIcon icon={faSave} />登録
 							</Button>
 						</Col>
