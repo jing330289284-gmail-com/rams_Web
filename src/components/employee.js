@@ -64,7 +64,7 @@ class employee extends React.Component {
 		developLanguage4: '',
 		developLanguage5: '',
 		developLanguageMaster: [],
-		stationCode1: '',
+		stationCode: '',
 	};
 	//　　リセット
 	resetBook = () => {
@@ -108,7 +108,7 @@ class employee extends React.Component {
 			postcode: this.state.postcode,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
-			stationCode1: publicUtils.labelGetValue($("#nearestStationCode").val(), this.state.station),
+			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
@@ -126,13 +126,14 @@ class employee extends React.Component {
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
+			picInfo : this.state.pictures
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
 		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
 		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
 		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
-		//formData.append('pictures', $('.pi').get(0).files[0])
+		formData.append('pictures', this.state.pictures[0])
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -185,7 +186,7 @@ class employee extends React.Component {
 			postcode: this.state.postcode,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
-			stationCode1: publicUtils.labelGetValue($("#nearestStationCode").val(), this.state.station),
+			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
@@ -354,7 +355,7 @@ class employee extends React.Component {
 					postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
-					stationCode1: data.stationCode1,
+					stationCode: data.stationCode,
 					developLanguage1: data.developLanguage1,//　スキール1
 					developLanguage2: data.developLanguage2,//スキール2
 					developLanguage3: data.developLanguage3,//スキール3
@@ -375,7 +376,8 @@ class employee extends React.Component {
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
-			});
+			}
+			);
 	};
 
 	//　採番番号
@@ -393,8 +395,10 @@ class employee extends React.Component {
 	//ImageUploaderを処理　開始
 	onDrop(pictureFiles, pictureDataURLs) {
 		this.setState({
-			pictures: pictureFiles
+			pictures: this.state.pictures.concat(pictureFiles)
 		});
+				console.log(this.state.pictures)
+
 	}
 	//ImageUploaderを処理　終了
 	//　　年月開始
@@ -588,42 +592,57 @@ class employee extends React.Component {
 		}
 	}
 
+	
 	handleTag = ({ target }, fieldName) => {
-		const { value } = target;
-		switch (fieldName) {
-			case 'developLanguage1':
-				this.setState({
-					developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage1,
-				})
-				break;
-				case 'developLanguage2':
-				this.setState({
-					developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage2,
-				})
-				break;
-				case 'developLanguage3':
-				this.setState({
-					developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage3,
-				})
-				break;
-				case 'developLanguage4':
-				this.setState({
-					developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage4,
-				})
-				break;
-				case 'developLanguage5':
-				this.setState({
-					developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage5,
-				})
-				break;
-				case 'stationCode1':
-				this.setState({
-					stationCode1: this.state.station.find((v) => (v.name === value)) !== undefined ? this.state.station.find((v) => (v.name === value)).code : this.state.stationCode1,
-				})
-				break;
-			default:
+		const { value, id } = target;
+		console.log(value)
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.station.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'developLanguage1':
+						this.setState({
+							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage2':
+						this.setState({
+							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage3':
+						this.setState({
+							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage5':
+						this.setState({
+							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage5':
+						this.setState({
+							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'stationCode':
+						this.setState({
+							stationCode: this.state.station.find((v) => (v.name === value)).code,
+						})
+						break;
+					default:
+				}
+			}
 		}
+
 	};
+
+	
+	
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1091,68 +1110,61 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										id="developLanguageCode1"
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語1" type="text" {...params.inputProps}
+												<input placeholder="  開発言語1"   type="text" {...params.inputProps} className="auto"  　id="developLanguage1"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
 									<Autocomplete
-										id="developLanguageCode2"
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語2" type="text" {...params.inputProps}
+												<input placeholder="  開発言語2"  type="text" {...params.inputProps} className="auto" 　id="developLanguage2"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
 									<Autocomplete
-										id="developLanguageCode3"
-										
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語3" type="text" {...params.inputProps}
+												<input placeholder="  開発言語3"   type="text" {...params.inputProps} className="auto" 　id="developLanguage3"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
 									<Autocomplete
-										id="developLanguageCode4"
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語4" type="text" {...params.inputProps}
+												<input placeholder="  開発言語4"  type="text" {...params.inputProps} className="auto" 　id="developLanguage4" 
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
 									<Autocomplete
-										id="developLanguageCode5"
-										name="developLanguageCode5"
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語5" type="text" {...params.inputProps}
+												<input placeholder="  開発言語5"  type="text" {...params.inputProps} className="auto" 　id="developLanguage5"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1218,14 +1230,13 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										id="nearestStationCode"
-										value={this.state.station.find((v) => (v.code === this.state.stationCode1)) || {}}
+										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'stationCode1')}
+										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="最寄駅" type="text" {...params.inputProps}
+												<input placeholder="  最寄駅"   type="text" {...params.inputProps} className="auto"　id="stationCode" 
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
