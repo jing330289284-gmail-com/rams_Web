@@ -13,24 +13,27 @@ import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import Autosuggest from 'react-autosuggest';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 
 
 import BreakTime from './breakTime';
+import * as DutyRegistrationJs from './dutyRegistrationJs.js';
 
 
 class DutyRegistration extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log(props);
 		this.state = {
 			weekDay: {0: "日", 1: "月", 2: "火", 3: "水", 4: "木", 5: "金", 6: "土"},
-			isWorkMap: ["休憩", "出勤"],
+			hasWork: ["休憩","出勤"],
 			dateData: [],
 			year: new Date().getFullYear(),
 			month: (new Date().getMonth() + 1).toString().padStart(2, "0"),
+//			status: {sleep2sleep: 0 ,work2work: 1, sleep2work: 2, work2sleep: 3},
 		}
 		this.options = {
 			defaultSortName: 'day',
@@ -42,7 +45,9 @@ class DutyRegistration extends React.Component {
 		};
 		this.cellEditProp = {
 			mode: 'click',
-			blurToSave: true
+			blurToSave: true,
+			beforeSaveCell: this.beforeSaveCell,
+			afterSaveCell: this.afterSaveCell
 		};
 	}
 	//リセット化
@@ -51,23 +56,25 @@ class DutyRegistration extends React.Component {
 	//初期化メソッド
 	componentDidMount() {
 		var dateData = [];
-		for (var i = 0; i < 31; i++)	{
+		var monthDays = new Date(this.state.year, this.state.month, 0).getDate();
+		for (var i = 0; i < monthDays; i++)	{
 			dateData[i] = {};
+			dateData[i]['id'] = i;
 			dateData[i]['day'] = i + 1;
 			dateData[i]['week'] = this.state.weekDay[new Date(this.state.year + "/" + this.state.month +"/" + (i + 1)).getDay()];
-			dateData[i]['startHour'] = "";
-			dateData[i]['startMinut'] = "";
-			dateData[i]['endHour'] = "";
-			dateData[i]['endMinute'] = "";
+			dateData[i]['startTime'] = "";
+			dateData[i]['endTime'] = "";
 			dateData[i]['sleepHour'] = "";
 			dateData[i]['workHour'] = "";
 			dateData[i]['workContent'] = "";
 			dateData[i]['remark'] = "";
 			if (dateData[i]['week'] === "土" || dateData[i]['week'] === "日")	{
-				dateData[i]['isWork'] = this.state.isWorkMap[0];				
+				dateData[i]['isWork'] = 0;
+				dateData[i]['hasWork'] = this.state.hasWork[0];
 			}
 			else	{
-				dateData[i]['isWork'] = this.state.isWorkMap[1];				
+				dateData[i]['isWork'] = 1;
+				dateData[i]['hasWork'] = this.state.hasWork[1];
 			}
 		}
 		this.setState({ dateData: dateData })
@@ -100,8 +107,57 @@ class DutyRegistration extends React.Component {
 	}
 	columnClassNameFormat( fieldValue, row, rowIdx, colIdx) {
 		var baseCss = " dutyRegistration-DataTableTd ";
-		return baseCss;
+		if (row.isWork == 1 && colIdx == 3)	{
+			return baseCss + " dutyRegistration-ErrorData ";
+		}
+		if (row.isWork == 1 && colIdx == 4)	{
+			return baseCss + " dutyRegistration-ErrorData ";
+		}
+		else	{
+			return baseCss;
+		}
 	}
+	startTimeCallback(cell, row, rowIndex, columnIndex)	{
+//		if (cell == "1111")	{
+//			alert(11);
+//			return;
+//		}
+		return cell;
+	}
+	// check cell
+	beforeSaveCell(row, cellName, cellValue)	{
+		var regExp = /.*/;		
+		switch (cellName)	{
+			case "startTime":
+			case "endTime":
+				regExp = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+			break;
+		}
+		if (!cellValue.match(regExp))	{
+			return false;
+		}
+		return true;
+	}
+	// check cell
+	afterSaveCell(row, cellName, cellValue)	{
+		DutyRegistrationJs.removeRowAllClass($(".dutyRegistration-DataTableRow")[row.id]);		
+		if (row.isWork == 1 && row.hasWork == "出勤")	{
+			DutyRegistrationJs.addRowClass($(".dutyRegistration-DataTableRow")[row.id], "dutyRegistration-Work2Work");			
+		}
+		else if (row.isWork == 0 && row.hasWork == "出勤")	{
+			DutyRegistrationJs.addRowClass($(".dutyRegistration-DataTableRow")[row.id], "dutyRegistration-Sleep2Work");			
+		}
+		else if (row.isWork == 1 && row.hasWork == "休憩")	{
+			DutyRegistrationJs.addRowClass($(".dutyRegistration-DataTableRow")[row.id], "dutyRegistration-Work2Sleep");			
+		}
+		else if (row.isWork == 0 && row.hasWork == "休憩")	{
+			DutyRegistrationJs.addRowClass($(".dutyRegistration-DataTableRow")[row.id], "dutyRegistration-Sleep2Sleep");			
+		}
+		console.log(row);
+//		console.log($(".dutyRegistration-DataTableRow")[row.id].cells[0].style.backgroundColor = "#00FF00");
+//		DutyRegistrationJs.checkRowData($(".dutyRegistration-DataTableRow")[row.id]);
+	}
+
 	onSubmit = (event) =>	{
 		console.log(this.state.dateData);
 	}
@@ -145,12 +201,10 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<Row className="align-items-center">
-							<Col sm={3} md={{ span: 3, offset: 4 }}>
-								<InputGroup size="lg" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.year}年{this.state.month}月　作業報告書</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
+							<Col sm={4} md={{ span: 4, offset: 3 }}>
+								<span size="lg" className="mb-3">
+										<h3 class="text-danger">{this.state.year}年{this.state.month}月　作業報告書</h3>
+								</span>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 2 }}>
 								<InputGroup size="sm" className="mb-3">
@@ -180,21 +234,19 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={1} md={{ offset: 11 }}>
-								<Button size="sm">PDF</Button>
+							<Col md={{ offset: 11 }}>
+								<Button size="sm"><FontAwesomeIcon icon={faDownload} /> PDF</Button>
 							</Col>
 						</Row>
 						<BootstrapTable className={"dutyRegistration-DataTable"} trClassName={ this.rowClassNameFormat } data={this.state.dateData} pagination={true} options={this.options}  cellEdit={ this.cellEditProp }>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='isWork' editable={{ type: 'select', options: { values: this.state.isWorkMap } }}>出勤・休憩</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='hasWork' editable={{ type: 'select', options: { values: this.state.hasWork } }}>勤務</TableHeaderColumn>
 							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='60' dataField='week' editable={false}>曜日</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='startHour' colSpan='1'>作業開始時刻</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='startMinute'></TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='endHour'>作業終了時刻</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='endMinute'></TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='100' dataField='sleepHour' editable={false}>休憩時間</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='100' dataField='workHour' editable={false}>作業時間</TableHeaderColumn>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='100' dataField='workContent'>作業内容</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='50' dataField='week' editable={false}>曜日</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='100' dataField='startTime' editable={this.startTimeCallback}>作業開始時刻</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='100' dataField='endTime'>作業終了時刻</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='70' dataField='sleepHour' editable={false}>休憩時間</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='70' dataField='workHour' editable={false}>作業時間</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='250' dataField='workContent'>作業内容</TableHeaderColumn>
 							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='120' dataField='remark'>備考</TableHeaderColumn>
 						</BootstrapTable>
 						<Row>
@@ -208,7 +260,7 @@ class DutyRegistration extends React.Component {
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-							<Col sm={3} md={{ span: 0, offset: 4 }}>
+							<Col sm={3} md={{ span: 0, offset: 2 }}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">合計時間：</InputGroup.Text>
