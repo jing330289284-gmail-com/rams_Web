@@ -534,7 +534,7 @@ class manageSituation extends React.Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast ｍyToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
