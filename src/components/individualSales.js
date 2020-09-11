@@ -151,7 +151,7 @@ class individualSales extends Component {
 		var data = publicUtils.getPublicDropDown(method);
 		this.setState(
 			{
-				employeeName: data[0],//　性別区別
+				employeeName: data[0],
 
 			}
 		);
