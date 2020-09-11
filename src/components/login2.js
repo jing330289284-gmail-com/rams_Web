@@ -40,7 +40,7 @@ class Login2 extends Component {
 		loginModel["verificationCode"] = $("#verificationCode").val();
 		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(result =>{	
-			if(result.data.errorsMessage === null && result.data.errorsMessage === undefined){//ログイン成功
+			if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){//ログイン成功
 				this.props.history.push("/subMenu");
 			}else{//ログイン失敗
 				this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
