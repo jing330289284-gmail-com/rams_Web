@@ -12,6 +12,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker ,　{registerLocale} from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 registerLocale('ja', ja);
 axios.defaults.withCredentials=true;
 
@@ -26,6 +28,11 @@ class CustomerInfoSearch extends Component {
         businessStartDate: '',//取引開始の期日
         stationCode:[],//本社場所
         topCustomerDrop:[],//上位お客様連想の数列
+        message:'',
+        type:'',
+        myToastShow: false,
+        errorsMessageShow: false,
+        errorsMessageValue:'',
      }
      /**
       * 画面の初期化
@@ -86,8 +93,8 @@ class CustomerInfoSearch extends Component {
                 customerInfoData : resultList.data,
             })
         })
-        .catch(function (error) {
-        alert("查询错误，请检查程序");
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
         });  
     }
     /**
@@ -147,7 +154,7 @@ class CustomerInfoSearch extends Component {
     //隠した削除ボタン
     createCustomDeleteButton = (onClick) => {
         return (
-            <Button variant="info" id="delectBtn"hidden　　onClick={ onClick } >删除</Button>
+            <Button variant="info" id="delectBtn" hidden onClick={ onClick } >删除</Button>
         );
       }
       //隠した削除ボタンの実装
@@ -170,22 +177,24 @@ class CustomerInfoSearch extends Component {
             })
             var customerInfoMod = {};
             customerInfoMod["customerNo"] = this.state.customerNo;
-            axios.post("http://127.0.0.1:8080/customerInfoSearch/delect", customerInfoMod)
-            .then(function (result) {
+            axios.post("http://127.0.0.1:8080/customerInfoSearch/delete", customerInfoMod)
+            .then(result => {
                 if(result.data === 0){
-                    alert("删除成功");
+                    this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"削除成功"});
+				    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }else if(result.data === 1){
-                    alert("删除失败");
+                    this.setState({ "myToastShow": true, "type": "fail","errorsMessageShow": false,message:"削除失败"});
+				    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }else if(result.data === 2){
-                    alert("お客様が現場に使っている");
+                    this.setState({ "errorsMessageShow": true,errorsMessageValue:"お客様が現場に使っている"});
                 }else if(result.data === 3){
-                    alert("上位お客様の下位お客様が複数ある");
+                    this.setState({ "errorsMessageShow": true,errorsMessageValue:"上位お客様の下位お客様が複数ある"});
                 }else if(result.data === 4){
-                    alert("上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し");
+                    this.setState({ "errorsMessageShow": true,errorsMessageValue:"上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し"});
                 }
             })
-            .catch(function (error) {
-                alert("删除失败，请检查程序");
+            .catch(error=> {
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
       }
     //削除前のデフォルトお知らせの削除
@@ -232,7 +241,7 @@ class CustomerInfoSearch extends Component {
     );
     }
     render() {
-        const { radioValue , customerInfoData , stationCodeValue , topCustomerValue}=this.state;
+        const { radioValue , customerInfoData , stationCodeValue , topCustomerValue , message , type , errorsMessageValue}=this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
             pathname:'/subMenu/customerInfo',state:{actionType:'insert'},
@@ -272,16 +281,15 @@ class CustomerInfoSearch extends Component {
         };
         return (
            <div>
+                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
                <Row inline="true">
                     <Col  className="text-center">
                     <h2>お客様・協力情報検索</h2>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col sm={4}>
-                    </Col>
-                    <Col sm={7}>
-                    <p id="technologyTypeMasterErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★</p>
                     </Col>
                 </Row>
                <Form id="conditionForm">
@@ -448,24 +456,26 @@ class CustomerInfoSearch extends Component {
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
                             className={"bg-white text-dark"}
+                            headerStyle={{ background: '#B1F9D0' }} striped hover condensed
                              >
                                 <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='stationCode'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow className={"bg-white text-dark"}>
-                                <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerNo'  headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerName'  headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerRankingName'  headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                                <TableHeaderColumn dataField='stationCode'  headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                                <TableHeaderColumn dataField='companyNatureName'  headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                                <TableHeaderColumn dataField='topCustomerName'  headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow className={"bg-white text-dark"}
+                                headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+                                <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerRankingName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
+                                <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
+                                <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                             </BootstrapTable>
                         }
                 </Form>

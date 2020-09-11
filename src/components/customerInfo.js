@@ -14,6 +14,8 @@ import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 axios.defaults.withCredentials=true;
 registerLocale('ja', ja);
@@ -34,7 +36,13 @@ class CustomerInfo extends Component {
         accountInfo:null,//口座情報のデータ
         actionType:'',//処理区分
         topCustomerInfo:null,//上位お客様情報データ
-        stationCode:[],//本社場所
+        stationCodeDrop:[],//本社場所
+        myToastShow: false,
+        errorsMessageShow: false,
+        errorsMessageValue:'',
+        stationCode:'',
+        message:'',
+        type:'',
      }
     /**
      *  設立のonChange
@@ -96,7 +104,7 @@ class CustomerInfo extends Component {
         this.setState({
             actionType:this.props.location.state.actionType,
         })
-        $("#customerNo").val( this.props.location.customerNo);
+        $("#customerNo").val( this.props.location.state.customerNo);
         $("#sakujo").attr("disabled",true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite" , "getTopCustomer" , "getDepartmentMasterDrop" , "getStation"]
         var selectDataList = utils.getPublicDropDown(methodArray);
@@ -112,17 +120,17 @@ class CustomerInfo extends Component {
         var paymentsiteCode = selectDataList[4];
         var topCustomerDrop = [];
         var customerDepartmentNameDrop = [];
-        var stationCode = [];
+        var stationCodeDrop = [];
         topCustomerDrop = selectDataList[5];
         topCustomerDrop.shift();
         customerDepartmentNameDrop = selectDataList[6];
         customerDepartmentNameDrop.shift();
-        stationCode = selectDataList[7];
-        stationCode.shift();
+        stationCodeDrop = selectDataList[7];
+        stationCodeDrop.shift();
         this.setState({
             topCustomerDrop:topCustomerDrop,
             customerDepartmentNameDrop:customerDepartmentNameDrop,
-            stationCode:stationCode,
+            stationCodeDrop:stationCodeDrop,
         })
         for(let i = 1;i<listedCompanyFlag.length ; i++){
             $("#listedCompanyFlag").append('<option value="'+listedCompanyFlag[i].code+'">'+listedCompanyFlag[i].name+'</option>');
@@ -160,7 +168,10 @@ class CustomerInfo extends Component {
             }else{
                 $("#customerName").val(customerInfoMod.customerName);
                 $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
-                $("#stationCode").val(customerInfoMod.stationCode);
+                this.setState({
+                    stationCode:customerInfoMod.stationCode,
+                    topCustomerNo:customerInfoMod.stationCode,
+                })
                 $("#levelCode").val(customerInfoMod.levelCode);
                 $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
                 $("#companyNatureCode").val(customerInfoMod.companyNatureCode);
@@ -180,8 +191,8 @@ class CustomerInfo extends Component {
                 }
             }
         })
-        .catch(function (error) {
-            alert("select框内容获取错误，请检查程序");
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
         });  
     }
     
@@ -221,10 +232,12 @@ class CustomerInfo extends Component {
                             this.setState({
                                 customerDepartmentList:departmentList,
                             })
+                            this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"処理成功"});
+				            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         }else if(result.data === 2){
-                            alert("部門が部門マスタに存在しません");
+                            this.setState({ "errorsMessageShow": true,errorsMessageValue:"部門が部門マスタに存在しません"});
                         }else{
-                            alert("更新が失敗しました");
+                            this.setState({ "errorsMessageShow": true,errorsMessageValue:"更新が失敗しました"});
                         }
                     })
                 }else{
@@ -238,6 +251,7 @@ class CustomerInfo extends Component {
                 })
                 this.setState({
                     customerDepartmentValue:null,
+                    customerDepartmentCode:'',
                 })
                 $("#customerDepartmentName").val('');
                 document.getElementsByName("customerDepartmentName")[0].value = '';
@@ -251,7 +265,7 @@ class CustomerInfo extends Component {
      * 登録ボタン
      */
     toroku=()=>{
-        if($("#customerName").val() !== "" && $("#customerName").val() != null){
+
             var customerInfoMod = {};
             var formArray =$("#customerForm").serializeArray();
             $.each(formArray,function(i,item){
@@ -265,28 +279,18 @@ class CustomerInfo extends Component {
             customerInfoMod["accountInfo"] = this.state.accountInfo;
             customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
             axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
-            .then(function (result) {
-            if(result.data === 0){
-                alert("登录完成");
+            .then(result => {
+            if(result.data.errorsMessage === null){
+                this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"処理成功"});
+				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 window.location.reload();
-            }else if(result.data === 1){
-                alert("登录错误，请检查程序");
-            }else if(result.data === 2){
-                alert("上位お客様名前がお客様情報テーブルに存じません，データをチェックしてください");
-            }else if(result.data === 3){
-                alert("部署が登録失敗しました。");
-            }else if(result.data === 4){
-                alert("部署が部署マスタに存在しません。");
+            }else{
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
             }
             })
-            .catch(function (error) {
-            alert("登录错误，请检查程序");
+            .catch(error=> {
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
-        }else{
-            if($("#customerName").val() === "" || $("#customerName").val() === null){
-                document.getElementById("erorMsg").style = "visibility:visible";
-            } 
-        }  
     }
     /**
      * 行の削除
@@ -348,6 +352,9 @@ class CustomerInfo extends Component {
                     top["code"] = topCustomerToroku.topCustomerNo;
                     top["name"] = topCustomerToroku.topCustomerName;
                     topCustomerDrop[i] = top;
+                    this.setState({
+                        topCustomerNo:topCustomerToroku.topCustomerNo,
+                    })
                 }
             }
             this.setState({
@@ -360,23 +367,12 @@ class CustomerInfo extends Component {
             ModelClass["code"] = topCustomerToroku.topCustomerNo;
             ModelClass["name"] = topCustomerToroku.topCustomerName;
             this.setState({
+                topCustomerNo:topCustomerToroku.topCustomerNo,
                 topCustomerDrop:[...this.state.topCustomerDrop,ModelClass],
                 topCustomerInfo:topCustomerToroku,
                 showCustomerInfoModal:false,
             })
         }
-    }
-    /**
-     * 上位お客様番号の取得
-     */
-    getTopCustomerNo =(event)=>{
-        this.setState({
-			[event.target.name]: event.target.value
-		}, () => {
-            this.setState({
-                topCustomerNo:utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop)
-            })
-		})
     }
     renderShowsTotal(start, to, total) {
         if(total === 0){
@@ -424,15 +420,17 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentCode;
         if(this.state.actionType === "update"){
             axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
-            .then(function (result) {
+            .then(result=> {
                 if(result.data === true){
-                    alert("删除成功");
+                    this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"削除成功"});
+                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }else{
-                    alert("删除失败");
+                    this.setState({ "myToastShow": true, "type": "fail","errorsMessageShow": false,message:'削除失敗'});
+				    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 }
             })
             .catch(function (error) {
-                alert("删除失败，请检查程序");
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
             });
         }
       }
@@ -441,9 +439,30 @@ class CustomerInfo extends Component {
         const dropRowKeysStr = dropRowKeys.join(',');
         next();
       }
+      handleTag = ({ target }, fieldName) => {
+		const { value } = target;
+		switch (fieldName) {
+			case 'customerDepartment':
+				this.setState({
+					customerDepartmentCode: this.state.customerDepartmentNameDrop.find((v) => (v.name === value)) !== undefined ? this.state.customerDepartmentNameDrop.find((v) => (v.name === value)).code : this.state.customerDepartmentCode,
+				})
+                break;
+            case 'topCustomer':
+                this.setState({
+                    topCustomerNo: this.state.topCustomerDrop.find((v) => (v.name === value)) !== undefined ? this.state.topCustomerDrop.find((v) => (v.name === value)).code : this.state.topCustomerNo,
+                })
+            break;	
+            case 'stationCode':
+                this.setState({
+                    stationCode: this.state.stationCodeDrop.find((v) => (v.name === value)) !== undefined ? this.state.stationCodeDrop.find((v) => (v.name === value)).code : this.state.stationCode,
+                })
+            break;		
+				default:
+		}
+	};
     render() {
-        const { topCustomerValue , topCustomerInfo , stationCodeValue , customerDepartmentList , accountInfo
-         , actionType , topCustomerNo} = this.state;
+        const { topCustomerInfo , stationCodeValue , customerDepartmentList , accountInfo
+         , actionType , topCustomerNo , errorsMessageValue , message , type} = this.state;
         const accountPath = {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
         }
@@ -477,8 +496,13 @@ class CustomerInfo extends Component {
         handleConfirmDeleteRow: this.customConfirm,
         };
         return (
-
             <div style={{"background":"#f5f5f5"}}>
+                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
             <div>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" 
                 onHide={this.handleHideModal.bind(this,"bankInfo")} show={this.state.showBankInfoModal}>
@@ -514,13 +538,6 @@ class CustomerInfo extends Component {
                     <Col sm={2}>
                         
                     </Col>
-                </Row>
-                <Row>
-                        <Col sm={4}>
-                        </Col>
-                        <Col sm={7}>
-                            <p id="erorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★がついてる項目を入力してください！</p>
-                        </Col>
                 </Row>
                 <Form id="customerForm">
                 <Row>
@@ -565,10 +582,12 @@ class CustomerInfo extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
                             </InputGroup.Prepend>
                             <Autocomplete
+                                disabled={this.state.actionType === "detail" ? true : false}
                                 id="stationCode"
                                 name="stationCode"
-                                value={stationCodeValue}
-                                options={this.state.stationCode}
+                                value={this.state.stationCodeDrop.find((v) => (v.code === this.state.stationCode)) || {}}
+                                onSelect={(event) => this.handleTag(event, 'stationCode')}
+                                options={this.state.stationCodeDrop}
                                 getOptionLabel={(option) => option.name}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
@@ -635,9 +654,11 @@ class CustomerInfo extends Component {
                                 <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
                             </InputGroup.Prepend>
                             	<Autocomplete
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     id="topCustomer"
                                     name="topCustomer"
-                                    value={topCustomerValue}
+                                    value={this.state.topCustomerDrop.find((v) => (v.code === this.state.topCustomerNo)) || {}}
+                                    onSelect={(event) => this.handleTag(event, 'topCustomer')}
                                     options={this.state.topCustomerDrop}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
@@ -646,7 +667,6 @@ class CustomerInfo extends Component {
                                                 style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                         </div>
                                     )}
-                                    onChange={this.getTopCustomerNo}
                                 />
                         </InputGroup>
                     </Col>
@@ -744,9 +764,11 @@ class CustomerInfo extends Component {
                                 <Autocomplete
                                     id="customerDepartmentName"
                                     name="customerDepartmentName"
-                                    value={this.state.customerDepartmentValue}
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     options={this.state.customerDepartmentNameDrop}
                                     getOptionLabel={(option) => option.name}
+                                    value={this.state.customerDepartmentNameDrop.find((v) => (v.code === this.state.customerDepartmentCode)) || {}}
+                                    onSelect={(event) => this.handleTag(event, 'customerDepartment')}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
                                             <input placeholder="お客様部門" type="text" {...params.inputProps}
@@ -804,13 +826,18 @@ class CustomerInfo extends Component {
                     </Col>
                 </Row>
                     <div>
-                    <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} pagination={ true } options={ options } deleteRow data={customerDepartmentList} className={"bg-white text-dark"}>
-                        <TableHeaderColumn isKey dataField='rowNo' headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
-                        <TableHeaderColumn dataField='responsiblePerson' headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
-                        <TableHeaderColumn dataField='customerDepartmentName' headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
-                        <TableHeaderColumn dataField='positionName' headerAlign='center' dataAlign='center' width="190">職位</TableHeaderColumn>
-                        <TableHeaderColumn dataField='customerDepartmentMail' headerAlign='center' dataAlign='center'>メール</TableHeaderColumn>
-                        <TableHeaderColumn dataField='companyNatureName' headerAlign='center' dataAlign='center' width="140">取引人数</TableHeaderColumn>
+                    <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail} 
+                    pagination={ true } 
+                    options={ options } 
+                    deleteRow data={customerDepartmentList} 
+                    className={"bg-white text-dark"}
+                    headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+                        <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
+                        <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
+                        <TableHeaderColumn dataField='customerDepartmentName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
+                        <TableHeaderColumn dataField='positionName' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190">職位</TableHeaderColumn>
+                        <TableHeaderColumn dataField='customerDepartmentMail' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'>メール</TableHeaderColumn>
+                        <TableHeaderColumn dataField='companyNatureName' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="140">取引人数</TableHeaderColumn>
                     </BootstrapTable>
                     </div>
                 </Card.Body>
