@@ -116,7 +116,7 @@ class masterInsert extends Component {
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="  マスター名" type="text" {...params.inputProps}
+											<input placeholder="  マスター名" type="text" {...params.inputProps} className="auto"
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}

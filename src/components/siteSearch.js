@@ -33,6 +33,8 @@ class siteSearch extends Component {
 		getstations: [], // 場所
 		typeOfIndustryMaster: [], // 業種
 		employeeStatuss: [], // 社員区分
+		customerNo: '',
+		topCustomerNo: '',
 	};
 
 	onchange = event => {
@@ -91,6 +93,66 @@ class siteSearch extends Component {
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
 	}
+	//reset
+	reset = () => {
+		this.setState(() => this.resetStates);
+	};
+	//リセット　reset
+	resetStates = {
+		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
+		developLanguageCode: '', stationCode: ''
+	};
+
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
+				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'customerNo':
+						this.setState({
+							customerNo: value,
+						})
+						break;
+					case 'topCustomerNo':
+						this.setState({
+							topCustomerNo: value,
+						})
+						break;
+					case 'bpCustomerNo':
+						this.setState({
+							bpCustomerNo: value,
+						})
+						break;
+					case 'stationCode':
+						this.setState({
+							stationCode: value,
+						})
+						break;
+					case 'typeOfIndustryCode':
+						this.setState({
+							typeOfIndustryCode: value,
+						})
+						break;
+					case 'developLanguageCode':
+						this.setState({
+							developLanguageCode: value,
+						})
+						break;
+					default:
+				}
+			}
+		}
+
+	};
 	//検索処理
 	tokuro = () => {
 		var SiteSearchModel = {};
@@ -115,7 +177,7 @@ class siteSearch extends Component {
 				}
 				if (response.data.data != null) {
 					this.setState({
-						siteData: response.data.data,"errorsMessageShow": false 
+						siteData: response.data.data, "errorsMessageShow": false
 					});
 				}
 
@@ -123,20 +185,28 @@ class siteSearch extends Component {
 				console.error("Error - " + error);
 			});
 	}
+	renderShowsTotal(start, to, total) {
+		return (
+			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+				{start}から  {to}まで , 総計{total}
+			</p>
+		);
+	}
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
-			prePage: 'まえ', // Previous page button text
-			nextPage: 'つぎ', // Next page button text
-			firstPage: '最初', // First page button text
-			lastPage: '最後', // Last page button text
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 		};
-		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod, errorsMessageValue } = this.state;
+		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod, errorsMessageValue, customerNo } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -228,9 +298,11 @@ class siteSearch extends Component {
 											name="customerNo"
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
+											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  お客様名" type="text" {...params.inputProps}
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto"
 														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -245,12 +317,13 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={topCustomer}
+											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
 											options={this.state.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  トップお客様名" type="text" {...params.inputProps}
+													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto"
 														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -265,12 +338,13 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="bpCustomerNo"
 											name="bpCustomerNo"
-											value={bpCustomer}
+											value={this.state.customerMaster.find(v => v.name === this.state.bpCustomerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'bpCustomerNo')}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  BP会社名" type="text" {...params.inputProps}
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto"
 														style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -285,13 +359,13 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="stationCode"
 											name="stationCode"
-											value={stationCode}
-											onChange={this.onchange}
+											value={this.state.getstations.find(v => v.name === this.state.stationCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'stationCode')}
 											options={this.state.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  駅名" type="text" {...params.inputProps}
+													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto"
 														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -309,13 +383,13 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="typeOfIndustryCode"
 											name="typeOfIndustryCode"
-											value={typeOfIndustryCode}
-											onChange={this.onchange}
+											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
 											options={this.state.typeOfIndustryMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  業種" type="text" {...params.inputProps}
+													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto"
 														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -368,12 +442,13 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="developLanguageCode"
 											name="developLanguageCode"
-											value={developLanguage}
+											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
 											options={this.state.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語" type="text" {...params.inputProps}
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -397,6 +472,7 @@ class siteSearch extends Component {
 												className="form-control form-control-sm"
 												id="admissionStartDate"
 												locale="ja"
+												autoComplete="off"
 												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>〜
 										<DatePicker
@@ -407,6 +483,7 @@ class siteSearch extends Component {
 												className="form-control form-control-sm"
 												id="admissionEndDate"
 												locale="ja"
+												autoComplete="off"
 												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>
 										</InputGroup.Prepend>
@@ -427,17 +504,18 @@ class siteSearch extends Component {
 							</Row>
 
 							<div style={{ "textAlign": "center" }}>
-								<Button size="sm" type="reset" variant="info" >
-									<FontAwesomeIcon icon={faUndo} /> リセット
-                                    </Button>{' '}
-								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
+								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button" color={{ background: '#5599FF' }}>
 									<FontAwesomeIcon icon={faSearch} /> 検索
-									</Button>
+									</Button>{' '}
+								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
+									<FontAwesomeIcon icon={faUndo} /> リセット
+                                    </Button>
+
 							</div>
 						</Form.Group>
 					</Form>
 					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }} headerAlign='center'>所属</TableHeaderColumn>
 							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} headerAlign='center'>期間</TableHeaderColumn>

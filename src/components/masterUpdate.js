@@ -52,6 +52,9 @@ class masterUpdate extends Component {
 		this.setState({
 			data: '',
 		})
+		this.refs.table.setState({
+			selectedRowKeys: []
+		});
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
@@ -143,10 +146,10 @@ class masterUpdate extends Component {
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
-			prePage: 'まえ', // Previous page button text
-			nextPage: 'つぎ', // Next page button text
-			firstPage: '最初', // First page button text
-			lastPage: '最後', // Last page button text
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
@@ -195,7 +198,7 @@ class masterUpdate extends Component {
 									clearOnBlur
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="  マスター名" type="text" {...params.inputProps}
+											<input placeholder="  マスター名" type="text" {...params.inputProps} className="auto"
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
@@ -224,7 +227,7 @@ class masterUpdate extends Component {
 					</div>
 					<br />
 					<div>
-						<BootstrapTable selectRow={selectRow} data={masterData} pagination={true} options={this.options} headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+						<BootstrapTable selectRow={selectRow} data={masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 							<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
 						</BootstrapTable>
