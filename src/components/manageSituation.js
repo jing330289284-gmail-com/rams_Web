@@ -64,11 +64,11 @@ class manageSituation extends React.Component {
 		admissionStartDate: '', // record開始時間
 		customerNo: '', // 該当レコードおきゃくNO
 		unitPrice: '', // 該当レコード単価
-		resumeInfo1: '',
-		resumeInfo2: '',
-		myToastShow: false,
-		errorsMessageShow: false,
-		errorsMessageValue: '',
+		resumeInfo1: '',// 履歴情報１
+		resumeInfo2: '',// 履歴情報２
+		myToastShow: false,// 状態ダイアログ
+		errorsMessageShow: false,// ERRダイアログ
+		errorsMessageValue: '',// ERRメッセージ
 	};
 
 	// 初期表示のレコードを取る
@@ -97,6 +97,8 @@ class manageSituation extends React.Component {
 						}
 					}
 
+					console.log(result.data);
+					
 					this.setState({
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
@@ -195,6 +197,10 @@ class manageSituation extends React.Component {
 			this.state.salesSituationLists[this.state.rowNo - 1].customer = '';
 			this.formatCustome(no);
 		}
+		if (no === '5') {
+			this.state.salesSituationLists[this.state.rowNo - 1].customer = 
+			 this.state.salesSituationLists[this.state.rowNo - 1].nowCustomer;
+		}
 		this.formatType(no);
 	}
 
@@ -218,6 +224,7 @@ class manageSituation extends React.Component {
 			if (row.customer === '' || row.customer === undefined) {
 				row.customer = '';
 			}
+
 			this.setState({
 				customerNo: row.customer,
 				unitPrice: row.price
@@ -230,6 +237,7 @@ class manageSituation extends React.Component {
 				// row.updateUser = sessionStorage.getItem('employeeName');
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
+				row.admissionStartDate = this.state.admissionStartDate;
 				axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
 					.then(result => {
 						if (result.data != null) {
@@ -422,7 +430,7 @@ class manageSituation extends React.Component {
 				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
 				readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
 				linkDisableFlag: false,
-				admissionStartDate: row.admissionStartDate === null ? '' : row.admissionStartDate,
+				admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
 				customerNo: row.customer === null ? '' : row.customer,
 				unitPrice: row.price === null ? '' : row.price,
 				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
@@ -461,9 +469,6 @@ class manageSituation extends React.Component {
 		);
 	}
 
-	/* 	handleDownload1 = (resumeInfo) => {
-			publicUtils.handleDownload(resumeInfo);
-		} */
 	// react download Excel
 	/* 	handleDownload = (resumeInfo) => {
 			var resumeInfos= new Array();
@@ -513,7 +518,7 @@ class manageSituation extends React.Component {
 
 		const options = {
 			defaultSortOrder: 'dsc',
-			sizePerPage: 5,
+			sizePerPage: 10,
 			pageStartIndex: 1,
 			paginationSize: 2,
 			prePage: 'Prev',
@@ -529,7 +534,7 @@ class manageSituation extends React.Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast ｍyToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
