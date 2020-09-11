@@ -689,7 +689,7 @@ class employee extends React.Component {
 
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">>
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
