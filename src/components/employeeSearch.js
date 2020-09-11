@@ -231,22 +231,22 @@ class employeeSearch extends React.Component {
 			mode: 'radio',
 			bgColor: 'pink',
 			hideSelectColumn: true,
-			clickToSelect: true,  // click to select, default is false
-			clickToExpand: true,// click to expand row, default is false
+			clickToSelect: true,  
+			clickToExpand: true,
 			onSelect: this.handleRowSelect,
 		};
 		//テーブルの定義
 		const options = {
 			page: 1,
-			sizePerPage: 5,  // which size per page you want to locate as default
-			pageStartIndex: 1, // where to start counting the pages
-			paginationSize: 3,  // the pagination bar size.
-			prePage: 'Prev', // Previous page button text
-			nextPage: 'Next', // Next page button text
-			firstPage: 'First', // First page button text
-			lastPage: 'Last', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			sizePerPage: 5,  
+			pageStartIndex: 1, 
+			paginationSize: 3,  
+			prePage: 'Prev', 
+			nextPage: 'Next', 
+			firstPage: 'First', 
+			lastPage: 'Last', 
+			paginationShowsTotal: this.renderShowsTotal,  
+			hideSizePerPage: true, 
 			expandRowBgColor: 'rgb(165, 165, 165)',
 			deleteBtn: this.createCustomDeleteButton,
 			onDeleteRow: this.onDeleteRow,
@@ -433,7 +433,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語1" type="text" {...params.inputProps}
+													<input placeholder="開発言語1" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -446,7 +446,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語2" type="text" {...params.inputProps}
+													<input placeholder="開発言語2" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -459,7 +459,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語3" type="text" {...params.inputProps}
+													<input placeholder="開発言語3" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
