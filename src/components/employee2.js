@@ -14,12 +14,13 @@ import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import Autosuggest from 'react-autosuggest';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials=true;
 
 
 class employee extends React.Component {
@@ -50,6 +51,9 @@ class employee extends React.Component {
 		residenceCodes: [],//　　在留資格
 		englishLeveCodes: [],//　　英語
 		nationalityCodes: [],//　　出身地 
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
+		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '',
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
 		subCostInfo: null,//諸費用のデータ
@@ -58,17 +62,53 @@ class employee extends React.Component {
 		station: [],//駅
 		myToastShow: false,
 		errorsMessageShow: false,
-		developLanguage1: '',
-		developLanguage2: '',
-		developLanguage3: '',
-		developLanguage4: '',
-		developLanguage5: '',
-		developLanguageMaster: [],
-		stationCode1: '',
 	};
 	//　　リセット
 	resetBook = () => {
 		window.location.href = window.location.href
+	};
+	//リセット化
+	resetState = {
+		employeeFristName: '',//　　社員氏
+		employeeLastName: '',//　　社員名
+		furigana1: '',//　　カタカナ1
+		furigana2: '',//　　カタカナ2
+		alphabetName: '',//　　ローマ字
+		temporary_age: '',//　　年齢
+		birthday: '',//　　年齢
+		japaneseCalendar: "",　　//和暦
+		companyMail: "",　　//社内メール
+		graduationUniversity: "",　　//学校
+		major: "",//　　専門
+		graduationYearAndMonth: "",//　　卒業年月
+		intoCompanyYearAndMonth: "",//　　入社年月
+		retirementYearAndMonth: "",//　　退職年月
+		comeToJapanYearAndMonth: "",//　　来日年月
+		birthplace: "",//　　出身地(県)
+		phoneNo: "",//携帯電話
+		residenceCardNo: "",//　　在留カード
+		employmentInsuranceNo: "",//　　雇用保険番号
+		myNumber: "",//　　マイナンバー
+		certification1: "",//　　資格1
+		certification2: "",//　　資格2
+		siteRoleCode: "",//役割
+		postcode: "",//　　郵便番号1
+		firstHalfAddress: "",
+		lastHalfAddress: "",
+		nearestStation: "",
+		resumeRemark1: "",//　　履歴書備考1
+		resumeRemark2: "",//　　履歴書備考2
+		stayPeriod: "",//　　stayPeriod
+		temporary_comeToJapanYearAndMonth: "",
+		temporary_intoCompanyYearAndMonth: "",
+		temporary_stayPeriod: "",
+		temporary_age: "",
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developement4Value: '', developement4Suggestions: [], developement5Value: '', developement5Suggestions: [],
+		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', developmentLanguageNo4: '', developmentLanguageNo5: '', value: '', suggestions: [],
+		yearsOfExperience: "",//　経験年数
+		temporary_yearsOfExperience: "",
+		temporary_retirementYearAndMonth: ""
 	};
 	//　　登録
 	insertEmployee = () => {
@@ -99,21 +139,21 @@ class employee extends React.Component {
 			nationalityCode: this.state.nationalityCode,//出身地
 			birthplace: this.state.birthplace,//出身県
 			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
+			authorityCode: $('input:radio[name="employeeType"]:checked').val()==="0"?$("#authorityCodeId").val():"0",//権限
 			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
 			englishLevelCode: this.state.englishLevelCode,//英語
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
 			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode,//郵便番号
+			postcode: this.state.postcode + this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
-			stationCode1: publicUtils.labelGetValue($("#nearestStationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguageCode4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguageCode5").val(), this.state.developLanguageMaster),
+			nearestStation: this.state.nearestStation,
+			developLanguage1: this.state.developement1Value,//スキール1
+			developLanguage2: this.state.developement2Value,//スキール2
+			developLanguage3: this.state.developement3Value,//スキール3
+			developLanguage4: this.state.developement4Value,//スキール4
+			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -135,10 +175,10 @@ class employee extends React.Component {
 		//formData.append('pictures', $('.pi').get(0).files[0])
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 			.then(result => {
-				if (result.data.errorsMessage != null) {
-					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+				if (result.data.errorsMessage!= null) {
+					this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
 				} else {
-					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "post","errorsMessageShow": false  });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
 					this.getNO("LYC");//採番番号
@@ -182,15 +222,15 @@ class employee extends React.Component {
 			certification1: this.state.certification1,//資格1
 			certification2: this.state.certification2,//資格2
 			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode,//郵便番号
+			postcode: this.state.postcode + this.state.postcode2,//郵便番号
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
-			stationCode1: publicUtils.labelGetValue($("#nearestStationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguageCode4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguageCode5").val(), this.state.developLanguageMaster),
+			nearestStation: this.state.nearestStation,
+			developLanguage1: this.state.developement1Value,//スキール1
+			developLanguage2: this.state.developement2Value,//スキール2
+			developLanguage3: this.state.developement3Value,//スキール3
+			developLanguage4: this.state.developement4Value,//スキール4
+			developLanguage5: this.state.developement5Value,//スキール5
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -241,7 +281,7 @@ class employee extends React.Component {
 		}
 	}
 	//初期化メソッド
-	componentDidMount() {
+	async componentDidMount() {
 		this.getDropDownｓ();//全部のドロップダウン
 		this.radioChangeEmployeeType();
 		const { location } = this.props
@@ -271,8 +311,7 @@ class employee extends React.Component {
 	}
 
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel",
-			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel", "getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -289,7 +328,6 @@ class employee extends React.Component {
 				siteMaster: data[10],//　役割
 				station: data[11].slice(1),//　駅
 				customer: data[12].slice(1),//BP所属
-				developLanguageMaster: data[13].slice(1),//開発言語
 			}
 		);
 	};
@@ -350,16 +388,16 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
-					postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
+					//postcode: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
+					//postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
-					stationCode1: data.stationCode1,
-					developLanguage1: data.developLanguage1,//　スキール1
-					developLanguage2: data.developLanguage2,//スキール2
-					developLanguage3: data.developLanguage3,//スキール3
-					developLanguage4: data.developLanguage4,//スキール4
-					developLanguage5: data.developLanguage5,//スキール5
+					nearestStation: data.stationName,
+					//developement1Value: data.developLanguage1,//　スキール1
+					//developement2Value: data.developLanguage2,//スキール2
+					//developement3Value: data.developLanguage3,//スキール3
+					//	developement4Value: data.developLanguage4,//スキール4
+					//	developement5Value: data.developLanguage5,//スキール5
 					residenceCode: data.residenceCode,//在留資格
 					residenceCardNo: data.residenceCardNo,//在留カード
 					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),//在留期間
@@ -578,7 +616,176 @@ class employee extends React.Component {
 			this.setState({ showPbInfoModal: true })
 		}
 	}
+	//　　開発言語　開始
+	onDevelopement1Change = (event, { newValue }) => {
+		this.setState({
+			developement1Value: newValue
+		});
+	};
 
+	onDevelopement2Change = (event, { newValue }) => {
+		this.setState({
+			developement2Value: newValue
+		});
+	};
+
+	onDevelopement3Change = (event, { newValue }) => {
+		this.setState({
+			developement3Value: newValue
+		});
+	};
+
+	onDevelopement4Change = (event, { newValue }) => {
+		this.setState({
+			developement4Value: newValue
+		});
+	};
+
+	onDevelopement5Change = (event, { newValue }) => {
+		this.setState({
+			developement5Value: newValue
+		});
+	};
+
+
+	onDlt1SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo1: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement1Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt1SuggestionsClearRequested = () => {
+		this.setState({
+			developement1Suggestions: []
+		});
+	};
+
+	onDlt1SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement1Value: suggestion.name
+		});
+	};
+
+	onDlt2SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo2: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement2Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt3SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo3: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement3Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+	onDlt4SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo4: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement4Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+	onDlt5SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo5: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement5Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt2SuggestionsClearRequested = () => {
+		this.setState({
+			developement2Suggestions: []
+		});
+	};
+
+	onDlt3SuggestionsClearRequested = () => {
+		this.setState({
+			developement3Suggestions: []
+		});
+	};
+
+	onDlt4SuggestionsClearRequested = () => {
+		this.setState({
+			developement4Suggestions: []
+		});
+	};
+
+	onDlt5SuggestionsClearRequested = () => {
+		this.setState({
+			developement5Suggestions: []
+		});
+	};
+
+	onDlt2SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement2Value: suggestion.name
+		});
+	};
+
+	onDlt3SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement3Value: suggestion.name
+		});
+	};
+
+	onDlt4SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement4Value: suggestion.name
+		});
+	};
+
+	onDlt5SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement5Value: suggestion.name
+		});
+	};
+	//　　開発言語　終了
 	valueChangeEmployeeFormCode = (event) => {
 		const value = event.target.value;
 		if (value === "3") {
@@ -588,48 +795,38 @@ class employee extends React.Component {
 		}
 	}
 
-	handleTag = ({ target }, fieldName) => {
-		const { value } = target;
-		switch (fieldName) {
-			case 'developLanguage1':
-				this.setState({
-					developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage1,
-				})
-				break;
-				case 'developLanguage2':
-				this.setState({
-					developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage2,
-				})
-				break;
-				case 'developLanguage3':
-				this.setState({
-					developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage3,
-				})
-				break;
-				case 'developLanguage4':
-				this.setState({
-					developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage4,
-				})
-				break;
-				case 'developLanguage5':
-				this.setState({
-					developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ? this.state.developLanguageMaster.find((v) => (v.name === value)).code : this.state.developLanguage5,
-				})
-				break;
-				case 'stationCode1':
-				this.setState({
-					stationCode1: this.state.station.find((v) => (v.name === value)) !== undefined ? this.state.station.find((v) => (v.name === value)).code : this.state.stationCode1,
-				})
-				break;
-			default:
-		}
-	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled, errorsMessageValue
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, postcode2, firstHalfAddress, lastHalfAddress, nearestStation, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			developement1Value, developement1Suggestions, developement2Value, developement2Suggestions, developement3Value, developement3Suggestions, developement4Value, developement4Suggestions, developement5Value, developement5Suggestions,
+			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled,errorsMessageValue
 		} = this.state;
+		const dlt1InputProps = {
+			placeholder: "開発言語1",
+			value: developement1Value,
+			onChange: this.onDevelopement1Change
+		};
+		const dlt2InputProps = {
+			placeholder: "開発言語2",
+			value: developement2Value,
+			onChange: this.onDevelopement2Change
+		};
+		const dlt3InputProps = {
+			placeholder: "開発言語3",
+			value: developement3Value,
+			onChange: this.onDevelopement3Change
+		};
+		const dlt4InputProps = {
+			placeholder: "開発言語4",
+			value: developement4Value,
+			onChange: this.onDevelopement4Change
+		};
+		const dlt5InputProps = {
+			placeholder: "開発言語5",
+			value: developement5Value,
+			onChange: this.onDevelopement5Change
+		};
 		const { accountInfo, subCostInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
 			<div>
@@ -758,7 +955,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
+									<FormControl placeholder="0" id="temporary_age"  value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -1085,78 +1282,66 @@ class employee extends React.Component {
 
 						</Row>
 						<Row>
-							<Col sm={9}>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
+										<Autosuggest
+											suggestions={developement1Suggestions}
+											onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt1SuggestionSelected}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
+											inputProps={dlt1InputProps}
+											id="developement1"
+											disabled={detailDisabled ? false : true}
+										/>
+										<Autosuggest
+											suggestions={developement2Suggestions}
+											onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt2SuggestionSelected}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
+											inputProps={dlt2InputProps}
+											id="developement2"
+											disabled={detailDisabled ? false : true}
+										/>
+										<Autosuggest
+											suggestions={developement3Suggestions}
+											onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt3SuggestionSelected}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
+											inputProps={dlt3InputProps}
+											id="developement3"
+											disabled={detailDisabled ? false : true}
+										/>
+
+										<Autosuggest
+											suggestions={developement4Suggestions}
+											onSuggestionsFetchRequested={this.onDlt4SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt4SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt4SuggestionSelected}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
+											inputProps={dlt4InputProps}
+											id="developement4"
+											disabled={detailDisabled ? false : true}
+										/>
+										<Autosuggest
+											suggestions={developement5Suggestions}
+											onSuggestionsFetchRequested={this.onDlt5SuggestionsFetchRequested}
+											onSuggestionsClearRequested={this.onDlt5SuggestionsClearRequested}
+											onSuggestionSelected={this.onDlt5SuggestionSelected}
+											getSuggestionValue={publicUtils.getSuggestionDlt}
+											renderSuggestion={publicUtils.renderSuggestion}
+											inputProps={dlt5InputProps}
+											id="developement5"
+										/>
 									</InputGroup.Prepend>
-									<Autocomplete
-										id="developLanguageCode1"
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
-										options={this.state.developLanguageMaster}
-										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語1" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-											</div>
-										)}
-									/>
-									<Autocomplete
-										id="developLanguageCode2"
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
-										options={this.state.developLanguageMaster}
-										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語2" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-											</div>
-										)}
-									/>
-									<Autocomplete
-										id="developLanguageCode3"
-										
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
-										options={this.state.developLanguageMaster}
-										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語3" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-											</div>
-										)}
-									/>
-									<Autocomplete
-										id="developLanguageCode4"
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
-										options={this.state.developLanguageMaster}
-										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語4" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-											</div>
-										)}
-									/>
-									<Autocomplete
-										id="developLanguageCode5"
-										name="developLanguageCode5"
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
-										options={this.state.developLanguageMaster}
-										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語5" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-											</div>
-										)}
-									/>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1218,19 +1403,18 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										id="nearestStationCode"
-										value={this.state.station.find((v) => (v.code === this.state.stationCode1)) || {}}
+										id="nearestStationNo"
+										name="nearestStationNo"
+										value={nearestStation}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'stationCode1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="最寄駅" type="text" {...params.inputProps}
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
-
 								</InputGroup>
 							</Col>
 						</Row>

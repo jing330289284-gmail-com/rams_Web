@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
+import Autosuggest from 'react-autosuggest';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
 import $ from 'jquery'
@@ -14,8 +15,6 @@ import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-
 
 
 registerLocale("ja", ja);
@@ -41,14 +40,119 @@ class employeeSearch extends React.Component {
 	//初期化データ
 	initialState = {
 		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [],
-
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		suggestions: [], developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: ''
 	};
 	//リセット　reset
 	resetStates = {
 		employeeNo: '', employeeFristName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
 		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
+		developement1Value: '', developement1Suggestions: [], developement2Value: '', developement2Suggestions: [], developement3Value: '', developement3Suggestions: [],
+		developmentLanguageNo1: '', developmentLanguageNo2: '', developmentLanguageNo3: '', value: '', suggestions: [],
 	};
+	//開発言語　開始
+	onDevelopement1Change = (event, { newValue }) => {
+		this.setState({
+			developement1Value: newValue
+		});
+	};
+
+	onDevelopement2Change = (event, { newValue }) => {
+		this.setState({
+			developement2Value: newValue
+		});
+	};
+
+	onDevelopement3Change = (event, { newValue }) => {
+		this.setState({
+			developement3Value: newValue
+		});
+	};
+
+	onDlt1SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo1: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement1Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt1SuggestionsClearRequested = () => {
+		this.setState({
+			developement1Suggestions: []
+		});
+	};
+
+	onDlt1SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement1Value: suggestion.name
+		});
+	};
+
+	onDlt2SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo2: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement2Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt3SuggestionsFetchRequested = ({ value }) => {
+		const emp = {
+			developmentLanguageNo3: value
+		};
+		axios.post("http://127.0.0.1:8080/getTechnologyType", emp)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						developement3Suggestions: publicUtils.getSuggestions(value, response.data)
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	};
+
+	onDlt2SuggestionsClearRequested = () => {
+		this.setState({
+			developement2Suggestions: []
+		});
+	};
+
+	onDlt3SuggestionsClearRequested = () => {
+		this.setState({
+			developement3Suggestions: []
+		});
+	};
+
+	onDlt2SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement2Value: suggestion.name
+		});
+	};
+
+	onDlt3SuggestionSelected = (event, { suggestion }) => {
+		this.setState({
+			developement3Value: suggestion.name
+		});
+	};
+	//開発言語　終了
 
 	//初期化メソッド
 	componentDidMount() {
@@ -57,7 +161,7 @@ class employeeSearch extends React.Component {
 	}
 	//全部のドロップダウン
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys", "getDevelopLanguage"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -68,9 +172,7 @@ class employeeSearch extends React.Component {
 				employeeStatuss: data[4],//　 employeesステータス
 				japaneaseLevelCodes: data[5],//　日本語  
 				residenceCodes: data[6],//　在留資格
-				nationalityCodes: data[7],//　 出身地国
-				developLanguageMaster: data[8].slice(1),//開発言語
-
+				nationalityCodes: data[7]//　 出身地国
 			}
 		);
 	};
@@ -96,9 +198,9 @@ class employeeSearch extends React.Component {
 			intoCompanyCode: this.state.intoCompanyCode,
 			japaneaseLeveCode: this.state.japaneaseLeveCode,
 			siteRoleCode: this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
+			developLanguage1: this.state.developement1Value,
+			developLanguage2: this.state.developement2Value,
+			developLanguage3: this.state.developement3Value,
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
@@ -106,9 +208,9 @@ class employeeSearch extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
-					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+					this.setState({ "errorsMessageShow": true,errorsMessageValue:response.data.errorsMessage});
 				} else {
-					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
+					this.setState({ employeeList: response.data.data,"errorsMessageShow": false })
 				}
 			}
 			);
@@ -224,8 +326,31 @@ class employeeSearch extends React.Component {
 
 	render() {
 		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
-			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
-			employeeList, errorsMessageValue, developLanguage1, developLanguage2, developLanguage3 } = this.state;
+			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode, employeeList,errorsMessageValue } = this.state;
+		const {
+			developement1Value,
+			developement1Suggestions,
+			developement2Value,
+			developement2Suggestions,
+			developement3Value,
+			developement3Suggestions
+		} = this.state;
+		const dlt1InputProps = {
+			placeholder: "開発言語1",
+			value: developement1Value,
+			onChange: this.onDevelopement1Change
+		};
+		const dlt2InputProps = {
+			placeholder: "開発言語2",
+			value: developement2Value,
+			onChange: this.onDevelopement2Change
+		};
+		const dlt3InputProps = {
+			placeholder: "開発言語3",
+			value: developement3Value,
+			onChange: this.onDevelopement3Change
+		};
+
 		//テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -420,50 +545,38 @@ class employeeSearch extends React.Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={6}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
+											<Autosuggest
+												suggestions={developement1Suggestions}
+												onSuggestionsFetchRequested={this.onDlt1SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt1SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt1SuggestionSelected}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
+												inputProps={dlt1InputProps}
+											/>
+											<Autosuggest
+												suggestions={developement2Suggestions}
+												onSuggestionsFetchRequested={this.onDlt2SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt2SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt2SuggestionSelected}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
+												inputProps={dlt2InputProps}
+											/>
+											<Autosuggest
+												suggestions={developement3Suggestions}
+												onSuggestionsFetchRequested={this.onDlt3SuggestionsFetchRequested}
+												onSuggestionsClearRequested={this.onDlt3SuggestionsClearRequested}
+												onSuggestionSelected={this.onDlt3SuggestionSelected}
+												getSuggestionValue={publicUtils.getSuggestionDlt}
+												renderSuggestion={publicUtils.renderSuggestion}
+												inputProps={dlt3InputProps}
+											/>
 										</InputGroup.Prepend>
-										<Autocomplete
-											id="developLanguageCode1"
-											name="developLanguageCode1"
-											value={developLanguage1}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語1" type="text" {...params.inputProps}
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
-										<Autocomplete
-											id="developLanguageCode2"
-											name="developLanguageCode2"
-											value={developLanguage2}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語2" type="text" {...params.inputProps}
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
-										<Autocomplete
-											id="developLanguageCode3"
-											name="developLanguageCode3"
-											value={developLanguage3}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語3" type="text" {...params.inputProps}
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
 									</InputGroup>
 								</Col>
 
