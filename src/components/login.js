@@ -36,7 +36,7 @@ class Login extends Component {
 		loginModel["verificationCode"] = $("#verificationCode").val();
 		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(result =>{
-				if(result.data.errorsMessage === null && result.data.errorsMessage === undefined){
+				if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
 					this.props.history.push("/subMenu");
 				}else{
 					this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
