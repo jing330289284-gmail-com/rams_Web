@@ -156,10 +156,8 @@ class bpInfo extends React.Component {
 											onChange={this.bpOtherCompanyAdmissionEndDateChange}
 											dateFormat={"yyyy MM"}
 											autoComplete="off"
-											locale="pt-BR"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											// minDate={new Date()}
 											showDisabledMonthNavigation
 											className="form-control form-control-sm"
 											id="customerInfoDatePicker"

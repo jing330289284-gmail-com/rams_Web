@@ -23,7 +23,9 @@ import axios from 'axios';
 import $ from 'jquery';
 import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
+import individualSales from './individualSales';
 axios.defaults.withCredentials=true;
+
 
 class SubMenu extends Component {
 	state = {
@@ -145,7 +147,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage} />給料と単価</Accordion.Toggle>
 									<Accordion.Collapse eventKey="3">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />個人売上一覧</Link></ListGroup.Item>
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/individualSales"><img alt="title" src={open} />個人売上一覧</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />売上検索一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
@@ -223,6 +225,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
+								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />

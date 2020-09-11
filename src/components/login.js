@@ -4,6 +4,7 @@ import title from '../asserts/images/title.png';
 import $ from 'jquery'
 import axios from 'axios';
 import { Row,  Col , Form , Button , InputGroup , FormControl} from 'react-bootstrap';
+import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials=true;
 
 class Login extends Component {
@@ -12,6 +13,8 @@ class Login extends Component {
 		buttonText:"SMSを発信する",
 		btnDisable:false,
 		time:60,
+		errorsMessageShow: false,
+        errorsMessageValue:'',
 	}
 	componentWillMount(){
 		$("#sendVerificationCode").attr("disabled",true);
@@ -27,31 +30,24 @@ class Login extends Component {
 	 * ログインボタン
 	 */
 	login = () =>{
-		if($("#employeeNo").val() !== null && $("#password").val() !== null && 
-			$("#employeeNo").val() !== '' && $("#password").val() !== '' &&
-				$("#verificationCode").val() !== '' && $("#verificationCode").val() !== null){
-					var loginModel = {};
-					loginModel["employeeNo"] = $("#employeeNo").val();
-					loginModel["password"] = $("#password").val();
-					loginModel["verificationCode"] = $("#verificationCode").val();
-					axios.post("http://127.0.0.1:8080/login/login",loginModel)
-					.then(resultMap =>{
-						var employeeModel = resultMap.data.employeeModel;		
-						if(employeeModel !== null){//ログイン成功
-							this.props.history.push("/subMenu");
-						}else{//ログイン失敗
-							alert("入力した社員番号やパスワードや認証番号が間違いため、ログインできません");
-						}
-						})
-						.catch(function (error) {
-							alert("登录错误，请检查程序");
-						});
-		}else{
-			alert("社員番号とパスワードと検証番号を入力してください");
-		}
-		
+		var loginModel = {};
+		loginModel["employeeNo"] = $("#employeeNo").val();
+		loginModel["password"] = $("#password").val();
+		loginModel["verificationCode"] = $("#verificationCode").val();
+		axios.post("http://127.0.0.1:8080/login/login",loginModel)
+		.then(result =>{
+				if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+					this.props.history.push("/subMenu");
+				}else{
+					this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+				}
+			})
+			.catch(function (error) {
+				this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
+			});
 	}
     render() {
+		const {errorsMessageValue , } = this.state;
 		let timeChange;
 		let ti = this.state.time;
 		//关键在于用ti取代time进行计算和判断，因为time在render里不断刷新，但在方法中不会进行刷新
@@ -69,7 +65,7 @@ class Login extends Component {
 			this.setState({
 			  btnDisable: false,
 			  time: 60,
-			  buttonText: "发送验证码",
+			  buttonText: "SMSを発信する",
 			});
 		  }
 		};
@@ -78,30 +74,27 @@ class Login extends Component {
 		  var loginModel = {};
 		  loginModel["employeeNo"] = $("#employeeNo").val();
 		  loginModel["password"] = $("#password").val();
-		  if($("#employeeNo").val() !== null && $("#password").val() !== null && 
-		  		$("#employeeNo").val() !== '' && $("#password").val() !== ''){
-					axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
-					.then(resultMap =>{
-						if(!resultMap.data){
-							alert("社員番号またはパスワードが間違いため、認証番号は発送できません");
-						}else{
-							this.setState({
-								btnDisable: true,
-								buttonText: "60s後再発行",
-							  });
-							$("#verificationCode").attr("readOnly",false);
-							$("#login").attr("disabled",false);
-							//每隔一秒执行一次clock方法
-							  timeChange = setInterval(clock,1000);
-						}
-					})
-		  } else if($("#employeeNo").val() === null || $("#password").val() === null || 
-		  				$("#employeeNo").val() === '' || $("#password").val() === ''){
-							alert("社員番号とパスワードを入力してください。");
-		  }
+			axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
+			.then(result =>{
+				if(result.data.errorsMessage !== null && result.data.errorsMessage !== undefined){
+					this.setState({ errorsMessageShow: true,errorsMessageValue:result.data.errorsMessage});
+				}else{
+					this.setState({
+						btnDisable: true,
+						buttonText: "60s後再発行",
+						});
+					$("#verificationCode").attr("readOnly",false);
+					$("#login").attr("disabled",false);
+					//每隔一秒执行一次clock方法
+						timeChange = setInterval(clock,1000);
+				}
+			})
 		};
 		return (
 			<div style={{marginTop:"10%"}}>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<Row>
 					<Col sm={5}></Col>
 					<Col sm={7}>
