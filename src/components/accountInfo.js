@@ -116,16 +116,18 @@ class BankInfo extends Component {
      */
     accountTokuro(){
         var result = bankInfoJs.checkAccountName();
-        if(result){
+        if(result && bankInfoJs.torokuCheck()){
             var accountInfo = {};
             var formArray =$("#bankForm").serializeArray();
             $.each(formArray,function(i,item){
                 accountInfo[item.name] = item.value;     
             });
             this.props.accountTokuro(accountInfo);
-        }else{
+        }else if(!result){
             this.setState({ "errorsMessageShow": true,errorsMessageValue:'口座名義人をカタカナで入力してください'});
-        }   
+        }else if(!bankInfoJs.torokuCheck()){
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:'銀行関連を入力してください'});
+        }
     }
     render() {
         const {actionType , errorsMessageValue} =this.state;

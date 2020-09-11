@@ -24,7 +24,7 @@ class TopCustomerInfo extends Component {
      */
     componentDidMount(){
         var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
-        var topCustomerNo = this.props.topCustomerNo;//父画面のパラメータ（画面既存上位お客様情報）
+        var topCustomerNo = this.props.topCustomer;//父画面のパラメータ（画面既存上位お客様情報）
         console.log($("#topCustomerNameShita").val());
         var topCustomerInfo = this.props.topCustomerInfo;
         if(!$.isEmptyObject(topCustomerInfo)){//上位お客様追加でも修正したい場合

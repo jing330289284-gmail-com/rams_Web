@@ -42,6 +42,20 @@ export function setDisabled(){
     $('#futsu').attr("checked",true);
 }
 /**
+ * フォーマットチェック
+ */
+export function torokuCheck(){
+  if($("#bankCode").val() !== ''){
+    if(   $("#bankBranchName").val() === null || $("#bankBranchName").val() === '' ||
+          $("#bankBranchCode").val() === null || $("#bankBranchCode").val() === '' ||
+          $("#accountNo").val() === null || $("#accountNo").val() === '' ||
+          $("#accountName").val() === null || $("#accountName").val() === '' ){
+            return false;
+    }
+  }
+  return true;
+}
+/**
  * 活性になる
  */
 export function takeDisabled(){
