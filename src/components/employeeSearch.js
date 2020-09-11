@@ -333,9 +333,10 @@ class employeeSearch extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+										</InputGroup.Prepend>	
 											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
 											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
-										</InputGroup.Prepend>
+										
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -433,7 +434,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語1" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語1" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -446,7 +447,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語2" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語2" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -459,7 +460,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語3" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語3" type="text" {...params.inputProps}  className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -470,7 +471,8 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text><DatePicker
+											<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
+											<DatePicker
 												selected={this.state.intoCompanyYearAndMonthFrom}
 												onChange={this.inactiveintoCompanyYearAndMonthFrom}
 												locale="ja"
@@ -479,6 +481,7 @@ class employeeSearch extends React.Component {
 												showFullMonthYearPicker
 												id="datePicker"
 												className="form-control form-control-sm"
+												autoComplete="off"
 											/>～<DatePicker
 												selected={this.state.intoCompanyYearAndMonthTo}
 												onChange={this.inactiveintoCompanyYearAndMonthTo}
@@ -488,6 +491,7 @@ class employeeSearch extends React.Component {
 												showFullMonthYearPicker
 												id="datePicker"
 												className="form-control form-control-sm"
+												autoComplete="off"
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>

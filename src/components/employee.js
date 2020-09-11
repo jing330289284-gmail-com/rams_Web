@@ -1116,7 +1116,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語1"   type="text" {...params.inputProps} className="auto"  　id="developLanguage1"
+												<input placeholder="  開発言語1"   type="text" {...params.inputProps} className="auto"  　id="developLanguage1"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1128,7 +1128,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語2"  type="text" {...params.inputProps} className="auto" 　id="developLanguage2"
+												<input placeholder="  開発言語2"  type="text" {...params.inputProps} className="auto" 　id="developLanguage2"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1140,7 +1140,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語3"   type="text" {...params.inputProps} className="auto" 　id="developLanguage3"
+												<input placeholder="  開発言語3"   type="text" {...params.inputProps} className="auto" 　id="developLanguage3"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1152,7 +1152,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語4"  type="text" {...params.inputProps} className="auto" 　id="developLanguage4" 
+												<input placeholder="  開発言語4"  type="text" {...params.inputProps} className="auto" 　id="developLanguage4" 
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1164,7 +1164,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="開発言語5"  type="text" {...params.inputProps} className="auto" 　id="developLanguage5"
+												<input placeholder="  開発言語5"  type="text" {...params.inputProps} className="auto" 　id="developLanguage5"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1236,7 +1236,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="最寄駅"   type="text" {...params.inputProps} className="auto"　id="stationCode" 
+												<input placeholder="  最寄駅"   type="text" {...params.inputProps} className="auto"　id="stationCode" 
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
