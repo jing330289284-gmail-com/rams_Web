@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import $ from 'jquery';
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -32,7 +33,7 @@ class masterUpdate extends Component {
 			}
 		);
 	};
-
+	//onchange
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -100,43 +101,43 @@ class masterUpdate extends Component {
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["code"] = this.state.code;
 		axios.post("http://127.0.0.1:8080/masterUpdate/update", masterModel)
-			.then(function(result) {
-				if (result.data) {
-					alert("修正成功");
+			.then(result => {
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					alert("データが存在しています");
+					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					window.location.reload();
 				}
 			})
-			.catch(function(error) {
-				alert("页面加载错误，请检查程序");
+			.catch((error) => {
+				console.error("Error - " + error);
 			});
 	}
 
 	/**
 	 * 削除ボタン
 	 */
-	delete = (event) => {
+	delete = () => {
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
 			var masterModel = {};
 			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 			masterModel["code"] = this.state.code;
 			axios.post("http://127.0.0.1:8080/masterUpdate/delete", masterModel)
-				.then(function(result) {
-					if (result.data) {
-						alert("削除成功");
-						this.selectMaster(event);
-					} else {
-						alert("削除失敗");
-					}
+				.then(result => {
+					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					window.location.reload();
 				})
-				.catch(function(error) {
-					alert("页面加载错误，请检查程序");
+				.catch((error) => {
+					console.error("Error - " + error);
 				});
 		}
 	}
 
 	render() {
+		//表格样式设定
 		this.options = {
 			page: 1,  // which page you want to show as default
 			sizePerPage: 5,  // which size per page you want to locate as default
@@ -149,7 +150,7 @@ class masterUpdate extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { master, masterData } = this.state;
+		const { master, masterData, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -161,6 +162,12 @@ class masterUpdate extends Component {
 		};
 		return (
 			<div className="container col-7">
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "削除成功！"} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<Row inline="true">
 					<Col className="text-center">
 						<h2>共通マスター修正</h2>
@@ -188,7 +195,7 @@ class masterUpdate extends Component {
 									clearOnBlur
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="マスター名" type="text" {...params.inputProps}
+											<input placeholder="  マスター名" type="text" {...params.inputProps}
 												style={{ width: 225, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
@@ -207,24 +214,19 @@ class masterUpdate extends Component {
 							</InputGroup>
 						</Col>
 					</Row>
-					<Row>
-						<Col sm={2}></Col>
-						<Col sm={4} className="text-center">
-							<Button size="sm" onClick={this.update} variant="info" id="update" type="button" >
-								<FontAwesomeIcon icon={faEdit} />修正
-							</Button>
-						</Col>
-						<Col sm={4} className="text-center">
-							<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" >
-								<FontAwesomeIcon icon={faTrash} /> 削除
+					<div style={{ "textAlign": "center" }}>
+						<Button size="sm" onClick={this.update} variant="info" id="update" type="button" >
+							<FontAwesomeIcon icon={faEdit} />修正
+							</Button>{' '}
+						<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" >
+							<FontAwesomeIcon icon={faTrash} /> 削除
                            </Button>
-						</Col>
-					</Row>
+					</div>
 					<br />
 					<div>
-						<BootstrapTable selectRow={selectRow} data={masterData} pagination={true} options={this.options} >
-							<TableHeaderColumn dataField='code' width='60' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='data' headerAlign='center'>名称</TableHeaderColumn>
+						<BootstrapTable selectRow={selectRow} data={masterData} pagination={true} options={this.options} headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+							<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</Form>
