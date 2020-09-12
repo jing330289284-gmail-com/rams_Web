@@ -231,22 +231,22 @@ class employeeSearch extends React.Component {
 			mode: 'radio',
 			bgColor: 'pink',
 			hideSelectColumn: true,
-			clickToSelect: true,  
+			clickToSelect: true,
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
 		};
 		//テーブルの定義
 		const options = {
 			page: 1,
-			sizePerPage: 5,  
-			pageStartIndex: 1, 
-			paginationSize: 3,  
-			prePage: 'Prev', 
-			nextPage: 'Next', 
-			firstPage: 'First', 
-			lastPage: 'Last', 
-			paginationShowsTotal: this.renderShowsTotal,  
-			hideSizePerPage: true, 
+			sizePerPage: 5,
+			pageStartIndex: 1,
+			paginationSize: 3,
+			prePage: '<', 
+			nextPage: '>', 
+			firstPage: '<<', 
+			lastPage: '>>', 
+			paginationShowsTotal: this.renderShowsTotal,
+			hideSizePerPage: true,
 			expandRowBgColor: 'rgb(165, 165, 165)',
 			deleteBtn: this.createCustomDeleteButton,
 			onDeleteRow: this.onDeleteRow,
@@ -333,10 +333,10 @@ class employeeSearch extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-										</InputGroup.Prepend>	
-											<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
-											/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
-										
+										</InputGroup.Prepend>
+										<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
+										/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
+
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -434,7 +434,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語1" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -447,7 +447,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語2" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -460,7 +460,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語3" type="text" {...params.inputProps}  className="auto"
+													<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto"
 														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -540,7 +540,7 @@ class employeeSearch extends React.Component {
 					</Row>
 				</div>
 				<div >
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#B1F9D0' }} striped hover condensed >
+					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
