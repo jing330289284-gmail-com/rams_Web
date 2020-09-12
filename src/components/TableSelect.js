@@ -14,7 +14,6 @@ class TableSelect extends React.Component {
 			selectedValue: '',
 			everyWidth: 0,
 		}
-		this.updateData = this.updateData.bind(this);
 	}
 	componentDidMount() {
 		if (this.props.flag === 1) {
@@ -41,9 +40,6 @@ class TableSelect extends React.Component {
 	focus() {
 		this.refs.inputRef.focus();
 	}
-	updateData() {
-		this.props.onUpdate({ amount: this.state.amount, currency: this.state.currency });
-	}
 
 	onchange = (event, values) => {
 		if (this.props.flag === 1) {
@@ -64,9 +60,9 @@ class TableSelect extends React.Component {
 					ref='inputRef'
 					blurOnSelect={true}
 					options={this.state.allOption}
-					value={this.state.allOption.find(v => v.value === this.state.selectedValue) || {}}
+					value={this.state.allOption.find(v => v.value === this.state.selectedValue) || ""}
 					onChange={this.onchange}
-					getOptionLabel={(option) => option.text}
+					getOptionLabel={(option) => option.text?option.text:""}
 					renderInput={(params) => (
 						<div ref={params.InputProps.ref}>
 							<input /* placeholder="選択してください" */ type="text" {...params.inputProps}

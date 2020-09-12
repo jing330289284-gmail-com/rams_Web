@@ -42,7 +42,7 @@ class manageSituation extends React.Component {
 		salesSituationLists: [],// 明細
 		readFlag: true,// readonlyflag
 		style: {
-			"color": ""
+			"backgroundColor": ""
 		},// 単価エラー色
 		salesProgressCodes: [],// ステータス
 		allCustomer: [],// お客様レコード用
@@ -98,7 +98,7 @@ class manageSituation extends React.Component {
 					}
 
 					console.log(result.data);
-					
+
 					this.setState({
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
@@ -114,7 +114,7 @@ class manageSituation extends React.Component {
 						remark: '',　// 備考 
 						salesPriorityStatus: '',
 						style: {
-							"color": ""
+							"backgroundColor": ""
 						},
 						readFlag: true,
 						updateBtnflag: false,
@@ -198,8 +198,8 @@ class manageSituation extends React.Component {
 			this.formatCustome(no);
 		}
 		if (no === '5') {
-			this.state.salesSituationLists[this.state.rowNo - 1].customer = 
-			 this.state.salesSituationLists[this.state.rowNo - 1].nowCustomer;
+			this.state.salesSituationLists[this.state.rowNo - 1].customer =
+				this.state.salesSituationLists[this.state.rowNo - 1].nowCustomer;
 		}
 		this.formatType(no);
 	}
@@ -283,14 +283,6 @@ class manageSituation extends React.Component {
 				})
 			}
 		} else {
-			/*if (this.state.hopeLowestPrice > this.state.hopeHighestPrice) {
-				this.setState({
-					style: {
-						"color": "red"
-					},
-				})
-				alert("エラーメッセージはMSG009")
-			} else {*/
 			axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
 				.then(result => {
 					if (result.data != null) {
@@ -299,7 +291,7 @@ class manageSituation extends React.Component {
 								errorsMessageShow: true,
 								errorsMessageValue: result.data.errorsMessage,
 								style: {
-									"color": "red"
+									"backgroundColor": "red"
 								},
 							});
 						} else {
@@ -521,8 +513,10 @@ class manageSituation extends React.Component {
 			sizePerPage: 10,
 			pageStartIndex: 1,
 			paginationSize: 2,
-			prePage: 'Prev',
-			nextPage: 'Next',
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+			lastPage: '>>', // Last page button text
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
@@ -539,6 +533,11 @@ class manageSituation extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
 				</div>
+				<Row inline="true">
+					<Col className="text-center">
+						<h2>営業状況確認一覧</h2>
+					</Col>
+				</Row>
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row >
@@ -611,8 +610,8 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="stationCode1"
 										options={this.state.getstations}
-										getOptionLabel={(option) => option.name}
-										value={this.state.getstations.find(v => v.code === this.state.stationCode1) || {}}
+										getOptionLabel={(option) => option.name ? option.name : ""}
+										value={this.state.getstations.find(v => v.code === this.state.stationCode1) || ""}
 										onSelect={(event) => this.handleTag(event, 'stationCode1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
@@ -633,8 +632,8 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="interviewCustomer1"
 										options={this.state.customers}
-										getOptionLabel={(option) => option.name}
-										value={this.state.customers.find(v => v.code === this.state.interviewCustomer1) || {}}
+										getOptionLabel={(option) => option.name ? option.name : ""}
+										value={this.state.customers.find(v => v.code === this.state.interviewCustomer1) || ""}
 										onSelect={(event) => this.handleTag(event, 'interviewCustomer1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
@@ -676,16 +675,16 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="stationCode2"
 										options={this.state.getstations}
-										getOptionLabel={(option) => option.name}
-										value={this.state.getstations.find(v => v.code === this.state.stationCode2) || {}}
+										getOptionLabel={(option) => option.name?option.name:""}
+										value={this.state.getstations.find(v => v.code === this.state.stationCode2) || ""}
 										onSelect={(event) => this.handleTag(event, 'stationCode2')}
 										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="stationCode2" className="auto"
-													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
-											</div>
-										)}
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="stationCode2" className="auto"
+												style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+										</div>
+									)}
 									/>
 								</InputGroup>
 							</Col>
@@ -698,16 +697,16 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="interviewCustomer2"
 										options={this.state.customers}
-										getOptionLabel={(option) => option.name}
-										value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || {}}
+										getOptionLabel={(option) => option.name ? option.name:""}
+										value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || ""}
 										onSelect={(event) => this.handleTag(event, 'interviewCustomer2')}
 										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="interviewCustomer2" className="auto"
-													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
-											</div>
-										)}
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="interviewCustomer2" className="auto"
+												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+										</div>
+									)}
 									/>
 								</InputGroup>
 							</Col>
@@ -809,7 +808,7 @@ class manageSituation extends React.Component {
 						selectRow={selectRow}
 						cellEdit={cellEdit}
 						trClassName="customClass"
-						headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+						headerStyle={{ background: '#5599FF' }} striped hover condensed>
 						<TableHeaderColumn width='8%' dataField='rowNo' dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
