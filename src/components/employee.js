@@ -126,7 +126,7 @@ class employee extends React.Component {
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
-			picInfo : this.state.pictures
+			picInfo: this.state.pictures
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -312,6 +312,7 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				alert(data.residentCardInfo)
 				this.setState({
 					//employeeNo: date.employeeNo,//ピクチャ
 					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -351,8 +352,8 @@ class employee extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: ((data.postcode+"       ").replace("null","")).substring(0,3).replace("   ",""),//郵便番号
-					postcode2: ((data.postcode+"       ").replace("null","")).substring(3,4).replace("",""),//郵便番号
+					postcode: ((data.postcode + "       ").replace("null", "")).substring(0, 3).replace("   ", ""),//郵便番号
+					postcode2: ((data.postcode + "       ").replace("null", "")).substring(3, 4).replace("", ""),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -367,12 +368,12 @@ class employee extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					residentCardInfo: data.residentCardInfo,//在留カード
+					residentCardInfoFalg: data.residentCardInfo!== "" ? false :true,//在留カード
 					//resumeInfo1: "rrr",//履歴書
 					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeInfo2: data.resumeInfo2,//履歴書2
+					//resumeInfo2: data.resumeInfo2,//履歴書2
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
-					passportInfo: data.passportInfo,//パスポート
+				//	passportInfo: data.passportInfo,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -397,7 +398,7 @@ class employee extends React.Component {
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
 		});
-				console.log(this.state.pictures)
+		console.log(this.state.pictures)
 
 	}
 	//ImageUploaderを処理　終了
@@ -592,7 +593,7 @@ class employee extends React.Component {
 		}
 	}
 
-	
+
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
 		console.log(value)
@@ -641,8 +642,41 @@ class employee extends React.Component {
 
 	};
 
-	
-	
+	changeFile = (event,name) => {
+		var filePath = event.target.value;
+		var arr = filePath.split('\\');
+		var fileName = arr[arr.length - 1];
+	if(name==="residentCardInfo"){
+			this.setState({
+
+			residentCardInfo: filePath,
+			residentCardInfoName: fileName,
+		})
+		}else if(name==="resumeInfo1"){
+			this.setState({
+			resumeInfo1: filePath,
+			resumeInfo1Name: fileName,
+		})
+			
+		}else if(name==="resumeInfo2"){
+			this.setState({
+			resumeInfo2: filePath,
+			resumeInfo2Name: fileName,
+		})
+			
+		}else if
+			(name==="passportInfo"){
+			this.setState({
+			passportInfo: filePath,
+			passportInfoName: fileName,
+		})
+			
+		}
+		
+		
+		
+	}
+
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1116,7 +1150,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  開発言語1"   type="text" {...params.inputProps} className="auto"  　id="developLanguage1"
+												<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto" id="developLanguage1"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1128,7 +1162,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  開発言語2"  type="text" {...params.inputProps} className="auto" 　id="developLanguage2"
+												<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto" id="developLanguage2"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1140,7 +1174,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  開発言語3"   type="text" {...params.inputProps} className="auto" 　id="developLanguage3"
+												<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto" id="developLanguage3"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1152,7 +1186,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  開発言語4"  type="text" {...params.inputProps} className="auto" 　id="developLanguage4" 
+												<input placeholder="  開発言語4" type="text" {...params.inputProps} className="auto" id="developLanguage4"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1164,7 +1198,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  開発言語5"  type="text" {...params.inputProps} className="auto" 　id="developLanguage5"
+												<input placeholder="  開発言語5" type="text" {...params.inputProps} className="auto" id="developLanguage5"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1236,7 +1270,7 @@ class employee extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  最寄駅"   type="text" {...params.inputProps} className="auto"　id="stationCode" 
+												<input placeholder="  最寄駅" type="text" {...params.inputProps} className="auto" id="stationCode"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -1322,18 +1356,19 @@ class employee extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text><Form.File id="residentCardInfo" name="residentCardInfo" disabled={detailDisabled ? false : true} />
+										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text><Form.File id="residentCardInfo"
+											label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange= {(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
-
-
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text><input type="file" id="resumeInfo1" name="resumeInfo1" disabled={detailDisabled ? false : true}></input>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
+									<Form.File id="resumeInfo1"
+											label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange= {(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1348,7 +1383,10 @@ class employee extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text><Form.File id="resumeInfo2" name="resumeInfo2" disabled={detailDisabled ? false : true} />
+										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
+									<Form.File id="resumeInfo2"
+											label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange= {(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />
+									
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1363,7 +1401,9 @@ class employee extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text><Form.File id="passportInfo" name="passportInfo" disabled={detailDisabled ? false : true} />
+										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
+										<Form.File id="passportInfo" 
+											label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange= {(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
