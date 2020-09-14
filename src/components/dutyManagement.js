@@ -36,31 +36,36 @@ class dutyManagement extends React.Component {
 	//　初期化データ
 	initialState = {
 		yearAndMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1))).getTime(),
-		updateTimelist:"",
-		approvalStatus:'',
 		employeeList: [],
-		employeeNo: [],
-		employeeName: [],
-		customerName: [], 
-		stationName: [],
-		payOffRange: [],
-		workTime: [],
-		workTotalTimeHaveData: [],
-		employeeWorkTimeHaveData:[],
-		updateTimelist:[],
 		approvalStatuslist:[],
+		totalPersons:"",
+		averageWorkingTime:"",
+		totalWorkingTime:"",
 	};
 	//　検索
 	searchDutyManagement = () => {
 		const emp = {
-			yearAndMonth: this.state.yearAndMonth,
+			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
 			approvalStatus: this.state.approvalStatus,
 		};
 		axios.post("http://127.0.0.1:8080/dutyManagement/selectDutyManagement", emp)
 			.then(response => {
 				if (response.data != null) {
-					alert(response.data);
-					this.setState({ employeeList: response.data })
+					var totalPersons=response.data.length;
+					var averageWorkingTime=0;
+					var totalWorkingTime=0;
+					for(var i=0;i<totalPersons;i++){
+						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
+						if(totalWorkingTime<response.data[i].workTime){
+							totalWorkingTime=response.data[i].workTime;
+						}
+					}
+					if(isNaN( averageWorkingTime)){
+						averageWorkingTime=0
+					}else{
+						averageWorkingTime=averageWorkingTime/totalPersons;
+					}
+					this.setState({ employeeList: response.data,totalPersons: response.data.length,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
 				} else {
 					alert("err")
 				}
@@ -70,7 +75,7 @@ class dutyManagement extends React.Component {
    /**
      * 行の承認
      */
-    listApproval=()=>{
+    listApproval = () => {
         //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
         var a = window.confirm("承認していただきますか？");
         if(a){
@@ -79,41 +84,30 @@ class dutyManagement extends React.Component {
     }
     //　隠した承認ボタン
     createCustomApprovalButton = (onClick) => {
+	alert("rows");
         return (
-            <Button variant="info" id="approvalBtn"hidden　　onClick={ onClick } >承認</Button>
+            <Button variant="info" id="approvalBtn" hidden onClick={onClick} >承認</Button>
         );
       }
       //　隠した承認ボタンの実装
       onApprovalRow =(rows)=>{
-        var id = this.state.rowNo;
-            var dutyMangementInfoList = this.state.dutyMangementInfoData;
-            for(let i=dutyMangementInfoList.length-1; i>=0; i--){
-                if(dutyMangementInfoList[i].rowNo === id){
-                    dutyMangementInfoList.splice(i,1);
-                }
-            }
-            if(dutyMangementInfoList.length !== 0){
-                for(let i=dutyMangementInfoList.length-1; i>=0; i--){
-                    dutyMangementInfoList[i].rowNo = (i + 1);
-                }  
-            }
-            this.setState({
-                dutyMangementInfoData:dutyMangementInfoList,
-                rowNo:'',
-            })
-            var dutyMangementInfoMod = {};
-            dutyMangementInfoMod["customerNo"] = this.state.customerNo;
-            axios.post("http://127.0.0.1:8080/dutyMangement/updateDutyManagement", dutyMangementInfoMod)
-            .then(function (result) {
-                if(result.data === 0){
-                    alert("承認成功");
-                }else if(result.data === 1){
-                    alert("承認失败");
-                }
-            })
-            .catch(function (error) {
-                alert("承認失败，请检查程序");
-            });
+	alert(rows);
+		const emp = {
+			employeeNo: this.state.employeeNo,
+			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
+		}
+		alert(emp);
+		axios.post("http://127.0.0.1:8080/dutyMangement/updateDutyManagement", emp)
+		.then(function (result) {
+		    if(result.data === 0){
+		        alert("承認成功");
+		    }else if(result.data === 1){
+		        alert("承認失败");
+		    }
+		})
+		.catch(function (error) {
+		    alert("承認失败，请检查程序");
+		});
       }
     //　承認
     customConfirm(next, dropRowKeys) {
@@ -123,33 +117,39 @@ class dutyManagement extends React.Component {
 	state = {
 		yearAndMonth: new Date()
 	};
-
+  /**
+     * 作業報告書ボタン
+     */
+    workRepot=()=>{
+ 
+    }
 	//　年月
 	inactiveYearAndMonth = (date) => {
 		this.setState(
 			{
-				yearAndMonth: date
+				yearAndMonth: date,
 			}
 		);
 	};
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
-		$("#syounin").attr("disabled",false);
+		
 		if (isSelected) {
 			this.setState(
 				{
+					rowNo:row.rowNo,
 					rowSelectEmployeeNo: row.employeeNo,
 				}
 			);
-			$('button[name="clickButton"]').prop('disabled', false);
+			$("#syounin").attr("disabled",false);
 		} else {
-			$("#syounin").attr("disabled",true);
 			this.setState(
 				{
+					rowNo: '',
 					rowSelectEmployeeNo: '',
 				}
 			);
-			$('button[name="clickButton"]').prop('disabled', true);
+			$("#syounin").attr("disabled",true);
 		}
 	}
 
@@ -162,7 +162,7 @@ class dutyManagement extends React.Component {
 	}
 
 	render() {
-		const {employeeNo,employeeName, customerName, stationName, payOffRange, workTime, employeeWorkTimeHaveData, updateTimelist,approvalStatuslist,approvalStatus,employeeList} = this.state;
+		const {approvalStatus,employeeList} = this.state;
 		//　テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -241,35 +241,40 @@ class dutyManagement extends React.Component {
 				<div >
 	                <br/>
                     <Row>
-						<Col sm={1}>
+						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}>稼動人数：{this.state.totalPersons}</font>
 						</Col>
-						<Col sm={1}>
+						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}>平均稼働時間：{this.state.averageWorkingTime}</font>
 						</Col>
-						<Col sm={1}>
+						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}>最大稼働時間：{this.state.totalWorkingTime}</font>
 						</Col>
-                        <Col sm={7}>
-                        </Col>
                         <Col sm={2}>
-                            <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" id="syounin" onClick={this.listApproval} > <FontAwesomeIcon icon={faTrash} />承認</Button>
-                            </div>
                         </Col>
+                        <Col sm={4}>
+                            <div style={{ "float": "right" }}>
+                               <Button variant="info" size="sm" id="syounin" onClick={this.listApproval} >
+									<FontAwesomeIcon icon={faTrash} />承認
+								</Button>
+		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot" >
+	                          		 作業報告書
+		                        </Button>                   
+	 						</div>
+						</Col>  
                     </Row>
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
-						<TableHeaderColumn width='95'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
+					<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
+						<TableHeaderColumn width='95'　tdStyle={ { padding: '.25em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>所属お客様</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
 						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='workTotalTimeHaveData'>アップロード</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeWorkTimeHaveData'>登録済み</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='updateTimelist'>更新日付</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='approvalStatuslist'>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='overTimePay'>残業代/控除</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='checkSection'>確認区分</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.65em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='approvalStatus'>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
