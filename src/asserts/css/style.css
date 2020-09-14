@@ -379,5 +379,22 @@ body {
 	background-color: #b6b2b2;
 	color: #ffc107;
 }
+.custom　{
+height:31px;
+}
+
+.custom-file {
+	height:31px;
+	}
+	#custom-file {
+	height:31px;
+	}
+	.custom-file-input {
+	height:31px;
+	}
+	
+		.custom-file-label {
+	height:31px;
+	}
 
 

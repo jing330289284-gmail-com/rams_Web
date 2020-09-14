@@ -706,7 +706,7 @@ class employee extends React.Component {
 				</Modal>
 				{/*　 諸費用 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-subCost">
+					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-expensesInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
