@@ -9,18 +9,16 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
-import TopCustomerInfo from './topCustomerInfo';
 import masterInsert from './masterInsert';
 import masterUpdate from './masterUpdate';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
-import PasswordSet from './passwordSet';
+import WagesInfo from './wagesInfo';
 import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
 import axios from 'axios';
-import $ from 'jquery';
 import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
 import individualSales from './individualSales';
@@ -147,6 +145,7 @@ class SubMenu extends Component {
 									<Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage} />給料と単価</Accordion.Toggle>
 									<Accordion.Collapse eventKey="3">
 										<ListGroup variant="flush">
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/wagesInfo"><img alt="title" src={open} />給料情報</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/individualSales"><img alt="title" src={open} />個人売上一覧</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />売上検索一覧</Link></ListGroup.Item>
 										</ListGroup>
@@ -226,6 +225,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
 								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
+								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />

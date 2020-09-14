@@ -7,7 +7,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './accountInfo';
-import SubCost from './costInfo';
+import SubCost from './expensesInfo';
 import BpInfoModel from './bpInfo';
 import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';

@@ -74,22 +74,26 @@ export function getdropDown(method) {
 	return array;
 }
 //　ドロップダウン  多くメソッド
-export function getPublicDropDown(methodArray) {
+export function getPublicDropDown(methodNameList) {
 	var outArray = [];
-	for (var i = 0; i < methodArray.length; i++) {
-		$.ajax({
-			type: "POST",
-			url: "http://127.0.0.1:8080/" + methodArray[i],
-			async: false,
-			success: function(msg) {
+	var par = JSON.stringify(methodNameList);
+	$.ajax({
+		type: "POST",
+		url: "http://127.0.0.1:8080/initializationPage",
+		data:par,
+		async: false,
+		contentType:"application/json",
+		success: function(resultList) {
+			for(let j = 0;j < resultList.length; j++){
 				var array = [{ code: '', name: '選択ください' }];
-				for (var i in msg) {
-					array.push(msg[i])
+				var list = resultList[j];
+				for (var i in list) {
+					array.push(list[i])
 				}
 				outArray.push(array);
 			}
-		});
-	}
+		}
+	});
 	return outArray;
 }
 
