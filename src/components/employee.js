@@ -65,6 +65,7 @@ class employee extends React.Component {
 		developLanguage5: '',
 		developLanguageMaster: [],
 		stationCode: '',
+		residentCardInfoFlag: false,
 	};
 	//　　リセット
 	resetBook = () => {
@@ -126,7 +127,6 @@ class employee extends React.Component {
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
-			picInfo: this.state.pictures
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -211,7 +211,7 @@ class employee extends React.Component {
 		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
 		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
 		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
-		formData.append('pictures', this.state.pictures)
+		formData.append('pictures', this.state.pictures[0])
 		axios.post("http://127.0.0.1:8080/employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
@@ -312,7 +312,6 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
-				alert(data.residentCardInfo)
 				this.setState({
 					//employeeNo: date.employeeNo,//ピクチャ
 					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -368,12 +367,12 @@ class employee extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoFalg: data.residentCardInfo!== "" ? false :true,//在留カード
-					//resumeInfo1: "rrr",//履歴書
+					residentCardInfoFlag: data.residentCardInfo!== "" && data.residentCardInfo!== null ? true :false,//在留カード
+					resumeInfo1Flag: data.resumeInfo1!== "" && data.resumeInfo1!== null ? true :false,//履歴書
 					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					//resumeInfo2: data.resumeInfo2,//履歴書2
+					resumeInfo2Flag: data.resumeInfo2!== "" && data.resumeInfo2!== null ? true :false,//履歴書2
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
-				//	passportInfo: data.passportInfo,//パスポート
+					passportInfoFlag: data.passportInfo!== "" && data.passportInfo!== null ? true :false,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -1356,8 +1355,10 @@ class employee extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text><Form.File id="residentCardInfo"
-											label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange= {(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />
+										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
+										{this.state.residentCardInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
+                                        <Form.File id="residentCardInfo"
+											label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange= {(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1367,8 +1368,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
+									{this.state.resumeInfo1Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
 									<Form.File id="resumeInfo1"
-											label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange= {(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />
+											label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange= {(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1384,8 +1386,10 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
+									{this.state.resumeInfo2Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
+
 									<Form.File id="resumeInfo2"
-											label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange= {(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />
+											label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange= {(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />}
 									
 									</InputGroup.Prepend>
 								</InputGroup>
@@ -1402,8 +1406,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
+										{this.state.passportInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
 										<Form.File id="passportInfo" 
-											label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange= {(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />
+											label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange= {(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
