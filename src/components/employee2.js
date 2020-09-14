@@ -7,7 +7,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './accountInfo';
-import SubCost from './costInfo';
+import SubCost from './expensesInfo';
 import BpInfoModel from './bpInfo';
 import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';
@@ -394,6 +394,8 @@ class employee extends React.Component {
 
 	//ImageUploaderを処理　開始
 	onDrop(pictureFiles, pictureDataURLs) {
+				console.log(this.state.pictures.concat(pictureFiles));
+
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
 		});
@@ -704,7 +706,7 @@ class employee extends React.Component {
 				</Modal>
 				{/*　 諸費用 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-subCost">
+					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-expensesInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -803,7 +805,7 @@ class employee extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											maxDate={new Date()}
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
@@ -948,7 +950,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -971,7 +973,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -993,7 +995,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
@@ -1017,7 +1019,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1143,6 +1145,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1155,6 +1158,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1167,6 +1171,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1179,6 +1184,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1191,6 +1197,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1217,7 +1224,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1263,6 +1270,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
+									disabled={detailDisabled ? false : true}
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
@@ -1322,7 +1330,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}

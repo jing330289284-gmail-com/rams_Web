@@ -4,8 +4,8 @@ const axios = require('axios');
 
 export function checkRowData(row){
 	for (var i = 0; i < row.cells.length; i++)	{
-		console.log(i);
-		console.log(row.cells[i].classList.remove("dutyRegistration-ErrorData"));
+//		console.log(i);
+//		console.log(row.cells[i].classList.remove("dutyRegistration-ErrorData"));
 	}
 }
 export function addRowClass(row, ClassName){

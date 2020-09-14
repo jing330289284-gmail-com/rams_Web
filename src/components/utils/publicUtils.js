@@ -74,22 +74,26 @@ export function getdropDown(method) {
 	return array;
 }
 //　ドロップダウン  多くメソッド
-export function getPublicDropDown(methodArray) {
+export function getPublicDropDown(methodNameList) {
 	var outArray = [];
-	for (var i = 0; i < methodArray.length; i++) {
-		$.ajax({
-			type: "POST",
-			url: "http://127.0.0.1:8080/" + methodArray[i],
-			async: false,
-			success: function(msg) {
+	var par = JSON.stringify(methodNameList);
+	$.ajax({
+		type: "POST",
+		url: "http://127.0.0.1:8080/initializationPage",
+		data:par,
+		async: false,
+		contentType:"application/json",
+		success: function(resultList) {
+			for(let j = 0;j < resultList.length; j++){
 				var array = [{ code: '', name: '選択ください' }];
-				for (var i in msg) {
-					array.push(msg[i])
+				var list = resultList[j];
+				for (var i in list) {
+					array.push(list[i])
 				}
 				outArray.push(array);
 			}
-		});
-	}
+		}
+	});
 	return outArray;
 }
 
@@ -344,4 +348,31 @@ export async function calApi(date) {
 
 };
 
+//diff time, 11:30 - 09:00 = 2.5(H)
+export function timeDiff(startTime, endTime) {
+	let result = 0;
+	let startMinute = 0;
+	let endMinute = 0;
+	let temp = "";
+	
+	if (!startTime || !endTime)	{
+		result = "";
+	}
+	else	{
+		temp = startTime.split(":");
+		startMinute = Number(temp[0]) * 60 + Number(temp[1]);
+		temp = endTime.split(":");
+		endMinute = Number(temp[0]) * 60 + Number(temp[1]);
+		result = (endMinute - startMinute) / 60;
+	}
+	return result;
+}
+//is Null?
+export function isNull(obj) {
+	return (obj === undefined || isNaN(obj) || obj === null);
+}
+//Null to empty
+export function nullToEmpty(obj) {
+	return (isNull(obj))?"":obj;
+}
 
