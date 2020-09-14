@@ -332,7 +332,8 @@ class WagesInfo extends Component {
                     centered 
                     backdrop="static" 
                     onHide={this.handleHideModal} 
-                    show={costInfoShow}>
+                    show={costInfoShow}
+                    dialogClassName="modal-expensesInfo">
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body >

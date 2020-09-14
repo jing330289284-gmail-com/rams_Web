@@ -212,7 +212,7 @@ class ExpensesInfo extends Component {
                                     placeholder="例：10000"/>
                                 </InputGroup>
                             </Col>
-                            <Col sm={3}>
+                            <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                     <InputGroup.Text>反映年月</InputGroup.Text>
@@ -239,6 +239,29 @@ class ExpensesInfo extends Component {
                                         style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                                     </InputGroup.Append>
                                 </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={4}></Col>
+                            <Col sm={2} className="text-center">
+                                    <Button 
+                                    block 
+                                    size="sm"
+                                    disabled={actionType === "detail" ? true : false}
+                                    variant="info">
+                                        <FontAwesomeIcon icon={faSave} />登録
+                                    </Button>
+                            </Col>
+                            <Col sm={2} className="text-center">
+                                    <Button 
+                                    block 
+                                    size="sm" 
+                                    disabled={actionType === "detail" ? true : false}
+                                    type="reset"
+                                    variant="info" 
+                                    value="Reset" >
+                                        <FontAwesomeIcon icon={faUndo} />リセット
+                                    </Button>
                             </Col>
                         </Row>
                     </Form>
