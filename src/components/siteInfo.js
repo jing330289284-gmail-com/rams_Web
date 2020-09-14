@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -21,29 +21,24 @@ class siteInfo extends Component {
 		this.onchange = this.onchange.bind(this);
 	}
 	initialState = {
-		payOffRange1: '',
-		payOffRange2: '',
+		payOffRange1: '0',
+		payOffRange2: '0',
 		siteMaster: [],
 		payOffRangeStatus: [],
 		topCustomerMaster: [],
 		levelMaster: [],
 		customerMaster: [],
-		developLanguageMaster: []
+		developLanguageMaster: [],
+		typeOfIndustryMaster: [], // 業種
+		employeeInfo: [],
+		employeeName: '',
+		getstations: [], // 場所
 	};
 
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
 		})
-	}
-
-	fixed = event => {
-		$("#payOffRange2").prop('disabled', false);
-		this.onchange(event);
-		if (event.target.value === "0") {
-			this.setState({ "payOffRange2": event.target.value })
-			$("#payOffRange2").prop('disabled', true);
-		}
 	}
 
 	state = {
@@ -69,7 +64,7 @@ class siteInfo extends Component {
 	};
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage"]
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getEmployeeName", "getTypeOfIndustry", "getStation"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -79,7 +74,9 @@ class siteInfo extends Component {
 				customerMaster: data[3].slice(1),//お客様
 				topCustomerMaster: data[4].slice(1),//トップお客様
 				developLanguageMaster: data[5].slice(1),//開発言語
-
+				employeeInfo: data[6].slice(1),//社員名
+				typeOfIndustryMaster: data[7].slice(1),//業種
+				getstations: data[8].slice(1),//　場所 
 			}
 		);
 	};
@@ -99,6 +96,67 @@ class siteInfo extends Component {
 				console.error("Error - " + error);
 			});
 	}
+	//reset
+	reset = () => {
+		this.setState(() => this.resetStates);
+	};
+	//リセット　reset
+	resetStates = {
+		customerNo: '', topCustomerNo: '', typeOfIndustryCode: '',
+		developLanguageCode: '', stationCode: '', employeeName: ''
+	};
+
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
+				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
+					case 'customerNo':
+						this.setState({
+							customerNo: value,
+						})
+						break;
+					case 'topCustomerNo':
+						this.setState({
+							topCustomerNo: value,
+						})
+						break;
+					case 'stationCode':
+						this.setState({
+							stationCode: value,
+						})
+						break;
+					case 'typeOfIndustryCode':
+						this.setState({
+							typeOfIndustryCode: value,
+						})
+						break;
+					case 'developLanguageCode':
+						this.setState({
+							developLanguageCode: value,
+						})
+						break;
+					default:
+				}
+			}
+		}
+
+	};
 	//登録処理
 	tokuro = () => {
 		if ($("#payOffRange2").val() < $("#payOffRange1").val()) {
@@ -134,17 +192,28 @@ class siteInfo extends Component {
 				alert("登录错误，请检查程序");
 			});
 	}
+	renderShowsTotal(start, to, total) {
+		return (
+			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+				{start}から  {to}まで , 総計{total}
+			</p>
+		);
+	}
 	render() {
 		this.options = {
-			sizePerPage: 5,
-			pageStartIndex: 1,
-			paginationSize: 2,
-			prePage: '<<',
-			nextPage: '>>',
-			hideSizePerPage: true,
-			alwaysShowAllBtns: true,
+			page: 1,  // which page you want to show as default
+			sizePerPage: 5,  // which size per page you want to locate as default
+			pageStartIndex: 1, // where to start counting the pages
+			paginationSize: 3,  // the pagination bar size.
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+			lastPage: '>>', // Last page button text
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
+			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 		};
-		const { payOffRange1, payOffRange2, workState, siteData, employeeName, siteRoleCode, levelCode, customer, topCustomer, developLanguage, time } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -171,12 +240,25 @@ class siteInfo extends Component {
 						</Form.Group>
 						<Form.Group>
 							<Row>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="employeeName" name="employeeName" value={employeeName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											options={this.state.employeeInfo}
+											getOptionLabel={(option) => option.name}
+											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="例：佐藤真一" type="text" {...params.inputProps} className="auto"
+														style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
 									</InputGroup>
 								</Col>
 							</Row>
@@ -195,6 +277,7 @@ class siteInfo extends Component {
 												name="admissionStartDate"
 												className="form-control form-control-sm"
 												id="admissionStartDate"
+												autoComplete="off"
 												locale="ja"
 											/>
 										</InputGroup.Prepend>
@@ -228,28 +311,13 @@ class siteInfo extends Component {
 												className="form-control form-control-sm"
 												id="admissionEndDate"
 												locale="ja"
+												autoComplete="off"
 												disabled={this.state.workState === "0" ? true : false}
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off">
-											{this.state.levelMaster.map(date =>
-												<option key={date.code} value={date.code}>
-													{date.name}
-												</option>
-											)}
-										</Form.Control>
-									</InputGroup>
-								</Col>
-							</Row>
 
-							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -258,12 +326,29 @@ class siteInfo extends Component {
 										<FormControl id="systemName" name="systemName" type="text" placeholder="例：請求システム" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
+							</Row>
+
+							<Row>
+
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="location" name="location" placeholder="例：秋葉原" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<Autocomplete
+											id="stationCode"
+											name="stationCode"
+											value={this.state.getstations.find(v => v.name === this.state.stationCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'stationCode')}
+											options={this.state.getstations}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto"
+														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
 									</InputGroup>
 
 								</Col>
@@ -275,12 +360,13 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											value={customer}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
+											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="お客様名" type="text" {...params.inputProps}
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto"
 														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -295,13 +381,35 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={topCustomer}
+											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
 											options={this.state.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="トップお客様名" type="text" {...params.inputProps}
+													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto"
 														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="developLanguageCode"
+											name="developLanguageCode"
+											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
+											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto"
+														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
@@ -328,7 +436,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select"
-											onChange={this.fixed}
+											onChange={this.onchange}
 											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off">
 											{this.state.payOffRangeStatus.map(data =>
@@ -340,8 +448,8 @@ class siteInfo extends Component {
 										〜
 											<Form.Control as="select"
 											onChange={this.onchange}
-											id="payOffRange2" name="payOffRange2" value={payOffRange2}
-											autoComplete="off" disabled>
+											id="payOffRange2" name="payOffRange2" value={this.state.payOffRange1 === '0' ? '0' : payOffRange2}
+											autoComplete="off" disabled={this.state.payOffRange1 === '0' ? true : false} >
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -350,27 +458,8 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="developLanguageCode"
-											name="developLanguageCode"
-											value={developLanguage}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="開発言語" type="text" {...params.inputProps}
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
+
+								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
@@ -382,6 +471,28 @@ class siteInfo extends Component {
 												</option>
 											)}
 										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={2}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off">
+											{this.state.levelMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={2}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -398,15 +509,28 @@ class siteInfo extends Component {
 										<FormControl id="related4Employees" name="related4Employees" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<Autocomplete
+											id="typeOfIndustryCode"
+											name="typeOfIndustryCode"
+											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
+											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
+											options={this.state.typeOfIndustryMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto"
+														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
 									</InputGroup>
 								</Col>
-								<Col sm={4}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
@@ -416,19 +540,14 @@ class siteInfo extends Component {
 								</Col>
 							</Row>
 
-							<Row>
-								<Col sm={4}></Col>
-								<Col sm={2} className="text-center">
-									<Button size="sm" type="reset" variant="info" >
-										<FontAwesomeIcon icon={faUndo} /> リセット
+							<div style={{ "textAlign": "center" }}>
+								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
+									<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
+								</Button>{' '}
+								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
+									<FontAwesomeIcon icon={faUndo} /> リセット
                                     </Button>
-								</Col>
-								<Col sm={2} className="text-center">
-									<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button">
-										<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
-									</Button>
-								</Col>
-							</Row>
+							</div>
 						</Form.Group>
 					</Form>
 					<Row>
@@ -438,21 +557,23 @@ class siteInfo extends Component {
 							<div style={{ "float": "right" }}>
 								<Button variant="info" size="sm" id="revise"><FontAwesomeIcon icon={faEdit} />修正</Button>
 								{' '}
-								<Button variant="info" size="sm" id="delete"><FontAwesomeIcon icon={faEdit} />削除</Button>
+								<Button variant="info" size="sm" id="delete"><FontAwesomeIcon icon={faTrash} />削除</Button>
 							</div>
 						</Col>
 					</Row>
 					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} >
-							<TableHeaderColumn dataField='workDate' isKey>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName'>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='location'>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName'>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='topCustomerName'>トップ客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName'>言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName'>役割</TableHeaderColumn>
-							<TableHeaderColumn dataField='remark'>備考</TableHeaderColumn>
+						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+							<TableHeaderColumn dataField='workDate' width='110' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }}>システム</TableHeaderColumn>
+							<TableHeaderColumn dataField='location' width='58' tdStyle={{ padding: '.45em' }}>場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='topCustomerName' width='58' tdStyle={{ padding: '.45em' }}>トップ客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }}>お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' width='60' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice' width='35' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }}>言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' width='32' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' width='32' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+							<TableHeaderColumn dataField='remark' width='58' tdStyle={{ padding: '.45em' }}>備考</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</div>

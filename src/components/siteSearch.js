@@ -23,8 +23,8 @@ class siteSearch extends Component {
 	}
 	//初期化
 	initialState = {
-		payOffRange1: '',// 単価1
-		payOffRange2: '',// 単価2
+		payOffRange1: '0',// 単価1
+		payOffRange2: '0',// 単価2
 		siteMaster: [],// 役割
 		payOffRangeStatus: [],// 精算時間
 		topCustomerMaster: [],// トップお客様
@@ -35,6 +35,9 @@ class siteSearch extends Component {
 		employeeStatuss: [], // 社員区分
 		customerNo: '',
 		topCustomerNo: '',
+		employeeInfo: [],
+		employeeName:'',
+		
 	};
 
 	onchange = event => {
@@ -42,15 +45,7 @@ class siteSearch extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
-	//时间精算 入力框1固定的时候2也变成固定且为非活性
-	fixed = event => {
-		$("#payOffRange2").prop('disabled', false);
-		this.onchange(event);
-		if (event.target.value === "0") {
-			this.setState({ "payOffRange2": event.target.value })
-			$("#payOffRange2").prop('disabled', true);
-		}
-	}
+
 	//时间入力框初始值
 	state = {
 		admissionStartDate: new Date(),
@@ -74,7 +69,7 @@ class siteSearch extends Component {
 	};
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployee"]
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployee", "getEmployeeName"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -86,6 +81,7 @@ class siteSearch extends Component {
 				developLanguageMaster: data[5].slice(1),//開発言語
 				typeOfIndustryMaster: data[6].slice(1),//業種
 				employeeStatuss: data[7],// 社員区分
+				employeeInfo: data[8].slice(1)//社員名
 			}
 		);
 	};
@@ -100,7 +96,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: ''
+		developLanguageCode: '', stationCode: '',employeeName:''
 	};
 
 	// AUTOSELECT select事件
@@ -115,8 +111,14 @@ class siteSearch extends Component {
 				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
 				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
 				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined) {
+				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
 					case 'customerNo':
 						this.setState({
 							customerNo: value,
@@ -163,6 +165,7 @@ class siteSearch extends Component {
 		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
+		SiteSearchModel["employeeName"] = $("#employeeName").val()
 		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
 		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
 		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
@@ -206,7 +209,7 @@ class siteSearch extends Component {
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 		};
-		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, employeeName, siteRoleCode, bpCustomer, topCustomer, developLanguage, stationCode, typeOfIndustryCode, dataAcquisitionPeriod, errorsMessageValue, customerNo } = this.state;
+		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, siteRoleCode, dataAcquisitionPeriod, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -241,7 +244,20 @@ class siteSearch extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員・BP名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="employeeName" name="employeeName" placeholder="例：田中" value={employeeName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											options={this.state.employeeInfo}
+											getOptionLabel={(option) => option.name}
+											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="例：佐藤真一" type="text" {...params.inputProps} className="auto"
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -402,7 +418,7 @@ class siteSearch extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">精算</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select"
-											onChange={this.fixed}
+											onChange={this.onchange}
 											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off">
 											{this.state.payOffRangeStatus.map(data =>
@@ -414,8 +430,8 @@ class siteSearch extends Component {
 										〜
 											<Form.Control as="select"
 											onChange={this.onchange}
-											id="payOffRange2" name="payOffRange2" value={payOffRange2}
-											autoComplete="off" disabled>
+											id="payOffRange2" name="payOffRange2" value={this.state.payOffRange1 === '0' ? '0' : payOffRange2}
+											autoComplete="off" disabled={this.state.payOffRange1 === '0' ? true : false} >
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
