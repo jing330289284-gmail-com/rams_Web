@@ -115,6 +115,11 @@ class salesSendLetter extends React.Component {
 
 		return (
 			<div>
+				<Row inline="true">
+                    <Col  className="text-center">
+                    <h2>お客様選択（要員送信）</h2>
+                    </Col>
+                </Row>
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 
