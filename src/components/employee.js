@@ -805,7 +805,7 @@ class employee extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											maxDate={new Date()}
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
@@ -950,7 +950,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -973,7 +973,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -995,7 +995,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
@@ -1019,7 +1019,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1224,7 +1224,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1330,7 +1330,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
