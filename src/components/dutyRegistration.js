@@ -21,6 +21,7 @@ import * as publicUtils from './utils/publicUtils.js';
 
 import BreakTime from './breakTime';
 import * as DutyRegistrationJs from './dutyRegistrationJs.js';
+axios.defaults.withCredentials=true;
 
 
 class DutyRegistration extends React.Component {
@@ -34,6 +35,8 @@ class DutyRegistration extends React.Component {
 			year: new Date().getFullYear(),
 			month: (new Date().getMonth() + 1).toString().padStart(2, "0"),
 //			status: {sleep2sleep: 0 ,work2work: 1, sleep2work: 2, work2sleep: 3},
+			workDays: 0,
+			workHours: 0,
 		}
 		this.options = {
 			defaultSortName: 'day',
@@ -49,14 +52,24 @@ class DutyRegistration extends React.Component {
 			beforeSaveCell: this.beforeSaveCell,
 			afterSaveCell: this.afterSaveCell
 		};
+		this.valueChange = this.valueChange.bind(this);
+	}
+	//onchange
+	valueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value
+		})
 	}
 	//リセット化
 	resetState = {
+		siteCustomer: "",
 	};
 	//初期化メソッド
 	componentDidMount() {
 		var dateData = [];
 		var monthDays = new Date(this.state.year, this.state.month, 0).getDate();
+		let workDays = 0;
+		let workHours = 0;
 		for (var i = 0; i < monthDays; i++)	{
 			dateData[i] = {};
 			dateData[i]['id'] = i;
@@ -75,9 +88,13 @@ class DutyRegistration extends React.Component {
 			else	{
 				dateData[i]['isWork'] = 1;
 				dateData[i]['hasWork'] = this.state.hasWork[1];
+				dateData[i]['sleepHour'] = 1;
+			}
+			if (dateData[i]["hasWork"] == this.state.hasWork[1])	{
+				workDays++;
 			}
 		}
-		this.setState({ dateData: dateData })
+		this.setState({ dateData: dateData, workDays: workDays, workHours: workHours })
 		console.log(new Date("2020/08/02").getDay());
 		console.log(this.state.month);
 	}
@@ -117,6 +134,15 @@ class DutyRegistration extends React.Component {
 			return baseCss;
 		}
 	}
+	hasWorkCallback(value, row)	{
+//		if (cell == "1111")	{
+//			alert(11);
+//			return;
+//		}
+		console.log(value);
+		console.log(row);
+		return true;
+	}
 	startTimeCallback(cell, row, rowIndex, columnIndex)	{
 //		if (cell == "1111")	{
 //			alert(11);
@@ -125,7 +151,7 @@ class DutyRegistration extends React.Component {
 		return cell;
 	}
 	// check cell
-	beforeSaveCell(row, cellName, cellValue)	{
+	beforeSaveCell = (row, cellName, cellValue) =>	{
 		var regExp = /.*/;		
 		switch (cellName)	{
 			case "startTime":
@@ -139,9 +165,9 @@ class DutyRegistration extends React.Component {
 		return true;
 	}
 	// check cell
-	afterSaveCell(row, cellName, cellValue)	{
+	afterSaveCell = (row, cellName, cellValue) =>	{
 		DutyRegistrationJs.removeRowAllClass($(".dutyRegistration-DataTableRow")[row.id]);		
-		if (row.isWork == 1 && row.hasWork == "出勤")	{
+		if (row.isWork == 1 && row.hasWork == this.state.hasWork[1])	{
 			DutyRegistrationJs.addRowClass($(".dutyRegistration-DataTableRow")[row.id], "dutyRegistration-Work2Work");			
 		}
 		else if (row.isWork == 0 && row.hasWork == "出勤")	{
@@ -156,10 +182,52 @@ class DutyRegistration extends React.Component {
 		console.log(row);
 //		console.log($(".dutyRegistration-DataTableRow")[row.id].cells[0].style.backgroundColor = "#00FF00");
 //		DutyRegistrationJs.checkRowData($(".dutyRegistration-DataTableRow")[row.id]);
+		this.setWorkDays();
+		row.workHour = publicUtils.nullToEmpty(publicUtils.timeDiff(row.startTime, row.endTime) - Number(row.sleepHour));
+		this.setWorkHours();
+		console.log(this.state);
+		
 	}
-
+	setWorkDays ()	{
+		let workDays = 0;
+		for (var i = 0; i < this.state.dateData.length; i++)	{
+			if (this.state.dateData[i]["hasWork"] == this.state.hasWork[1])	{
+				workDays++;
+			}
+		}
+		this.setState({ workDays: workDays });
+	}
+	setWorkHours ()	{
+		let workHours = 0;
+		for (var i = 0; i < this.state.dateData.length; i++)	{
+			workHours += this.state.dateData[i]["workHour"];
+		}
+		this.setState({ workHours: workHours });		
+	}
 	onSubmit = (event) =>	{
-		console.log(this.state.dateData);
+        var dataInfo = {};
+		var actionType = "insert";
+        dataInfo["actionType"] = actionType;
+        dataInfo["dateData"] = this.state.dateData;
+        dataInfo["yearMonth"] = this.state.year + this.state.month;
+        dataInfo["siteCustomer"] = this.state.siteCustomer;
+        dataInfo["customer"] = this.state.customer;
+        dataInfo["siteResponsiblePerson"] = this.state.siteResponsiblePerson;
+        dataInfo["systemName"] = this.state.systemName;
+		console.log(dataInfo);
+        if(actionType === "insert"){
+            axios.post("http://127.0.0.1:8080/dutyRegistration/dutyInsert", dataInfo)
+            .then(resultMap => {
+                if(resultMap.data){
+                    alert("更新成功");
+                }else{
+                    alert("更新失败");
+                }
+            })
+            .catch(function(){
+                alert("更新错误，请检查程序");
+            })
+        }    
 	}
 	render() {
 		return (
@@ -185,7 +253,7 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+									<FormControl value={this.state.siteCustomer} autoComplete="off" size="sm" name="siteCustomer" id="siteCustomer" onChange={this.valueChange} />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">御中</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -196,7 +264,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">会社名：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+									<FormControl value={this.state.customer} autoComplete="off" size="sm" name="customer" id="customer" onChange={this.valueChange} />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -211,7 +279,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">責任者名：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+									<FormControl value={this.state.siteResponsiblePerson} autoComplete="off" size="sm" name="siteResponsiblePerson" id="siteResponsiblePerson" onChange={this.valueChange} />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -221,7 +289,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">業務名称：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+									<FormControl value={this.state.systemName} autoComplete="off" size="sm" name="systemName" id="systemName" onChange={this.valueChange} />
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
@@ -229,7 +297,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" />
+									<FormControl value="" autoComplete="off" size="sm" name="" id="" onChange={this.valueChange} />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -239,7 +307,7 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<BootstrapTable className={"dutyRegistration-DataTable"} trClassName={ this.rowClassNameFormat } data={this.state.dateData} pagination={true} options={this.options}  cellEdit={ this.cellEditProp }>
-							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='hasWork' editable={{ type: 'select', options: { values: this.state.hasWork } }}>勤務</TableHeaderColumn>
+							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='50' dataField='hasWork' editable={{ type: 'select', options: { values: this.state.hasWork }, validator: this.hasWorkCallback }}>勤務</TableHeaderColumn>
 							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
 							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} width='50' dataField='week' editable={false}>曜日</TableHeaderColumn>
 							<TableHeaderColumn columnClassName={this.columnClassNameFormat} className={"dutyRegistration-DataTableTh"} editColumnClassName="dutyRegistration-DataTableEditingCell" width='100' dataField='startTime' editable={this.startTimeCallback}>作業開始時刻</TableHeaderColumn>
@@ -256,7 +324,7 @@ class DutyRegistration extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">出勤日数：</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">20</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workDays}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -266,7 +334,7 @@ class DutyRegistration extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">合計時間：</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">168H</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workHours}H</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
