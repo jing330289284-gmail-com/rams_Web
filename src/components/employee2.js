@@ -394,8 +394,6 @@ class employee extends React.Component {
 
 	//ImageUploaderを処理　開始
 	onDrop(pictureFiles, pictureDataURLs) {
-				console.log(this.state.pictures.concat(pictureFiles));
-
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
 		});
@@ -1145,7 +1143,6 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1158,7 +1155,6 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1171,7 +1167,6 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1184,7 +1179,6 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1197,7 +1191,6 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1270,7 +1263,6 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
