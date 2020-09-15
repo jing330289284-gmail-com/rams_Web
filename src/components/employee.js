@@ -72,7 +72,8 @@ class employee extends React.Component {
 		window.location.href = window.location.href
 	};
 	//　　登録
-	insertEmployee = () => {
+	insertEmployee = (event ) => {
+		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -744,17 +745,7 @@ class employee extends React.Component {
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-						<ImageUploader
-							withIcon={false}
-							withPreview={true}
-							label=""
-							buttonText="Upload Images"
-							onChange={this.onDrop}
-							imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
-							maxFileSize={1048576}
-							fileSizeError=" file size is too big"
-							className="pi"
-						/>
+						
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
