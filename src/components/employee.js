@@ -2,7 +2,6 @@
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
@@ -66,13 +65,16 @@ class employee extends React.Component {
 		developLanguageMaster: [],
 		stationCode: '',
 		residentCardInfoFlag: false,
+		employeeStatus: '0',
+		
 	};
 	//　　リセット
 	resetBook = () => {
 		window.location.href = window.location.href
 	};
 	//　　登録
-	insertEmployee = () => {
+	insertEmployee = (event ) => {
+		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
@@ -312,9 +314,10 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+　　　　　　　　　　　　　//　$("input:radio[value="+data.employeeStatus+"]").attr('checked','true');
 				this.setState({
 					//employeeNo: date.employeeNo,//ピクチャ
-					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
+					employeeStatus: data.employeeStatus,//社員ステータス
 					employeeNo: data.employeeNo,//社員番号
 					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
@@ -492,7 +495,7 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ companyMail: '', authorityCodes: [] });
+			this.setState({ companyMail: '', authorityCodes: [],employeeStatus: '1' });
 			$('input[type="email"]').prop('disabled', true);
 			$('#authorityCodeId').prop('disabled', true);
 			$('#bankInfo').prop('disabled', true);
@@ -509,6 +512,7 @@ class employee extends React.Component {
 			$('#subCost').prop('disabled', false);
 			$('#passwordSet').prop('disabled', false);
 			$('#bpInfoModel').prop('disabled', true);
+			this.setState({employeeStatus: '0' });
 		}
 	}
 
@@ -737,24 +741,14 @@ class employee extends React.Component {
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={detailDisabled ? false : true} >PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")}>BP情報</Button>{' '}
 					<div>
-						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
-						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={this.state.employeeStatus==="0"?true : false} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check defaultChecked={this.state.employeeStatus==="1"?true : false} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-						<ImageUploader
-							withIcon={false}
-							withPreview={true}
-							label=""
-							buttonText="Upload Images"
-							onChange={this.onDrop}
-							imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
-							maxFileSize={1048576}
-							fileSizeError=" file size is too big"
-							className="pi"
-						/>
+						
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">

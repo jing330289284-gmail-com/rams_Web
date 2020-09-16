@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
-import Autosuggest from 'react-autosuggest';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
 import $ from 'jquery'
@@ -10,10 +9,8 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faEdit, faUpload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
-import { Link } from "react-router-dom";
-import MyToast from './myToast';
 
 registerLocale("ja", ja);
 class dutyManagement extends React.Component {
@@ -50,20 +47,20 @@ class dutyManagement extends React.Component {
 		};
 		axios.post("http://127.0.0.1:8080/dutyManagement/selectDutyManagement", emp)
 			.then(response => {
+				var totalPersons=0;
+				var averageWorkingTime=0;
+				var totalWorkingTime=0;
 				if (response.data != null) {
 					var totalPersons=response.data.length;
-					var averageWorkingTime=0;
-					var totalWorkingTime=0;
 					for(var i=0;i<totalPersons;i++){
 						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
 						if(totalWorkingTime<response.data[i].workTime){
 							totalWorkingTime=response.data[i].workTime;
 						}
 					}
-					if(isNaN( averageWorkingTime)){
+					averageWorkingTime=averageWorkingTime/totalPersons;
+					if(isNaN(averageWorkingTime)){
 						averageWorkingTime=0
-					}else{
-						averageWorkingTime=averageWorkingTime/totalPersons;
 					}
 					this.setState({ employeeList: response.data,totalPersons: response.data.length,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
 				} else {
@@ -76,7 +73,6 @@ class dutyManagement extends React.Component {
      * 行の承認
      */
     listApproval = () => {
-        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
         var a = window.confirm("承認していただきますか？");
         if(a){
             $("#approvalBtn").click();    
@@ -250,31 +246,30 @@ class dutyManagement extends React.Component {
 						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}>最大稼働時間：{this.state.totalWorkingTime}</font>
 						</Col>
-                        <Col sm={2}>
-                        </Col>
+  						<Col sm={2}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
                                <Button variant="info" size="sm" id="syounin" onClick={this.listApproval} >
-									<FontAwesomeIcon icon={faTrash} />承認
-								</Button>
-		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot" >
-	                          		 作業報告書
+									<FontAwesomeIcon icon={faEdit} />承認
+								</Button>{' '}
+		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot">
+	                          		 <FontAwesomeIcon icon={faUpload} />作業報告書
 		                        </Button>                   
 	 						</div>
 						</Col>  
                     </Row>
-					<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#B1F9D0'} } striped hover condensed >
-						<TableHeaderColumn width='95'　tdStyle={ { padding: '.25em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>所属お客様</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='overTimePay'>残業代/控除</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='checkSection'>確認区分</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.65em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='approvalStatus'>ステータス</TableHeaderColumn>
+					<BootstrapTable data={employeeList} pagination={true}  className={"bg-white text-dark"}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+						<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='rowNo' isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 headerAlign='center' dataAlign='center' dataField='employeeNo'>社員番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='employeeName'>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='customerName'>所属お客様</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='stationName'>場所</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='payOffRange'>精算範囲</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workTime'>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='overTimePay'>残業代/控除</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='checkSection'>確認区分</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime'>更新日付</TableHeaderColumn>
+						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatus'>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
