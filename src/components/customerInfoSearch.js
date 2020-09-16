@@ -456,7 +456,7 @@ class CustomerInfoSearch extends Component {
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
                             className={"bg-white text-dark"}
-                            headerStyle={{ background: '#B1F9D0' }} striped hover condensed
+                            headerStyle={{ background: '#5599FF' }} striped hover condensed
                              >
                                 <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
@@ -468,7 +468,7 @@ class CustomerInfoSearch extends Component {
                                 </BootstrapTable>
                             :
                                 <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow className={"bg-white text-dark"}
-                                headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+                                headerStyle={{ background: '#5599FF' }} striped hover condensed>
                                 <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
