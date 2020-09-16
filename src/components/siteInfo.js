@@ -23,6 +23,7 @@ class siteInfo extends Component {
 	initialState = {
 		payOffRange1: '0',
 		payOffRange2: '0',
+		workState: '0',
 		siteMaster: [],
 		payOffRangeStatus: [],
 		topCustomerMaster: [],
@@ -82,19 +83,7 @@ class siteInfo extends Component {
 	};
 	// 页面加载
 	componentDidMount() {
-		var employeeName = this.props.employeeName//父画面のパラメータ（社員名）
-		this.setState({ "employeeName": employeeName })
 		this.getDropDowns();//全部のドロップダウン
-		axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeNo: "LYC001" })
-			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						siteData: response.data
-					});
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
 	}
 	//reset
 	reset = () => {
@@ -122,9 +111,17 @@ class siteInfo extends Component {
 				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
-						this.setState({
-							employeeName: value,
-						})
+						axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+							.then(response => {
+								if (response.data != null) {
+									this.setState({
+										siteData: response.data,
+										employeeName: value,
+									});
+								}
+							}).catch((error) => {
+								console.error("Error - " + error);
+							});
 						break;
 					case 'customerNo':
 						this.setState({
@@ -159,16 +156,6 @@ class siteInfo extends Component {
 	};
 	//登録処理
 	tokuro = () => {
-		if ($("#payOffRange2").val() < $("#payOffRange1").val()) {
-			alert("正しい期間を選択してください");
-			return false;
-		}
-		if ('0' != $("#payOffRange1").val()) {
-			if ($("#payOffRange2").val() === $("#payOffRange1").val()) {
-				alert("固定を選択してくださいます");
-				return false;
-			}
-		}
 		var siteModel = {};
 		var formArray = $("#siteForm").serializeArray();
 		$.each(formArray, function(i, item) {
@@ -177,8 +164,6 @@ class siteInfo extends Component {
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		siteModel["updateUser"] = sessionStorage.getItem('employeeNo');
-		siteModel["employeeNo"] = this.props.employeeNo;
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
 			.then(function(result) {
 				if (result.data === true) {
@@ -211,7 +196,6 @@ class siteInfo extends Component {
 			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 		};
 		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time } = this.state;
 		//テーブルの列の選択
@@ -254,7 +238,7 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="例：佐藤真一" type="text" {...params.inputProps} className="auto"
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
 														style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -448,8 +432,8 @@ class siteInfo extends Component {
 										〜
 											<Form.Control as="select"
 											onChange={this.onchange}
-											id="payOffRange2" name="payOffRange2" value={this.state.payOffRange1 === '0' ? '0' : payOffRange2}
-											autoComplete="off" disabled={this.state.payOffRange1 === '0' ? true : false} >
+											id="payOffRange2" name="payOffRange2" value={payOffRange1 === '0' ? '0' : payOffRange2}
+											autoComplete="off" disabled={payOffRange1 === '0' ? true : false} >
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -566,13 +550,21 @@ class siteInfo extends Component {
 							<TableHeaderColumn dataField='workDate' width='110' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
 							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }}>システム</TableHeaderColumn>
 							<TableHeaderColumn dataField='location' width='58' tdStyle={{ padding: '.45em' }}>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='topCustomerName' width='58' tdStyle={{ padding: '.45em' }}>トップ客様</TableHeaderColumn>
 							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }}>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' width='60' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
 							<TableHeaderColumn dataField='unitPrice' width='35' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
 							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }}>言語</TableHeaderColumn>
 							<TableHeaderColumn dataField='siteRoleName' width='32' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' width='32' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+							<TableHeaderColumn dataField='levelName' width='32' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+							<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='payOffRange2' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='relatedEmployee1' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='relatedEmployee2' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='relatedEmployee3' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='relatedEmployee4' hidden={true} ></TableHeaderColumn>
+							<TableHeaderColumn dataField='typeOfIndustryName' hidden={true} ></TableHeaderColumn>
 							<TableHeaderColumn dataField='remark' width='58' tdStyle={{ padding: '.45em' }}>備考</TableHeaderColumn>
 						</BootstrapTable>
 					</div>

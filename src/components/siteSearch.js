@@ -36,8 +36,8 @@ class siteSearch extends Component {
 		customerNo: '',
 		topCustomerNo: '',
 		employeeInfo: [],
-		employeeName:'',
-		
+		employeeName: '',
+
 	};
 
 	onchange = event => {
@@ -96,7 +96,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '',employeeName:''
+		developLanguageCode: '', stationCode: '', employeeName: ''
 	};
 
 	// AUTOSELECT select事件
@@ -165,7 +165,7 @@ class siteSearch extends Component {
 		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		SiteSearchModel["employeeName"] = $("#employeeName").val()
+		SiteSearchModel["employeeName"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
 		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
 		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
 		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
@@ -207,7 +207,6 @@ class siteSearch extends Component {
 			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 		};
 		const { payOffRange1, payOffRange2, employeeStatus, employeeForm, siteData, siteRoleCode, dataAcquisitionPeriod, errorsMessageValue } = this.state;
 		//テーブルの列の選択
@@ -281,7 +280,7 @@ class siteSearch extends Component {
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="employeeForm" name="employeeForm" value={employeeForm}
 											onChange={this.onchange}>
-											<option value="">選択してくだいさい</option>
+											<option value="">選択くだいさい</option>
 											<option value="0">在職</option>
 											<option value="1">離職済み</option>
 										</Form.Control>
@@ -430,8 +429,8 @@ class siteSearch extends Component {
 										〜
 											<Form.Control as="select"
 											onChange={this.onchange}
-											id="payOffRange2" name="payOffRange2" value={this.state.payOffRange1 === '0' ? '0' : payOffRange2}
-											autoComplete="off" disabled={this.state.payOffRange1 === '0' ? true : false} >
+											id="payOffRange2" name="payOffRange2" value={payOffRange1 === '0' ? '0' : payOffRange2}
+											autoComplete="off" disabled={payOffRange1 === '0' ? true : false} >
 											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -536,13 +535,13 @@ class siteSearch extends Component {
 							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }} headerAlign='center'>所属</TableHeaderColumn>
 							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} headerAlign='center'>期間</TableHeaderColumn>
 							<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} headerAlign='center'>氏名</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70'>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120' eaderAlign='center'>システム名</TableHeaderColumn>
+							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} eaderAlign='center'>場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} eaderAlign='center'>お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' eaderAlign='center'>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} eaderAlign='center'>言語</TableHeaderColumn>
 							<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65'>役割</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' eaderAlign='center'>役割</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</div>
