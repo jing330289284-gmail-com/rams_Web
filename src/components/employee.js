@@ -66,14 +66,14 @@ class employee extends React.Component {
 		stationCode: '',
 		residentCardInfoFlag: false,
 		employeeStatus: '0',
-		
+
 	};
 	//　　リセット
 	resetBook = () => {
 		window.location.href = window.location.href
 	};
 	//　　登録
-	insertEmployee = (event ) => {
+	insertEmployee = (event) => {
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -275,7 +275,7 @@ class employee extends React.Component {
 
 	getDropDownｓ = () => {
 		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel",
-			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage"]
+			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage","getAuthority"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -314,7 +314,7 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
-　　　　　　　　　　　　　//　$("input:radio[value="+data.employeeStatus+"]").attr('checked','true');
+				//　$("input:radio[value="+data.employeeStatus+"]").attr('checked','true');
 				this.setState({
 					//employeeNo: date.employeeNo,//ピクチャ
 					employeeStatus: data.employeeStatus,//社員ステータス
@@ -370,12 +370,12 @@ class employee extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoFlag: data.residentCardInfo!== "" && data.residentCardInfo!== null ? true :false,//在留カード
-					resumeInfo1Flag: data.resumeInfo1!== "" && data.resumeInfo1!== null ? true :false,//履歴書
+					residentCardInfoFlag: data.residentCardInfo !== "" && data.residentCardInfo !== null ? true : false,//在留カード
+					resumeInfo1Flag: data.resumeInfo1 !== "" && data.resumeInfo1 !== null ? true : false,//履歴書
 					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeInfo2Flag: data.resumeInfo2!== "" && data.resumeInfo2!== null ? true :false,//履歴書2
+					resumeInfo2Flag: data.resumeInfo2 !== "" && data.resumeInfo2 !== null ? true : false,//履歴書2
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
-					passportInfoFlag: data.passportInfo!== "" && data.passportInfo!== null ? true :false,//パスポート
+					passportInfoFlag: data.passportInfo !== "" && data.passportInfo !== null ? true : false,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -397,7 +397,7 @@ class employee extends React.Component {
 
 	//ImageUploaderを処理　開始
 	onDrop(pictureFiles, pictureDataURLs) {
-				console.log(this.state.pictures.concat(pictureFiles));
+		console.log(this.state.pictures.concat(pictureFiles));
 
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
@@ -495,7 +495,7 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ companyMail: '', authorityCodes: [],employeeStatus: '1' });
+			this.setState({ companyMail: '', authorityCodes: [], employeeStatus: '1' });
 			$('input[type="email"]').prop('disabled', true);
 			$('#authorityCodeId').prop('disabled', true);
 			$('#bankInfo').prop('disabled', true);
@@ -512,7 +512,7 @@ class employee extends React.Component {
 			$('#subCost').prop('disabled', false);
 			$('#passwordSet').prop('disabled', false);
 			$('#bpInfoModel').prop('disabled', true);
-			this.setState({employeeStatus: '0' });
+			this.setState({ employeeStatus: '0' });
 		}
 	}
 
@@ -647,39 +647,32 @@ class employee extends React.Component {
 
 	};
 
-	changeFile = (event,name) => {
+	changeFile = (event, name) => {
 		var filePath = event.target.value;
 		var arr = filePath.split('\\');
 		var fileName = arr[arr.length - 1];
-	if(name==="residentCardInfo"){
+		if (name === "residentCardInfo") {
 			this.setState({
-
-			residentCardInfo: filePath,
-			residentCardInfoName: fileName,
-		})
-		}else if(name==="resumeInfo1"){
+				residentCardInfo: filePath,
+				residentCardInfoName: fileName,
+			})
+		} else if (name === "resumeInfo1") {
 			this.setState({
-			resumeInfo1: filePath,
-			resumeInfo1Name: fileName,
-		})
-			
-		}else if(name==="resumeInfo2"){
+				resumeInfo1: filePath,
+				resumeInfo1Name: fileName,
+			})
+		} else if (name === "resumeInfo2") {
 			this.setState({
-			resumeInfo2: filePath,
-			resumeInfo2Name: fileName,
-		})
-			
-		}else if
-			(name==="passportInfo"){
+				resumeInfo2: filePath,
+				resumeInfo2Name: fileName,
+			})
+		} else if
+			(name === "passportInfo") {
 			this.setState({
-			passportInfo: filePath,
-			passportInfoName: fileName,
-		})
-			
+				passportInfo: filePath,
+				passportInfoName: fileName,
+			})
 		}
-		
-		
-		
 	}
 
 	render() {
@@ -741,14 +734,14 @@ class employee extends React.Component {
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={detailDisabled ? false : true} >PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")}>BP情報</Button>{' '}
 					<div>
-						<Form.Label>社員</Form.Label><Form.Check defaultChecked={this.state.employeeStatus==="0"?true : false} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
-						<Form.Label>協力</Form.Label><Form.Check defaultChecked={this.state.employeeStatus==="1"?true : false} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={this.state.employeeStatus === "0" ? true : false} disabled={ this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check defaultChecked={this.state.employeeStatus === "1" ? true : false} disabled={　this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-						
+
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -799,7 +792,7 @@ class employee extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											maxDate={new Date()}
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
@@ -944,7 +937,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -967,7 +960,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -989,7 +982,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
@@ -1013,7 +1006,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1139,7 +1132,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1152,7 +1145,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1165,7 +1158,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1178,7 +1171,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1191,7 +1184,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1218,7 +1211,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1264,7 +1257,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
@@ -1324,7 +1317,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1358,9 +1351,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										{this.state.residentCardInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-                                        <Form.File id="residentCardInfo"
-											label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange= {(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />}
+										{this.state.residentCardInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="residentCardInfo"
+												label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1370,9 +1363,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-									{this.state.resumeInfo1Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-									<Form.File id="resumeInfo1"
-											label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange= {(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />}
+										{this.state.resumeInfo1Flag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="resumeInfo1"
+												label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1388,11 +1381,11 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-									{this.state.resumeInfo2Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
+										{this.state.resumeInfo2Flag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 
-									<Form.File id="resumeInfo2"
-											label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange= {(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />}
-									
+											<Form.File id="resumeInfo2"
+												label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />}
+
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1408,9 +1401,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										{this.state.passportInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-										<Form.File id="passportInfo" 
-											label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange= {(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />}
+										{this.state.passportInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="passportInfo"
+												label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
