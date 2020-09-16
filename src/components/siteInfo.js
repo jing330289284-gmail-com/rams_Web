@@ -11,6 +11,8 @@ import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 
 registerLocale('ja', ja);
 
@@ -92,7 +94,7 @@ class siteInfo extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '', employeeName: ''
+		developLanguageCode: '', location: '', employeeName: ''
 	};
 
 	// AUTOSELECT select事件
@@ -133,9 +135,9 @@ class siteInfo extends Component {
 							topCustomerNo: value,
 						})
 						break;
-					case 'stationCode':
+					case 'location':
 						this.setState({
-							stationCode: value,
+							location: value,
 						})
 						break;
 					case 'typeOfIndustryCode':
@@ -164,17 +166,20 @@ class siteInfo extends Component {
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
+		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
+		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.state.getstations)
+		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
 		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
 			.then(function(result) {
-				if (result.data === true) {
-					alert("登录完成");
-					sessionStorage.setItem('actionType', 'update');
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					alert("登录错误，请检查程序");
+					this.setState({ "myToastShow": true, "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					window.location.reload();
 				}
-			})
-			.catch(function(error) {
-				alert("登录错误，请检查程序");
+			}).catch((error) => {
+				console.error("Error - " + error);
 			});
 	}
 	renderShowsTotal(start, to, total) {
@@ -197,7 +202,7 @@ class siteInfo extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -209,6 +214,12 @@ class siteInfo extends Component {
 		};
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={"登録成功！"} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<div style={{ "background": "#f5f5f5" }}>
 					<Form id="siteForm">
 						<Form.Group>
@@ -320,10 +331,10 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
-											id="stationCode"
-											name="stationCode"
-											value={this.state.getstations.find(v => v.name === this.state.stationCode) || {}}
-											onSelect={(event) => this.handleTag(event, 'stationCode')}
+											id="location"
+											name="location"
+											value={this.state.getstations.find(v => v.name === this.state.location) || {}}
+											onSelect={(event) => this.handleTag(event, 'location')}
 											options={this.state.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -547,15 +558,15 @@ class siteInfo extends Component {
 					</Row>
 					<div>
 						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='workDate' width='110' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }}>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='location' width='58' tdStyle={{ padding: '.45em' }}>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }}>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' width='35' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }}>言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' width='32' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
-							<TableHeaderColumn dataField='levelName' width='32' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+							<TableHeaderColumn dataField='workDate' width='100' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>システム</TableHeaderColumn>
+							<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} headerAlign='center'>場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} headerAlign='center'>責任者</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} headerAlign='center'>言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
+							<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
 							<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
 							<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
 							<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
@@ -565,7 +576,7 @@ class siteInfo extends Component {
 							<TableHeaderColumn dataField='relatedEmployee3' hidden={true} ></TableHeaderColumn>
 							<TableHeaderColumn dataField='relatedEmployee4' hidden={true} ></TableHeaderColumn>
 							<TableHeaderColumn dataField='typeOfIndustryName' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='remark' width='58' tdStyle={{ padding: '.45em' }}>備考</TableHeaderColumn>
+							<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</div>

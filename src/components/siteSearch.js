@@ -167,8 +167,8 @@ class siteSearch extends Component {
 		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
 		SiteSearchModel["employeeName"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
 		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
-		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
-		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
+		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#stationCode").val(), this.state.getstations)
+		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
 		if ($("#dataAcquisitionPeriod").val() === '1') {
 			SiteSearchModel["dataAcquisitionPeriod"] = publicUtils.setFullYearMonth(new Date());
 		}
