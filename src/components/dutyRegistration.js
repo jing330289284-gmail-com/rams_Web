@@ -17,6 +17,7 @@ import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@
 import Autosuggest from 'react-autosuggest';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
+import { Link } from "react-router-dom";
 
 
 import BreakTime from './breakTime';
@@ -88,15 +89,54 @@ class DutyRegistration extends React.Component {
 			else	{
 				dateData[i]['isWork'] = 1;
 				dateData[i]['hasWork'] = this.state.hasWork[1];
-				dateData[i]['sleepHour'] = 1;
+				dateData[i]['sleepHour'] = 0;
 			}
 			if (dateData[i]["hasWork"] == this.state.hasWork[1])	{
 				workDays++;
 			}
 		}
-		this.setState({ dateData: dateData, workDays: workDays, workHours: workHours })
+		this.setState({ dateData: dateData, workDays: workDays, workHours: workHours });
 		console.log(new Date("2020/08/02").getDay());
 		console.log(this.state.month);
+		let postData = {
+			yearMonth: this.state.year + this.state.month,
+		}
+        axios.post("http://127.0.0.1:8080/dutyRegistration/getDutyInfo", postData)
+            .then(resultMap => {
+                if(resultMap.data){
+					let dateData = [];
+					let defaultDateData = [];
+					let workDays = 0;
+					let workHours = 0;
+					dateData = this.state.dateData;
+					defaultDateData = resultMap.data.dateData;
+					console.log(dateData);
+					console.log(defaultDateData);
+					let dayIndex = -1;
+					for (let i = 0; i < defaultDateData.length; i++)	{
+						dayIndex = defaultDateData[i].day - 1;
+						dateData[dayIndex].hasWork = this.state.hasWork[defaultDateData[i].isWork];
+						if (defaultDateData[i].isWork == 1)	{
+							dateData[dayIndex].startTime = publicUtils.timeInsertChar(publicUtils.nullToEmpty(defaultDateData[i].startTime));
+							dateData[dayIndex].endTime = publicUtils.timeInsertChar(publicUtils.nullToEmpty(defaultDateData[i].endTime));
+							dateData[dayIndex].workHour = publicUtils.nullToEmpty(publicUtils.timeDiff(dateData[dayIndex].startTime, dateData[dayIndex].endTime) - Number(dateData[dayIndex].sleepHour));
+							workDays++;
+							workHours += Number(dateData[dayIndex].workHour);
+						}
+					}
+					this.setState({dateData: dateData, workDays: workDays, workHours: workHours, 
+						employeeNo: resultMap.data.employeeNo, siteCustomer: resultMap.data.siteCustomer, customer: resultMap.data.customer,
+						siteResponsiblePerson: resultMap.data.siteResponsiblePerson, systemName: resultMap.data.systemName, });
+					console.log(dateData);
+					console.log(resultMap.data);
+					
+                }else{
+                    alert("fail");
+                }
+            })
+            .catch(function(){
+                alert("error");
+            })
 	}
 	/**
 	* 小さい画面の閉め 
@@ -200,7 +240,7 @@ class DutyRegistration extends React.Component {
 	setWorkHours ()	{
 		let workHours = 0;
 		for (var i = 0; i < this.state.dateData.length; i++)	{
-			workHours += this.state.dateData[i]["workHour"];
+			workHours += Number(this.state.dateData[i]["workHour"]);
 		}
 		this.setState({ workHours: workHours });		
 	}
@@ -214,6 +254,9 @@ class DutyRegistration extends React.Component {
         dataInfo["customer"] = this.state.customer;
         dataInfo["siteResponsiblePerson"] = this.state.siteResponsiblePerson;
         dataInfo["systemName"] = this.state.systemName;
+		for (let i = 0; i < dataInfo["dateData"].length; i++)	{
+			dataInfo["dateData"][i]["isWork"] = (dataInfo["dateData"][i]["hasWork"] == this.state.hasWork[0])?0:1;
+		}
 		console.log(dataInfo);
         if(actionType === "insert"){
             axios.post("http://127.0.0.1:8080/dutyRegistration/dutyInsert", dataInfo)
@@ -245,7 +288,7 @@ class DutyRegistration extends React.Component {
 					</Modal>
 					{/* 終了 */}
 					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" onClick={this.handleShowModal.bind(this, "breakTime")}>休憩時間</Button>{' '}
+						<Button size="sm" className="btn btn-info btn-sm" onClick={this.handleShowModal.bind(this, "breakTime")}>休憩時間</Button>{' '}
 					</div>
 				</div>
 				<div>
@@ -262,7 +305,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">会社名：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={this.state.customer} autoComplete="off" size="sm" name="customer" id="customer" onChange={this.valueChange} />
 								</InputGroup>
@@ -277,7 +320,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3} md={{ span: 3, offset: 2 }}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">責任者名：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">責任者名</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={this.state.siteResponsiblePerson} autoComplete="off" size="sm" name="siteResponsiblePerson" id="siteResponsiblePerson" onChange={this.valueChange} />
 								</InputGroup>
@@ -287,7 +330,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">業務名称：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">業務名称</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={this.state.systemName} autoComplete="off" size="sm" name="systemName" id="systemName" onChange={this.valueChange} />
 								</InputGroup>
@@ -297,13 +340,15 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value="" autoComplete="off" size="sm" name="" id="" onChange={this.valueChange} />
+									<FormControl value={this.state.employeeNo} autoComplete="off" size="sm" name="employeeNo" id="employeeNo" onChange={this.valueChange} />
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
-							<Col md={{ offset: 11 }}>
-								<Button size="sm"><FontAwesomeIcon icon={faDownload} /> PDF</Button>
+							<Col sm={12}>
+								<div style={{ "float": "right" }}>
+									<Link className="btn btn-info btn-sm" onClick="" id=""><FontAwesomeIcon icon={faDownload} /> PDF</Link>
+								</div>
 							</Col>
 						</Row>
 						<BootstrapTable className={"dutyRegistration-DataTable"} trClassName={ this.rowClassNameFormat } data={this.state.dateData} pagination={true} options={this.options}  cellEdit={ this.cellEditProp }>
@@ -321,7 +366,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出勤日数：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">出勤日数</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workDays}</InputGroup.Text>
@@ -331,7 +376,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3} md={{ span: 0, offset: 2 }}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">合計時間：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">合計時間</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workHours}H</InputGroup.Text>
@@ -340,7 +385,7 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
-							<Button size="sm" onClick={this.onSubmit.bind(this)}>提出</Button>
+							<Button size="sm" className="btn btn-info btn-sm" onClick={this.onSubmit.bind(this)}>提出</Button>
 						</div>
 					</Form.Group>
 				</div>
