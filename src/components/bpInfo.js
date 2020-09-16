@@ -1,6 +1,6 @@
 /* 社員を追加 */
 import React from 'react';
-import { Card, Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Card, Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
@@ -102,8 +102,23 @@ class bpInfo extends React.Component {
 			}
 		);
 	};
+
+	insertOrUpdateBpInfo = () => {
+		const bpInfoModel = {
+			bpEmployeeNo:  this.props.employeeNo,
+			bpBelongCustomerCode: this.state.bpBelongCustomerCode,
+			bpUnitPrice: this.state.bpUnitPrice,
+			bpSalesProgressCode: this.state.bpSalesProgressCode,
+			bpOtherCompanyAdmissionEndDate: publicUtils.formateDate(this.state.bpOtherCompanyAdmissionEndDate, false),
+			bpRemark: this.state.bpRemark,
+		};
+　　　　　　　this.props.pbInfoTokuro(bpInfoModel);
+	};
+
+
+
 	render() {
-		const { bpUnitPrice, bpSalesProgressCode, bpRemark,pbInfoEmployeeName
+		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName
 		} = this.state;
 		return (
 			<div>
@@ -146,7 +161,7 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='5' />
+										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='5' disabled={this.props.actionType === "detail" ? false : true}/>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -162,7 +177,7 @@ class bpInfo extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="bpSalesProgressCode" value={bpSalesProgressCode}
-										autoComplete="off" >
+										autoComplete="off" disabled={this.props.actionType === "detail" ? false : true}>
 										{this.state.salesProgressCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -175,12 +190,10 @@ class bpInfo extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">所属現場終年月</InputGroup.Text>
-
 									</InputGroup.Prepend>
 									<DatePicker
 										selected={this.state.bpOtherCompanyAdmissionEndDate}
 										onChange={this.bpOtherCompanyAdmissionEndDateChange}
-										dateFormat={"yyyy MM"}
 										autoComplete="off"
 										showMonthYearPicker
 										showFullMonthYearPicker
@@ -190,7 +203,6 @@ class bpInfo extends React.Component {
 										dateFormat={"yyyy/MM"}
 										locale="ja"
 									/>
-
 								</InputGroup>
 							</Col>
 						</Row>
@@ -200,15 +212,15 @@ class bpInfo extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="例：XXXXX" name="bpRemark" value={bpRemark} autoComplete="off"
+									<FormControl placeholder="例：XXXXX" name="bpRemark" value={bpRemark} autoComplete="off"　disabled={this.props.actionType === "detail" ? false : true}
 										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
 								</InputGroup>
 							</Col>
 						</Row>
 					</Form.Group>
-					{sessionStorage.getItem('actionType') === "detail" ? "" : <div style={{ "textAlign": "center" }}>
-						<Button size="sm" variant="info" onClick={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} type="button" on>
-							<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
+					{this.props.actionType === "detail" ? "" : <div style={{ "textAlign": "center" }}>
+						<Button size="sm" variant="info" onClick={ this.insertOrUpdateBpInfo } type="button" on>
+							<FontAwesomeIcon icon={faSave} /> {this.props.actionType === "update" ? "更新" : "登録"}
 						</Button>{' '}
 						<Button size="sm" variant="info" onClick={this.resetButton}>
 							<FontAwesomeIcon icon={faUndo} /> リセット
