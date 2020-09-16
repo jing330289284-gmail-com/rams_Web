@@ -21,7 +21,7 @@ class ExpensesInfo extends Component {
 		this.state = this.initialState;//初期化
     }
     initialState = {
-        expensesReflectStartDate:new Date(),//反映年月開始年月
+        expensesReflectStartDate:'',//反映年月開始年月
         expensesReflectYearAndMonth:'',//反映年月
         transportationExpenses:'',//交通費
         otherAllowanceName:'',//他の手当名称
@@ -49,11 +49,11 @@ class ExpensesInfo extends Component {
     expensesReflectStartDateChange = date => {
         if(date !== null){
             this.setState({
-                expensesReflectYearAndMonth: date,
+                expensesReflectStartDate: date,
             });
         }else{
             this.setState({
-                expensesReflectYearAndMonth: '',
+                expensesReflectStartDate: '',
             });
         }
     };
@@ -62,7 +62,7 @@ class ExpensesInfo extends Component {
      */
     giveValue=(expensesInfoMod)=>{
         this.setState({
-            expensesReflectYearAndMonth:utils.converToLocalTime(expensesInfoMod.expensesReflectYearAndMonth,false),
+            expensesReflectStartDate:utils.converToLocalTime(expensesInfoMod.expensesReflectYearAndMonth,false),
             transportationExpenses:expensesInfoMod.transportationExpenses,
             otherAllowanceName:expensesInfoMod.otherAllowanceName,
             otherAllowanceAmount:expensesInfoMod.otherAllowanceAmount,

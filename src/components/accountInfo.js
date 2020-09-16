@@ -5,7 +5,7 @@ import $ from 'jquery';
 import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials=true;
 
@@ -25,10 +25,10 @@ class BankInfo extends Component {
     }
 
     componentDidMount(){
-        if($("#customerNo").val() === '' || $("#customerNo").val() === null){//社員の場合
+        if(!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== ''){//社員の場合
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
-            document.getElementById("No").innerHTML  = "社員：" + $("#employeeName").val();
+            document.getElementById("No").innerHTML  = "社員：" + this.props.employeeFristName + this.props.employeeLastName;
         }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){//お客様の場合
             $("#employeeOrCustomerNo").val($("#customerNo").val())
             $("#accountBelongsStatus").val("1")
@@ -137,12 +137,6 @@ class BankInfo extends Component {
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
             <div  >
-                {/* <Row>
-                        <Col sm={2}></Col>
-                        <Col sm={7}>
-                            <img className="mb-4" alt="title" src={title}/>
-                        </Col>
-                </Row> */}
                 <Row inline="true">
                     <Col  className="text-center">
                     <h2>口座情報</h2>
