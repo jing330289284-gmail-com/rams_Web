@@ -53,50 +53,6 @@ class BreakTime extends Component {
 		this.calculateTime();
 		console.log(sessionStorage);
         var topCustomerInfo = this.props.topCustomerInfo;
-//        if(!$.isEmptyObject(topCustomerInfo)){//上位お客様追加でも修正したい場合
-//            document.getElementById("topCustomerNo").innerHTML = topCustomerInfo.topCustomerNo;
-//            $("#topCustomerName").val(topCustomerInfo.topCustomerName);
-//            $("#topCustomerAbbreviation").val(topCustomerInfo.topCustomerAbbreviation);
-//            $("#topUrl").val(topCustomerInfo.url);
-//            $("#topRemark").val(topCustomerInfo.remark);
-//            this.setState({
-//                actionType:'insert',
-//            })
-//        }else{
-//            if(topCustomerNo !== null && topCustomerNo !== '' && topCustomerNo !== undefined){
-//                var topCustomerMod = {};
-//                topCustomerMod["topCustomerNo"] = topCustomerNo;
-//                axios.post("http://127.0.0.1:8080/topCustomerInfo/onloadPage", topCustomerMod)
-//                    .then(resultMap => {
-//                        topCustomerMod = resultMap.data.topCustomerMod;
-//                        document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
-//                        $("#topCustomerName").val(topCustomerMod.topCustomerName);
-//                        $("#topCustomerAbbreviation").val(topCustomerMod.topCustomerAbbreviation);
-//                        $("#topUrl").val(topCustomerMod.url);
-//                        $("#topRemark").val(topCustomerMod.remark);
-//                        this.setState({
-//                            actionType:'update',
-//                        })
-//                    })
-//                    .catch(function(){
-//                        alert("页面加载错误，请检查程序");
-//                    })
-//            }else{
-//                var topCustomerNo = "";
-//                const promise = Promise.resolve(utils.getNO("topCustomerNo", "T", "T008TopCustomerInfo"));
-//                promise.then((value) => {
-//                    console.log(value);
-//                            topCustomerNo = value;
-//                            document.getElementById("topCustomerNo").innerHTML = topCustomerNo;
-//                });
-//                this.setState({
-//                    actionType:'insert',
-//                })
-//            }
-//        }
-//        if(actionType === "detail"){
-//            TopCustomerInfoJs.setDisabled();
-//        }
     }
 	calculateTime ()	{
 		var breakTimeDayHourStart = Number($("#breakTimeDayHourStart").val());
@@ -271,6 +227,7 @@ class BreakTime extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">分</InputGroup.Text>
                             </InputGroup.Prepend>
+							&nbsp;&nbsp;&nbsp;&nbsp;
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -330,6 +287,7 @@ class BreakTime extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">分</InputGroup.Text>
                             </InputGroup.Prepend>
+							&nbsp;&nbsp;&nbsp;&nbsp;
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                             </InputGroup.Prepend>

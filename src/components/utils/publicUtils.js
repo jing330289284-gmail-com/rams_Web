@@ -367,9 +367,20 @@ export function timeDiff(startTime, endTime) {
 	}
 	return result;
 }
+// 0130 -> 01:30
+export function timeInsertChar(time, inputChar) {
+	if (isNull(inputChar))	{
+		inputChar = ":";
+	}
+	return isEmpty(time)?"":time.substring(0,2) + inputChar + time.substring(2,4);
+}
 //is Null?
 export function isNull(obj) {
 	return (obj === undefined || isNaN(obj) || obj === null);
+}
+//is empty?
+export function isEmpty(obj) {
+	return (isNull(obj) || obj === "");
 }
 //Null to empty
 export function nullToEmpty(obj) {
