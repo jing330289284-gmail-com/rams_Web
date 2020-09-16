@@ -69,47 +69,26 @@ class dutyManagement extends React.Component {
 			}
 			);
 	}
-   /**
-     * 行の承認
-     */
-    listApproval = () => {
-        var a = window.confirm("承認していただきますか？");
-        if(a){
-            $("#approvalBtn").click();    
-        }
-    }
-    //　隠した承認ボタン
-    createCustomApprovalButton = (onClick) => {
-	alert("rows");
-        return (
-            <Button variant="info" id="approvalBtn" hidden onClick={onClick} >承認</Button>
-        );
-      }
-      //　隠した承認ボタンの実装
-      onApprovalRow =(rows)=>{
-	alert(rows);
+	/**
+	  * 行の承認
+	  */
+	listApproval = () => {
 		const emp = {
-			employeeNo: this.state.employeeNo,
 			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
+			employeeNo: this.state.rowSelectEmployeeNo,
 		}
-		alert(emp);
-		axios.post("http://127.0.0.1:8080/dutyMangement/updateDutyManagement", emp)
-		.then(function (result) {
-		    if(result.data === 0){
-		        alert("承認成功");
-		    }else if(result.data === 1){
-		        alert("承認失败");
-		    }
-		})
-		.catch(function (error) {
-		    alert("承認失败，请检查程序");
-		});
-      }
-    //　承認
-    customConfirm(next, dropRowKeys) {
-        const dropRowKeysStr = dropRowKeys.join(',');
-        next();
-    }
+		axios.post("http://127.0.0.1:8080/dutyManagement/updateDutyManagement", emp)
+			.then(function(result) {
+				if (result.data == true) {
+					alert("承認成功");
+				} else if (result.data == false) {
+					alert("承認失败");
+				}
+			})
+			.catch(function(error) {
+				alert("承認失败，请检查程序");
+			});
+	}
 	state = {
 		yearAndMonth: new Date()
 	};
