@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faEdit, faUpload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
-
+import MyToast from './myToast';
 registerLocale("ja", ja);
 class dutyManagement extends React.Component {
 	constructor(props) {
@@ -78,11 +78,19 @@ class dutyManagement extends React.Component {
 			employeeNo: this.state.rowSelectEmployeeNo,
 		}
 		axios.post("http://127.0.0.1:8080/dutyManagement/updateDutyManagement", emp)
-			.then(function(result) {
+			.then(result => {
 				if (result.data == true) {
-					alert("承認成功");
+					this.searchDutyManagement();
+					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
+					this.setState(
+						{
+							rowSelectEmployeeNo: ''
+						}
+					);
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else if (result.data == false) {
-					alert("承認失败");
+					this.setState({ "myToastShow": false });
 				}
 			})
 			.catch(function(error) {
@@ -166,7 +174,12 @@ class dutyManagement extends React.Component {
 		};
 
 		return (
+
 			<div>
+				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
+					<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={"承認成功！"} type={"success"} />
+				</div>
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
 				<Form >
 					<div>
