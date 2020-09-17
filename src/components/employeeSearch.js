@@ -41,12 +41,12 @@ class employeeSearch extends React.Component {
 	//初期化データ
 	initialState = {
 		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [],
+		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [],		employeeInfo: [],
 
 	};
 	//リセット　reset
 	resetStates = {
-		employeeNo: '', employeeFristName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
+		employeeNo: '', employeeName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
 		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
 	};
 
@@ -57,7 +57,7 @@ class employeeSearch extends React.Component {
 	}
 	//全部のドロップダウン
 	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys", "getDevelopLanguage"]
+		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys", "getDevelopLanguage", "getEmployeeName"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -70,6 +70,7 @@ class employeeSearch extends React.Component {
 				residenceCodes: data[6],//　在留資格
 				nationalityCodes: data[7],//　 出身地国
 				developLanguageMaster: data[8].slice(1),//開発言語
+				employeeInfo: data[9].slice(1)//社員名
 
 			}
 		);
@@ -84,7 +85,7 @@ class employeeSearch extends React.Component {
 	searchEmployee = () => {
 		const emp = {
 			employeeNo: this.state.employeeNo,
-			employeeFristName: this.state.employeeFristName,
+			employeeFristName: this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus,
 			genderStatus: this.state.genderStatus,
@@ -222,8 +223,32 @@ class employeeSearch extends React.Component {
 		);
 	}
 
+
+// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (
+				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
+					default:
+				}
+			}
+		}
+
+	};
+
 	render() {
-		const { employeeNo, employeeFristName, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
+		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
 			employeeList, errorsMessageValue, developLanguage1, developLanguage2, developLanguage3 } = this.state;
 		//テーブルの行の選択
@@ -279,7 +304,22 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl name="employeeFristName" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" placeholder="社員名" />
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											options={this.state.employeeInfo}
+											getOptionLabel={(option) => option.name}
+											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+										
+										
 									</InputGroup>
 								</Col>
 								<Col sm={3}>

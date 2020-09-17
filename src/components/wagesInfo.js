@@ -13,6 +13,7 @@ import * as utils from './utils/publicUtils.js';
 import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import ExpensesInfo from "./expensesInfo.js"
+import Autocomplete from '@material-ui/lab/Autocomplete';
 registerLocale('ja', ja);
 axios.defaults.withCredentials=true;
 
@@ -24,7 +25,7 @@ class WagesInfo extends Component {
     }
     
     initialState = { 
-        employeeName:'',//社員名
+        employeeNo:'',//社員番号
         reflectYearAndMonth:'',//反映年月
         socialInsuranceFlag:'',//社会保険フラグ
         salary:'',//給料
@@ -49,13 +50,16 @@ class WagesInfo extends Component {
         myToastShow: false,//toastのフラグ
         errorsMessageShow: false,///エラーのメッセージのフラグ
         errorsMessageValue:'',//エラーのメッセージ
-        actionType:'',//処理区分
+        actionType:'insert',//処理区分
         socialInsuranceFlagDrop:[],//社会保険フラグselect
         bonusFlagDrop:[],//ボーナスフラグselect
         EmployeeFormCodeDrop:[],//社員性質select
+        employeeNameDrop:[],//社員名select
         wagesInfoList:[],//給料明細テーブル
         waitingFlag:false,//稼働フラグ
         selectedWagesInfo:{},//選択された行
+        expensesInfoModel:null,//諸費用データ
+        torokuText:'登録',//登録ボタンの文字
      }
     //onchange
 	valueChange = event => {
@@ -89,13 +93,14 @@ class WagesInfo extends Component {
       * select取得
       */
      getDropDowns = () => {
-		var methodArray = ["getInsurance", "getBonus", "getStaffForms"]
+		var methodArray = ["getInsurance", "getBonus", "getStaffForms","getEmployeeName"]
 		var data = utils.getPublicDropDown(methodArray);
 		this.setState(
 			{
-				socialInsuranceFlagDrop: data[0].slice(1),//　性別区別
-				bonusFlagDrop: data[1].slice(1),//　入社区分 
-				EmployeeFormCodeDrop: data[2],//　 社員形式 
+				socialInsuranceFlagDrop: data[0].slice(1),
+				bonusFlagDrop: data[1].slice(1), 
+                EmployeeFormCodeDrop: data[2], 
+                employeeNameDrop:data[3].slice(1),
 			}
 		);
     };
@@ -174,22 +179,74 @@ class WagesInfo extends Component {
             totalAmount:wagesInfoMod.totalAmount , 
             employeeFormCode:wagesInfoMod.employeeFormCode , 
             remark:wagesInfoMod.remark , 
-            bonusStartDate:utils.converToLocalTime(wagesInfoMod.bonusStartDate,false),
-            raiseStartDate:utils.converToLocalTime(wagesInfoMod.raiseStartDate,false),
-            reflectStartDate:utils.converToLocalTime(wagesInfoMod.reflectStartDate,false),
+            bonusStartDate:utils.converToLocalTime(wagesInfoMod.nextBonusMonth,false),
+            raiseStartDate:utils.converToLocalTime(wagesInfoMod.nextRaiseMonth,false),
+            reflectStartDate:utils.converToLocalTime(wagesInfoMod.reflectYearAndMonth,false),
         })
     }
+    /**
+     * 値をリセット
+     */
+    resetValue=()=>{
+        this.setState({ 
+            socialInsuranceFlag:'', 
+            salary:'', 
+            waitingCost:'', 
+            welfarePensionAmount:'', 
+            healthInsuranceAmount:'' , 
+            insuranceFeeAmount:'', 
+            lastTimeBonusAmount:'', 
+            scheduleOfBonusAmount:'', 
+            bonusFlag:'', 
+            totalAmount:'', 
+            employeeFormCode:'', 
+            remark:'', 
+            bonusStartDate:'',
+            raiseStartDate:'',
+            reflectStartDate:'',
+        })
+    }
+    getWagesInfo= (event) =>{
+        this.setState({
+			[event.target.name]: event.target.value,
+        },()=>{
+            var wagesInfoMod = {
+                "employeeNo":utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
+            }
+            axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo",wagesInfoMod)
+            .then(result=> {
+                if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+                    this.setState({
+                        wagesInfoList:result.data.wagesInfoList,
+                    })
+                }else{
+                    this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+                }
+            })
+        }
+        )
+    }
+
     /**
      * 行Selectファンクション
      */
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
-            if(row.datePeriod === this.state.subCostList[this.state.subCostList.length - 1].datePeriod){
+            if(row.reflectYearAndMonth === this.state.wagesInfoList[this.state.wagesInfoList.length - 1].reflectYearAndMonth){
                 this.setState({
                     selectedWagesInfo:row,
                 })
                 $("#shusei").attr("disabled",false);
+            }else{
+                $("#shusei").attr("disabled",true);
             }
+        }else{
+            this.resetValue();
+            this.setState({
+                actionType:'insert',
+                torokuText:'登録',
+            })
+            $("#shusei").attr("disabled",true);
         }
     }
     /**
@@ -197,6 +254,10 @@ class WagesInfo extends Component {
      */
     shuseiBtn=()=>{
         var selectedWagesInfo = this.state.selectedWagesInfo;
+        this.setState({
+            actionType:"update",
+            torokuText:'更新',
+        })
         this.giveValue(selectedWagesInfo);
     }
      /**
@@ -238,6 +299,31 @@ class WagesInfo extends Component {
             )
         }
     }
+    toroku=()=>{
+        var wagesInfoModel = {};
+        var formArray =$("#wagesInfoForm").serializeArray();
+        $.each(formArray,function(i,item){
+            wagesInfoModel[item.name] = item.value;     
+        });
+        wagesInfoModel["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate,false);
+        wagesInfoModel["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate,false);
+        wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate,false);
+        wagesInfoModel["actionType"] = this.state.actionType;
+        wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
+        axios.post("http://127.0.0.1:8080/wagesInfo/toroku", wagesInfoModel)
+        .then(result => {
+            if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+                this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:result.data.message});
+                setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                window.location.reload();
+            }else{
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+            }
+        })
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
+        });
+    }
     /**
      * 小さい画面の閉め 
      */
@@ -250,6 +336,25 @@ class WagesInfo extends Component {
     handleShowModal=(Kbn)=>{
         this.setState({costInfoShow:true})
     }
+    /**
+     * select
+     * @param {*} param0 
+     * @param {*} fieldName 
+     */
+    handleTag = ({ target }) => {
+        const { value , id} = target;
+        if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+            if (this.state.employeeNameDrop.find((v) => (v.name === value)) !== undefined) {
+                this.setState({
+                    employeeName: this.state.employeeNameDrop.find((v) => (v.name === value)).code,
+                })
+            }
+        }
+	};
     /**
      * テーブルの下もの
      * @param {} start 
@@ -269,6 +374,7 @@ class WagesInfo extends Component {
       }
     render() {
         const {        
+            employeeNo ,
             employeeName , 
             socialInsuranceFlag , 
             salary , 
@@ -292,7 +398,9 @@ class WagesInfo extends Component {
             bonusFlagDrop ,
             EmployeeFormCodeDrop ,
             wagesInfoList ,
-            waitingFlag } = this.state;
+            waitingFlag ,
+            employeeNameDrop ,
+            torokuText } = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -348,20 +456,48 @@ class WagesInfo extends Component {
                     <Form id="wagesInfoForm">
                         <Form.Group>
                         <Row>
-                            <Col sm={2}>
+                            <Col sm={3}>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>社員名</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <FormControl 
-                                    value={employeeName}
-                                    name="employeeName"
-                                    onChange={this.valueChange}
-                                    disabled={actionType === "detail" ? true : false}
-                                    placeholder="例：田中"/>
-                            </InputGroup>
+                                <Autocomplete
+                                    id="employeeName"
+									name="employeeName"
+									value={employeeName}
+									options={this.state.employeeNameDrop}
+                                    getOptionLabel={(option) => option.name}
+                                    onChange = {this.getWagesInfo}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input placeholder="  例：田中" type="text" {...params.inputProps}
+												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+										</div>
+                                    )}
+                                />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text>円</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <font id="mark" color="red"
+                                        style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
+                                </InputGroup>
                             </Col>
-                            <Col sm={9}></Col>
+                            <Col sm={2}>
+                                <InputGroup size="sm" className="mb-3">
+                                        <InputGroup.Prepend>
+                                        <InputGroup.Text>社員番号</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl 
+                                        maxLength="6" 
+                                        value={employeeName}
+                                        name="employeeNo"
+                                        onChange={this.valueChange}
+                                        readOnly
+                                        disabled={actionType === "detail" ? true : false}
+                                        placeholder="例：220000"/>
+                                    </InputGroup>
+                            </Col>
+                            <Col sm={6}></Col>
                             <Col sm={1}>
                                 <Button 
                                 block 
@@ -642,29 +778,23 @@ class WagesInfo extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col sm={5}></Col>
-                            <Col sm={1} className="text-center">
-                                    <Button 
-                                    block 
-                                    size="sm"
-                                    disabled={actionType === "detail" ? true : false}
-                                    variant="info">
-                                        <FontAwesomeIcon icon={faSave} />登録
-                                    </Button>
-                            </Col>
-                            <Col sm={1} className="text-center">
-                                    <Button 
-                                    block 
-                                    size="sm" 
-                                    disabled={actionType === "detail" ? true : false}
-                                    type="reset"
-                                    variant="info" 
-                                    value="Reset" >
-                                        <FontAwesomeIcon icon={faUndo} />リセット
-                                    </Button>
-                            </Col>
-                        </Row>
+                        <div style={{ "textAlign": "center" }}>
+                            <Button 
+                                size="sm"
+                                disabled={actionType === "detail" ? true : false}
+                                variant="info"
+                                onClick={this.toroku}>
+                                    <FontAwesomeIcon icon={faSave} />{torokuText}
+                            </Button>{" "}
+                            <Button 
+                                size="sm" 
+                                disabled={actionType === "detail" ? true : false}
+                                onClick={this.resetValue}
+                                variant="info" 
+                                value="Reset" >
+                                    <FontAwesomeIcon icon={faUndo} />リセット
+                            </Button>
+                        </div>
                         </Form.Group>
                     </Form>
                     <Form.Text style={{ "color": "#FFD700" }}>給料変動一覧</Form.Text>
@@ -677,8 +807,9 @@ class WagesInfo extends Component {
                                 variant="info" 
                                 size="sm" 
                                 id="shusei"
+                                onClick={this.shuseiBtn}
                                 >
-                                    <FontAwesomeIcon icon={faEdit} />修正
+                                    <FontAwesomeIcon icon={faEdit}/>修正
                                 </Button>
                             </div>
                         </Col>
@@ -689,20 +820,20 @@ class WagesInfo extends Component {
                     pagination={ true } 
                     options={ options } 
                     data={wagesInfoList}
-                    headerStyle={{ background: '#B1F9D0' }} 
+                    headerStyle={{ background: '#5599FF' }} 
                     striped 
                     hover 
                     condensed>
-                        <TableHeaderColumn isKey={true} dataField='data' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn>
+                        <TableHeaderColumn isKey={true} dataField='reflectYearAndMonth' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn>
                         <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">社員形式</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="290">給料</TableHeaderColumn>
+                        <TableHeaderColumn dataField='employeeFormCode' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">社員形式</TableHeaderColumn>
+                        <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="290">給料</TableHeaderColumn>
                         <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
                         <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
                         <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
                         <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
+                        <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
+                        <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
                 </div>

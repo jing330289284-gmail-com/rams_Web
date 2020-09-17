@@ -98,25 +98,31 @@ export function getPublicDropDown(methodNameList) {
 }
 
 //　ドロップダウン  多くメソッド react-bootstrap-table---->select専用
-export function getPublicDropDownRtBtSpTleOnly(methodArray) {
+export function getPublicDropDownRtBtSpTleOnly(methodNameList) {
 	var outArray = [];
-	for (var i = 0; i < methodArray.length; i++) {
+	var par = JSON.stringify(methodNameList);
+	for (var i = 0; i < methodNameList.length; i++) {
 		$.ajax({
 			type: "POST",
-			url: "http://127.0.0.1:8080/" + methodArray[i],
+			data:par,
+			url: "http://127.0.0.1:8080/initializationPage",
+			contentType:"application/json",
 			async: false,
-			success: function(msg) {
-				var array = [{ value: '', text: '選択ください' }];
-				for (var k in msg) {
-					var arrayDetail1 = { value: '', text: '' }
-					if (msg[k].code !== null) {
-						arrayDetail1 = { value: msg[k].code, text: msg[k].name }
-					} else {
-						arrayDetail1 = { value: msg[k].value, text: msg[k].label }
+			success: function(resultList) {
+				for(let j = 0;j < resultList.length; j++){
+					var array = [{ value: '', text: '選択ください' }];
+					var List = resultList[j];
+					for (var k in List) {
+						var arrayDetail1 = { value: '', text: '' }
+						if (List[k].code !== null) {
+							arrayDetail1 = { value: List[k].code, text: List[k].name }
+						} else {
+							arrayDetail1 = { value: List[k].value, text: List[k].label }
+						}
+						array.push(arrayDetail1)
 					}
-					array.push(arrayDetail1)
+					outArray.push(array);
 				}
-				outArray.push(array);
 			}
 		});
 	}
@@ -367,9 +373,20 @@ export function timeDiff(startTime, endTime) {
 	}
 	return result;
 }
+// 0130 -> 01:30
+export function timeInsertChar(time, inputChar) {
+	if (isNull(inputChar))	{
+		inputChar = ":";
+	}
+	return isEmpty(time)?"":time.substring(0,2) + inputChar + time.substring(2,4);
+}
 //is Null?
 export function isNull(obj) {
 	return (obj === undefined || isNaN(obj) || obj === null);
+}
+//is empty?
+export function isEmpty(obj) {
+	return (isNull(obj) || obj === "");
 }
 //Null to empty
 export function nullToEmpty(obj) {

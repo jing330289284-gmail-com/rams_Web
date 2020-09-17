@@ -2,7 +2,6 @@
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import ImageUploader from "react-images-upload";
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
@@ -66,13 +65,14 @@ class employee extends React.Component {
 		developLanguageMaster: [],
 		stationCode: '',
 		residentCardInfoFlag: false,
+		BPFlag: false,
 	};
 	//　　リセット
 	resetBook = () => {
 		window.location.href = window.location.href
 	};
 	//　　登録
-	insertEmployee = (event ) => {
+	insertEmployee = (event) => {
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -205,7 +205,6 @@ class employee extends React.Component {
 			password: this.state.passwordSetInfo,//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
-
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
@@ -264,7 +263,7 @@ class employee extends React.Component {
 			this.getEmployeeByEmployeeNo(id);
 			this.setState(
 				{
-					detailDisabled: false
+					detailDisabled: false,
 				}
 			);
 		} else {
@@ -274,7 +273,7 @@ class employee extends React.Component {
 
 	getDropDownｓ = () => {
 		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel",
-			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage"]
+			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage","getAuthority"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -313,9 +312,10 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				$("input:radio[value="+data.employeeStatus+"]").attr('checked','true');
 				this.setState({
 					//employeeNo: date.employeeNo,//ピクチャ
-					employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
+					BPFlag: data.employeeStatus=== "0"? false : true ,
 					employeeNo: data.employeeNo,//社員番号
 					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
@@ -368,12 +368,12 @@ class employee extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoFlag: data.residentCardInfo!== "" && data.residentCardInfo!== null ? true :false,//在留カード
-					resumeInfo1Flag: data.resumeInfo1!== "" && data.resumeInfo1!== null ? true :false,//履歴書
+					residentCardInfoFlag: data.residentCardInfo !== "" && data.residentCardInfo !== null　&& data.residentCardInfo !== undefined ? true : false,//在留カード
+					resumeInfo1Flag: data.resumeInfo1 !== "" && data.resumeInfo1 !== null && data.resumeInfo1 !== undefined? true : false,//履歴書
 					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeInfo2Flag: data.resumeInfo2!== "" && data.resumeInfo2!== null ? true :false,//履歴書2
+					resumeInfo2Flag: data.resumeInfo2 !== "" && data.resumeInfo2 !== null && data.resumeInfo2 !== undefined? true : false,//履歴書2
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
-					passportInfoFlag: data.passportInfo!== "" && data.passportInfo!== null ? true :false,//パスポート
+					passportInfoFlag: data.passportInfo !== "" && data.passportInfo !== null　&& data.passportInfo !== undefined? true : false,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -395,12 +395,9 @@ class employee extends React.Component {
 
 	//ImageUploaderを処理　開始
 	onDrop(pictureFiles, pictureDataURLs) {
-				console.log(this.state.pictures.concat(pictureFiles));
-
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
 		});
-		console.log(this.state.pictures)
 
 	}
 	//ImageUploaderを処理　終了
@@ -493,23 +490,12 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ companyMail: '', authorityCodes: [] });
-			$('input[type="email"]').prop('disabled', true);
-			$('#authorityCodeId').prop('disabled', true);
-			$('#bankInfo').prop('disabled', true);
-			$('#subCost').prop('disabled', true);
-			$('#passwordSet').prop('disabled', true);
-			$('#bpInfoModel').prop('disabled', false);
+			this.setState({ companyMail: '', authorityCodes: [] ,BPFlag: true});
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
 			this.getAuthority();
-			$('input[type="email"]').prop('disabled', false);
-			$('#authorityCodeId').prop('disabled', false);
-			$('#bankInfo').prop('disabled', false);
-			$('#subCost').prop('disabled', false);
-			$('#passwordSet').prop('disabled', false);
-			$('#bpInfoModel').prop('disabled', true);
+			this.setState({ BPFlag: false, });
 		}
 	}
 
@@ -522,7 +508,6 @@ class employee extends React.Component {
 			accountInfo: accountTokuro,
 			showBankInfoModal: false,
 		})
-		console.log(accountTokuro);
 	}
 
 	/* 
@@ -533,7 +518,6 @@ class employee extends React.Component {
 			subCostInfo: subCostInfoTokuro,
 			showSubCostModal: false,
 		})
-		console.log(subCostInfoTokuro);
 	}
 	/* 
 	ポップアップPW設定の取得
@@ -543,18 +527,15 @@ class employee extends React.Component {
 			passwordSetInfo: passwordSetTokuro,
 			showPasswordSetModal: false,
 		})
-		console.log(passwordSetTokuro);
 	}
 	/* 
 	ポップアップpb情報の取得
  　　　*/
 	pbInfoGet = (pbInfoGetTokuro) => {
-		alert(pbInfoGetTokuro)
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
 			showPbInfoModal: false,
 		})
-		console.log(pbInfoGetTokuro);
 	}
 	/**
 	* 小さい画面の閉め 
@@ -598,7 +579,6 @@ class employee extends React.Component {
 
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
-		console.log(value)
 		if (value === '') {
 			this.setState({
 				[id]: '',
@@ -644,39 +624,32 @@ class employee extends React.Component {
 
 	};
 
-	changeFile = (event,name) => {
+	changeFile = (event, name) => {
 		var filePath = event.target.value;
 		var arr = filePath.split('\\');
 		var fileName = arr[arr.length - 1];
-	if(name==="residentCardInfo"){
+		if (name === "residentCardInfo") {
 			this.setState({
-
-			residentCardInfo: filePath,
-			residentCardInfoName: fileName,
-		})
-		}else if(name==="resumeInfo1"){
+				residentCardInfo: filePath,
+				residentCardInfoName: fileName,
+			})
+		} else if (name === "resumeInfo1") {
 			this.setState({
-			resumeInfo1: filePath,
-			resumeInfo1Name: fileName,
-		})
-			
-		}else if(name==="resumeInfo2"){
+				resumeInfo1: filePath,
+				resumeInfo1Name: fileName,
+			})
+		} else if (name === "resumeInfo2") {
 			this.setState({
-			resumeInfo2: filePath,
-			resumeInfo2Name: fileName,
-		})
-			
-		}else if
-			(name==="passportInfo"){
+				resumeInfo2: filePath,
+				resumeInfo2Name: fileName,
+			})
+		} else if
+			(name === "passportInfo") {
 			this.setState({
-			passportInfo: filePath,
-			passportInfoName: fileName,
-		})
-			
+				passportInfo: filePath,
+				passportInfoName: fileName,
+			})
 		}
-		
-		
-		
 	}
 
 	render() {
@@ -702,7 +675,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} />
+						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName}/>
 					</Modal.Body>
 				</Modal>
 				{/*　 諸費用 */}
@@ -733,19 +706,19 @@ class employee extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>口座情報</Button>{' '}
-					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")}>諸費用</Button>{' '}
-					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={detailDisabled ? false : true} >PW設定</Button>{' '}
-					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}  disabled={this.state.BPFlag ? true : false}>口座情報</Button>{' '}
+					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")} disabled={this.state.BPFlag ? true : false}>諸費用</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={this.state.BPFlag ? true : false}>PW設定</Button>{' '}
+					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={!this.state.BPFlag ? true : false}>BP情報</Button>{' '}
 					<div>
-						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
-						<Form.Label>協力</Form.Label><Form.Check disabled={detailDisabled ? false : true} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={ this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check disabled={　this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-						
+
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -796,7 +769,7 @@ class employee extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											maxDate={new Date()}
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
@@ -912,7 +885,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control type="email" placeholder="社内メール" value={companyMail} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="companyMail" disabled={detailDisabled ? false : true} /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										onChange={this.valueChange} size="sm" name="companyMail" disabled={this.state.BPFlag ? true : false}/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 						</Row>
@@ -941,7 +914,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -964,7 +937,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -986,7 +959,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
@@ -1010,7 +983,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1056,7 +1029,7 @@ class employee extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
-										autoComplete="off" id="authorityCodeId" disabled={detailDisabled ? false : true}>
+										autoComplete="off" id="authorityCodeId" disabled={this.state.BPFlag ? true : false}>
 										{this.state.authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1136,7 +1109,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1149,7 +1122,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1162,7 +1135,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1175,7 +1148,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1188,7 +1161,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1215,7 +1188,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1261,7 +1234,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-									disabled={detailDisabled ? false : true}
+										disabled={detailDisabled ? false : true}
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
@@ -1321,7 +1294,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" :"datePickerReadonlyDefault" }
+											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={detailDisabled ? false : true}
@@ -1355,9 +1328,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										{this.state.residentCardInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-                                        <Form.File id="residentCardInfo"
-											label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange= {(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />}
+										{this.state.residentCardInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="residentCardInfo"
+												label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1367,9 +1340,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-									{this.state.resumeInfo1Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-									<Form.File id="resumeInfo1"
-											label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange= {(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />}
+										{this.state.resumeInfo1Flag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="resumeInfo1"
+												label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1385,11 +1358,10 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-									{this.state.resumeInfo2Flag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
+										{this.state.resumeInfo2Flag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 
-									<Form.File id="resumeInfo2"
-											label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange= {(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />}
-									
+											<Form.File id="resumeInfo2"
+												label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1405,9 +1377,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										{this.state.passportInfoFlag && !detailDisabled ?<InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text>: 
-										<Form.File id="passportInfo" 
-											label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange= {(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />}
+										{this.state.passportInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+											<Form.File id="passportInfo"
+												label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} disabled={detailDisabled ? false : true} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>

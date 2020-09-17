@@ -170,7 +170,7 @@ class CustomerInfo extends Component {
                 $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
                 this.setState({
                     stationCode:customerInfoMod.stationCode,
-                    topCustomer:customerInfoMod.topCustomer,
+                    topCustomer:customerInfoMod.topCustomerNo,
                 })
                 $("#levelCode").val(customerInfoMod.levelCode);
                 $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
@@ -277,6 +277,7 @@ class CustomerInfo extends Component {
             customerInfoMod["actionType"] = this.state.actionType;
             customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
             customerInfoMod["accountInfo"] = this.state.accountInfo;
+            customerInfoMod["stationCode"] = utils.labelGetValue( $("#stationCode").val(),this.state.stationCodeDrop);;
             customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
             axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
             .then(result => {
@@ -467,7 +468,7 @@ class CustomerInfo extends Component {
         }
 	};
     render() {
-        const { topCustomerInfo , stationCodeValue , customerDepartmentList , accountInfo
+        const { topCustomerInfo , stationCode , customerDepartmentList , accountInfo
          , actionType , topCustomer , errorsMessageValue , message , type} = this.state;
         const accountPath = {
             pathName:`${this.props.match.url}/`,state:this.state.accountInfo,
@@ -597,7 +598,7 @@ class CustomerInfo extends Component {
                                 getOptionLabel={(option) => option.name}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
-                                        <input placeholder="例：秋葉原駅" type="text" {...params.inputProps}
+                                        <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps}
                                             style={{ width: 258, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                     </div>
                                 )}
@@ -669,7 +670,7 @@ class CustomerInfo extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="上位お客様名" type="text" {...params.inputProps}
+                                            <input placeholder="  例：富士通" type="text" {...params.inputProps}
                                                 style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                         </div>
                                     )}
@@ -777,7 +778,7 @@ class CustomerInfo extends Component {
                                     onSelect={(event) => this.handleTag(event, 'customerDepartment')}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="お客様部門" type="text" {...params.inputProps}
+                                            <input placeholder="  例：第一事業部" type="text" {...params.inputProps}
                                                 style={{ width: 250, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                         </div>
                                     )}
@@ -809,19 +810,14 @@ class CustomerInfo extends Component {
                         </InputGroup>
                     </Col>
                 </Row>
-                <Row>
-                    <Col sm={5}></Col>
-                        <Col sm={1} className="text-center">
-                                <Button block size="sm" onClick={this.meisaiToroku} variant="info" id="meisaiToroku" type="button">
+                    <div style={{ "textAlign": "center" }}>
+                        <Button size="sm" onClick={this.meisaiToroku} variant="info" id="meisaiToroku" type="button">
                                 <FontAwesomeIcon icon={faSave} />部署登録
-                                </Button>
-                        </Col>
-                        <Col sm={1} className="text-center">
-                                <Button  block size="sm" variant="info" id="meisaiReset" >
+                        </Button>{" "}
+                        <Button  size="sm" variant="info" id="meisaiReset" >
                                 <FontAwesomeIcon icon={faUndo} />リセット
-                                </Button>
-                        </Col>
-                </Row>
+                        </Button>
+                    </div>
                 <Row>
                     <Col sm={11}></Col>
                     <Col sm={1}>
@@ -836,7 +832,7 @@ class CustomerInfo extends Component {
                     options={ options } 
                     deleteRow data={customerDepartmentList} 
                     className={"bg-white text-dark"}
-                    headerStyle={{ background: '#B1F9D0' }} striped hover condensed>
+                    headerStyle={{ background: '#5599FF' }} striped hover condensed>
                         <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>
                         <TableHeaderColumn dataField='customerDepartmentName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">部門</TableHeaderColumn>
@@ -848,20 +844,17 @@ class CustomerInfo extends Component {
                 <input type="hidden" id="employeeNo" name="employeeNo"/>
                 </Form>
             </div>
-                <Row>
-                    <Col sm={5}></Col>
-                    <Col sm={2}>
-                        {actionType === "update" ? 
-                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
+            <div style={{ "textAlign": "center" }}>
+                    {actionType === "update" ? 
+                        <Button size="sm" onClick={this.toroku}  variant="info" id="toroku" type="button">
                             <FontAwesomeIcon icon={faSave} />更新
                         </Button>
                         :
-                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
+                        <Button size="sm" onClick={this.toroku}  variant="info" id="toroku" type="button">
                             <FontAwesomeIcon icon={faSave} />登録
                         </Button>
                     }
-                    </Col>
-                </Row>
+            </div>
             </div>
         );
     }
