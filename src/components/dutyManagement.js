@@ -22,6 +22,7 @@ class dutyManagement extends React.Component {
 	};
 	componentDidMount(){
 		$("#syounin").attr("disabled",true);
+		$("#workRepot").attr("disabled",true);
 		$("#datePicker").attr("readonly","readonly");
 	}
 	//onchange
@@ -76,15 +77,17 @@ class dutyManagement extends React.Component {
 		const emp = {
 			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
 			employeeNo: this.state.rowSelectEmployeeNo,
+			checkSection: this.state.rowSelectCheckSection,
 		}
 		axios.post("http://127.0.0.1:8080/dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
+					//削除の後で、rowSelectの値に空白をセットする
 					this.setState(
 						{
-							rowSelectEmployeeNo: ''
+							rowSelectEmployeeNo: '',
+							rowSelectCheckSection: ''
 						}
 					);
 					this.setState({ "myToastShow": true });
@@ -116,20 +119,25 @@ class dutyManagement extends React.Component {
 	};
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
-		
+		$("#workRepot").attr("disabled",true);
 		if (isSelected) {
 			this.setState(
 				{
 					rowNo:row.rowNo,
 					rowSelectEmployeeNo: row.employeeNo,
+					rowSelectCheckSection: row.checkSection,
 				}
 			);
 			$("#syounin").attr("disabled",false);
+			if(row.checkSection==0){
+				$("#workRepot").attr("disabled",false);
+			}
 		} else {
 			this.setState(
 				{
 					rowNo: '',
 					rowSelectEmployeeNo: '',
+					rowSelectCheckSection: '',
 				}
 			);
 			$("#syounin").attr("disabled",true);
@@ -176,11 +184,12 @@ class dutyManagement extends React.Component {
 		return (
 
 			<div>
-				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
-					<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"承認成功！"} type={"success"} />
 				</div>
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
+				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
 					<div>
 						<Form.Group>
