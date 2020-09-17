@@ -186,7 +186,7 @@ class dutyManagement extends React.Component {
 						<Form.Group>
 							<Row inline="true">
 								<Col className="text-center">
-									<h2>時間登録ステータス</h2>
+									<h2>社員勤務管理</h2>
 								</Col>
 							</Row>
 						</Form.Group>
