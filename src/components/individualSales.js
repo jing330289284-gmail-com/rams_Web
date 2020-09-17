@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , select, FormControl , Tooltip} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , select, FormControl , Tooltip,} from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -13,13 +13,12 @@ import { TableBody } from '@material-ui/core';
 import { parse } from '@fortawesome/fontawesome-svg-core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import ErrorsMessageToast from './errorsMessageToast';
 class individualSales extends Component {
     state = { 
         actionType:'',
-        employeeNo:'',
         fiscalYear:'',
-        employeeFirstName:'',
-        employeeLastName:'',
+        employeeName:'',
 		individualSales_startYearAndMonth:'',
         individualSales_endYearAndMonth:'',
      }
@@ -29,49 +28,46 @@ class individualSales extends Component {
 			sizePerPage: 12,
 			pageStartIndex: 1,
 			paginationSize: 2,
-			prePage: 'Prev',
-			nextPage: 'Next',
+			prePage: '<', // Previous page button text
+            nextPage: '>', // Next page button text
+            firstPage: '<<', // First page button text
+            lastPage: '>>', // Last page button text
 			hideSizePerPage: true,
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
 
 		};
     }
-	searchEmployee = () => {
-        if($("#employeeName").val()==""){
-            document.getElementById("individualSalesErrmsg").innerHTML = "社員名を入力してください";
-            document.getElementById("individualSalesErrmsg").style = "visibility:visible";
-        }else if($("#fiscalYear").val()==""&&$("#personalsalesSearchDatePicker").val()==""&&$("#personalsalesSearchBackDatePicker").val()==""){
-            document.getElementById("individualSalesErrmsg").innerHTML = "年度また年月を入力してください";
-            document.getElementById("individualSalesErrmsg").style = "visibility:visible";
-        }else if($("#personalsalesSearchDatePicker").val()!=""&&$("#personalsalesSearchBackDatePicker").val()!=""&&$("#personalsalesSearchDatePicker").val()>$("#personalsalesSearchBackDatePicker").val()&&$("#fiscalYear").val()==""){
-            document.getElementById("individualSalesErrmsg").innerHTML = "年月を確認してください";
-            document.getElementById("individualSalesErrmsg").style = "visibility:visible";
-        }
-        else{
-            document.getElementById("individualSalesErrmsg").style = "visibility:hidden";
-        
+	searchEmployee = () => { 
 		const empInfo = {
-			employeeNo: this.state.employeeNo,
-			employeeName: $("#employeeName").val(),
+            employeeName: publicUtils.labelGetValue($("#employeeName").val() ,this.state.employeeName),
             fiscalYear:this.state.fiscalYear,
             startYearAndMonth:publicUtils.formateDate(this.state.individualSales_startYearAndMonth,false),
             endYearAndMonth:publicUtils.formateDate(this.state.individualSales_endYearAndMonth,false),
 		};
 		axios.post("http://127.0.0.1:8080/personalSales/searchEmpDetails", empInfo)
 			.then(response => {
-				if (response.data != null) {
-                    this.setState({ employeeInfoList: response.data })
+				if (response.data.errorsMessage != null) {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+				} else {
+                    this.setState({ employeeInfoList: response.data.data })
                     this.setState({workMonthCount:this.state.employeeInfoList[0].workMonthCount})
                     this.feeTotal();
-				} else {
-					alert("err")
+					
 				}
-			}
-            );
-        }
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+        //}
     }
-
+    yearAndMonthChange =event =>{
+    	this.setState({
+			[event.target.name]: event.target.value
+        })
+        this.setState({individualSales_endYearAndMonth:''})
+        this.setState({individualSales_startYearAndMonth:''})
+    }
 
     	//onchange
 	valueChange = event => {
@@ -79,8 +75,7 @@ class individualSales extends Component {
 			[event.target.name]: event.target.value
         })
 
-    }
-    
+    }    
     feeTotal = () =>{
         var totalutilPrice = 0;
         var totalgrosProfits = 0;
@@ -102,7 +97,7 @@ class individualSales extends Component {
                 totalgrosProfits = parseInt(totalgrosProfits) + parseInt(this.state.employeeInfoList[i].grosProfits) 
             }
         }
-        this.setState({totalutilPrice:totalutilPrice+"万円"})
+        this.setState({totalutilPrice:totalutilPrice})
         this.setState({totalgrosProfits:totalgrosProfits})
         this.setState({paymentTotal:paymentTotal})
     }
@@ -119,6 +114,7 @@ class individualSales extends Component {
         if(date !== null){
             this.setState({
                 individualSales_startYearAndMonth: date,
+                fiscalYear:'',
             });
         }else{
             this.setState({
@@ -131,6 +127,7 @@ class individualSales extends Component {
         if(date !== null){
             this.setState({
                 individualSales_endYearAndMonth: date,
+                fiscalYear:'',
             });
         }else{
             this.setState({
@@ -158,9 +155,13 @@ class individualSales extends Component {
 	};
 
 render (){
-    const { employeeName } = this.state;
+    const { employeeName,errorsMessageValue } = this.state;
         return(
+            
             <div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
                 <Row inline="true">
                      <Col  className="text-center">
                     <h2>個人売上検索</h2>
@@ -172,7 +173,7 @@ render (){
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl id="fiscalYear"  name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.valueChange} />
+                            <FormControl id="fiscalYear"  name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange} />
                         </InputGroup>
                     </Col>
                     <Col sm={3}>
@@ -180,37 +181,24 @@ render (){
                     </Col>
 				</Row>
 				<Row>
-                <Col sm={3}>
+                <Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									
-                                    {/* <FormControl placeholder="社員名" size="sm"  id="employeeName" name="employeeName" value={this.state.employeeName} onChange={this.valueChange}/>{' '} */}
 									<Autocomplete
 									id="employeeName"
 									name="employeeName"
-									value={employeeName}
 									options={this.state.employeeName}
 									getOptionLabel={(option) => option.name}
-									clearOnBlur
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="社員名" type="text" {...params.inputProps}
-												style={{ width: 160, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											<input placeholder="  社員名" type="text" {...params.inputProps}
+												style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
 								/>
-                                    {/* <FormControl placeholder="社員名" size="sm" id="employeeLastName" name="employeeLastName" value={this.state.employeeLastName} onChange={this.valueChange}/> */}
                                     <font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
-                    <Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl name="employeeNo" value={this.state.employeeNo}  onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
-                        </InputGroup>
-                    </Col>
                     <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
@@ -228,7 +216,7 @@ render (){
                                 dateFormat={"yyyy/MM"}
                                 name="individualSales_startYearAndMonth"
                                 locale="ja">
-								</DatePicker><font id="mark" style={{marginLeft: "20px",marginRight: "20px"}}>～</font><DatePicker
+								</DatePicker><font id="mark">～</font><DatePicker
                                 selected={this.state.individualSales_endYearAndMonth}
                                 onChange={this.individualSalesEndYearAndMonthChange}
                                 dateFormat={"yyyy MM"}
@@ -254,10 +242,11 @@ render (){
 					<Button variant="info" size="sm" id="shusei"　onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>
                     </Col> 
                 </Row>
+                <br/>
 				<Row>
                     <Col sm={3}>
                             <label>稼働月数:</label>
-                            <label id="workMonthCount"name="workMonthCount" >{this.state.workMonthCount}</label>
+                            <label id="workMonthCount"name="workMonthCount" >{'\u00A0'}{'\u00A0'}{this.state.workMonthCount}</label>
 						</Col>
                     
 						<Col sm={3}>
@@ -267,7 +256,7 @@ render (){
 						<Col sm={3}>
 
                             <label>支払合計:</label>
-                            <label id="paymentTotal" name="paymentTotal" type="text">{this.state.paymentTotal}</label>
+                            <label id="paymentTotal" name="paymentTotal" type="text">{'\u00A0'}{'\u00A0'}{this.state.paymentTotal}</label>
 						</Col>
 						<Col sm={3}>
                             <label>粗利合計:</label>
@@ -275,18 +264,18 @@ render (){
 						</Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.employeeInfoList} className={"bg-white text-dark"} pagination={true}  headerStyle={{ background: '#B1F9D0' }}  options={this.options}>
-							<TableHeaderColumn  dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
-							<TableHeaderColumn  dataField='employeeFormName'>社員形式</TableHeaderColumn>
-							<TableHeaderColumn  width='125' dataField='customerName'>所属客様</TableHeaderColumn>
-							<TableHeaderColumn  dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn  dataField='salary'>基本支給</TableHeaderColumn>
-							<TableHeaderColumn  dataField='transportationExpenses'>交通代</TableHeaderColumn>
-							<TableHeaderColumn  dataField='insuranceFeeAmount'>社会保険</TableHeaderColumn>
-							<TableHeaderColumn  dataField='scheduleOfBonusAmount'>ボーナス</TableHeaderColumn>
-							<TableHeaderColumn  width='125' dataField='leaderAllowanceAmount'>リーダー手当</TableHeaderColumn>
-							<TableHeaderColumn  dataField='otherAllowanceAmount'>他の手当</TableHeaderColumn>
-							<TableHeaderColumn  dataField='grosProfits'>粗利</TableHeaderColumn>         
+                    <BootstrapTable data={this.state.employeeInfoList} className={"bg-white text-dark"} pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice'>単価</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='salary'>基本支給</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses'>交通代</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'>社会保険</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }}dataField='scheduleOfBonusAmount'>ボーナス</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='leaderAllowanceAmount'>リーダー手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='otherAllowanceAmount'>他の手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits'>粗利</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
 						
