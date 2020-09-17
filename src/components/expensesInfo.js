@@ -21,6 +21,7 @@ class ExpensesInfo extends Component {
 		this.state = this.initialState;//初期化
     }
     initialState = {
+        employeeNo:'',//社員番号
         expensesReflectStartDate:'',//反映年月開始年月
         expensesReflectYearAndMonth:'',//反映年月
         transportationExpenses:'',//交通費
@@ -34,14 +35,21 @@ class ExpensesInfo extends Component {
         myToastShow: false,//toastのフラグ
         errorsMessageShow: false,///エラーのメッセージのフラグ
         errorsMessageValue:'',//エラーのメッセージ
-        actionType:'',//処理区分
+        actionType:'insert',//処理区分
         leaderMember:'',//leaderの要員
         housingStatusDrop:[],//住宅ステータスselect
     }
     componentDidMount(){
         this.setState({
             housingStatusDrop:utils.getdropDown("getHousingStatus"),
+            employeeNo:this.props.employeeNo,
         })
+        if(this.props.expensesInfoModel !== null){
+            this.giveValue(this.props.expensesInfoModel);
+            this.setState({
+                actionType:'update',
+            })
+        }
     }
     /**
      * 昇給期日の変化
@@ -77,6 +85,30 @@ class ExpensesInfo extends Component {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
+    }
+    expensesInfoToroku(){
+        var expensesInfoModel = {};
+        var formArray =$("#expensesInfoForm").serializeArray();
+        $.each(formArray,function(i,item){
+            expensesInfoModel[item.name] = item.value;     
+        });
+        expensesInfoModel["actionType"] = this.state.actionType;
+        expensesInfoModel["employeeNo"] = this.state.employeeNo;
+        expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate,false);
+        axios.post("http://127.0.0.1:8080/expensesInfo/toroku", expensesInfoModel)
+        .then(result => {
+            if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+                this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:result.data.message});
+                setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                var seikou = "success";
+                this.props.expensesInfoToroku(seikou);
+            }else{
+                this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+            }
+        })
+        .catch(error=> {
+            this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
+        });
     }
     render() {
         const {
@@ -248,8 +280,9 @@ class ExpensesInfo extends Component {
                                     block 
                                     size="sm"
                                     disabled={actionType === "detail" ? true : false}
-                                    variant="info">
-                                        <FontAwesomeIcon icon={faSave} />登録
+                                    variant="info"
+                                    onClick={this.expensesInfoToroku.bind(this)}>
+                                        <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
                                     </Button>
                             </Col>
                             <Col sm={2} className="text-center">

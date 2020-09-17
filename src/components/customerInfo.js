@@ -491,10 +491,10 @@ class CustomerInfo extends Component {
         sizePerPage: 5,  // which size per page you want to locate as default
         pageStartIndex: 1, // where to start counting the pages
         paginationSize: 3,  // the pagination bar size.
-        prePage: 'Prev', // Previous page button text
-        nextPage: 'Next', // Next page button text
-        firstPage: 'First', // First page button text
-        lastPage: 'Last', // Last page button text
+        prePage: '<', // Previous page button text
+        nextPage: '>', // Next page button text
+        firstPage: '<<', // First page button text
+        lastPage: '>>', // Last page button text
         paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
         hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
         expandRowBgColor: 'rgb(165, 165, 165)',

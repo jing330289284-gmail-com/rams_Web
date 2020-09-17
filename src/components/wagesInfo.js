@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , Modal , Popover , Navbar} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , FormControl , Modal , Table , Navbar} from 'react-bootstrap';
 import MyToast from './myToast';
 import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave , faEdit , faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
-import {BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import {BootstrapTable, TableHeaderColumn , BSTable } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import ExpensesInfo from "./expensesInfo.js"
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -88,6 +88,7 @@ class WagesInfo extends Component {
      componentDidMount(){
         this.getDropDowns();
         $("#shusei").attr("disabled",true);
+        $("#expensesInfoBtn").attr("disabled",true);
      }
      /**
       * select取得
@@ -168,8 +169,8 @@ class WagesInfo extends Component {
     giveValue=(wagesInfoMod)=>{
         this.setState({ 
             socialInsuranceFlag:wagesInfoMod.socialInsuranceFlag , 
-            salary:wagesInfoMod.wagesInfoMod , 
-            waitingCost:wagesInfoMod.wagesInfoMod , 
+            salary:wagesInfoMod.salary , 
+            waitingCost:wagesInfoMod.waitingCost , 
             welfarePensionAmount:wagesInfoMod.welfarePensionAmount , 
             healthInsuranceAmount:wagesInfoMod.healthInsuranceAmount , 
             insuranceFeeAmount:wagesInfoMod.insuranceFeeAmount , 
@@ -213,13 +214,22 @@ class WagesInfo extends Component {
             var wagesInfoMod = {
                 "employeeNo":utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
             }
+            this.setState({
+                employeeNo:wagesInfoMod.employeeNo,
+            })
             axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo",wagesInfoMod)
             .then(result=> {
                 if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+                    $("#expensesInfoBtn").attr("disabled",false);
                     this.setState({
                         wagesInfoList:result.data.wagesInfoList,
+                        lastTimeBonusAmount:result.data.wagesInfoList[result.data.wagesInfoList.length-1].scheduleOfBonusAmount,
                     })
                 }else{
+                    $("#expensesInfoBtn").attr("disabled",true);
+                    this.setState({
+                        wagesInfoList:[],
+                    })
                     this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
                 }
             })
@@ -238,6 +248,7 @@ class WagesInfo extends Component {
                 })
                 $("#shusei").attr("disabled",false);
             }else{
+                this.resetValue();
                 $("#shusei").attr("disabled",true);
             }
         }else{
@@ -299,12 +310,45 @@ class WagesInfo extends Component {
             )
         }
     }
+    getExpensesInfo=(expensesInfoToroku)=>{
+        if(expensesInfoToroku === "success"){
+            this.setState({
+                costInfoShow:false,
+            },()=>{
+                var wagesInfoMod = {
+                    "employeeNo":utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
+                }
+                axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo",wagesInfoMod)
+                .then(result=> {
+                    if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+                        $("#expensesInfoBtn").attr("disabled",false);
+                        this.setState({
+                            wagesInfoList:result.data.wagesInfoList,
+                            lastTimeBonusAmount:result.data.wagesInfoList[result.data.wagesInfoList.length-1].scheduleOfBonusAmount,
+                        })
+                    }else{
+                        $("#expensesInfoBtn").attr("disabled",true);
+                        this.setState({
+                            wagesInfoList:[],
+                        })
+                        this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+                    }
+                })
+            }
+            )
+        }
+        console.log(expensesInfoToroku);
+    }
+    /**
+     * 登録ボタン
+     */
     toroku=()=>{
         var wagesInfoModel = {};
         var formArray =$("#wagesInfoForm").serializeArray();
         $.each(formArray,function(i,item){
             wagesInfoModel[item.name] = item.value;     
         });
+        wagesInfoModel["employeeNo"] = utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop);
         wagesInfoModel["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate,false);
         wagesInfoModel["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate,false);
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate,false);
@@ -372,6 +416,54 @@ class WagesInfo extends Component {
             );
             }
       }
+    /**
+     * 諸費用テーブルの開き
+     */
+    isExpandableRow(row) {
+        // if (row.employeeNameList !== null) return true;
+        // else return false;
+        return true;
+    }
+    /**
+     * 諸費用テーブルの開きアイコン
+     */
+     expandColumnComponent({ isExpandableRow, isExpanded }) {
+        let content = '';
+
+        if (isExpandableRow) {
+        content = (isExpanded ? '(-)' : '(+)' );
+        } else {
+        content = ' ';
+        }
+        return (
+        <div> { content } </div>
+        );
+    }
+    /**
+     * 諸費用テーブル
+     */
+    expandComponent(row){
+        const selectRow = {
+            mode: 'radio',
+            bgColor: 'pink',
+            hideSelectColumn: true,
+            clickToSelect: true,  // click to select, default is false
+            clickToExpand: true,// click to expand row, default is false
+        };
+        return (
+            <div>
+                 <BootstrapTable 
+                 selectRow={selectRow} 
+                 data={row.expensesInfoModels}>
+                        <TableHeaderColumn isKey={true} dataField='expensesReflectYearAndMonth' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
+                        <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
+                        <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
+                        <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
+                        <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
+                    </BootstrapTable>
+            </div>
+        );
+        }
     render() {
         const {        
             employeeNo ,
@@ -419,10 +511,11 @@ class WagesInfo extends Component {
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
-            prePage: 'Prev', // Previous page button text
-            nextPage: 'Next', // Next page button text
-            firstPage: 'First', // First page button text
-            lastPage: 'Last', // Last page button text
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+            lastPage: '>>', // Last page button text
+            expandRowBgColor: 'rgb(165, 165, 165)',
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
@@ -445,7 +538,7 @@ class WagesInfo extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body >
-                                    <ExpensesInfo/>
+                                    <ExpensesInfo employeeNo={employeeNo} expensesInfoModel={this.state.expensesInfoModel} expensesInfoToroku={this.getExpensesInfo}/>
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">
@@ -482,26 +575,12 @@ class WagesInfo extends Component {
                                         style={{marginLeft: "10px",marginRight: "10px"}}>★</font>
                                 </InputGroup>
                             </Col>
-                            <Col sm={2}>
-                                <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
-                                        <InputGroup.Text>社員番号</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl 
-                                        maxLength="6" 
-                                        value={employeeName}
-                                        name="employeeNo"
-                                        onChange={this.valueChange}
-                                        readOnly
-                                        disabled={actionType === "detail" ? true : false}
-                                        placeholder="例：220000"/>
-                                    </InputGroup>
-                            </Col>
-                            <Col sm={6}></Col>
+                            <Col sm={8}></Col>
                             <Col sm={1}>
                                 <Button 
                                 block 
                                 size="sm"
+                                id="expensesInfoBtn"
                                 disabled={actionType === "detail" ? true : false}
                                 onClick={this.handleShowModal}>
                                     諸費用</Button>
@@ -650,11 +729,11 @@ class WagesInfo extends Component {
                                     <InputGroup.Text>前回額</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
-                                    readOnly = {bonusFlag === "1" ? false : true}
                                     onChange={this.valueChange}
                                     disabled={actionType === "detail" ? true : false}
                                     name="lastTimeBonusAmount"
                                     maxLength="7"
+                                    readOnly
                                     placeholder="例：400000"
                                     value={lastTimeBonusAmount}/>
                                     <InputGroup.Prepend>
@@ -820,18 +899,26 @@ class WagesInfo extends Component {
                     pagination={ true } 
                     options={ options } 
                     data={wagesInfoList}
-                    headerStyle={{ background: '#5599FF' }} 
+                    headerStyle={{ background: '#5599FF' }}
+                    expandColumnOptions={ {
+                        expandColumnVisible: true,
+                        expandColumnComponent: this.expandColumnComponent,
+                        columnWidth: 50,
+                        text:"諸費用"
+                      } } 
+                    expandableRow={ this.isExpandableRow }
+                    expandComponent={ this.expandComponent }
                     striped 
                     hover 
                     condensed>
                         <TableHeaderColumn isKey={true} dataField='reflectYearAndMonth' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
+                        {/* <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">最新の諸費用反映年月</TableHeaderColumn> */}
                         <TableHeaderColumn dataField='employeeFormCode' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">社員形式</TableHeaderColumn>
                         <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="290">給料</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
-                        <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
+                        <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
+                        <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
+                        <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
+                        <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
                         <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
                     </BootstrapTable>
