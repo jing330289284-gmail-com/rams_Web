@@ -63,9 +63,6 @@ class bpInfo extends React.Component {
 				}
 				);
 		}
-
-
-
 	}
 
 	getDropDownｓ = () => {
@@ -161,7 +158,7 @@ class bpInfo extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  BP所属" type="text" {...params.inputProps} className="auto" id="bpBelongCustomerCode"
-													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.props.actionType === "detail"  ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
