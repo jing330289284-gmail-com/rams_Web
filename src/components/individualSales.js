@@ -1,18 +1,14 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , select, FormControl , Tooltip,} from 'react-bootstrap';
+import {Row , Col , InputGroup , Button , FormControl } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Autosuggest from 'react-autosuggest';
-import { faSave, faUndo, faSearch , faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
-import { TableBody } from '@material-ui/core';
-import { parse } from '@fortawesome/fontawesome-svg-core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import ErrorsMessageToast from './errorsMessageToast';
 class individualSales extends Component {
     state = { 
@@ -181,7 +177,7 @@ render (){
                     </Col>
 				</Row>
 				<Row>
-                <Col sm={4}>
+                <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
 									<Autocomplete
@@ -192,14 +188,14 @@ render (){
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
 											<input placeholder="  社員名" type="text" {...params.inputProps}
-												style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
 								/>
-                                    <font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                    <font color="red" style={{ marginLeft: "15px"}}>★</font>
 								</InputGroup>
 							</Col>
-                    <Col sm={6}>
+                    <Col sm={4}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
@@ -245,22 +241,38 @@ render (){
                 <br/>
 				<Row>
                     <Col sm={3}>
-                            <label>稼働月数:</label>
-                            <label id="workMonthCount"name="workMonthCount" >{'\u00A0'}{'\u00A0'}{this.state.workMonthCount}</label>
+                    <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                    <InputGroup.Text id="inputGroup-sizing-sm">稼働月数</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.workMonthCount} readOnly/>
+                    </InputGroup>
+                            
 						</Col>
                     
 						<Col sm={3}>
-                            <label>単価合計:</label>
-                            <label id="utilPriceTotal" name="utilPriceTotal" >{'\u00A0'}{'\u00A0'}{this.state.totalutilPrice}</label>
+                        <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                    <InputGroup.Text id="inputGroup-sizing-sm">単価合計</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.totalutilPrice} readOnly/>
+                    </InputGroup>
 						</Col>
 						<Col sm={3}>
-
-                            <label>支払合計:</label>
-                            <label id="paymentTotal" name="paymentTotal" type="text">{'\u00A0'}{'\u00A0'}{this.state.paymentTotal}</label>
+                        <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                    <InputGroup.Text id="inputGroup-sizing-sm">支払合計</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.paymentTotal} readOnly/>
+                    </InputGroup>
 						</Col>
 						<Col sm={3}>
-                            <label>粗利合計:</label>
-                            <label id="grossProfitTotal" name="grossProfitTotal" type="text">{'\u00A0'}{'\u00A0'}{this.state.totalgrosProfits}</label>
+                        <InputGroup size="sm" className="mb-3">
+                    <InputGroup.Prepend>
+                    <InputGroup.Text id="inputGroup-sizing-sm">粗利合計</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.totalgrosProfits} readOnly/>
+                    </InputGroup>
 						</Col>
 				</Row>
                 <div>
