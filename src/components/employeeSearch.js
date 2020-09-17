@@ -244,7 +244,6 @@ class employeeSearch extends React.Component {
 				}
 			}
 		}
-
 	};
 
 	render() {
