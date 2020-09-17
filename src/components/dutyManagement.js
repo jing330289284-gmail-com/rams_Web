@@ -58,7 +58,7 @@ class dutyManagement extends React.Component {
 							totalWorkingTime=response.data[i].workTime;
 						}
 					}
-					averageWorkingTime=averageWorkingTime/totalPersons;
+					averageWorkingTime=Math.round(averageWorkingTime/totalPersons);
 					if(isNaN(averageWorkingTime)){
 						averageWorkingTime=0
 					}
@@ -183,6 +183,13 @@ class dutyManagement extends React.Component {
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
 				<Form >
 					<div>
+						<Form.Group>
+							<Row inline="true">
+								<Col className="text-center">
+									<h2>時間登録ステータス</h2>
+								</Col>
+							</Row>
+						</Form.Group>
 						<Form.Group>
 							<Row>
 								<Col sm={3}>
