@@ -6,7 +6,6 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import BankInfo from './accountInfo';
-import SubCost from './expensesInfo';
 import BpInfoModel from './bpInfo';
 import PasswordSet from './passwordSet';
 import '../asserts/css/style.css';
@@ -75,6 +74,7 @@ class employee extends React.Component {
 	insertEmployee = (event) => {
 		event.preventDefault();
 		const formData = new FormData()
+		alert(this.state.companyMail)
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
@@ -111,11 +111,11 @@ class employee extends React.Component {
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguageCode4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguageCode5").val(), this.state.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
+			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
+			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
+			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -188,11 +188,11 @@ class employee extends React.Component {
 			firstHalfAddress: this.state.firstHalfAddress,
 			lastHalfAddress: this.state.lastHalfAddress,
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguageCode4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguageCode5").val(), this.state.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
+			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
+			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
+			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
 			residenceCode: this.state.residenceCode,//在留資格
 			residenceCardNo: this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -273,7 +273,7 @@ class employee extends React.Component {
 
 	getDropDownｓ = () => {
 		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel",
-			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage","getAuthority"]
+			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage", "getAuthority"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{
@@ -312,10 +312,10 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
-				$("input:radio[value="+data.employeeStatus+"]").attr('checked','true');
+				alert(data.authorityCode)
+				$("input:radio[value=" + data.employeeStatus + "]").attr('checked', 'true');
 				this.setState({
-					//employeeNo: date.employeeNo,//ピクチャ
-					BPFlag: data.employeeStatus=== "0"? false : true ,
+					BPFlag: data.employeeStatus === "0" ? false : true,
 					employeeNo: data.employeeNo,//社員番号
 					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
@@ -346,7 +346,7 @@ class employee extends React.Component {
 					nationalityCode: data.nationalityCode,//出身地
 					birthplace: data.birthplace,//出身県
 					phoneNo: data.phoneNo,//携帯電話
-					authorityCode: $("#authorityCodeId").val(),//権限
+					authorityCode: data.authorityCode,//権限
 					japaneseLevelCode: data.japaneseLevelCode,//日本語
 					englishLevelCode: data.englishLevelCode,//英語
 					certification1: data.certification1,//資格1
@@ -368,12 +368,12 @@ class employee extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoFlag: data.residentCardInfo !== "" && data.residentCardInfo !== null　&& data.residentCardInfo !== undefined ? true : false,//在留カード
-					resumeInfo1Flag: data.resumeInfo1 !== "" && data.resumeInfo1 !== null && data.resumeInfo1 !== undefined? true : false,//履歴書
+					residentCardInfoFlag: data.residentCardInfo !== "" && data.residentCardInfo !== null && data.residentCardInfo !== undefined ? true : false,//在留カード
+					resumeInfo1Flag: data.resumeInfo1 !== "" && data.resumeInfo1 !== null && data.resumeInfo1 !== undefined ? true : false,//履歴書
 					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeInfo2Flag: data.resumeInfo2 !== "" && data.resumeInfo2 !== null && data.resumeInfo2 !== undefined? true : false,//履歴書2
+					resumeInfo2Flag: data.resumeInfo2 !== "" && data.resumeInfo2 !== null && data.resumeInfo2 !== undefined ? true : false,//履歴書2
 					resumeRemark2: data.resumeRemark2,//履歴書備考1
-					passportInfoFlag: data.passportInfo !== "" && data.passportInfo !== null　&& data.passportInfo !== undefined? true : false,//パスポート
+					passportInfoFlag: data.passportInfo !== "" && data.passportInfo !== null && data.passportInfo !== undefined ? true : false,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -490,7 +490,7 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		var val = $('input:radio[name="employeeType"]:checked').val();
 		if (val === '1') {
-			this.setState({ companyMail: '', authorityCodes: [] ,BPFlag: true});
+			this.setState({ companyMail: '', authorityCodes: [], BPFlag: true });
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
@@ -543,8 +543,6 @@ class employee extends React.Component {
 	handleHideModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
 			this.setState({ showBankInfoModal: false })
-		} else if (kbn === "subCost") {//　　諸費用
-			this.setState({ showSubCostModal: false })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: false })
 		} else if (kbn === "bpInfoModel") {//pb情報
@@ -558,8 +556,6 @@ class employee extends React.Component {
 	handleShowModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
 			this.setState({ showBankInfoModal: true })
-		} else if (kbn === "subCost") {//　　諸費用
-			this.setState({ showSubCostModal: true })
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: true })
 		} else if (kbn === "bpInfoModel") {//pb情報
@@ -602,9 +598,9 @@ class employee extends React.Component {
 							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
-					case 'developLanguage5':
+					case 'developLanguage4':
 						this.setState({
-							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage5':
@@ -658,7 +654,7 @@ class employee extends React.Component {
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled, errorsMessageValue
 		} = this.state;
-		const { accountInfo, subCostInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
+		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -675,16 +671,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName}/>
-					</Modal.Body>
-				</Modal>
-				{/*　 諸費用 */}
-				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "subCost")} show={this.state.showSubCostModal} dialogClassName="modal-expensesInfo">
-					<Modal.Header closeButton>
-					</Modal.Header>
-					<Modal.Body >
-						<SubCost subCostInfo={subCostInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} subCostTokuro={this.subCostInfoGet} />
+						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/*　 PW設定 */}
@@ -695,7 +682,6 @@ class employee extends React.Component {
 					<Modal.Body >
 						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
-
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">
@@ -706,13 +692,12 @@ class employee extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}  disabled={this.state.BPFlag ? true : false}>口座情報</Button>{' '}
-					<Button size="sm" id="subCost" onClick={this.handleShowModal.bind(this, "subCost")} disabled={this.state.BPFlag ? true : false}>諸費用</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.BPFlag ? true : false}>口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={this.state.BPFlag ? true : false}>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={!this.state.BPFlag ? true : false}>BP情報</Button>{' '}
 					<div>
-						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={ this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
-						<Form.Label>協力</Form.Label><Form.Check disabled={　this.props.location.state.actionType !== "insert"? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={this.props.location.state.actionType !== "insert" ? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check disabled={this.props.location.state.actionType !== "insert" ? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
 					</div>
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
@@ -885,7 +870,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control type="email" placeholder="社内メール" value={companyMail} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="companyMail" disabled={this.state.BPFlag ? true : false}/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										onChange={this.valueChange} size="sm" name="companyMail" disabled={this.state.BPFlag ? true : false} /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 						</Row>
@@ -959,7 +944,7 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id={detailDisabled ? "datePicker" : "datePickerReadonlyDefault"}
+											id={detailDisabled && retirementYearAndMonthDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
@@ -1117,7 +1102,7 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto" id="developLanguage1"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -1130,7 +1115,7 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto" id="developLanguage2"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -1143,7 +1128,7 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto" id="developLanguage3"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -1156,7 +1141,7 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語4" type="text" {...params.inputProps} className="auto" id="developLanguage4"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -1169,7 +1154,7 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語5" type="text" {...params.inputProps} className="auto" id="developLanguage5"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -1242,11 +1227,10 @@ class employee extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  最寄駅" type="text" {...params.inputProps} className="auto" id="stationCode"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": !detailDisabled ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
-
 								</InputGroup>
 							</Col>
 						</Row>
