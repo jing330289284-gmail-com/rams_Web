@@ -382,7 +382,7 @@ export function timeInsertChar(time, inputChar) {
 }
 //is Null?
 export function isNull(obj) {
-	return (obj === undefined || isNaN(obj) || obj === null);
+	return (obj === undefined || obj === null);
 }
 //is empty?
 export function isEmpty(obj) {
