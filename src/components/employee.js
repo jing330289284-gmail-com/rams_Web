@@ -74,7 +74,6 @@ class employee extends React.Component {
 	insertEmployee = (event) => {
 		event.preventDefault();
 		const formData = new FormData()
-		alert(this.state.companyMail)
 		const emp = {
 			employeeStatus: $('input:radio[name="employeeType"]:checked').val(),//社員ステータス
 			employeeNo: this.state.employeeNo,//社員番号
@@ -312,7 +311,6 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
-				alert(data.authorityCode)
 				$("input:radio[value=" + data.employeeStatus + "]").attr('checked', 'true');
 				this.setState({
 					BPFlag: data.employeeStatus === "0" ? false : true,

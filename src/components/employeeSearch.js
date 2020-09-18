@@ -41,7 +41,7 @@ class employeeSearch extends React.Component {
 	//初期化データ
 	initialState = {
 		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [],		employeeInfo: [],
+		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [], employeeInfo: [],
 
 	};
 	//リセット　reset
@@ -71,7 +71,6 @@ class employeeSearch extends React.Component {
 				nationalityCodes: data[7],//　 出身地国
 				developLanguageMaster: data[8].slice(1),//開発言語
 				employeeInfo: data[9].slice(1)//社員名
-
 			}
 		);
 	};
@@ -223,8 +222,17 @@ class employeeSearch extends React.Component {
 		);
 	}
 
+	formatBrthday(birthday) {
+		let value = publicUtils.converToLocalTime(birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(birthday, true).getTime()) / 31536000000);
+		return value;
+	}
 
-// AUTOSELECT select事件
+	formatStayPeriod(stayPeriod) {
+		let value = publicUtils.converToLocalTime(stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(stayPeriod, false));
+		return value;
+	}
+
+	// AUTOSELECT select事件
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
 		if (value === '') {
@@ -265,10 +273,10 @@ class employeeSearch extends React.Component {
 			sizePerPage: 5,
 			pageStartIndex: 1,
 			paginationSize: 3,
-			prePage: '<', 
-			nextPage: '>', 
-			firstPage: '<<', 
-			lastPage: '>>', 
+			prePage: '<',
+			nextPage: '>',
+			firstPage: '<<',
+			lastPage: '>>',
 			paginationShowsTotal: this.renderShowsTotal,
 			hideSizePerPage: true,
 			expandRowBgColor: 'rgb(165, 165, 165)',
@@ -317,8 +325,8 @@ class employeeSearch extends React.Component {
 												</div>
 											)}
 										/>
-										
-										
+
+
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -585,11 +593,11 @@ class employeeSearch extends React.Component {
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort={true} caretRender={publicUtils.getCaret}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort={true} dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod'>ビザ期間</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod'　dataFormat={this.formatStayPeriod.bind(this)}>ビザ期間</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>

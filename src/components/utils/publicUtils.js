@@ -338,15 +338,15 @@ export async function postcodeApi() {
 
 //　　年齢と和暦
 export async function calApi(date) {
+	
 	var birthDayTime = date.getTime();
 	var nowTime = new Date().getTime();
-	$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function(result) {
-		console.log(result.data);
 		if (result.data != null) {
 			$("#japaneseCalendar").val(result.data);
+			$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
 		}
 	}).catch((error) => {
 		console.error("Error - " + error);
