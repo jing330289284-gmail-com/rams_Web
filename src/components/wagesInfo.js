@@ -224,6 +224,7 @@ class WagesInfo extends Component {
                     this.setState({
                         wagesInfoList:result.data.wagesInfoList,
                         lastTimeBonusAmount:result.data.wagesInfoList[result.data.wagesInfoList.length-1].scheduleOfBonusAmount,
+                        "errorsMessageShow": false,
                     })
                 }else{
                     $("#expensesInfoBtn").attr("disabled",true);
@@ -420,9 +421,8 @@ class WagesInfo extends Component {
      * 諸費用テーブルの開き
      */
     isExpandableRow(row) {
-        // if (row.employeeNameList !== null) return true;
-        // else return false;
-        return true;
+        if (row.expensesInfoModels!== null) return true;
+        else return false;
     }
     /**
      * 諸費用テーブルの開きアイコン
@@ -454,8 +454,9 @@ class WagesInfo extends Component {
             <div>
                  <BootstrapTable 
                  selectRow={selectRow} 
-                 data={row.expensesInfoModels}>
-                        <TableHeaderColumn isKey={true} dataField='expensesReflectYearAndMonth' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
+                 data={row.expensesInfoModels}
+                 striped>
+                        <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">諸費用期間</TableHeaderColumn>
                         <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
                         <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
                         <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
@@ -904,21 +905,19 @@ class WagesInfo extends Component {
                         expandColumnVisible: true,
                         expandColumnComponent: this.expandColumnComponent,
                         columnWidth: 50,
-                        text:"諸費用"
+                        text:"諸費用",
                       } } 
                     expandableRow={ this.isExpandableRow }
                     expandComponent={ this.expandComponent }
-                    striped 
-                    hover 
-                    condensed>
-                        <TableHeaderColumn isKey={true} dataField='reflectYearAndMonth' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn>
+                    striped>
+                        <TableHeaderColumn isKey={true} dataField='period' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn>
                         {/* <TableHeaderColumn dataField='' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">最新の諸費用反映年月</TableHeaderColumn> */}
-                        <TableHeaderColumn dataField='employeeFormCode' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">社員形式</TableHeaderColumn>
+                        <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230">社員形式</TableHeaderColumn>
                         <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="290">給料</TableHeaderColumn>
-                        <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
+                        {/* <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
                         <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
                         <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
-                        <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
+                        <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn> */}
                         <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
                     </BootstrapTable>

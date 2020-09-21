@@ -408,5 +408,7 @@ height:31px;
 		.custom-file-label {
 	height:31px;
 	}
-
+.col-hidden{
+  display: none
+}
 
