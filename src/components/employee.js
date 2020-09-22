@@ -1200,7 +1200,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
+									<FormControl value={firstHalfAddress} autoComplete="off"  size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
