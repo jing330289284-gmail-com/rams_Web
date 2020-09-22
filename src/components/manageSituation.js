@@ -16,7 +16,6 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials = true;
 
-
 class manageSituation extends React.Component {
 	constructor(props) {
 		super(props);
@@ -64,8 +63,8 @@ class manageSituation extends React.Component {
 		admissionStartDate: '', // record開始時間
 		customerNo: '', // 該当レコードおきゃくNO
 		unitPrice: '', // 該当レコード単価
-		resumeInfo1: '',// 履歴情報１
-		resumeInfo2: '',// 履歴情報２
+		resumeInfo1: '',　// 履歴情報１
+		resumeInfo2: '',　// 履歴情報２
 		myToastShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
 		errorsMessageValue: '',// ERRメッセージ
@@ -96,9 +95,6 @@ class manageSituation extends React.Component {
 							}
 						}
 					}
-
-					console.log(result.data);
-
 					this.setState({
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
@@ -183,8 +179,8 @@ class manageSituation extends React.Component {
 				}
 			}
 		}
-
 	}
+
 	getCustomerNo = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].customer = no;
 		this.formatCustome(no);
@@ -208,6 +204,7 @@ class manageSituation extends React.Component {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
 		this.formatStaff(no);
 	}
+
 	// レコードおきゃく表示
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
@@ -224,17 +221,15 @@ class manageSituation extends React.Component {
 			if (row.customer === '' || row.customer === undefined) {
 				row.customer = '';
 			}
-
 			this.setState({
 				customerNo: row.customer,
 				unitPrice: row.price
 			})
 			// 
-			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined) {
+			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
 				alert(row.customer);
 				alert(row.price);
 				row.customerNo = row.customer;
-				// row.updateUser = sessionStorage.getItem('employeeName');
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
@@ -255,7 +250,6 @@ class manageSituation extends React.Component {
 		} else {
 			row.customer = 'noedit';
 		}
-
 	};
 
 	// 行番号
@@ -299,7 +293,6 @@ class manageSituation extends React.Component {
 							this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
 							setTimeout(() => this.setState({ myToastShow: false }), 3000);
 						}
-
 					} else {
 						alert("FAIL");
 					}
@@ -309,7 +302,6 @@ class manageSituation extends React.Component {
 				});
 		}
 	}
-	//}
 
 	//onchange
 	valueChange = event => {
@@ -326,9 +318,8 @@ class manageSituation extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.state.getstations.find((v) => (v.name === value)) !== undefined ||
-				this.state.customers.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
+			if (fieldName === "station" && this.state.getstations.find((v) => (v.name === value)) !== undefined) {
+				switch (id) {
 					case 'stationCode1':
 						this.setState({
 							stationCode1: this.state.getstations.find((v) => (v.name === value)).code,
@@ -339,6 +330,10 @@ class manageSituation extends React.Component {
 							stationCode2: this.state.getstations.find((v) => (v.name === value)).code,
 						})
 						break;
+					default:
+				}
+			} else if (fieldName === "interviewCustomer" && this.state.customers.find((v) => (v.name === value)) !== undefined) {
+				switch (id) {
 					case 'interviewCustomer1':
 						this.setState({
 							interviewCustomer1: this.state.customers.find((v) => (v.name === value)).code,
@@ -353,7 +348,6 @@ class manageSituation extends React.Component {
 				}
 			}
 		}
-
 	};
 
 	// numbre only
@@ -394,7 +388,7 @@ class manageSituation extends React.Component {
 	}
 
 	// レコードselect事件
-	handleRowSelect = (row, isSelected, event) => {
+	handleRowSelect = (row, isSelected, e) => {
 		console.log(this.refs.table);
 		this.refs.table.setState({
 			selectedRowKeys: []
@@ -490,7 +484,7 @@ class manageSituation extends React.Component {
 				}).catch((error) => {
 					alert('文件下载失败', error);
 				});
-	
+		
 		} */
 
 	render() {
@@ -499,6 +493,7 @@ class manageSituation extends React.Component {
 			bgColor: 'pink',
 			clickToSelectAndEditCell: true,
 			hideSelectColumn: true,
+			clickToSelect: true,
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
 		};
@@ -509,6 +504,7 @@ class manageSituation extends React.Component {
 		}
 
 		const options = {
+			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
 			defaultSortOrder: 'dsc',
 			sizePerPage: 10,
 			pageStartIndex: 1,
@@ -612,7 +608,7 @@ class manageSituation extends React.Component {
 										options={this.state.getstations}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.getstations.find(v => v.code === this.state.stationCode1) || ""}
-										onSelect={(event) => this.handleTag(event, 'stationCode1')}
+										onSelect={(event) => this.handleTag(event, 'station')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
@@ -634,7 +630,7 @@ class manageSituation extends React.Component {
 										options={this.state.customers}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customers.find(v => v.code === this.state.interviewCustomer1) || ""}
-										onSelect={(event) => this.handleTag(event, 'interviewCustomer1')}
+										onSelect={(event) => this.handleTag(event, 'interviewCustomer')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
@@ -675,16 +671,16 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="stationCode2"
 										options={this.state.getstations}
-										getOptionLabel={(option) => option.name?option.name:""}
+										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.getstations.find(v => v.code === this.state.stationCode2) || ""}
-										onSelect={(event) => this.handleTag(event, 'stationCode2')}
+										onSelect={(event) => this.handleTag(event, 'station')}
 										renderInput={(params) => (
-										<div ref={params.InputProps.ref}>
-											<input type="text" {...params.inputProps}
-												id="stationCode2" className="auto"
-												style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
-										</div>
-									)}
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="stationCode2" className="auto"
+													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+											</div>
+										)}
 									/>
 								</InputGroup>
 							</Col>
@@ -697,16 +693,16 @@ class manageSituation extends React.Component {
 										disabled={this.state.readFlag}
 										name="interviewCustomer2"
 										options={this.state.customers}
-										getOptionLabel={(option) => option.name ? option.name:""}
+										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || ""}
-										onSelect={(event) => this.handleTag(event, 'interviewCustomer2')}
+										onSelect={(event) => this.handleTag(event, 'interviewCustomer')}
 										renderInput={(params) => (
-										<div ref={params.InputProps.ref}>
-											<input type="text" {...params.inputProps}
-												id="interviewCustomer2" className="auto"
-												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
-										</div>
-									)}
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="interviewCustomer2" className="auto"
+													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+											</div>
+										)}
 									/>
 								</InputGroup>
 							</Col>
@@ -762,7 +758,6 @@ class manageSituation extends React.Component {
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
 							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? "更新" : "解除"}</Button></div>
 					</div>
-
 					<Row>
 						<Col sm={1}>
 							{/* <InputGroup size="sm" >

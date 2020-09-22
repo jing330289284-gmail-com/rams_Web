@@ -1,14 +1,16 @@
-/* 営業確認 */
+// 営業送信画面
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import SalesAppend from './salesAppend';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
 class salesSendLetter extends React.Component {
 	constructor(props) {
@@ -17,66 +19,210 @@ class salesSendLetter extends React.Component {
 	}
 	//初期化
 	initialState = {
-		employeeNo: '',// 社員NO
-		yearMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2))).getTime(),
-		interviewDate1Show: '',　// 面接1日付
-		interviewDate1: '',　// 面接1日付
-		interviewDate2Show: '',　// 面接1日付
-		interviewDate2: '',　// 面接2日付
-		stationCode1: '',　// 面接1場所
-		stationCode2: '',　// 面接2場所
-		interviewCustomer1: '',　// 面接1客様
-		interviewCustomer2: '',　// 面接2客様
-		hopeLowestPrice: '',　// 希望単価min
-		hopeHighestPrice: '',　// 希望単価max
-		remark: '',　// 備考
-		salesSituationLists: [],// 明細
-		readFlag: true,// readonlyflag
-		style: {
-			"color": ""
-		},// 単価エラー色
-		salesProgressCodes: [],// ステータス
 		allCustomer: [],// お客様レコード用
-		editFlag: false,// 確定客様編集flag
-		priceEditFlag: false,// 確定単価編集flag
-		updateBtnflag: false,//　レコード選択flag
-		salesYearAndMonth: new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
-		updateUser: sessionStorage.getItem('employeeName'),//更新者
-		salesPriorityStatus: '',// 優先度
-		regexp: /^[0-9\b]+$/,// 数字正則式
-		salesStaff: '',// 営業担当
-		salesPriorityStatuss: [],// 全部ステータス
-		salesPersons: [],// 全部営業
-		customers: [],// 全部お客様　画面入力用
-		getstations: [], // 全部場所
-		totalPersons: '',// 合計人数
-		decidedPersons: '',// 確定人数
-		linkDisableFlag: true,// linkDisableFlag
-		admissionStartDate:'', // record開始時間
-		customerNo:'', // 該当レコードおきゃくNO
-		unitPrice:'', // 該当レコード単価
-		resumeInfo1:'',	
-		resumeInfo2:'',
+		customerName: '', // おきゃく名前
+		customers: [],// 全部お客様　dropDowm用
+		customerDepartmentNameDrop: [],//部門の連想数列
+		customerCode: '',
+		customerDepartmentName: '',
+		allCustomerNo: [],
+		currentPage: 1,//　該当page番号
+		selectetRowIds: [],
+		customerTemp: [],
+		sendLetterBtnFlag: true,
+		tableClickColumn: '0',
+		linkDetail: '担当追加',
+		selectedCustomer: {},
+		daiologShowFlag: false,
+		positions: [],
 	};
 
-	// 初期表示のレコードを取る
+	// 
 	componentDidMount() {
-	}
-	
-	// 行番号
-	indexN(cell, row, enumObject, index) {
-		return (<div>{index + 1}</div>);
+		this.getCustomers();
+		this.getDropDowns();
 	}
 
-	//onchange
-	valueChange = event => {
+	//初期化お客様取る
+	getCustomers = () => {
+		axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
+			.then(result => {
+				let customerNoArray = new Array();
+				for (let i in result.data) {
+					customerNoArray.push(result.data[i].customerNo);
+				}
+				this.setState({
+					allCustomer: result.data,
+					customerTemp: [...result.data],
+					allCustomerNo: customerNoArray,
+				});
+			})
+			.catch(function(err) {
+				alert(err)
+			})
+	}
+
+	//dropdown
+	getDropDowns = () => {
+		var methodArray = ["getCustomer", "getDepartmentMasterDrop", "getPosition"]
+		var data = publicUtils.getPublicDropDown(methodArray);
+		data[0].shift();
+		data[1].shift();
+		data[2].shift();
+		this.setState(
+			{
+				customers: data[0],// 全部お客様　dropDowm用
+				customerDepartmentNameDrop: data[1],//部門の連想数列
+				positions: data[2],
+			}
+		);
+	}
+
+	// 行番号
+	indexN = (cell, row, enumObject, index) => {
+		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
+		return (<div>{rowNumber}</div>);
+	}
+
+	onTagsChange = (event, values, fieldName) => {
+		if (values === null) {
+			switch (fieldName) {
+				case 'customerCode':
+				case 'customerName':
+					this.setState({
+						customerCode: '',
+					})
+					break;
+				case 'customerDepartmentCode':
+					this.setState({
+						customerDepartmentCode: '',
+					})
+					break;
+				default:
+			}
+		} else {
+			switch (fieldName) {
+				case 'customerCode':
+				case 'customerName':
+					this.setState({
+						customerCode: values.code,
+					})
+					break;
+				case 'customerDepartmentCode':
+					this.setState({
+						customerDepartmentCode: values.code,
+					})
+					break;
+				default:
+			}
+		}
+	}
+
+	// customerDepartmentNameFormat
+	positionNameFormat = (cell) => {
+		let positionsTem = this.state.positions;
+		for (var i in positionsTem) {
+			if (cell === positionsTem[i].code) {
+				return positionsTem[i].name;
+			}
+		}
+	}
+
+	customerDepartmentNameFormat = (cell) => {
+		let customerDepartmentNameDropTem = this.state.customerDepartmentNameDrop;
+		for (var i in customerDepartmentNameDropTem) {
+			if (cell === customerDepartmentNameDropTem[i].code) {
+				return customerDepartmentNameDropTem[i].name;
+			}
+		}
+	}
+
+	// clearボタン事件 
+	clearLists = () => {
 		this.setState({
-			[event.target.name]: event.target.value,
+			allCustomer: [],
+			sendLetterBtnFlag: true,
+		})
+		this.refs.customersTable.store.selected = [];
+		this.refs.customersTable.setState({
+			selectedRowKeys: [],
 		})
 	}
 
-	// レコードselect事件
-	
+	// deleteボタン事件
+	deleteLists = () => {
+		let selectedIndex = this.state.selectetRowIds;
+		let newCustomer = this.state.allCustomer;
+		for (let i in selectedIndex) {
+			for (let k in newCustomer) {
+				if (selectedIndex[i] === newCustomer[k].rowId) {
+					newCustomer.splice(k, 1);
+					break;
+				}
+			}
+		}
+		this.refs.customersTable.store.selected = [];
+		this.setState({
+			allCustomer: newCustomer,
+			selectetRowIds: [],
+		});
+		this.refs.customersTable.setState({
+			selectedRowKeys: [],
+		})
+	}
+
+	// 全て選択ボタン事件
+	selectAllLists = () => {
+		this.refs.customersTable.store.selected = [];
+		this.refs.customersTable.setState({
+			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
+		})
+		this.setState({
+			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
+			selectetRowIds: [],
+			currentPage: 1,//　該当page番号
+		})
+	}
+
+	// plusClick
+	plusClick = () => {
+		let customerNo = this.state.customerCode;
+		let customerDepartmentCode = this.state.customerDepartmentCode;
+		let customers = this.state.allCustomer;
+		let customerInfo = this.state.customerTemp;
+		var sameFlag = false;
+		if (customers.length !== 0) {
+			for (let k in customers) {
+				if (customerNo === customers[k].customerNo &&
+					customerDepartmentCode === customers[k].customerDepartmentCode) {
+					alert("err---the same record");
+					sameFlag = true;
+				}
+			}
+			if (!sameFlag) {
+				for (let k in customerInfo) {
+					if (customerNo === customerInfo[k].customerNo &&
+						customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
+						this.setState({
+							allCustomer: this.state.allCustomer.concat(customerInfo[k]).sort(function(a, b) {
+								return a.rowId - b.rowId
+							}),
+						})
+					}
+				}
+			}
+		} else {
+			for (let k in customerInfo) {
+				if (customerNo === customerInfo[k].customerNo &&
+					customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
+					this.setState({
+						allCustomer: this.state.allCustomer.concat(customerInfo[k]),
+					})
+				}
+			}
+		}
+	}
+
 	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -85,29 +231,105 @@ class salesSendLetter extends React.Component {
 		);
 	}
 
+	handleRowSelect = (row, isSelected, e) => {
+		if (this.refs.customersTable.state.selectedRowKeys.length === this.state.allCustomer.length) {
+			this.refs.customersTable.setState({
+				selectedRowKeys: [],
+			})
+		}
+		if (isSelected) {
+			//alert(this.refs.customersTable.state.selectedRowKeys);
+			this.setState({
+				sendLetterBtnFlag: true,
+				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
+			})
+		} else {
+			let index = this.state.selectetRowIds.findIndex(item => item === row.rowId);
+			this.state.selectetRowIds.splice(index, 1);
+			this.setState({
+				sendLetterBtnFlag: true,
+				selectetRowIds: this.state.selectetRowIds,
+			})
+		}
+	}
+
+	CellFormatter(cell, row) {
+		if (cell !== "" && cell !== null) {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{cell}</a>);
+		} else {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{this.state.linkDetail}</a>);
+		}
+	}
+
+	getSalesPersons = (selectedCustomer) => {
+		console.log(selectedCustomer.salesPersonsAppend !== null);
+		this.setState({
+			selectedCustomer: selectedCustomer,
+			daiologShowFlag: true,
+		})
+	}
+
+	closeDaiolog = () => {
+		this.setState({
+			daiologShowFlag: false,
+		})
+	}
+
+	saveSalesPersons = (row) => {
+		this.setState({
+			daiologShowFlag: false,
+		});
+		this.CellFormatter(row.salesPersonsAppend, row);
+	}
 
 	render() {
 		const selectRow = {
-			mode: 'radio',
+			mode: 'checkbox',
 			bgColor: 'pink',
-			clickToSelectAndEditCell: true,
+			/*bgColor: (row, isSelect) => {
+				if(isSelect){
+					if (this.state.tableClickColumn === 9 || this.state.tableClickColumn === undefined){
+						this.refs.customersTable.store.selected.pop();
+					this.refs.customersTable.state.selectedRowKeys.pop();
+					return 'pink';
+					}
+					
+				}
+				if (this.state.tableClickColumn === 9 || this.state.tableClickColumn === undefined) return '';
+				else return 'pink';
+			},*/
 			hideSelectColumn: true,
+			clickToSelect: true,
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
+			/*(row, isSelected, e) => {
+				let getCurrentCellIndex = e.target.cellIndex;
+				this.setState({
+					tableClickColumn: getCurrentCellIndex,
+				});
+				if (getCurrentCellIndex === 9 || getCurrentCellIndex === undefined) {
+					console.log(`----> ${JSON.stringify(row)}`);
+					e.preventDefault();
+					e.stopPropagation();
+				} else {
+					this.handleRowSelect(row, isSelected, e);
+				}
+			},*/
 		};
-		const cellEdit = {
-			mode: 'click',
-			blurToSave: true,
-			afterSaveCell: this.afterSaveCell,
-		}
 
 		const options = {
+			onPageChange: page => {
+				this.setState({ currentPage: page });
+			},
+			page: this.state.currentPage,
 			defaultSortOrder: 'dsc',
-			sizePerPage: 5,
+			sizePerPage: 10,
 			pageStartIndex: 1,
 			paginationSize: 2,
-			prePage: 'Prev',
-			nextPage: 'Next',
+			prePage: '<', // Previous page button text
+			nextPage: '>', // Next page button text
+			firstPage: '<<', // First page button text
+			lastPage: '>>', // Last page button text
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
@@ -115,86 +337,131 @@ class salesSendLetter extends React.Component {
 
 		return (
 			<div>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
+					<Modal.Header closeButton></Modal.Header>
+					<Modal.Body >
+						<SalesAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
+							allState={this} positions={this.state.positions} />
+					</Modal.Body>
+				</Modal>
 				<Row inline="true">
-                    <Col  className="text-center">
-                    <h2>お客様選択（要員送信）</h2>
-                    </Col>
-                </Row>
+					<Col className="text-center">
+						<h2>お客様選択（要員送信）</h2>
+					</Col>
+				</Row>
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
-
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.remark} autoComplete="off" name="remark"
-										onChange={this.valueChange} size="sm" maxLength="50" />
+									<Autocomplete
+										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+										options={this.state.customers}
+										getOptionLabel={(option) => option.code ? option.code : ""}
+										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
+										onChange={(event, values) => this.onTagsChange(event, values, 'customerCode')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="customerCode" className="auto"
+													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+											</div>
+										)}
+									/>
 								</InputGroup>
 							</Col>
-							
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.remark} autoComplete="off" name="remark"
-										onChange={this.valueChange} size="sm" maxLength="50" />
+									<Autocomplete
+										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+										options={this.state.customers}
+										getOptionLabel={(option) => option.name ? option.name : ""}
+										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
+										onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="customerCode" className="auto"
+													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+											</div>
+										)}
+									/>
 								</InputGroup>
 							</Col>
-							
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.remark} autoComplete="off" name="remark"
-										onChange={this.valueChange} size="sm" maxLength="50"  />
+									<Autocomplete
+										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+										options={this.state.customerDepartmentNameDrop}
+										getOptionLabel={(option) => option.name ? option.name : ""}
+										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
+										onChange={(event, values) => this.onTagsChange(event, values, 'customerDepartmentCode')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="customerDepartmentName" className="auto"
+													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+											</div>
+										)}
+									/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
-								<Button size="sm" variant="info" >
-							<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
+								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
+									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 							</Col>
 						</Row>
 					</Form.Group>
-
 					<Row>
 						<Col sm={2}>
-							<Button size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
-							{' '}
-							<font style={{ whiteSpace: 'nowrap' }}>件数：21</font>
+							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
+								disabled={0 !== this.state.allCustomer.length ? false : true}
+							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
 						<Col sm={5}></Col>
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faBroom} />クリア</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
-								<Button size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />送信</Button>
+								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" onClick={this.clearLists}
+									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>
+								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton"
+									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
+								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
+								><FontAwesomeIcon icon={faEnvelope} />送信</Button>
 							</div>
 						</Col>
 					</Row>
 				</Form>
 				<div >
 					<BootstrapTable
+						ref="customersTable"
 						className={"bg-white text-dark"}
-						data={this.state.salesSituationLists}
-						pagination
+						data={this.state.allCustomer}
+						pagination={true}
 						options={options}
 						selectRow={selectRow}
-						cellEdit={cellEdit}
-						trClassName="customClass" >
+						trClassName="customClass"
+						headerStyle={{ background: '#5599FF' }} striped hover condensed>
 						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
-						<TableHeaderColumn width='10%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>お客様番号</TableHeaderColumn>
-						<TableHeaderColumn width='10%' dataField='employeeName' editable={false}>お客様名</TableHeaderColumn>
-						<TableHeaderColumn width='7%' dataField='siteRoleCode' editable={false}>担当者</TableHeaderColumn>
-						<TableHeaderColumn width='7%' dataField='developLanguage' editable={false}>所属</TableHeaderColumn>
-						<TableHeaderColumn width='7%' dataField='nearestStation' editable={false}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='15%' dataField='unitPrice' editable={false}>メール</TableHeaderColumn>
-						<TableHeaderColumn width='12%' dataField='price' editable={this.state.priceEditFlag}>ランキング</TableHeaderColumn>
-						<TableHeaderColumn width='12%' dataField='interviewDate1'>取引数(今月)</TableHeaderColumn>
-						<TableHeaderColumn width='12%' dataField='stationCode1' >担当追加</TableHeaderColumn>
+						<TableHeaderColumn width='10%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
+						<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
+						<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
+						<TableHeaderColumn width='12%' dataField='levelCode' >ランキング</TableHeaderColumn>
+						<TableHeaderColumn width='12%' dataField='monthCount' >取引数(今月)</TableHeaderColumn>
+						<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
+						<TableHeaderColumn dataField='rowId' hidden={true}>ID</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div>
