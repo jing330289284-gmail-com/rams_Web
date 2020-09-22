@@ -16,6 +16,7 @@ import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import WagesInfo from './wagesInfo';
+import workRepot from './workRepot';
 import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
 import axios from 'axios';
@@ -205,6 +206,14 @@ class SubMenu extends Component {
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
+								<ListGroup.Item variant="secondary">
+									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />アップデロード</Accordion.Toggle>
+									<Accordion.Collapse eventKey="9">
+										<ListGroup variant="flush">
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/workRepot/"><img alt="title" src={open} />作業報告書アップデロード</Link></ListGroup.Item>
+										</ListGroup>
+									</Accordion.Collapse>
+								</ListGroup.Item>
 							</Accordion>
 						</ListGroup>
 					</Col>
@@ -226,7 +235,8 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
 								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
-								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />		
+								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />	
+								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<div className="container col-8">
 									<div className="container col-10">
