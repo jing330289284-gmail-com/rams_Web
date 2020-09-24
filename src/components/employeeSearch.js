@@ -15,6 +15,9 @@ import { Link } from "react-router-dom";
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import {connect} from 'react-redux';
+
+import {fetchUsers} from './services/index';
 
 
 
@@ -52,6 +55,7 @@ class employeeSearch extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
+		this.props.fetchUsers();
 		this.getDropDownｓ();//全部のドロップダウン
 		this.clickButtonDisabled();
 	}
@@ -68,7 +72,7 @@ class employeeSearch extends React.Component {
 				employeeStatuss: data[4],//　 employeesステータス
 				japaneaseLevelCodes: data[5],//　日本語  
 				residenceCodes: data[6],//　在留資格
-				nationalityCodes: data[7],//　 出身地国
+			//	nationalityCodes: data[7],//　 出身地国
 				developLanguageMaster: data[8].slice(1),//開発言語
 				employeeInfo: data[9].slice(1)//社員名
 			}
@@ -607,4 +611,18 @@ class employeeSearch extends React.Component {
 		);
 	}
 }
+
+
+const mapStateToProps = state => {
+    return {
+        customer: "1111"
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        nationalityCodes: () => dispatch(fetchUsers())
+    }
+};
 export default employeeSearch;
+//export default connect(mapStateToProps, mapDispatchToProps)(employeeSearch);
