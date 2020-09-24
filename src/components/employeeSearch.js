@@ -55,7 +55,7 @@ class employeeSearch extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		this.props.fetchUsers();
+		this.props.employeeStatuss();
 		this.getDropDownｓ();//全部のドロップダウン
 		this.clickButtonDisabled();
 	}
@@ -69,7 +69,7 @@ class employeeSearch extends React.Component {
 				intoCompanyCodes: data[1],//　入社区分 
 				employeeFormCodes: data[2],//　 社員形式 
 				siteMaster: data[3],//　　役割
-				employeeStatuss: data[4],//　 employeesステータス
+				//employeeStatuss: data[4],//　 employeesステータス
 				japaneaseLevelCodes: data[5],//　日本語  
 				residenceCodes: data[6],//　在留資格
 			//	nationalityCodes: data[7],//　 出身地国
@@ -621,8 +621,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        nationalityCodes: () => dispatch(fetchUsers())
+        employeeStatuss: () => dispatch(fetchUsers())
     }
 };
-export default employeeSearch;
-//export default connect(mapStateToProps, mapDispatchToProps)(employeeSearch);
+//export default employeeSearch;
+export default connect(mapStateToProps, mapDispatchToProps)(employeeSearch);

@@ -4,7 +4,7 @@ import axios from 'axios';
 export const fetchUsers = () => {
     return dispatch => {
         dispatch(fetchUserRequest());
-        axios.get("http://127.0.0.1:8080/getNationalitys")
+        axios.post("http://127.0.0.1:8080/getNationalitys")
             .then(response => {
                 dispatch(fetchUserSuccess(response.data));
             })
