@@ -34,6 +34,12 @@ class TableSelect extends React.Component {
 				selectedValue: this.props.dropdowns.state.salesStaff,
 				everyWidth: 105,
 			})
+		} else if (this.props.flag === 4) {
+			this.setState({
+				allOption: this.props.dropdowns.state.customerContracts,
+				selectedValue: this.props.dropdowns.state.customerContractStatus,
+				everyWidth: 80,
+			})
 		}
 	}
 
@@ -48,6 +54,8 @@ class TableSelect extends React.Component {
 			this.props.dropdowns.getSalesProgressCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.value);
 		} else if (this.props.flag === 3) {
 			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.value);
+		} else if (this.props.flag === 4) {
+			this.props.dropdowns.getCustomerContract(values === null ? this.props.dropdowns.state.customerContractStatus : values.value);
 		}
 
 	}
