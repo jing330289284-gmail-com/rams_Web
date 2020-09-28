@@ -8,13 +8,6 @@ import store from './components/services/store';
 
 import * as serviceWorker from './serviceWorker';
 
-/*ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-*/
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 
 

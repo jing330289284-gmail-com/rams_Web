@@ -228,7 +228,7 @@ class employee extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
-		//this.getDropDownｓ();//全部のドロップダウン
+		this.props.fetchDropDown();
 		this.radioChangeEmployeeType();
 		const { location } = this.props
 		var actionType = '';
@@ -1322,7 +1322,7 @@ class employee extends React.Component {
 							</Col>
 
 							<Col sm={4}>
-								<InputGroup size="sm" className="mb-3">
+								<InputGroup size="sm"     className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
 										{this.state.passportInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
@@ -1340,7 +1340,7 @@ class employee extends React.Component {
 						<Button size="sm" variant="info" type="reset">
 							<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
-					</div>}
+					</div>} 
 				</Form>
 			</div>
 		);
