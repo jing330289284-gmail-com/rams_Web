@@ -15,11 +15,8 @@ import { Link } from "react-router-dom";
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {connect} from 'react-redux';
-
-import {fetchUsers} from './services/index';
-
-
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 registerLocale("ja", ja);
 class employeeSearch extends React.Component {
@@ -43,8 +40,7 @@ class employeeSearch extends React.Component {
 
 	//初期化データ
 	initialState = {
-		employeeFormCodes: [], employeeStatuss: [], genderStatuss: [], residenceCodes: [], nationalityCodes: [], intoCompanyCodes: [], japaneaseLevelCodes: [], siteMaster: [],
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '', developLanguageMaster: [], employeeInfo: [],
+		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '',
 
 	};
 	//リセット　reset
@@ -55,29 +51,9 @@ class employeeSearch extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		this.props.employeeStatuss();
-		this.getDropDownｓ();//全部のドロップダウン
+		this.props.fetchDropDown();
 		this.clickButtonDisabled();
 	}
-	//全部のドロップダウン
-	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getEmployee", "getJapaneseLevel", "getVisa", "getNationalitys", "getDevelopLanguage", "getEmployeeName"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				genderStatuss: data[0],//　性別区別
-				intoCompanyCodes: data[1],//　入社区分 
-				employeeFormCodes: data[2],//　 社員形式 
-				siteMaster: data[3],//　　役割
-				//employeeStatuss: data[4],//　 employeesステータス
-				japaneaseLevelCodes: data[5],//　日本語  
-				residenceCodes: data[6],//　在留資格
-			//	nationalityCodes: data[7],//　 出身地国
-				developLanguageMaster: data[8].slice(1),//開発言語
-				employeeInfo: data[9].slice(1)//社員名
-			}
-		);
-	};
 
 	//初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
@@ -289,6 +265,18 @@ class employeeSearch extends React.Component {
 			handleConfirmDeleteRow: this.customConfirm,
 		};
 
+
+		const genderStatuss = this.props.genderStatuss;
+		const intoCompanyCodes = this.props.nationalityCodes;
+		const employeeFormCodes = this.props.employeeFormCodes;
+		const siteMaster = this.props.siteMaster;
+		const employeeStatuss = this.props.employeeStatuss;
+		const japaneaseLevelCodes = this.props.japaneaseLevelCodes;
+		const residenceCodes = this.props.residenceCodes;
+		const nationalityCodes = this.props.nationalityCodes;
+		const developLanguageMaster = this.props.developLanguageMaster;
+		const employeeInfo = this.props.employeeInfo;
+
 		return (
 			<div >
 				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
@@ -318,9 +306,9 @@ class employeeSearch extends React.Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											options={this.state.employeeInfo}
+											options={employeeInfo}
 											getOptionLabel={(option) => option.name}
-											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											value={employeeInfo.find(v => v.name === this.state.employeeName) || {}}
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -342,7 +330,7 @@ class employeeSearch extends React.Component {
 											onChange={this.valueChange}
 											name="employeeFormCode" value={employeeFormCode}
 											autoComplete="off">
-											{this.state.employeeFormCodes.map(data =>
+											{employeeFormCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -356,7 +344,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeStatus" value={employeeStatus} autoComplete="off">
-											{this.state.employeeStatuss.map(data =>
+											{employeeStatuss.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -372,7 +360,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="genderStatus" value={genderStatus} autoComplete="off">
-											{this.state.genderStatuss.map(data =>
+											{genderStatuss.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -396,7 +384,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">在留資格</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="residenceCode" value={residenceCode} autoComplete="off">
-											{this.state.residenceCodes.map(data =>
+											{residenceCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -410,7 +398,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="nationalityCode" value={nationalityCode} autoComplete="off">
-											{this.state.nationalityCodes.map(data =>
+											{nationalityCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -434,7 +422,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode} autoComplete="off">
-											{this.state.intoCompanyCodes.map(data =>
+											{intoCompanyCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -448,7 +436,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneaseLeveCode" value={japaneaseLeveCode} autoComplete="off">
-											{this.state.japaneaseLevelCodes.map(data =>
+											{japaneaseLevelCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -462,7 +450,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="siteRoleCode" value={siteRoleCode} autoComplete="off">
-											{this.state.siteMaster.map(data =>
+											{siteMaster.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -481,7 +469,7 @@ class employeeSearch extends React.Component {
 											id="developLanguageCode1"
 											name="developLanguageCode1"
 											value={developLanguage1}
-											options={this.state.developLanguageMaster}
+											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -494,7 +482,7 @@ class employeeSearch extends React.Component {
 											id="developLanguageCode2"
 											name="developLanguageCode2"
 											value={developLanguage2}
-											options={this.state.developLanguageMaster}
+											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -507,7 +495,7 @@ class employeeSearch extends React.Component {
 											id="developLanguageCode3"
 											name="developLanguageCode3"
 											value={developLanguage3}
-											options={this.state.developLanguageMaster}
+											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -601,7 +589,7 @@ class employeeSearch extends React.Component {
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod'　dataFormat={this.formatStayPeriod.bind(this)}>ビザ期間</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期間</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
@@ -614,15 +602,23 @@ class employeeSearch extends React.Component {
 
 
 const mapStateToProps = state => {
-    return {
-        customer: "1111"
-    }
+	return {
+		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
+		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
+		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
+		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
+		employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
+		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
+		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
+		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
+		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
+		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : []
+	}
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        employeeStatuss: () => dispatch(fetchUsers())
-    }
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
 };
-//export default employeeSearch;
 export default connect(mapStateToProps, mapDispatchToProps)(employeeSearch);

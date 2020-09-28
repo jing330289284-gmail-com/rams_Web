@@ -1,24 +1,24 @@
-import {FETCH_USER_REQUEST, FETCH_USER_SUCCESS, FETCH_USER_FAILURE} from './userTypes';
+import {FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE} from './dropDownTypes';
 
 const initialState = {
-    users: [],
+    dataReques: [],
     error: ''
 };
 
 const reducer = (state = initialState, action) => {
     switch(action.type) {
-        case FETCH_USER_REQUEST:
+        case FETCH_DATA_REQUEST:
             return {
                 ...state
             };
-        case FETCH_USER_SUCCESS:
+        case FETCH_DATA_SUCCESS:
             return {
-                users: action.payload,
+                dataReques: action.payload,
                 error: ''
             };
-        case FETCH_USER_FAILURE:
+        case FETCH_DATA_FAILURE:
             return {
-                users: [],
+                dataReques: [],
                 error: action.payload
             };
         default:
