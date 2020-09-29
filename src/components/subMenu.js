@@ -24,6 +24,7 @@ import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
 import individualSales from './individualSales';
 import monthlySalesSearch from './monthlySalesSearch';
+import sendLettersConfirm from './sendLettersConfirm';
 axios.defaults.withCredentials=true;
 
 
@@ -238,6 +239,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />	
 								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
+								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
