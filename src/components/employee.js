@@ -66,60 +66,60 @@ class employee extends React.Component {
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
-			furigana1: this.state.furigana1 === null ? '' : this.state.furigana1,//　　カタカナ
-			furigana2: this.state.furigana2 === null ? '' : this.state.furigana2,//　　カタカナ
-			alphabetName: this.state.alphabetName === null ? '' : this.state.alphabetName,//　　ローマ字
+			furigana1: publicUtils.nullToEmpty(this.state.furigana1) ,//　　カタカナ
+			furigana2: publicUtils.nullToEmpty(this.state.furigana2),//　　カタカナ
+			alphabetName: publicUtils.nullToEmpty(this.state.alphabetName),//　　ローマ字
 			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
-			japaneseCalendar: this.state.japaneseCalendar === null ? '' : this.state.japaneseCalendar,//和暦
-			genderStatus: this.state.genderStatus === null ? '' : this.state.genderStatus,//性別
-			intoCompanyCode: this.state.intoCompanyCode === null ? '' : this.state.intoCompanyCode,//入社区分
-			employeeFormCode: this.state.employeeFormCode === null ? '' : this.state.employeeFormCode,//社員形式
-			occupationCode: this.state.occupationCode === null ? '' : this.state.occupationCode,//職種
-			departmentCode: this.state.departmentCode === null ? '' : this.state.departmentCode,//部署
-			companyMail: this.state.companyMail === null ? '' : this.state.companyMail,//社内メール
-			graduationUniversity: this.state.graduationUniversity === null ? '' : this.state.graduationUniversity,//卒業学校
-			major: this.state.major === null ? '' : this.state.major,//専門
+			japaneseCalendar: publicUtils.nullToEmpty(this.state.japaneseCalendar),//和暦
+			genderStatus: publicUtils.nullToEmpty(this.state.genderStatus),//性別
+			intoCompanyCode: publicUtils.nullToEmpty(this.state.intoCompanyCode),//入社区分
+			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
+			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
+			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
+			companyMail: publicUtils.nullToEmpty(this.state.companyMail),//社内メール
+			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
+			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
 			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
-			nationalityCode: this.state.nationalityCode === null ? '' : this.state.nationalityCode,//出身地
-			birthplace: this.state.birthplace === null ? '' : this.state.birthplace,//出身県
-			phoneNo: this.state.phoneNo === null ? '' : this.state.phoneNo,//携帯電話
+			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
+			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
+			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo),//携帯電話
 			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
-			japaneseLevelCode: this.state.japaneseLevelCode === null ? '' : this.state.japaneseLevelCode,//日本語
-			englishLevelCode: this.state.englishLevelCode === null ? '' : this.state.englishLevelCode,//英語
-			certification1: this.state.certification1 === null ? '' : this.state.certification1,//資格1
-			certification2: this.state.certification2 === null ? '' : this.state.certification2,//資格2
-			siteRoleCode: this.state.siteRoleCode === null ? '' : this.state.siteRoleCode,//役割
-			postcode: this.state.postcode === null ? '' : this.state.postcode,//郵便番号
-			firstHalfAddress: this.state.firstHalfAddress === null ? '' : this.state.firstHalfAddress,
-			lastHalfAddress: this.state.lastHalfAddress === null ? '' : this.state.lastHalfAddress,
+			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
+			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
+			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
+			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
+			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
+			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
+			firstHalfAddress: publicUtils.nullToEmpty(this.state.firstHalfAddress),
+			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
-			residenceCode: this.state.residenceCode === null ? '' : this.state.residenceCode,//在留資格
-			residenceCardNo: this.state.residenceCardNo === null ? '' : this.state.residenceCardNo,//在留カード
+			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster)),
+			developLanguage2:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster)),
+			developLanguage3:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
+			developLanguage4:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
+			developLanguage5:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
+			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
+			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
-			employmentInsuranceNo: this.state.employmentInsuranceNo === null ? '' : this.state.employmentInsuranceNo,//雇用保険番号
-			myNumber: this.state.myNumber === null ? '' : this.state.myNumber,//マイナンバー
-			resumeRemark1: this.state.resumeRemark1 === null ? '' : this.state.resumeRemark1,//履歴書備考1
-			resumeRemark2: this.state.resumeRemark2 === null ? '' : this.state.resumeRemark2,//履歴書備考1
+			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),//雇用保険番号
+			myNumber: publicUtils.nullToEmpty(this.state.myNumber),//マイナンバー
+			resumeRemark1: publicUtils.nullToEmpty(this.state.resumeRemark1),//履歴書備考1
+			resumeRemark2: publicUtils.nullToEmpty(this.state.resumeRemark2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
-			password: this.state.passwordSetInfo,//pw設定
-			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
+			password:publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
+			yearsOfExperience: publicUtils.nullToEmpty(this.state.yearsOfExperience),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
-		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
-		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
-		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
-		formData.append('pictures', this.state.pictures[0])
+		formData.append('resumeInfo1',  　publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
+		formData.append('resumeInfo2',  publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
+		formData.append('residentCardInfo',  publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
+		formData.append('passportInfo',  publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		//formData.append('pictures',  publicUtils.nullToEmpty($('#pictures').get(0).files[0]))
 		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -143,60 +143,60 @@ class employee extends React.Component {
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
-			furigana1: this.state.furigana1 === null ? '' : this.state.furigana1,//　　カタカナ
-			furigana2: this.state.furigana2 === null ? '' : this.state.furigana2,//　　カタカナ
-			alphabetName: this.state.alphabetName === null ? '' : this.state.alphabetName,//　　ローマ字
+			furigana1: publicUtils.nullToEmpty(this.state.furigana1) ,//　　カタカナ
+			furigana2: publicUtils.nullToEmpty(this.state.furigana2),//　　カタカナ
+			alphabetName: publicUtils.nullToEmpty(this.state.alphabetName),//　　ローマ字
 			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
-			japaneseCalendar: this.state.japaneseCalendar === null ? '' : this.state.japaneseCalendar,//和暦
-			genderStatus: this.state.genderStatus === null ? '' : this.state.genderStatus,//性別
-			intoCompanyCode: this.state.intoCompanyCode === null ? '' : this.state.intoCompanyCode,//入社区分
-			employeeFormCode: this.state.employeeFormCode === null ? '' : this.state.employeeFormCode,//社員形式
-			occupationCode: this.state.occupationCode === null ? '' : this.state.occupationCode,//職種
-			departmentCode: this.state.departmentCode === null ? '' : this.state.departmentCode,//部署
-			companyMail: this.state.companyMail === null ? '' : this.state.companyMail,//社内メール
-			graduationUniversity: this.state.graduationUniversity === null ? '' : this.state.graduationUniversity,//卒業学校
-			major: this.state.major === null ? '' : this.state.major,//専門
+			japaneseCalendar: publicUtils.nullToEmpty(this.state.japaneseCalendar),//和暦
+			genderStatus: publicUtils.nullToEmpty(this.state.genderStatus),//性別
+			intoCompanyCode: publicUtils.nullToEmpty(this.state.intoCompanyCode),//入社区分
+			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
+			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
+			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
+			companyMail: publicUtils.nullToEmpty(this.state.companyMail),//社内メール
+			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
+			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
 			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
-			nationalityCode: this.state.nationalityCode === null ? '' : this.state.nationalityCode,//出身地
-			birthplace: this.state.birthplace === null ? '' : this.state.birthplace,//出身県
-			phoneNo: this.state.phoneNo === null ? '' : this.state.phoneNo,//携帯電話
+			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
+			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
+			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo),//携帯電話
 			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
-			japaneseLevelCode: this.state.japaneseLevelCode === null ? '' : this.state.japaneseLevelCode,//日本語
-			englishLevelCode: this.state.englishLevelCode === null ? '' : this.state.englishLevelCode,//英語
-			certification1: this.state.certification1 === null ? '' : this.state.certification1,//資格1
-			certification2: this.state.certification2 === null ? '' : this.state.certification2,//資格2
-			siteRoleCode: this.state.siteRoleCode === null ? '' : this.state.siteRoleCode,//役割
-			postcode: this.state.postcode === null ? '' : this.state.postcode,//郵便番号
-			firstHalfAddress: this.state.firstHalfAddress === null ? '' : this.state.firstHalfAddress,
-			lastHalfAddress: this.state.lastHalfAddress === null ? '' : this.state.lastHalfAddress,
+			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
+			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
+			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
+			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
+			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
+			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
+			firstHalfAddress: publicUtils.nullToEmpty(this.state.firstHalfAddress),
+			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
-			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
-			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
-			residenceCode: this.state.residenceCode === null ? '' : this.state.residenceCode,//在留資格
-			residenceCardNo: this.state.residenceCardNo === null ? '' : this.state.residenceCardNo,//在留カード
+			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster)),
+			developLanguage2:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster)),
+			developLanguage3:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
+			developLanguage4:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
+			developLanguage5:  publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
+			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
+			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
-			employmentInsuranceNo: this.state.employmentInsuranceNo === null ? '' : this.state.employmentInsuranceNo,//雇用保険番号
-			myNumber: this.state.myNumber === null ? '' : this.state.myNumber,//マイナンバー
-			resumeRemark1: this.state.resumeRemark1 === null ? '' : this.state.resumeRemark1,//履歴書備考1
-			resumeRemark2: this.state.resumeRemark2 === null ? '' : this.state.resumeRemark2,//履歴書備考1
+			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),//雇用保険番号
+			myNumber: publicUtils.nullToEmpty(this.state.myNumber),//マイナンバー
+			resumeRemark1: publicUtils.nullToEmpty(this.state.resumeRemark1),//履歴書備考1
+			resumeRemark2: publicUtils.nullToEmpty(this.state.resumeRemark2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
-			password: this.state.passwordSetInfo,//pw設定
-			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
+			password:publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
+			yearsOfExperience: publicUtils.nullToEmpty(this.state.yearsOfExperience),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', $('#resumeInfo1').get(0).files[0])
-		formData.append('resumeInfo2', $('#resumeInfo2').get(0).files[0])
-		formData.append('residentCardInfo', $('#residentCardInfo').get(0).files[0])
-		formData.append('passportInfo', $('#passportInfo').get(0).files[0])
-		formData.append('pictures', this.state.pictures[0])
+		formData.append('resumeInfo1',  　publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
+		formData.append('resumeInfo2',  publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
+		formData.append('residentCardInfo',  publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
+		formData.append('passportInfo',  publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		//formData.append('pictures', this.state.pictures[0])
 		axios.post("http://127.0.0.1:8080/employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
@@ -667,7 +667,6 @@ class employee extends React.Component {
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
-
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -1048,8 +1047,6 @@ class employee extends React.Component {
 								</InputGroup>
 							</Col>
 
-
-
 						</Row>
 						<Row>
 							<Col sm={9}>
@@ -1361,7 +1358,7 @@ const mapStateToProps = state => {
 		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
 		occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[10] : [],
 		departmentCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[11] : [],
-		authorityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[12] : [],
+		authorityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[12].slice(1) : [],
 		englishLeveCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[13] : [],
 		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
 		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
