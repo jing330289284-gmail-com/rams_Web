@@ -15,6 +15,11 @@ class salesAppend extends Component {
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
 		parentSelectedInfo: this.props.customer,
+		appendPersonMsg: {
+			purchasingManagers2: '',
+			positionCode2: '',
+			purchasingManagersMail2: '',
+		}
 	}
 
 	constructor(props) {
@@ -86,6 +91,11 @@ class salesAppend extends Component {
 		if (isSelected) {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
+				appendPersonMsg: {
+			purchasingManagers2: row.responsiblePerson,
+			positionCode2: row.positionCode,
+			purchasingManagersMail2: row.customerDepartmentMail,
+		}
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
@@ -121,10 +131,10 @@ class salesAppend extends Component {
 	salesSelected = () => {
 		let salesPersons = this.state.selectetRowIds.join(",");
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
-		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo);
+		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
 	render() {
-		
+
 		const selectRow = {
 			mode: 'checkbox',
 			bgColor: 'pink',
@@ -151,7 +161,7 @@ class salesAppend extends Component {
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 		};
-		
+
 		return (
 			<div >
 				<Row inline="true">

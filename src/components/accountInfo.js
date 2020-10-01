@@ -1,5 +1,5 @@
-import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , Navbar , OverlayTrigger , Tooltip} from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Row, Form, Col, InputGroup, Button, Navbar, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import * as bankInfoJs from './accountInfoJs.js';
 import $ from 'jquery';
 import * as utils from './utils/publicUtils.js';
@@ -7,106 +7,106 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
 class BankInfo extends Component {
 
     state = {
-        actionType:'',//処理区分
-        message:'',
-        type:'',
+        actionType: '',//処理区分
+        message: '',
+        type: '',
         myToastShow: false,
         errorsMessageShow: false,
-        errorsMessageValue:'',
+        errorsMessageValue: '',
     }
 
-    constructor(props){
+    constructor(props) {
         super(props);
     }
 
-    componentDidMount(){
-        if(!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== ''){//社員の場合
+    componentDidMount() {
+        if (!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== '') {//社員の場合
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
-            document.getElementById("No").innerHTML  = "社員：" + this.props.employeeFristName + this.props.employeeLastName;
-        }else if($("#employeeNo").val() === '' || $("#employeeNo").val() === null){//お客様の場合
+            document.getElementById("No").innerHTML = "社員：" + this.props.employeeFristName + this.props.employeeLastName;
+        } else if ($("#employeeNo").val() === '' || $("#employeeNo").val() === null) {//お客様の場合
             $("#employeeOrCustomerNo").val($("#customerNo").val())
             $("#accountBelongsStatus").val("1")
-            document.getElementById("No").innerHTML  = "お客様：" + $("#customerName").val();
+            document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
         var bankCode = utils.getdropDown("getBankInfo");
         bankCode[0].name = "銀行を選択してください";
-        for(let i = 0;i<bankCode.length ; i++){
-            $("#bankCode").append('<option value="'+bankCode[i].code+'">'+bankCode[i].name+'</option>');
+        for (let i = 0; i < bankCode.length; i++) {
+            $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');
         }
         var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
         this.setState({
-            actionType:actionType,//処理区分
+            actionType: actionType,//処理区分
         })
         var accountInfo = this.props.accountInfo;//父画面のパラメータ（画面既存口座情報）
-        if(!$.isEmptyObject(accountInfo)){
+        if (!$.isEmptyObject(accountInfo)) {
             $("#bankBranchName").val(accountInfo["bankBranchName"]);
             $("#bankBranchCode").val(accountInfo["bankBranchCode"]);
             $("#accountNo").val(accountInfo["accountNo"]);
             $("#accountName").val(accountInfo["accountName"]);
-            $("#bankCode").val(accountInfo["bankCode"]);   
-            if(accountInfo["accountBelongsStatus"] !== null && accountInfo["accountBelongsStatus"] !== ''){
+            $("#bankCode").val(accountInfo["bankCode"]);
+            if (accountInfo["accountBelongsStatus"] !== null && accountInfo["accountBelongsStatus"] !== '') {
                 $("#accountBelongsStatus").val(accountInfo["accountBelongsStatus"]);
             }
-            if(accountInfo["accountTypeStatus"] === '0'){
-                $("#futsu").attr("checked",true);
-            }else if(accountInfo["accountTypeStatus"] === '1'){
-                $("#toza").attr("checked",true);
-            } 
+            if (accountInfo["accountTypeStatus"] === '0') {
+                $("#futsu").attr("checked", true);
+            } else if (accountInfo["accountTypeStatus"] === '1') {
+                $("#toza").attr("checked", true);
+            }
             bankInfoJs.takeDisabled();
-        }else{
-            if(actionType !== "insert"){
+        } else {
+            if (actionType !== "insert") {
                 var onloadMol = {};
                 onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                  axios.post("http://127.0.0.1:8080/bankInfo/init",onloadMol)
-                  .then(function (resultMap) {
-                    if(resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null){
-                        $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
-                        $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
-                        $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
-                        $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
-                        $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);   
-                        if(resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== ''){
-                          $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
+                axios.post("http://127.0.0.1:8080/bankInfo/init", onloadMol)
+                    .then(function (resultMap) {
+                        if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
+                            $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
+                            $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
+                            $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
+                            $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
+                            $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);
+                            if (resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== '') {
+                                $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
+                            }
+                            if (resultMap.data.accountInfoMod["accountTypeStatus"] === '0') {
+                                $("#futsu").attr("checked", true);
+                            } else if (resultMap.data.accountInfoMod["accountTypeStatus"] === '1') {
+                                $("#toza").attr("checked", true);
+                            }
+                            //修正の場合
+                            if (actionType === 'update') {
+                                $("#bankBranchName").attr("readonly", false);
+                                $("#bankBranchCode").attr("readonly", false);
+                                $("#accountNo").attr("readonly", false);
+                                $("#accountName").attr("readonly", false);
+                                $("#futsu").attr("disabled", false);
+                                $("#toza").attr("disabled", false);
+                            }
                         }
-                        if(resultMap.data.accountInfoMod["accountTypeStatus"] === '0'){
-                          $("#futsu").attr("checked",true);
-                        }else if(resultMap.data.accountInfoMod["accountTypeStatus"] === '1'){
-                          $("#toza").attr("checked",true);
-                        }
-                        //修正の場合
-                        if(actionType === 'update'){
-                          $("#bankBranchName").attr("readonly",false);
-                          $("#bankBranchCode").attr("readonly",false);
-                          $("#accountNo").attr("readonly",false);
-                          $("#accountName").attr("readonly",false);
-                          $("#futsu").attr("disabled",false);
-                          $("#toza").attr("disabled",false);
-                        }
-                      }
-                  })
-                  .catch(function (error) {
-                  alert("口座情報获取错误，请检查程序");
-                });  
-                if(actionType === "detail"){//詳細の場合
-                    $("#bankCode").attr("disabled",true);
-                    $("#bankBranchName").attr("disabled",true);
-                    $("#bankBranchCode").attr("disabled",true);
-                    $("#accountNo").attr("disabled",true);
-                    $("#accountName").attr("disabled",true);
-                    $("#futsu").attr("disabled",true);
-                    $("#toza").attr("disabled",true);
-                    $("#accountToroku").attr("disabled",true);
-                    $("#accountReset").attr("disabled",true);
+                    })
+                    .catch(function (error) {
+                        alert("口座情報获取错误，请检查程序");
+                    });
+                if (actionType === "detail") {//詳細の場合
+                    $("#bankCode").attr("disabled", true);
+                    $("#bankBranchName").attr("disabled", true);
+                    $("#bankBranchCode").attr("disabled", true);
+                    $("#accountNo").attr("disabled", true);
+                    $("#accountName").attr("disabled", true);
+                    $("#futsu").attr("disabled", true);
+                    $("#toza").attr("disabled", true);
+                    $("#accountToroku").attr("disabled", true);
+                    $("#accountReset").attr("disabled", true);
                 }
             }
         }
@@ -114,134 +114,134 @@ class BankInfo extends Component {
     /**
      * 口座登録ボタン
      */
-    accountTokuro(){
+    accountTokuro() {
         var result = bankInfoJs.checkAccountName();
-        if(result && bankInfoJs.torokuCheck()){
+        if (result && bankInfoJs.torokuCheck()) {
             var accountInfo = {};
-            var formArray =$("#bankForm").serializeArray();
-            $.each(formArray,function(i,item){
-                accountInfo[item.name] = item.value;     
+            var formArray = $("#bankForm").serializeArray();
+            $.each(formArray, function (i, item) {
+                accountInfo[item.name] = item.value;
             });
             this.props.accountTokuro(accountInfo);
-        }else if(!result){
-            this.setState({ "errorsMessageShow": true,errorsMessageValue:'口座名義人をカタカナで入力してください'});
-        }else if(!bankInfoJs.torokuCheck()){
-            this.setState({ "errorsMessageShow": true,errorsMessageValue:'銀行関連を入力してください'});
+        } else if (!result) {
+            this.setState({ "errorsMessageShow": true, errorsMessageValue: '口座名義人をカタカナで入力してください' });
+        } else if (!bankInfoJs.torokuCheck()) {
+            this.setState({ "errorsMessageShow": true, errorsMessageValue: '銀行関連を入力してください' });
         }
     }
     render() {
-        const {actionType , errorsMessageValue} =this.state;
+        const { actionType, errorsMessageValue } = this.state;
         return (
             <div  >
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
-				</div>
-            <div  >
-                <Row inline="true">
-                    <Col  className="text-center">
-                    <h2>口座情報</h2>
-                    </Col>
-                </Row>
-                <Form id="bankForm">
-                <Row>
-                        <Col>
-                            <Navbar>
+                    <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+                </div>
+                <div  >
+                    <Row inline="true">
+                        <Col className="text-center">
+                            <h2>口座情報</h2>
+                        </Col>
+                    </Row>
+                    <Form id="bankForm">
+                        <Row>
+                            <Col>
+                                <Navbar>
                                     <Navbar.Collapse>
                                         <Navbar.Text>
                                             <a id="No"></a>
                                         </Navbar.Text>
-                                </Navbar.Collapse>
-                            </Navbar>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
-                                </InputGroup.Prepend>
+                                    </Navbar.Collapse>
+                                </Navbar>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
+                                    </InputGroup.Prepend>
                                     <Form.Control id="bankCode" name="bankCode" as="select" onChange={bankInfoJs.canSelect}>
                                     </Form.Control>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Check disabled defaultChecked={true}　label="普通" inline="true" type="radio" id="futsu" name="accountTypeStatus" value="0"   />
-                            <Form.Check disabled label="当座" inline="true" type="radio" name="accountTypeStatus" id="toza" value="1"   />
-                        </Col>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Col>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                    <Form.Control readOnly 
-                                    placeholder="例：浦和支店" 
-                                    onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchName")} 
-                                    id="bankBranchName" maxLength="20" name="bankBranchName"/>
-                            </InputGroup>
-                        </Col>
-                        <Col>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                    <Form.Control placeholder="010" onBlur={bankInfoJs.getBankBranchInfo.bind(this,"bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode"/>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="9" name="accountNo"/>
-                            </InputGroup>
-                        </Col>
-                        <Col>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">口座名義人</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <OverlayTrigger
-                                    overlay={
-                                    <Tooltip id="tips" >
-                                        片仮名で入力してください
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Form.Check disabled defaultChecked={true} label="普通" inline="true" type="radio" id="futsu" name="accountTypeStatus" value="0" />
+                                <Form.Check disabled label="当座" inline="true" type="radio" name="accountTypeStatus" id="toza" value="1" />
+                            </Col>
+                        </Row>
+                        <br />
+                        <Row>
+                            <Col>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control readOnly
+                                        placeholder="例：浦和支店"
+                                        onBlur={bankInfoJs.getBankBranchInfo.bind(this, "bankBranchName")}
+                                        id="bankBranchName" maxLength="20" name="bankBranchName" />
+                                </InputGroup>
+                            </Col>
+                            <Col>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control placeholder="010" onBlur={bankInfoJs.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode" />
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="9" name="accountNo" />
+                                </InputGroup>
+                            </Col>
+                            <Col>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">口座名義人</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <OverlayTrigger
+                                        overlay={
+                                            <Tooltip id="tips" >
+                                                片仮名で入力してください
                                     </Tooltip>
-                                    }
-                                >
-                                    <Form.Control placeholder="カタカナ" onChange={bankInfoJs.checkAccountName} readOnly id="accountName" maxLength="20" name="accountName"/>
-                                </OverlayTrigger>
-                            </InputGroup>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={3}></Col>
-                        <Col sm={3} className="text-center">
-                        {actionType === "update" ? 
-                        <Button size="sm" block onClick={this.toroku}  variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />更新
+                                        }
+                                    >
+                                        <Form.Control placeholder="カタカナ" onChange={bankInfoJs.checkAccountName} readOnly id="accountName" maxLength="20" name="accountName" />
+                                    </OverlayTrigger>
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={3}></Col>
+                            <Col sm={3} className="text-center">
+                                {actionType === "update" ?
+                                    <Button size="sm" block onClick={this.toroku} variant="info" id="toroku" type="button">
+                                        <FontAwesomeIcon icon={faSave} />更新
                         </Button>
-                        :
-                        <Button block size="sm" onClick={this.accountTokuro.bind(this)}  variant="info" id="accountToroku" type="button">
-                        <FontAwesomeIcon icon={faSave} />登録
+                                    :
+                                    <Button block size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="accountToroku" type="button">
+                                        <FontAwesomeIcon icon={faSave} />登録
                         </Button>
-                    }
-                        </Col>
-                        <Col sm={3} className="text-center">
+                                }
+                            </Col>
+                            <Col sm={3} className="text-center">
                                 <Button onClick={bankInfoJs.setDisabled} block variant="info" size="sm" type="reset" id="accountReset" value="Reset" >
-                                <FontAwesomeIcon icon={faUndo} />リセット
+                                    <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
-                        </Col>
-                    </Row> 
-                <input type="hidden" id="employeeOrCustomerNo" name="employeeOrCustomerNo"/>
-                <input type="hidden" id="accountBelongsStatus" name="accountBelongsStatus"/>
-                </Form>
-            </div>
+                            </Col>
+                        </Row>
+                        <input type="hidden" id="employeeOrCustomerNo" name="employeeOrCustomerNo" />
+                        <input type="hidden" id="accountBelongsStatus" name="accountBelongsStatus" />
+                    </Form>
+                </div>
             </div>
         );
     }

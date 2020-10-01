@@ -7,7 +7,7 @@ import PasswordReset from './components/passwordReset';
 function App() {
 	return (
 		<Router>
-			<div style={{ "backgroundColor": "#f5f5f5" }}>
+			<div>
 				<Main/>
 				<Route exact path="/login2" component={Login2} />
 				<Route exact path="/passwordReset" component={PasswordReset} />
