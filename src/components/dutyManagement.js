@@ -36,9 +36,20 @@ class dutyManagement extends React.Component {
 		yearAndMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1))).getTime(),
 		employeeList: [],
 		approvalStatuslist:[],
+		checkSectionlist:[],
 		totalPersons:"",
 		averageWorkingTime:"",
 		totalWorkingTime:"",
+	};
+	getDropDownｓ = () => {
+		var methodArray = ["getApproval","getCheckSection"]
+		var data = publicUtils.getPublicDropDown(methodArray);
+		this.setState(
+			{
+				approvalStatuslist: data[0],//　getApproval
+				checkSectionlist: data[0],//　getCheckSection
+			}
+		);
 	};
 	//　検索
 	searchDutyManagement = () => {
