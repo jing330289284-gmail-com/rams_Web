@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Col, Row, FormControl } from 'react-bootstrap';
+import { Button, Form, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -91,7 +91,37 @@ class workRepot extends React.Component {
      * 作業報告書ボタン
      */
     workRepotUpload=()=>{
- 		
+	let getfile=$("#getFile").val();
+	let fileName = getfile.split('.');
+	if(
+		fileName[fileName.length -1]=== "xlsx" ||
+		fileName[fileName.length -1]=== "xls" ||
+		fileName[fileName.length -1]=== "xltx" ||
+		fileName[fileName.length -1]=== "xlt" ||
+		fileName[fileName.length -1]=== "xlsm" ||
+		fileName[fileName.length -1]=== "xlsb" ||
+		fileName[fileName.length -1]=== "xltm" ||
+		fileName[fileName.length -1]=== "csv"||
+		fileName[fileName.length -1]=== "pdf"
+	){
+  }else{
+    alert('PDF或いはexcelをアップロードしてください')
+    return false;
+  }
+		const formData = new FormData()
+		const emp = {
+				attendanceYearAndMonth:this.state.rowSelectAttendanceYearAndMonth,
+			};
+			formData.append('emp', JSON.stringify(emp))
+			formData.append('workRepotFile', $("#getFile").get(0).files[0])
+			axios.post("http://127.0.0.1:8080/workRepot/insertWorkRepot",formData)
+			.then(response => {
+				if (response.data != null) {
+					window.location.reload();
+				} else {
+					alert("err")
+				}
+			});
     }
 	getFile=()=>{
 		$("#getFile").click();
@@ -105,6 +135,7 @@ class workRepot extends React.Component {
 			this.setState(
 				{
 					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
+					rowSelectWorkingTimeReport: row.workingTimeReport,
 					rowSelectSumWorkTime: row.sumWorkTime,
 					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
 				}
@@ -119,7 +150,9 @@ class workRepot extends React.Component {
 
 		} else {
 			this.setState(
-				{	rowSelectAttendanceYearAndMonth:'',
+				{	
+					rowSelectWorkingTimeReport:'',
+					rowSelectAttendanceYearAndMonth:'',
 					rowSelectSumWorkTime: '',
 					rowSelectapproval: '',
 				}
@@ -166,7 +199,7 @@ class workRepot extends React.Component {
 		const cellEdit = {
 			mode: 'click',
 			blurToSave: true,
-afterSaveCell: this.sumWorkTimeChange,
+			afterSaveCell: this.sumWorkTimeChange,
 		}
 		return (
 			<div>
@@ -186,6 +219,7 @@ afterSaveCell: this.sumWorkTimeChange,
 					</div>
 				</Form>
 				<div >
+				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.workRepotUpload}/>
 	                <br/>
                     <Row>
 						<Col sm={2}>
@@ -197,16 +231,17 @@ afterSaveCell: this.sumWorkTimeChange,
                                <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={this.workRepotDownload} id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
-		                        </Button>   
-								</div>
+		                        </Button>
+	 						</div>
 						</Col>
                     </Row>	
 					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  className={"bg-white text-dark"}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
 						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
+						<TableHeaderColumn width='250'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
 						<TableHeaderColumn width='150'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
-						<TableHeaderColumn width='250' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReport' editable={false}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='250' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } onBlur={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
 						<TableHeaderColumn width='450' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
