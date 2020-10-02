@@ -13,7 +13,8 @@ export const fetchDropDown = () => {
 		 */
 		var methodNameList = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation","getEmployee",
 		 "getJapaneseLevel", "getVisa", "getNationalitys","getDevelopLanguage", "getEmployeeName", 
-	    "getOccupation", "getDepartment", "getAuthority",  "getEnglishLevel","getStation", "getCustomer"]
+		"getOccupation", "getDepartment", "getAuthority",  "getEnglishLevel","getStation", "getCustomer","getListedCompany",
+		"getLevel","getCompanyNature","getPosition","getPaymentsite","getPaymentsite","getDepartmentMasterDrop"]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);
 		$.ajax({
