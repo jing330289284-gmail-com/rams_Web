@@ -13,6 +13,7 @@ import masterInsert from './masterInsert';
 import masterUpdate from './masterUpdate';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
+import salesPointSet from './salesPointSet';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import WagesInfo from './wagesInfo';
@@ -32,15 +33,15 @@ class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日
 	}
-	async componentWillMount(){
+	async componentWillMount() {
 		await axios.post("http://127.0.0.1:8080/subMenu/init")
-		.then(resultMap =>{
-			if(resultMap.data !== null && resultMap.data !== ''){
-				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
-			}else{
-				this.props.history.push("/");
-			}
-		})
+			.then(resultMap => {
+				if (resultMap.data !== null && resultMap.data !== '') {
+					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
+				} else {
+					this.props.history.push("/");
+				}
+			})
 	}
     /**
      * 画面の初期化
@@ -52,11 +53,11 @@ class SubMenu extends Component {
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月'),
 		})
 	}
-	logout=()=>{
+	logout = () => {
 		axios.post("http://127.0.0.1:8080/subMenu/logout")
-		.then(resultMap =>{
-			alert("ログアウトしました");
-		})
+			.then(resultMap => {
+				alert("ログアウトしました");
+			})
 	}
 	render() {
 		//お客様情報画面の追加パラメータ
@@ -154,6 +155,7 @@ class SubMenu extends Component {
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
+
 								<ListGroup.Item variant="secondary">
 									<Accordion.Toggle as={Button} variant="link" eventKey="4"><img alt="title" src={openPage} />営業送信</Accordion.Toggle>
 									<Accordion.Collapse eventKey="4">
@@ -165,8 +167,16 @@ class SubMenu extends Component {
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+									<Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage} />営業管理</Accordion.Toggle>
 									<Accordion.Collapse eventKey="5">
+										<ListGroup variant="flush">
+											<ListGroup.Item variant="secondary"><Link to="/subMenu/salesPointSet"><img alt="title" src={open} />営業ポイント設定</Link></ListGroup.Item>
+										</ListGroup>
+									</Accordion.Collapse>
+								</ListGroup.Item>
+								<ListGroup.Item variant="secondary">
+									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+									<Accordion.Collapse eventKey="6">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyManagement"><img alt="title" src={open} />勤務管理</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />残業代一覧</Link></ListGroup.Item>
@@ -174,16 +184,16 @@ class SubMenu extends Component {
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />非稼働</Accordion.Toggle>
-									<Accordion.Collapse eventKey="6">
+									<Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage} />非稼働</Accordion.Toggle>
+									<Accordion.Collapse eventKey="7">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />非待機一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage} />マスター</Accordion.Toggle>
-									<Accordion.Collapse eventKey="7">
+									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />マスター</Accordion.Toggle>
+									<Accordion.Collapse eventKey="8">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />マスター登録</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterUpdate"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
@@ -191,16 +201,16 @@ class SubMenu extends Component {
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />他の設定</Accordion.Toggle>
-									<Accordion.Collapse eventKey="8">
+									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />他の設定</Accordion.Toggle>
+									<Accordion.Collapse eventKey="9">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />システム設定</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
-									<Accordion.Collapse eventKey="9">
+									<Accordion.Toggle as={Button} variant="link" eventKey="10"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+									<Accordion.Collapse eventKey="10">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyRegistration/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />履歴検索</Link></ListGroup.Item>
@@ -208,8 +218,8 @@ class SubMenu extends Component {
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />アップデロード</Accordion.Toggle>
-									<Accordion.Collapse eventKey="9">
+									<Accordion.Toggle as={Button} variant="link" eventKey="11"><img alt="title" src={openPage} />アップデロード</Accordion.Toggle>
+									<Accordion.Collapse eventKey="11">
 										<ListGroup variant="flush">
 											<ListGroup.Item variant="secondary"><Link to="/subMenu/workRepot/"><img alt="title" src={open} />作業報告書アップデロード</Link></ListGroup.Item>
 										</ListGroup>
@@ -231,12 +241,13 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
+								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
 								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
 								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
-								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />	
+								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />
 								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
@@ -254,7 +265,7 @@ class SubMenu extends Component {
 				<br />
 			</div>
 		);
-	}	
+	}
 }
 
 export default SubMenu;
