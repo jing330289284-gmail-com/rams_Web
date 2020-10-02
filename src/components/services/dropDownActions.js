@@ -10,11 +10,13 @@ export const fetchDropDown = () => {
 		0.性別区別   1入社区分  2 社員形式  3役割  4employeesステータス  
 		5日本語  6在留資格  7国籍  8開発言語  9社員名
 		10 職種  11部署  12 権限  13英語 14駅 15BP所属
+		16営業状況
 		 */
 		var methodNameList = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation","getEmployee",
 		 "getJapaneseLevel", "getVisa", "getNationalitys","getDevelopLanguage", "getEmployeeName", 
-		"getOccupation", "getDepartment", "getAuthority",  "getEnglishLevel","getStation", "getCustomer","getListedCompany",
-		"getLevel","getCompanyNature","getPosition","getPaymentsite","getPaymentsite","getDepartmentMasterDrop"]
+		"getOccupation", "getDepartment", "getAuthority",  "getEnglishLevel","getStation","getListedCompany",
+		"getLevel","getCompanyNature","getPosition","getPaymentsite","getDepartmentMasterDrop",
+	    "getCustomer","getSalesProgress"]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);
 		$.ajax({

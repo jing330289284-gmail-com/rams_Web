@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Card,Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -286,6 +286,9 @@ class employeeSearch extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
+				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
+					<h2>社員情報検索</h2>
+				</Card.Header>
 				<Form >
 					<div >
 						<Form.Group>

@@ -18,12 +18,14 @@ class dutyManagement extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.getDropDownｓ = this.getDropDownｓ.bind(this);
 		this.searchEmployee = this.searchDutyManagement.bind(this);
 	};
 	componentDidMount(){
 		$("#syounin").attr("disabled",true);
 		$("#workRepot").attr("disabled",true);
 		$("#datePicker").attr("readonly","readonly");
+		this.getDropDownｓ();
 	}
 	//onchange
 	valueChange = event => {
@@ -36,9 +38,20 @@ class dutyManagement extends React.Component {
 		yearAndMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1))).getTime(),
 		employeeList: [],
 		approvalStatuslist:[],
+		checkSectionlist:[],
 		totalPersons:"",
 		averageWorkingTime:"",
 		totalWorkingTime:"",
+	};
+	getDropDownｓ = () => {
+		var methodArray = ["getApproval","getCheckSection"]
+		var data = publicUtils.getPublicDropDown(methodArray);
+		this.setState(
+			{
+				approvalStatuslist: data[0],//　getApproval
+				checkSectionlist: data[0],//　getCheckSection
+			}
+		);
 	};
 	//　検索
 	searchDutyManagement = () => {
@@ -53,10 +66,22 @@ class dutyManagement extends React.Component {
 				var totalWorkingTime=0;
 				if (response.data != null) {
 					var totalPersons=response.data.length;
+					var approvalStatusstatuss = this.state.approvalStatuslist;
+					var checkSectionstatuss = this.state.checkSectionlist;
 					for(var i=0;i<totalPersons;i++){
 						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
 						if(totalWorkingTime<response.data[i].workTime){
 							totalWorkingTime=response.data[i].workTime;
+						}
+						for (var i2=0;i2<approvalStatusstatuss.length;i2++) {
+							if (response.data[i].approvalStatus == approvalStatusstatuss[i2].code) {
+								response.data[i].approvalStatusName=approvalStatusstatuss[i2].name;
+							}
+						}
+						for (var i2=0;i2<checkSectionstatuss.length;i2++) {
+							if (response.data[i].checkSection == checkSectionstatuss[i2].code) {
+								response.data[i].checkSectionName=checkSectionstatuss[i2].name;
+							}
 						}
 					}
 					averageWorkingTime=Math.round(averageWorkingTime/totalPersons);
@@ -275,9 +300,11 @@ class dutyManagement extends React.Component {
 						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='payOffRange'>精算範囲</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workTime'>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='overTimePay'>残業代/控除</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='checkSection'>確認区分</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' hidden={true} dataField='checkSection'></TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='checkSectionName'>確認区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime'>更新日付</TableHeaderColumn>
-						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatus'>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center'hidden={true}  dataField='approvalStatus'></TableHeaderColumn>
+						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName'>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
