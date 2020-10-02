@@ -9,6 +9,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
+import { Link } from "react-router-dom";
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
@@ -35,6 +36,8 @@ class salesSendLetter extends React.Component {
 		selectedCustomer: {},
 		daiologShowFlag: false,
 		positions: [],
+		selectedEmpNos:this.props.location.state.selectetRowIds,
+		selectedCusInfos: [],
 	};
 
 	// 
@@ -163,6 +166,7 @@ class salesSendLetter extends React.Component {
 		}
 		this.refs.customersTable.store.selected = [];
 		this.setState({
+			selectedCusInfos: [],
 			allCustomer: newCustomer,
 			selectetRowIds: [],
 		});
@@ -177,7 +181,17 @@ class salesSendLetter extends React.Component {
 		this.refs.customersTable.setState({
 			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
 		})
+		let customerRowIdArray = new Array();
+				for (let i in this.state.allCustomer) {
+					customerRowIdArray.push(this.state.allCustomer[i].rowId);
+				};
+				let targetCustomer = new Array();
+				for (let i in customerRowIdArray) {
+					let rowNo=customerRowIdArray[i];
+					targetCustomer.push(this.state.customerTemp[rowNo]);
+				};
 		this.setState({
+			selectedCusInfos: targetCustomer,
 			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
 			selectetRowIds: [],
 			currentPage: 1,//　該当page番号
@@ -237,16 +251,21 @@ class salesSendLetter extends React.Component {
 				selectedRowKeys: [],
 			})
 		}
+		let rowNo=row.rowId;
 		if (isSelected) {
-			//alert(this.refs.customersTable.state.selectedRowKeys);
+			//alert(this.refs.customersTable.state.selectedRowKeys); selectedCusInfos
 			this.setState({
 				sendLetterBtnFlag: true,
-				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
+				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
+				selectedCusInfos: this.state.selectedCusInfos.concat(this.state.customerTemp[rowNo]),
 			})
 		} else {
-			let index = this.state.selectetRowIds.findIndex(item => item === row.rowId);
+			let index = this.state.selectetRowIds.findIndex(item => item === rowNo);
 			this.state.selectetRowIds.splice(index, 1);
+			let index2 = this.state.selectedCusInfos.findIndex(item => item.rowId === rowNo);
+			this.state.selectedCusInfos.splice(index2, 1);
 			this.setState({
+				selectedCusInfos: this.state.selectedCusInfos,
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds,
 			})
@@ -275,7 +294,10 @@ class salesSendLetter extends React.Component {
 		})
 	}
 
-	saveSalesPersons = (row) => {
+	saveSalesPersons = (row,appendPersonMsg) => {
+		this.state.customerTemp[row.rowId].purchasingManagers2=appendPersonMsg.purchasingManagers2;
+		this.state.customerTemp[row.rowId].positionCode2=appendPersonMsg.positionCode2;
+		this.state.customerTemp[row.rowId].purchasingManagersMail2=appendPersonMsg.purchasingManagersMail2;
 		this.setState({
 			daiologShowFlag: false,
 		});
@@ -338,7 +360,7 @@ class salesSendLetter extends React.Component {
 		return (
 			<div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
+					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
 						<SalesAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
@@ -435,8 +457,9 @@ class salesSendLetter extends React.Component {
 									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>
 								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton"
 									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
+								<Link to={{ pathname: '/subMenu/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
-								><FontAwesomeIcon icon={faEnvelope} />送信</Button>
+								><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
 							</div>
 						</Col>
 					</Row>
@@ -461,7 +484,7 @@ class salesSendLetter extends React.Component {
 						<TableHeaderColumn width='12%' dataField='levelCode' >ランキング</TableHeaderColumn>
 						<TableHeaderColumn width='12%' dataField='monthCount' >取引数(今月)</TableHeaderColumn>
 						<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-						<TableHeaderColumn dataField='rowId' hidden={true}>ID</TableHeaderColumn>
+						<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div>

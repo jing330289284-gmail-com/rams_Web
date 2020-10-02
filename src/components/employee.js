@@ -15,10 +15,10 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 axios.defaults.withCredentials = true;
-
 
 class employee extends React.Component {
 	constructor(props) {
@@ -32,28 +32,15 @@ class employee extends React.Component {
 	}
 	//初期化
 	initialState = {
-		siteMaster: [],
 		showBankInfoModal: false,//口座情報画面フラグ
-		showSubCostModal: false,//諸費用
 		showpasswordSetModal: false,//PW設定
-		showPbInfoModal: false,//pb情報
+		showBpInfoModal: false,//bp情報
 		pictures: [],//ImageUploader
-		genderStatuss: [],//性別
-		intoCompanyCodes: [],//　　入社区分
-		employeeFormCodes: [],//　　社員形式
-		occupationCodes: [],//　　職種
-		departmentCodes: [],//　　部署
-		authorityCodes: [],//　　権限
-		japaneaseLevelCodes: [],//　　日本語
-		residenceCodes: [],//　　在留資格
-		englishLeveCodes: [],//　　英語
-		nationalityCodes: [],//　　出身地 
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
 		subCostInfo: null,//諸費用のデータ
 		detailDisabled: true,//明細の時、全部のインプットをリードオンリーにします
 		bpInfoModel: null,//pb情報
-		station: [],//駅
 		myToastShow: false,
 		errorsMessageShow: false,
 		developLanguage1: '',
@@ -61,7 +48,6 @@ class employee extends React.Component {
 		developLanguage3: '',
 		developLanguage4: '',
 		developLanguage5: '',
-		developLanguageMaster: [],
 		stationCode: '',
 		residentCardInfoFlag: false,
 		BPFlag: false,
@@ -80,48 +66,48 @@ class employee extends React.Component {
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
-			furigana1: this.state.furigana1,//　　カタカナ
-			furigana2: this.state.furigana2,//　　カタカナ
-			alphabetName: this.state.alphabetName,//　　ローマ字
+			furigana1: this.state.furigana1 === null ? '' : this.state.furigana1,//　　カタカナ
+			furigana2: this.state.furigana2 === null ? '' : this.state.furigana2,//　　カタカナ
+			alphabetName: this.state.alphabetName === null ? '' : this.state.alphabetName,//　　ローマ字
 			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
-			japaneseCalendar: this.state.japaneseCalendar,//和暦
-			genderStatus: this.state.genderStatus,//性別
-			intoCompanyCode: this.state.intoCompanyCode,//入社区分
-			employeeFormCode: this.state.employeeFormCode,//社員形式
-			occupationCode: this.state.occupationCode,//職種
-			departmentCode: this.state.departmentCode,//部署
-			companyMail: this.state.companyMail,//社内メール
-			graduationUniversity: this.state.graduationUniversity,//卒業学校
-			major: this.state.major,//専門
+			japaneseCalendar: this.state.japaneseCalendar === null ? '' : this.state.japaneseCalendar,//和暦
+			genderStatus: this.state.genderStatus === null ? '' : this.state.genderStatus,//性別
+			intoCompanyCode: this.state.intoCompanyCode === null ? '' : this.state.intoCompanyCode,//入社区分
+			employeeFormCode: this.state.employeeFormCode === null ? '' : this.state.employeeFormCode,//社員形式
+			occupationCode: this.state.occupationCode === null ? '' : this.state.occupationCode,//職種
+			departmentCode: this.state.departmentCode === null ? '' : this.state.departmentCode,//部署
+			companyMail: this.state.companyMail === null ? '' : this.state.companyMail,//社内メール
+			graduationUniversity: this.state.graduationUniversity === null ? '' : this.state.graduationUniversity,//卒業学校
+			major: this.state.major === null ? '' : this.state.major,//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
 			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
-			nationalityCode: this.state.nationalityCode,//出身地
-			birthplace: this.state.birthplace,//出身県
-			phoneNo: this.state.phoneNo,//携帯電話
+			nationalityCode: this.state.nationalityCode === null ? '' : this.state.nationalityCode,//出身地
+			birthplace: this.state.birthplace === null ? '' : this.state.birthplace,//出身県
+			phoneNo: this.state.phoneNo === null ? '' : this.state.phoneNo,//携帯電話
 			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
-			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
-			englishLevelCode: this.state.englishLevelCode,//英語
-			certification1: this.state.certification1,//資格1
-			certification2: this.state.certification2,//資格2
-			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode,//郵便番号
-			firstHalfAddress: this.state.firstHalfAddress,
-			lastHalfAddress: this.state.lastHalfAddress,
+			japaneseLevelCode: this.state.japaneseLevelCode === null ? '' : this.state.japaneseLevelCode,//日本語
+			englishLevelCode: this.state.englishLevelCode === null ? '' : this.state.englishLevelCode,//英語
+			certification1: this.state.certification1 === null ? '' : this.state.certification1,//資格1
+			certification2: this.state.certification2 === null ? '' : this.state.certification2,//資格2
+			siteRoleCode: this.state.siteRoleCode === null ? '' : this.state.siteRoleCode,//役割
+			postcode: this.state.postcode === null ? '' : this.state.postcode,//郵便番号
+			firstHalfAddress: this.state.firstHalfAddress === null ? '' : this.state.firstHalfAddress,
+			lastHalfAddress: this.state.lastHalfAddress === null ? '' : this.state.lastHalfAddress,
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
 			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
 			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
 			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
-			residenceCode: this.state.residenceCode,//在留資格
-			residenceCardNo: this.state.residenceCardNo,//在留カード
+			residenceCode: this.state.residenceCode === null ? '' : this.state.residenceCode,//在留資格
+			residenceCardNo: this.state.residenceCardNo === null ? '' : this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
-			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
-			myNumber: this.state.myNumber,//マイナンバー
-			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
-			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			employmentInsuranceNo: this.state.employmentInsuranceNo === null ? '' : this.state.employmentInsuranceNo,//雇用保険番号
+			myNumber: this.state.myNumber === null ? '' : this.state.myNumber,//マイナンバー
+			resumeRemark1: this.state.resumeRemark1 === null ? '' : this.state.resumeRemark1,//履歴書備考1
+			resumeRemark2: this.state.resumeRemark2 === null ? '' : this.state.resumeRemark2,//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
@@ -157,48 +143,48 @@ class employee extends React.Component {
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
-			furigana1: this.state.furigana1,//　　カタカナ
-			furigana2: this.state.furigana2,//　　カタカナ
-			alphabetName: this.state.alphabetName,//　　ローマ字
+			furigana1: this.state.furigana1 === null ? '' : this.state.furigana1,//　　カタカナ
+			furigana2: this.state.furigana2 === null ? '' : this.state.furigana2,//　　カタカナ
+			alphabetName: this.state.alphabetName === null ? '' : this.state.alphabetName,//　　ローマ字
 			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
-			japaneseCalendar: this.state.japaneseCalendar,//和暦
-			genderStatus: this.state.genderStatus,//性別
-			intoCompanyCode: this.state.intoCompanyCode,//入社区分
-			employeeFormCode: this.state.employeeFormCode,//社員形式
-			occupationCode: this.state.occupationCode,//職種
-			departmentCode: this.state.departmentCode,//部署
-			companyMail: this.state.companyMail,//社内メール
-			graduationUniversity: this.state.graduationUniversity,//卒業学校
-			major: this.state.major,//専門
+			japaneseCalendar: this.state.japaneseCalendar === null ? '' : this.state.japaneseCalendar,//和暦
+			genderStatus: this.state.genderStatus === null ? '' : this.state.genderStatus,//性別
+			intoCompanyCode: this.state.intoCompanyCode === null ? '' : this.state.intoCompanyCode,//入社区分
+			employeeFormCode: this.state.employeeFormCode === null ? '' : this.state.employeeFormCode,//社員形式
+			occupationCode: this.state.occupationCode === null ? '' : this.state.occupationCode,//職種
+			departmentCode: this.state.departmentCode === null ? '' : this.state.departmentCode,//部署
+			companyMail: this.state.companyMail === null ? '' : this.state.companyMail,//社内メール
+			graduationUniversity: this.state.graduationUniversity === null ? '' : this.state.graduationUniversity,//卒業学校
+			major: this.state.major === null ? '' : this.state.major,//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
 			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
-			nationalityCode: this.state.nationalityCode,//出身地
-			birthplace: this.state.birthplace,//出身県
-			phoneNo: this.state.phoneNo,//携帯電話
-			authorityCode: $("#authorityCodeId").val(),//権限
-			japaneseLevelCode: this.state.japaneseLevelCode,//日本語
-			englishLevelCode: this.state.englishLevelCode,//英語
-			certification1: this.state.certification1,//資格1
-			certification2: this.state.certification2,//資格2
-			siteRoleCode: this.state.siteRoleCode,//役割
-			postcode: this.state.postcode,//郵便番号
-			firstHalfAddress: this.state.firstHalfAddress,
-			lastHalfAddress: this.state.lastHalfAddress,
+			nationalityCode: this.state.nationalityCode === null ? '' : this.state.nationalityCode,//出身地
+			birthplace: this.state.birthplace === null ? '' : this.state.birthplace,//出身県
+			phoneNo: this.state.phoneNo === null ? '' : this.state.phoneNo,//携帯電話
+			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
+			japaneseLevelCode: this.state.japaneseLevelCode === null ? '' : this.state.japaneseLevelCode,//日本語
+			englishLevelCode: this.state.englishLevelCode === null ? '' : this.state.englishLevelCode,//英語
+			certification1: this.state.certification1 === null ? '' : this.state.certification1,//資格1
+			certification2: this.state.certification2 === null ? '' : this.state.certification2,//資格2
+			siteRoleCode: this.state.siteRoleCode === null ? '' : this.state.siteRoleCode,//役割
+			postcode: this.state.postcode === null ? '' : this.state.postcode,//郵便番号
+			firstHalfAddress: this.state.firstHalfAddress === null ? '' : this.state.firstHalfAddress,
+			lastHalfAddress: this.state.lastHalfAddress === null ? '' : this.state.lastHalfAddress,
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
 			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster),
 			developLanguage4: publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster),
 			developLanguage5: publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster),
-			residenceCode: this.state.residenceCode,//在留資格
-			residenceCardNo: this.state.residenceCardNo,//在留カード
+			residenceCode: this.state.residenceCode === null ? '' : this.state.residenceCode,//在留資格
+			residenceCardNo: this.state.residenceCardNo === null ? '' : this.state.residenceCardNo,//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
-			employmentInsuranceNo: this.state.employmentInsuranceNo,//雇用保険番号
-			myNumber: this.state.myNumber,//マイナンバー
-			resumeRemark1: this.state.resumeRemark1,//履歴書備考1
-			resumeRemark2: this.state.resumeRemark2,//履歴書備考1
+			employmentInsuranceNo: this.state.employmentInsuranceNo === null ? '' : this.state.employmentInsuranceNo,//雇用保険番号
+			myNumber: this.state.myNumber === null ? '' : this.state.myNumber,//マイナンバー
+			resumeRemark1: this.state.resumeRemark1 === null ? '' : this.state.resumeRemark1,//履歴書備考1
+			resumeRemark2: this.state.resumeRemark2 === null ? '' : this.state.resumeRemark2,//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: this.state.passwordSetInfo,//pw設定
@@ -242,7 +228,7 @@ class employee extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
-		this.getDropDownｓ();//全部のドロップダウン
+		this.props.fetchDropDown();
 		this.radioChangeEmployeeType();
 		const { location } = this.props
 		var actionType = '';
@@ -270,29 +256,6 @@ class employee extends React.Component {
 		}
 	}
 
-	getDropDownｓ = () => {
-		var methodArray = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation", "getDepartment", "getAuthority", "getJapaneseLevel",
-			"getVisa", "getEnglishLevel", "getNationalitys", "getSiteMaster", "getStation", "getCustomer", "getDevelopLanguage", "getAuthority"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				genderStatuss: data[0],//　性別区別
-				intoCompanyCodes: data[1],//　入社区分 
-				employeeFormCodes: data[2],//　 社員形式 
-				occupationCodes: data[3],//　職種
-				departmentCodes: data[4],//　 部署 
-				authorityCodes: data[5].slice(1),//　 権限 
-				japaneaseLevelCodes: data[6],//　日本語  
-				residenceCodes: data[7],//　在留資格
-				englishLeveCodes: data[8],//　英語
-				nationalityCodes: data[9],//　 出身地国
-				siteMaster: data[10],//　役割
-				station: data[11].slice(1),//　駅
-				customer: data[12].slice(1),//BP所属
-				developLanguageMaster: data[13].slice(1),//開発言語
-			}
-		);
-	};
 
 	getAuthority = () => {
 		var methodArray = ["getAuthority"]
@@ -396,7 +359,6 @@ class employee extends React.Component {
 		this.setState({
 			pictures: this.state.pictures.concat(pictureFiles)
 		});
-
 	}
 	//ImageUploaderを処理　終了
 	//　　年月開始
@@ -500,7 +462,6 @@ class employee extends React.Component {
 	/* 
 		ポップアップ口座情報の取得
 	 */
-
 	accountInfoGet = (accountTokuro) => {
 		this.setState({
 			accountInfo: accountTokuro,
@@ -508,15 +469,6 @@ class employee extends React.Component {
 		})
 	}
 
-	/* 
-	ポップアップ諸費用の取得
- 　　　*/
-	subCostInfoGet = (subCostInfoTokuro) => {
-		this.setState({
-			subCostInfo: subCostInfoTokuro,
-			showSubCostModal: false,
-		})
-	}
 	/* 
 	ポップアップPW設定の取得
  　　　*/
@@ -532,7 +484,7 @@ class employee extends React.Component {
 	pbInfoGet = (pbInfoGetTokuro) => {
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
-			showPbInfoModal: false,
+			showBpInfoModal: false,
 		})
 	}
 	/**
@@ -544,7 +496,7 @@ class employee extends React.Component {
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: false })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showPbInfoModal: false })
+			this.setState({ showBpInfoModal: false })
 		}
 	}
 
@@ -557,7 +509,7 @@ class employee extends React.Component {
 		} else if (kbn === "passwordSet") {//PW設定
 			this.setState({ showPasswordSetModal: true })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showPbInfoModal: true })
+			this.setState({ showBpInfoModal: true })
 		}
 	}
 
@@ -653,6 +605,20 @@ class employee extends React.Component {
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled, errorsMessageValue
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
+		const genderStatuss = this.props.genderStatuss;
+		const employeeFormCodes = this.props.employeeFormCodes;
+		const siteMaster = this.props.siteMaster;
+		const intoCompanyCodes = this.props.intoCompanyCodes;
+		const japaneaseLevelCodes = this.props.japaneaseLevelCodes;
+		const residenceCodes = this.props.residenceCodes;
+		const nationalityCodes = this.props.nationalityCodes;
+		const developLanguageMaster = this.props.developLanguageMaster;
+		const occupationCodes = this.props.occupationCodes;
+		const departmentCodes = this.props.departmentCodes;
+		const authorityCodes = this.props.authorityCodes;
+		const englishLeveCodes = this.props.englishLeveCodes;
+		const station = this.props.station;
+
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -682,7 +648,7 @@ class employee extends React.Component {
 				</Modal>
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showPbInfoModal} dialogClassName="modal-pbinfoSet">
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModal} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -784,7 +750,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="genderStatus" value={genderStatus}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.genderStatuss.map(date =>
+										{genderStatuss.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -801,7 +767,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.intoCompanyCodes.map(date =>
+										{intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -818,7 +784,7 @@ class employee extends React.Component {
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.employeeFormCodes.map(date =>
+										{employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -837,7 +803,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="occupationCode" value={occupationCode}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.occupationCodes.map(date =>
+										{occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -854,7 +820,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.departmentCodes.map(date =>
+										{departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -984,7 +950,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="nationalityCode" value={nationalityCode}
 										autoComplete="off" id="nationalityCodeId" disabled={detailDisabled ? false : true}>
-										{this.state.nationalityCodes.map(date =>
+										{nationalityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -1013,7 +979,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
 										autoComplete="off" id="authorityCodeId" disabled={this.state.BPFlag ? true : false}>
-										{this.state.authorityCodes.map(date =>
+										{authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -1035,7 +1001,7 @@ class employee extends React.Component {
 										onChange={this.valueChange} size="sm"
 										name="japaneseLevelCode" value={japaneseLevelCode}
 										autoComplete="off" id="japaneaseLevelCodeId" disabled={detailDisabled ? false : true}>
-										{this.state.japaneaseLevelCodes.map(data =>
+										{japaneaseLevelCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -1049,7 +1015,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" onChange={this.valueChange} size="sm" name="englishLevelCode" value={englishLevelCode} autoComplete="off" id="englishLeveCodeId" disabled={detailDisabled ? false : true}>
-										{this.state.englishLeveCodes.map(data =>
+										{englishLeveCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -1073,7 +1039,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.siteMaster.map(date =>
+										{siteMaster.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -1093,8 +1059,8 @@ class employee extends React.Component {
 									</InputGroup.Prepend>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
-										options={this.state.developLanguageMaster}
+										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
+										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
@@ -1106,8 +1072,8 @@ class employee extends React.Component {
 									/>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
-										options={this.state.developLanguageMaster}
+										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
+										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
@@ -1119,8 +1085,8 @@ class employee extends React.Component {
 									/>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
-										options={this.state.developLanguageMaster}
+										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
+										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
@@ -1132,8 +1098,8 @@ class employee extends React.Component {
 									/>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
-										options={this.state.developLanguageMaster}
+										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
+										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
@@ -1145,8 +1111,8 @@ class employee extends React.Component {
 									/>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
-										options={this.state.developLanguageMaster}
+										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
+										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
@@ -1200,7 +1166,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off"  size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
+									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1218,8 +1184,8 @@ class employee extends React.Component {
 									</InputGroup.Prepend>
 									<Autocomplete
 										disabled={detailDisabled ? false : true}
-										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
-										options={this.state.station}
+										value={station.find((v) => (v.code === this.state.stationCode)) || {}}
+										options={station}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
@@ -1246,7 +1212,7 @@ class employee extends React.Component {
 										onChange={this.valueChange}
 										name="residenceCode" value={residenceCode}
 										autoComplete="off" disabled={detailDisabled ? false : true}>
-										{this.state.residenceCodes.map(data =>
+										{residenceCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -1356,7 +1322,7 @@ class employee extends React.Component {
 							</Col>
 
 							<Col sm={4}>
-								<InputGroup size="sm" className="mb-3">
+								<InputGroup size="sm"     className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
 										{this.state.passportInfoFlag && !detailDisabled ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
@@ -1374,10 +1340,38 @@ class employee extends React.Component {
 						<Button size="sm" variant="info" type="reset">
 							<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
-					</div>}
+					</div>} 
 				</Form>
 			</div>
 		);
 	}
 }
-export default employee;
+
+const mapStateToProps = state => {
+	return {
+		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
+		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
+		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
+		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
+		employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
+		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
+		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
+		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
+		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
+		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
+		occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[10] : [],
+		departmentCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[11] : [],
+		authorityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[12] : [],
+		englishLeveCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[13] : [],
+		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
+		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(employee);
+

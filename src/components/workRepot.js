@@ -1,11 +1,10 @@
 import React from 'react';
-import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Form, Col, Row, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
 import $ from 'jquery'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
@@ -16,12 +15,17 @@ class workRepot extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.getDropDownｓ = this.getDropDownｓ.bind(this);
 		this.searchWorkRepot = this.searchWorkRepot.bind(this);
+		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
+
 	};
 	componentDidMount(){
 		$("#workRepotUpload").attr("disabled",true);
 		$("#workRepotDownload").attr("disabled",true);
+		this.getDropDownｓ();
 		this.searchWorkRepot();
+		
 	}
 	//onchange
 	valueChange = event => {
@@ -33,82 +37,91 @@ class workRepot extends React.Component {
 	initialState = {
 		employeeList: [],
 		approvalStatuslist:[],
+
+	};
+		getDropDownｓ = () => {
+		var methodArray = ["getApproval"]
+		var data = publicUtils.getPublicDropDown(methodArray);
+		this.setState(
+			{
+				approvalStatuslist: data[0],//　getApproval
+			}
+		);
 	};
 	//　検索
 	searchWorkRepot = () => {
-				const emp = {
-
+		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+			.then(response => response.data)
+			.then((data) => {
+				if (data != null) {
+					var statuss = this.state.approvalStatuslist;
+					for(var i=0;i<data.length;i++){
+						for (var i2=0;i2<statuss.length;i2++) {
+							if (data[i].approvalStatus == statuss[i2].code) {
+								data[i].approvalStatusName=statuss[i2].name;
+							}
+						}
+					}
+				} else {
+					data[0].approvalStatus=0;
+					data[0].approvalStatusName="未";
+					data[0].attendanceYearAndMonth=publicUtils.setFullYearMonth(new Date());
+					}
+				this.setState({ 
+					employeeList: data
+				})
+			});
+	};
+	//　変更
+	sumWorkTimeChange = (e) =>{
+		const emp = {
+			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
+			sumWorkTime:　e.sumWorkTime,
 		};
-		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot",emp)
+		axios.post("http://127.0.0.1:8080/workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
-					this.setState({ employeeList: response.data })
+					window.location.reload();
 				} else {
 					alert("err")
 				}
 			});
 	}
-
-	/**
-	  * 行の承認
-	  */
-	listApproval = () => {
-		const emp = {
-			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
-			employeeNo: this.state.rowSelectEmployeeNo,
-			checkSection: this.state.rowSelectCheckSection,
-		}
-		axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepot", emp)
-			.then(result => {
-				if (result.data == true) {
-					this.searchWorkRepot();
-					//削除の後で、rowSelectの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: '',
-							rowSelectCheckSection: ''
-						}
-					);
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else if (result.data == false) {
-					this.setState({ "myToastShow": false });
-				}
-			})
-			.catch(function(error) {
-				alert("承認失败，请检查程序");
-			});
-	}
-
   /**
      * 作業報告書ボタン
      */
-    workRepot=()=>{
- 
+    workRepotUpload=()=>{
+ 		
     }
-
+	getFile=()=>{
+		$("#getFile").click();
+	}
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#workRepotUpload").attr("disabled",false);
+			$("#workRepotUpload").attr("disabled",true);
 			$("#workRepotDownload").attr("disabled",false);
+			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
 			this.setState(
 				{
-					rowNo:row.rowNo,
-					rowSelectEmployeeNo: row.employeeNo,
-					rowSelectCheckSection: row.checkSection,
+					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
+					rowSelectSumWorkTime: row.sumWorkTime,
+					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
 				}
 			);
-			if(row.checkSection==0){
-				$("#workRepotUpload").attr("disabled",true);
+
+			if(row.attendanceYearAndMonth-0>=TheYearMonth){
+				$("#workRepotUpload").attr("disabled",false);
+			}
+			if(row.attendanceYearAndMonth-0>TheYearMonth){
 				$("#workRepotDownload").attr("disabled",true);
 			}
+
 		} else {
 			this.setState(
-				{
-					rowNo: '',
-					rowSelectEmployeeNo: '',
-					rowSelectCheckSection: '',
+				{	rowSelectAttendanceYearAndMonth:'',
+					rowSelectSumWorkTime: '',
+					rowSelectapproval: '',
 				}
 			);
 		}
@@ -128,8 +141,8 @@ class workRepot extends React.Component {
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
+			clickToSelectAndEditCell: true,
 			hideSelectColumn: true,
-			clickToSelect: true,  // click to select, default is false
 			clickToExpand: true,// click to expand row, default is false
 			onSelect: this.handleRowSelect,
 		};
@@ -150,15 +163,16 @@ class workRepot extends React.Component {
 			onApprovalRow: this.onApprovalRow,
 			handleConfirmApprovalRow: this.customConfirm,
 		};
-
+		const cellEdit = {
+			mode: 'click',
+			blurToSave: true,
+afterSaveCell: this.sumWorkTimeChange,
+		}
 		return (
-
 			<div>
-
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"成功！"} type={"success"} />
 				</div>
-				<FormControl id="rowSelectEmployeeNo" name="rowSelectEmployeeNo" hidden />
 				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
 					<div>
@@ -180,23 +194,23 @@ class workRepot extends React.Component {
   						<Col sm={6}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.workRepotUpload} id="workRepotUpload">
+                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
 		                        <Button variant="info" size="sm" onClick={this.workRepotDownload} id="workRepotDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
-		                        </Button>                   
-	 						</div>
+		                        </Button>   
+								</div>
 						</Col>
-                    </Row>
-					<BootstrapTable data={employeeList} pagination={true}    options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='0'　tdStyle={ { padding: '.0em' } }  dataField='rowNo' isKey></TableHeaderColumn>
-						<TableHeaderColumn width='150'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth'>年月</TableHeaderColumn>
-						<TableHeaderColumn width='250' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReport'>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='sumWorkTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser'>登録者</TableHeaderColumn>
-						<TableHeaderColumn width='450' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime'>更新日</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatus'>ステータス</TableHeaderColumn>
+                    </Row>	
+					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
+						<TableHeaderColumn width='150'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
+						<TableHeaderColumn width='250' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReport' editable={false}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } onBlur={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
+						<TableHeaderColumn width='450' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
