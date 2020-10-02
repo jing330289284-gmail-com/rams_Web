@@ -38,8 +38,8 @@ class siteInfo extends Component {
 		getstations: [], // 場所
 		myToastShow: false,
 		errorsMessageShow: false,
-		updateFlag: true,//修正flag
-		insertFlag: true,//登陆flag
+		updateFlag: true,//修正登録状態フラグ
+		disabledFlag: true,//活性非活性フラグ
 
 	};
 
@@ -146,8 +146,7 @@ class siteInfo extends Component {
 									this.setState({
 										siteData: response.data,
 										employeeName: value,
-										insertFlag: false,
-										updateFlag: true
+										disabledFlag: false,
 									});
 								}
 							}).catch((error) => {
@@ -211,7 +210,7 @@ class siteInfo extends Component {
 					related3Employees: row.related3Employees === null ? '' : row.related3Employees,
 					related4Employees: row.related4Employees === null ? '' : row.related4Employees,
 					updateFlag: false,
-					insertFlag: true
+					disabledFlag: false
 
 				});
 			}
@@ -219,14 +218,14 @@ class siteInfo extends Component {
 				this.setState(() => this.resetStates);
 				this.setState({
 					updateFlag: true,
-					insertFlag: false
+					disabledFlag: false
 				})
 			}
 		} else {
 			this.setState(() => this.resetStates);
 			this.setState({
 				updateFlag: true,
-				insertFlag: false
+				disabledFlag: false
 			})
 		}
 	}
@@ -255,7 +254,21 @@ class siteInfo extends Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.refs.table.setState({
+						selectedRowKeys: []
+					});
+					axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+						.then(response => {
+							if (response.data != null) {
+								this.setState({
+									siteData: response.data,
+								});
+								this.handleRowSelect();
+
+							}
+						}).catch((error) => {
+							console.error("Error - " + error);
+						});
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -287,7 +300,20 @@ class siteInfo extends Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.refs.table.setState({
+						selectedRowKeys: []
+					});
+					axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+						.then(response => {
+							if (response.data != null) {
+								this.setState({
+									siteData: response.data,
+								});
+								this.handleRowSelect();
+							}
+						}).catch((error) => {
+							console.error("Error - " + error);
+						});
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -655,8 +681,8 @@ class siteInfo extends Component {
 							</Row>
 
 							<div style={{ "textAlign": "center" }}>
-								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button" disabled={this.state.insertFlag === true ? true : false}>
-									<FontAwesomeIcon icon={faSave} /> 登録
+								<Button size="sm" onClick={this.state.updateFlag === true ? this.tokuro : this.update} variant="info" id="toroku" type="button" disabled={this.state.disabledFlag === true ? true : false}>
+									<FontAwesomeIcon icon={faSave} /> {this.state.updateFlag === true ? '登録' : '修正'}
 								</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
 									<FontAwesomeIcon icon={faUndo} /> リセット
@@ -665,13 +691,6 @@ class siteInfo extends Component {
 						</Form.Group>
 					</Form>
 					<Row>
-						<Col sm={10}>
-						</Col>
-						<Col sm={2}>
-							<div style={{ "float": "right" }}>
-								<Button variant="info" size="sm" id="revise" onClick={this.update} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faEdit} />修正</Button>
-							</div>
-						</Col>
 					</Row>
 					<div>
 						<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>

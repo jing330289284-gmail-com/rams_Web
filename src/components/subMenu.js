@@ -13,6 +13,7 @@ import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
+import salesPointSet from './salesPointSet';
 import WagesInfo from './wagesInfo';
 import workRepot from './workRepot';
 import DutyRegistration from './dutyRegistration';
@@ -146,7 +147,7 @@ class SubMenu extends Component {
 											<Accordion.Toggle as={Button} variant="link" eventKey="5"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faBuilding} />営業管理</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="5">
 												<ListGroup variant="flush">
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenu/salesPointSet"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -219,6 +220,8 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />
 								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
+								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
+								
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
