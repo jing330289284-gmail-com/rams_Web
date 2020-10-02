@@ -40,6 +40,46 @@ class TableSelect extends React.Component {
 				selectedValue: this.props.dropdowns.state.customerContractStatus,
 				everyWidth: 80,
 			})
+		} else if (this.props.flag === 5) {
+			this.setState({
+				allOption: this.props.dropdowns.state.customerDepartmentNameDrop,
+				selectedValue: this.props.dropdowns.state.customerDepartmentName,	
+				everyWidth: 150,
+			})
+		} else if (this.props.flag === 6) {
+			this.setState({
+				allOption: this.props.dropdowns.state.positionDrop,
+				selectedValue: this.props.dropdowns.state.positionCode,	
+				everyWidth: 150,
+			})
+		}
+		else if (this.props.flag === 7) {
+			this.setState({
+				allOption: this.props.dropdowns.state.typeOfIndustryDrop,
+				selectedValue: this.props.dropdowns.state.typeOfIndustryCode,	
+				everyWidth: 150,
+			})
+		}
+		else if (this.props.flag === 8) {
+			this.setState({
+				allOption: this.props.dropdowns.state.stationCodeDrop,
+				selectedValue: this.props.dropdowns.state.stationCode,	
+				everyWidth: 150,
+			})
+		}
+		else if (this.props.flag === 9) {
+			this.setState({
+				allOption: this.props.dropdowns.state.developLanguageDrop,
+				selectedValue: this.props.dropdowns.state.developLanguageCode1,	
+				everyWidth: 150,
+			})
+		}
+		else if (this.props.flag === 10) {
+			this.setState({
+				allOption: this.props.dropdowns.state.developLanguageDrop,
+				selectedValue: this.props.dropdowns.state.developLanguageCode2,	
+				everyWidth: 150,
+			})
 		}
 	}
 
@@ -56,8 +96,19 @@ class TableSelect extends React.Component {
 			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.value);
 		} else if (this.props.flag === 4) {
 			this.props.dropdowns.getCustomerContract(values === null ? this.props.dropdowns.state.customerContractStatus : values.value);
+		} else if (this.props.flag === 5) {
+			this.props.dropdowns.getCustomerDepartment(values === null ? this.props.dropdowns.state.customerDepartmentNameDrop : values.code);
+		} else if (this.props.flag === 6) {
+			this.props.dropdowns.getPosition(values === null ? this.props.dropdowns.state.positionDrop : values.code);
+		} else if (this.props.flag === 7) {
+			this.props.dropdowns.getIndustry(values === null ? this.props.dropdowns.state.typeOfIndustryDrop : values.code);
+		} else if (this.props.flag === 8) {
+			this.props.dropdowns.getStation(values === null ? this.props.dropdowns.state.stationCodeDrop : values.code);
+		} else if (this.props.flag === 9) {
+			this.props.dropdowns.getLanguage1(values === null ? this.props.dropdowns.state.developLanguageDrop : values.code);
+		} else if (this.props.flag === 10) {
+			this.props.dropdowns.getLanguage2(values === null ? this.props.dropdowns.state.developLanguageDrop : values.code);
 		}
-
 	}
 
 	render() {
@@ -70,7 +121,7 @@ class TableSelect extends React.Component {
 					options={this.state.allOption}
 					value={this.state.allOption.find(v => v.value === this.state.selectedValue) || ""}
 					onChange={this.onchange}
-					getOptionLabel={(option) => option.text?option.text:""}
+					getOptionLabel={(option) => option.name?option.name:""}
 					renderInput={(params) => (
 						<div ref={params.InputProps.ref}>
 							<input /* placeholder="選択してください" */ type="text" {...params.inputProps}

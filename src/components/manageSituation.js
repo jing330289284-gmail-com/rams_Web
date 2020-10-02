@@ -1,6 +1,6 @@
 /* 営業確認 */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl,Modal } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker"
@@ -8,12 +8,13 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faBuilding, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faBuilding, faDownload,faBook } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
+import SalesContent from './salesContent';
 axios.defaults.withCredentials = true;
 
 class manageSituation extends React.Component {
@@ -76,6 +77,7 @@ class manageSituation extends React.Component {
 			onSelectFlag: true,
 			checkFlag:false,
 			checkDisabledFlag:false,
+			daiologShowFlag: false,
 	};
 
 	// 初期表示のレコードを取る
@@ -466,7 +468,7 @@ selectetRowIds:[],
 		});
 		if (isSelected) {
 			this.setState({
-				selectetRowIds: row.employeeNo === null ? '' : row.employeeNo,
+				selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
 				rowNo: row.rowNo === null ? '' : row.rowNo,
 				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
 				interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
@@ -538,6 +540,19 @@ selectetRowIds:[],
 				checkSelect:this.state.selectetRowIds.length===0?true:false,
 			})
 		}
+	}
+	
+		closeDaiolog = () => {
+		this.setState({
+			daiologShowFlag: false,
+		})
+	}
+	
+			openDaiolog = () => {
+		this.setState({
+			daiologShowFlag: true,
+		});
+
 	}
 
 	renderShowsTotal = (start, to, total) => {
@@ -623,6 +638,15 @@ selectetRowIds:[],
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
 				</div>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
+					<Modal.Header closeButton><Col className="text-center">
+						<h2>営業文章</h2>
+					</Col></Modal.Header>
+					<Modal.Body >
+						<SalesContent/>
+					</Modal.Body>
+				</Modal>
 				<Row inline="true">
 					<Col className="text-center">
 						<h2>営業状況確認一覧</h2>
@@ -707,7 +731,7 @@ selectetRowIds:[],
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode1" className="auto"
-													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -729,7 +753,7 @@ selectetRowIds:[],
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer1" className="auto"
-													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -772,7 +796,7 @@ selectetRowIds:[],
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode2" className="auto"
-													style={{ width: 166, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -794,7 +818,7 @@ selectetRowIds:[],
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer2" className="auto"
-													style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -872,8 +896,8 @@ selectetRowIds:[],
 						<Col sm={1}>
 							<font style={{ whiteSpace: 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
 						</Col>
-						<Col sm={4}></Col>
-						<Col sm={5}>
+						<Col sm={3}></Col>
+						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenu/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo,selectetRowIds:this.state.selectetRowIds } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag||!this.state.checkSelect?false:true}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
@@ -881,6 +905,7 @@ selectetRowIds:[],
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
 								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
+								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
 							</div>
@@ -890,7 +915,7 @@ selectetRowIds:[],
 				<div >
 					<BootstrapTable
 						ref='table'
-						
+						className={"bg-white text-dark"}
 						data={this.state.salesSituationLists}
 						pagination
 						options={options}
