@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 
 import BreakTime from './breakTime';
 import * as DutyRegistrationJs from './dutyRegistrationJs.js';
+
 axios.defaults.withCredentials=true;
 
 
@@ -31,6 +32,7 @@ class DutyRegistration extends React.Component {
 			workDays: 0,
 			workHours: 0,
 			isConfirmedPage: false,
+			breakTime: {},
 		}
 		this.options = {
 			defaultSortName: 'day',
@@ -76,7 +78,8 @@ class DutyRegistration extends React.Component {
 			default:
 			break;
 		}
-		if (!cell.match(regExp))	{
+		cell = publicUtils.nullToEmpty(cell);
+		if (!cell.toString().match(regExp))	{
 			event.target.value = event.target.dataset["beforevalue"];
 			return;
 		}
@@ -143,7 +146,7 @@ class DutyRegistration extends React.Component {
 			dateData[i]['workHour'] = "";
 			dateData[i]['workContent'] = "";
 			dateData[i]['remark'] = "";
-			if (dateData[i]['week'] === "土" || dateData[i]['week'] === "日")	{
+			if (publicUtils.isHoliday(this.state.year, this.state.month, dateData[i]['day']))	{
 				dateData[i]['isWork'] = 0;
 				dateData[i]['hasWork'] = this.state.hasWork[0];
 			}
@@ -170,6 +173,9 @@ class DutyRegistration extends React.Component {
 					let sleepHour = 0;
 					dateData = this.state.dateData;
 					defaultDateData = resultMap.data.dateData;
+					if (publicUtils.isNull(resultMap.data.breakTime))	{
+						resultMap.data.breakTime = {};
+					}
 //					console.log(resultMap.data);
 					if (!publicUtils.isNull(resultMap.data.breakTime) && resultMap.data.breakTime["breakTimeFixedStatus"] === "1" ) 	{
 						sleepHour = resultMap.data.breakTime["totalBreakTime"];
@@ -187,10 +193,10 @@ class DutyRegistration extends React.Component {
 							workHours += Number(dateData[dayIndex].workHour);
 						}
 					}
-					this.setState({dateData: dateData, workDays: workDays, workHours: workHours, 
+					this.setState({breakTime: resultMap.data.breakTime, dateData: dateData, workDays: workDays, workHours: workHours, 
 						employeeNo: resultMap.data.employeeNo, siteCustomer: resultMap.data.siteCustomer, customer: resultMap.data.customer,
 						siteResponsiblePerson: resultMap.data.siteResponsiblePerson, systemName: resultMap.data.systemName,
-						breakTimeFixedStatus: resultMap.data.breakTimeFixedStatus, employeeName: resultMap.data.employeeName, });
+						employeeName: resultMap.data.employeeName, });
 //					console.log(resultMap.data);
 					
                 }else{
@@ -198,7 +204,7 @@ class DutyRegistration extends React.Component {
                 }
 				this.setTableStyle();
             })
-            .catch(function(){
+            .catch(function(e){
                 alert("error");
             })
 	}
@@ -265,8 +271,19 @@ class DutyRegistration extends React.Component {
         }
 	}
 	beforeSubmit = (event) =>	{
+//		let arrWorkContent = $("input[name=workContent]");
+//		console.log(arrWorkContent[0].value);
+		let nowDay = new Date().getDate();
+		for (let i = 0; i < this.state.dateData.length; i++)	{
+			if (this.state.dateData[i]["hasWork"] == this.state.hasWork[1])	{
+				if (nowDay >= this.state.dateData[i]["day"] && publicUtils.isEmpty(this.state.dateData[i]["workContent"]))	{
+					alert("day " + this.state.dateData[i]["day"] + " work content");
+					return;
+				}
+			}
+		}
 		this.setState({ isConfirmedPage: true }, () => {
-			this.setTableStyle();		
+			this.setTableStyle();
 		});
 	}
 	onBack = (event) =>	{
@@ -309,7 +326,7 @@ class DutyRegistration extends React.Component {
 	}
 	sleepHourFormatter = (cell, row) => {
 		let returnItem = cell;
-		if (!this.state.isConfirmedPage && this.state.breakTimeFixedStatus)	{
+		if (!this.state.isConfirmedPage && this.state.dateData[row.id].hasWork === this.state.hasWork[1] && this.state.breakTime.breakTimeFixedStatus == 0)	{
 			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="sleepHour" value={cell} onChange={(event) => this.tableValueChange(event ,cell ,row)} onBlur={(event) => this.tableValueChangeAfter(event ,cell ,row)} /></span>;
 		}
 		return returnItem;
@@ -397,7 +414,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.employeeName} autoComplete="off" size="sm" name="employeeName" id="employeeName" onChange={this.valueChange} />
+									<FormControl value={this.state.employeeName} autoComplete="off" size="sm" name="employeeName" id="employeeName" onChange={this.valueChange} disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -440,15 +457,17 @@ class DutyRegistration extends React.Component {
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
+							<Col style={{ "textAlign": "right" }} sm={3} md={{ span: 0, offset: 3 }} >
+								<div hidden={ this.state.isConfirmedPage }>
+									<Button size="sm" className="btn btn-info btn-sm" onClick={this.beforeSubmit.bind(this)}>提出</Button>
+								</div>
+								<div hidden={ !this.state.isConfirmedPage }>
+									<Button size="sm" className="btn btn-info btn-sm" onClick={this.onBack.bind(this)}>戻る</Button>
+									&nbsp;&nbsp;
+									<Button size="sm" className="btn btn-info btn-sm" onClick={this.onSubmit.bind(this)}>確認</Button>
+								</div>
+							</Col>
 						</Row>
-						<div style={{ "textAlign": "center" }} hidden={ this.state.isConfirmedPage }>
-							<Button size="sm" className="btn btn-info btn-sm" onClick={this.beforeSubmit.bind(this)}>提出</Button>
-						</div>
-						<div style={{ "textAlign": "center" }} hidden={ !this.state.isConfirmedPage }>
-							<Button size="sm" className="btn btn-info btn-sm" onClick={this.onSubmit.bind(this)}>確認</Button>
-							&nbsp;&nbsp;
-							<Button size="sm" className="btn btn-info btn-sm" onClick={this.onBack.bind(this)}>back</Button>
-						</div>
 					</Form.Group>
 				</div>
 			</div>

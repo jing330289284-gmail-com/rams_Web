@@ -380,6 +380,9 @@ body {
     background: #FFFFFF;
     outline: 3px solid #B8D7F8;
 }
+.dutyRegistration-Error {
+	background-color: #eb5959;
+}
 .dutyRegistration-IsChanged {
 	background-color: #eb5959;
 }
