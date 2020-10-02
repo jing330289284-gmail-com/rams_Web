@@ -94,16 +94,14 @@ class Login extends Component {
 			})
 		};
 		return (
-			<div style={{marginTop:"10%"}}>
+			<div className="loginBody">
+				<div style={{"marginTop":"10%"}}>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<Row>
-					<Col sm={5}></Col>
-					<Col sm={7}>
-						<img className="mb-4" alt="title" src={title}/>
-					</Col>
-				</Row>
+				<div style={{"textAlign":"center"}}>
+					<img className="mb-4" alt="title" src={title}/>
+				</div>
 			<Form className="form-signin" id="loginForm">
 				<Form.Group controlId="formBasicEmail" >
 					<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required/>
@@ -124,7 +122,8 @@ class Login extends Component {
 				<Button variant="primary" id="login" onClick={this.login} block type="button">
 					ログイン
 				</Button>
-			</Form>
+			</Form>					
+			</div>
 			</div>
 			)
 		}

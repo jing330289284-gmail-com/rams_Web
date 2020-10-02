@@ -219,11 +219,11 @@ class siteSearch extends Component {
 			onSelect: this.handleRowSelect,
 		};
 		return (
-			<div style={{ "background": "#f5f5f5" }}>
+			<div >
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<div style={{ "background": "#f5f5f5" }}>
+				<div >
 					<Form id="siteForm">
 						<Form.Group>
 							{/* <Row>

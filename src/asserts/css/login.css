@@ -1,22 +1,18 @@
 html,
-/* .loginBody {
+.root{
   height: 100%;
-  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #00BFFF)); /* Saf4+, Chrome */
 }
-
-.loginBody {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #f5f5f5;
-  justify-content: center;
-} */
-.loginBody{
-  background-color: #f5f5f5;
-  justify-content: center;
+.loginBody{ 
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
 }
 .dateInput {
   border: 0px;
@@ -32,10 +28,9 @@ html,
   margin-bottom: 2rem !important;
 }
 .form-signin {
-  width: 100%;
   max-width: 330px;
-  padding: 5px;
   margin: auto;
+  height:100%;
 }
 .passwordForm {
   width: 100%;
@@ -59,4 +54,9 @@ html,
   margin-bottom: -1px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.row{
+  width:99.9999%;
+  padding:0px;
+  margin:0px;
 }

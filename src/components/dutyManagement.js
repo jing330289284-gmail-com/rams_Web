@@ -291,7 +291,7 @@ class dutyManagement extends React.Component {
 	 						</div>
 						</Col>  
                     </Row>
-					<BootstrapTable data={employeeList} pagination={true}  className={"bg-white text-dark"}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+					<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
 						<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='rowNo' isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 headerAlign='center' dataAlign='center' dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='employeeName'>氏名</TableHeaderColumn>

@@ -1,0 +1,76 @@
+html,
+.mainBody{
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #00BFFF)); /* Saf4+, Chrome */
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+  }
+  .row{
+    width:99.9999%;
+    padding:0px;
+    margin:0px;
+}
+h2{
+  font-family: "幼园", Sans-serif;
+  font-size: 22px;
+  letter-spacing: 10pt;
+  font-weight: 900;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+  color:#018ec5;
+}
+.nav-font{
+  font-family: "宋体", Sans-serif;
+  font-weight:bold;
+  font-size: 18px;
+  color:rgb(198, 251, 255);
+}
+.logout{
+  color: #7087b0 !important;
+  background-color: rgba(112, 135, 176, 0) !important;
+  border-radius: 40px 40px 40px 40px !important;
+  padding: 14px 40px 15px 40px !important;
+  border-style: solid !important;
+  border-width: 1px 1px 1px 1px !important;
+  border-color: #7087b0 !important;
+  }
+  .loginPeople{
+    font-family: "黑体", Sans-serif;
+    font-size: 15px;
+    text-decoration: blink;
+    font-weight:bolder;
+    color:rgba(123, 84, 175, 0.411);
+    margin-right: auto;
+    margin-top: auto;
+  }
+  .title-font{
+    font-family: "幼园", Sans-serif;
+    font-size: 25px;
+    width: auto;
+    font-weight: bolder;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+    color:rgb(110, 70, 185);
+    text-shadow:5px 2px 6px rgb(148, 195, 207);
+  }
+  .linkFont{
+    font-family: "黑体", Sans-serif;
+    font-size: 16px;
+    color:rgb(247, 226, 248);
+  }
+  .title-all{
+    background-color: #f5f5f5;
+  }
+  .menuCol{
+    box-shadow:5px 2px 6px rgb(110, 0, 28);
+  }
+  #page{
+    background-color: #f0ffff;
+    box-shadow:5px 2px 6px rgb(110, 0, 28);
+  }
