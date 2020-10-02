@@ -40,7 +40,11 @@ export function getFullYearMonth(date, now) {
 		if (dayDiff < 0) {
 			returnMonths = returnMonths - 1;
 		}
-		yearmonth = returnYears + "年" + returnMonths + "月";
+		if (returnYears === 0) {
+		yearmonth =  returnMonths + "か月";
+		}else{
+		yearmonth = returnYears + "年" + returnMonths + "か月";
+		}
 		return yearmonth;
 	} else {
 		return "";

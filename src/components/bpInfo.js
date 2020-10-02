@@ -9,7 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
-
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 class bpInfo extends React.Component {
@@ -45,7 +46,7 @@ class bpInfo extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		this.getDropDownｓ();//全部のドロップダウン
+		//this.getDropDownｓ();//全部のドロップダウン
 		this.setEmployeeName();
 		if (this.props.actionType !== "insert") {
 			const formData = new FormData()
@@ -65,7 +66,7 @@ class bpInfo extends React.Component {
 		}
 	}
 
-	getDropDownｓ = () => {
+/*	getDropDownｓ = () => {
 		var methodArray = ["getSalesProgress"]
 		var data = utils.getPublicDropDown(methodArray);
 		this.setState(
@@ -73,7 +74,7 @@ class bpInfo extends React.Component {
 				salesProgressCodes: data[0].slice(1),//
 			}
 		);
-	};
+	};*/
 
 	setEmployeeName = () => {
 		if (this.props.employeeFristName === undefined || this.props.employeeLastName === undefined) {
@@ -129,6 +130,8 @@ class bpInfo extends React.Component {
 
 	render() {
 		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
+		const customer = this.props.customer;
+		const salesProgressCodes = this.props.salesProgressCodes;
 		return (
 			<div>
 				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
@@ -150,8 +153,8 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={this.props.customer.find((v) => (v.code === this.state.bpBelongCustomerCode)) || {}}
-										options={this.props.customer}
+										value={customer.find((v) => (v.code === this.state.bpBelongCustomerCode)) || {}}
+										options={customer}
 										getOptionLabel={(option) => option.name}
 										disabled={this.props.actionType === "detail" ? true : false}
 										onSelect={(event) => this.handleTag(event, 'bpBelongCustomerCode')}
@@ -187,7 +190,7 @@ class bpInfo extends React.Component {
 										onChange={this.valueChange}
 										name="bpSalesProgressCode" value={bpSalesProgressCode}
 										autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}>
-										{this.state.salesProgressCodes.map(date =>
+										{salesProgressCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -241,4 +244,18 @@ class bpInfo extends React.Component {
 		);
 	}
 }
-export default bpInfo;
+
+const mapStateToProps = state => {
+	return {
+		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
+		salesProgressCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[16].slice(1) : [],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(bpInfo);
+

@@ -662,24 +662,16 @@ class employee extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.BPFlag ? true : false}>口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={this.state.BPFlag ? true : false}>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={!this.state.BPFlag ? true : false}>BP情報</Button>{' '}
-					
+					<div>
+						<Form.Label>社員</Form.Label><Form.Check defaultChecked={true} disabled={this.props.location.state.actionType !== "insert" ? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="0" />
+						<Form.Label>協力</Form.Label><Form.Check disabled={this.props.location.state.actionType !== "insert" ? true : false} onChange={this.radioChangeEmployeeType.bind(this)} inline type="radio" name="employeeType" value="1" />
+					</div>
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
-					<Form.Label style={{ "color": "#00EE00" }}>基本情報</Form.Label>
+					<Form.Label style={{ "color": "#FFD700" }}>基本情報</Form.Label>
 					<Form.Group>
 						<Row>
-						   <Col sm={2}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={alphabetName} autoComplete="off" >
-											<option value="0">社員</option>
-											<option value="1">協力</option>
-										</Form.Control>
-									</InputGroup>
-								</Col>
-							<Col sm={2}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
@@ -999,7 +991,7 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-					<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
+					<Form.Label style={{ "color": "#FFD700" }}>スキール情報</Form.Label>
 					<Form.Group>
 						<Row>
 							<Col sm={3}>
@@ -1159,7 +1151,7 @@ class employee extends React.Component {
 					<Form.Label style={{ "color": "#FFD700" }}>住所情報</Form.Label>
 					<Form.Group>
 						<Row>
-							<Col sm={2}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
@@ -1167,6 +1159,8 @@ class employee extends React.Component {
 									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
+						</Row>
+						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -1175,7 +1169,7 @@ class employee extends React.Component {
 									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
-							<Col sm={4}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">以降住所：</InputGroup.Text>
