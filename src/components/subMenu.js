@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Row, Col, ListGroup, Accordion, Button, Navbar } from 'react-bootstrap';
+import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react-bootstrap';
 import title from '../asserts/images/title.png';
 import open from '../asserts/images/open.png';
 import openPage from '../asserts/images/openPage.png';
-import menu from '../asserts/images/menu.png';
-import signout from '../asserts/images/signout.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
@@ -24,26 +22,30 @@ import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
 import individualSales from './individualSales';
 import monthlySalesSearch from './monthlySalesSearch';
-axios.defaults.withCredentials=true;
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAddressBook , faHome, faUser, faUsers, faYenSign , faPaperPlane , faBuilding , faCalendar , faCalendarAlt , faThList , faCogs , faCloudUploadAlt , faSearch , faSave ,
+faCommentDollar , faList , faSearchMinus} from '@fortawesome/free-solid-svg-icons';
+import '../asserts/css/subMenu.css';
+axios.defaults.withCredentials = true;
 
 
 class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日
 	}
-	async componentWillMount(){
+	async componentWillMount() {
 		await axios.post("http://127.0.0.1:8080/subMenu/init")
-		.then(resultMap =>{
-			if(resultMap.data !== null && resultMap.data !== ''){
-				document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
-			}else{
-				this.props.history.push("/");
-			}
-		})
+			.then(resultMap => {
+				if (resultMap.data !== null && resultMap.data !== '') {
+					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
+				} else {
+					this.props.history.push("/");
+				}
+			})
 	}
-    /**
-     * 画面の初期化
-     */
+	/**
+	 * 画面の初期化
+	 */
 	componentDidMount() {
 		var dateNow = new Date();
 		let month = dateNow.getMonth() + 1;
@@ -51,11 +53,11 @@ class SubMenu extends Component {
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月'),
 		})
 	}
-	logout=()=>{
+	logout = () => {
 		axios.post("http://127.0.0.1:8080/subMenu/logout")
-		.then(resultMap =>{
-			alert("ログアウトしました");
-		})
+			.then(resultMap => {
+				alert("ログアウトしました");
+			})
 	}
 	render() {
 		//お客様情報画面の追加パラメータ
@@ -63,164 +65,139 @@ class SubMenu extends Component {
 			pathname: '/subMenu/customerInfo', state: { actionType: 'insert' },
 		}
 		return (
-			<div>
-				<Row>
-					<Col sm={5}></Col>
-					<Col sm={7}>
-						<img className="mb-4" alt="title" src={title} />
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={5}></Col>
-					<Col sm={5}>
-						<h1>
-							売上請求管理システム
-						</h1>
-					</Col>
-					<Col sm={1}>
-					</Col>
-					<Col sm={1}>
-						<Link to="/" id="logout" onClick={this.logout}><img alt="title" src={signout} />sign out</Link>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm={1}>
-					</Col>
-					<Col>
-						<Navbar>
-							<Navbar.Brand>{this.state.nowDate}</Navbar.Brand>
-							<Navbar.Toggle />
-							<Navbar.Collapse>
-								<Navbar.Text>
-									<a id="kanriSha"></a>
-								</Navbar.Text>
-							</Navbar.Collapse>
-						</Navbar>
-					</Col>
-				</Row>
-				{/* <Row className="clearfix" style={{marginBottom: "10px"}}>
-					<Col sm={2}></Col>
-					<Col sm={7}>
-					<Form.Group >
-						<Form.Label column sm="2">
-						年月日
-						</Form.Label>
-					</Form.Group>
-					</Col>
-				</Row> */}
-				<hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
-				<Row>
-					<Col sm={2} >
-						<h4 style={{ backgroundColor: "#dfb763" }}><img alt="title" src={menu} />メニュー一覧</h4>
-						<br />
+			<div className="mainBody">
+				<Row style={{ "backgroundColor": "#f5f5f5" }}>
+					<Navbar inline>
+						<Navbar.Brand><img className="titleImg" alt="title" src={title} />{" "}</Navbar.Brand>
+					</Navbar>
+					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
+						<font className="loginPeople">{this.state.nowDate}{" "}<a id="kanriSha"></a></font>{" "}
+						<Link as="button" className="logout" to="/" id="logout" onClick={this.logout}>sign out</Link>
+					</div>
 
-						<ListGroup>
-							<Accordion >
-								<ListGroup.Item variant="secondary" block>
-									<Accordion.Toggle as={Button} variant="link" eventKey="0"><img alt="title" src={openPage} />社員管理</Accordion.Toggle>
+				</Row>
+				<Row>
+					<Col sm={2}>
+						<br />
+						<Row>
+						<Container>
+							<h1 className="title-font">
+								売上請求管理システム
+                            </h1>
+							<br />
+						</Container>
+						</Row>
+						<Row>
+						<Col>
+						<ListGroup >
+							<Accordion className="menuCol">
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}} block>
+									<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員管理</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="0">
-										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to={{ pathname: '/subMenu/employee', state: { actionType: 'insert' } }}><img alt="title" src={open} />社員情報登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/employeeSearch"><img alt="title" src={open} />社員情報検索</Link></ListGroup.Item>
+										<ListGroup>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to={{ pathname: '/subMenu/employee', state: { actionType: 'insert' } }}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/employeeSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員情報検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary" block>
-									<Accordion.Toggle as={Button} variant="link" eventKey="1"><img alt="title" src={openPage} />現場</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}} block>
+									<Accordion.Toggle as={Button} variant="link" eventKey="1"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faHome} />現場</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="1">
-										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/siteInfo"><img alt="title" src={open} />現場情報登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/siteSearch"><img alt="title" src={open} />現場情報検索</Link></ListGroup.Item>
+										<ListGroup >
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/siteInfo"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />現場情報登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/siteSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />現場情報検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="2"><img alt="title" src={openPage} />お客様</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="2"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUsers} />お客様</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="2">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to={customerInfoPath}><img alt="title" src={open} />お客様情報登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/customerInfoSearch"><img alt="title" src={open} />お客様情報検索</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to={customerInfoPath}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />お客様情報登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/customerInfoSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様情報検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="3"><img alt="title" src={openPage} />給料と単価</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と単価</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="3">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/wagesInfo"><img alt="title" src={open} />給料情報</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/individualSales"><img alt="title" src={open} />個人売上一覧</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/monthlySalesSearch"><img alt="title" src={open} />売上検索一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/wagesInfo"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />給料情報</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/individualSales"><FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/monthlySalesSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="4"><img alt="title" src={openPage} />営業送信</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="4"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />営業送信</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="4">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />営業状況確認一覧</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />提案送信</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/manageSituation"><img alt="title" src={open} />営業状況確認一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/manageSituation"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />営業状況確認一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />提案送信</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />要員提案送信</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="5"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="5"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faBuilding} />営業管理</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="5">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyManagement"><img alt="title" src={open} />勤務管理</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />残業代一覧</Link></ListGroup.Item>
-										</ListGroup>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />営業ポイント設定</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="6"><img alt="title" src={openPage} />非稼働</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="6">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link><img alt="title" src={open} />非待機一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/dutyManagement"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />勤務管理</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />残業代一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/dutyRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />勤務登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />履歴検索</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="7"><img alt="title" src={openPage} />マスター</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />非稼働</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="7">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />マスター登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterUpdate"><img alt="title" src={open} />マスター修正</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />非待機一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="8"><img alt="title" src={openPage} />他の設定</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="8"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />マスター</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="8">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/masterInsert"><img alt="title" src={open} />システム設定</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/masterInsert"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />マスター登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/masterUpdate"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />マスター修正</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />勤務</Accordion.Toggle>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="9"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCogs} />他の設定</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="9">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/dutyRegistration/"><img alt="title" src={open} />勤務登録</Link></ListGroup.Item>
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/"><img alt="title" src={open} />履歴検索</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/masterInsert"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />システム設定</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item variant="secondary">
-									<Accordion.Toggle as={Button} variant="link" eventKey="9"><img alt="title" src={openPage} />アップデロード</Accordion.Toggle>
-									<Accordion.Collapse eventKey="9">
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="10"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCloudUploadAlt} />アップデロード</font></Accordion.Toggle>
+									<Accordion.Collapse eventKey="10">
 										<ListGroup variant="flush">
-											<ListGroup.Item variant="secondary"><Link to="/subMenu/workRepot/"><img alt="title" src={open} />作業報告書アップデロード</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/workRepot/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />作業報告書アップデロード</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
 							</Accordion>
 						</ListGroup>
+						</Col>
+						</Row>
 					</Col>
-					<div style={{ float: "left", width: "1px", height: "650px", background: "darkgray" }}></div>
-					{/* <Container> */}
-					<Col sm={9} id="page">
+					<Col sm={10} id="page">
 						<div key={this.props.location.key}>
+							<br/>
 							<Router>
 								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
@@ -235,7 +212,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />
 								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
-								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />	
+								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />
 								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<div className="container col-8">
@@ -247,12 +224,11 @@ class SubMenu extends Component {
 							</Router>
 						</div>
 					</Col>
-					{/* </Container> */}
 				</Row>
 				<br />
 			</div>
 		);
-	}	
+	}
 }
 
 export default SubMenu;

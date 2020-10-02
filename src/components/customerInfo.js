@@ -832,7 +832,7 @@ class CustomerInfo extends Component {
                     pagination={ true } 
                     options={ options } 
                     deleteRow data={customerDepartmentList} 
-                    className={"bg-white text-dark"}
+                    
                     headerStyle={{ background: '#5599FF' }} striped hover condensed>
                         <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">名前</TableHeaderColumn>

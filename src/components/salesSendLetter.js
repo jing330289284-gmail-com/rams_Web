@@ -444,7 +444,7 @@ class salesSendLetter extends React.Component {
 				<div >
 					<BootstrapTable
 						ref="customersTable"
-						className={"bg-white text-dark"}
+						
 						data={this.state.allCustomer}
 						pagination={true}
 						options={options}

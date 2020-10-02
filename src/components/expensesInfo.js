@@ -345,30 +345,23 @@ class ExpensesInfo extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col sm={4}></Col>
-                            <Col sm={2} className="text-center">
-                                <Button
-                                    block
+                        <div style={{ "textAlign": "center" }}>
+                            <Button
                                     size="sm"
                                     disabled={actionType === "detail" ? true : false}
                                     variant="info"
                                     onClick={this.expensesInfoToroku.bind(this)}>
                                     <FontAwesomeIcon icon={faSave} />{btnText}
-                                </Button>
-                            </Col>
-                            <Col sm={2} className="text-center">
+                                </Button>{" "}
                                 <Button
-                                    block
                                     size="sm"
                                     disabled={actionType === "detail" ? true : false}
                                     type="reset"
                                     variant="info"
                                     value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
-                                    </Button>
-                            </Col>
-                        </Row>
+                            </Button>
+                        </div>
                         <div>
                         <BootstrapTable
                             selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
@@ -377,7 +370,6 @@ class ExpensesInfo extends Component {
                             data={expensesInfoModels}
                             headerStyle={{ background: '#5599FF' }}
                             striped>
-                            {/* <TableHeaderColumn isKey={true} dataField='period' headerAlign='center' dataAlign='center' width='190'>給料期間</TableHeaderColumn> */}
                             <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
                             <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
                             <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>

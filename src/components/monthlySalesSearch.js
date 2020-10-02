@@ -215,7 +215,7 @@ class monthlySalesSearch extends Component {
                     </Col> 
                 </Row>
                 <div>
-                    <BootstrapTable  className={"bg-white text-dark"} pagination={true}  headerStyle={{ background: '#5599FF' }}  options={this.options}>
+                    <BootstrapTable   pagination={true}  headerStyle={{ background: '#5599FF' }}  options={this.options}>
 							<TableHeaderColumn  dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>                           
 							<TableHeaderColumn  dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn  dataField='employeeName'>氏名</TableHeaderColumn>

@@ -587,7 +587,7 @@ class employeeSearch extends React.Component {
 					</Row>
 				</div>
 				<div >
-					<BootstrapTable data={employeeList} className={"bg-white text-dark"} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+					<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
