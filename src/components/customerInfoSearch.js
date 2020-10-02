@@ -293,6 +293,7 @@ class CustomerInfoSearch extends Component {
                     <h2>お客様・協力情報検索</h2>
                     </Col>
                 </Row>
+                <br/>
                <Form id="conditionForm">
                    <div className="container">
                    <Row>
@@ -456,10 +457,9 @@ class CustomerInfoSearch extends Component {
                             deleteRow
                             expandableRow={ this.isExpandableRow }
                             expandComponent={ this.expandComponent }
-                            className={"bg-white text-dark"}
                             headerStyle={{ background: '#5599FF' }} striped hover condensed
                              >
-                                <TableHeaderColumn isKey dataField='rowNo'  headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
+                                <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerRankingName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
@@ -468,7 +468,7 @@ class CustomerInfoSearch extends Component {
                                 <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
                                 </BootstrapTable>
                             :
-                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow className={"bg-white text-dark"}
+                                <BootstrapTable selectRow={ selectRow } pagination={ true } data={customerInfoData} options={ options } deleteRow 
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
                                 <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>

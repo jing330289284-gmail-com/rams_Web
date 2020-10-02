@@ -274,7 +274,7 @@ render (){
 						</Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.employeeInfoList} className={"bg-white text-dark"} pagination={true}  headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed>
+                    <BootstrapTable data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>

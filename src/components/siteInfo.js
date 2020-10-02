@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -126,6 +126,7 @@ class siteInfo extends Component {
 		if (value === '') {
 			this.setState({
 				[id]: '',
+				siteData: [],
 			})
 		} else {
 			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
@@ -136,6 +137,9 @@ class siteInfo extends Component {
 				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
+						this.refs.table.setState({
+							selectedRowKeys: []
+						});
 						axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 							.then(response => {
 								if (response.data != null) {
@@ -309,7 +313,7 @@ class siteInfo extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager, employeeName } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -320,14 +324,14 @@ class siteInfo extends Component {
 			onSelect: this.handleRowSelect,
 		};
 		return (
-			<div style={{ "background": "#f5f5f5" }}>
+			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "登録成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<div style={{ "background": "#f5f5f5" }}>
+				<div>
 					<Form id="siteForm">
 						<Form.Group>
 							{/* <Row>
@@ -670,8 +674,8 @@ class siteInfo extends Component {
 						</Col>
 					</Row>
 					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='workDate' width='100' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
+						<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+							<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
 							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>システム</TableHeaderColumn>
 							<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} headerAlign='center'>場所</TableHeaderColumn>
 							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様</TableHeaderColumn>

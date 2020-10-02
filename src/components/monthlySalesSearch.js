@@ -357,7 +357,7 @@ class monthlySalesSearch extends Component {
                     </Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.monthlySalesInfoList} className={"bg-white text-dark"} pagination={true}  headerStyle={{ background: '#5599FF' }}  options={this.options}　striped hover condensed>
+                    <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }}  options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>氏名</TableHeaderColumn>

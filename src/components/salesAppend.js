@@ -188,7 +188,7 @@ class salesAppend extends Component {
 				<div >
 					<BootstrapTable
 						ref="salesPersonTable"
-						className={"bg-white text-dark"}
+						
 						data={this.state.allSalesPersons}
 						pagination={true}
 						options={options}

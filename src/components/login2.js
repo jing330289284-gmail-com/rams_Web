@@ -96,7 +96,7 @@ class Login2 extends Component {
 			})
 		};
 		return (
-			<div style={{marginTop:"10%"}}>
+			<div style={{marginTop:"10%"}} >
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
 				</div>

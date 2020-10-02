@@ -890,7 +890,7 @@ selectetRowIds:[],
 				<div >
 					<BootstrapTable
 						ref='table'
-						className={"bg-white text-dark"}
+						
 						data={this.state.salesSituationLists}
 						pagination
 						options={options}

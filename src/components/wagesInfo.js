@@ -834,9 +834,9 @@ class WagesInfo extends Component {
                             </div>
                         </Form.Group>
                     </Form>
-                    <Form.Text style={{ "color": "#FFD700" }}>給料変動一覧</Form.Text>
                     <Row>
                         <Col sm={11}>
+                            <Form.Text style={{ "color": "#FFD700" }}>給料変動一覧</Form.Text>
                         </Col>
                         <Col sm={1}>
                             <div style={{ "float": "right" }}>
@@ -858,8 +858,10 @@ class WagesInfo extends Component {
                             options={options}
                             data={wagesInfoList}
                             headerStyle={{ background: '#5599FF' }}
-                            striped>
-                            <TableHeaderColumn isKey={true} dataField='period' headerAlign='center' dataAlign='center' width='145'>給料期間</TableHeaderColumn>
+                            striped
+                            hover
+                            condensed>
+                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='145'>給料期間</TableHeaderColumn>
                             <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社員形式</TableHeaderColumn>
                             <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">給料</TableHeaderColumn>
                             <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社会保険</TableHeaderColumn>

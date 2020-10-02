@@ -31,4 +31,26 @@ module.exports = function(app) {
 				"^/cal": "/"
 			}
 		}))
+		
+	app.use(createProxyMiddleware('/login',
+		{
+			target: "http://127.0.0.1:8080/login/login",
+			changeOrigin: true,
+			secure: false,
+			pathRewrite: {
+				"^/login": "/"
+			}
+		}))
+		
+		
+	app.use(createProxyMiddleware('/sendVerificationCode',
+		{
+			target: "http://127.0.0.1:8080/login/sendVerificationCode",
+			changeOrigin: true,
+			secure: false,
+			pathRewrite: {
+				"^/sendVerificationCode": "/"
+			}
+		}))
+		
 }
