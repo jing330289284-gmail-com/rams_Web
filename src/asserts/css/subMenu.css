@@ -6,6 +6,8 @@ html,
     position: absolute;
     top: 0px;
     bottom: 0px;
+    background-size: cover;
+    background-attachment: fixed;
   }
   .row{
     width:99.9999%;
@@ -74,3 +76,10 @@ h2{
     background-color: #f0ffff;
     box-shadow:5px 2px 6px rgb(110, 0, 28);
   }
+  .list-group-item {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+    background-color: #fff;
+    border: none !important;
+}
