@@ -140,34 +140,34 @@ class SubMenu extends Component {
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
 									<Accordion.Toggle as={Button} variant="link" eventKey="5"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faBuilding} />営業管理</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="5">
 										<ListGroup variant="flush">
-											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
-											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
+								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
 									<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="6">
 										<ListGroup variant="flush">
-											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/dutyManagement"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />勤務管理</Link></ListGroup.Item>
-											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />残業代一覧</Link></ListGroup.Item>
-											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/dutyRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
-											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />履歴検索</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/dutyManagement"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />勤務管理</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />残業代一覧</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/dutyRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />履歴検索</Link></ListGroup.Item>
+										</ListGroup>
+									</Accordion.Collapse>
+								</ListGroup.Item>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
+									<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />非稼働</font></Accordion.Toggle>
+									<Accordion.Collapse eventKey="7">
+										<ListGroup variant="flush">
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />非待機一覧</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
 								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
-									<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />非稼働</font></Accordion.Toggle>
-									<Accordion.Collapse eventKey="7">
-										<ListGroup variant="flush">
-											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />非待機一覧</Link></ListGroup.Item>
-										</ListGroup>
-									</Accordion.Collapse>
-								</ListGroup.Item>
-								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
 									<Accordion.Toggle as={Button} variant="link" eventKey="8"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />マスター</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="8">
 										<ListGroup variant="flush">
@@ -176,11 +176,11 @@ class SubMenu extends Component {
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
-								<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}>
+								<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}>
 									<Accordion.Toggle as={Button} variant="link" eventKey="9"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCogs} />他の設定</font></Accordion.Toggle>
 									<Accordion.Collapse eventKey="9">
 										<ListGroup variant="flush">
-											<ListGroup.Item style={{"backgroundColor":"#17a2b8"}}><Link className="linkFont" to="/subMenu/masterInsert"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCog} />システム設定</Link></ListGroup.Item>
+											<ListGroup.Item style={{"backgroundColor":"#1a94a8"}}><Link className="linkFont" to="/subMenu/masterInsert"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCog} />システム設定</Link></ListGroup.Item>
 										</ListGroup>
 									</Accordion.Collapse>
 								</ListGroup.Item>
@@ -197,7 +197,7 @@ class SubMenu extends Component {
 						</Col>
 						</Row>
 					</Col>
-					<Col sm={10} id="page">
+					<Col sm={9} id="page">
 						<div key={this.props.location.key}>
 							<br/>
 							<Router>

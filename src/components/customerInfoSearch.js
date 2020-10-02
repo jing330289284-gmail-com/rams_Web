@@ -293,6 +293,7 @@ class CustomerInfoSearch extends Component {
                     <h2>お客様・協力情報検索</h2>
                     </Col>
                 </Row>
+                <br/>
                <Form id="conditionForm">
                    <div className="container">
                    <Row>

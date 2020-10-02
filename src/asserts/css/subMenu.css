@@ -1,7 +1,7 @@
 html,
 .mainBody{
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #00BFFF)); /* Saf4+, Chrome */
-    height: 105%;
+    height: 100%;
     width: 100%;
     position: absolute;
     top: 0px;
@@ -21,7 +21,7 @@ h2{
   margin: 0;
   line-height: 1;
   text-align: center;
-  color:#ffffff;
+  color:#018ec5;
 }
 .nav-font{
   font-family: "宋体", Sans-serif;
