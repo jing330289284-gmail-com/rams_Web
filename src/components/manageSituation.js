@@ -14,7 +14,6 @@ import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
-import SalesContent from './salesContent';
 axios.defaults.withCredentials = true;
 
 class manageSituation extends React.Component {
@@ -643,9 +642,6 @@ selectetRowIds:[],
 					<Modal.Header closeButton><Col className="text-center">
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
-					<Modal.Body >
-						<SalesContent/>
-					</Modal.Body>
 				</Modal>
 				<Row inline="true">
 					<Col className="text-center">

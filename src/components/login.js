@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import '../asserts/css/login.css';
-import title from '../asserts/images/title.png';
+import title from '../asserts/images/LYCmark.png';
 import $ from 'jquery'
 import axios from 'axios';
 import { Row,  Col , Form , Button , InputGroup , FormControl} from 'react-bootstrap';
@@ -100,7 +100,7 @@ class Login extends Component {
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
 				<div style={{"textAlign":"center"}}>
-					<img className="mb-4" alt="title" src={title}/>
+					<img className="mb-4" alt="title" src={title}/><a className="loginMark">LYC株式会社</a>
 				</div>
 			<Form className="form-signin" id="loginForm">
 				<Form.Group controlId="formBasicEmail" >

@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react-bootstrap';
-import title from '../asserts/images/title.png';
-import open from '../asserts/images/open.png';
-import openPage from '../asserts/images/openPage.png';
+import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Employee from './employee';
 import EmployeeSearch from './employeeSearch';
@@ -70,9 +68,9 @@ class SubMenu extends Component {
 		}
 		return (
 			<div className="mainBody">
-				<Row style={{ "backgroundColor": "#f5f5f5" }}>
+				<Row style={{ "backgroundColor": "#FFFAF0" }}>
 					<Navbar inline>
-						<Navbar.Brand><img className="titleImg" alt="title" src={title} />{" "}</Navbar.Brand>
+					<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
