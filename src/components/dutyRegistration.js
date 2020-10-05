@@ -5,10 +5,12 @@ import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
+import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
+import * as messageUtils from './utils/messageUtils.js';
 import { Link } from "react-router-dom";
 
 
@@ -273,16 +275,23 @@ class DutyRegistration extends React.Component {
 	beforeSubmit = (event) =>	{
 //		let arrWorkContent = $("input[name=workContent]");
 //		console.log(arrWorkContent[0].value);
+		let errorMessage = "";
 		let nowDay = new Date().getDate();
 		for (let i = 0; i < this.state.dateData.length; i++)	{
 			if (this.state.dateData[i]["hasWork"] == this.state.hasWork[1])	{
 				if (nowDay >= this.state.dateData[i]["day"] && publicUtils.isEmpty(this.state.dateData[i]["workContent"]))	{
-					alert("day " + this.state.dateData[i]["day"] + " work content");
-					return;
+					errorMessage += messageUtils.getMessage("E0001", this.state.dateData[i]["day"], true);
 				}
 			}
 		}
-		this.setState({ isConfirmedPage: true }, () => {
+		if (!publicUtils.isEmpty(errorMessage))	{
+			this.setState({
+				errorsMessageShow: true,
+				errorsMessageValue: errorMessage,
+			});
+			return;
+		}
+		this.setState({ isConfirmedPage: true, errorsMessageShow: false }, () => {
 			this.setTableStyle();
 		});
 	}
@@ -349,6 +358,9 @@ class DutyRegistration extends React.Component {
 	render() {
 		return (
 			<div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
+				</div>
 				<div>
 					{/*　 開始 */}
 					{/*　 休憩時間 */}
@@ -388,7 +400,7 @@ class DutyRegistration extends React.Component {
 						<Row className="align-items-center">
 							<Col sm={4} md={{ span: 4, offset: 3 }}>
 								<span size="lg" className="mb-3">
-										<h3 class="text-danger">{this.state.year}年{this.state.month}月　作業報告書</h3>
+										<h3 >{this.state.year}年{this.state.month}月　作業報告書</h3>
 								</span>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 2 }}>
