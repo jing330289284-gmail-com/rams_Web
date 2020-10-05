@@ -32,7 +32,7 @@ module.exports = function(app) {
 			}
 		}))
 
-	app.use(createProxyMiddleware('/login',
+	/* app.use(createProxyMiddleware('/login',
 		{
 			target: "http://127.0.0.1:8080/login/login",
 			changeOrigin: true,
@@ -41,7 +41,7 @@ module.exports = function(app) {
 				"^/login": "/"
 			}
 		}))
-
+ */
 
 	app.use(createProxyMiddleware('/sendVerificationCode',
 		{
