@@ -47,6 +47,7 @@ class CustomerInfo extends Component {
         positionDrop: [],
         typeOfIndustryDrop: [],
         developLanguageDrop: [],
+        currentPage:1,//今のページ
     }
     /**
      *  設立のonChange
@@ -346,7 +347,9 @@ class CustomerInfo extends Component {
                 departmentList[i].rowNo = (i + 1);
             }
         }
+        var currentPage = Math.ceil(departmentList.length/5);
         this.setState({
+            currentPage:currentPage,
             customerDepartmentList: departmentList,
             rowNo: '',
             customerDepartmentNameValue: '',
@@ -521,8 +524,10 @@ class CustomerInfo extends Component {
         customerDepartment["developLanguageCode1"] = "";
         customerDepartment["developLanguageCode2"] = "";
         customerDepartmentList.push(customerDepartment);
+        var currentPage = Math.ceil(customerDepartmentList.length/5);
         this.setState({
             customerDepartmentList:customerDepartmentList,
+            currentPage:currentPage,
         })
     }
     render() {
@@ -550,9 +555,11 @@ class CustomerInfo extends Component {
         }
         //テーブルの定義
         const options = {
-            id: "deparmentTable",
+            onPageChange: page => {
+				this.setState({ currentPage: page });
+			},
+			page: this.state.currentPage,
             noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
-            page: 1,  // which page you want to show as default
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
