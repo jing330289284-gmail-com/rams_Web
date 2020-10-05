@@ -286,7 +286,12 @@ export function handleDownload(path) {
 		//src/main/resources/file/
 		var NewPath = new Array();
 		NewPath = path.split("/");
-		var pathInfo = NewPath.slice(-3);
+		if(path.indexOf("作業報告書") != -1){
+				var pathInfo = NewPath.slice(-5);
+		}else{
+			var pathInfo = NewPath.slice(-3);
+		}
+	
 		var strPath = pathInfo.join('/');
 		console.log(NewPath);
 		var xhr = new XMLHttpRequest();
@@ -303,7 +308,7 @@ export function handleDownload(path) {
 					var url = window.URL.createObjectURL(blob);
 					a.href = url;
 					//设置文件名称
-					a.download = NewPath[5];
+					a.download = NewPath[NewPath.length-1];
 					a.click();
 					a.remove();
 				}

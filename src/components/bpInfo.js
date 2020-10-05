@@ -134,9 +134,12 @@ class bpInfo extends React.Component {
 		const salesProgressCodes = this.props.salesProgressCodes;
 		return (
 			<div>
-				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
-					<h2>BP情報入力</h2>
-				</Card.Header>
+				<Row inline="true">
+                        <Col className="text-center">
+                            <h2>BP情報入力</h2>
+                        </Col>
+                </Row>
+				<br />
 				<Form >
 					<Form.Group>
 						<Row>

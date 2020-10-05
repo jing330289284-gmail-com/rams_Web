@@ -5,18 +5,34 @@ const $ = require('jquery');
 export const fetchDropDown = () => {
 	return dispatch => {
 		dispatch(fetchDropDownRequest());
-		/** 
-		追加の時、コンテンツをお願い致します。
-		0.性別区別   1入社区分  2 社員形式  3役割  4employeesステータス  
-		5日本語  6在留資格  7国籍  8開発言語  9社員名
-		10 職種  11部署  12 権限  13英語 14駅 15BP所属
-		16営業状況
-		 */
-		var methodNameList = ["getGender", "getIntoCompany", "getStaffForms", "getOccupation","getEmployee",
-		 "getJapaneseLevel", "getVisa", "getNationalitys","getDevelopLanguage", "getEmployeeName", 
-		"getOccupation", "getDepartment", "getAuthority",  "getEnglishLevel","getStation","getListedCompany",
-		"getLevel","getCompanyNature","getPosition","getPaymentsite","getDepartmentMasterDrop",
-	    "getCustomer","getSalesProgress"]
+		var methodNameList = ["getGender",//0.性別区別 
+			"getIntoCompany",// 1入社区分 
+			"getStaffForms", // 2 社員形式 
+			"getOccupation",// 3役割
+			"getEmployee",// 4社員区分
+			"getJapaneseLevel",//5日本語
+			"getVisa",//6在留資格
+			"getNationalitys",// 7国籍 
+			"getDevelopLanguage", // 8開発言語
+			"getEmployeeName",// 9社員名
+			"getOccupation",//10 職種
+			"getDepartment",//11部署
+			"getAuthority", // 12 権限 
+			"getEnglishLevel",// 13英語
+			"getStation",//14駅 
+			"getCustomer",//15BP所属
+			"getSalesProgress",//16営業状況
+			"getListedCompany",// 17上場会社
+			"getLevel",//18レベル
+			"getCompanyNature",//　19性質
+			"getPosition",//20職位
+			"getPaymentsite",//21支払サイト
+			"getDepartmentMasterDrop",//22部門名前
+			"getNewMember",//23新人区分
+			"getCustomerContractStatus",//24契約区分
+			"getSalesPuttern", //25営業結果パタンー
+			"getSpecialPoint",//26特別ポイント条件
+		]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);
 		$.ajax({
@@ -25,7 +41,7 @@ export const fetchDropDown = () => {
 			data: par,
 			async: false,
 			contentType: "application/json",
-			success: function(resultList) {
+			success: function (resultList) {
 				for (let j = 0; j < resultList.length; j++) {
 					var array = [{ code: '', name: '選択ください' }];
 					var list = resultList[j];
