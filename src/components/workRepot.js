@@ -82,6 +82,8 @@ class workRepot extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
 					alert("err")
 				}
@@ -118,6 +120,8 @@ class workRepot extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
 					alert("err")
 				}
