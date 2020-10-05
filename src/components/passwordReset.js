@@ -52,7 +52,7 @@ class passwordReset extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="mainBody">
                 <Row inline="true">
                     <Col  className="text-center">
                     <h2>パースワードリセット</h2>
