@@ -163,7 +163,7 @@ class manageSituation extends React.Component {
 			}
 		);
 		// レコードdropdown用
-		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer","getCustomerContract"]
+		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer","getCustomerContractStatus"]
 		var dataTleOnly = publicUtils.getPublicDropDownRtBtSpTleOnly(methodArrayTleOnly);
 		dataTleOnly[0].shift();
 		dataTleOnly[1].shift();
