@@ -229,9 +229,7 @@ class CustomerInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     window.location.reload();
-                }else if(result.data === "1" || result.data === "2" || result.data === "3" || result.data === "4"){
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様部門の更新がエラーを発生している" });
-                } else {
+                }else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
@@ -614,6 +612,7 @@ class CustomerInfo extends Component {
                             上位お客様
                         </Button>
                     </div>
+                    <br/>
                     <Form id="customerForm">
                         <Row>
                             <Col sm={3}>
@@ -880,15 +879,9 @@ class CustomerInfo extends Component {
                         <input type="hidden" id="employeeNo" name="employeeNo" />
                 </div>
                 <div style={{ "textAlign": "center" }}>
-                    {actionType === "update" ?
                         <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />更新
+                            <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
                         </Button>
-                        :
-                        <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />登録
-                        </Button>
-                    }
                 </div>
             </div>
         );

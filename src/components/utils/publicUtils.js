@@ -417,6 +417,9 @@ export function nullToEmpty(obj) {
  * @param {*} decimalPointFlag 小数点保留フラグ
  */
 export function addComma(money,decimalPointFlag){
+	if(money === null || money === undefined){
+		return "";
+	}
 	var moneyInt = parseInt(money.split(".")[0]);
 	var moneyPoi = parseInt(money.split(".")[1]);
 	var result = moneyInt.toLocaleString();
