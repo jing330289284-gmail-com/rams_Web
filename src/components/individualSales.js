@@ -17,6 +17,7 @@ class individualSales extends Component {
         employeeName:'',
 		individualSales_startYearAndMonth:'',
         individualSales_endYearAndMonth:'',
+        
      }
      constructor(props){
 		super(props);
@@ -228,24 +229,20 @@ render (){
                                 locale="ja">
 								</DatePicker>
                             </InputGroup.Prepend>
-                            <InputGroup.Append>                 
-                            </InputGroup.Append>
-                        </InputGroup>
+                        </InputGroup>                       
+                    </Col>                    
+                    <Col sm={4}>
+                    <Button variant="info" size="sm" id="search"style={{marginLeft:"90px",width:"90px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
                     </Col>
+
                 </Row>
-				<Row>
-					<Col  className="text-center">
-					<Button variant="info" size="sm" id="shusei"　onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>
-                    </Col> 
-                </Row>
-                <br/>
 				<Row>
                     <Col sm={3}>
                     <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-sm">稼働月数</InputGroup.Text>
+                    <label>稼働月数：</label>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.workMonthCount} readOnly/>
+                    <label>{this.state.workMonthCount}</label>
                     </InputGroup>
                             
 						</Col>
@@ -253,30 +250,31 @@ render (){
 						<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-sm">単価合計</InputGroup.Text>
+                    <label>単価合計：</label>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.totalutilPrice} readOnly/>
+                    <label>{this.state.totalutilPrice} </label>
                     </InputGroup>
 						</Col>
 						<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-sm">支払合計</InputGroup.Text>
+                    <label>支払合計：</label>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.paymentTotal} readOnly/>
+                    <label>{this.state.paymentTotal} </label>
                     </InputGroup>
 						</Col>
 						<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-sm">粗利合計</InputGroup.Text>
+                    <label>粗利合計:
+                    </label>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Small" aria-describedby="inputGroup-sizing-sm"  value={this.state.totalgrosProfits} readOnly/>
+                    <label>{this.state.totalgrosProfits} </label>
                     </InputGroup>
 						</Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.employeeInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed>
+                    <BootstrapTable data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
