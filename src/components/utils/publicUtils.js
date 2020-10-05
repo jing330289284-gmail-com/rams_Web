@@ -1,3 +1,4 @@
+import JapaneseHolidays from 'japanese-holidays';
 const $ = require('jquery');
 const axios = require('axios');
 
@@ -286,6 +287,7 @@ export function handleDownload(path) {
 		//src/main/resources/file/
 		var NewPath = new Array();
 		NewPath = path.split("/");
+		
 		if(path.indexOf("作業報告書") != -1){
 				var pathInfo = NewPath.slice(-5);
 		}else{
@@ -362,6 +364,8 @@ export async function calApi(date) {
 };
 
 //diff time, 11:30 - 09:00 = 2.5(H)
+//input startTime(string), endTime(string)
+//output double
 export function timeDiff(startTime, endTime) {
 	let result = 0;
 	let startMinute = 0;
@@ -381,6 +385,8 @@ export function timeDiff(startTime, endTime) {
 	return result;
 }
 // 0130 -> 01:30
+//input time(string), char(string default->:)
+//output string
 export function timeInsertChar(time, inputChar) {
 	if (isNull(inputChar)) {
 		inputChar = ":";
@@ -388,14 +394,20 @@ export function timeInsertChar(time, inputChar) {
 	return isEmpty(time) ? "" : time.substring(0, 2) + inputChar + time.substring(2, 4);
 }
 //is Null?
+//input Object
+//output boolean
 export function isNull(obj) {
 	return (obj === undefined || obj === null);
 }
 //is empty?
+//input Object
+//output boolean
 export function isEmpty(obj) {
 	return (isNull(obj) || obj === "");
 }
 //Null to empty
+//input Object
+//output Object or ""
 export function nullToEmpty(obj) {
 	return (isNull(obj)) ? "" : obj;
 }
@@ -413,3 +425,22 @@ export function addComma(money,decimalPointFlag){
 	}
 	return result;
 }
+//isHoliday?
+//input Object or year, month, day
+//output boolean
+export function isHoliday() {
+	switch (arguments.length)	{
+		case 1:	//main
+			let date = arguments[0];
+			return JapaneseHolidays.isHoliday(date) || (date.getDay() === 0) || (date.getDay() === 6);
+		case 3:
+			let year = arguments[0];
+			let month = arguments[1];
+			let day = arguments[2];
+			return isHoliday(new Date(Number(year), Number(month) - 1, Number(day)));
+		default:
+			return isHoliday(new Date());
+	}
+}
+
+

@@ -17,6 +17,7 @@
     "bootstrap": "^4.5.0",
     "colresizable": "^1.6.0",
     "http-proxy-middleware": "^1.0.5",
+    "japanese-holidays": "^1.0.9",
     "jquery": "^3.5.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
