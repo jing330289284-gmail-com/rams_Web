@@ -87,6 +87,7 @@ class Login extends Component {
 						btnDisable: true,
 						buttonText: "60s後再発行",
 						});
+						alert(result.data.verificationCode);
 					$("#verificationCode").attr("readOnly",false);
 					$("#login").attr("disabled",false);
 					//每隔一秒执行一次clock方法
@@ -101,7 +102,7 @@ class Login extends Component {
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
 				<div style={{"textAlign":"center"}}>
-					<img className="mb-4" alt="title" src={title}/><a className="loginMark">LYC株式会社</a>
+					<img className="mb-4" alt="title" src={title}/>{"   "}<a className="loginMark">LYC株式会社</a>
 				</div>
 			<Form className="form-signin" id="loginForm">
 				<Form.Group controlId="formBasicEmail" >
