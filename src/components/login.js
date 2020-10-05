@@ -19,8 +19,8 @@ class Login extends Component {
 	componentWillMount(){
 		$("#sendVerificationCode").attr("disabled",true);
 		$("#login").attr("disabled",true);
-		axios.post("/init")
-		//axios.post("http://127.0.0.1:8080/login/init")
+		//axios.get("/init")
+		axios.post("http://127.0.0.1:8080/login/init")
 		.then(resultMap =>{
 			if(resultMap.data){
 				this.props.history.push("/subMenu");
@@ -35,8 +35,8 @@ class Login extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		axios.post("/login" ,loginModel)
-		//axios.post("http://127.0.0.1:8080/login/login",loginModel)
+		//axios.post("/login" ,loginModel)
+		axios.post("http://127.0.0.1:8080/login/login",loginModel)
 		.then(result =>{
 				if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
 					this.props.history.push("/subMenu");
@@ -76,9 +76,9 @@ class Login extends Component {
 		  var loginModel = {};
 		  loginModel["employeeNo"] = $("#employeeNo").val();
 		  loginModel["password"] = $("#password").val();
-		axios.post("/sendVerificationCode" ,loginModel)
+		//axios.post("/sendVerificationCode" ,loginModel)
 
-			//axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
+			axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
 			.then(result =>{
 				if(result.data.errorsMessage !== null && result.data.errorsMessage !== undefined){
 					this.setState({ errorsMessageShow: true,errorsMessageValue:result.data.errorsMessage});

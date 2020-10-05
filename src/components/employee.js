@@ -628,9 +628,11 @@ class employee extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
-					<h2>社員情報登録</h2>
-				</Card.Header>
+				<Row inline="true">
+                        <Col className="text-center">
+                            <h2>社員情報登録</h2>
+                        </Col>
+                </Row>
 				{/*　 開始 */}
 				{/*　 口座情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"

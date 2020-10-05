@@ -265,7 +265,6 @@ class employeeSearch extends React.Component {
 			handleConfirmDeleteRow: this.customConfirm,
 		};
 
-
 		const genderStatuss = this.props.genderStatuss;
 		const intoCompanyCodes = this.props.nationalityCodes;
 		const employeeFormCodes = this.props.employeeFormCodes;
@@ -286,9 +285,11 @@ class employeeSearch extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
-					<h2>社員情報検索</h2>
-				</Card.Header>
+				<Row inline="true">
+                        <Col className="text-center">
+                            <h2>社員情報検索</h2>
+                        </Col>
+                </Row>
 				<Form >
 					<div >
 						<Form.Group>
