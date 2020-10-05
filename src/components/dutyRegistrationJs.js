@@ -1,6 +1,3 @@
-const $ = require('jquery');
-const axios = require('axios');
-
 
 export function checkRowData(row){
 	for (var i = 0; i < row.cells.length; i++)	{
@@ -10,8 +7,11 @@ export function checkRowData(row){
 }
 export function addRowClass(row, ClassName){
 	for (var i = 0; i < row.cells.length; i++)	{
-		row.cells[i].classList.add(ClassName);
+		addCellClass(row.cells[i], ClassName);
 	}
+}
+export function addCellClass(cell, ClassName){
+	cell.classList.add(ClassName);
 }
 export function removeRowAllClass(row){
 	var tempClass = "";

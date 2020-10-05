@@ -1,6 +1,6 @@
 /* 社員を追加 */
 import React from 'react';
-import {Card, Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -628,9 +628,12 @@ class employee extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
-					<h2>社員情報登録</h2>
-				</Card.Header>
+				<Row inline="true">
+                        <Col className="text-center">
+                            <h2>社員情報登録</h2>
+                        </Col>
+                </Row>
+				<br />
 				{/*　 開始 */}
 				{/*　 口座情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
@@ -647,7 +650,7 @@ class employee extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo}  employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
@@ -999,7 +1002,7 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-					<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
+					<Form.Label style={{ "color": "#00EE00" }}>スキール情報</Form.Label>
 					<Form.Group>
 						<Row>
 							<Col sm={3}>
@@ -1156,7 +1159,7 @@ class employee extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-					<Form.Label style={{ "color": "#FFD700" }}>住所情報</Form.Label>
+					<Form.Label style={{ "color": "#00EE00" }}>住所情報</Form.Label>
 					<Form.Group>
 						<Row>
 							<Col sm={2}>
@@ -1206,7 +1209,7 @@ class employee extends React.Component {
 						</Row>
 					</Form.Group>
 
-					<Form.Label style={{ "color": "#FFD700" }}>個人関連情報</Form.Label>
+					<Form.Label style={{ "color": "#00EE00" }}>個人関連情報</Form.Label>
 					<Form.Group>
 						<Row>
 							<Col sm={3}>

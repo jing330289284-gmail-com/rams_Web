@@ -19,6 +19,7 @@ class Login extends Component {
 	componentWillMount(){
 		$("#sendVerificationCode").attr("disabled",true);
 		$("#login").attr("disabled",true);
+		//axios.get("/init")
 		axios.post("http://127.0.0.1:8080/login/init")
 		.then(resultMap =>{
 			if(resultMap.data){

@@ -252,7 +252,7 @@ class siteSearch extends Component {
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="例：佐藤真一" type="text" {...params.inputProps} className="auto"
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}

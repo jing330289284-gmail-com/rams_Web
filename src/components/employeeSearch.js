@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card,Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import {Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -265,7 +265,6 @@ class employeeSearch extends React.Component {
 			handleConfirmDeleteRow: this.customConfirm,
 		};
 
-
 		const genderStatuss = this.props.genderStatuss;
 		const intoCompanyCodes = this.props.nationalityCodes;
 		const employeeFormCodes = this.props.employeeFormCodes;
@@ -286,9 +285,12 @@ class employeeSearch extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<Card.Header style={{ "textAlign": "center", "background-color": "white", "border-bottom": "0px" }}>
-					<h2>社員情報検索</h2>
-				</Card.Header>
+				<Row inline="true">
+                        <Col className="text-center">
+                            <h2>社員情報検索</h2>
+                        </Col>
+                </Row>
+				<br />
 				<Form >
 					<div >
 						<Form.Group>
@@ -582,6 +584,8 @@ class employeeSearch extends React.Component {
 					</Row>
 				</div>
 				<div >
+					<Row >
+						<Col sm={12}>
 					<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
@@ -597,6 +601,8 @@ class employeeSearch extends React.Component {
 						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
 					</BootstrapTable>
+					</Col>
+					</Row>
 				</div>
 			</div >
 		);

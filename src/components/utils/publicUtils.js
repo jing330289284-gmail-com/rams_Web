@@ -1,3 +1,4 @@
+import JapaneseHolidays from 'japanese-holidays';
 const $ = require('jquery');
 const axios = require('axios');
 
@@ -41,9 +42,9 @@ export function getFullYearMonth(date, now) {
 			returnMonths = returnMonths - 1;
 		}
 		if (returnYears === 0) {
-		yearmonth =  returnMonths + "か月";
-		}else{
-		yearmonth = returnYears + "年" + returnMonths + "か月";
+			yearmonth = returnMonths + "か月";
+		} else {
+			yearmonth = returnYears + "年" + returnMonths + "か月";
 		}
 		return yearmonth;
 	} else {
@@ -84,11 +85,11 @@ export function getPublicDropDown(methodNameList) {
 	$.ajax({
 		type: "POST",
 		url: "http://127.0.0.1:8080/initializationPage",
-		data:par,
+		data: par,
 		async: false,
-		contentType:"application/json",
+		contentType: "application/json",
 		success: function(resultList) {
-			for(let j = 0;j < resultList.length; j++){
+			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
 				for (var i in list) {
@@ -105,31 +106,29 @@ export function getPublicDropDown(methodNameList) {
 export function getPublicDropDownRtBtSpTleOnly(methodNameList) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
-	for (var i = 0; i < methodNameList.length; i++) {
-		$.ajax({
-			type: "POST",
-			data:par,
-			url: "http://127.0.0.1:8080/initializationPage",
-			contentType:"application/json",
-			async: false,
-			success: function(resultList) {
-				for(let j = 0;j < resultList.length; j++){
-					var array = [{ value: '', text: '選択ください' }];
-					var List = resultList[j];
-					for (var k in List) {
-						var arrayDetail1 = { value: '', text: '' }
-						if (List[k].code !== null) {
-							arrayDetail1 = { value: List[k].code, text: List[k].name }
-						} else {
-							arrayDetail1 = { value: List[k].value, text: List[k].label }
-						}
-						array.push(arrayDetail1)
+	$.ajax({
+		type: "POST",
+		data: par,
+		url: "http://127.0.0.1:8080/initializationPage",
+		contentType: "application/json",
+		async: false,
+		success: function(resultList) {
+			for (let j = 0; j < resultList.length; j++) {
+				var array = [{ value: '', text: '選択ください' }];
+				var List = resultList[j];
+				for (var k in List) {
+					var arrayDetail1 = { value: '', text: '' }
+					if (List[k].code !== null) {
+						arrayDetail1 = { value: List[k].code, text: List[k].name }
+					} else {
+						arrayDetail1 = { value: List[k].value, text: List[k].label }
 					}
-					outArray.push(array);
+					array.push(arrayDetail1)
 				}
+				outArray.push(array);
 			}
-		});
-	}
+		}
+	});
 	return outArray;
 }
 
@@ -288,7 +287,13 @@ export function handleDownload(path) {
 		//src/main/resources/file/
 		var NewPath = new Array();
 		NewPath = path.split("/");
-		var pathInfo = NewPath.slice(-3);
+		
+		if(path.indexOf("作業報告書") != -1){
+				var pathInfo = NewPath.slice(-5);
+		}else{
+			var pathInfo = NewPath.slice(-3);
+		}
+	
 		var strPath = pathInfo.join('/');
 		console.log(NewPath);
 		var xhr = new XMLHttpRequest();
@@ -305,7 +310,7 @@ export function handleDownload(path) {
 					var url = window.URL.createObjectURL(blob);
 					a.href = url;
 					//设置文件名称
-					a.download = NewPath[5];
+					a.download = NewPath[NewPath.length-1];
 					a.click();
 					a.remove();
 				}
@@ -342,7 +347,7 @@ export async function postcodeApi() {
 
 //　　年齢と和暦
 export async function calApi(date) {
-	
+
 	var birthDayTime = date.getTime();
 	var nowTime = new Date().getTime();
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
@@ -359,16 +364,18 @@ export async function calApi(date) {
 };
 
 //diff time, 11:30 - 09:00 = 2.5(H)
+//input startTime(string), endTime(string)
+//output double
 export function timeDiff(startTime, endTime) {
 	let result = 0;
 	let startMinute = 0;
 	let endMinute = 0;
 	let temp = "";
-	
-	if (!startTime || !endTime)	{
+
+	if (!startTime || !endTime) {
 		result = "";
 	}
-	else	{
+	else {
 		temp = startTime.split(":");
 		startMinute = Number(temp[0]) * 60 + Number(temp[1]);
 		temp = endTime.split(":");
@@ -378,23 +385,31 @@ export function timeDiff(startTime, endTime) {
 	return result;
 }
 // 0130 -> 01:30
+//input time(string), char(string default->:)
+//output string
 export function timeInsertChar(time, inputChar) {
-	if (isNull(inputChar))	{
+	if (isNull(inputChar)) {
 		inputChar = ":";
 	}
-	return isEmpty(time)?"":time.substring(0,2) + inputChar + time.substring(2,4);
+	return isEmpty(time) ? "" : time.substring(0, 2) + inputChar + time.substring(2, 4);
 }
 //is Null?
+//input Object
+//output boolean
 export function isNull(obj) {
 	return (obj === undefined || obj === null);
 }
 //is empty?
+//input Object
+//output boolean
 export function isEmpty(obj) {
 	return (isNull(obj) || obj === "");
 }
 //Null to empty
+//input Object
+//output Object or ""
 export function nullToEmpty(obj) {
-	return (isNull(obj))?"":obj;
+	return (isNull(obj)) ? "" : obj;
 }
 /**
  * お金の三枠でカンマ区切り
@@ -410,3 +425,22 @@ export function addComma(money,decimalPointFlag){
 	}
 	return result;
 }
+//isHoliday?
+//input Object or year, month, day
+//output boolean
+export function isHoliday() {
+	switch (arguments.length)	{
+		case 1:	//main
+			let date = arguments[0];
+			return JapaneseHolidays.isHoliday(date) || (date.getDay() === 0) || (date.getDay() === 6);
+		case 3:
+			let year = arguments[0];
+			let month = arguments[1];
+			let day = arguments[2];
+			return isHoliday(new Date(Number(year), Number(month) - 1, Number(day)));
+		default:
+			return isHoliday(new Date());
+	}
+}
+
+
