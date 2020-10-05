@@ -19,18 +19,31 @@ class salesPointSet extends Component {
 
 	initialState = {
 		masterStatus: [],
+		no: '',
 		employee: '',
 		newMember: '',
 		customerContract: '',
+		employeeStatus: [],
+		newMemberStatus: [],
+		customerContractStatus: [],
+		levelStatus: [],
+		salesPutternStatus: [],
+		specialPointStatus: [],
+		updateFlag: true
 	};
 
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getMaster"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var methodArray = ["getEmployee", "getNewMember", "getCustomerContractStatus", "getLevel", "getSalesPuttern", "getSpecialPoint"]
+		var data = publicUtils.getPublicDropDownRtBtSpTleOnly(methodArray);
 		this.setState(
 			{
-				masterStatus: data[0].slice(1),//　名称
+				employeeStatus: data[0],
+				newMemberStatus: data[1],
+				customerContractStatus: data[2],
+				levelStatus: data[3],
+				salesPutternStatus: data[4],
+				specialPointStatus: data[5],
 			}
 		);
 	};
@@ -38,6 +51,7 @@ class salesPointSet extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.getDropDowns();//全部のドロップダウン
+		this.select();
 	}
 	//明细查询
 	onchange = (event) => {
@@ -47,42 +61,48 @@ class salesPointSet extends Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
-			var salesPointSetModel = {};
-			salesPointSetModel["employee"] = this.state.employee
-			salesPointSetModel["newMember"] = this.state.newMember
-			salesPointSetModel["customerContract"] = this.state.customerContract
-			axios.post("http://127.0.0.1:8080/getSalesPointInfo", salesPointSetModel)
-				.then(response => {
-					if (response.data != null) {
-						this.setState({
-							salesPointData: response.data
-						});
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
+			this.select();
 		})
 	}
 
-	/**
-   * 行Selectファンクション
-   */
-	handleRowSelect = (row, isSelected) => {
-		this.setState({ flag: true });
-		this.setState({
-			data: '',
-		})
-		if (isSelected) {
-			this.setState({
-				code: row.code,
-				data: row.data,
-			})
-			this.setState({ flag: false });
+// レコードのステータス
+	employeeStatusFormat= (cell) => {
+		var statuss = this.state.employeeStatus;
+		for (var i in statuss) {
+			if (cell === statuss[i].value) {
+				return statuss[i].text;
+			}
 		}
 	}
-    /**
-     * 修正ボタン
-     */
+
+	select = () => {
+		var salesPointSetModel = {};
+		salesPointSetModel["employee"] = this.state.employee
+		salesPointSetModel["newMember"] = this.state.newMember
+		salesPointSetModel["customerContract"] = this.state.customerContract
+		axios.post("http://127.0.0.1:8080/getSalesPointInfo", salesPointSetModel)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({
+						salesPointData: response.data
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+	}
+	/**
+	* 行Selectファンクション
+	*/
+	handleRowSelect = (row, isSelected) => {
+		this.setState({ updateFlag: true });
+		if (isSelected) {
+			this.setState({ no: row.no, updateFlag: false });
+		}
+	}
+	/**
+	 * 修正ボタン
+	 */
 	update = () => {
 		var masterModel = {};
 		var formArray = $("#masterUpdateForm").serializeArray();
@@ -112,10 +132,9 @@ class salesPointSet extends Component {
 	delete = () => {
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
-			var masterModel = {};
-			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-			masterModel["code"] = this.state.code;
-			axios.post("http://127.0.0.1:8080/masterUpdate/delete", masterModel)
+			var salesPointSetModel = {};
+			salesPointSetModel["no"] = this.state.no
+			axios.post("http://127.0.0.1:8080/salesPointDelete", salesPointSetModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -151,10 +170,14 @@ class salesPointSet extends Component {
 			clickToExpand: true,// click to expand row, default is false
 			onSelect: this.handleRowSelect,
 		};
+		const cellEditProp = {
+			mode: 'click',
+			blurToSave: true
+		};
 		return (
 			<div style={{ "background": "#f5f5f5" }}>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "登録成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "削除成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
@@ -216,16 +239,18 @@ class salesPointSet extends Component {
 								</Col>
 								<Col sm={3}>
 									<div style={{ "float": "right" }}>
-										<Button variant="info" size="sm" id="revise" onClick={this.insert} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faSave} />追加</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.insert} ><FontAwesomeIcon icon={faSave} />追加</Button>{' '}
 										<Button variant="info" size="sm" id="revise" onClick={this.update} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
 										<Button variant="info" size="sm" id="revise" onClick={this.delete} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faTrash} />削除</Button>{' '}
 									</div>
 								</Col>
 							</Row>
 							<div>
-								<BootstrapTable selectRow={selectRow} data={salesPointData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<BootstrapTable selectRow={selectRow} data={salesPointData} ref='table' pagination={true} options={this.options}
+									cellEdit={cellEditProp} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 									<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-									<TableHeaderColumn dataField='employee' width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>社員区分</TableHeaderColumn>
+									<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.state.employeeStatus } }} 
+									editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)} width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>社員区分</TableHeaderColumn>
 									<TableHeaderColumn dataField='newMember' width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>新人区分</TableHeaderColumn>
 									<TableHeaderColumn dataField='customerContract' width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>契約区分</TableHeaderColumn>
 									<TableHeaderColumn dataField='level' width='125' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様レベル</TableHeaderColumn>

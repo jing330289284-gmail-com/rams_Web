@@ -103,12 +103,29 @@ class masterUpdate extends Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					axios.post("http://127.0.0.1:8080/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+						.then(response => {
+							if (response.data != null) {
+								this.setState({
+									masterData: response.data,
+									flag: true,
+									data: ''
+								});
+							}
+							this.refs.table.setState({
+								selectedRowKeys: []
+							});
+						}).catch((error) => {
+							console.error("Error - " + error);
+						});
+
 				}
 			})
 			.catch((error) => {
 				console.error("Error - " + error);
 			});
+
+
 	}
 
 	/**
@@ -124,9 +141,36 @@ class masterUpdate extends Component {
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					axios.post("http://127.0.0.1:8080/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+						.then(response => {
+							if (response.data != null) {
+								this.setState({
+									masterData: response.data,
+									flag: true,
+									data: ''
+								});
+							}
+							this.refs.table.setState({
+								selectedRowKeys: []
+							});
+						}).catch((error) => {
+							console.error("Error - " + error);
+						});
 				})
 				.catch((error) => {
+					console.error("Error - " + error);
+				});
+			this.refs.table.setState({
+				selectedRowKeys: []
+			});
+			axios.post("http://127.0.0.1:8080/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+				.then(response => {
+					if (response.data != null) {
+						this.setState({
+							masterData: response.data
+						});
+					}
+				}).catch((error) => {
 					console.error("Error - " + error);
 				});
 		}
@@ -220,7 +264,7 @@ class masterUpdate extends Component {
 					</div>
 					<br />
 					<div>
-						<BootstrapTable selectRow={selectRow} data={masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+						<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 							<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
 						</BootstrapTable>

@@ -41,9 +41,9 @@ export function getFullYearMonth(date, now) {
 			returnMonths = returnMonths - 1;
 		}
 		if (returnYears === 0) {
-		yearmonth =  returnMonths + "か月";
-		}else{
-		yearmonth = returnYears + "年" + returnMonths + "か月";
+			yearmonth = returnMonths + "か月";
+		} else {
+			yearmonth = returnYears + "年" + returnMonths + "か月";
 		}
 		return yearmonth;
 	} else {
@@ -84,11 +84,11 @@ export function getPublicDropDown(methodNameList) {
 	$.ajax({
 		type: "POST",
 		url: "http://127.0.0.1:8080/initializationPage",
-		data:par,
+		data: par,
 		async: false,
-		contentType:"application/json",
+		contentType: "application/json",
 		success: function(resultList) {
-			for(let j = 0;j < resultList.length; j++){
+			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
 				for (var i in list) {
@@ -105,31 +105,29 @@ export function getPublicDropDown(methodNameList) {
 export function getPublicDropDownRtBtSpTleOnly(methodNameList) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
-	for (var i = 0; i < methodNameList.length; i++) {
-		$.ajax({
-			type: "POST",
-			data:par,
-			url: "http://127.0.0.1:8080/initializationPage",
-			contentType:"application/json",
-			async: false,
-			success: function(resultList) {
-				for(let j = 0;j < resultList.length; j++){
-					var array = [{ value: '', text: '選択ください' }];
-					var List = resultList[j];
-					for (var k in List) {
-						var arrayDetail1 = { value: '', text: '' }
-						if (List[k].code !== null) {
-							arrayDetail1 = { value: List[k].code, text: List[k].name }
-						} else {
-							arrayDetail1 = { value: List[k].value, text: List[k].label }
-						}
-						array.push(arrayDetail1)
+	$.ajax({
+		type: "POST",
+		data: par,
+		url: "http://127.0.0.1:8080/initializationPage",
+		contentType: "application/json",
+		async: false,
+		success: function(resultList) {
+			for (let j = 0; j < resultList.length; j++) {
+				var array = [{ value: '', text: '選択ください' }];
+				var List = resultList[j];
+				for (var k in List) {
+					var arrayDetail1 = { value: '', text: '' }
+					if (List[k].code !== null) {
+						arrayDetail1 = { value: List[k].code, text: List[k].name }
+					} else {
+						arrayDetail1 = { value: List[k].value, text: List[k].label }
 					}
-					outArray.push(array);
+					array.push(arrayDetail1)
 				}
+				outArray.push(array);
 			}
-		});
-	}
+		}
+	});
 	return outArray;
 }
 
@@ -342,7 +340,7 @@ export async function postcodeApi() {
 
 //　　年齢と和暦
 export async function calApi(date) {
-	
+
 	var birthDayTime = date.getTime();
 	var nowTime = new Date().getTime();
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
@@ -364,11 +362,11 @@ export function timeDiff(startTime, endTime) {
 	let startMinute = 0;
 	let endMinute = 0;
 	let temp = "";
-	
-	if (!startTime || !endTime)	{
+
+	if (!startTime || !endTime) {
 		result = "";
 	}
-	else	{
+	else {
 		temp = startTime.split(":");
 		startMinute = Number(temp[0]) * 60 + Number(temp[1]);
 		temp = endTime.split(":");
@@ -379,10 +377,10 @@ export function timeDiff(startTime, endTime) {
 }
 // 0130 -> 01:30
 export function timeInsertChar(time, inputChar) {
-	if (isNull(inputChar))	{
+	if (isNull(inputChar)) {
 		inputChar = ":";
 	}
-	return isEmpty(time)?"":time.substring(0,2) + inputChar + time.substring(2,4);
+	return isEmpty(time) ? "" : time.substring(0, 2) + inputChar + time.substring(2, 4);
 }
 //is Null?
 export function isNull(obj) {
@@ -394,6 +392,6 @@ export function isEmpty(obj) {
 }
 //Null to empty
 export function nullToEmpty(obj) {
-	return (isNull(obj))?"":obj;
+	return (isNull(obj)) ? "" : obj;
 }
 
