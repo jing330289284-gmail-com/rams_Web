@@ -394,4 +394,17 @@ export function isEmpty(obj) {
 export function nullToEmpty(obj) {
 	return (isNull(obj)) ? "" : obj;
 }
-
+/**
+ * お金の三枠でカンマ区切り
+ * @param {*} money strの数字
+ * @param {*} decimalPointFlag 小数点保留フラグ
+ */
+export function addComma(money,decimalPointFlag){
+	var moneyInt = parseInt(money.split(".")[0]);
+	var moneyPoi = parseInt(money.split(".")[1]);
+	var result = moneyInt.toLocaleString();
+	if(decimalPointFlag){//trueは保留
+		result += "." + moneyPoi;
+	}
+	return result;
+}

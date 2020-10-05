@@ -60,3 +60,9 @@ html,
   padding:0px;
   margin:0px;
 }
+.loginMark{
+  font-family: "黑体", Sans-serif;
+  font-size: 44px;
+  color:rgb(0, 0, 0);
+  font-weight: lighter;
+}
