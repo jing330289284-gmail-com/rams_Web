@@ -587,12 +587,12 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={12}>
 					<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'　 isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort={true} dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>

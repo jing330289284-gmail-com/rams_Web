@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import * as publicUtils from './utils/publicUtils.js';
 import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
-import $ from 'jquery';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
@@ -11,7 +9,7 @@ import { faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 
-class salesPointSet extends Component {
+class salesPointSet extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -20,7 +18,6 @@ class salesPointSet extends Component {
 	}
 
 	initialState = {
-		masterStatus: [],
 		no: '',
 		employee: '',
 		newMember: '',
@@ -101,9 +98,9 @@ class salesPointSet extends Component {
 	}
 	select = () => {
 		var salesPointSetModel = {};
-		salesPointSetModel["employee"] = this.state.employee
-		salesPointSetModel["newMember"] = this.state.newMember
-		salesPointSetModel["customerContract"] = this.state.customerContract
+		salesPointSetModel["employee"] = this.state.employeeSearch
+		salesPointSetModel["newMember"] = this.state.newMemberSearch
+		salesPointSetModel["customerContract"] = this.state.customerContractSearch
 		axios.post("http://127.0.0.1:8080/getSalesPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
@@ -121,28 +118,52 @@ class salesPointSet extends Component {
 	handleRowSelect = (row, isSelected) => {
 		this.setState({ updateFlag: true });
 		if (isSelected) {
-			this.setState({ no: row.no, updateFlag: false });
+			this.setState({
+				no: row.no,
+				employee: row.employee,
+				newMember: row.newMember,
+				customerContract: row.customerContract,
+				level: row.level,
+				salesPuttern: row.salesPuttern,
+				specialPoint: row.specialPoint,
+				point: row.point,
+				remark: row.remark,
+				updateFlag: false
+			});
+		} else {
+			this.setState({
+				updateFlag: true
+			});
 		}
 	}
 	/**
 	 * 修正ボタン
 	 */
 	update = () => {
-		var masterModel = {};
-		var formArray = $("#masterUpdateForm").serializeArray();
-		$.each(formArray, function(i, item) {
-			masterModel[item.name] = item.value;
-		});
-		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		masterModel["code"] = this.state.code;
-		axios.post("http://127.0.0.1:8080/masterUpdate/update", masterModel)
+		var salesPointSetModel = {};
+		salesPointSetModel["no"] = this.state.no
+		salesPointSetModel["employee"] = this.state.employee
+		salesPointSetModel["newMember"] = this.state.newMember
+		salesPointSetModel["customerContract"] = this.state.customerContract
+		salesPointSetModel["level"] = this.state.level
+		salesPointSetModel["salesPuttern"] = this.state.salesPuttern
+		salesPointSetModel["specialPoint"] = this.state.specialPoint
+		salesPointSetModel["point"] = this.state.point
+		salesPointSetModel["remark"] = this.state.remark
+		axios.post("http://127.0.0.1:8080/salesPointUpdate", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.refs.table.setState({
+						selectedRowKeys: []
+					});
+					this.setState({
+						updateFlag: true
+					});
+					this.select();
 				}
 			})
 			.catch((error) => {
@@ -162,7 +183,10 @@ class salesPointSet extends Component {
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.setState({
+						updateFlag: true
+					});
+					this.select();
 				})
 				.catch((error) => {
 					console.error("Error - " + error);
@@ -184,17 +208,18 @@ class salesPointSet extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { employee, newMember, customerContract, salesPointData, errorsMessageValue } = this.state;
+		const { employeeSearch, newMemberSearch, customerContractSearch, salesPointData, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
+			clickToSelectAndEditCell: true,
 			hideSelectColumn: true,
 			clickToSelect: true,  // click to select, default is false
 			clickToExpand: true,// click to expand row, default is false
 			onSelect: this.handleRowSelect,
 		};
-		const cellEditProp = {
+		const cellEdit = {
 			mode: 'click',
 			blurToSave: true
 		};
@@ -226,7 +251,7 @@ class salesPointSet extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.onchange} name="employee" value={employee} autoComplete="off" >
+										<Form.Control as="select" size="sm" onChange={this.onchange} name="employeeSearch" value={employeeSearch} autoComplete="off" >
 											<option value="">選択ください</option>
 											<option value="0">社員</option>
 											<option value="1">協力</option>
@@ -238,7 +263,7 @@ class salesPointSet extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">新人区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.onchange} name="newMember" value={newMember} autoComplete="off" >
+										<Form.Control as="select" size="sm" onChange={this.onchange} name="newMemberSearch" value={newMemberSearch} autoComplete="off" >
 											<option value="">選択ください</option>
 											<option value="0">新人</option>
 											<option value="1">経験者</option>
@@ -250,7 +275,7 @@ class salesPointSet extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">契約区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.onchange} name="customerContract" value={customerContract} autoComplete="off" >
+										<Form.Control as="select" size="sm" onChange={this.onchange} name="customerContractSearch" value={customerContractSearch} autoComplete="off" >
 											<option value="">選択ください</option>
 											<option value="0">既存</option>
 											<option value="1">新規</option>
@@ -271,35 +296,35 @@ class salesPointSet extends Component {
 							</Row>
 							<div>
 								<BootstrapTable selectRow={selectRow} data={salesPointData} ref='table' pagination={true} options={this.options}
-									cellEdit={cellEditProp} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+									cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 									<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.props.employeeStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>社員区分</TableHeaderColumn>
+										width='95' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='newMember' editable={{ type: 'select', options: { values: this.props.newMemberStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>新人区分</TableHeaderColumn>
+										width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='customerContract' editable={{ type: 'select', options: { values: this.props.customerContractStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.customerContractStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} headerAlign='center'>契約区分</TableHeaderColumn>
+										width='95' tdStyle={{ padding: '.45em' }} >契約区分</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='level' editable={{ type: 'select', options: { values: this.props.levelStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.levelStatusFormat.bind(this)}
-										width='125' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様レベル</TableHeaderColumn>
+										width='125' tdStyle={{ padding: '.45em' }} >お客様レベル</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='salesPuttern' editable={{ type: 'select', options: { values: this.props.salesPutternStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
-										width='155' tdStyle={{ padding: '.45em' }} headerAlign='center'>営業結果パタンー</TableHeaderColumn>
+										width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='specialPoint' editable={{ type: 'select', options: { values: this.props.specialPointStatus } }}
 										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.specialPointStatusFormat.bind(this)}
-										tdStyle={{ padding: '.45em' }} headerAlign='center'>特別ポイント条件</TableHeaderColumn>
+										tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell" headerAlign='center'>ポイント</TableHeaderColumn>
-									<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell" headerAlign='center'>備考</TableHeaderColumn>
+									<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
+									<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">備考</TableHeaderColumn>
 								</BootstrapTable>
 							</div>
 						</Form.Group>
