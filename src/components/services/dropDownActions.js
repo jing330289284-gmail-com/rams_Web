@@ -9,7 +9,7 @@ export const fetchDropDown = () => {
 			"getIntoCompany",// 1入社区分 
 			"getStaffForms", // 2 社員形式 
 			"getOccupation",// 3役割
-			"getEmployee",// 4社員区分
+			"getEmployeeStatus",// 4社員区分
 			"getJapaneseLevel",//5日本語
 			"getVisa",//6在留資格
 			"getNationalitys",// 7国籍 
