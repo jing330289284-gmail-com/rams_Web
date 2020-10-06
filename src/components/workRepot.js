@@ -53,7 +53,7 @@ class workRepot extends React.Component {
 		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
-				if (data != null) {
+				if (data.length!=0) {
 					var statuss = this.state.approvalStatuslist;
 					for(var i=0;i<data.length;i++){
 						for (var i2=0;i2<statuss.length;i2++) {
@@ -61,11 +61,14 @@ class workRepot extends React.Component {
 								data[i].approvalStatusName=statuss[i2].name;
 							}
 						}
+						if(data[i].workingTimeReport!=null){
+							let fileName=data[i].workingTimeReport.split("/");
+							data[i].workingTimeReportFile=fileName[fileName.length-1];
+						}
+				
 					}
 				} else {
-					data[0].approvalStatus=0;
-					data[0].approvalStatusName="未";
-					data[0].attendanceYearAndMonth=publicUtils.setFullYearMonth(new Date());
+					data.push({"approvalStatus":0,"approvalStatusName":"未","attendanceYearAndMonth":publicUtils.setFullYearMonth(new Date())});
 					}
 				this.setState({ 
 					employeeList: data
@@ -110,13 +113,17 @@ class workRepot extends React.Component {
     alert('PDF或いはexcelをアップロードしてください')
     return false;
   }
+if($("#getFile").get(0).files[0].size>1048576){
+	 alert('１M以下のファイルをアップロードしてください')
+    return false;
+}
 		const formData = new FormData()
 		const emp = {
 				attendanceYearAndMonth:this.state.rowSelectAttendanceYearAndMonth,
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post("http://127.0.0.1:8080/workRepot/insertWorkRepot",formData)
+			axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -208,7 +215,7 @@ class workRepot extends React.Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={"成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
 				</div>
 				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
@@ -243,12 +250,12 @@ class workRepot extends React.Component {
                     </Row>	
 					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
 						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
-						<TableHeaderColumn width='250'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
-						<TableHeaderColumn width='150'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
-						<TableHeaderColumn width='250' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } onBlur={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
+						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
+						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onBlur={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
-						<TableHeaderColumn width='450' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
+						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
