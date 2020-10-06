@@ -32,8 +32,8 @@ export const fetchDropDown = () => {
 			"getCustomerContractStatus",//24契約区分
 			"getSalesPuttern", //25営業結果パタンー
 			"getSpecialPoint",//26特別ポイント条件
-			"getApproval",//27approvalを取得する
-			"getCheckSection",//28CheckSectionを取得する
+			"getApproval",//27ステータスを取得する
+			"getCheckSection",//28確認区分を取得する
 		]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);
