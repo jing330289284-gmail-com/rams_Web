@@ -69,7 +69,7 @@ class siteSearch extends Component {
 	};
 	//全部のドロップダウン
 	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployee", "getEmployeeName"]
+		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployeeStatus", "getEmployeeName"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{

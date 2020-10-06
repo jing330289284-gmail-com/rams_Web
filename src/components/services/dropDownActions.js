@@ -9,7 +9,7 @@ export const fetchDropDown = () => {
 			"getIntoCompany",// 1入社区分 
 			"getStaffForms", // 2 社員形式 
 			"getOccupation",// 3役割
-			"getEmployee",// 4社員区分
+			"getEmployeeStatus",// 4社員区分
 			"getJapaneseLevel",//5日本語
 			"getVisa",//6在留資格
 			"getNationalitys",// 7国籍 
@@ -32,8 +32,8 @@ export const fetchDropDown = () => {
 			"getCustomerContractStatus",//24契約区分
 			"getSalesPuttern", //25営業結果パタンー
 			"getSpecialPoint",//26特別ポイント条件
-			"getApproval",//27approvalを取得する
-			"getCheckSection",//28CheckSectionを取得する
+			"getApproval",//27ステータスを取得する
+			"getCheckSection",//28確認区分を取得する
 		]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);
