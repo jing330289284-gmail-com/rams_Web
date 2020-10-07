@@ -47,7 +47,12 @@ class individualSales extends Component {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
-				} else {
+                }else if(response.data.noData!= null){
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+                    window.location.href = window.location.href
+                }
+                 else {
                     this.setState({ employeeInfoList: response.data.data })
                     this.setState({workMonthCount:this.state.employeeInfoList[0].workMonthCount})
                     this.feeTotal();
