@@ -335,9 +335,8 @@ export async function postcodeApi() {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
-					alert("必須パラメータが指定されていません。")//一時的な情報、後で修正します。
+					//alert("必須パラメータが指定されていません。")//一時的な情報、後で修正します。
 				}
-
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});

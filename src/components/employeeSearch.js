@@ -47,6 +47,7 @@ class employeeSearch extends React.Component {
 	resetStates = {
 		employeeNo: '', employeeName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
 		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
+		developLanguage1: '',developLanguage2: '',developLanguage3: '',
 	};
 
 	//初期化メソッド
@@ -76,9 +77,9 @@ class employeeSearch extends React.Component {
 			intoCompanyCode: this.state.intoCompanyCode,
 			japaneaseLeveCode: this.state.japaneaseLeveCode,
 			siteRoleCode: this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.props.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.props.developLanguageMaster),
+			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.props.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
@@ -221,7 +222,7 @@ class employeeSearch extends React.Component {
 			})
 		} else {
 			if (
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
 						this.setState({

@@ -58,6 +58,7 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = (event) => {
+		alert(publicUtils.nullToEmpty(this.state.postcode))
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -76,7 +77,7 @@ class employee extends React.Component {
 			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
 			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
 			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
-			companyMail: publicUtils.nullToEmpty(this.state.companyMail),//社内メール
+			companyMail:  publicUtils.nullToEmpty(this.state.companyMail) === ""?"":this.state.companyMail+"@lyc.co.jp",//社内メール
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
@@ -92,15 +93,15 @@ class employee extends React.Component {
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
 			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
 			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
-			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
-			firstHalfAddress: publicUtils.nullToEmpty(this.state.firstHalfAddress),
+			postcode: publicUtils.nullToEmpty(this.refs.postcode.value),//郵便番号
+			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster)),
-			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster)),
-			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
-			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
-			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
+			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.props.developLanguageMaster)),
+			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.props.developLanguageMaster)),
+			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.props.developLanguageMaster)),
+			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.props.developLanguageMaster)),
+			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.props.developLanguageMaster)),
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -111,7 +112,7 @@ class employee extends React.Component {
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
-			yearsOfExperience: publicUtils.nullToEmpty(this.state.yearsOfExperience),//経験年数
+			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
@@ -169,15 +170,15 @@ class employee extends React.Component {
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
 			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
 			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
-			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
-			firstHalfAddress: publicUtils.nullToEmpty(this.state.firstHalfAddress),
+			postcode: publicUtils.nullToEmpty(this.refs.postcode.value),//郵便番号
+			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster)),
-			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster)),
-			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
-			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
-			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
+			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.props.developLanguageMaster)),
+			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.props.developLanguageMaster)),
+			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.props.developLanguageMaster)),
+			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.props.developLanguageMaster)),
+			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.props.developLanguageMaster)),
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -188,7 +189,7 @@ class employee extends React.Component {
 			accountInfo: this.state.accountInfo,//口座情報
 			subCostInfo: this.state.subCostInfo,//諸費用
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
-			yearsOfExperience: publicUtils.nullToEmpty(this.state.yearsOfExperience),//経験年数
+			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
@@ -448,7 +449,7 @@ class employee extends React.Component {
 
 	//社員タイプが違う時に、色々な操作をします。
 	radioChangeEmployeeType = () => {
-		var val = $('input:radio[name="employeeType"]:checked').val();
+		let val =$('#employeeStatusId').val();
 		if (val === '1') {
 			this.setState({ companyMail: '', authorityCodes: [], BPFlag: true });
 			this.getNO("BP");
@@ -530,37 +531,37 @@ class employee extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.station.find((v) => (v.name === value)) !== undefined) {
+			if (this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.station.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'developLanguage1':
 						this.setState({
-							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage1: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage2':
 						this.setState({
-							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage2: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage3':
 						this.setState({
-							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage3: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage4':
 						this.setState({
-							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage4: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage5':
 						this.setState({
-							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage5: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'stationCode':
 						this.setState({
-							stationCode: this.state.station.find((v) => (v.name === value)).code,
+							stationCode: this.props.station.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -597,12 +598,11 @@ class employee extends React.Component {
 			})
 		}
 	}
-
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled, errorsMessageValue
+			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, detailDisabled, errorsMessageValue,employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		const genderStatuss = this.props.genderStatuss;
@@ -618,7 +618,7 @@ class employee extends React.Component {
 		const authorityCodes = this.props.authorityCodes;
 		const englishLeveCodes = this.props.englishLeveCodes;
 		const station = this.props.station;
-
+		const employeeStatusS = this.props.employeeStatusS;
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -675,9 +675,16 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={alphabetName} autoComplete="off" >
-										<option value="0">社員</option>
-										<option value="1">協力</option>
+									<Form.Control as="select" size="sm"
+										onChange={this.radioChangeEmployeeType.bind(this)}
+										name="employeeStatus" value={employeeStatus}
+										id="employeeStatusId"
+										autoComplete="off" disabled={detailDisabled ? false : true}>
+										{employeeStatusS.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
 									</Form.Control>
 								</InputGroup>
 							</Col>
@@ -1153,7 +1160,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />
+									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" disabled={detailDisabled ? false : true} />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1161,7 +1168,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" disabled />
+									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
@@ -1339,7 +1346,7 @@ const mapStateToProps = state => {
 		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
 		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
 		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
-		employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
+		employeeStatusS: state.data.dataReques.length >= 1 ? state.data.dataReques[4].slice(1) : [],
 		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
 		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
 		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
