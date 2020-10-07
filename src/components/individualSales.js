@@ -47,7 +47,12 @@ class individualSales extends Component {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
-				} else {
+                }else if(response.data.noData!= null){
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+                    window.location.href = window.location.href
+                }
+                 else {
                     this.setState({ employeeInfoList: response.data.data })
                     this.setState({workMonthCount:this.state.employeeInfoList[0].workMonthCount})
                     this.feeTotal();
@@ -94,9 +99,10 @@ class individualSales extends Component {
                 totalgrosProfits = parseInt(totalgrosProfits) + parseInt(this.state.employeeInfoList[i].grosProfits) 
             }
         }
-        this.setState({totalutilPrice:totalutilPrice})
-        this.setState({totalgrosProfits:totalgrosProfits})
-        this.setState({paymentTotal:paymentTotal})
+        
+        this.setState({totalutilPrice:publicUtils.addComma(totalutilPrice.toString(),false)})
+        this.setState({totalgrosProfits:publicUtils.addComma(totalgrosProfits.toString(),false)})
+        this.setState({paymentTotal:publicUtils.addComma(paymentTotal.toString(),false)})
     }
 	componentDidMount(){
         this.getDropDown();
@@ -150,7 +156,78 @@ class individualSales extends Component {
 			}
 		);
 	};
+    unitPriceAddComma(cell,row){
+        if(row.unitPrice ===null){
+            return 
+        }else{
+            let formatUprice = publicUtils.addComma(row.unitPrice , false);
+            return formatUprice;
+        }   
+    }
 
+    salaryAddComma(cell,row){
+        if(row.salary ===null){
+            return 
+        }else{
+            let formatSalary = publicUtils.addComma(row.salary , false);
+            return formatSalary;
+        }
+
+    }
+    transportationExpensesAddComma(cell,row){
+        if(row.transportationExpenses ===null){
+            return 
+        }else{
+            let formatTransportationExpenses = publicUtils.addComma(row.transportationExpenses , false);
+            return formatTransportationExpenses;
+        } 
+    }
+
+    insuranceFeeAmountAddComma(cell,row){
+        if(row.insuranceFeeAmount ===null){
+            return 
+        }else{
+            let formatInsuranceFeeAmount= publicUtils.addComma(row.insuranceFeeAmount , false);
+            return formatInsuranceFeeAmount;
+        } 
+    }
+
+    scheduleOfBonusAmountAddComma(cell,row){
+        if(row.scheduleOfBonusAmount ===null){
+            return 
+        }else{
+            let formatScheduleOfBonusAmount= publicUtils.addComma(row.scheduleOfBonusAmount , false);
+            return formatScheduleOfBonusAmount;
+        } 
+    }
+
+    leaderAllowanceAmountAddComma(cell,row){
+        if(row.leaderAllowanceAmount ===null){
+            return 
+        }else{
+            let formatLeaderAllowanceAmount= publicUtils.addComma(row.leaderAllowanceAmount , false);
+            return formatLeaderAllowanceAmount;
+        }    
+    }
+
+    otherAllowanceAmountAddComma(cell,row){
+        if(row. otherAllowanceAmount ===null){
+            return 
+        }else{
+            let formatOtherAllowanceAmount= publicUtils.addComma(row. otherAllowanceAmount , false);
+            return formatOtherAllowanceAmount;
+        }
+    }
+
+    grosProfitsAddComma(cell ,row){
+        if(row. grosProfits===null){
+            return 
+        }else{
+         let mGrosProfits = row. grosProfits.split('.')[0];
+         let formatmGrosProfits = publicUtils.addComma(mGrosProfits,false)
+         return formatmGrosProfits;
+        }
+    }
 render (){
     const { employeeName,errorsMessageValue } = this.state;
         return(
@@ -232,45 +309,28 @@ render (){
                         </InputGroup>                       
                     </Col>                    
                     <Col sm={4}>
-                    <Button variant="info" size="sm" id="search"style={{marginLeft:"90px",width:"90px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
+                    <Button variant="info" size="sm" id="search"style={{marginLeft:"100px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
                     </Col>
 
                 </Row>
 				<Row>
                     <Col sm={3}>
-                    <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Prepend>
                     <label>稼働月数：</label>
-                    </InputGroup.Prepend>
                     <label>{this.state.workMonthCount}</label>
-                    </InputGroup>
-                            
-						</Col>
+                    </Col>
                     
 						<Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Prepend>
                     <label>単価合計：</label>
-                    </InputGroup.Prepend>
                     <label>{this.state.totalutilPrice} </label>
-                    </InputGroup>
 						</Col>
 						<Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Prepend>
                     <label>支払合計：</label>
-                    </InputGroup.Prepend>
-                    <label>{this.state.paymentTotal} </label>
-                    </InputGroup>
+                      <label>{this.state.paymentTotal} </label>
 						</Col>
 						<Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                    <InputGroup.Prepend>
-                    <label>粗利合計:
+                    <label>粗利合計：
                     </label>
-                    </InputGroup.Prepend>
                     <label>{this.state.totalgrosProfits} </label>
-                    </InputGroup>
 						</Col>
 				</Row>
                 <div>
@@ -278,14 +338,14 @@ render (){
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='salary'>基本支給</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses'>交通代</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'>社会保険</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }}dataField='scheduleOfBonusAmount'>ボーナス</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='leaderAllowanceAmount'>リーダー手当</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='otherAllowanceAmount'>他の手当</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits'>粗利</TableHeaderColumn>         
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.unitPriceAddComma} >単価</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }}dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='leaderAllowanceAmount' dataFormat={this.leaderAllowanceAmountAddComma}>リーダー手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='otherAllowanceAmount' dataFormat={this.otherAllowanceAmountAddComma}>他の手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
 						
