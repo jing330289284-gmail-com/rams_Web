@@ -329,7 +329,7 @@ class CustomerInfoSearch extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="例：秋葉原駅" type="text" {...params.inputProps}
+                                                <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
                                                     style={{ width: 170, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                             </div>
                                         )}
@@ -378,7 +378,7 @@ class CustomerInfoSearch extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="上位お客様名" type="text" {...params.inputProps}
+                                                <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto"
                                                     style={{ width: 160, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                             </div>
                                         )}

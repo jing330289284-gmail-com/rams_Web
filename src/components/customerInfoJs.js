@@ -36,21 +36,6 @@ export function setDisabled(){
     $("#dateButton").attr("disabled",true);
 }
 /**
- * リセットブタン
- */
-export function reset(){
-  $("#customerName").val("");
-  $("#stationCode").val("");
-  $("#establishmentDate").val("");
-  $("#levelCode").val("0");
-  $("#listedCompany").val("0");
-  $("#companyNatureCode").val("0");
-  $("#url").val("");
-  $("#remark").val("");
-  $("#toBankInfo").attr("disabled",true);
-  $("#toCustomerInfo").attr("disabled",true);
-}
-/**
  * お客様名前を入力してないと、小さい画面を開けない
  */
 export function toDisabed(){

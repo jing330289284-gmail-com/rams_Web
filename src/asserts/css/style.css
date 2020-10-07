@@ -223,6 +223,14 @@ body {
   width: 40%;
   max-width: none !important;
 }
+.modal-accountInfo{
+  width: 30%;
+  max-width: none !important;
+}
+.modal-topCustomerInfo{
+  width: 28%;
+  max-width: none !important;
+}
 #datePicker {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -289,7 +297,7 @@ body {
 }
 #wagesInfoDatePicker {
   background-repeat: no-repeat;
-  width: 210px;
+  width: 205px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;

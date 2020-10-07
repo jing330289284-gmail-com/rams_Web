@@ -520,7 +520,7 @@ class WagesInfo extends Component {
                                             onChange={this.getWagesInfo}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="  例：田中" type="text" {...params.inputProps}
+                                                    <input placeholder="  例：田中" type="text" {...params.inputProps} className="auto"
                                                         style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                                 </div>
                                             )}

@@ -1,7 +1,10 @@
 import React,{Component} from 'react';
 import { BrowserRouter as Router, Route , withRouter} from "react-router-dom";
-import Login from './login';
-import SubMenu from './subMenu';
+import LoginManager from './loginManager';
+import Gate from './gate';
+import LoginEmployee from './loginEmployee';
+import SubMenuManager from './subMenuManager';
+import SubMenuEmployee from './subMenuEmployee';
 import axios from 'axios';
 axios.defaults.withCredentials=true;
 /**
@@ -12,8 +15,11 @@ class mainIn extends Component {
         return (
             <Router>
             <>
-                <Route exact path="/" component={Login} />
-				<Route path="/subMenu" component={SubMenu} />
+                <Route exact path="/" component={Gate} />
+                <Route path="/loginManager" component={LoginManager} />
+                <Route path="/loginEmployee" component={LoginEmployee} />
+				<Route path="/subMenuManager" component={SubMenuManager} />
+                <Route path="/subMenuEmployee" component={SubMenuEmployee} />
             </>
             </Router>
             
