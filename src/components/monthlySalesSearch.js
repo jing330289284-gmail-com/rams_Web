@@ -162,7 +162,6 @@ class monthlySalesSearch extends Component {
             grossProfitBack: '',
         });
     }
-
     totalfee = () =>{
         let unitPirceTotal = 0;
         let salaryTotal = 0;
@@ -414,28 +413,27 @@ class monthlySalesSearch extends Component {
                 <Row style = {{marginTop:"10px"}}>
                     <Col sm={2}>
                             <label>稼働人数：</label>
-                            <label id="workPeopleCount"name="workPeopleCount" >{this.state.workcount}</label>
+                            <label>{this.state.workcount}</label>
 						</Col>
                          
                     <Col sm={2}>
                             <label>単価総額：</label>
-                                            <label id="utilPirceTotal"name="utilPirceTotal">{this.state.unitPirceTotal}</label>
-						</Col>
+                            <label>{this.state.unitPirceTotal}</label>
+					</Col>
                     
-						<Col sm={2}>
+					<Col sm={2}>
                             <label>支給総額：</label>
-                                            <label id="salaryTotal" name="salaryTotal" >{this.state.salaryTotal}</label>
-						</Col>
-						<Col sm={2}>
-
+                            <label>{this.state.salaryTotal}</label>
+					</Col>
+					<Col sm={2}>
                             <label>非稼働総額：</label>
-                            <label id="TotalNonOperation" name="TotalNonOperation" type="text">{this.state.TotalNonOperation}</label>
-						</Col>
-						<Col sm={2}>
+                            <label>{this.state.TotalNonOperation}</label>
+					</Col>
+					<Col sm={2}>
                             <label>粗利総額：</label>
-                            <label id="grossProfitTotal" name="grossProfitTotal" type="text">{this.state.grossProfitTotal}</label>
-						</Col>
-                        <Col  className="text-right">
+                            <label>{this.state.grossProfitTotal}</label>
+					</Col>
+                    <Col  className="text-right">
 					<Button variant="info" size="sm" id="shusei">個人売上検索</Button>
                     </Col>
 				</Row>
