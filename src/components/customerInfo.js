@@ -530,6 +530,32 @@ class CustomerInfo extends Component {
             currentPage:currentPage,
         })
     }
+    /**
+     * リセットブタン
+     */
+    reset=()=>{
+        this.setState({
+            stationCode:'',
+            topCustomer:'',
+            establishmentDate: '',
+            businessStartDate: '',
+        })
+        $("#customerName").val("");
+        $("#stationCode").val("");
+        $("#establishmentDate").val("");
+        $("#levelCode").val("");
+        $("#listedCompanyFlag").val("0");
+        $("#companyNatureCode").val("");
+        $("#paymentsiteCode").val("");
+        $("#purchasingManagersMail").val("");
+        $("#purchasingManagers").val("");
+        $("#capitalStock").val("");
+        $("#customerAbbreviation").val("");
+        $("#representative").val("");
+        $("#url").val("");
+        $("#remark").val("");
+        $("#toBankInfo").attr("disabled",true);
+    }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
             , actionType, topCustomer, errorsMessageValue, message, type, positionDrop } = this.state;
@@ -589,7 +615,7 @@ class CustomerInfo extends Component {
                     <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
                 </div>
                 <div>
-                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-accountInfo"
                         onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal}>
                         <Modal.Header closeButton>
                         </Modal.Header>
@@ -597,7 +623,7 @@ class CustomerInfo extends Component {
                             <BankInfo accountInfo={accountInfo} actionType={actionType} accountTokuro={this.accountInfoGet} />
                         </Modal.Body>
                     </Modal>
-                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-topCustomerInfo"
                         onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
                         <Modal.Header closeButton>
                         </Modal.Header>
@@ -672,7 +698,7 @@ class CustomerInfo extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps}
+                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto"
                                                     style={{ width: 245, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                             </div>
                                         )}
@@ -744,7 +770,7 @@ class CustomerInfo extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="  例：富士通" type="text" {...params.inputProps}
+                                                <input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto"
                                                     style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                             </div>
                                         )}
@@ -836,7 +862,7 @@ class CustomerInfo extends Component {
                             <Col sm={7}>
                             </Col>
                             <Col className="text-right">
-                                <Button size="sm" variant="info" id="reset" onClick={customerInfoJs.reset} >
+                                <Button size="sm" variant="info" id="reset" onClick={this.reset} >
                                     <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                             </Col>
@@ -850,7 +876,7 @@ class CustomerInfo extends Component {
                                 <div style={{ "float": "right" }}>
                                     <Button size="sm" variant="info" onClick={this.insertRow} id="insertRow" type="button">
                                         <FontAwesomeIcon icon={faSave} />追加
-                        </Button>
+                        </Button>{" "}
                                     <Button size="sm" onClick={this.listDelete} variant="info" id="sakujo" type="button">
                                         <FontAwesomeIcon icon={faTrash} />删除
                         </Button>
