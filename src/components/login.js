@@ -1,133 +1,134 @@
-import React,{Component} from 'react';
+import React, { Component } from 'react';
 import '../asserts/css/login.css';
 import title from '../asserts/images/LYCmark.png';
 import $ from 'jquery'
 import axios from 'axios';
-import { Row,  Col , Form , Button , InputGroup , FormControl} from 'react-bootstrap';
+import { Row, Col, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import ErrorsMessageToast from './errorsMessageToast';
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
 class Login extends Component {
 	state = {
-		yztime:59,
-		buttonText:"SMSを発信する",
-		btnDisable:false,
-		time:60,
+		yztime: 59,
+		buttonText: "SMSを発信する",
+		btnDisable: false,
+		time: 60,
 		errorsMessageShow: false,
-        errorsMessageValue:'',
+		errorsMessageValue: '',
 	}
-	componentWillMount(){
-		$("#sendVerificationCode").attr("disabled",true);
-		$("#login").attr("disabled",true);
+	componentWillMount() {
+		$("#sendVerificationCode").attr("disabled", true);
+		$("#login").attr("disabled", true);
 		//axios.get("/init")
 		axios.post("http://127.0.0.1:8080/login/init")
-		.then(resultMap =>{
-			if(resultMap.data){
-				this.props.history.push("/subMenu");
-			}
-		})
+			.then(resultMap => {
+				if (resultMap.data) {
+					this.props.history.push("/subMenu");
+				}
+			})
 	}
 	/**
 	 * ログインボタン
 	 */
-	login = () =>{
+	login = () => {
 		var loginModel = {};
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
 		//axios.post("/login" ,loginModel)
-		axios.post("http://127.0.0.1:8080/login/login",loginModel)
-		.then(result =>{
-				if(result.data.errorsMessage === null || result.data.errorsMessage === undefined){
+		axios.post("http://127.0.0.1:8080/login/login", loginModel)
+			.then(result => {
+				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
 					this.props.history.push("/subMenu");
-				}else{
-					this.setState({ "errorsMessageShow": true,errorsMessageValue:result.data.errorsMessage});
+				} else {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				}
 			})
 			.catch(function (error) {
-				this.setState({ "errorsMessageShow": true,errorsMessageValue:"程序错误"});
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
 			});
 	}
-    render() {
-		const {errorsMessageValue , } = this.state;
+	render() {
+		const { errorsMessageValue, } = this.state;
 		let timeChange;
 		let ti = this.state.time;
 		//关键在于用ti取代time进行计算和判断，因为time在render里不断刷新，但在方法中不会进行刷新
-		const clock =()=>{
-		  if (ti > 0) {
-			//当ti>0时执行更新方法
-			 ti = ti - 1;
-			 this.setState({
-				time: ti,
-				buttonText: ti + "s後再発行",
-			  });
-		  }else{
-			//当ti=0时执行终止循环方法
-			clearInterval(timeChange);
-			this.setState({
-			  btnDisable: false,
-			  time: 60,
-			  buttonText: "SMSを発信する",
-			});
-		  }
+		const clock = () => {
+			if (ti > 0) {
+				//当ti>0时执行更新方法
+				ti = ti - 1;
+				this.setState({
+					time: ti,
+					buttonText: ti + "s後再発行",
+				});
+			} else {
+				//当ti=0时执行终止循环方法
+				clearInterval(timeChange);
+				this.setState({
+					btnDisable: false,
+					time: 60,
+					buttonText: "SMSを発信する",
+				});
+			}
 		};
-	
-		const sendCode = () =>{
-		  var loginModel = {};
-		  loginModel["employeeNo"] = $("#employeeNo").val();
-		  loginModel["password"] = $("#password").val();
-		//axios.post("/sendVerificationCode" ,loginModel)
 
-			axios.post("http://127.0.0.1:8080/login/sendVerificationCode",loginModel)
-			.then(result =>{
-				if(result.data.errorsMessage !== null && result.data.errorsMessage !== undefined){
-					this.setState({ errorsMessageShow: true,errorsMessageValue:result.data.errorsMessage});
-				}else{
-					this.setState({
-						btnDisable: true,
-						buttonText: "60s後再発行",
+		const sendCode = () => {
+			var loginModel = {};
+			loginModel["employeeNo"] = $("#employeeNo").val();
+			loginModel["password"] = $("#password").val();
+			//axios.post("/sendVerificationCode" ,loginModel)
+
+			axios.post("http://127.0.0.1:8080/login/sendVerificationCode", loginModel)
+				.then(result => {
+					if (result.data.errorsMessage !== null && result.data.errorsMessage !== undefined) {
+						this.setState({ errorsMessageShow: true, errorsMessageValue: result.data.errorsMessage });
+					} else {
+						this.setState({
+							btnDisable: true,
+							buttonText: "60s後再発行",
 						});
-					$("#verificationCode").attr("readOnly",false);
-					$("#login").attr("disabled",false);
-					//每隔一秒执行一次clock方法
-						timeChange = setInterval(clock,1000);
-				}
-			})
+						alert(result.data.verificationCode);
+						$("#verificationCode").attr("readOnly", false);
+						$("#login").attr("disabled", false);
+						//每隔一秒执行一次clock方法
+						timeChange = setInterval(clock, 1000);
+					}
+				})
 		};
 		return (
 			<div className="loginBody">
-				<div style={{"marginTop":"10%"}}>
-				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
-				</div>
-				<div style={{"textAlign":"center"}}>
-					<img className="mb-4" alt="title" src={title}/><a className="loginMark">LYC株式会社</a>
-				</div>
-			<Form className="form-signin" id="loginForm">
-				<Form.Group controlId="formBasicEmail" >
-					<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required/>
-					<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} required/>
-				</Form.Group>
-				<InputGroup className="mb-3" size="sm">
-					<FormControl
-					size="sm"
-					placeholder="検証番号"
-					id="verificationCode" name="verificationCode"
-					readOnly
-					required
-					/>
-					<InputGroup.Append>
-					<Button size="sm" variant="info" id="sendVerificationCode" disabled={this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
-					</InputGroup.Append>
-				</InputGroup>
-				<Button variant="primary" id="login" onClick={this.login} block type="button">
-					ログイン
+				<div style={{ "marginTop": "10%" }}>
+					<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+						<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+					</div>
+					<div style={{ "textAlign": "center" }}>
+						<img className="mb-4" alt="title" src={title} />{"   "}<a className="loginMark">LYC株式会社</a>
+					</div>
+					<Form className="form-signin" id="loginForm">
+						<Form.Group controlId="formBasicEmail" >
+							<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} required />
+							<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} required />
+						</Form.Group>
+						<InputGroup className="mb-3" size="sm">
+							<FormControl
+								size="sm"
+								placeholder="検証番号"
+								id="verificationCode" name="verificationCode"
+								readOnly
+								required
+							/>
+							<InputGroup.Append>
+								<Button size="sm" variant="info" id="sendVerificationCode" disabled={this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
+							</InputGroup.Append>
+						</InputGroup>
+						<Button variant="primary" id="login" onClick={this.login} block type="button">
+							ログイン
 				</Button>
-			</Form>					
+					</Form>
+				</div>
 			</div>
-			</div>
-			)
-		}
+		)
+	}
 }
 
 export default Login;

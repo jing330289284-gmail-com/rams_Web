@@ -47,6 +47,7 @@ class employeeSearch extends React.Component {
 	resetStates = {
 		employeeNo: '', employeeName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
 		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
+		developLanguage1: '',developLanguage2: '',developLanguage3: '',
 	};
 
 	//初期化メソッド
@@ -76,9 +77,9 @@ class employeeSearch extends React.Component {
 			intoCompanyCode: this.state.intoCompanyCode,
 			japaneaseLeveCode: this.state.japaneaseLeveCode,
 			siteRoleCode: this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.props.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.props.developLanguageMaster),
+			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.props.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
@@ -221,7 +222,7 @@ class employeeSearch extends React.Component {
 			})
 		} else {
 			if (
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
 						this.setState({
@@ -587,12 +588,12 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={12}>
 					<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' dataSort={true} caretRender={publicUtils.getCaret} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'　 isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort={true} dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>

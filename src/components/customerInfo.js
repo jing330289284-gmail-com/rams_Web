@@ -47,6 +47,7 @@ class CustomerInfo extends Component {
         positionDrop: [],
         typeOfIndustryDrop: [],
         developLanguageDrop: [],
+        currentPage:1,//今のページ
     }
     /**
      *  設立のonChange
@@ -229,9 +230,7 @@ class CustomerInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     window.location.reload();
-                }else if(result.data === "1" || result.data === "2" || result.data === "3" || result.data === "4"){
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様部門の更新がエラーを発生している" });
-                } else {
+                }else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
@@ -348,7 +347,9 @@ class CustomerInfo extends Component {
                 departmentList[i].rowNo = (i + 1);
             }
         }
+        var currentPage = Math.ceil(departmentList.length/5);
         this.setState({
+            currentPage:currentPage,
             customerDepartmentList: departmentList,
             rowNo: '',
             customerDepartmentNameValue: '',
@@ -523,8 +524,10 @@ class CustomerInfo extends Component {
         customerDepartment["developLanguageCode1"] = "";
         customerDepartment["developLanguageCode2"] = "";
         customerDepartmentList.push(customerDepartment);
+        var currentPage = Math.ceil(customerDepartmentList.length/5);
         this.setState({
             customerDepartmentList:customerDepartmentList,
+            currentPage:currentPage,
         })
     }
     render() {
@@ -552,9 +555,11 @@ class CustomerInfo extends Component {
         }
         //テーブルの定義
         const options = {
-            id: "deparmentTable",
+            onPageChange: page => {
+				this.setState({ currentPage: page });
+			},
+			page: this.state.currentPage,
             noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
-            page: 1,  // which page you want to show as default
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
@@ -614,6 +619,7 @@ class CustomerInfo extends Component {
                             上位お客様
                         </Button>
                     </div>
+                    <br/>
                     <Form id="customerForm">
                         <Row>
                             <Col sm={3}>
@@ -880,15 +886,9 @@ class CustomerInfo extends Component {
                         <input type="hidden" id="employeeNo" name="employeeNo" />
                 </div>
                 <div style={{ "textAlign": "center" }}>
-                    {actionType === "update" ?
                         <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />更新
+                            <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
                         </Button>
-                        :
-                        <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />登録
-                        </Button>
-                    }
                 </div>
             </div>
         );

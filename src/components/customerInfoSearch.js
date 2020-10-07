@@ -206,12 +206,15 @@ class CustomerInfoSearch extends Component {
      * 取引開始のonChange 
      */
     businessStartDateChange = date => {
-        this.setState({
-            businessStartDate: date,
-        });
-        let month = date.getMonth() + 1;
-        $("#businessStartDate").val(date.getFullYear() + '' + (month < 10 ? '0' + month : month));
-
+        if (date !== null) {
+            this.setState({
+                businessStartDate: date,
+            });
+        } else {
+            this.setState({
+                businessStartDate: '',
+            });
+        }
     };
     /**
     * 稼働テーブル

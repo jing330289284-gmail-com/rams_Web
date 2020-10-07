@@ -69,7 +69,7 @@ class monthlySalesSearch extends Component {
 		);
     }   
     getDropDownｓ = () => {
-		var methodArray = ["getStaffForms" ,"getOccupation","getEmployee"];
+		var methodArray = ["getStaffForms" ,"getOccupation","getEmployeeStatus"];
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
 			{

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../asserts/css/login.css';
-import title from '../asserts/images/title.png';
+import title from '../asserts/images/LYCmark.png';
 import $ from 'jquery'
 import axios from 'axios';
 import { Row, Col, Form, Button } from 'react-bootstrap';
@@ -20,16 +20,16 @@ class Login2 extends Component {
 		errorsMessageShow: false,
 		errorsMessageValue: '',
 	}
-	// componentWillMount(){
-	// 	$("#sendVerificationCode").attr("disabled",true);
-	// 	$("#login").attr("disabled",true);
-	// 	axios.post("http://127.0.0.1:8080/login/init")
-	// 	.then(resultMap =>{
-	// 		if(resultMap.data){
-	// 			this.props.history.push("/subMenu");
-	// 		}
-	// 	})
-	// }
+	componentWillMount() {
+		$("#sendVerificationCode").attr("disabled", true);
+		$("#login").attr("disabled", true);
+		axios.post("http://127.0.0.1:8080/login2/init")
+			.then(resultMap => {
+				if (resultMap.data) {
+					this.props.history.push("/subMenu");
+				}
+			})
+	}
 	/**
 	 * ログインボタン
 	 */
@@ -38,7 +38,7 @@ class Login2 extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		axios.post("http://127.0.0.1:8080/login/login", loginModel)
+		axios.post("http://127.0.0.1:8080/login2/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {//ログイン成功
 					this.props.history.push("/subMenu");
@@ -96,31 +96,32 @@ class Login2 extends Component {
 				})
 		};
 		return (
-			<div style={{ marginTop: "10%" }} >
-				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
-				</div>
-				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
-				</div>
-				<Row>
-					<Col sm={5}></Col>
-					<Col sm={7}>
-						<img className="mb-4" alt="title" src={title} />
-					</Col>
-				</Row>
-				<Form className="form-signin" id="loginForm">
-					<Form.Group>
-						<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} />
-						<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} />
-					</Form.Group>
-				</Form>
-				<div className="text-center form-signin">
-					<button onClick={sendMail} disabled={this.state.btnDisable} className="btn btn-link">{this.state.buttonText}</button>
-					<br />
-					<Button variant="primary" id="login" block onClick={this.login} type="button">
-						ログイン
-				</Button>
+			<div className="loginBody" >
+				<div style={{ "marginTop": "10%" }}>
+					<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+						<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+					</div>
+					<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+						<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+					</div>
+					<div style={{ "textAlign": "center" }}>
+						<img className="mb-4" alt="title" src={title} />{"   "}<a className="loginMark">LYC株式会社</a>
+					</div>
+					<Form className="form-signin" id="loginForm">
+						<Form.Group>
+							<Form.Control id="employeeNo" name="employeeNo" maxLength="6" type="text" placeholder="社员番号" onChange={this.setReadOnly} />
+							<Form.Control id="password" name="password" maxLength="12" type="password" placeholder="Password" onChange={this.setReadOnly} />
+						</Form.Group>
+					</Form>
+					<div className="form-signin">
+						<div className="text-center">
+							<button onClick={sendMail} disabled={this.state.btnDisable} className="btn btn-link">{this.state.buttonText}</button>
+							<br />
+							<Button variant="primary" id="login" block onClick={this.login} type="button">
+								ログイン
+							</Button>
+						</div>
+					</div>
 				</div>
 			</div>
 		)
