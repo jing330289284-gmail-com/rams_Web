@@ -58,7 +58,6 @@ class employee extends React.Component {
 	};
 	//　　登録
 	insertEmployee = (event) => {
-		alert(publicUtils.nullToEmpty(this.state.postcode))
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -275,7 +274,6 @@ class employee extends React.Component {
 		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
-				$("input:radio[value=" + data.employeeStatus + "]").attr('checked', 'true');
 				this.setState({
 					BPFlag: data.employeeStatus === "0" ? false : true,
 					employeeNo: data.employeeNo,//社員番号
@@ -449,6 +447,7 @@ class employee extends React.Component {
 
 	//社員タイプが違う時に、色々な操作をします。
 	radioChangeEmployeeType = () => {
+		alert($('#employeeStatusId').val())
 		let val =$('#employeeStatusId').val();
 		if (val === '1') {
 			this.setState({ companyMail: '', authorityCodes: [], BPFlag: true });
@@ -764,7 +763,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" readOnly />
+									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" disabled />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -775,7 +774,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" readOnly />
+									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -881,7 +880,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_graduationYearAndMonth" value={temporary_graduationYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_graduationYearAndMonth" value={temporary_graduationYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -903,7 +902,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -925,7 +924,7 @@ class employee extends React.Component {
 											autoComplete="off"
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -949,7 +948,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1149,7 +1148,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1247,7 +1246,7 @@ class employee extends React.Component {
 											disabled={detailDisabled ? false : true}
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
