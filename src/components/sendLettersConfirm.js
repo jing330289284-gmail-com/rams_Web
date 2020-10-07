@@ -30,7 +30,7 @@ initialState=({
 componentDidMount(){
 	this.searchEmpDetail();
 }
-searchEmpDetail=(empNos)=>{
+searchEmpDetail=()=>{
 	axios.post("http://127.0.0.1:8080/sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
 	.then(result=>{
 		this.setState({
@@ -50,7 +50,7 @@ searchEmpDetail=(empNos)=>{
 		})
 	})
 	.catch(function(error) {
-				alert("ERR");
+				alert(error);
 			});
 }
 	render() {

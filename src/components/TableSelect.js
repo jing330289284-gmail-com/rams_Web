@@ -89,13 +89,13 @@ class TableSelect extends React.Component {
 
 	onchange = (event, values) => {
 		if (this.props.flag === 1) {
-			this.props.dropdowns.getCustomerNo(values === null ? this.props.dropdowns.state.customerNo : values.value);
+			this.props.dropdowns.getCustomerNo(values === null ? this.props.dropdowns.state.customerNo : values.code);
 		} else if (this.props.flag === 2) {
-			this.props.dropdowns.getSalesProgressCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.value);
+			this.props.dropdowns.getSalesProgressCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.code);
 		} else if (this.props.flag === 3) {
-			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.value);
+			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.code);
 		} else if (this.props.flag === 4) {
-			this.props.dropdowns.getCustomerContract(values === null ? this.props.dropdowns.state.customerContractStatus : values.value);
+			this.props.dropdowns.getCustomerContract(values === null ? this.props.dropdowns.state.customerContractStatus : values.code);
 		} else if (this.props.flag === 5) {
 			this.props.dropdowns.getCustomerDepartment(values === null ? this.props.dropdowns.state.customerDepartmentNameDrop : values.code);
 		} else if (this.props.flag === 6) {
@@ -119,7 +119,7 @@ class TableSelect extends React.Component {
 					ref='inputRef'
 					blurOnSelect={true}
 					options={this.state.allOption}
-					value={this.state.allOption.find(v => v.value === this.state.selectedValue) || ""}
+					value={this.state.allOption.find(v => v.code === this.state.selectedValue) || ""}
 					onChange={this.onchange}
 					getOptionLabel={(option) => option.name?option.name:""}
 					renderInput={(params) => (
