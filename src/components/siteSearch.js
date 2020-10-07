@@ -96,7 +96,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '', employeeName: ''
+		developLanguageCode: '', stationCode: '', employeeName: '',payOffRange1:'0'
 	};
 
 	// AUTOSELECT select事件

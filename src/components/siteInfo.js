@@ -415,7 +415,7 @@ class siteInfo extends Component {
 												disabled={this.state.employeeName === '' ? true : false}
 											/>
 										</InputGroup.Prepend>
-										<FormControl id="time" name="time" value={time} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" readOnly />
+										<FormControl id="time" name="time" value={time} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 										<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									</InputGroup>
 								</Col>
