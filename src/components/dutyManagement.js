@@ -73,7 +73,7 @@ class dutyManagement extends React.Component {
 				var totalPersons=0;
 				var averageWorkingTime=0;
 				var totalWorkingTime=0;
-				if (response.data != null) {
+				if (response.data.length>0) {
 					var totalPersons=response.data.length;
 					var approvalStatusstatuss = this.props.approvalStatuslist;
 					var checkSectionstatuss = this.props.checkSectionlist;
@@ -97,10 +97,12 @@ class dutyManagement extends React.Component {
 					if(isNaN(averageWorkingTime)){
 						averageWorkingTime=0
 					}
-					this.setState({ employeeList: response.data,totalPersons: response.data.length,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
 				} else {
-					alert("err")
+					var totalPersons="";
+					var averageWorkingTime="";
+					var totalWorkingTime="";
 				}
+				this.setState({ employeeList: response.data,totalPersons: totalPersons,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
 			}
 			);
 	}
