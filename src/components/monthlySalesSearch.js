@@ -1,25 +1,23 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , select, FormControl , Tooltip,} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , FormControl , select , Tooltip,} from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Autosuggest from 'react-autosuggest';
-import { faSave, faUndo, faSearch , faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faUndo, faSearch  } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
-import { TableBody } from '@material-ui/core';
-import { parse } from '@fortawesome/fontawesome-svg-core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
+import { Route } from 'react-router-dom';
 
 class monthlySalesSearch extends Component {
     state = { 
-        individualSales_YearAndMonth:'',
+        monthlySales_YearAndMonth:'',
+        monthlySales_startYearAndMonth:'',
+        monthlySales_endYearAndMonth:'',
         utilPricefront:'',
         utilPriceback:'',
         salaryfront:'',
@@ -27,6 +25,7 @@ class monthlySalesSearch extends Component {
         grossProfitFront:'',
         grossProfitBack:'',
         nowYandM:'',
+        kadou:'',
      }
      constructor(props){
         super(props);
@@ -90,27 +89,32 @@ class monthlySalesSearch extends Component {
             [key]: value
             })
         }
-        // if((reg.test(utilPriceback) && utilPriceback.length<3)){
-        //     this.setState({
-        //         utilPriceback: utilPriceback
-        //     })
-        // }
     } 
-	individualSalesYearAndMonthChange = date => {
+    monthlySalesStartYearAndMonthChange = date => {
         if(date !== null){
             this.setState({
-                individualSales_YearAndMonth: date,
-                fiscalYear:'',
+                monthlySales_startYearAndMonth: date,
             });
         }else{
             this.setState({
-                individualSales_YearAndMonth: '',
+                monthlySales_startYearAndMonth: '',
+            });
+        }
+    };
+    
+    monthlySalesEndYearAndMonthChange = date => {
+        if(date !== null){
+            this.setState({
+                monthlySales_endYearAndMonth: date,
+            });
+        }else{
+            this.setState({
+                monthlySales_endYearAndMonth: '',
             });
         }
 	};
     searchMonthlySales = () => { 
 		const monthlyInfo = {
-            nowYandM: publicUtils.formateDate(this.state.individualSales_YearAndMonth,false),
             employeeClassification:this.state.employeeClassification,
             employeeForms:this.state.employeeForms,
             employeeOccupation:this.state.employeeOccupation,
@@ -121,29 +125,31 @@ class monthlySalesSearch extends Component {
             salaryback:this.state.salaryback,
             grossProfitFront:this.state.grossProfitFront,
             grossProfitBack:this.state.grossProfitBack,
+            startYandM: publicUtils.formateDate(this.state.monthlySales_startYearAndMonth,false),
+            endYandM: publicUtils.formateDate(this.state.monthlySales_endYearAndMonth,false),
 
         };
-        
- 
 		axios.post("http://127.0.0.1:8080/monthlySales/searchMonthlySales", monthlyInfo)
 			.then(response => {
-				// if (response.data.errorsMessage != null) {
-                //     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
-				// 	setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
-				// } else {
+				if (response.data.errorsMessage != null) {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+                }else if(response.data.noData != null){
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+                    window.location.href = window.location.href
+                }else {
                     this.setState({ monthlySalesInfoList: response.data.data })
-                    this.totalfee()
-                //     this.setState({workMonthCount:this.state.employeeInfoList[0].workMonthCount})
-					
-				// }
+                    this.totalfee()	
+				 }
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
-        //}
-    }
+        }
     resetForm= () =>{
         this.setState({
-            individualSales_YearAndMonth: '',
+            monthlySales_startYearAndMonth: '',
+            monthlySales_endYearAndMonth: '',
             employeeClassification: '',
             employeeForms: '',
             employeeOccupation: '',
@@ -168,6 +174,7 @@ class monthlySalesSearch extends Component {
                 unitPirceTotal = parseInt(unitPirceTotal) + 0;
             }else{
                 unitPirceTotal = parseInt(unitPirceTotal)+parseInt(this.state.monthlySalesInfoList[i].unitPrice)
+                workcount++;
             }
             if(this.state.monthlySalesInfoList[i].salary == null||this.state.monthlySalesInfoList[i].salary == ""){
                 salaryTotal = salaryTotal + 0;
@@ -178,7 +185,7 @@ class monthlySalesSearch extends Component {
                 TotalNonOperation = parseInt(TotalNonOperation) + 0;
             }else{
                 TotalNonOperation = parseInt(TotalNonOperation) + parseInt(this.state.monthlySalesInfoList[i].waitingCost) 
-                workcount++;
+                
             }
 
             if(this.state.monthlySalesInfoList[i].monthlyGrosProfits==null||this.state.monthlySalesInfoList[i].monthlyGrosProfits==""){
@@ -187,32 +194,97 @@ class monthlySalesSearch extends Component {
                 grossProfitTotal = parseInt(grossProfitTotal) + parseInt(this.state.monthlySalesInfoList[i].monthlyGrosProfits) 
             }
         }
-        this.setState({unitPirceTotal:unitPirceTotal})
-        this.setState({salaryTotal:salaryTotal})
-        this.setState({TotalNonOperation:TotalNonOperation})
-        this.setState({grossProfitTotal:grossProfitTotal})
+        this.setState({unitPirceTotal:publicUtils.addComma(unitPirceTotal.toString(),false)})
+        this.setState({salaryTotal:publicUtils.addComma(salaryTotal.toString(),false)})
+        this.setState({TotalNonOperation:publicUtils.addComma(TotalNonOperation.toString(),false)})
+        this.setState({grossProfitTotal:publicUtils.addComma(grossProfitTotal.toString(),false)})
         this.setState({workcount:workcount})
+    }
+
+	
+
+
+    formatStayPeriod(code) {
+    let positionsTem = this.state.employeeStatuss;
+		for (var i in positionsTem) {
+			if (code === positionsTem[i].code) {
+				return positionsTem[i].name;
+			}
+		}
+    }
+    
+    unitPriceAddComma(cell,row){
+        if(row.unitPrice ===null){
+            return 
+        }else{
+            let formatUprice = publicUtils.addComma(row.unitPrice , false);
+            return formatUprice;
+        }   
+    }
+
+    salaryAddComma(cell,row){
+        if(row.salary ===null){
+            return 
+        }else{
+            let formatSalary = publicUtils.addComma(row.salary , false);
+            return formatSalary;
+        }   
+    }
+
+    otherFeeAddComma(cell,row){
+        if(row.otherFee ===null){
+            return 
+        }else{
+            let formatOtherFee = publicUtils.addComma(row.otherFee , false);
+            return formatOtherFee;
+        } 
+    }
+
+    waitingCostAddComma(cell, row){
+        if(row.waitingCost ===null){
+            return
+        }else{
+            let formatwaitingCost = publicUtils.addComma(row.waitingCost , false)
+            return formatwaitingCost;
+        }
+    }
+
+    monthlyGrosProfitsAddComma(cell ,row){
+       if(row.monthlyGrosProfits===null){
+           return 
+       }else{
+        let mGrosProfits = row.monthlyGrosProfits.split('.')[0];
+        let formatmGrosProfits = publicUtils.addComma(mGrosProfits,false)
+        return formatmGrosProfits;
+       }
+        
 
     }
     render(){
-        const { kadou,employeeOccupation,employeeForms,employeeClassification}= this.state;
+        const { kadou,employeeOccupation,employeeForms,employeeClassification ,errorsMessageValue}= this.state;
+        // const employeeStatuss = this.props.employeeStatuss;
+        // const employeeFormCodes = this.props.employeeFormCodes;
+        // const  occupationCodes= this.props.occupationCodes;
+
         return(
-            
-            <div>
+            <div>   
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
                 <Form>
                 <Row inline="true">
                      <Col  className="text-center">
                     <h2>月次売上検索</h2>
                     </Col> 
                 </Row>
+                <br/>
 				<Row>
-				<Col sm={3}>
-                <InputGroup size="sm" className="mb-3">
+                    <Col sm={6}>
+                        <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
-                            <DatePicker
-                                selected={this.state.individualSales_YearAndMonth}
-                                onChange={this.individualSalesYearAndMonthChange}
+                            <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
+                                selected={this.state.monthlySales_startYearAndMonth}
+                                onChange={this.monthlySalesStartYearAndMonthChange}
                                 dateFormat={"yyyy MM"}
                                 autoComplete="off"
                                 locale="pt-BR"
@@ -220,16 +292,27 @@ class monthlySalesSearch extends Component {
                                 showFullMonthYearPicker
                                 showDisabledMonthNavigation
                                 className="form-control form-control-sm"
-                                id="monthlysalesSearchDatePicker"
+                                id="personalsalesSearchDatePicker"
                                 dateFormat={"yyyy/MM"}
-                                name="individualSales_YearAndMonth"
+                                name="individualSales_startYearAndMonth"
+                                locale="ja">
+								</DatePicker><font id="mark">～</font><DatePicker
+                                selected={this.state.monthlySales_endYearAndMonth}
+                                onChange={this.monthlySalesEndYearAndMonthChange}
+                                dateFormat={"yyyy MM"}
+                                autoComplete="off"
+                                locale="pt-BR"
+                                showMonthYearPicker
+                                showFullMonthYearPicker
+                                showDisabledMonthNavigation
+                                className="form-control form-control-sm"
+                                id="personalsalesSearchBackDatePicker"
+                                dateFormat={"yyyy/MM"}
+                                name="individualSales_endYearAndMonth"
                                 locale="ja">
 								</DatePicker>
-                                </InputGroup.Prepend>
-                        </InputGroup>
-                    </Col>
-                    <Col sm={3}>
-                    <p id ="individualSalesErrmsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger"></p>
+                            </InputGroup.Prepend>
+                        </InputGroup>                       
                     </Col>
 				</Row>
 				<Row>
@@ -312,7 +395,7 @@ class monthlySalesSearch extends Component {
                     <Col sm={3}>
                     <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">粗利</InputGroup.Text>
+                            <InputGroup.Text id="inputGroup-sizing-sm">粗利範囲</InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl name="grossProfitFront" id="grossProfitFront" value={this.state.grossProfitFront} onChange={(e) => this.vNumberChange(e, 'grossProfitFront')} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 万円"/>
                             <font id="mark">～</font>
@@ -361,14 +444,14 @@ class monthlySalesSearch extends Component {
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>氏名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeStatus'>社員区分</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeStatus'　dataFormat={this.formatStayPeriod.bind(this)}>社員区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName'>職種</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'>単価</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>支給合計</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee'>他の負担</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost'>非稼動費用</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'>粗利(税抜き)</TableHeaderColumn>         
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'dataFormat={this.unitPriceAddComma}>単価</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>支給合計</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee' dataFormat={this.otherFeeAddComma}>他の負担</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost' dataFormat={this.waitingCostAddComma}>非稼動費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma}>粗利(税抜き)</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
                 
@@ -379,9 +462,9 @@ class monthlySalesSearch extends Component {
 
 const mapStateToProps = state => {
 	return {
-        employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
-        employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
-        occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
+        employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
+        employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
+        occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
 		
 	}
 };
@@ -392,4 +475,4 @@ const mapDispatchToProps = dispatch => {
 	}
 };
 
-export default monthlySalesSearch;
+export default connect(mapStateToProps, mapDispatchToProps)(monthlySalesSearch) ;
