@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Form, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Button, Form, Col, Row, InputGroup, FormControl} from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
 import $ from 'jquery'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import DatePicker, {  } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
@@ -15,10 +16,17 @@ class costRegistration extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.getDropDownｓ = this.getDropDownｓ.bind(this);
+		this.searchWorkRepot = this.searchWorkRepot.bind(this);
+		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
+
 	};
 	componentDidMount(){
-		$("#fileUpload").attr("disabled",true);
+		$("#workRepotUpload").attr("disabled",true);
 		$("#workRepotDownload").attr("disabled",true);
+		this.getDropDownｓ();
+		this.searchWorkRepot();
+		
 	}
 	//onchange
 	valueChange = event => {
@@ -30,11 +38,85 @@ class costRegistration extends React.Component {
 	initialState = {
 		employeeList: [],
 		approvalStatuslist:[],
+
 	};
-s /**
+		getDropDownｓ = () => {
+		var methodArray = ["getApproval"]
+		var data = publicUtils.getPublicDropDown(methodArray);
+		this.setState(
+			{
+				approvalStatuslist: data[0],//　getApproval
+			}
+		);
+	};
+	//　検索
+	searchWorkRepot = () => {
+		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+			.then(response => response.data)
+			.then((data) => {
+				if (data.length!=0) {
+					var statuss = this.state.approvalStatuslist;
+					for(var i=0;i<data.length;i++){
+						for (var i2=0;i2<statuss.length;i2++) {
+							if (data[i].approvalStatus == statuss[i2].code) {
+								data[i].approvalStatusName=statuss[i2].name;
+							}
+						}
+						if(data[i].workingTimeReport!=null){
+							let fileName=data[i].workingTimeReport.split("/");
+							data[i].workingTimeReportFile=fileName[fileName.length-1];
+						}
+				
+					}
+				} else {
+					data.push({"approvalStatus":0,"approvalStatusName":"未","attendanceYearAndMonth":publicUtils.setFullYearMonth(new Date())});
+					}
+				this.setState({ 
+					employeeList: data
+				})
+			});
+	};
+		//　年月1
+	inactiveYearAndMonth1 = (date) => {
+		this.setState(
+			{
+				yearAndMonth: date,
+			}
+		);
+
+	};
+			//　年月2
+	inactiveYearAndMonth2 = (date) => {
+		this.setState(
+			{
+				yearAndMonth: date,
+			}
+		);
+	};
+	state = {
+		yearAndMonth: new Date()
+	};
+	//　変更
+	sumWorkTimeChange = (e) =>{
+		const emp = {
+			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
+			sumWorkTime:　e.sumWorkTime,
+		};
+		axios.post("http://127.0.0.1:8080/workRepot/updateworkRepot",emp)
+			.then(response => {
+				if (response.data != null) {
+					window.location.reload();
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				} else {
+					alert("err")
+				}
+			});
+	}
+  /**
      * 作業報告書ボタン
      */
-    fileUpload=()=>{
+    workRepotUpload=()=>{
 	let getfile=$("#getFile").val();
 	let fileName = getfile.split('.');
 	if(
@@ -79,7 +161,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#fileUpload").attr("disabled",true);
+			$("#workRepotUpload").attr("disabled",true);
 			$("#workRepotDownload").attr("disabled",false);
 			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
 			this.setState(
@@ -92,7 +174,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			);
 
 			if(row.attendanceYearAndMonth-0>=TheYearMonth){
-				$("#fileUpload").attr("disabled",false);
+				$("#workRepotUpload").attr("disabled",false);
 			}
 			if(row.attendanceYearAndMonth-0>TheYearMonth){
 				$("#workRepotDownload").attr("disabled",true);
@@ -149,7 +231,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 		const cellEdit = {
 			mode: 'click',
 			blurToSave: true,
-			afterSaveCell: this.dataChange,
+			afterSaveCell: this.sumWorkTimeChange,
 		}
 		return (
 			<div>
@@ -163,10 +245,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>費用登録</h2>
-								</Col>
-							</Row>
-							<Row inline="true">
-								<Col className="text-center">
+							  		<br/>
 									<h2>{new Date().toLocaleDateString()}</h2>
 								</Col>
 							</Row>
@@ -174,31 +253,200 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</div>
 				</Form>
 				<div >
-				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.fileUpload}/>
+				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.workRepotUpload}/>
 	                <br/>
                     <Row>
+						<Col sm={2}>
+							<font style={{ whiteSpace: 'nowrap' }}>氏名：</font>
+							{"        "}
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="区分" />
+							</InputGroup>
+						</Col>
 						<Col sm={8}></Col>
+					</Row>	
+					<Row>
+						<Col sm={2}>
+							<font style={{ whiteSpace: 'nowrap' }}><b>定期</b></font>
+						</Col>	
+					</Row>	
+					<Row>
+						<Col sm={2}>
+						<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">期間</InputGroup.Text>
+									<DatePicker
+										selected={this.state.yearAndMonth}
+										onChange={this.inactiveYearAndMonth1}
+										autoComplete="off"
+										locale="ja"
+										dateFormat="yyyy/MM/dd"
+										maxDate={new Date()}
+										id="datePicker2"
+										className="form-control form-control-sm"
+									/>{" ～"}
+								</InputGroup.Prepend>
+						</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<DatePicker
+											selected={this.state.yearAndMonth}
+											onChange={this.inactiveYearAndMonth2}
+											autoComplete="off"
+											locale="ja"
+											dateFormat="yyyy/MM/dd"
+	
+											maxDate={new Date()}
+											id="datePicker"
+											className="form-control form-control-sm"
+										/>
+									</InputGroup.Prepend>
+							</InputGroup>	
+						</Col>
+                        <Col sm={2}>
+                            <div style={{ "float": "right" }}>
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+	                          		 <FontAwesomeIcon icon={faDownload} />出張費用
+		                        </Button>{' '}
+                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
+									<FontAwesomeIcon icon={faUpload} />添付
+								</Button>{' '}
+	 						</div>
+						</Col>
+					</Row>
+					<Row>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="出発" />
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">線路</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
+							</InputGroup>
+						</Col>
+                      
+					</Row>
+					<Row>
+						<Col sm={2}>
+							<font style={{ whiteSpace: 'nowrap' }}><b>定期</b></font>
+						</Col>	
+					</Row>	
+					<Row>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
+										<DatePicker
+											selected={this.state.yearAndMonth}
+											onChange={this.inactiveYearAndMonth2}
+											autoComplete="off"
+											locale="ja"
+											dateFormat="yyyy/MM/dd"
+	
+											maxDate={new Date()}
+											id="datePicker"
+											className="form-control form-control-sm"
+										/>
+									</InputGroup.Prepend>
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="名称" />
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="備考" />
+							</InputGroup>
+						</Col>
+						 <Col sm={2}>
+                            <div style={{ "float": "right" }}>
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+	                          		 <FontAwesomeIcon icon={faDownload} />登録
+		                        </Button>{' '}
+                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
+									<FontAwesomeIcon icon={faUpload} />添付
+								</Button>
+	 						</div>
+						</Col>
+					</Row>
+					<Row>
+  						<Col sm={8}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.getFile} id="fileUpload">
-									<FontAwesomeIcon icon={faUpload} />Upload
+                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
+									<FontAwesomeIcon icon={faUpload} />修正
 								</Button>{' '}
 		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
-	                          		 <FontAwesomeIcon icon={faDownload} />Download
+	                          		 <FontAwesomeIcon icon={faDownload} />削除
 		                        </Button>
 	 						</div>
 						</Col>
                     </Row>	
 					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
-						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' iskey={true} editable={false}>日付</TableHeaderColumn>
-						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
+						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>日付</TableHeaderColumn>
+						<TableHeaderColumn width='80' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>名称</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>出発地</TableHeaderColumn>
-						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>目的地</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>目的地</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>金額</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>備考</TableHeaderColumn>
+						<TableHeaderColumn width='100' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>片・往</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>添付</TableHeaderColumn>
 					</BootstrapTable>
+				</div>
+				<div>
+					<Row>
+						<Col sm={10}></Col>
+						<Col sm={2}>
+							<font style={{ whiteSpace: 'nowrap' }}>総額：</font>
+						</Col>
+					</Row>
 				</div>
 			</div >
 		);
