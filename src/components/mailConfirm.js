@@ -24,7 +24,7 @@ class mailConfirm extends React.Component {
 		developLanguage: this.props.personalInfo.state.developLanguage,
 		unitPrice: this.props.personalInfo.state.unitPrice,
 		salesProgressCode: this.props.personalInfo.state.salesProgressCode,
-		salesProgresss: his.props.personalInfo.state.salesProgresss,
+		salesProgresss:this.props.personalInfo.state.salesProgresss,
 		remark: this.props.personalInfo.state.remark,
 		selectedCustomerName: this.props.personalInfo.state.selectedCustomerName,
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
