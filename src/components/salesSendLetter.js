@@ -390,7 +390,7 @@ class salesSendLetter extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="customerCode" className="auto"
-													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+													style={{ width: 110, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>

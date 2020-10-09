@@ -427,6 +427,25 @@ export function addComma(money,decimalPointFlag){
 	}
 	return result;
 }
+
+/**
+ * YYYYMMDD→YYYY/MM/DDまたYYYYMM→YYYY/MM
+ * @param {*} datestrの数字
+ * @return {*} YYYY/MM/DDまたYYYY/MM
+ */
+export function dateFormate(dateStr){
+	if(dateStr === null || dateStr === undefined){
+		return "";
+	}
+	if(dateStr.dateStr == 8){
+        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
+    } else if(dateStr.length == 6){
+        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
+    } else {
+    return dateStr;
+    }
+}
+
 //isHoliday?
 //input Object or year, month, day
 //output boolean
