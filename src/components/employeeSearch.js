@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -45,9 +45,10 @@ class employeeSearch extends React.Component {
 	};
 	//リセット　reset
 	resetStates = {
-		employeeNo: '', employeeName: '', employeeFormCode: '', employeeStatus: '', genderStatus: '', ageFrom: '', ageTo: '', residenceCode: '',
-		nationalityCode: '', customer: '', intoCompanyCode: '', japaneaseLeveCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '', kadou: '',
-		developLanguage1: '',developLanguage2: '',developLanguage3: '',
+		employeeNo: null, employeeName: null, employeeFormCode: null, employeeStatus: null, genderStatus: null, 
+		ageFrom: null, ageTo: null, residenceCode: null,nationalityCode: null, customer: null,
+		intoCompanyCode: null, japaneaseLeveCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null,intoCompanyYearAndMonthTo: null,
+		kadou: null,developLanguage1: null, developLanguage2: null, developLanguage3: null,
 	};
 
 	//初期化メソッド
@@ -153,7 +154,7 @@ class employeeSearch extends React.Component {
 					this.setState({ "myToastShow": false });
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				alert("删除错误，请检查程序");
 			});
 	}
@@ -221,9 +222,24 @@ class employeeSearch extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (
+			if (this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
 				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
+					case 'developLanguage1':
+						this.setState({
+							developLanguage1: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage2':
+						this.setState({
+							developLanguage2: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'developLanguage3':
+						this.setState({
+							developLanguage3: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+						})
+						break;
 					case 'employeeName':
 						this.setState({
 							employeeName: value,
@@ -238,7 +254,7 @@ class employeeSearch extends React.Component {
 	render() {
 		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
-			employeeList, errorsMessageValue, developLanguage1, developLanguage2, developLanguage3 } = this.state;
+			employeeList, errorsMessageValue } = this.state;
 		//テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -287,10 +303,10 @@ class employeeSearch extends React.Component {
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
 				<Row inline="true">
-                        <Col className="text-center">
-                            <h2>社員情報検索</h2>
-                        </Col>
-                </Row>
+					<Col className="text-center">
+						<h2>社員情報検索</h2>
+					</Col>
+				</Row>
 				<br />
 				<Form >
 					<div >
@@ -323,8 +339,6 @@ class employeeSearch extends React.Component {
 												</div>
 											)}
 										/>
-
-
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -471,45 +485,50 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
+
 										<Autocomplete
 											id="developLanguageCode1"
 											name="developLanguageCode1"
-											value={developLanguage1}
 											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
+											value={developLanguageMaster.find(v => v.code === this.state.developLanguage1) || {}}
+											onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto"
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
 										<Autocomplete
 											id="developLanguageCode2"
 											name="developLanguageCode2"
-											value={developLanguage2}
 											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
+											value={developLanguageMaster.find(v => v.code === this.state.developLanguage2) || {}}
+											onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto"
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
 										<Autocomplete
 											id="developLanguageCode3"
 											name="developLanguageCode3"
-											value={developLanguage3}
 											options={developLanguageMaster}
 											getOptionLabel={(option) => option.name}
+											value={developLanguageMaster.find(v => v.code === this.state.developLanguage3) || {}}
+											onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto"
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
+
 									</InputGroup>
 								</Col>
 
@@ -587,22 +606,22 @@ class employeeSearch extends React.Component {
 				<div >
 					<Row >
 						<Col sm={12}>
-					<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'　 isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期間</TableHeaderColumn>
-						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
-						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
-						<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
-					</BootstrapTable>
-					</Col>
+							<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+								<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
+								<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
+								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
+								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+								<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
+							</BootstrapTable>
+						</Col>
 					</Row>
 				</div>
 			</div >

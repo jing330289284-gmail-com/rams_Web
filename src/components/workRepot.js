@@ -253,7 +253,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
 						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
 						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onBlur={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
 						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>ステータス</TableHeaderColumn>

@@ -42,9 +42,9 @@ export function getFullYearMonth(date, now) {
 			returnMonths = returnMonths - 1;
 		}
 		if (returnYears === 0) {
-			yearmonth = returnMonths + "か月";
+			yearmonth = returnMonths + "ヶ月";
 		} else {
-			yearmonth = returnYears + "年" + returnMonths + "か月";
+			yearmonth = returnYears + "年" + returnMonths + "ヶ月";
 		}
 		return yearmonth;
 	} else {

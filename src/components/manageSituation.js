@@ -14,6 +14,7 @@ import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
+import SalesContent from './salesContent';
 axios.defaults.withCredentials = true;
 
 class manageSituation extends React.Component {
@@ -83,7 +84,7 @@ class manageSituation extends React.Component {
 	componentDidMount() {
 		let sysYearMonth = new Date();
 		let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
-		this.getSalesSituation(searchYearMonth);
+		this.getSalesSituation("202009");
 		this.getDropDowns();
 	}
 
@@ -164,11 +165,11 @@ class manageSituation extends React.Component {
 		);
 		// レコードdropdown用
 		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer","getCustomerContractStatus"]
-		var dataTleOnly = publicUtils.getPublicDropDownRtBtSpTleOnly(methodArrayTleOnly);
+		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly);
 		dataTleOnly[0].shift();
 		dataTleOnly[1].shift();
 		dataTleOnly[2].shift();
-		dataTleOnly[2].unshift({ value: '', text: '' })
+		//dataTleOnly[2].unshift({ value: '', text: '' })
 		dataTleOnly[3].shift();
 		this.setState(
 			{
@@ -184,8 +185,8 @@ class manageSituation extends React.Component {
 	formatType= (cell) => {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
-			if (cell === statuss[i].value) {
-				return statuss[i].text;
+			if (cell === statuss[i].code) {
+				return statuss[i].name;
 			}
 		}
 	}
@@ -193,8 +194,8 @@ class manageSituation extends React.Component {
 	formatcustomerContract= (cell) => {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
-			if (cell === customerContracts[i].value) {
-				return customerContracts[i].text;
+			if (cell === customerContracts[i].code) {
+				return customerContracts[i].name;
 			}
 		}
 	}
@@ -206,8 +207,8 @@ class manageSituation extends React.Component {
 			return '';
 		} else {
 			for (var i in allCustomers) {
-				if (cell === allCustomers[i].value) {
-					return allCustomers[i].text;
+				if (cell === allCustomers[i].code) {
+					return allCustomers[i].name;
 				}
 			}
 		}
@@ -254,8 +255,8 @@ class manageSituation extends React.Component {
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
-			if (cell === salesPersons[i].value) {
-				return salesPersons[i].text;
+			if (cell === salesPersons[i].code) {
+				return salesPersons[i].name;
 			}
 		}
 	}
@@ -642,6 +643,9 @@ selectetRowIds:[],
 					<Modal.Header closeButton><Col className="text-center">
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
+					<Modal.Body >
+						<SalesContent empNo={this.state.employeeNo}/>
+					</Modal.Body>
 				</Modal>
 				<Row inline="true">
 					<Col className="text-center">
@@ -907,8 +911,10 @@ selectetRowIds:[],
 							</div>
 						</Col>
 					</Row>
-				</Form>
-				<div >
+				
+				<Row>
+							<Col sm={12}>
+				
 					<BootstrapTable
 						ref='table'
 						className={"bg-white text-dark"}
@@ -949,7 +955,11 @@ selectetRowIds:[],
 						<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 
 					</BootstrapTable>
-				</div>
+				
+				
+							</Col>
+							</Row>
+							</Form>
 			</div>
 		);
 	}

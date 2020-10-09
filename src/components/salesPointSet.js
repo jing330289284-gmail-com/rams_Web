@@ -22,7 +22,10 @@ class salesPointSet extends React.Component {
 		employee: '',
 		newMember: '',
 		customerContract: '',
-		updateFlag: true
+		updateFlag: true,
+		insertFlag: false,
+		currentPage: 1,//今のページ
+		insertNo: ''
 	};
 
 	// 页面加载
@@ -116,18 +119,10 @@ class salesPointSet extends React.Component {
 	* 行Selectファンクション
 	*/
 	handleRowSelect = (row, isSelected) => {
-		this.setState({ updateFlag: true });
+
 		if (isSelected) {
 			this.setState({
 				no: row.no,
-				employee: row.employee,
-				newMember: row.newMember,
-				customerContract: row.customerContract,
-				level: row.level,
-				salesPuttern: row.salesPuttern,
-				specialPoint: row.specialPoint,
-				point: row.point,
-				remark: row.remark,
 				updateFlag: false
 			});
 		} else {
@@ -136,20 +131,53 @@ class salesPointSet extends React.Component {
 			});
 		}
 	}
+
+	/**
+	 * 行追加
+	 */
+	insertRow = () => {
+		var salesPointData = this.state.salesPointData;
+		var salesPointSetModel = {};
+		salesPointSetModel["no"] = parseInt(salesPointData[salesPointData.length - 1].no) + 1;
+		salesPointSetModel["employee"] = "";
+		salesPointSetModel["newMember"] = "";
+		salesPointSetModel["customerContract"] = "";
+		salesPointSetModel["level"] = "";
+		salesPointSetModel["salesPuttern"] = "";
+		salesPointSetModel["specialPoint"] = "";
+		salesPointSetModel["point"] = "";
+		salesPointSetModel["remark"] = "";
+		salesPointData.push(salesPointSetModel);
+		var currentPage = Math.ceil(salesPointData.length / 5);
+		this.setState({
+			salesPointData: salesPointData,
+			currentPage: currentPage,
+			updateFlag: true,
+			insertFlag: true,
+		})
+		this.refs.table.setState({
+			selectedRowKeys: []
+		});
+	}
+
 	/**
 	 * 修正ボタン
 	 */
 	update = () => {
 		var salesPointSetModel = {};
-		salesPointSetModel["no"] = this.state.no
-		salesPointSetModel["employee"] = this.state.employee
-		salesPointSetModel["newMember"] = this.state.newMember
-		salesPointSetModel["customerContract"] = this.state.customerContract
-		salesPointSetModel["level"] = this.state.level
-		salesPointSetModel["salesPuttern"] = this.state.salesPuttern
-		salesPointSetModel["specialPoint"] = this.state.specialPoint
-		salesPointSetModel["point"] = this.state.point
-		salesPointSetModel["remark"] = this.state.remark
+		for (let i = 0; i < this.state.salesPointData.length; i++) {
+			if (this.state.salesPointData[i].no === this.state.no) {
+				salesPointSetModel["no"] = this.state.no
+				salesPointSetModel["employee"] = this.state.salesPointData[i].employee
+				salesPointSetModel["newMember"] = this.state.salesPointData[i].newMember
+				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
+				salesPointSetModel["level"] = this.state.salesPointData[i].level
+				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
+				salesPointSetModel["point"] = this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
+			}
+		}
 		axios.post("http://127.0.0.1:8080/salesPointUpdate", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -197,7 +225,10 @@ class salesPointSet extends React.Component {
 	render() {
 		//表格样式设定
 		this.options = {
-			page: 1,  // which page you want to show as default
+			onPageChange: page => {
+				this.setState({ currentPage: page });
+			},
+			page: this.state.currentPage,
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
@@ -208,14 +239,13 @@ class salesPointSet extends React.Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { employeeSearch, newMemberSearch, customerContractSearch, salesPointData, errorsMessageValue } = this.state;
+		const { employeeSearch, newMemberSearch, customerContractSearch, errorsMessageValue } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
 			clickToSelectAndEditCell: true,
 			hideSelectColumn: true,
-			clickToSelect: true,  // click to select, default is false
 			clickToExpand: true,// click to expand row, default is false
 			onSelect: this.handleRowSelect,
 		};
@@ -231,7 +261,7 @@ class salesPointSet extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
-				<div style={{ "background": "#f5f5f5" }}>
+				<div >
 					<Form id="siteForm">
 						<Form.Group>
 							{/* <Row>
@@ -288,15 +318,15 @@ class salesPointSet extends React.Component {
 								</Col>
 								<Col sm={3}>
 									<div style={{ "float": "right" }}>
-										<Button variant="info" size="sm" id="revise" onClick={this.insert} ><FontAwesomeIcon icon={faSave} />追加</Button>{' '}
-										<Button variant="info" size="sm" id="revise" onClick={this.update} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-										<Button variant="info" size="sm" id="revise" onClick={this.delete} disabled={this.state.updateFlag === true ? true : false}><FontAwesomeIcon icon={faTrash} />削除</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.state.insertFlag === true ? this.insert : this.insertRow}><FontAwesomeIcon icon={faSave} /> {this.state.insertFlag === true ? '登録' : '追加'}</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.update} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.delete} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faTrash} />削除</Button>{' '}
 									</div>
 								</Col>
 							</Row>
 							<div>
-								<BootstrapTable selectRow={selectRow} data={salesPointData} ref='table' pagination={true} options={this.options}
-									cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options}
+									insertRow cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 									<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.props.employeeStatus } }}

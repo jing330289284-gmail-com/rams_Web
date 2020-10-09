@@ -32,35 +32,4 @@ module.exports = function(app) {
 			}
 		}))
 
-	/* app.use(createProxyMiddleware('/login',
-		{
-			target: "http://127.0.0.1:8080/login/login",
-			changeOrigin: true,
-			secure: false,
-			pathRewrite: {
-				"^/login": "/"
-			}
-		}))
- */
-
-	app.use(createProxyMiddleware('/sendVerificationCode',
-		{
-			target: "http://127.0.0.1:8080/login/sendVerificationCode",
-			changeOrigin: true,
-			secure: false,
-			pathRewrite: {
-				"^/sendVerificationCode": "/"
-			}
-		}))
-
-	app.use(createProxyMiddleware('/init',
-		{
-			target: "http://127.0.0.1:8080/login/init",
-			changeOrigin: true,
-			secure: false,
-			pathRewrite: {
-				"^/init": "/"
-			}
-		}))
-
 }
