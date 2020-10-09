@@ -8,6 +8,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 class workRepot extends React.Component {
@@ -15,17 +17,14 @@ class workRepot extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		this.getDropDownｓ = this.getDropDownｓ.bind(this);
 		this.searchWorkRepot = this.searchWorkRepot.bind(this);
 		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
-
 	};
 	componentDidMount(){
 		$("#workRepotUpload").attr("disabled",true);
 		$("#workRepotDownload").attr("disabled",true);
-		this.getDropDownｓ();
+		this.props.fetchDropDown();
 		this.searchWorkRepot();
-		
 	}
 	//onchange
 	valueChange = event => {
@@ -36,36 +35,26 @@ class workRepot extends React.Component {
 	//　初期化データ
 	initialState = {
 		employeeList: [],
-		approvalStatuslist:[],
-
 	};
-		getDropDownｓ = () => {
-		var methodArray = ["getApproval"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				approvalStatuslist: data[0],//　getApproval
-			}
-		);
-	};
+	approvalStatus(code) {
+    let approvalStatuss = this.props.approvalStatuslist;
+        for (var i in approvalStatuss) {
+            if (code === approvalStatuss[i].code) {
+                return approvalStatuss[i].name;
+            }
+        }
+    };
 	//　検索
 	searchWorkRepot = () => {
 		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
-					var statuss = this.state.approvalStatuslist;
 					for(var i=0;i<data.length;i++){
-						for (var i2=0;i2<statuss.length;i2++) {
-							if (data[i].approvalStatus == statuss[i2].code) {
-								data[i].approvalStatusName=statuss[i2].name;
-							}
-						}
 						if(data[i].workingTimeReport!=null){
 							let fileName=data[i].workingTimeReport.split("/");
 							data[i].workingTimeReportFile=fileName[fileName.length-1];
 						}
-				
 					}
 				} else {
 					data.push({"approvalStatus":0,"approvalStatusName":"未","attendanceYearAndMonth":publicUtils.setFullYearMonth(new Date())});
@@ -151,14 +140,12 @@ if($("#getFile").get(0).files[0].size>1048576){
 					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
 				}
 			);
-
 			if(row.attendanceYearAndMonth-0>=TheYearMonth){
 				$("#workRepotUpload").attr("disabled",false);
 			}
 			if(row.attendanceYearAndMonth-0>TheYearMonth){
 				$("#workRepotDownload").attr("disabled",true);
 			}
-
 		} else {
 			this.setState(
 				{	
@@ -170,7 +157,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 			);
 		}
 	}
-
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -178,7 +164,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 			</p>
 		);
 	}
-
 	render() {
 		const {employeeList} = this.state;
 		//　テーブルの行の選択
@@ -256,11 +241,22 @@ if($("#getFile").get(0).files[0].size>1048576){
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
 						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatus' editable={false} dataFormat={this.approvalStatus.bind(this)}>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
 		);
 	}
 }
-export default workRepot;
+const mapStateToProps = state => {
+	return {
+		approvalStatuslist: state.data.dataReques.length >= 1 ? state.data.dataReques[27]: [],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(workRepot);
