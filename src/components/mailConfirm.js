@@ -24,7 +24,7 @@ class mailConfirm extends React.Component {
 		developLanguage: this.props.personalInfo.state.developLanguage,
 		unitPrice: this.props.personalInfo.state.unitPrice,
 		salesProgressCode: this.props.personalInfo.state.salesProgressCode,
-		salesProgresss: this.props.personalInfo.state.salesProgresss,
+		salesProgresss: his.props.personalInfo.state.salesProgresss,
 		remark: this.props.personalInfo.state.remark,
 		selectedCustomerName: this.props.personalInfo.state.selectedCustomerName,
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
@@ -37,10 +37,10 @@ class mailConfirm extends React.Component {
 		return (
 			<div>
 				<div >
-					<textarea ref={(textarea) => this.textArea = textarea}  disabled
+					<textarea ref={(textarea) => this.textArea = textarea} disabled
 						style={{ height: '780px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
-						value={this.state.selectedCustomerName+`株式会社
-`+this.state.selectedPurchasingManagers+`様
+						value={this.state.selectedCustomerName + `株式会社
+`+ this.state.selectedPurchasingManagers + `様
 
 お世話になっております、＿＿です。
 
@@ -71,7 +71,7 @@ Email：______________ 営業共通：eigyou@lyc.co.jp
 労働者派遣事業許可番号　派遣許可番号　派13-306371
 ＩＳＭＳ：MSA-IS-385
 *****************************************************************`}
-                    /></div>
+					/></div>
 			</div>
 		);
 	}
