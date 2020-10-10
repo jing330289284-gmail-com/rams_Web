@@ -899,11 +899,11 @@ class manageSituation extends React.Component {
 						<Col sm={3}></Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenu/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
+								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
-								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
 								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
