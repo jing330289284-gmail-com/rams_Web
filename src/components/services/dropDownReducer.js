@@ -2,7 +2,9 @@ import {FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE} from './drop
 
 const initialState = {
     dataReques: [],
-    error: ''
+    error: '',
+    //serverIP: "http://13.58.173.66:8080/",
+    serverIP: "http://127.0.0.1:8080/",
 };
 
 const reducer = (state = initialState, action) => {

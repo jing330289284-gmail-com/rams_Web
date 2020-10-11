@@ -447,7 +447,6 @@ class employee extends React.Component {
 
 	//社員タイプが違う時に、色々な操作をします。
 	radioChangeEmployeeType = () => {
-		alert($('#employeeStatusId').val())
 		let val =$('#employeeStatusId').val();
 		if (val === '1') {
 			this.setState({ companyMail: '', authorityCodes: [], BPFlag: true });
