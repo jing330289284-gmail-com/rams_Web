@@ -41,13 +41,12 @@ class dutyManagement extends React.Component {
 	initialState = {
 		yearAndMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : (new Date().getMonth() + 1))).getTime(),
 		employeeList: [],
-
 		totalPersons:"",
 		averageWorkingTime:"",
 		totalWorkingTime:"",
 	};
 	checkSection(code) {
-    let checkSections = this.state.checkSectionlist;
+    let checkSections = this.props.checkSectionlist;
         for (var i in checkSections) {
             if (code === checkSections[i].code) {
                 return checkSections[i].name;
@@ -55,7 +54,7 @@ class dutyManagement extends React.Component {
         }
     };
 	approvalStatus(code) {
-    let approvalStatuss = this.state.approvalStatuslist;
+    let approvalStatuss = this.props.approvalStatuslist;
         for (var i in approvalStatuss) {
             if (code === approvalStatuss[i].code) {
                 return approvalStatuss[i].name;
@@ -75,22 +74,10 @@ class dutyManagement extends React.Component {
 				var totalWorkingTime=0;
 				if (response.data.length>0) {
 					var totalPersons=response.data.length;
-					var approvalStatusstatuss = this.props.approvalStatuslist;
-					var checkSectionstatuss = this.props.checkSectionlist;
 					for(var i=0;i<totalPersons;i++){
 						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
 						if(totalWorkingTime<response.data[i].workTime){
 							totalWorkingTime=response.data[i].workTime;
-						}
-						for (var i2=0;i2<approvalStatusstatuss.length;i2++) {
-							if (response.data[i].approvalStatus == approvalStatusstatuss[i2].code) {
-								response.data[i].approvalStatusName=approvalStatusstatuss[i2].name;
-							}
-						}
-						for (var i2=0;i2<checkSectionstatuss.length;i2++) {
-							if (response.data[i].checkSection == checkSectionstatuss[i2].code) {
-								response.data[i].checkSectionName=checkSectionstatuss[i2].name;
-							}
 						}
 					}
 					averageWorkingTime=Math.round(averageWorkingTime/totalPersons);
@@ -307,7 +294,7 @@ class dutyManagement extends React.Component {
 						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='payOffRange'>精算範囲</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workTime'>稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='overTimePay'>残業代/控除</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataFormat={this.checkSection.bind(this)}  dataField='checkSectionName'>確認区分</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime'>更新日付</TableHeaderColumn>
 						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
 					</BootstrapTable>

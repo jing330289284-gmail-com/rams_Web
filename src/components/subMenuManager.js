@@ -14,6 +14,7 @@ import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
 import WagesInfo from './wagesInfo';
 import workRepot from './workRepot';
+import costRegistration from './costRegistration';
 import DutyRegistration from './dutyRegistration';
 import BreakTime from './breakTime';
 import axios from 'axios';
@@ -193,6 +194,8 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="10">
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/workRepot/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />作業報告書アップ</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/costRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />費用登録</Link></ListGroup.Item>
+												
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -220,6 +223,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/individualSales`} component={individualSales} />
 								<Route exact path={`${this.props.match.url}/wagesInfo`} component={WagesInfo} />
 								<Route exact path={`${this.props.match.url}/workRepot`} component={workRepot} />
+								<Route exact path={`${this.props.match.url}/costRegistration`} component={costRegistration} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
