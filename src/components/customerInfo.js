@@ -167,7 +167,7 @@ class CustomerInfo extends Component {
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
         customerInfoMod["actionType"] = this.props.location.state.actionType;
-        await axios.post(this.props.serverIP + "/customerInfo/onloadPage", customerInfoMod)
+        await axios.post(this.props.serverIP + "customerInfo/onloadPage", customerInfoMod)
             .then(resultMap => {
                 var customerInfoMod;
                 var actionType = this.state.actionType;
@@ -227,7 +227,7 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
         customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
-        axios.post(this.props.serverIP + "/customerInfo/toroku", customerInfoMod)
+        axios.post(this.props.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
@@ -365,7 +365,7 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
         if (this.state.actionType === "update") {
-            axios.post(this.props.serverIP + "/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+            axios.post(this.props.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                 .then(result => {
                     if (result.data === true) {
                         this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });

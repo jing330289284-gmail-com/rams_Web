@@ -47,7 +47,7 @@ class ExpensesInfo extends Component {
     componentDidMount() {
         this.props.fetchDropDown();
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousingStatus"),
+            housingStatusDrop: utils.getdropDown("getHousingStatus",this.props.serverIP),
             employeeNo: this.props.employeeNo,
             expensesInfoModels:this.props.expensesInfoModels,
             kadouCheck:this.props.kadouCheck,
@@ -117,7 +117,7 @@ class ExpensesInfo extends Component {
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);
-        axios.post(this.props.serverIP + "/expensesInfo/toroku", expensesInfoModel)
+        axios.post(this.props.serverIP + "expensesInfo/toroku", expensesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });

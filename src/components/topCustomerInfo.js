@@ -43,7 +43,7 @@ class TopCustomerInfo extends Component {
             if(topCustomerNo !== null && topCustomerNo !== '' && topCustomerNo !== undefined){
                 var topCustomerMod = {};
                 topCustomerMod["topCustomerNo"] = topCustomerNo;
-                axios.post(this.props.serverIP + "/topCustomerInfo/init", topCustomerMod)
+                axios.post(this.props.serverIP + "topCustomerInfo/init", topCustomerMod)
                     .then(resultMap => {
                         topCustomerMod = resultMap.data.topCustomerMod;
                         document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
@@ -60,7 +60,7 @@ class TopCustomerInfo extends Component {
                     })
             }else{
                 var topCustomerNo = "";
-                const promise = Promise.resolve(utils.getNO("topCustomerNo", "T", "T008TopCustomerInfo"));
+                const promise = Promise.resolve(utils.getNO("topCustomerNo", "T", "T008TopCustomerInfo",this.props.serverIP));
                 promise.then((value) => {
                     console.log(value);
                             topCustomerNo = value;
@@ -89,7 +89,7 @@ class TopCustomerInfo extends Component {
             topCustomerInfo["remark"] = $("#topRemark").val();
             if(actionType === "update"){
                 topCustomerInfo["actionType"] = "update";
-                axios.post(this.props.serverIP + "/topCustomerInfo/toroku", topCustomerInfo)
+                axios.post(this.props.serverIP + "topCustomerInfo/toroku", topCustomerInfo)
                 .then(resultMap => {
                     if(resultMap.data){
                         this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"更新成功"});

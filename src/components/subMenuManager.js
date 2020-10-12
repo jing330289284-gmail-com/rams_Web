@@ -43,7 +43,7 @@ class SubMenu extends Component {
 	}
 	async componentWillMount() {
 		this.props.fetchDropDown();
-		await axios.post(this.props.serverIP + "/subMenu/init")
+		await axios.post(this.props.serverIP + "subMenu/init")
 			.then(resultMap => {
 				if (resultMap.data !== null && resultMap.data !== '') {
 					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
@@ -64,7 +64,7 @@ class SubMenu extends Component {
 		})
 	}
 	logout = () => {
-		axios.post(this.props.serverIP + "/subMenu/logout")
+		axios.post(this.props.serverIP + "subMenu/logout")
 			.then(resultMap => {
 				alert("ログアウトしました");
 			})

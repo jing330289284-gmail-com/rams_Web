@@ -20,7 +20,7 @@ class passwordReset extends Component {
         var passwordResetId = query.substring(4);
         var pswMod = {};
         pswMod["passwordResetId"] = passwordResetId;
-        axios.post(this.props.serverIP + "/passwordReset/init" , pswMod)
+        axios.post(this.props.serverIP + "passwordReset/init" , pswMod)
 		.then(resultMap =>{
 			if(!resultMap.data){
 				this.props.history.push("/login2");
@@ -34,7 +34,7 @@ class passwordReset extends Component {
         pswMod["passwordResetId"] = passwordResetId;
         pswMod["password"] = $("#newPassword").val();
         if($("#newPassword").val() === $("#passwordCheck").val()){
-            axios.post(this.props.serverIP + "/passwordReset/passwordReset" , pswMod)
+            axios.post(this.props.serverIP + "passwordReset/passwordReset" , pswMod)
             .then(resultMap =>{
                 if(resultMap.data === 0){
                     alert("パスワードリセット成功しました");

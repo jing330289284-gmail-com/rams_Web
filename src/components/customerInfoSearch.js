@@ -91,7 +91,7 @@ class CustomerInfoSearch extends Component {
         });
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCode);
-        axios.post(this.props.serverIP + "/customerInfoSearch/search", customerInfoMod)
+        axios.post(this.props.serverIP + "customerInfoSearch/search", customerInfoMod)
             .then(resultList => {
                 this.setState({
                     customerInfoData: resultList.data,
@@ -181,7 +181,7 @@ class CustomerInfoSearch extends Component {
         })
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = this.state.customerNo;
-        axios.post(this.props.serverIP + "/customerInfoSearch/delete", customerInfoMod)
+        axios.post(this.props.serverIP + "customerInfoSearch/delete", customerInfoMod)
             .then(result => {
                 if (result.data === 0) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });

@@ -38,7 +38,7 @@ class BankInfo extends Component {
             document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
-        var bankCode = utils.getdropDown("getBankInfo");
+        var bankCode = utils.getdropDown("getBankInfo",this.props.serverIP);
         bankCode[0].name = "銀行を選択してください";
         for (let i = 0; i < bankCode.length; i++) {
             $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');
@@ -70,7 +70,7 @@ class BankInfo extends Component {
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                axios.post(this.props.serverIP + "/bankInfo/init", onloadMol)
+                axios.post(this.props.serverIP + "bankInfo/init", onloadMol)
                     .then(function (resultMap) {
                         if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
                             $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
@@ -124,7 +124,7 @@ getBankBranchInfo(noORname){
     sendMap["bankCode"] = $('#bankCode').val();
     if($('#'+noORname+'').val() !== ""){
       
-      axios.post(this.props.serverIP + "/getBankBranchInfo",sendMap)
+      axios.post(this.props.serverIP + "getBankBranchInfo",sendMap)
         .then(function (resultMap) {
           if(resultMap.data.length !== 0){
               $('#bankBranchCode').val(resultMap.data[0].code);

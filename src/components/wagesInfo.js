@@ -222,7 +222,7 @@ class WagesInfo extends Component {
             this.setState({
                 employeeNo: wagesInfoMod.employeeNo,
             })
-            axios.post(this.props.serverIP + "/wagesInfo/getWagesInfo", wagesInfoMod)
+            axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                         $("#expensesInfoBtn").attr("disabled", false);
@@ -336,7 +336,7 @@ class WagesInfo extends Component {
                 var wagesInfoMod = {
                     "employeeNo": utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
                 }
-                axios.post(this.props.serverIP + "/wagesInfo/getWagesInfo", wagesInfoMod)
+                axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
                     .then(result => {
                         if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                             $("#expensesInfoBtn").attr("disabled", false);
@@ -372,7 +372,7 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
-        axios.post(this.props.serverIP + "/wagesInfo/toroku", wagesInfoModel)
+        axios.post(this.props.serverIP + "wagesInfo/toroku", wagesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });

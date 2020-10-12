@@ -23,7 +23,7 @@ class Login extends Component {
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
 		//axios.get("/init")
-		axios.post(this.props.serverIP + "/login/init")
+		axios.post(this.props.serverIP + "login/init")
 			.then(resultMap => {
 				if (resultMap.data) {
 					this.props.history.push("/subMenuManager");
@@ -39,7 +39,7 @@ class Login extends Component {
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
 		//axios.post("/login" ,loginModel)
-		axios.post(this.props.serverIP + "/login/login", loginModel)
+		axios.post(this.props.serverIP + "login/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
 					this.props.history.push("/subMenuManager");
@@ -81,7 +81,7 @@ class Login extends Component {
 			loginModel["password"] = $("#password").val();
 			//axios.post("/sendVerificationCode" ,loginModel)
 
-			axios.post(this.props.serverIP + "/login/sendVerificationCode", loginModel)
+			axios.post(this.props.serverIP + "login/sendVerificationCode", loginModel)
 				.then(result => {
 					if (result.data.errorsMessage !== null && result.data.errorsMessage !== undefined) {
 						this.setState({ errorsMessageShow: true, errorsMessageValue: result.data.errorsMessage });
