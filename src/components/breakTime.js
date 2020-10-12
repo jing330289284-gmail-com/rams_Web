@@ -6,6 +6,8 @@ import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -92,7 +94,7 @@ class BreakTime extends Component {
 		actionType = "insert";
         if(actionType === "insert"){
             breakTimeInfo["actionType"] = "insert";
-            axios.post("http://127.0.0.1:8080/dutyRegistration/breakTimeInsert", breakTimeInfo)
+            axios.post(this.props.serverIP + "dutyRegistration/breakTimeInsert", breakTimeInfo)
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
@@ -342,4 +344,15 @@ class BreakTime extends Component {
     }
 }
 
-export default BreakTime;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BreakTime);

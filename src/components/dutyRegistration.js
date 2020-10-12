@@ -12,6 +12,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import * as messageUtils from './utils/messageUtils.js';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 
 import BreakTime from './breakTime';
@@ -165,7 +167,7 @@ class DutyRegistration extends React.Component {
 		let postData = {
 			yearMonth: this.state.year + this.state.month,
 		}
-        axios.post("http://127.0.0.1:8080/dutyRegistration/getDutyInfo", postData)
+        axios.post(this.props.serverIP + "dutyRegistration/getDutyInfo", postData)
             .then(resultMap => {
                 if(resultMap.data){
 					let dateData = [];
@@ -268,7 +270,7 @@ class DutyRegistration extends React.Component {
         dataInfo["dateData"] = submitData;
 		console.log(dataInfo);
         if(actionType === "insert"){
-            axios.post("http://127.0.0.1:8080/dutyRegistration/dutyInsert", dataInfo)
+            axios.post(this.props.serverIP + "dutyRegistration/dutyInsert", dataInfo)
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
@@ -314,7 +316,7 @@ class DutyRegistration extends React.Component {
 	downloadPDF = (event) =>	{
 		let dataInfo = {};
 		dataInfo["yearMonth"] = this.state.year + this.state.month;
-		axios.post("http://127.0.0.1:8080/dutyRegistration/downloadPDF", dataInfo)
+		axios.post(this.props.serverIP + "dutyRegistration/downloadPDF", dataInfo)
 			.then(resultMap => {
 			    if(resultMap.data){
 			        alert("更新成功");
@@ -505,4 +507,15 @@ class DutyRegistration extends React.Component {
 	}
 }
 
-export default DutyRegistration;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(DutyRegistration);
