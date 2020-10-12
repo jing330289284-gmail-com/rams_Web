@@ -71,7 +71,7 @@ class salesSendLetter extends React.Component {
 	//dropdown
 	getDropDowns = () => {
 		var methodArray = ["getCustomer", "getDepartmentMasterDrop", "getPosition"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		data[0].shift();
 		data[1].shift();
 		data[2].shift();

@@ -156,7 +156,7 @@ class manageSituation extends React.Component {
 
 	getDropDowns = () => {
 		var methodArray = ["getSalesPriorityStatus", "getCustomer", "getStation"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		data[2].shift();
 		data[1].shift();
 		this.setState(
@@ -168,7 +168,7 @@ class manageSituation extends React.Component {
 		);
 		// レコードdropdown用
 		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer", "getCustomerContractStatus"]
-		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly);
+		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly,this.props.serverIP);
 		dataTleOnly[0].shift();
 		dataTleOnly[1].shift();
 		dataTleOnly[2].shift();
