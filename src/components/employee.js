@@ -35,7 +35,6 @@ class employee extends React.Component {
 		showBpInfoModal: false,//bp情報
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
-		subCostInfo: null,//諸費用のデータ
 		bpInfoModel: null,//pb情報
 		myToastShow: false,
 		errorsMessageShow: false,
@@ -103,7 +102,6 @@ class employee extends React.Component {
 			resumeRemark1: publicUtils.nullToEmpty(this.state.resumeRemark1),//履歴書備考1
 			resumeRemark2: publicUtils.nullToEmpty(this.state.resumeRemark2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
-			subCostInfo: this.state.subCostInfo,//諸費用
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
@@ -178,7 +176,6 @@ class employee extends React.Component {
 			resumeRemark1: publicUtils.nullToEmpty(this.state.resumeRemark1),//履歴書備考1
 			resumeRemark2: publicUtils.nullToEmpty(this.state.resumeRemark2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
-			subCostInfo: this.state.subCostInfo,//諸費用
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
@@ -241,18 +238,6 @@ class employee extends React.Component {
 			this.getNO('LYC');//採番番号
 		}
 	}
-
-
-/* 	getAuthority = () => {
-		var methodArray = ["getAuthority"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				authorityCodes: data[0].slice(1),//　 権限 
-			}
-		);
-	};
- */
 	getEmployeeByEmployeeNo = employeeNo => {
 		const emp = {
 			employeeNo: employeeNo
@@ -328,7 +313,7 @@ class employee extends React.Component {
 
 	//　採番番号
 	getNO = (ｓｔｒ) => {
-		const promise = Promise.resolve(publicUtils.getNO("employeeNo", ｓｔｒ, "T001Employee"));
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", ｓｔｒ, "T001Employee",this.props.serverIP));
 		promise.then((value) => {
 			this.setState(
 				{
