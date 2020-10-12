@@ -96,7 +96,7 @@ componentDidMount(){
 }
 	getDropDowns = () => {
 		var methodArray = ["getGender", "getEmployeeStatus", "getJapaneseLevel", "getEnglishLevel", "getSalesProgress", "getJapaneaseConversationLevel", "getEnglishConversationLevel", "getProjectPhase", "getStation", "getDevelopLanguage"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		this.setState(
 				{genders: data[0],
 				employees: data[1],
