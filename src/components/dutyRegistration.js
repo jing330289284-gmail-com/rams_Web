@@ -82,7 +82,7 @@ class DutyRegistration extends React.Component {
 		}
 		cell = publicUtils.nullToEmpty(cell);
 		if (!cell.toString().match(regExp))	{
-			event.target.value = event.target.dataset["beforevalue"];
+			event.target.value = publicUtils.nullToEmpty(event.target.dataset["beforevalue"]);
 			return;
 		}
 		event.target.dataset["beforevalue"] = cell;
@@ -311,6 +311,21 @@ class DutyRegistration extends React.Component {
 			this.setTableStyle();		
 		});
 	}	
+	downloadPDF = (event) =>	{
+		let dataInfo = {};
+		dataInfo["yearMonth"] = this.state.year + this.state.month;
+		axios.post("http://127.0.0.1:8080/dutyRegistration/downloadPDF", dataInfo)
+			.then(resultMap => {
+			    if(resultMap.data){
+			        alert("更新成功");
+			    }else{
+			        alert("更新失败");
+			    }
+			})
+			.catch(function(){
+			    alert("更新错误，请检查程序");
+			});
+	}	
 	hasWorkFormatter = (cell, row) => {
 		let returnItem = (
 			<span id={"dutyDataRowNumber-" + row.id}>{cell}</span>
@@ -444,7 +459,7 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={12}>
 								<div style={{ "float": "right" }}>
-									<Link className="btn btn-info btn-sm" onClick="" id=""><FontAwesomeIcon icon={faDownload} /> PDF</Link>
+									<Link className="btn btn-info btn-sm" onClick={this.downloadPDF.bind(this)} id="downloadPDF"><FontAwesomeIcon icon={faDownload} /> PDF</Link>
 								</div>
 							</Col>
 						</Row>
