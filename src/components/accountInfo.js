@@ -38,7 +38,7 @@ class BankInfo extends Component {
             document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
-        var bankCode = utils.getdropDown("getBankInfo");
+        var bankCode = utils.getdropDown("getBankInfo",this.props.serverIP);
         bankCode[0].name = "銀行を選択してください";
         for (let i = 0; i < bankCode.length; i++) {
             $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');

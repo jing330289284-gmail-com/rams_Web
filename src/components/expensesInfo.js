@@ -47,7 +47,7 @@ class ExpensesInfo extends Component {
     componentDidMount() {
         this.props.fetchDropDown();
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousingStatus"),
+            housingStatusDrop: utils.getdropDown("getHousingStatus",this.props.serverIP),
             employeeNo: this.props.employeeNo,
             expensesInfoModels:this.props.expensesInfoModels,
             kadouCheck:this.props.kadouCheck,
