@@ -46,7 +46,7 @@ class workRepot extends React.Component {
     };
 	//　検索
 	searchWorkRepot = () => {
-		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -70,7 +70,7 @@ class workRepot extends React.Component {
 			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
 			sumWorkTime:　e.sumWorkTime,
 		};
-		axios.post("http://127.0.0.1:8080/workRepot/updateworkRepot",emp)
+		axios.post(this.props.serverIP + "workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -112,7 +112,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepotFile",formData)
+			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -251,6 +251,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 const mapStateToProps = state => {
 	return {
 		approvalStatuslist: state.data.dataReques.length >= 1 ? state.data.dataReques[27]: [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 

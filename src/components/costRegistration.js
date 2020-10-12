@@ -7,6 +7,9 @@ import $ from 'jquery'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, {  } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
@@ -20,8 +23,7 @@ class costRegistration extends React.Component {
 
 	};
 	componentDidMount(){
-		$("#workRepotUpload").attr("disabled",true);
-		$("#workRepotDownload").attr("disabled",true);
+		this.props.fetchDropDown();
 		this.searchWorkRepot();
 		
 	}
@@ -35,11 +37,12 @@ class costRegistration extends React.Component {
 	initialState = {
 		employeeList: [],
 		approvalStatuslist:[],
-
+		stationCode1: '',　// 出発
+		stationCode2: '',　// 到着
 	};
 	//　検索
 	searchWorkRepot = () => {
-		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -53,7 +56,9 @@ class costRegistration extends React.Component {
 					}
 				} 
 				this.setState({ 
-					employeeList: data
+					employeeList: data,
+							stationCode1: '',　// 出発
+		stationCode2: '',　// 到着
 				})
 			});
 	};
@@ -64,7 +69,7 @@ class costRegistration extends React.Component {
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
 		}
-		axios.post("http://127.0.0.1:8080/dutyManagement/updateDutyManagement", emp)
+		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
@@ -92,7 +97,7 @@ class costRegistration extends React.Component {
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
 		}
-		axios.post("http://127.0.0.1:8080/dutyManagement/updateDutyManagement", emp)
+		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
@@ -165,7 +170,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepotFile",formData)
+			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -182,37 +187,44 @@ if($("#getFile").get(0).files[0].size>1048576){
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#workRepotUpload").attr("disabled",true);
-			$("#workRepotDownload").attr("disabled",false);
-			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
 			this.setState(
 				{
 					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
-					rowSelectWorkingTimeReport: row.workingTimeReport,
-					rowSelectSumWorkTime: row.sumWorkTime,
-					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
 				}
 			);
-
-			if(row.attendanceYearAndMonth-0>=TheYearMonth){
-				$("#workRepotUpload").attr("disabled",false);
-			}
-			if(row.attendanceYearAndMonth-0>TheYearMonth){
-				$("#workRepotDownload").attr("disabled",true);
-			}
-
 		} else {
 			this.setState(
 				{	
 					rowSelectWorkingTimeReport:'',
-					rowSelectAttendanceYearAndMonth:'',
-					rowSelectSumWorkTime: '',
-					rowSelectapproval: '',
 				}
 			);
 		}
 	}
-
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (fieldName === "station" && this.props.station.find((v) => (v.name === value)) !== undefined) {
+				switch (id) {
+					case 'stationCode1':
+						this.setState({
+							stationCode1: this.props.station.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'stationCode2':
+						this.setState({
+							stationCode2: this.props.station.find((v) => (v.name === value)).code,
+						})
+						break;
+					default:
+				}
+			}
+		}
+	};
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -223,6 +235,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 
 	render() {
 		const {employeeList} = this.state;
+		const station = this.props.station;
 		//　テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -281,14 +294,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 							<font style={{ whiteSpace: 'nowrap' }}>氏名：</font>
 							{"        "}
 						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="区分" />
-							</InputGroup>
-						</Col>
 						<Col sm={8}></Col>
 					</Row>	
 					<Row>
@@ -297,7 +302,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>	
 					</Row>	
 					<Row>
-						<Col sm={2}>
+						<Col sm={4}>
 						<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">期間</InputGroup.Text>
@@ -307,33 +312,26 @@ if($("#getFile").get(0).files[0].size>1048576){
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM/dd"
-										maxDate={new Date()}
 										id="datePicker2"
 										className="form-control form-control-sm"
-									/>{" ～"}
+									/>{"　　   ～　　 　 "}
 								</InputGroup.Prepend>
-						</InputGroup>
-						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<DatePicker
-											selected={this.state.yearAndMonth2}
-											onChange={this.inactiveYearAndMonth2}
-											autoComplete="off"
-											locale="ja"
-											dateFormat="yyyy/MM/dd"
-	
-											maxDate={new Date()}
-											id="datePicker"
-											className="form-control form-control-sm"
-										/>
-									</InputGroup.Prepend>
+								<InputGroup.Prepend>
+									<DatePicker
+										selected={this.state.yearAndMonth2}
+										onChange={this.inactiveYearAndMonth2}
+										autoComplete="off"
+										locale="ja"
+										dateFormat="yyyy/MM/dd"
+										id="datePicker"
+										className="form-control form-control-sm"
+									/>
+								</InputGroup.Prepend>
 							</InputGroup>	
 						</Col>
                         <Col sm={2}>
                             <div style={{ "float": "right" }}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="OtherCost">
 	                          		 <FontAwesomeIcon icon={faDownload} />他の費用
 		                        </Button>
 	 						</div>
@@ -341,21 +339,45 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</Row>
 					<Row>
 						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="出発" />
-							</InputGroup>
-						</Col>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete
+										value={station.find((v) => (v.code === this.state.stationCode1)) || {}}
+										options={station}
+										name="station"
+										getOptionLabel={(option) => option.name}
+										onSelect={(event) => this.handleTag(event, 'station')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="  出発" type="text" {...params.inputProps} className="auto" id="stationCode1"
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
+									/>
+								</InputGroup>
+							</Col>
 						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
-							</InputGroup>
-						</Col>
+								<InputGroup size="sm" className="mb-3" >
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete
+										value={station.find((v) => (v.code === this.state.stationCode2)) || {}}
+										options={station}
+										name="station"
+										getOptionLabel={(option) => option.name}
+										onSelect={(event) => this.handleTag(event, 'station')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="  到着" type="text" {...params.inputProps} className="auto" id="stationCode2"
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
+									/>
+								</InputGroup>
+							</Col>
 						<Col sm={2}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
@@ -374,7 +396,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>
                        <Col sm={2}>
                             <div style={{ "float": "right" }}>
-		                        <Button variant="info" size="sm" onClick={this.getFile}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={this.getFile}id="costRegistrationFile">
 	                          		 <FontAwesomeIcon icon={faDownload} />添付
 		                        </Button>
 	 						</div>
@@ -384,7 +406,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 
 						 <Col sm={2}>
                             <div style={{ "position": "relative","left": "300%"}}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="costRegistrationInsert">
 	                          		 <FontAwesomeIcon icon={faDownload} />登録
 		                        </Button>
 	 						</div>
@@ -397,10 +419,10 @@ if($("#getFile").get(0).files[0].size>1048576){
   						<Col sm={6}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.listChange} id="workRepotUpload">
+                               <Button variant="info" size="sm" onClick={this.listChange} id="costRegistrationChange">
 									<FontAwesomeIcon icon={faUpload} />修正
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={this.listDel}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={this.listDel}id="costRegistrationDel">
 	                          		 <FontAwesomeIcon icon={faDownload} />削除
 		                        </Button>
 	 						</div>
@@ -423,4 +445,16 @@ if($("#getFile").get(0).files[0].size>1048576){
 		);
 	}
 }
-export default costRegistration;
+const mapStateToProps = state => {
+	return {
+		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(costRegistration);
