@@ -911,8 +911,8 @@ class manageSituation extends React.Component {
 								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
 								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.props.serverIP)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.props.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
 							</div>
 						</Col>
 					</Row>

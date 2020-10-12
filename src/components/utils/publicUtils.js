@@ -280,24 +280,13 @@ export function labelGetValue(name, list) {
 
 //Download 方法
 // param path  備考：ファイルのフォーマットは下記です
-// src/main/resources/file/LYC078_姜下載/姜下載_履歴書1.xlsx
-export function handleDownload(path) {
+// c:/file/LYC124_12/12_履歴書1.xlsx
+export function handleDownload(path,serverIP) {
 	if (path !== undefined && path !== null && path !== "") {
-		console.log(path);
-		//src/main/resources/file/
 		var NewPath = new Array();
 		NewPath = path.split("/");
-		
-		if(path.indexOf("作業報告書") != -1){
-				var pathInfo = NewPath.slice(-5);
-		}else{
-			var pathInfo = NewPath.slice(-3);
-		}
-	
-		var strPath = pathInfo.join('/');
-		console.log(NewPath);
 		var xhr = new XMLHttpRequest();
-		xhr.open('post', 'http://127.0.0.1:8080/download', true);
+		xhr.open('post', serverIP+'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
 		xhr.onload = function() {
@@ -317,7 +306,7 @@ export function handleDownload(path) {
 			}
 		}
 		xhr.send(JSON.stringify({
-			"name": strPath,
+			"name": path,
 		}));
 	}
 
