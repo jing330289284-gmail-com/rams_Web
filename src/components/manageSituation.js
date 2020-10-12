@@ -15,6 +15,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import SalesContent from './salesContent';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 class manageSituation extends React.Component {
@@ -90,7 +92,8 @@ class manageSituation extends React.Component {
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		axios.post("http://127.0.0.1:8080/salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
+		//axios.post("http://127.0.0.1:8080/salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
+		axios.post(this.props.serverIP + "salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -306,7 +309,8 @@ class manageSituation extends React.Component {
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
-				axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
+				//axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
+				axios.post(this.props.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
 					.then(result => {
 						if (result.data != null) {
 							this.getSalesSituation(this.state.salesYearAndMonth)
@@ -350,7 +354,8 @@ class manageSituation extends React.Component {
 				})
 			}
 		} else {
-			axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
+			// axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
+			axios.post(this.props.serverIP + "salesSituation/updateSalesSituation", this.state)
 				.then(result => {
 					if (result.data != null) {
 						if (result.data.errorsMessage != null) {
@@ -964,4 +969,16 @@ class manageSituation extends React.Component {
 		);
 	}
 }
-export default manageSituation;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(manageSituation);
+
