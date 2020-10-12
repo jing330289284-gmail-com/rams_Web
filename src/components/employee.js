@@ -243,7 +243,7 @@ class employee extends React.Component {
 	}
 
 
-	getAuthority = () => {
+/* 	getAuthority = () => {
 		var methodArray = ["getAuthority"]
 		var data = publicUtils.getPublicDropDown(methodArray);
 		this.setState(
@@ -252,7 +252,7 @@ class employee extends React.Component {
 			}
 		);
 	};
-
+ */
 	getEmployeeByEmployeeNo = employeeNo => {
 		const emp = {
 			employeeNo: employeeNo
@@ -427,11 +427,11 @@ class employee extends React.Component {
 	radioChangeEmployeeType = () => {
 		let val = $('#employeeStatusId').val();
 		if (val === '1') {
-			this.setState({ companyMail: '', authorityCodes: []});
+			this.setState({ companyMail: '', authorityCodes: [] });
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
-			this.getAuthority();
+			//this.getAuthority();
 		}
 	}
 
@@ -497,7 +497,6 @@ class employee extends React.Component {
 			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "", employeeFormCode: event.target.value, temporary_retirementYearAndMonth: "" })
 		}
 	}
-
 
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
@@ -674,8 +673,8 @@ class employee extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange}  size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange}  size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -684,9 +683,9 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="カタカナ" value={furigana1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="furigana1"  />{' '}
+										onChange={this.valueChange} size="sm" name="furigana1" />{' '}
 									<FormControl placeholder="カタカナ" value={furigana2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="furigana2"  />
+										onChange={this.valueChange} size="sm" name="furigana2" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -695,7 +694,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="ローマ字" value={alphabetName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="alphabetName"  />
+										onChange={this.valueChange} size="sm" name="alphabetName" />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -732,11 +731,11 @@ class employee extends React.Component {
 											yearDropdownItemNumber={25}
 											scrollableYearDropdown
 											maxDate={new Date()}
-											
+
 											className="form-control form-control-sm"
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
-											
+
 										/>
 									</InputGroup.Append>
 									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" disabled />
@@ -821,7 +820,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control type="email" placeholder="社内メール" value={companyMail} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="companyMail"  /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										onChange={this.valueChange} size="sm" name="companyMail" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 						</Row>
@@ -832,9 +831,9 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">卒業学校</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="学校" value={graduationUniversity} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="graduationUniversity"  />
+										onChange={this.valueChange} size="sm" name="graduationUniversity" />
 									<FormControl placeholder="専門" value={major} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="major"  />
+										onChange={this.valueChange} size="sm" name="major" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -850,13 +849,13 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											
+
 											className="form-control form-control-sm"
 											autoComplete="off"
-											
+
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_graduationYearAndMonth" value={temporary_graduationYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_graduationYearAndMonth" value={temporary_graduationYearAndMonth}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -872,13 +871,13 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											
+
 											className="form-control form-control-sm"
 											autoComplete="off"
-											
+
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -899,7 +898,7 @@ class employee extends React.Component {
 											autoComplete="off"
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -917,13 +916,13 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											
+
 											className="form-control form-control-sm"
 											autoComplete="off"
-											
+
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_comeToJapanYearAndMonth" value={temporary_comeToJapanYearAndMonth}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -942,7 +941,7 @@ class employee extends React.Component {
 										)}
 									</Form.Control>
 									<FormControl placeholder="出身地" value={birthplace} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="birthplace"  />
+										onChange={this.valueChange} size="sm" name="birthplace" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -951,7 +950,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="携帯電話" value={phoneNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo"  />
+										onChange={this.valueChange} size="sm" name="phoneNo" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1010,8 +1009,8 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1"  />
-									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2"  />
+									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1" />
+									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" />
 								</InputGroup>
 							</Col>
 
@@ -1038,7 +1037,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										
+
 										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1051,7 +1050,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										
+
 										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1064,7 +1063,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										
+
 										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1077,7 +1076,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										
+
 										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1090,7 +1089,7 @@ class employee extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										
+
 										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={developLanguageMaster}
 										getOptionLabel={(option) => option.name}
@@ -1117,13 +1116,13 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											
+
 											className="form-control form-control-sm"
 											autoComplete="off"
-											
+
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_yearsOfExperience" value={temporary_yearsOfExperience}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1134,7 +1133,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7"  />
+									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1150,7 +1149,7 @@ class employee extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">以降住所：</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress"  />
+									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1159,7 +1158,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										
+
 										value={station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={station}
 										getOptionLabel={(option) => option.name}
@@ -1199,7 +1198,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="在留カード" value={residenceCardNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="residenceCardNo"  />
+										onChange={this.valueChange} size="sm" name="residenceCardNo" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1215,13 +1214,13 @@ class employee extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											
+
 											className="form-control form-control-sm"
 											autoComplete="off"
-											
+
 										/>
 									</InputGroup.Append>
-									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} placeholder="0年0月" aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod}  aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -1230,7 +1229,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employmentInsuranceNo"  />
+										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1239,7 +1238,7 @@ class employee extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="myNumber"  />
+										onChange={this.valueChange} size="sm" name="myNumber" />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -1249,9 +1248,9 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										{this.state.residentCardInfoFlag  ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+										{this.state.residentCardInfoFlag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 											<Form.File id="residentCardInfo"
-												label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')}  />}
+												label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1259,41 +1258,41 @@ class employee extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										{this.state.resumeInfo1Flag  ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+										{this.state.resumeInfo1Flag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 											<Form.File id="resumeInfo1"
-												label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')}  />}
+												label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
 									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark1"  />
+										onChange={this.valueChange} size="sm" name="resumeRemark1" />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										{this.state.resumeInfo2Flag  ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+										{this.state.resumeInfo2Flag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 											<Form.File id="resumeInfo2"
-												label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')}  />}
+												label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
 									<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark2"  />
+										onChange={this.valueChange} size="sm" name="resumeRemark2" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										{this.state.passportInfoFlag  ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
+										{this.state.passportInfoFlag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 											<Form.File id="passportInfo"
-												label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')}  />}
+												label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />}
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
