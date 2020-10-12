@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 class Login2 extends Component {
@@ -21,9 +23,10 @@ class Login2 extends Component {
 		errorsMessageValue: '',
 	}
 	componentWillMount() {
+		this.props.fetchDropDown();
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
-		axios.post("http://127.0.0.1:8080/login2/init")
+		axios.post(this.props.serverIP + "/login2/init")
 			.then(resultMap => {
 				if (resultMap.data) {
 					this.props.history.push("/subMenuEmployee");
@@ -38,7 +41,7 @@ class Login2 extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		axios.post("http://127.0.0.1:8080/login2/login", loginModel)
+		axios.post(this.props.serverIP + "/login2/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {//ログイン成功
 					this.props.history.push("/subMenuEmployee");
@@ -77,7 +80,7 @@ class Login2 extends Component {
 		const sendMail = () => {
 			var loginModel = {};
 			loginModel["employeeNo"] = $("#employeeNo").val();
-			axios.post("http://127.0.0.1:8080/login2/sendMail", loginModel)
+			axios.post(this.props.serverIP + "/login2/sendMail", loginModel)
 				.then(result => {
 					if (result.data.errorsMessage !== null && result.data.errorsMessage !== undefined) {
 						this.setState({ errorsMessageShow: true, errorsMessageValue: result.data.errorsMessage });
@@ -127,6 +130,16 @@ class Login2 extends Component {
 		)
 	}
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default Login2;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Login2);
 

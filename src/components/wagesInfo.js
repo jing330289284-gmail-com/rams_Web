@@ -14,6 +14,8 @@ import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-tabl
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import ExpensesInfo from "./expensesInfo.js"
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 
@@ -88,6 +90,7 @@ class WagesInfo extends Component {
         )
     }
     componentDidMount() {
+        this.props.fetchDropDown();
         this.getDropDowns();
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
@@ -219,7 +222,7 @@ class WagesInfo extends Component {
             this.setState({
                 employeeNo: wagesInfoMod.employeeNo,
             })
-            axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo", wagesInfoMod)
+            axios.post(this.props.serverIP + "/wagesInfo/getWagesInfo", wagesInfoMod)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                         $("#expensesInfoBtn").attr("disabled", false);
@@ -333,7 +336,7 @@ class WagesInfo extends Component {
                 var wagesInfoMod = {
                     "employeeNo": utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
                 }
-                axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo", wagesInfoMod)
+                axios.post(this.props.serverIP + "/wagesInfo/getWagesInfo", wagesInfoMod)
                     .then(result => {
                         if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                             $("#expensesInfoBtn").attr("disabled", false);
@@ -369,7 +372,7 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
-        axios.post("http://127.0.0.1:8080/wagesInfo/toroku", wagesInfoModel)
+        axios.post(this.props.serverIP + "/wagesInfo/toroku", wagesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
@@ -879,5 +882,15 @@ class WagesInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default WagesInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(WagesInfo);

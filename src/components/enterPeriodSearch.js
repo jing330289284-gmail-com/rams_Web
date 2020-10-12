@@ -235,6 +235,7 @@ const mapStateToProps = state => {
 	return {
         getEnterPeriod:state.data.dataReques.length >= 1 ? state.data.dataReques[29] : [],
         getEmployeeName:state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
+        serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 
