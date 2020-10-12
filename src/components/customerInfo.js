@@ -18,6 +18,8 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TableSelect from './TableSelect';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 registerLocale('ja', ja);
 
@@ -106,6 +108,7 @@ class CustomerInfo extends Component {
     * 画面の初期化 
     */
     async componentDidMount() {
+        this.props.fetchDropDown();
         this.setState({
             actionType: this.props.location.state.actionType,
         })
@@ -164,7 +167,7 @@ class CustomerInfo extends Component {
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
         customerInfoMod["actionType"] = this.props.location.state.actionType;
-        await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage", customerInfoMod)
+        await axios.post(this.props.serverIP + "/customerInfo/onloadPage", customerInfoMod)
             .then(resultMap => {
                 var customerInfoMod;
                 var actionType = this.state.actionType;
@@ -224,7 +227,7 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
         customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
-        axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
+        axios.post(this.props.serverIP + "/customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
@@ -362,7 +365,7 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
         if (this.state.actionType === "update") {
-            axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+            axios.post(this.props.serverIP + "/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                 .then(result => {
                     if (result.data === true) {
                         this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
@@ -918,5 +921,15 @@ class CustomerInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default CustomerInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfo);
