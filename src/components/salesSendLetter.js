@@ -390,7 +390,7 @@ class salesSendLetter extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="customerCode" className="auto"
-													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+													style={{ width: 110, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -457,7 +457,7 @@ class salesSendLetter extends React.Component {
 									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>
 								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton"
 									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
-								<Link to={{ pathname: '/subMenu/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
+								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
 								><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
 							</div>

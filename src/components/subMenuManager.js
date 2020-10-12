@@ -22,6 +22,7 @@ import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
 import individualSales from './individualSales';
 import monthlySalesSearch from './monthlySalesSearch';
+import sendLettersConfirm from './sendLettersConfirm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
@@ -225,6 +226,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/costRegistration`} component={costRegistration} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
+								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								
 								<div className="container col-8">
 									<div className="container col-10">

@@ -1,6 +1,6 @@
 /* 営業確認 */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl,Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker"
@@ -8,7 +8,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faBuilding, faDownload,faBook } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -74,10 +74,10 @@ class manageSituation extends React.Component {
 		customerContractStatus: '',
 		modeSelect: 'radio',
 		selectetRowIds: [],
-			onSelectFlag: true,
-			checkFlag:false,
-			checkDisabledFlag:false,
-			daiologShowFlag: false,
+		onSelectFlag: true,
+		checkFlag: false,
+		checkDisabledFlag: false,
+		daiologShowFlag: false,
 	};
 
 	// 初期表示のレコードを取る
@@ -97,9 +97,9 @@ class manageSituation extends React.Component {
 						selectedRowKeys: []
 					});
 					var totalPersons = result.data.length;
-						this.setState({
-						checkDisabledFlag:totalPersons===0?true:false,
-						});
+					this.setState({
+						checkDisabledFlag: totalPersons === 0 ? true : false,
+					});
 					var decidedPersons = 0;
 					if (totalPersons !== 0) {
 						for (var i = 0; i < result.data.length; i++) {
@@ -108,16 +108,16 @@ class manageSituation extends React.Component {
 							}
 						}
 					}
-						this.refs.table.store.selected = [];
-	this.refs.table.setState({
+					this.refs.table.store.selected = [];
+					this.refs.table.setState({
 						selectedRowKeys: []
 					});
 					this.setState({
-						selectetRowIds:[],
-						modeSelect:'radio',
-		checkSelect: true,
-			onSelectFlag: true,
-						checkFlag:false,
+						selectetRowIds: [],
+						modeSelect: 'radio',
+						checkSelect: true,
+						onSelectFlag: true,
+						checkFlag: false,
 						salesSituationLists: result.data,
 						interviewDate1Show: '',　// 面接1日付
 						interviewDate1: '',　// 面接1日付
@@ -164,7 +164,7 @@ class manageSituation extends React.Component {
 			}
 		);
 		// レコードdropdown用
-		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer","getCustomerContractStatus"]
+		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer", "getCustomerContractStatus"]
 		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly);
 		dataTleOnly[0].shift();
 		dataTleOnly[1].shift();
@@ -182,7 +182,7 @@ class manageSituation extends React.Component {
 	};
 
 	// レコードのステータス
-	formatType= (cell) => {
+	formatType = (cell) => {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
 			if (cell === statuss[i].code) {
@@ -191,7 +191,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	formatcustomerContract= (cell) => {
+	formatcustomerContract = (cell) => {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
 			if (cell === customerContracts[i].code) {
@@ -199,7 +199,7 @@ class manageSituation extends React.Component {
 			}
 		}
 	}
-	
+
 	// レコードおきゃく表示
 	formatCustome = (cell) => {
 		var allCustomers = this.state.allCustomer;
@@ -237,18 +237,18 @@ class manageSituation extends React.Component {
 		//alert(no);
 		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
 		this.formatStaff(no);
-				this.setState({
+		this.setState({
 			salesStaff: no,
-			});
+		});
 	}
-	
+
 	getCustomerContract = (no) => {
 		alert(no);
 		this.state.salesSituationLists[this.state.rowNo - 1].customerContractStatus = no;
 		this.formatcustomerContract(no);
 		this.setState({
 			customerContractStatus: no,
-			});
+		});
 	}
 
 	// レコードおきゃく表示
@@ -260,34 +260,34 @@ class manageSituation extends React.Component {
 			}
 		}
 	}
-changeMode = () => {
-	//alert(e);
-	this.setState({
-		checkFlag:!this.state.checkFlag,
-						modeSelect: this.state.modeSelect==='radio'?'checkbox':'radio',
+	changeMode = () => {
+		//alert(e);
+		this.setState({
+			checkFlag: !this.state.checkFlag,
+			modeSelect: this.state.modeSelect === 'radio' ? 'checkbox' : 'radio',
 
 			onSelectFlag: !this.state.onSelectFlag,
-				interviewDate1Show:  '' ,
-				interviewDate2Show: '' ,
-				stationCode1:  '' ,
-				stationCode2: '' ,
-				interviewCustomer1:  '',
-				interviewCustomer2:  '' ,
-				hopeLowestPrice:  '' ,
-				hopeHighestPrice:  '' ,
-				salesPriorityStatus: '' ,
-				remark:  '' ,
-				linkDisableFlag:true,
-				checkSelect: true,
-selectetRowIds:[],
-	});
+			interviewDate1Show: '',
+			interviewDate2Show: '',
+			stationCode1: '',
+			stationCode2: '',
+			interviewCustomer1: '',
+			interviewCustomer2: '',
+			hopeLowestPrice: '',
+			hopeHighestPrice: '',
+			salesPriorityStatus: '',
+			remark: '',
+			linkDisableFlag: true,
+			checkSelect: true,
+			selectetRowIds: [],
+		});
 
-	this.refs.table.store.selected = [];
-	this.refs.table.setState({
-						selectedRowKeys: []
-					});
+		this.refs.table.store.selected = [];
+		this.refs.table.setState({
+			selectedRowKeys: []
+		});
 
-}
+	}
 	// table編集保存
 	afterSaveCell = (row) => {
 		if (row.salesProgressCode === '3' || row.salesProgressCode === '5') {
@@ -499,7 +499,7 @@ selectetRowIds:[],
 			});
 		} else {
 			this.setState({
-				selectetRowIds:[],
+				selectetRowIds: [],
 				employeeNo: '',
 				interviewDate1: '',
 				interviewDate1Show: '',
@@ -522,33 +522,33 @@ selectetRowIds:[],
 			});
 		}
 	}
-	
-		handleCheckModeSelect = (row, isSelected, e) => {
+
+	handleCheckModeSelect = (row, isSelected, e) => {
 
 		if (isSelected) {
 			//alert(this.refs.customersTable.state.selectedRowKeys);table
-			let tempSelectetRowIds=this.state.selectetRowIds.concat([row.employeeNo]);
+			let tempSelectetRowIds = this.state.selectetRowIds.concat([row.employeeNo]);
 			this.setState({
 				selectetRowIds: tempSelectetRowIds,
-				checkSelect:false,
+				checkSelect: false,
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === row.employeeNo);
 			this.state.selectetRowIds.splice(index, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
-				checkSelect:this.state.selectetRowIds.length===0?true:false,
+				checkSelect: this.state.selectetRowIds.length === 0 ? true : false,
 			})
 		}
 	}
-	
-		closeDaiolog = () => {
+
+	closeDaiolog = () => {
 		this.setState({
 			daiologShowFlag: false,
 		})
 	}
-	
-			openDaiolog = () => {
+
+	openDaiolog = () => {
 		this.setState({
 			daiologShowFlag: true,
 		});
@@ -603,7 +603,7 @@ selectetRowIds:[],
 			hideSelectColumn: true,
 			clickToSelect: true,
 			clickToExpand: true,
-			onSelect: this.state.onSelectFlag?this.handleRowSelect:this.handleCheckModeSelect,
+			onSelect: this.state.onSelectFlag ? this.handleRowSelect : this.handleCheckModeSelect,
 		};
 		const cellEdit = {
 			mode: 'click',
@@ -644,7 +644,7 @@ selectetRowIds:[],
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<SalesContent empNo={this.state.employeeNo}/>
+						<SalesContent empNo={this.state.employeeNo} />
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
@@ -887,7 +887,7 @@ selectetRowIds:[],
 								</InputGroup.Append>
 							</InputGroup> */}
 							<div >
-								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" checked={this.state.checkFlag} disabled={this.state.checkDisabledFlag} onChange={this.changeMode}/></span>
+								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" checked={this.state.checkFlag} disabled={this.state.checkDisabledFlag} onChange={this.changeMode} /></span>
 							</div>
 						</Col>
 						<Col sm={1}>
@@ -899,11 +899,11 @@ selectetRowIds:[],
 						<Col sm={3}></Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenu/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo,selectetRowIds:this.state.selectetRowIds } }}>
-									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag||!this.state.checkSelect?false:true}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
+									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
+								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
-								<Link to={{ pathname: '/subMenu/siteSearch', state: { id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
 								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
@@ -911,55 +911,55 @@ selectetRowIds:[],
 							</div>
 						</Col>
 					</Row>
-				
-				<Row>
-							<Col sm={12}>
-				
-					<BootstrapTable
-						ref='table'
-						className={"bg-white text-dark"}
-						data={this.state.salesSituationLists}
-						pagination
-						options={options}
-						selectRow={selectRow}
-						cellEdit={cellEdit}
-						trClassName="customClass"
-						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='5%' dataField='rowNo' dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
-						<TableHeaderColumn dataField='stationCode1' hidden={true}>面接1場所</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewCustomer1' hidden={true}>面接1客様</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewDate2' hidden={true}> 面接2日付</TableHeaderColumn>
-						<TableHeaderColumn dataField='stationCode2' hidden={true}>面接2場所</TableHeaderColumn>
-						<TableHeaderColumn dataField='interviewCustomer2' hidden={true}>面接2客様</TableHeaderColumn>
-						<TableHeaderColumn dataField='hopeLowestPrice' hidden={true}>希望単価min</TableHeaderColumn>
-						<TableHeaderColumn dataField='hopeHighestPrice' hidden={true}>希望単価max</TableHeaderColumn>
-						<TableHeaderColumn dataField='remark' hidden={true}>備考</TableHeaderColumn>
-						<TableHeaderColumn dataField='salesPriorityStatus' hidden={true}>優先度</TableHeaderColumn>
-						<TableHeaderColumn dataField='admissionStartDate' hidden={true}>開始時間</TableHeaderColumn>
-						<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
-						<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
-						<TableHeaderColumn width='5%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
-						<TableHeaderColumn width='18%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
-						<TableHeaderColumn width='6%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
-						<TableHeaderColumn width='5%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
-						<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>ステータス</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)}  customEditor={{ getElement: tableSelect4 }}
-						editable={this.state.salesProgressCode === '' ||this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
-							editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
-						<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
-							editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 
-					</BootstrapTable>
-				
-				
-							</Col>
-							</Row>
-							</Form>
+					<Row>
+						<Col sm={12}>
+
+							<BootstrapTable
+								ref='table'
+								className={"bg-white text-dark"}
+								data={this.state.salesSituationLists}
+								pagination
+								options={options}
+								selectRow={selectRow}
+								cellEdit={cellEdit}
+								trClassName="customClass"
+								headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<TableHeaderColumn width='5%' dataField='rowNo' dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
+								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
+								<TableHeaderColumn dataField='stationCode1' hidden={true}>面接1場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='interviewCustomer1' hidden={true}>面接1客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='interviewDate2' hidden={true}> 面接2日付</TableHeaderColumn>
+								<TableHeaderColumn dataField='stationCode2' hidden={true}>面接2場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='interviewCustomer2' hidden={true}>面接2客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='hopeLowestPrice' hidden={true}>希望単価min</TableHeaderColumn>
+								<TableHeaderColumn dataField='hopeHighestPrice' hidden={true}>希望単価max</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark' hidden={true}>備考</TableHeaderColumn>
+								<TableHeaderColumn dataField='salesPriorityStatus' hidden={true}>優先度</TableHeaderColumn>
+								<TableHeaderColumn dataField='admissionStartDate' hidden={true}>開始時間</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
+								<TableHeaderColumn width='18%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
+								<TableHeaderColumn width='6%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
+								<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>ステータス</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)} customEditor={{ getElement: tableSelect4 }}
+									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
+								<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
+									editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
+									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
+								<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
+
+							</BootstrapTable>
+
+
+						</Col>
+					</Row>
+				</Form>
 			</div>
 		);
 	}

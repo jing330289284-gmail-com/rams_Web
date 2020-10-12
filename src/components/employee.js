@@ -120,7 +120,7 @@ class employee extends React.Component {
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		//formData.append('pictures',  publicUtils.nullToEmpty($('#pictures').get(0).files[0]))
-		axios.post("http://127.0.0.1:8080/employee/insertEmployee", formData)
+		axios.post(this.props.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -197,7 +197,7 @@ class employee extends React.Component {
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		//formData.append('pictures', this.state.pictures[0])
-		axios.post("http://127.0.0.1:8080/employee/updateEmployee", formData)
+		axios.post(this.props.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
@@ -271,7 +271,7 @@ class employee extends React.Component {
 		const emp = {
 			employeeNo: employeeNo
 		};
-		axios.post("http://127.0.0.1:8080/employee/getEmployeeByEmployeeNo", emp)
+		axios.post(this.props.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
 				this.setState({
@@ -447,7 +447,6 @@ class employee extends React.Component {
 
 	//社員タイプが違う時に、色々な操作をします。
 	radioChangeEmployeeType = () => {
-		alert($('#employeeStatusId').val())
 		let val =$('#employeeStatusId').val();
 		if (val === '1') {
 			this.setState({ companyMail: '', authorityCodes: [], BPFlag: true });
@@ -1357,6 +1356,7 @@ const mapStateToProps = state => {
 		englishLeveCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[13] : [],
 		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
 		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 
