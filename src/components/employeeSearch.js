@@ -45,10 +45,10 @@ class employeeSearch extends React.Component {
 	};
 	//リセット　reset
 	resetStates = {
-		employeeNo: null, employeeName: null, employeeFormCode: null, employeeStatus: null, genderStatus: null, 
-		ageFrom: null, ageTo: null, residenceCode: null,nationalityCode: null, customer: null,
-		intoCompanyCode: null, japaneaseLeveCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null,intoCompanyYearAndMonthTo: null,
-		kadou: null,developLanguage1: null, developLanguage2: null, developLanguage3: null,
+		employeeNo: null, employeeName: null, employeeFormCode: null, employeeStatus: null, genderStatus: null,
+		ageFrom: null, ageTo: null, residenceCode: null, nationalityCode: null, customer: null,
+		intoCompanyCode: null, japaneaseLeveCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null, intoCompanyYearAndMonthTo: null,
+		kadou: null, developLanguage1: null, developLanguage2: null, developLanguage3: null,
 	};
 
 	//初期化メソッド
@@ -85,7 +85,8 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
 		};
-		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
+		//axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
+		axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -138,7 +139,7 @@ class employeeSearch extends React.Component {
 			resumeInfo2: this.state.resumeInfo2,
 			residentCardInfo: this.state.residentCardInfo,
 		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
+		axios.post(this.props.serverIP +"employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
 					this.searchEmployee();
@@ -580,7 +581,7 @@ class employeeSearch extends React.Component {
 					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
-					<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
+					<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
 					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
@@ -596,8 +597,8 @@ class employeeSearch extends React.Component {
 						<Col sm={6}></Col>
 						<Col sm={2}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
-								<Link to={{ pathname: '/subMenu/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
 								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
 							</div>
 						</Col>
@@ -605,6 +606,8 @@ class employeeSearch extends React.Component {
 				</div>
 				<div >
 					<Row >
+
+
 						<Col sm={12}>
 							<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 								<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey>番号</TableHeaderColumn>
@@ -641,7 +644,8 @@ const mapStateToProps = state => {
 		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
 		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
 		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
-		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : []
+		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 
