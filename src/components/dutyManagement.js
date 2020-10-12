@@ -286,17 +286,17 @@ class dutyManagement extends React.Component {
 						</Col>  
                     </Row>
 					<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='rowNo' isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 headerAlign='center' dataAlign='center' dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='employeeName'>氏名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='customerName'>所属お客様</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='stationName'>場所</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='payOffRange'>精算範囲</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='overTimePay'>残業代/控除</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime'>更新日付</TableHeaderColumn>
-						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>所属お客様</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
+						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
+						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='overTimePay'>残業代/控除</TableHeaderColumn>
+						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
+						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
