@@ -4,6 +4,8 @@ import axios from 'axios';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 class salesAppend extends Component {
@@ -37,7 +39,8 @@ class salesAppend extends Component {
 	}
 
 	getSalesPersons = (customerNo) => {
-		axios.post("http://127.0.0.1:8080/salesSendLetters/getSalesPersons", { customerNo: customerNo })
+		//axios.post("http://127.0.0.1:8080/salesSendLetters/getSalesPersons", { customerNo: customerNo })
+		axios.post(this.props.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
 				for (let i in result.data) {
@@ -210,4 +213,15 @@ class salesAppend extends Component {
 		);
 	}
 }
-export default salesAppend;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(salesAppend);
