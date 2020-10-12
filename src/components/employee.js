@@ -19,14 +19,12 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 
 axios.defaults.withCredentials = true;
-
 class employee extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.insertEmployee = this.insertEmployee.bind(this);//登録
-		this.onDrop = this.onDrop.bind(this);//ImageUploaderを処理
 		this.radioChangeEmployeeType = this.radioChangeEmployeeType.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 	}
@@ -35,7 +33,6 @@ class employee extends React.Component {
 		showBankInfoModal: false,//口座情報画面フラグ
 		showpasswordSetModal: false,//PW設定
 		showBpInfoModal: false,//bp情報
-		pictures: [],//ImageUploader
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
 		subCostInfo: null,//諸費用のデータ
@@ -116,7 +113,6 @@ class employee extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		//formData.append('pictures',  publicUtils.nullToEmpty($('#pictures').get(0).files[0]))
 		axios.post(this.props.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -192,7 +188,6 @@ class employee extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		//formData.append('pictures', this.state.pictures[0])
 		axios.post(this.props.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
@@ -343,13 +338,6 @@ class employee extends React.Component {
 		});
 	};
 
-	//ImageUploaderを処理　開始
-	onDrop(pictureFiles, pictureDataURLs) {
-		this.setState({
-			pictures: this.state.pictures.concat(pictureFiles)
-		});
-	}
-	//ImageUploaderを処理　終了
 	//　　年月開始
 	//　　卒業年月
 	state = {
