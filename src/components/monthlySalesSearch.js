@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , select , Tooltip,} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , FormControl , select , Tooltip} from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -11,8 +11,8 @@ import axios from 'axios';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-import { Route } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import { ROW_SELECT_SINGLE } from 'react-bootstrap-table-next';
 class monthlySalesSearch extends Component {
     state = { 
         monthlySales_YearAndMonth:'',
@@ -26,6 +26,8 @@ class monthlySalesSearch extends Component {
         grossProfitBack:'',
         nowYandM:'',
         kadou:'',
+        rowSelectemployeeNo:'',
+        rowSelectemployeeName:'',
      }
      constructor(props){
         super(props);
@@ -43,7 +45,7 @@ class monthlySalesSearch extends Component {
 			hideSizePerPage: true,
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
-
+            expandRowBgColor: 'rgb(165, 165, 165)',
 		};
 
         };
@@ -51,9 +53,14 @@ class monthlySalesSearch extends Component {
         initialState = { occupationCodes: [],employeeFormCodes: [],employeeStatuss:[],
         }
         componentDidMount(){
-           this.getDropDownｓ();
+            this.props.fetchDropDown();
+           this.clickButtonDisabled();
        
         }
+
+        clickButtonDisabled = () => {
+            $('button[name="personalSearchBtn"]').prop('disabled', true);
+        };
            	//onchange
 	valueChange = event => {
 		this.setState({
@@ -68,23 +75,13 @@ class monthlySalesSearch extends Component {
 			</p>
 		);
     }   
-    getDropDownｓ = () => {
-		var methodArray = ["getStaffForms" ,"getOccupation","getEmployeeStatus"];
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-                employeeFormCodes:data[0],
-                occupationCodes:data[1],
-                employeeStatuss:data[2],
 
-			}
-		);
-    };
+    
     vNumberChange = (e, key) => {
         const {value} = e.target;
 
         const reg = /^[0-9]*$/;
-        if((reg.test(value) && value.length<3)){
+        if((reg.test(value) && value.length<4)){
             this.setState({
             [key]: value
             })
@@ -129,16 +126,15 @@ class monthlySalesSearch extends Component {
             endYandM: publicUtils.formateDate(this.state.monthlySales_endYearAndMonth,false),
 
         };
-		axios.post("http://127.0.0.1:8080/monthlySales/searchMonthlySales", monthlyInfo)
+       // axios.post("http://127.0.0.1:8080/monthlySales/searchMonthlySales", monthlyInfo)
+        axios.post(this.props.serverIP + "monthlySales/searchMonthlySales", monthlyInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
-                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
                 }else if(response.data.noData != null){
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
-                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
-                    window.location.href = window.location.href
                 }else {
+                    this.setState({"errorsMessageShow":false})
                     this.setState({ monthlySalesInfoList: response.data.data })
                     this.totalfee()	
 				 }
@@ -259,12 +255,30 @@ class monthlySalesSearch extends Component {
         
 
     }
+
+    handleRowSelect = (row, isSelected, e) => {
+		if (isSelected) {
+            this.setState({rowSelectemployeeNo:row.employeeNo});
+            this.setState({rowSelectemployeeName:row.employeeName});
+			$('#personalSearchBtn').removeClass('disabled');
+		} else {
+			$('#personalSearchBtn').addClass('disabled');
+		}
+	}
+    
     render(){
         const { kadou,employeeOccupation,employeeForms,employeeClassification ,errorsMessageValue}= this.state;
-        // const employeeStatuss = this.props.employeeStatuss;
-        // const employeeFormCodes = this.props.employeeFormCodes;
-        // const  occupationCodes= this.props.occupationCodes;
-
+        const employeeStatuss = this.props.employeeStatuss;
+        const employeeFormCodes = this.props.employeeFormCodes;
+        const  occupationCodes= this.props.occupationCodes;
+        const selectRow = {
+			mode: 'radio',
+			bgColor: 'pink',
+			hideSelectColumn: true,
+			clickToSelect: true,
+			clickToExpand: true,
+			onSelect: this.handleRowSelect,
+		};
         return(
             <div>   
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
@@ -320,7 +334,7 @@ class monthlySalesSearch extends Component {
 									<InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text></InputGroup.Prepend>
                                     <Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeClassification" id="employeeClassification" value={employeeClassification} autoComplete="off">
-											{this.state.employeeStatuss.map(data =>
+											{employeeStatuss.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -334,7 +348,7 @@ class monthlySalesSearch extends Component {
                             <InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
                             </InputGroup.Prepend>
                             <Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeForms" id="employeeForms" value={employeeClassification === "1" ? "" :employeeForms} autoComplete="off"  disabled={employeeClassification === "1" ? true : false} >
-											{this.state.employeeFormCodes.map(data =>
+											{employeeFormCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -349,7 +363,7 @@ class monthlySalesSearch extends Component {
                             <InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
                             </InputGroup.Prepend>
                             <Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeOccupation" id="employeeOccupation" value={employeeOccupation} autoComplete="off">
-											{this.state.occupationCodes.map(data =>
+											{occupationCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -434,11 +448,16 @@ class monthlySalesSearch extends Component {
                             <label>{this.state.grossProfitTotal}</label>
 					</Col>
                     <Col  className="text-right">
-					<Button variant="info" size="sm" id="shusei">個人売上検索</Button>
+                    <Link to={{ pathname: '/subMenuManager/individualSales', 
+                    state: {actionType: 'monthly',
+                    monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
+                    monthlySales_endYearAndMonth:this.state.monthlySales_endYearAndMonth,
+                    rowSelectemployeeNo:this.state.rowSelectemployeeNo,
+                    rowSelectemployeeName:this.state.rowSelectemployeeName} }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
                     </Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }}  options={this.options}　striped hover condensed>
+                    <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>氏名</TableHeaderColumn>
@@ -446,7 +465,7 @@ class monthlySalesSearch extends Component {
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName'>職種</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'dataFormat={this.unitPriceAddComma}>単価</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>支給合計</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本給</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee' dataFormat={this.otherFeeAddComma}>他の負担</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost' dataFormat={this.waitingCostAddComma}>非稼動費用</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma}>粗利(税抜き)</TableHeaderColumn>         
@@ -463,6 +482,7 @@ const mapStateToProps = state => {
         employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
         employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
         occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
+        serverIP: state.data.dataReques[state.data.dataReques.length-1],
 		
 	}
 };
