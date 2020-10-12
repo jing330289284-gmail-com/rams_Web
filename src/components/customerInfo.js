@@ -116,7 +116,7 @@ class CustomerInfo extends Component {
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
-        var selectDataList = utils.getPublicDropDown(methodArray);
+        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
         //上場会社
         var listedCompanyFlag = selectDataList[0];
         //お客様ランキン
