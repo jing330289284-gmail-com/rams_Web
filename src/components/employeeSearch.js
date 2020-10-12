@@ -64,7 +64,6 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
-		console.log("111111111"+this.props)
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeFristName: this.state.employeeName,
@@ -86,8 +85,8 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
 		};
-		axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
-		//axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
+		//axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
+		axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -140,7 +139,7 @@ class employeeSearch extends React.Component {
 			resumeInfo2: this.state.resumeInfo2,
 			residentCardInfo: this.state.residentCardInfo,
 		};
-		axios.post("http://127.0.0.1:8080/employee/deleteEmployeeInfo", emp)
+		axios.post(this.props.serverIP +"employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
 					this.searchEmployee();
@@ -635,7 +634,6 @@ class employeeSearch extends React.Component {
 
 
 const mapStateToProps = state => {
-	//alert(state.data.serverIP)
 	return {
 		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
 		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
@@ -647,7 +645,7 @@ const mapStateToProps = state => {
 		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
 		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
 		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
-		serverIP: state.data.serverIP
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 

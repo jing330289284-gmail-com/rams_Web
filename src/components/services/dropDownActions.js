@@ -34,8 +34,11 @@ export const fetchDropDown = () => {
 			"getSpecialPoint",//26特別ポイント条件
 			"getApproval",//27ステータスを取得する
 			"getCheckSection",//28確認区分を取得する
+			//"getEnterPeriod",
 		]
 		var outArray = [];
+		var serverIP = "http://127.0.0.1:8080/";
+		//var serverIP = "http://13.58.173.66:8080/";
 		var par = JSON.stringify(methodNameList);
 		$.ajax({
 			type: "POST",
@@ -54,17 +57,8 @@ export const fetchDropDown = () => {
 				}
 			}
 		});
+		outArray.push(serverIP);
 		dispatch(fetchDropDownSuccess(outArray));
-		/*
-		削除いけない
-		*/
-		/*axios.post("http://127.0.0.1:8080/initializationPage")
-			.then(response => {
-				dispatch(fetchDropDownSuccess(response.data));
-			})
-			.catch(error => {
-				dispatch(fetchDropDownFailure(error.message));
-			});*/
 	};
 };
 
