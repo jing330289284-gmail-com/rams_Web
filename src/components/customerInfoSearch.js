@@ -46,7 +46,7 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite", "getStation", "getTopCustomer"]
-        var selectDataList = utils.getPublicDropDown(methodArray);
+        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
         //お客様ランキン
         var level = selectDataList[0];
         //会社性質

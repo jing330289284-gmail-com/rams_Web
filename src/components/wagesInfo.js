@@ -100,7 +100,7 @@ class WagesInfo extends Component {
      */
     getDropDowns = () => {
         var methodArray = ["getInsurance", "getBonus", "getStaffForms", "getEmployeeNameNoBP"]
-        var data = utils.getPublicDropDown(methodArray);
+        var data = utils.getPublicDropDown(methodArray,this.props.serverIP);
         this.setState(
             {
                 socialInsuranceFlagDrop: data[0].slice(1),
