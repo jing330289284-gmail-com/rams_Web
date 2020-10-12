@@ -56,7 +56,7 @@ class PasswordSetEmployee extends Component {
     render() {
         const {oldPassword , newPassword , passwordCheck , message , type , errorsMessageValue}=this.state;
         return (
-            <div className="col-sm-6 container" style={{ "marginTop": "5%" }}>
+            <div className="col-sm-4 container" style={{ "marginTop": "5%" }}>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
                 </div>

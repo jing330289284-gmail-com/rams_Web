@@ -716,7 +716,6 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        placeholderText="期日を選択してください"
                                         id="customerInfoDatePicker"
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
@@ -741,7 +740,6 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        placeholderText="期日を選択してください"
                                         id="customerInfoDatePicker"
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
@@ -891,9 +889,9 @@ class CustomerInfo extends Component {
                                 insertRow
                                 cellEdit={cellEdit}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230"
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='90'>番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}  width="130">責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }}  width="230"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
                                     dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>

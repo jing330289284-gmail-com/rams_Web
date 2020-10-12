@@ -34,6 +34,7 @@ export const fetchDropDown = () => {
 			"getSpecialPoint",//26特別ポイント条件
 			"getApproval",//27ステータスを取得する
 			"getCheckSection",//28確認区分を取得する
+			"getEnterPeriod",//29enterPeriodを取得する
 		]
 		var outArray = [];
 		var par = JSON.stringify(methodNameList);

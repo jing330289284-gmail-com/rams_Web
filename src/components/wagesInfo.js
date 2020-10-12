@@ -650,7 +650,7 @@ class WagesInfo extends Component {
                                                 showFullMonthYearPicker
                                                 minDate={new Date()}
                                                 showDisabledMonthNavigation
-                                                placeholderText="期日を選択してください"
+                                                
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
                                                 dateFormat={"yyyy/MM"}
@@ -722,7 +722,7 @@ class WagesInfo extends Component {
                                                     showFullMonthYearPicker
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
-                                                    placeholderText="期日を選択してください"
+                                                    
                                                     className="form-control form-control-sm"
                                                     id="wagesInfoDatePicker"
                                                     name="nextBonusMonth"
@@ -772,7 +772,7 @@ class WagesInfo extends Component {
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
-                                                placeholderText="期日を選択してください"
+                                                
                                                 dateFormat={"yyyy/MM"}
                                                 name="reflectYearAndMonth"
                                                 locale="ja"
@@ -861,17 +861,17 @@ class WagesInfo extends Component {
                             striped
                             hover
                             condensed>
-                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='145'>給料期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社員形式</TableHeaderColumn>
-                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">給料</TableHeaderColumn>
-                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社会保険</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">交通代</TableHeaderColumn>
-                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
-                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他の手当</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他の手当の費用</TableHeaderColumn>
-                            <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
-                            <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
+                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }}  width='145'>給料期間</TableHeaderColumn>
+                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }}  width="100">社員形式</TableHeaderColumn>
+                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }}  width="100">給料</TableHeaderColumn>
+                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }}  width="100">社会保険</TableHeaderColumn>
+                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }}  width="100">交通代</TableHeaderColumn>
+                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
+                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                            <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
+                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他の手当の費用</TableHeaderColumn>
+                            <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} >ボーナス</TableHeaderColumn>
+                            <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
                 </div>

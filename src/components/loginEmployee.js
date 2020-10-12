@@ -115,7 +115,7 @@ class Login2 extends Component {
 					</Form>
 					<div className="form-signin">
 						<div className="text-center">
-							<button onClick={sendMail} disabled={this.state.btnDisable} className="btn btn-link">{this.state.buttonText}</button>
+							<button onClick={sendMail} disabled={this.state.btnDisable} className="btn btn-link resetFont">{this.state.buttonText}</button>
 							<br />
 							<Button variant="primary" id="login" block onClick={this.login} type="button">
 								ログイン
