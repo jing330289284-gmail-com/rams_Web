@@ -12,6 +12,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import * as messageUtils from './utils/messageUtils.js';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 
 import BreakTime from './breakTime';
@@ -82,7 +84,7 @@ class DutyRegistration extends React.Component {
 		}
 		cell = publicUtils.nullToEmpty(cell);
 		if (!cell.toString().match(regExp))	{
-			event.target.value = event.target.dataset["beforevalue"];
+			event.target.value = publicUtils.nullToEmpty(event.target.dataset["beforevalue"]);
 			return;
 		}
 		event.target.dataset["beforevalue"] = cell;
@@ -165,7 +167,7 @@ class DutyRegistration extends React.Component {
 		let postData = {
 			yearMonth: this.state.year + this.state.month,
 		}
-        axios.post("http://127.0.0.1:8080/dutyRegistration/getDutyInfo", postData)
+        axios.post(this.props.serverIP + "dutyRegistration/getDutyInfo", postData)
             .then(resultMap => {
                 if(resultMap.data){
 					let dateData = [];
@@ -193,6 +195,9 @@ class DutyRegistration extends React.Component {
 							dateData[dayIndex].workHour = publicUtils.nullToEmpty(publicUtils.timeDiff(dateData[dayIndex].startTime, dateData[dayIndex].endTime) - Number(dateData[dayIndex].sleepHour));
 							workDays++;
 							workHours += Number(dateData[dayIndex].workHour);
+							dateData[dayIndex].endTime = publicUtils.timeInsertChar(publicUtils.nullToEmpty(defaultDateData[i].endTime));
+							dateData[dayIndex]['workContent'] = publicUtils.nullToEmpty(defaultDateData[i].workContent);
+							dateData[dayIndex]['remark'] = publicUtils.nullToEmpty(defaultDateData[i].remark);
 						}
 					}
 					this.setState({breakTime: resultMap.data.breakTime, dateData: dateData, workDays: workDays, workHours: workHours, 
@@ -253,15 +258,23 @@ class DutyRegistration extends React.Component {
         dataInfo["customer"] = this.state.customer;
         dataInfo["siteResponsiblePerson"] = this.state.siteResponsiblePerson;
         dataInfo["systemName"] = this.state.systemName;
+		let submitData = [];
+		let j = 0;
 		for (let i = 0; i < dataInfo["dateData"].length; i++)	{
 			dataInfo["dateData"][i]["isWork"] = (dataInfo["dateData"][i]["hasWork"] == this.state.hasWork[0])?0:1;
+			if (dataInfo["dateData"][i]["isChanged"])	{
+				submitData[j] = JSON.parse(JSON.stringify(dataInfo["dateData"][i]));
+				j++;
+			}
 		}
+        dataInfo["dateData"] = submitData;
 		console.log(dataInfo);
         if(actionType === "insert"){
-            axios.post("http://127.0.0.1:8080/dutyRegistration/dutyInsert", dataInfo)
+            axios.post(this.props.serverIP + "dutyRegistration/dutyInsert", dataInfo)
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
+					window.location.reload();
                 }else{
                     alert("更新失败");
                 }
@@ -299,6 +312,21 @@ class DutyRegistration extends React.Component {
 		this.setState({ isConfirmedPage: false }, () => {
 			this.setTableStyle();		
 		});
+	}	
+	downloadPDF = (event) =>	{
+		let dataInfo = {};
+		dataInfo["yearMonth"] = this.state.year + this.state.month;
+		axios.post(this.props.serverIP + "dutyRegistration/downloadPDF", dataInfo)
+			.then(resultMap => {
+			    if(resultMap.data){
+			        alert("更新成功");
+			    }else{
+			        alert("更新失败");
+			    }
+			})
+			.catch(function(){
+			    alert("更新错误，请检查程序");
+			});
 	}	
 	hasWorkFormatter = (cell, row) => {
 		let returnItem = (
@@ -433,41 +461,33 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={12}>
 								<div style={{ "float": "right" }}>
-									<Link className="btn btn-info btn-sm" onClick="" id=""><FontAwesomeIcon icon={faDownload} /> PDF</Link>
+									<Link className="btn btn-info btn-sm" onClick={this.downloadPDF.bind(this)} id="downloadPDF"><FontAwesomeIcon icon={faDownload} /> PDF</Link>
 								</div>
 							</Col>
 						</Row>
-						<BootstrapTable className={"bg-white text-dark"} data={this.state.dateData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} >
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='hasWork' dataFormat={ this.hasWorkFormatter } >勤務</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='week' >曜日</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='100' dataField='startTime' dataFormat={ this.startTimeFormatter } >作業開始時刻</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='100' dataField='endTime' dataFormat={ this.endTimeFormatter } >作業終了時刻</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='70' dataField='sleepHour' dataFormat={ this.sleepHourFormatter } >休憩時間</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='70' dataField='workHour' >作業時間</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='250' dataField='workContent' dataFormat={ this.workContentFormatter } >作業内容</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='120' dataField='remark' dataFormat={ this.remarkFormatter } >備考</TableHeaderColumn>
-						</BootstrapTable>
+						<Row>
+							<Col sm={12}>
+								<BootstrapTable className={"bg-white text-dark"} data={this.state.dateData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} >
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='hasWork' dataFormat={ this.hasWorkFormatter } >勤務</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='week' >曜日</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='100' dataField='startTime' dataFormat={ this.startTimeFormatter } >作業開始時刻</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='100' dataField='endTime' dataFormat={ this.endTimeFormatter } >作業終了時刻</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='70' dataField='sleepHour' dataFormat={ this.sleepHourFormatter } >休憩時間</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='70' dataField='workHour' >作業時間</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='200' dataField='workContent' dataFormat={ this.workContentFormatter } >作業内容</TableHeaderColumn>
+									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='200' dataField='remark' dataFormat={ this.remarkFormatter } >備考</TableHeaderColumn>
+								</BootstrapTable>
+							</Col>
+						</Row>
 						<Row>
 							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出勤日数</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workDays}</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
+								出勤日数：
+								{this.state.workDays}
 							</Col>
 							<Col sm={3} md={{ span: 0, offset: 2 }}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">合計時間</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">{this.state.workHours}H</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
+								合計時間：
+								{this.state.workHours}H
 							</Col>
 							<Col style={{ "textAlign": "right" }} sm={3} md={{ span: 0, offset: 3 }} >
 								<div hidden={ this.state.isConfirmedPage }>
@@ -487,4 +507,15 @@ class DutyRegistration extends React.Component {
 	}
 }
 
-export default DutyRegistration;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(DutyRegistration);
