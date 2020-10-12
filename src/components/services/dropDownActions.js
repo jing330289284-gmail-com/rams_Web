@@ -34,7 +34,7 @@ export const fetchDropDown = () => {
 			"getSpecialPoint",//26特別ポイント条件
 			"getApproval",//27ステータスを取得する
 			"getCheckSection",//28確認区分を取得する
-			//"getEnterPeriod",
+			"getEnterPeriod",
 		]
 		var outArray = [];
 		var serverIP = "http://127.0.0.1:8080/";

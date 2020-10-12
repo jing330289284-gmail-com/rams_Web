@@ -215,7 +215,16 @@ class CustomerInfoSearch extends Component {
                 businessStartDate: '',
             });
         }
-    };
+    }
+    reset=()=>{
+        $("#topCustomer").val("");
+        $("#stationCode").val("");
+        $("#customerNo").val("");
+        $("#customerName").val("");
+        $("#paymentsiteCode").val("");
+        $("#levelCode").val("");
+        $("#companyNatureCode").val("");
+    }
     /**
     * 稼働テーブル
     */
@@ -247,14 +256,14 @@ class CustomerInfoSearch extends Component {
         const { radioValue, customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue } = this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
-            pathname: '/subMenu/customerInfo', state: { actionType: 'insert' },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
         }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname: '/subMenu/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo },
         }
         var shosaiPath = {
-            pathname: '/subMenu/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo },
         }
         //テーブルの行の選択
         const selectRow = {
@@ -427,7 +436,7 @@ class CustomerInfoSearch extends Component {
                         <Link to={tsuikaPath} className="btn btn-sm btn-info">
                             <FontAwesomeIcon icon={faSave} />追加
                             </Link>{' '}
-                        <Button size="sm" variant="info" type="reset">
+                        <Button size="sm" variant="info" onClick={this.reset}>
                             <FontAwesomeIcon icon={faUndo} /> Reset
                             </Button>
                     </div>
@@ -462,24 +471,24 @@ class CustomerInfoSearch extends Component {
                             expandComponent={this.expandComponent}
                             headerStyle={{ background: '#5599FF' }} striped hover condensed
                         >
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerRankingName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
+                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
+                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
                         </BootstrapTable>
                         :
                         <BootstrapTable selectRow={selectRow} pagination={true} data={customerInfoData} options={options} deleteRow
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerRankingName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">ランキング</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="160">上位客様</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
+                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
+                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
                         </BootstrapTable>
                     }
                 </Form>
