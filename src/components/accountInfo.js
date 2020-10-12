@@ -70,7 +70,7 @@ class BankInfo extends Component {
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                axios.post(this.props.serverIP + "/bankInfo/init", onloadMol)
+                axios.post(this.props.serverIP + "bankInfo/init", onloadMol)
                     .then(function (resultMap) {
                         if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
                             $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
@@ -124,7 +124,7 @@ getBankBranchInfo(noORname){
     sendMap["bankCode"] = $('#bankCode').val();
     if($('#'+noORname+'').val() !== ""){
       
-      axios.post(this.props.serverIP + "/getBankBranchInfo",sendMap)
+      axios.post(this.props.serverIP + "getBankBranchInfo",sendMap)
         .then(function (resultMap) {
           if(resultMap.data.length !== 0){
               $('#bankBranchCode').val(resultMap.data[0].code);

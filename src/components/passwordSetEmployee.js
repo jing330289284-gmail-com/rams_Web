@@ -42,7 +42,7 @@ class PasswordSetEmployee extends Component {
         $.each(formArray, function (i, item) {
             passwordSetEmployeeModel[item.name] = item.value;
         });
-        axios.post(this.props.serverIP + "/passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
+        axios.post(this.props.serverIP + "passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
         .then(resultMap => {
             if (resultMap.data.errorsMessage !== null && resultMap.data.errorsMessage !== undefined ) {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: resultMap.data.errorsMessage });

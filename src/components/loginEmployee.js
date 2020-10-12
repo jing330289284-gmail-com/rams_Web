@@ -26,7 +26,7 @@ class Login2 extends Component {
 		this.props.fetchDropDown();
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
-		axios.post(this.props.serverIP + "/login2/init")
+		axios.post(this.props.serverIP + "login2/init")
 			.then(resultMap => {
 				if (resultMap.data) {
 					this.props.history.push("/subMenuEmployee");
@@ -41,7 +41,7 @@ class Login2 extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		axios.post(this.props.serverIP + "/login2/login", loginModel)
+		axios.post(this.props.serverIP + "login2/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {//ログイン成功
 					this.props.history.push("/subMenuEmployee");
@@ -80,7 +80,7 @@ class Login2 extends Component {
 		const sendMail = () => {
 			var loginModel = {};
 			loginModel["employeeNo"] = $("#employeeNo").val();
-			axios.post(this.props.serverIP + "/login2/sendMail", loginModel)
+			axios.post(this.props.serverIP + "login2/sendMail", loginModel)
 				.then(result => {
 					if (result.data.errorsMessage !== null && result.data.errorsMessage !== undefined) {
 						this.setState({ errorsMessageShow: true, errorsMessageValue: result.data.errorsMessage });

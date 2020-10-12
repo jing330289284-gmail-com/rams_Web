@@ -117,7 +117,7 @@ class ExpensesInfo extends Component {
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);
-        axios.post(this.props.serverIP + "/expensesInfo/toroku", expensesInfoModel)
+        axios.post(this.props.serverIP + "expensesInfo/toroku", expensesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
