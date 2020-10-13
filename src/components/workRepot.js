@@ -36,14 +36,6 @@ class workRepot extends React.Component {
 	initialState = {
 		employeeList: [],
 	};
-	approvalStatus(code) {
-    let approvalStatuss = this.props.approvalStatuslist;
-        for (var i in approvalStatuss) {
-            if (code === approvalStatuss[i].code) {
-                return approvalStatuss[i].name;
-            }
-        }
-    };
 	//　検索
 	searchWorkRepot = () => {
 		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
@@ -227,7 +219,7 @@ if($("#getFile").get(0).files[0].size>1048576){
                                <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport,this.props.serverIP)}id="workRepotDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
 		                        </Button>
 	 						</div>
@@ -250,7 +242,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 }
 const mapStateToProps = state => {
 	return {
-		approvalStatuslist: state.data.dataReques.length >= 1 ? state.data.dataReques[27]: [],
+		costClassificationCode: state.data.dataReques.length >= 1 ? state.data.dataReques[30]: [],
 		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };

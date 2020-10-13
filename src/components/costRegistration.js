@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Col, Row, InputGroup, FormControl} from 'react-bootstrap';
+import { Button, Form, Col, Row, InputGroup, FormControl, Modal} from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -14,11 +14,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+import OtherCostModel from './otherCost';
 class costRegistration extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
 		this.searchWorkRepot = this.searchWorkRepot.bind(this);
 
 	};
@@ -39,6 +41,8 @@ class costRegistration extends React.Component {
 		approvalStatuslist:[],
 		stationCode1: '',　// 出発
 		stationCode2: '',　// 到着
+		showOtherCostModal: false,//他の費用
+		otherCostModel: null,
 	};
 	//　検索
 	searchWorkRepot = () => {
@@ -200,6 +204,28 @@ if($("#getFile").get(0).files[0].size>1048576){
 			);
 		}
 	}
+
+		/**
+ 　　　*他の費用画面の開き
+    */
+	handleShowModal = () => {
+			this.setState({ showOtherCostModal: true })
+	}
+		/**
+	*他の費用画面の閉め 
+	*/
+	handleHideModal = () => {
+			this.setState({ showOtherCostModal: false })
+	}
+		/* 
+	他の費用情報の取得
+ 　　　*/
+	pbInfoGet = (otherCostGetTokuro) => {
+		this.setState({
+			otherCostModel: otherCostGetTokuro,
+			showOtherCostModal: false,
+		})
+	}
 	// AUTOSELECT select事件
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
@@ -235,6 +261,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 
 	render() {
 		const {employeeList} = this.state;
+		const { otherCostModel } = this.state;
 		const station = this.props.station;
 		//　テーブルの行の選択
 		const selectRow = {
@@ -268,11 +295,20 @@ if($("#getFile").get(0).files[0].size>1048576){
 			afterSaveCell: this.sumWorkTimeChange,
 		}
 		return (
+				
+				
 			<div>
+			{/*　 他の費用*/}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "otherCostModel")} show={this.state.showOtherCostModal} dialogClassName="modal-pbinfoSet">
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body >
+						<OtherCostModel bpInfoModel={otherCostModel} customer={this.state.customer} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} otherCostTokuro={this.otherCostGet} /></Modal.Body>
+				</Modal>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
 				</div>
-				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
 					<div>
 						<Form.Group>
@@ -331,8 +367,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>
                         <Col sm={2}>
                             <div style={{ "float": "right" }}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="OtherCost">
-	                          		 <FontAwesomeIcon icon={faDownload} />他の費用
+		                        <Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
+	                          		 <FontAwesomeIcon />他の費用
 		                        </Button>
 	 						</div>
 						</Col>
@@ -429,8 +465,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>
                     </Row>
 						<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } } dataField='No' editable={false} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } } dataField='attendanceYearAndMonth' editable={false}>日付</TableHeaderColumn>
+						<TableHeaderColumn width='80'　tdStyle={ { padding: '.45em' } } dataField='No' editable={false} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='180'　tdStyle={ { padding: '.45em' } } dataField='attendanceYearAndMonth' editable={false}>日付</TableHeaderColumn>
 						<TableHeaderColumn width='80' tdStyle={ { padding: '.45em' } } dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } dataField='sumWorkTime' editable={this.state.rowSelectapproval}>名称</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='updateUser' editable={false}>出発地</TableHeaderColumn>
@@ -447,7 +483,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 }
 const mapStateToProps = state => {
 	return {
-		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
+		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14] : [],
 		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
