@@ -45,6 +45,7 @@ class employee extends React.Component {
 		developLanguage5: '',
 		stationCode: '',
 		residentCardInfoFlag: false,
+		employeeStatus: '0',
 	};
 	//　　リセット
 	resetBook = () => {
@@ -216,6 +217,7 @@ class employee extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
+		alert(this.state.employeeStatus)
 		this.props.fetchDropDown();
 		this.radioChangeEmployeeType();
 		const { location } = this.props
@@ -650,7 +652,7 @@ class employee extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
-									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 								</InputGroup>
 							</Col>
 						</Row>
