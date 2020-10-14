@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button} from 'react-bootstrap';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
@@ -95,16 +95,19 @@ class salesPointSet extends React.Component {
 		var statuss = this.props.specialPointStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
-				return statuss[i].text;
+				return <span title={statuss[i].text}>{statuss[i].text}</span>;
 			}
 		}
+	}
+	remarkFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
 	}
 	select = () => {
 		var salesPointSetModel = {};
 		salesPointSetModel["employee"] = this.state.employeeSearch
 		salesPointSetModel["newMember"] = this.state.newMemberSearch
 		salesPointSetModel["customerContract"] = this.state.customerContractSearch
-		axios.post("http://127.0.0.1:8080/getSalesPointInfo", salesPointSetModel)
+		axios.post(this.props.serverIP + "getSalesPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -150,6 +153,7 @@ class salesPointSet extends React.Component {
 		salesPointData.push(salesPointSetModel);
 		var currentPage = Math.ceil(salesPointData.length / 5);
 		this.setState({
+			no: salesPointSetModel["no"],
 			salesPointData: salesPointData,
 			currentPage: currentPage,
 			updateFlag: true,
@@ -158,6 +162,45 @@ class salesPointSet extends React.Component {
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
+	}
+	/**
+	  * 登録ボタン
+	  */
+	insert = () => {
+		var salesPointSetModel = {};
+		for (let i = 0; i < this.state.salesPointData.length; i++) {
+			if (this.state.salesPointData[i].no === this.state.no) {
+				salesPointSetModel["no"] = this.state.no
+				salesPointSetModel["employee"] = this.state.salesPointData[i].employee
+				salesPointSetModel["newMember"] = this.state.salesPointData[i].newMember
+				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
+				salesPointSetModel["level"] = this.state.salesPointData[i].level
+				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
+				salesPointSetModel["point"] = this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
+			}
+		}
+		axios.post(this.props.serverIP + "salesPointInsert", salesPointSetModel)
+			.then(result => {
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+				} else {
+					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.refs.table.setState({
+						selectedRowKeys: []
+					});
+					this.setState({
+						insertFlag: false,
+						updateFlag: true
+					});
+					this.select();
+				}
+			})
+			.catch((error) => {
+				console.error("Error - " + error);
+			});
 	}
 
 	/**
@@ -178,7 +221,7 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
 		}
-		axios.post("http://127.0.0.1:8080/salesPointUpdate", salesPointSetModel)
+		axios.post(this.props.serverIP + "salesPointUpdate", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -207,7 +250,7 @@ class salesPointSet extends React.Component {
 		if (a) {
 			var salesPointSetModel = {};
 			salesPointSetModel["no"] = this.state.no
-			axios.post("http://127.0.0.1:8080/salesPointDelete", salesPointSetModel)
+			axios.post(this.props.serverIP + "salesPointDelete", salesPointSetModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -256,7 +299,7 @@ class salesPointSet extends React.Component {
 		return (
 			<div >
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "削除成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "登録成功！" : "削除成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
@@ -319,7 +362,7 @@ class salesPointSet extends React.Component {
 								<Col sm={3}>
 									<div style={{ "float": "right" }}>
 										<Button variant="info" size="sm" id="revise" onClick={this.state.insertFlag === true ? this.insert : this.insertRow}><FontAwesomeIcon icon={faSave} /> {this.state.insertFlag === true ? '登録' : '追加'}</Button>{' '}
-										<Button variant="info" size="sm" id="revise" onClick={this.update} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.update.bind(this)} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
 										<Button variant="info" size="sm" id="revise" onClick={this.delete} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faTrash} />削除</Button>{' '}
 									</div>
 								</Col>
@@ -354,7 +397,8 @@ class salesPointSet extends React.Component {
 										tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
 
 									<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
-									<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">備考</TableHeaderColumn>
+									<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell"
+										dataFormat={this.remarkFormat.bind(this)}>備考</TableHeaderColumn>
 								</BootstrapTable>
 							</div>
 						</Form.Group>
@@ -373,6 +417,7 @@ const mapStateToProps = state => {
 		levelStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],
 		salesPutternStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[25] : [],
 		specialPointStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[26] : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 
