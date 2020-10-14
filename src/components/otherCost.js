@@ -22,7 +22,8 @@ class otherCost extends React.Component {
 	//初期化
 	initialState = {
 		salesProgressCodes: [],
-		costClassificationCode: '',//選択中のBP所属
+		costClassificationCode: '',//選択中の区分
+		transportationCode: '',//選択中の交通手段
 		bpUnitPrice: '',//単価
 		bpSalesProgressCode: '4',//選択中の営業状況
 		bpRemark: '',//備考
@@ -36,7 +37,8 @@ class otherCost extends React.Component {
 	//　　リセット
 	resetButton = () => {
 		this.setState({
-			costClassificationCode: '',//　　選択中のBP所属
+			costClassificationCode: '',//　　選択中の区分
+			transportationCode: '',//選択中の交通手段
 			bpUnitPrice: '',//単価
 			bpSalesProgressCode: '4',//選択中の営業状況
 			bpOtherCompanyAdmissionEndDate: '',//所属現場終年月
@@ -48,34 +50,8 @@ class otherCost extends React.Component {
 	componentDidMount() {
 		//this.getDropDownｓ();//全部のドロップダウン
 		this.setEmployeeName();
-		if (this.props.actionType !== "insert") {
-			const formData = new FormData()
-			formData.append('bpEmployeeNo', this.props.employeeNo)
-			axios.post("http://127.0.0.1:8080/bpInfo/getBpInfo", formData)
-				.then(response => response.data)
-				.then((data) => {
-					this.setState({
-						costClassificationCode: data.costClassificationCode,//　　選択中のBP所属
-						bpUnitPrice: data.bpUnitPrice,//単価
-						bpSalesProgressCode: data.bpSalesProgressCode,//選択中の営業状況
-						bpOtherCompanyAdmissionEndDate: utils.converToLocalTime(data.bpOtherCompanyAdmissionEndDate, false),
-						bpRemark: data.bpRemark,//備考
-					});
-				}
-				);
-		}
+		this.props.fetchDropDown();
 	}
-
-/*	getDropDownｓ = () => {
-		var methodArray = ["getSalesProgress"]
-		var data = utils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				salesProgressCodes: data[0].slice(1),//
-			}
-		);
-	};*/
-
 	setEmployeeName = () => {
 		if (this.props.employeeFristName === undefined || this.props.employeeLastName === undefined) {
 			this.setState({
@@ -95,11 +71,20 @@ class otherCost extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.props.customer.find((v) => (v.name === value)) !== undefined) {
+			if (fieldName === "costClassification" && this.props.costClassification.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
-					case 'costClassificationCode':
+					case 'costClassification':
 						this.setState({
-							costClassificationCode: this.props.customer.find((v) => (v.name === value)).code,
+							costClassificationCode: this.props.costClassification.find((v) => (v.name === value)).code,
+						})
+					break;
+				default:
+				}
+			}else if (fieldName === "transportation" && this.props.transportation.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'transportation':
+						this.setState({
+							transportationCode: this.props.transportation.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -120,6 +105,7 @@ class otherCost extends React.Component {
 		const bpInfoModel = {
 			bpEmployeeNo: this.props.employeeNo,
 			costClassificationCode: this.state.costClassificationCode,
+			transportationCode: this.state.transportationCode,
 			bpUnitPrice: this.state.bpUnitPrice,
 			bpSalesProgressCode: this.state.bpSalesProgressCode,
 			bpOtherCompanyAdmissionEndDate: utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate, false),
@@ -129,9 +115,10 @@ class otherCost extends React.Component {
 	};
 
 	render() {
-		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
-		const customer = this.props.customer;
-		const salesProgressCodes = this.props.salesProgressCodes;
+		const { bpRemark} = this.state;
+
+		const costClassification = this.props.costClassification;
+		const transportation = this.props.transportation;
 		return (
 			<div>
 				<Row inline="true">
@@ -149,68 +136,60 @@ class otherCost extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={customer.find((v) => (v.code === this.props.costClassificationCode)) || {}}
-										options={customer}
+										value={costClassification.find((v) => (v.code === this.state.costClassificationCode)) || {}}
+										options={costClassification}
+										name="station"
 										getOptionLabel={(option) => option.name}
-										disabled={this.props.actionType === "detail" ? true : false}
-										onSelect={(event) => this.handleTag(event, 'costClassificationCode')}
+										onSelect={(event) => this.handleTag(event, 'costClassification')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  区分" type="text" {...params.inputProps} className="auto" id="costClassificationCode"
-													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.props.actionType === "detail"  ? "#e9ecef" : "" }} />
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={6}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='5' disabled={this.props.actionType === "detail" ? true : false} />
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
 						</Row>
 						<Row>
-							<Col sm={6}>
-								<InputGroup size="sm" className="mb-3">
+							<Col sm={2}>
+								<font style={{ whiteSpace: 'nowrap' }}><b>出張費用</b></font>
+							</Col>	
+						</Row>	
+					<Row>
+						<Col sm={4}>
+							<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">営業状況</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">期間</InputGroup.Text>
+										<DatePicker
+											selected={this.state.yearAndMonth3}
+											onChange={this.inactiveYearAndMonth3}
+											autoComplete="off"
+											locale="ja"
+											dateFormat="yyyy/MM/dd"
+											id="datePicker3"
+											className="form-control form-control-sm"
+										/>
 									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="bpSalesProgressCode" value={bpSalesProgressCode}
-										autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}>
-										{salesProgressCodes.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
-								</InputGroup>
+								</InputGroup>	
 							</Col>
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">所属現場終年月</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">交通手段</InputGroup.Text>
 									</InputGroup.Prepend>
-									<DatePicker
-										selected={this.state.bpOtherCompanyAdmissionEndDate}
-										onChange={this.bpOtherCompanyAdmissionEndDateChange}
-										autoComplete="off"
-										showMonthYearPicker
-										showFullMonthYearPicker
-										showDisabledMonthNavigation
-										className="form-control form-control-sm"
-										id={this.props.actionType === "detail" ? "datePickerReadonlyDefault" : "datePicker"}
-										dateFormat={"yyyy/MM"}
-										locale="ja"
-										disabled={this.props.actionType === "detail" ? true : false}
+									<Autocomplete
+										value={transportation.find((v) => (v.code === this.state.transportationCode)) || {}}
+										options={transportation}
+										name="station"
+										getOptionLabel={(option) => option.name}
+										onSelect={(event) => this.handleTag(event, 'transportation')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="  区分" type="text" {...params.inputProps} className="auto" id="transportationCode"
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
 									/>
 								</InputGroup>
 							</Col>
@@ -243,7 +222,8 @@ class otherCost extends React.Component {
 
 const mapStateToProps = state => {
 	return {
-		costClassification: state.data.dataReques.length >= 1 ? state.data.dataReques[29] : [],
+		costClassification: state.data.dataReques.length >= 1 ? state.data.dataReques[30] : [],
+		transportation: state.data.dataReques.length >= 1 ? state.data.dataReques[31] : [],
 		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
