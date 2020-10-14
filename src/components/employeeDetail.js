@@ -535,7 +535,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.radioChangeEmployeeType.bind(this)}
+										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
 										autoComplete="off">
 										{employeeStatusS.map(date =>

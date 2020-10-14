@@ -50,7 +50,6 @@ class salesSendLetter extends React.Component {
 
 	//初期化お客様取る
 	getCustomers = () => {
-		// axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
 		axios.post(this.props.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();

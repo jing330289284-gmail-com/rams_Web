@@ -85,7 +85,6 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
 		};
-		//axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 		axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
