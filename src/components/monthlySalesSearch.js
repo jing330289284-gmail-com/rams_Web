@@ -126,7 +126,6 @@ class monthlySalesSearch extends Component {
             endYandM: publicUtils.formateDate(this.state.monthlySales_endYearAndMonth,false),
 
         };
-       // axios.post("http://127.0.0.1:8080/monthlySales/searchMonthlySales", monthlyInfo)
         axios.post(this.props.serverIP + "monthlySales/searchMonthlySales", monthlyInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {

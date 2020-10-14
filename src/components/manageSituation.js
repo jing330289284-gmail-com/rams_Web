@@ -51,7 +51,8 @@ class manageSituation extends React.Component {
 		editFlag: false,// 確定客様編集flag
 		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
-		salesYearAndMonth: new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
+		salesYearAndMonth: '202009',
+		// new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
 		// updateUser: sessionStorage.getItem('employeeName'),//更新者
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
@@ -92,8 +93,7 @@ class manageSituation extends React.Component {
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		//axios.post("http://127.0.0.1:8080/salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
-		axios.post(this.props.serverIP + "salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
+		axios.post(this.props.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: '202009' })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -309,7 +309,6 @@ class manageSituation extends React.Component {
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
-				//axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeSiteInfo", row)
 				axios.post(this.props.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
 					.then(result => {
 						if (result.data != null) {
@@ -354,7 +353,6 @@ class manageSituation extends React.Component {
 				})
 			}
 		} else {
-			// axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSituation", this.state)
 			axios.post(this.props.serverIP + "salesSituation/updateSalesSituation", this.state)
 				.then(result => {
 					if (result.data != null) {
@@ -576,7 +574,7 @@ class manageSituation extends React.Component {
 			console.log(resumeInfos);
 			axios({
 				method: "POST", //请求方式
-				url: "http://127.0.0.1:8080/download", //下载地址
+				url: "http://IP/download", //下载地址
 				data: { name: resumeInfos[6] }, //请求内容
 				responseType: 'arraybuffer'
 			})
