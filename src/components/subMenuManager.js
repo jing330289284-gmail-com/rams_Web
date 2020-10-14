@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react-bootstrap';
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Employee from './employee';
+import EmployeeInsert from './employeeInsert';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -106,7 +106,7 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
-														<Link className="linkFont" to={{ pathname: '/subMenuManager/employee', state: { actionType: 'insert' } }}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
+														<Link className="linkFont" to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/employeeSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員情報検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
@@ -226,7 +226,7 @@ class SubMenu extends Component {
 							<br />
 							<Router>
 								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
-								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
+								<Route exact path={`${this.props.match.url}/employeeInsert`} component={EmployeeInsert} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />

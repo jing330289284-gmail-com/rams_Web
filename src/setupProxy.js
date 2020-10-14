@@ -32,4 +32,14 @@ module.exports = function(app) {
 			}
 		}))
 
+	app.use(createProxyMiddleware('/katakana',
+		{
+			target: "https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysis/v1/katakana/",
+			changeOrigin: true,
+			secure: false,
+			pathRewrite: {
+				"^/katakana": "/"
+			}
+		}))
+
 }
