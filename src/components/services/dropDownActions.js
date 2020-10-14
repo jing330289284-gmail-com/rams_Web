@@ -36,6 +36,7 @@ export const fetchDropDown = () => {
 			"getCheckSection",//28確認区分を取得する
 			"getEnterPeriod",//29enterPeriodを取得する
 			"getCostClassification",//30費用区分を取得する
+			"getTransportation",//30費用区分を取得する
 		]
 		var outArray = [];
 		var serverIP = "http://127.0.0.1:8080/";
