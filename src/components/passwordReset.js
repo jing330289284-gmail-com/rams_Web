@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {Row , Form , Col , InputGroup , Button } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials=true;
 
 class passwordReset extends Component {
@@ -13,11 +15,12 @@ class passwordReset extends Component {
         super(props);
     }
     componentWillMount(){
+        this.props.fetchDropDown();
         const query = this.props.location.search;
         var passwordResetId = query.substring(4);
         var pswMod = {};
         pswMod["passwordResetId"] = passwordResetId;
-        axios.post("http://127.0.0.1:8080/passwordReset/init" , pswMod)
+        axios.post(this.props.serverIP + "passwordReset/init" , pswMod)
 		.then(resultMap =>{
 			if(!resultMap.data){
 				this.props.history.push("/login2");
@@ -31,7 +34,7 @@ class passwordReset extends Component {
         pswMod["passwordResetId"] = passwordResetId;
         pswMod["password"] = $("#newPassword").val();
         if($("#newPassword").val() === $("#passwordCheck").val()){
-            axios.post("http://127.0.0.1:8080/passwordReset/passwordReset" , pswMod)
+            axios.post(this.props.serverIP + "passwordReset/passwordReset" , pswMod)
             .then(resultMap =>{
                 if(resultMap.data === 0){
                     alert("パスワードリセット成功しました");
@@ -97,5 +100,15 @@ class passwordReset extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default passwordReset;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(passwordReset);

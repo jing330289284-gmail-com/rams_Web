@@ -80,35 +80,6 @@ export function checkAccountName(){
   }
 }
 /**
- * 支店名と支店番号の検索
- * param 項目のid
- */
-export function getBankBranchInfo(noORname){
-  var sendMap = {};
-  sendMap[noORname] = $('#'+noORname+'').val();
-  sendMap["bankCode"] = $('#bankCode').val();
-  if($('#'+noORname+'').val() !== ""){
-    
-    axios.post("http://127.0.0.1:8080/getBankBranchInfo",sendMap)
-      .then(function (resultMap) {
-        if(resultMap.data.length !== 0){
-            $('#bankBranchCode').val(resultMap.data[0].code);
-            $('#bankBranchName').val(resultMap.data[0].name);
-        }else{
-          $('#bankBranchCode').val("");
-          $('#bankBranchName').val("");
-        }
-        
-      })
-      .catch(function (error) {
-        alert("支店信息获取错误，请检查程序");
-      });
-  }else{
-    $('#bankBranchCode').val("");
-    $('#bankBranchName').val("");
-  }
-}
-/**
  * 全部の項目を非活性になる
  */
 export function setAllDisabled(){

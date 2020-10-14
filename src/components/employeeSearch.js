@@ -590,9 +590,9 @@ class employeeSearch extends React.Component {
 				<div>
 					<Row >
 						<Col sm={4}>
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 						</Col>
 						<Col sm={6}></Col>
 						<Col sm={2}>

@@ -64,11 +64,11 @@ export function setFullYearMonth(date) {
 
 
 //　ドロップダウン
-export function getdropDown(method) {
+export function getdropDown(method,serverIP) {
 	var array = [{ code: '', name: '選択ください' }];
 	$.ajax({
 		type: "POST",
-		url: "http://127.0.0.1:8080/" + method,
+		url: serverIP + method,
 		async: false,
 		success: function(msg) {
 			for (var i in msg) {
@@ -79,12 +79,12 @@ export function getdropDown(method) {
 	return array;
 }
 //　ドロップダウン  多くメソッド
-export function getPublicDropDown(methodNameList) {
+export function getPublicDropDown(methodNameList,serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
 		type: "POST",
-		url: "http://127.0.0.1:8080/initializationPage",
+		url: serverIP+"initializationPage",
 		data: par,
 		async: false,
 		contentType: "application/json",
@@ -103,13 +103,13 @@ export function getPublicDropDown(methodNameList) {
 }
 
 //　ドロップダウン  多くメソッド react-bootstrap-table---->select専用
-export function getPublicDropDownRtBtSpTleOnly(methodNameList) {
+export function getPublicDropDownRtBtSpTleOnly(methodNameList,serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
 		type: "POST",
 		data: par,
-		url: "http://127.0.0.1:8080/initializationPage",
+		url: serverIP+"initializationPage",
 		contentType: "application/json",
 		async: false,
 		success: function(resultList) {
@@ -133,7 +133,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList) {
 }
 
 //　採番番号
-export async function getNO(columnName, typeName, table) {
+export async function getNO(columnName, typeName, table , serverIP) {
 	var no;
 	var mo = {
 		columnName: columnName,
@@ -142,7 +142,7 @@ export async function getNO(columnName, typeName, table) {
 	};
 	$.ajax({
 		type: "POST",
-		url: "http://127.0.0.1:8080/getNO",
+		url: serverIP+"getNO",
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,

@@ -22,6 +22,7 @@ import salesSendLetter from './salesSendLetter';
 import dutyManagement from './dutyManagement';
 import individualSales from './individualSales';
 import monthlySalesSearch from './monthlySalesSearch';
+import EnterPeriodSearch from './enterPeriodSearch';
 import sendLettersConfirm from './sendLettersConfirm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -31,6 +32,8 @@ import {
 	faUserCircle, faFilePowerpoint, faChartPie, faTable, faCog, faUpload
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 
@@ -39,7 +42,8 @@ class SubMenu extends Component {
 		nowDate: '',//今の期日
 	}
 	async componentWillMount() {
-		await axios.post("http://127.0.0.1:8080/subMenu/init")
+		this.props.fetchDropDown();
+		await axios.post(this.props.serverIP + "subMenu/init")
 			.then(resultMap => {
 				if (resultMap.data !== null && resultMap.data !== '') {
 					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
@@ -60,7 +64,7 @@ class SubMenu extends Component {
 		})
 	}
 	logout = () => {
-		axios.post("http://127.0.0.1:8080/subMenu/logout")
+		axios.post(this.props.serverIP + "subMenu/logout")
 			.then(resultMap => {
 				alert("ログアウトしました");
 			})
@@ -129,9 +133,16 @@ class SubMenu extends Component {
 											<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と単価</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="3">
 												<ListGroup variant="flush">
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/wagesInfo"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />給料情報</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/individualSales"><FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/wagesInfo">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />給料情報</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/individualSales">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/enterPeriodSearch">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -157,10 +168,16 @@ class SubMenu extends Component {
 											<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="6">
 												<ListGroup variant="flush">
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/dutyManagement"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />勤務管理</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />残業代一覧</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/dutyRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />履歴検索</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/dutyManagement">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />勤務管理</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />勤務表送信</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />残業代一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />履歴検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -226,6 +243,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/costRegistration`} component={costRegistration} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
+								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								
 								<div className="container col-8">
@@ -243,5 +261,15 @@ class SubMenu extends Component {
 		);
 	}
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default SubMenu;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);

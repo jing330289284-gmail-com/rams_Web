@@ -18,6 +18,8 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TableSelect from './TableSelect';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 registerLocale('ja', ja);
 
@@ -106,6 +108,7 @@ class CustomerInfo extends Component {
     * 画面の初期化 
     */
     async componentDidMount() {
+        this.props.fetchDropDown();
         this.setState({
             actionType: this.props.location.state.actionType,
         })
@@ -113,7 +116,7 @@ class CustomerInfo extends Component {
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
-        var selectDataList = utils.getPublicDropDown(methodArray);
+        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
         //上場会社
         var listedCompanyFlag = selectDataList[0];
         //お客様ランキン
@@ -164,7 +167,7 @@ class CustomerInfo extends Component {
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
         customerInfoMod["actionType"] = this.props.location.state.actionType;
-        await axios.post("http://127.0.0.1:8080/customerInfo/onloadPage", customerInfoMod)
+        await axios.post(this.props.serverIP + "customerInfo/onloadPage", customerInfoMod)
             .then(resultMap => {
                 var customerInfoMod;
                 var actionType = this.state.actionType;
@@ -224,7 +227,7 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
         customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
-        axios.post("http://127.0.0.1:8080/customerInfo/toroku", customerInfoMod)
+        axios.post(this.props.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
@@ -362,7 +365,7 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
         if (this.state.actionType === "update") {
-            axios.post("http://127.0.0.1:8080/customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+            axios.post(this.props.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                 .then(result => {
                     if (result.data === true) {
                         this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
@@ -716,7 +719,6 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        placeholderText="期日を選択してください"
                                         id="customerInfoDatePicker"
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
@@ -741,7 +743,6 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        placeholderText="期日を選択してください"
                                         id="customerInfoDatePicker"
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
@@ -891,9 +892,9 @@ class CustomerInfo extends Component {
                                 insertRow
                                 cellEdit={cellEdit}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='90'>番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="230"
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='90'>番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}  width="130">責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }}  width="230"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
                                     dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
@@ -920,5 +921,15 @@ class CustomerInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default CustomerInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfo);

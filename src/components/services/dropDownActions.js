@@ -34,7 +34,8 @@ export const fetchDropDown = () => {
 			"getSpecialPoint",//26特別ポイント条件
 			"getApproval",//27ステータスを取得する
 			"getCheckSection",//28確認区分を取得する
-			//"getEnterPeriod",
+			"getEnterPeriod",//29enterPeriodを取得する
+			"getCostClassification",//30費用区分を取得する
 		]
 		var outArray = [];
 		var serverIP = "http://127.0.0.1:8080/";
@@ -42,7 +43,7 @@ export const fetchDropDown = () => {
 		var par = JSON.stringify(methodNameList);
 		$.ajax({
 			type: "POST",
-			url: "http://127.0.0.1:8080/initializationPage",
+			url: serverIP + "initializationPage",
 			data: par,
 			async: false,
 			contentType: "application/json",

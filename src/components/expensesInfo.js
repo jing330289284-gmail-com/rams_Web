@@ -12,6 +12,8 @@ import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 
@@ -43,8 +45,9 @@ class ExpensesInfo extends Component {
         relatedEmployees:'',//要員
     }
     componentDidMount() {
+        this.props.fetchDropDown();
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousingStatus"),
+            housingStatusDrop: utils.getdropDown("getHousingStatus",this.props.serverIP),
             employeeNo: this.props.employeeNo,
             expensesInfoModels:this.props.expensesInfoModels,
             kadouCheck:this.props.kadouCheck,
@@ -114,7 +117,7 @@ class ExpensesInfo extends Component {
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);
-        axios.post("http://127.0.0.1:8080/expensesInfo/toroku", expensesInfoModel)
+        axios.post(this.props.serverIP + "expensesInfo/toroku", expensesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
@@ -334,7 +337,7 @@ class ExpensesInfo extends Component {
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
                                             id="expensesInfoDatePicker"
-                                            placeholderText="期日を選択してください"
+                                            
                                             dateFormat={"yyyy/MM"}
                                             name="expensesReflectYearAndMonth"
                                             locale="ja"
@@ -370,11 +373,11 @@ class ExpensesInfo extends Component {
                             data={expensesInfoModels}
                             headerStyle={{ background: '#5599FF' }}
                             striped>
-                            <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="130">諸費用期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>交通代</TableHeaderColumn>
-                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
-                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他</TableHeaderColumn>
+                            <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }}  width="230">諸費用期間</TableHeaderColumn>
+                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} >交通代</TableHeaderColumn>
+                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
+                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
                     </Form>
@@ -383,5 +386,15 @@ class ExpensesInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default ExpensesInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ExpensesInfo);

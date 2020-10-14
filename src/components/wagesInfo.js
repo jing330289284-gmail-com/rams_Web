@@ -14,6 +14,8 @@ import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-tabl
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import ExpensesInfo from "./expensesInfo.js"
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 
@@ -88,6 +90,7 @@ class WagesInfo extends Component {
         )
     }
     componentDidMount() {
+        this.props.fetchDropDown();
         this.getDropDowns();
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
@@ -97,7 +100,7 @@ class WagesInfo extends Component {
      */
     getDropDowns = () => {
         var methodArray = ["getInsurance", "getBonus", "getStaffForms", "getEmployeeNameNoBP"]
-        var data = utils.getPublicDropDown(methodArray);
+        var data = utils.getPublicDropDown(methodArray,this.props.serverIP);
         this.setState(
             {
                 socialInsuranceFlagDrop: data[0].slice(1),
@@ -219,7 +222,7 @@ class WagesInfo extends Component {
             this.setState({
                 employeeNo: wagesInfoMod.employeeNo,
             })
-            axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo", wagesInfoMod)
+            axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                         $("#expensesInfoBtn").attr("disabled", false);
@@ -333,7 +336,7 @@ class WagesInfo extends Component {
                 var wagesInfoMod = {
                     "employeeNo": utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
                 }
-                axios.post("http://127.0.0.1:8080/wagesInfo/getWagesInfo", wagesInfoMod)
+                axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
                     .then(result => {
                         if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                             $("#expensesInfoBtn").attr("disabled", false);
@@ -369,7 +372,7 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
-        axios.post("http://127.0.0.1:8080/wagesInfo/toroku", wagesInfoModel)
+        axios.post(this.props.serverIP + "wagesInfo/toroku", wagesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
@@ -650,7 +653,7 @@ class WagesInfo extends Component {
                                                 showFullMonthYearPicker
                                                 minDate={new Date()}
                                                 showDisabledMonthNavigation
-                                                placeholderText="期日を選択してください"
+                                                
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
                                                 dateFormat={"yyyy/MM"}
@@ -722,7 +725,7 @@ class WagesInfo extends Component {
                                                     showFullMonthYearPicker
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
-                                                    placeholderText="期日を選択してください"
+                                                    
                                                     className="form-control form-control-sm"
                                                     id="wagesInfoDatePicker"
                                                     name="nextBonusMonth"
@@ -772,7 +775,7 @@ class WagesInfo extends Component {
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
-                                                placeholderText="期日を選択してください"
+                                                
                                                 dateFormat={"yyyy/MM"}
                                                 name="reflectYearAndMonth"
                                                 locale="ja"
@@ -861,17 +864,17 @@ class WagesInfo extends Component {
                             striped
                             hover
                             condensed>
-                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width='145'>給料期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社員形式</TableHeaderColumn>
-                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">給料</TableHeaderColumn>
-                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">社会保険</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center' width="100">交通代</TableHeaderColumn>
-                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>リーダー</TableHeaderColumn>
-                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>住宅</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他の手当</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>他の手当の費用</TableHeaderColumn>
-                            <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>ボーナス</TableHeaderColumn>
-                            <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} headerAlign='center' dataAlign='center'>備考</TableHeaderColumn>
+                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }}  width='145'>給料期間</TableHeaderColumn>
+                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }}  width="100">社員形式</TableHeaderColumn>
+                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }}  width="100">給料</TableHeaderColumn>
+                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }}  width="100">社会保険</TableHeaderColumn>
+                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }}  width="100">交通代</TableHeaderColumn>
+                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
+                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                            <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
+                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他の手当の費用</TableHeaderColumn>
+                            <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} >ボーナス</TableHeaderColumn>
+                            <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
                 </div>
@@ -879,5 +882,15 @@ class WagesInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default WagesInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(WagesInfo);

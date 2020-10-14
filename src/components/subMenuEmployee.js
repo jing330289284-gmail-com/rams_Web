@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faFile , faUser , faFileExcel , faFileWord , faSearch , faSave , faThList} from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import DutyRegistration from './dutyRegistration';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 
@@ -16,7 +18,8 @@ class SubMenu extends Component {
         nowDate: '',//今の期日
     }
     async componentWillMount() {
-        await axios.post("http://127.0.0.1:8080/subMenuEmployee/init")
+        this.props.fetchDropDown();
+        await axios.post(this.props.serverIP + "subMenuEmployee/init")
             .then(resultMap => {
                 if (resultMap.data !== null && resultMap.data !== '') {
                     document.getElementById("kanriSha").innerHTML = "社員" + "：" + resultMap.data["employeeName"];
@@ -37,7 +40,7 @@ class SubMenu extends Component {
 		})
 	}
     logout = () => {
-        axios.post("http://127.0.0.1:8080/subMenuEmployee/logout")
+        axios.post(this.props.serverIP + "subMenuEmployee/logout")
             .then(resultMap => {
                 alert("ログアウトしました");
             })
@@ -124,5 +127,15 @@ class SubMenu extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default SubMenu;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);

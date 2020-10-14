@@ -7,6 +7,8 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
 class BankInfo extends Component {
@@ -25,6 +27,7 @@ class BankInfo extends Component {
     }
 
     componentDidMount() {
+        this.props.fetchDropDown();
         if (!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== '') {//社員の場合
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
@@ -35,7 +38,7 @@ class BankInfo extends Component {
             document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
-        var bankCode = utils.getdropDown("getBankInfo");
+        var bankCode = utils.getdropDown("getBankInfo",this.props.serverIP);
         bankCode[0].name = "銀行を選択してください";
         for (let i = 0; i < bankCode.length; i++) {
             $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');
@@ -67,7 +70,7 @@ class BankInfo extends Component {
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                axios.post("http://127.0.0.1:8080/bankInfo/init", onloadMol)
+                axios.post(this.props.serverIP + "bankInfo/init", onloadMol)
                     .then(function (resultMap) {
                         if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
                             $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
@@ -111,6 +114,35 @@ class BankInfo extends Component {
             }
         }
     }
+/**
+ * 支店名と支店番号の検索
+ * param 項目のid
+ */
+getBankBranchInfo(noORname){
+    var sendMap = {};
+    sendMap[noORname] = $('#'+noORname+'').val();
+    sendMap["bankCode"] = $('#bankCode').val();
+    if($('#'+noORname+'').val() !== ""){
+      
+      axios.post(this.props.serverIP + "getBankBranchInfo",sendMap)
+        .then(function (resultMap) {
+          if(resultMap.data.length !== 0){
+              $('#bankBranchCode').val(resultMap.data[0].code);
+              $('#bankBranchName').val(resultMap.data[0].name);
+          }else{
+            $('#bankBranchCode').val("");
+            $('#bankBranchName').val("");
+          }
+          
+        })
+        .catch(function (error) {
+          alert("支店信息获取错误，请检查程序");
+        });
+    }else{
+      $('#bankBranchCode').val("");
+      $('#bankBranchName').val("");
+    }
+  }
     /**
      * 口座登録ボタン
      */
@@ -180,7 +212,7 @@ class BankInfo extends Component {
                                     </InputGroup.Prepend>
                                     <Form.Control readOnly
                                         placeholder="例：浦和支店"
-                                        onBlur={bankInfoJs.getBankBranchInfo.bind(this, "bankBranchName")}
+                                        onBlur={this.getBankBranchInfo.bind(this, "bankBranchName")}
                                         id="bankBranchName" maxLength="20" name="bankBranchName" />
                                 </InputGroup>
                             </Col>
@@ -189,7 +221,7 @@ class BankInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="010" onBlur={bankInfoJs.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode" />
+                                    <Form.Control placeholder="010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode" />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -246,5 +278,15 @@ class BankInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default BankInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BankInfo);

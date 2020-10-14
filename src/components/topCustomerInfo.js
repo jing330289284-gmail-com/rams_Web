@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
 import MyToast from './myToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials=true;
 
 class TopCustomerInfo extends Component {
@@ -23,6 +25,7 @@ class TopCustomerInfo extends Component {
      * 画面の初期化
      */
     componentDidMount(){
+        this.props.fetchDropDown();
         var actionType = this.props.actionType;//父画面のパラメータ（処理区分）
         var topCustomerNo = this.props.topCustomer;//父画面のパラメータ（画面既存上位お客様情報）
         console.log($("#topCustomerNameShita").val());
@@ -40,7 +43,7 @@ class TopCustomerInfo extends Component {
             if(topCustomerNo !== null && topCustomerNo !== '' && topCustomerNo !== undefined){
                 var topCustomerMod = {};
                 topCustomerMod["topCustomerNo"] = topCustomerNo;
-                axios.post("http://127.0.0.1:8080/topCustomerInfo/init", topCustomerMod)
+                axios.post(this.props.serverIP + "topCustomerInfo/init", topCustomerMod)
                     .then(resultMap => {
                         topCustomerMod = resultMap.data.topCustomerMod;
                         document.getElementById("topCustomerNo").innerHTML = topCustomerMod.topCustomerNo;
@@ -57,7 +60,7 @@ class TopCustomerInfo extends Component {
                     })
             }else{
                 var topCustomerNo = "";
-                const promise = Promise.resolve(utils.getNO("topCustomerNo", "T", "T008TopCustomerInfo"));
+                const promise = Promise.resolve(utils.getNO("topCustomerNo", "T", "T008TopCustomerInfo",this.props.serverIP));
                 promise.then((value) => {
                     console.log(value);
                             topCustomerNo = value;
@@ -86,13 +89,13 @@ class TopCustomerInfo extends Component {
             topCustomerInfo["remark"] = $("#topRemark").val();
             if(actionType === "update"){
                 topCustomerInfo["actionType"] = "update";
-                axios.post("http://127.0.0.1:8080/topCustomerInfo/toroku", topCustomerInfo)
+                axios.post(this.props.serverIP + "topCustomerInfo/toroku", topCustomerInfo)
                 .then(resultMap => {
                     if(resultMap.data){
                         this.setState({ "myToastShow": true, "type": "success","errorsMessageShow": false,message:"更新成功"});
 				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         var methodArray = ["getTopCustomerDrop"]
-                        var selectDataList = utils.getPublicDropDown(methodArray);
+                        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
                         var topCustomerDrop = selectDataList[0];
                         this.props.topCustomerToroku(topCustomerDrop);
                     }else{
@@ -204,5 +207,15 @@ class TopCustomerInfo extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default TopCustomerInfo;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(TopCustomerInfo);

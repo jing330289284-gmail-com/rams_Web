@@ -1,6 +1,6 @@
 /* 社員を追加 */
 import React from 'react';
-import { Card, Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
@@ -46,12 +46,11 @@ class bpInfo extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		//this.getDropDownｓ();//全部のドロップダウン
 		this.setEmployeeName();
 		if (this.props.actionType !== "insert") {
 			const formData = new FormData()
 			formData.append('bpEmployeeNo', this.props.employeeNo)
-			axios.post("http://127.0.0.1:8080/bpInfo/getBpInfo", formData)
+			axios.post(this.props.serverIP + "bpInfo/getBpInfo", formData)
 				.then(response => response.data)
 				.then((data) => {
 					this.setState({
@@ -65,16 +64,6 @@ class bpInfo extends React.Component {
 				);
 		}
 	}
-
-/*	getDropDownｓ = () => {
-		var methodArray = ["getSalesProgress"]
-		var data = utils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				salesProgressCodes: data[0].slice(1),//
-			}
-		);
-	};*/
 
 	setEmployeeName = () => {
 		if (this.props.employeeFristName === undefined || this.props.employeeLastName === undefined) {
@@ -252,6 +241,8 @@ const mapStateToProps = state => {
 	return {
 		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
 		salesProgressCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[16].slice(1) : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
+
 	}
 };
 

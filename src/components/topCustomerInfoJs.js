@@ -6,6 +6,7 @@ export function reset(){
     $("#topCustomerName").val("");
     $("#topUrl").val("");
     $("#topRemark").val("");
+    $("#topCustomerAbbreviation").val("");
   }
 /**
  * 項目の非活性

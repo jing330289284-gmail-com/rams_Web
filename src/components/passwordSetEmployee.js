@@ -6,6 +6,8 @@ import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 class PasswordSetEmployee extends Component {
     state = {
@@ -26,6 +28,7 @@ class PasswordSetEmployee extends Component {
      * 画面初期化
      */
     componentDidMount() {
+        this.props.fetchDropDown();
     }
     //onchange
     valueChange = event => {
@@ -39,7 +42,7 @@ class PasswordSetEmployee extends Component {
         $.each(formArray, function (i, item) {
             passwordSetEmployeeModel[item.name] = item.value;
         });
-        axios.post("http://127.0.0.1:8080/passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
+        axios.post(this.props.serverIP + "passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
         .then(resultMap => {
             if (resultMap.data.errorsMessage !== null && resultMap.data.errorsMessage !== undefined ) {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: resultMap.data.errorsMessage });
@@ -56,7 +59,7 @@ class PasswordSetEmployee extends Component {
     render() {
         const {oldPassword , newPassword , passwordCheck , message , type , errorsMessageValue}=this.state;
         return (
-            <div className="col-sm-6 container" style={{ "marginTop": "5%" }}>
+            <div className="col-sm-4 container" style={{ "marginTop": "5%" }}>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
                 </div>
@@ -120,5 +123,15 @@ class PasswordSetEmployee extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
 
-export default PasswordSetEmployee;
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordSetEmployee);

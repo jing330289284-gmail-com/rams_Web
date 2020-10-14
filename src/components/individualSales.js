@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Col , InputGroup , Button , FormControl } from 'react-bootstrap';
+import {Row , Col , InputGroup , Button , FormControl,Table } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -10,14 +10,17 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-class individualSales extends Component {
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
+class individualSales extends React.Component {
     state = { 
         actionType:'',
         fiscalYear:'',
         employeeName:'',
 		individualSales_startYearAndMonth:'',
         individualSales_endYearAndMonth:'',
-        
+        monthlySales_startYearAndMonth:'',
+        monthlySales_endYearAndMonth:'',
      }
      constructor(props){
 		super(props);
@@ -37,31 +40,30 @@ class individualSales extends Component {
     }
 	searchEmployee = () => { 
 		const empInfo = {
-            employeeName: publicUtils.labelGetValue($("#employeeName").val() ,this.state.employeeName),
+           // employeeName: publicUtils.labelGetValue($("#employeeName").val() ,this.state.employeeInfo),
+           employeeName:this.state.employeeName,
             fiscalYear:this.state.fiscalYear,
             startYearAndMonth:publicUtils.formateDate(this.state.individualSales_startYearAndMonth,false),
             endYearAndMonth:publicUtils.formateDate(this.state.individualSales_endYearAndMonth,false),
 		};
-		axios.post("http://127.0.0.1:8080/personalSales/searchEmpDetails", empInfo)
+        //axios.post("http://127.0.0.1:8080/personalSales/searchEmpDetails", empInfo)
+        axios.post(this.props.serverIP + "personalSales/searchEmpDetails", empInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
-					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
                 }else if(response.data.noData!= null){
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
-                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
-                    window.location.href = window.location.href
                 }
                  else {
+                    this.setState({"errorsMessageShow":false})
                     this.setState({ employeeInfoList: response.data.data })
-                    this.setState({workMonthCount:this.state.employeeInfoList[0].workMonthCount})
+                    this.setState({ workMonthCount:this.state.employeeInfoList[0].workMonthCount}) 
                     this.feeTotal();
 					
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
-        //}
     }
     yearAndMonthChange =event =>{
     	this.setState({
@@ -105,14 +107,31 @@ class individualSales extends Component {
         this.setState({paymentTotal:publicUtils.addComma(paymentTotal.toString(),false)})
     }
 	componentDidMount(){
-        this.getDropDown();
+        this.props.fetchDropDown();
+        //this.getDropDown();
 		var date = new Date();
 		var year = date.getFullYear();
 		$('#fiscalYear').append('<option value="">'+""+'</option>');
 		for(var i=2019;i<=year;i++){
 				$('#fiscalYear').append('<option value="'+i+'">'+i+'</option>');
-            }           
-	}
+            }       
+            const { location } = this.props
+            var actionType = '';
+            var monthlySales_startYearAndMonth='';
+            var monthlySales_endYearAndMonth= '';
+            var rowSelectemployeeNo='';
+            var rowSelectemployeeName='';
+            if (location.state) {
+                actionType = location.state.actionType;
+                sessionStorage.setItem('actionType', actionType);
+                monthlySales_startYearAndMonth = location.state.monthlySales_startYearAndMonth;
+                monthlySales_endYearAndMonth = location.state.monthlySales_endYearAndMonth;
+                rowSelectemployeeNo = location.state.rowSelectemployeeNo;
+                rowSelectemployeeName = location.state.rowSelectemployeeName;
+                this.setState({individualSales_startYearAndMonth:monthlySales_startYearAndMonth});
+                this.setState({individualSales_endYearAndMonth: monthlySales_endYearAndMonth})
+            }
+    }
 	individualSalesStartYearAndMonthChange = date => {
         if(date !== null){
             this.setState({
@@ -228,8 +247,46 @@ class individualSales extends Component {
          return formatmGrosProfits;
         }
     }
+
+    handleTag = ({ target }) => {
+        const { value, id } = target;
+        if (value === '') {
+            this.setState({
+                [id]: '',
+            })
+        } else {
+            if (this.state.employeeName.find((v) => (v.name === value)) !== undefined) {
+                        this.setState({
+                            employeeName: this.state.employeeName.find((v) => (v.name === value)).code,
+                        })
+        }
+    }
+    };
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
+					default:
+				}
+			}
+		}
+	};
+
+
 render (){
-    const { employeeName,errorsMessageValue } = this.state;
+    const {employeeName,errorsMessageValue } = this.state;
+    const employeeInfo = this.props.employeeInfo;
         return(
             
             <div>
@@ -258,9 +315,11 @@ render (){
                 <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<Autocomplete
+									{/* <Autocomplete
 									id="employeeName"
-									name="employeeName"
+                                    name="employeeName"
+                                    // value={this.state.employeeName.find((v) => (v.code === this.state.employeeName))}
+                                    // onSelect={(event) => this.handleTag(event)}
 									options={this.state.employeeName}
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
@@ -269,7 +328,21 @@ render (){
 												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 										</div>
 									)}
-								/>
+								/> */}
+                                <Autocomplete
+											id="employeeName"
+											name="employeeName"
+											options={employeeInfo}
+											getOptionLabel={(option) => option.name}
+											value={employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
                                     <font color="red" style={{ marginLeft: "15px"}}>★</font>
 								</InputGroup>
 							</Col>
@@ -309,7 +382,7 @@ render (){
                         </InputGroup>                       
                     </Col>                    
                     <Col sm={4}>
-                    <Button variant="info" size="sm" id="search"style={{marginLeft:"100px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
+                    <Button variant="info" type = "submit"size="sm" id="search"style={{marginLeft:"100px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
                     </Col>
 
                 </Row>
@@ -333,7 +406,7 @@ render (){
                     <label>{this.state.totalgrosProfits} </label>
 						</Col>
 				</Row>
-                <div>
+                  <div>
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
@@ -352,4 +425,16 @@ render (){
 			</div>
         );
     }
-}export default individualSales;
+}
+const mapStateToProps = state => {
+	return {
+        employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(individualSales);
