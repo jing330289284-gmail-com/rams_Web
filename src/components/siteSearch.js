@@ -12,6 +12,8 @@ import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 registerLocale('ja', ja);
 
@@ -25,19 +27,9 @@ class siteSearch extends Component {
 	initialState = {
 		payOffRange1: '0',// 単価1
 		payOffRange2: '0',// 単価2
-		siteMaster: [],// 役割
-		payOffRangeStatus: [],// 精算時間
-		topCustomerMaster: [],// トップお客様
-		customerMaster: [],// お客様
-		developLanguageMaster: [], // 開発言語
-		getstations: [], // 場所
-		typeOfIndustryMaster: [], // 業種
-		employeeStatuss: [], // 社員区分
 		customerNo: '',
 		topCustomerNo: '',
-		employeeInfo: [],
 		employeeName: '',
-
 	};
 
 	onchange = event => {
@@ -67,27 +59,9 @@ class siteSearch extends Component {
 			}
 		);
 	};
-	//全部のドロップダウン
-	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getStation", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getTypeOfIndustry", "getEmployeeStatus", "getEmployeeName"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				payOffRangeStatus: data[0].slice(1),//　精算時間
-				siteMaster: data[1],//　役割
-				getstations: data[2].slice(1),//　場所 
-				customerMaster: data[3].slice(1),//お客様
-				topCustomerMaster: data[4].slice(1),//トップお客様
-				developLanguageMaster: data[5].slice(1),//開発言語
-				typeOfIndustryMaster: data[6].slice(1),//業種
-				employeeStatuss: data[7],// 社員区分
-				employeeInfo: data[8].slice(1)//社員名
-			}
-		);
-	};
 	// 页面加载
 	componentDidMount() {
-		this.getDropDowns();//全部のドロップダウン
+		this.props.fetchDropDown();
 	}
 	//reset
 	reset = () => {
@@ -96,7 +70,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '', employeeName: '',payOffRange1:'0'
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '0'
 	};
 
 	// AUTOSELECT select事件
@@ -107,12 +81,12 @@ class siteSearch extends Component {
 				[id]: '',
 			})
 		} else {
-			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
-				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+			if (this.props.customerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.getstations.find((v) => (v.name === value)) !== undefined ||
+				this.props.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
 						this.setState({
@@ -162,18 +136,18 @@ class siteSearch extends Component {
 		$.each(formArray, function(i, item) {
 			SiteSearchModel[item.name] = item.value;
 		});
-		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
-		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
-		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		SiteSearchModel["employeeName"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
-		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
-		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#stationCode").val(), this.state.getstations)
-		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
+		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.props.customerMaster)
+		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.props.topCustomerMaster)
+		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.props.developLanguageMaster)
+		SiteSearchModel["employeeName"] = publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo)
+		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.props.customerMaster)
+		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#stationCode").val(), this.props.getstations)
+		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.props.typeOfIndustryMaster)
 		if ($("#dataAcquisitionPeriod").val() === '1') {
 			SiteSearchModel["dataAcquisitionPeriod"] = publicUtils.setFullYearMonth(new Date());
 		}
 
-		axios.post("http://127.0.0.1:8080/getSiteSearchInfo", SiteSearchModel)
+		axios.post(this.props.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -246,9 +220,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											options={this.state.employeeInfo}
+											options={this.props.employeeInfo}
 											getOptionLabel={(option) => option.name}
-											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											value={this.props.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -265,7 +239,7 @@ class siteSearch extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.onchange} name="employeeStatus" value={employeeStatus} autoComplete="off">
-											{this.state.employeeStatuss.map(data =>
+											{this.props.employeeStatuss.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -292,7 +266,7 @@ class siteSearch extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
-											{this.state.siteMaster.map(date =>
+											{this.props.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
@@ -311,9 +285,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											options={this.state.customerMaster}
+											options={this.props.customerMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+											value={this.props.customerMaster.find(v => v.name === this.state.customerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -332,9 +306,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+											value={this.props.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
-											options={this.state.topCustomerMaster}
+											options={this.props.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -353,9 +327,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="bpCustomerNo"
 											name="bpCustomerNo"
-											value={this.state.customerMaster.find(v => v.name === this.state.bpCustomerNo) || {}}
+											value={this.props.customerMaster.find(v => v.name === this.state.bpCustomerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'bpCustomerNo')}
-											options={this.state.customerMaster}
+											options={this.props.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -374,9 +348,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="stationCode"
 											name="stationCode"
-											value={this.state.getstations.find(v => v.name === this.state.stationCode) || {}}
+											value={this.props.getstations.find(v => v.name === this.state.stationCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'stationCode')}
-											options={this.state.getstations}
+											options={this.props.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -398,9 +372,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="typeOfIndustryCode"
 											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
+											value={this.props.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
-											options={this.state.typeOfIndustryMaster}
+											options={this.props.typeOfIndustryMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -420,7 +394,7 @@ class siteSearch extends Component {
 											onChange={this.onchange}
 											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off">
-											{this.state.payOffRangeStatus.map(data =>
+											{this.props.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -431,7 +405,7 @@ class siteSearch extends Component {
 											onChange={this.onchange}
 											id="payOffRange2" name="payOffRange2" value={payOffRange1 === '0' ? '0' : payOffRange2}
 											autoComplete="off" disabled={payOffRange1 === '0' ? true : false} >
-											{this.state.payOffRangeStatus.map(data =>
+											{this.props.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -457,9 +431,9 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="developLanguageCode"
 											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
+											value={this.props.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
-											options={this.state.developLanguageMaster}
+											options={this.props.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -549,6 +523,24 @@ class siteSearch extends Component {
 		)
 	}
 }
+const mapStateToProps = state => {
+	return {
+		payOffRangeStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[33].slice(1) : [],//　精算時間
+		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[34] : [],//　役割
+		customerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],//お客様
+		topCustomerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[35].slice(1) : [],//トップお客様
+		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],//開発言語
+		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],//社員名
+		typeOfIndustryMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[36].slice(1) : [],//業種
+		getstations: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],//　場所 
+		employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4].slice(1) : [],//　社員区分 
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
+	}
+};
 
-export default siteSearch;
-
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(siteSearch);
