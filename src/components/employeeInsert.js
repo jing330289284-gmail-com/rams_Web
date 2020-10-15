@@ -59,7 +59,6 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
-		alert(this.state.authorityCode)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -219,14 +218,23 @@ class employeeInsert extends React.Component {
 	* 漢字をカタカナに変更する
 	*/
 	katakanaApiChange = event => {
-		const value = event.target.value;
-		const promise = Promise.resolve(publicUtils.katakanaApi(value));
+		let name=event.target.name
+		let value = event.target.value;
+		let promise = Promise.resolve(publicUtils.katakanaApi(value));
 		promise.then((date) => {
-			this.setState(
-				{
-					//employeeNo: value
-				}
-			);
+			switch (name) {
+				case 'employeeFristName':
+					this.setState({
+						furigana1: date
+					})
+					break;
+				case 'employeeLastName':
+					this.setState({
+						furigana2: date
+					})
+					break;
+				default:
+			}
 		});
 	};
 
@@ -548,9 +556,10 @@ class employeeInsert extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
+									{/* onBlur={publicUtils.postcodeApi} ref="postcode" */}
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>

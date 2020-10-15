@@ -34,7 +34,8 @@ module.exports = function(app) {
 
 	app.use(createProxyMiddleware('/katakana',
 		{
-			target: "https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysis/v1/katakana/",
+			target:"https://labs.goo.ne.jp/api/hiragana",
+			//target: "https://api.apigw.smt.docomo.ne.jp/gooLanguageAnalysisCorp/v1/hiragana?APIKEY=36767e486ea387713ac17cff9c07ee840ce0781e7320010bd6ff661724a49c7a",
 			changeOrigin: true,
 			secure: false,
 			pathRewrite: {

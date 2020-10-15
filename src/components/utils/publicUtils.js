@@ -453,28 +453,24 @@ export function isHoliday() {
 	}
 }
 
-export async function katakanaApi() {
-	let value = "劉林涛";
-/* 	if (value !== undefined && value !== null && value !== "") {
-		await axios.post("/katakana?APIKEY=" + value)
-			.then(function (result) {
-				alert(result)
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
-	} else {
-	} */
-
-
-$.ajax({
+export async function katakanaApi(value) {
+	$.ajax({
 		type: "POST",
-		url: "/katakana?APIKEY=" + value,
-		contentType: "application/json;charset=UTF-8",
+		url: "/katakana",
+		data: {
+			"app_id": "36767e486ea387713ac17cff9c07ee840ce0781e7320010bd6ff661724a49c7a",
+			"request_id": "record003",
+			"sentence": value,
+			"output_type": "katakana"
+		},
+		dataType: "json",
+		contentType: "application/x-www-form-urlencoded",
 		async: false,
 		success: function (data) {
-			alert("111"+data)
+			value= data.converted;
 		}
 	});
-
-
+	return value;
 }
+
+
