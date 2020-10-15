@@ -36,7 +36,6 @@ export const fetchDropDown = () => {
 			"getCheckSection",//28確認区分を取得する
 			"getEnterPeriod",//29enterPeriodを取得する
 			"getCostClassification",//30費用区分を取得する
-			"getCostClassification",//30費用区分を取得する
 			"getTransportation",//31交通手段を取得する
 			"getMaster",//32マスター名を取得する
 			"getPayOffRange",//33精算時間を取得する
