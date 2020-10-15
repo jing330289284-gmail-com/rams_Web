@@ -32,21 +32,22 @@ class employeeInsert extends React.Component {
 	 * 初期化
 	 */
 	initialState = {
-		showBankInfoModal: false,//口座情報画面フラグ
-		showpasswordSetModal: false,//PW設定
-		showBpInfoModal: false,//bp情報
+		showBankInfoModalFlag: false,//口座情報画面フラグ
+		showpasswordSetModalFlag: false,//PW設定
+		showBpInfoModalFlag: false,//bp情報
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
-		accountInfo: null,//口座情報のデータ
-		bpInfoModel: null,//pb情報
 		myToastShow: false,
 		errorsMessageShow: false,
+		accountInfo: null,//口座情報のデータ
+		bpInfoModel: null,//pb情報
 		developLanguage1: '',
 		developLanguage2: '',
 		developLanguage3: '',
 		developLanguage4: '',
 		developLanguage5: '',
 		stationCode: '',
-		employeeStatusFlag: true,
+		employeeStatus: 0,
+		authorityCode: 1,
 	};
 	/**
 	 * リセット
@@ -58,9 +59,11 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+		alert(this.state.authorityCode)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
+			employeeStatus: this.state.employeeStatus,//社員区分
 			employeeNo: this.state.employeeNo,//社員番号
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
@@ -303,11 +306,11 @@ class employeeInsert extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCodes: [], employeeStatusFlag: false });
+			this.setState({ companyMail: '', authorityCode: 0, employeeStatus: 1 });
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
-			this.setState({ employeeStatusFlag: true });
+			this.setState({ employeeStatus: 0 });
 		}
 	}
 
@@ -317,7 +320,7 @@ class employeeInsert extends React.Component {
 	accountInfoGet = (accountTokuro) => {
 		this.setState({
 			accountInfo: accountTokuro,
-			showBankInfoModal: false,
+			showBankInfoModalFlag: false,
 		})
 	}
 
@@ -327,7 +330,7 @@ class employeeInsert extends React.Component {
 	passwordSetInfoGet = (passwordSetTokuro) => {
 		this.setState({
 			passwordSetInfo: passwordSetTokuro,
-			showPasswordSetModal: false,
+			showpasswordSetModalFlag: false,
 		})
 	}
 	/* 
@@ -336,7 +339,7 @@ class employeeInsert extends React.Component {
 	pbInfoGet = (pbInfoGetTokuro) => {
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
-			showBpInfoModal: false,
+			showBpInfoModalFlag: false,
 		})
 	}
 	/**
@@ -344,11 +347,11 @@ class employeeInsert extends React.Component {
 	*/
 	handleHideModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
-			this.setState({ showBankInfoModal: false })
+			this.setState({ showBankInfoModalFlag: false })
 		} else if (kbn === "passwordSet") {//PW設定
-			this.setState({ showPasswordSetModal: false })
+			this.setState({ showpasswordSetModalFlag: false })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showBpInfoModal: false })
+			this.setState({ showBpInfoModalFlag: false })
 		}
 	}
 
@@ -357,11 +360,11 @@ class employeeInsert extends React.Component {
     */
 	handleShowModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
-			this.setState({ showBankInfoModal: true })
+			this.setState({ showBankInfoModalFlag: true })
 		} else if (kbn === "passwordSet") {//PW設定
-			this.setState({ showPasswordSetModal: true })
+			this.setState({ showpasswordSetModalFlag: true })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showBpInfoModal: true })
+			this.setState({ showBpInfoModalFlag: true })
 		}
 	}
 
@@ -485,7 +488,7 @@ class employeeInsert extends React.Component {
 				{/*　 開始 */}
 				{/*　 口座情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal} dialogClassName="modal-bankInfo">
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModalFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -494,7 +497,7 @@ class employeeInsert extends React.Component {
 				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-passwordSet">
+					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showpasswordSetModalFlag} dialogClassName="modal-passwordSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -502,7 +505,7 @@ class employeeInsert extends React.Component {
 				</Modal>
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModal} dialogClassName="modal-pbinfoSet">
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModalFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -510,9 +513,9 @@ class employeeInsert extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
-					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={this.state.employeeStatusFlag ? false : true}>PW設定</Button>{' '}
-					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === 0 ? false : true} >口座情報</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === 0 ? false : true}>PW設定</Button>{' '}
+					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === 0 ? true : false}>BP情報</Button>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -691,7 +694,7 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control type="email" placeholder="社内メール" value={companyMail} autoComplete="off" disabled={this.state.employeeStatusFlag ? false : true}
+									<Form.Control type="email" placeholder="社内メール" value={companyMail} autoComplete="off" disabled={employeeStatus === 0 ? false : true}
 										onChange={this.valueChange} size="sm" name="companyMail" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
@@ -831,7 +834,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
-										autoComplete="off" id="authorityCodeId" disabled={this.state.employeeStatusFlag ? false : true} >
+										autoComplete="off" id="authorityCodeId" disabled={employeeStatus === 0 ? false : true} >
 										{authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1108,7 +1111,7 @@ class employeeInsert extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<Form.File id="residentCardInfo"  data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
+										<Form.File id="residentCardInfo" data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
