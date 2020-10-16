@@ -25,7 +25,6 @@ class EnterPeriodSearch extends React.Component {
         enterPeriodKbn: '0',//区分
         enterPeriodKbnDrop: [],//区分List
         enterPeriodList: [],//入社入場期限List
-        employeeName: '',//社員名前
         actionType: '',//処理区分
         employeeNameDrop: [],//社員名Drop
         message: '',
@@ -36,6 +35,10 @@ class EnterPeriodSearch extends React.Component {
     }
     componentDidMount(){
         this.props.fetchDropDown();
+        this.setState({
+            employeeNameDrop:this.props.getEmployeeName,
+            enterPeriodKbnDrop:this.props.getEnterPeriod,
+        })
         this.search(utils.formateDate(this.state.yearAndMonthDate,false),this.state.enterPeriodKbn,utils.labelGetValue($("#employeeName").val(),this.state.employeeNameDrop));
     }
     /**
@@ -54,8 +57,8 @@ class EnterPeriodSearch extends React.Component {
                 (new Date().getMonth() === 11 ? 1 : new Date().getMonth() + 2) + ''),
             }, () => {
                 this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
-                    this.state.enterPeriodKbn,utils.labelGetValue($("#employeeName").val() ,
-                        this.state.employeeNameDrop));
+                    this.state.enterPeriodKbn,
+                        utils.labelGetValue($("#employeeName").val() , this.state.employeeNameDrop));
             });
         }
     }
@@ -66,6 +69,10 @@ class EnterPeriodSearch extends React.Component {
     getEmployeeName = (event) => {
         this.setState({
             [event.target.name]: event.target.value,
+        },()=>{
+            this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
+                    this.state.enterPeriodKbn,
+                        utils.labelGetValue($("#employeeName").val() , this.state.employeeNameDrop));
         })
     }
     /**
@@ -115,6 +122,10 @@ class EnterPeriodSearch extends React.Component {
     valueChange = event => {
         this.setState({
             [event.target.name]: event.target.value,
+        },()=>{
+            this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
+                    this.state.enterPeriodKbn,
+                        utils.labelGetValue($("#employeeName").val() , this.state.employeeNameDrop));
         })
     }
     periodButton=(cell,row)=>{
@@ -159,7 +170,7 @@ class EnterPeriodSearch extends React.Component {
             </Popover>
             }
         >
-        <Button variant="warning" size="sm">非稼働期間</Button>
+        <Button variant="warning" size="sm" className="hikadoButton">非稼働期間</Button>
       </OverlayTrigger>
         return returnItem;
     }
@@ -201,8 +212,6 @@ class EnterPeriodSearch extends React.Component {
             type,
             errorsMessageValue,
             enterPeriodList, } = this.state;
-        const getEnterPeriod = this.props.getEnterPeriod;
-        const getEmployeeName = this.props.getEmployeeName;
         //テーブルの定義
         const options = {
             noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
@@ -271,7 +280,7 @@ class EnterPeriodSearch extends React.Component {
                                     name="enterPeriodKbn"
                                     onChange={this.valueChange}
                                     value={enterPeriodKbn}>
-                                    {getEnterPeriod.map(data =>
+                                    {this.state.enterPeriodKbnDrop.map(data =>
                                         <option key={data.code} value={data.code}>
                                             {data.name}
                                         </option>
@@ -288,7 +297,7 @@ class EnterPeriodSearch extends React.Component {
                                     id="employeeName"
                                     name="employeeName"
                                     value={employeeName}
-                                    options={getEmployeeName}
+                                    options={this.state.employeeNameDrop}
                                     getOptionLabel={(option) => option.name}
                                     onChange={this.getEmployeeName}
                                     renderInput={(params) => (
@@ -311,7 +320,7 @@ class EnterPeriodSearch extends React.Component {
                         striped
                         hover
                         condensed>
-                        <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} >
+                        <TableHeaderColumn isKey={true} dataField='rowNo' tdStyle={{ padding: '.45em' }} >
                             番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='employeeNo' tdStyle={{ padding: '.45em' }} >
                             社員番号</TableHeaderColumn>
@@ -340,7 +349,7 @@ class EnterPeriodSearch extends React.Component {
 const mapStateToProps = state => {
 	return {
         getEnterPeriod:state.data.dataReques.length >= 1 ? state.data.dataReques[29].slice(1) : [],
-        getEmployeeName:state.data.dataReques.length >= 1 ? state.data.dataReques[9] : [],
+        getEmployeeName:state.data.dataReques.length >= 1 ? state.data.dataReques[38].slice(1) : [],
         serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
