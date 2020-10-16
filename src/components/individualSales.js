@@ -46,7 +46,6 @@ class individualSales extends React.Component {
             startYearAndMonth:publicUtils.formateDate(this.state.individualSales_startYearAndMonth,false),
             endYearAndMonth:publicUtils.formateDate(this.state.individualSales_endYearAndMonth,false),
 		};
-        //axios.post("http://127.0.0.1:8080/personalSales/searchEmpDetails", empInfo)
         axios.post(this.props.serverIP + "personalSales/searchEmpDetails", empInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {

@@ -85,7 +85,6 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
 		};
-		//axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 		axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -581,7 +580,7 @@ class employeeSearch extends React.Component {
 					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
+					<Link to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
 					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>

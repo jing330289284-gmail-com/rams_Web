@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -13,6 +13,8 @@ import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 registerLocale('ja', ja);
 
@@ -26,21 +28,11 @@ class siteInfo extends Component {
 		payOffRange1: '0',
 		payOffRange2: '0',
 		workState: '0',
-		siteMaster: [],
-		payOffRangeStatus: [],
-		topCustomerMaster: [],
-		levelMaster: [],
-		customerMaster: [],
-		developLanguageMaster: [],
-		typeOfIndustryMaster: [], // 業種
-		employeeInfo: [],
 		employeeName: '',
-		getstations: [], // 場所
 		myToastShow: false,
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
-
 	};
 
 	onchange = event => {
@@ -70,27 +62,10 @@ class siteInfo extends Component {
 			}
 		);
 	};
-	//全部のドロップダウン
-	getDropDowns = () => {
-		var methodArray = ["getPayOffRange", "getSiteMaster", "getLevel", "getCustomer", "getTopCustomer", "getDevelopLanguage", "getEmployeeName", "getTypeOfIndustry", "getStation"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				payOffRangeStatus: data[0].slice(1),//　精算時間
-				siteMaster: data[1],//　役割
-				levelMaster: data[2],//　レベル
-				customerMaster: data[3].slice(1),//お客様
-				topCustomerMaster: data[4].slice(1),//トップお客様
-				developLanguageMaster: data[5].slice(1),//開発言語
-				employeeInfo: data[6].slice(1),//社員名
-				typeOfIndustryMaster: data[7].slice(1),//業種
-				getstations: data[8].slice(1),//　場所 
-			}
-		);
-	};
+
 	// 页面加载
 	componentDidMount() {
-		this.getDropDowns();//全部のドロップダウン
+		this.props.fetchDropDown();
 	}
 	//reset
 	reset = () => {
@@ -126,21 +101,25 @@ class siteInfo extends Component {
 		if (value === '') {
 			this.setState({
 				[id]: '',
-				siteData: [],
 			})
+			if (fieldName==='employeeName') {
+				this.setState({
+					siteData: [],
+				})
+			}
 		} else {
-			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
-				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+			if (this.props.customerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.getstations.find((v) => (v.name === value)) !== undefined ||
+				this.props.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
 						this.refs.table.setState({
 							selectedRowKeys: []
 						});
-						axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+						axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
 							.then(response => {
 								if (response.data != null) {
 									this.setState({
@@ -236,18 +215,18 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
-		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
-		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
-		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.state.getstations)
-		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
+		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.props.customerMaster)
+		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.props.topCustomerMaster)
+		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.props.developLanguageMaster)
+		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo)
+		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.props.getstations)
+		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.props.typeOfIndustryMaster)
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
 			siteModel["checkDate"] = "1";
 		}
-		axios.post("http://127.0.0.1:8080/insertSiteInfo", siteModel)
+		axios.post(this.props.serverIP + "insertSiteInfo", siteModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -257,7 +236,7 @@ class siteInfo extends Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
-					axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+					axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -281,19 +260,19 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
-		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
-		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
-		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.state.getstations)
-		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
+		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.props.customerMaster)
+		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.props.topCustomerMaster)
+		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.props.developLanguageMaster)
+		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo)
+		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.props.getstations)
+		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.props.typeOfIndustryMaster)
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {
 			siteModel["checkDate"] = "1";
 		}
 		siteModel["workDate"] = this.state.siteData[this.state.siteData.length - 1].admissionStartDate
-		axios.post("http://127.0.0.1:8080/updateSiteInfo", siteModel)
+		axios.post(this.props.serverIP + "updateSiteInfo", siteModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -303,7 +282,7 @@ class siteInfo extends Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
-					axios.post("http://127.0.0.1:8080/getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
+					axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -380,9 +359,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											options={this.state.employeeInfo}
+											options={this.props.employeeInfo}
 											getOptionLabel={(option) => option.name}
-											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											value={this.props.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -473,9 +452,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="location"
 											name="location"
-											value={this.state.getstations.find(v => v.name === this.state.location) || {}}
+											value={this.props.getstations.find(v => v.name === this.state.location) || {}}
 											onSelect={(event) => this.handleTag(event, 'location')}
-											options={this.state.getstations}
+											options={this.props.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -496,9 +475,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											options={this.state.customerMaster}
+											options={this.props.customerMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+											value={this.props.customerMaster.find(v => v.name === this.state.customerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -518,9 +497,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+											value={this.props.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
-											options={this.state.topCustomerMaster}
+											options={this.props.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -540,9 +519,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="developLanguageCode"
 											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
+											value={this.props.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
-											options={this.state.developLanguageMaster}
+											options={this.props.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -578,7 +557,7 @@ class siteInfo extends Component {
 											onChange={this.onchange}
 											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.state.payOffRangeStatus.map(data =>
+											{this.props.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -589,7 +568,7 @@ class siteInfo extends Component {
 											onChange={this.onchange}
 											id="payOffRange2" name="payOffRange2" value={payOffRange1 === '0' ? '0' : payOffRange2}
 											autoComplete="off" disabled={payOffRange1 === '0' ? true : false} >
-											{this.state.payOffRangeStatus.map(data =>
+											{this.props.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -604,7 +583,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.state.siteMaster.map(date =>
+											{this.props.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
@@ -618,7 +597,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.state.levelMaster.map(date =>
+											{this.props.levelMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
@@ -656,9 +635,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="typeOfIndustryCode"
 											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
+											value={this.props.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
-											options={this.state.typeOfIndustryMaster}
+											options={this.props.typeOfIndustryMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -721,6 +700,24 @@ class siteInfo extends Component {
 		)
 	}
 }
+const mapStateToProps = state => {
+	return {
+		payOffRangeStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[33].slice(1) : [],//　精算時間
+		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[34] : [],//　役割
+		levelMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],//　レベル
+		customerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],//お客様
+		topCustomerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[35].slice(1) : [],//トップお客様
+		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],//開発言語
+		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],//社員名
+		typeOfIndustryMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[36].slice(1) : [],//業種
+		getstations: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],//　場所 
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
+	}
+};
 
-export default siteInfo;
-
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(siteInfo);

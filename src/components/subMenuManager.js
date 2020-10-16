@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react-bootstrap';
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import Employee from './employee';
+import EmployeeInsert from './employeeInsert';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -25,6 +25,7 @@ import monthlySalesSearch from './monthlySalesSearch';
 import EnterPeriodSearch from './enterPeriodSearch';
 import sendLettersConfirm from './sendLettersConfirm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import situationChange from './situationChange';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -106,7 +107,7 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
-														<Link className="linkFont" to={{ pathname: '/subMenuManager/employee', state: { actionType: 'insert' } }}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
+														<Link className="linkFont" to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/employeeSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員情報検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
@@ -139,7 +140,7 @@ class SubMenu extends Component {
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/">
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/situationChange">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/enterPeriodSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
@@ -226,7 +227,7 @@ class SubMenu extends Component {
 							<br />
 							<Router>
 								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
-								<Route exact path={`${this.props.match.url}/employee`} component={Employee} />
+								<Route exact path={`${this.props.match.url}/employeeInsert`} component={EmployeeInsert} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
@@ -245,7 +246,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
-								
+								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />

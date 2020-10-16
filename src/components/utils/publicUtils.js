@@ -64,13 +64,13 @@ export function setFullYearMonth(date) {
 
 
 //　ドロップダウン
-export function getdropDown(method,serverIP) {
+export function getdropDown(method, serverIP) {
 	var array = [{ code: '', name: '選択ください' }];
 	$.ajax({
 		type: "POST",
 		url: serverIP + method,
 		async: false,
-		success: function(msg) {
+		success: function (msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -79,16 +79,16 @@ export function getdropDown(method,serverIP) {
 	return array;
 }
 //　ドロップダウン  多くメソッド
-export function getPublicDropDown(methodNameList,serverIP) {
+export function getPublicDropDown(methodNameList, serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
 		type: "POST",
-		url: serverIP+"initializationPage",
+		url: serverIP + "initializationPage",
 		data: par,
 		async: false,
 		contentType: "application/json",
-		success: function(resultList) {
+		success: function (resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
@@ -103,16 +103,16 @@ export function getPublicDropDown(methodNameList,serverIP) {
 }
 
 //　ドロップダウン  多くメソッド react-bootstrap-table---->select専用
-export function getPublicDropDownRtBtSpTleOnly(methodNameList,serverIP) {
+export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
 		type: "POST",
 		data: par,
-		url: serverIP+"initializationPage",
+		url: serverIP + "initializationPage",
 		contentType: "application/json",
 		async: false,
-		success: function(resultList) {
+		success: function (resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ value: '', text: '選択ください' }];
 				var List = resultList[j];
@@ -133,7 +133,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList,serverIP) {
 }
 
 //　採番番号
-export async function getNO(columnName, typeName, table , serverIP) {
+export async function getNO(columnName, typeName, table, serverIP) {
 	var no;
 	var mo = {
 		columnName: columnName,
@@ -142,11 +142,11 @@ export async function getNO(columnName, typeName, table , serverIP) {
 	};
 	$.ajax({
 		type: "POST",
-		url: serverIP+"getNO",
+		url: serverIP + "getNO",
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function(data) {
+		success: function (data) {
 			if (data != null) {
 				no = data
 			}
@@ -281,15 +281,15 @@ export function labelGetValue(name, list) {
 //Download 方法
 // param path  備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
-export function handleDownload(path,serverIP) {
+export function handleDownload(path, serverIP) {
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
 		NewPath = path.split("/");
 		var xhr = new XMLHttpRequest();
-		xhr.open('post', serverIP+'download', true);
+		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-		xhr.onload = function() {
+		xhr.onload = function () {
 			if (this.status === 200) {
 				var blob = this.response;
 				if (blob.size === 0) {
@@ -299,7 +299,7 @@ export function handleDownload(path,serverIP) {
 					var url = window.URL.createObjectURL(blob);
 					a.href = url;
 					//设置文件名称
-					a.download = NewPath[NewPath.length-1];
+					a.download = NewPath[NewPath.length - 1];
 					a.click();
 					a.remove();
 				}
@@ -320,7 +320,7 @@ export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		await axios.post("/postcodeApi/search?zipcode=" + postcode)
-			.then(function(result) {
+			.then(function (result) {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
@@ -340,7 +340,7 @@ export async function calApi(date) {
 	var nowTime = new Date().getTime();
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function(result) {
+	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function (result) {
 		if (result.data != null) {
 			$("#japaneseCalendar").val(result.data);
 			$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
@@ -404,14 +404,14 @@ export function nullToEmpty(obj) {
  * @param {*} money strの数字
  * @param {*} decimalPointFlag 小数点保留フラグ
  */
-export function addComma(money,decimalPointFlag){
-	if(money === null || money === undefined){
+export function addComma(money, decimalPointFlag) {
+	if (money === null || money === undefined) {
 		return "";
 	}
 	var moneyInt = parseInt(money.split(".")[0]);
 	var moneyPoi = parseInt(money.split(".")[1]);
 	var result = moneyInt.toLocaleString();
-	if(decimalPointFlag){//trueは保留
+	if (decimalPointFlag) {//trueは保留
 		result += "." + moneyPoi;
 	}
 	return result;
@@ -422,24 +422,24 @@ export function addComma(money,decimalPointFlag){
  * @param {*} datestrの数字
  * @return {*} YYYY/MM/DDまたYYYY/MM
  */
-export function dateFormate(dateStr){
-	if(dateStr === null || dateStr === undefined){
+export function dateFormate(dateStr) {
+	if (dateStr === null || dateStr === undefined) {
 		return "";
 	}
-	if(dateStr.dateStr == 8){
-        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
-    } else if(dateStr.length == 6){
-        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
-    } else {
-    return dateStr;
-    }
+	if (dateStr.dateStr == 8) {
+		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
+	} else if (dateStr.length == 6) {
+		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
+	} else {
+		return dateStr;
+	}
 }
 
 //isHoliday?
 //input Object or year, month, day
 //output boolean
 export function isHoliday() {
-	switch (arguments.length)	{
+	switch (arguments.length) {
 		case 1:	//main
 			let date = arguments[0];
 			return JapaneseHolidays.isHoliday(date) || (date.getDay() === 0) || (date.getDay() === 6);
@@ -451,6 +451,26 @@ export function isHoliday() {
 		default:
 			return isHoliday(new Date());
 	}
+}
+
+export async function katakanaApi(value) {
+	$.ajax({
+		type: "POST",
+		url: "/katakana",
+		data: {
+			"app_id": "36767e486ea387713ac17cff9c07ee840ce0781e7320010bd6ff661724a49c7a",
+			"request_id": "record003",
+			"sentence": value,
+			"output_type": "katakana"
+		},
+		dataType: "json",
+		contentType: "application/x-www-form-urlencoded",
+		async: false,
+		success: function (data) {
+			value= data.converted;
+		}
+	});
+	return value;
 }
 
 

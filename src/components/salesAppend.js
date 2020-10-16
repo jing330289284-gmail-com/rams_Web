@@ -39,7 +39,6 @@ class salesAppend extends Component {
 	}
 
 	getSalesPersons = (customerNo) => {
-		//axios.post("http://127.0.0.1:8080/salesSendLetters/getSalesPersons", { customerNo: customerNo })
 		axios.post(this.props.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
