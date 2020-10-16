@@ -39,7 +39,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
-
+/**
+ * サブメニュー画面（管理者用）
+ */
 class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日

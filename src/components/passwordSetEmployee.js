@@ -8,7 +8,9 @@ import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-
+/**
+ * パスワードリセット画面（社員画面用）
+ */
 class PasswordSetEmployee extends Component {
     state = {
         oldPassword:'',//既存パスワード

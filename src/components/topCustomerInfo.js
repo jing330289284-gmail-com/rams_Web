@@ -11,7 +11,9 @@ import MyToast from './myToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials=true;
-
+/**
+ * 上位お客様画面（社員用）
+ */
 class TopCustomerInfo extends Component {
     state = {
         actionType:'',//処理区分

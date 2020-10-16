@@ -426,13 +426,13 @@ export function dateFormate(dateStr) {
 	if (dateStr === null || dateStr === undefined) {
 		return "";
 	}
-	if (dateStr.dateStr == 8) {
-		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
-	} else if (dateStr.length == 6) {
-		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
-	} else {
-		return dateStr;
-	}
+	if(dateStr.length == 8){
+        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
+    } else if(dateStr.length == 6){
+        return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
+    } else {
+    return dateStr;
+    }
 }
 
 //isHoliday?

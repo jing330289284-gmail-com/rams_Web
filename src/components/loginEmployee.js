@@ -9,7 +9,9 @@ import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
-
+/**
+ * 社員ログイン画面
+ */
 class Login2 extends Component {
 	state = {
 		yztime: 59,

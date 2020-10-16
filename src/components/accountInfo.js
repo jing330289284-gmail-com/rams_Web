@@ -10,7 +10,9 @@ import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
-
+/**
+ * 口座情報画面
+ */
 class BankInfo extends Component {
 
     state = {
