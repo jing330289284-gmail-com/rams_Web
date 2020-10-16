@@ -557,7 +557,7 @@ class employeeUpdate extends React.Component {
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
-						<Form.Label style={{ "color": "#00EE00" }}>基本情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -881,7 +881,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>スキール情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -1029,7 +1029,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>住所情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>住所情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -1075,7 +1075,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>個人関連情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>個人関連情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">

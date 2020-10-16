@@ -19,7 +19,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-import { Link } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
 class employeeInsert extends React.Component {
@@ -38,8 +37,6 @@ class employeeInsert extends React.Component {
 		showBankInfoModalFlag: false,//口座情報画面フラグ
 		showpasswordSetModalFlag: false,//PW設定
 		showBpInfoModalFlag: false,//bp情報
-		//showWagesInfoModalFlag: false,//給料情報
-		//showSiteInfoModalFlag: false,//現場情報
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		myToastShow: false,
 		errorsMessageShow: false,
@@ -542,12 +539,11 @@ class employeeInsert extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === 0 ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === 0 ? false : true}>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === 0 ? true : false}>BP情報</Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: {  employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
-					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { 　　employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
+					
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
-						<Form.Label style={{ "color": "#00EE00" }}>基本情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -872,7 +868,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>スキール情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -1020,7 +1016,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>住所情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>住所情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -1066,7 +1062,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>個人関連情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>個人関連情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">

@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faFile } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -400,10 +401,12 @@ class employeeUpdate extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
+					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: {  employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
+					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { 　　employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
-						<Form.Label style={{ "color": "#00EE00" }}>基本情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -715,7 +718,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>スキール情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -862,7 +865,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>住所情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>住所情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -909,7 +912,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>個人関連情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>個人関連情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
