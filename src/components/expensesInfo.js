@@ -16,7 +16,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
-
+/**
+ * 諸費用画面
+ */
 class ExpensesInfo extends Component {
     constructor(props) {
         super(props);

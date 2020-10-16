@@ -1,7 +1,9 @@
 import React,{Component} from 'react';
 import { BrowserRouter as Router, Route , Link} from "react-router-dom";
 import { Button , Card} from 'react-bootstrap';
-
+/**
+ * 入口画面
+ */
 class gate extends Component {
     state = { 
 

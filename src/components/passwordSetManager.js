@@ -4,7 +4,9 @@ import $, { isNumeric } from 'jquery';
 import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+/**
+ * パスワードリセット画面（管理者画面用）
+ */
 class PasswordSet extends Component {
     state = { 
         actionType:'',

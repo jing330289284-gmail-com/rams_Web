@@ -7,7 +7,9 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials=true;
-
+/**
+ * パスワードリセット画面（パスワード忘れ用）
+ */
 class passwordReset extends Component {
     state = { }
 
