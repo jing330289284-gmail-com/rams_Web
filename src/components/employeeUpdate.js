@@ -1,4 +1,6 @@
-/* 社員を追加 */
+/* 
+社員を修正
+ */
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
@@ -11,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo,　faFile } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -28,9 +30,9 @@ class employeeUpdate extends React.Component {
 	}
 	//初期化
 	initialState = {
-		showBankInfoModal: false,//口座情報画面フラグ
-		showpasswordSetModal: false,//PW設定
-		showBpInfoModal: false,//bp情報
+		showBankInfoModalFlag: false,//口座情報画面フラグ
+		showpasswordSetModalFlag: false,//PW設定
+		showBpInfoModalFlag: false,//bp情報
 		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
 		accountInfo: null,//口座情報のデータ
 		bpInfoModel: null,//pb情報
@@ -49,7 +51,7 @@ class employeeUpdate extends React.Component {
 	resetBook = () => {
 		window.location.href = window.location.href
 	};
-	
+
 	//更新ボタン
 	updateEmployee = () => {
 		const formData = new FormData()
@@ -128,35 +130,34 @@ class employeeUpdate extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
-		/* var val = $('#nationalityCodeId').val();
-		if (val === '3') {
+	}
+	/**
+ * 出身地に変更する時、日本語ラベルとEnglishラベルを変更する
+ */
+	changeNationalityCodes = event => {
+		let value = event.target.value;
+		if (value === '3') {
 			this.setState({
 				japaneseLevelCode: 5,
 			})
-		} else if (val === '4') {
+		} else if (value === '4' || value === '5' || value === '6') {
 			this.setState({
 				englishLevelCode: 8,
 			})
-		} */
+		}
 	}
-	//初期化メソッド
+	/**
+	  * 初期化メソッド
+	  */
 	componentDidMount() {
 		this.props.fetchDropDown();
 		const { location } = this.props
-		var actionType = '';
-		var id = '';
-		if (location.state) {
-			actionType = location.state.actionType;
-			sessionStorage.setItem('actionType', actionType);
-			id = location.state.id;
-			sessionStorage.setItem('id', id);
-		} else {
-			actionType = sessionStorage.getItem('actionType');
-			id = sessionStorage.getItem('id');
-		}
-		if (actionType === 'update') {
-			this.getEmployeeByEmployeeNo(id);
-		} 
+		this.setState(
+			{
+				actionType: location.state.actionType,
+			}
+		);
+		this.getEmployeeByEmployeeNo(location.state.id);
 	}
 	getEmployeeByEmployeeNo = employeeNo => {
 		const emp = {
@@ -231,8 +232,30 @@ class employeeUpdate extends React.Component {
 			);
 	};
 
+	/**
+	* 漢字をカタカナに変更する
+	*/
+	katakanaApiChange = event => {
+		let name = event.target.name
+		let value = event.target.value;
+		let promise = Promise.resolve(publicUtils.katakanaApi(value));
+		promise.then((date) => {
+			switch (name) {
+				case 'employeeFristName':
+					this.setState({
+						furigana1: date
+					})
+					break;
+				case 'employeeLastName':
+					this.setState({
+						furigana2: date
+					})
+					break;
+				default:
+			}
+		});
+	};
 
-	//　　年月開始
 	//　　卒業年月
 	state = {
 		birthday: new Date(),
@@ -324,7 +347,7 @@ class employeeUpdate extends React.Component {
 	accountInfoGet = (accountTokuro) => {
 		this.setState({
 			accountInfo: accountTokuro,
-			showBankInfoModal: false,
+			showBankInfoModalFlag: false,
 		})
 	}
 
@@ -334,7 +357,7 @@ class employeeUpdate extends React.Component {
 	passwordSetInfoGet = (passwordSetTokuro) => {
 		this.setState({
 			passwordSetInfo: passwordSetTokuro,
-			showPasswordSetModal: false,
+			showpasswordSetModalFlag: false,
 		})
 	}
 	/* 
@@ -343,7 +366,7 @@ class employeeUpdate extends React.Component {
 	pbInfoGet = (pbInfoGetTokuro) => {
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
-			showBpInfoModal: false,
+			showBpInfoModalFlag: false,
 		})
 	}
 	/**
@@ -351,11 +374,11 @@ class employeeUpdate extends React.Component {
 	*/
 	handleHideModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
-			this.setState({ showBankInfoModal: false })
+			this.setState({ showBankInfoModalFlag: false })
 		} else if (kbn === "passwordSet") {//PW設定
-			this.setState({ showPasswordSetModal: false })
+			this.setState({ showpasswordSetModalFlag: false })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showBpInfoModal: false })
+			this.setState({ showBpInfoModalFlag: false })
 		}
 	}
 
@@ -364,11 +387,11 @@ class employeeUpdate extends React.Component {
     */
 	handleShowModal = (kbn) => {
 		if (kbn === "bankInfo") {//　　口座情報
-			this.setState({ showBankInfoModal: true })
+			this.setState({ showBankInfoModalFlag: true })
 		} else if (kbn === "passwordSet") {//PW設定
-			this.setState({ showPasswordSetModal: true })
+			this.setState({ showpasswordSetModalFlag: true })
 		} else if (kbn === "bpInfoModel") {//pb情報
-			this.setState({ showBpInfoModal: true })
+			this.setState({ showBpInfoModalFlag: true })
 		}
 	}
 
@@ -455,6 +478,15 @@ class employeeUpdate extends React.Component {
 			})
 		}
 	}
+
+	/**
+	 * ファイルを処理
+	 * @param {*} event 
+	 * @param {*} name 
+	 */
+	addFile = (event, name) => {
+		$("#" + name).click();
+	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -480,7 +512,7 @@ class employeeUpdate extends React.Component {
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"修正成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
@@ -494,28 +526,28 @@ class employeeUpdate extends React.Component {
 				{/*　 開始 */}
 				{/*　 口座情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModal} dialogClassName="modal-bankInfo">
+					onHide={this.handleHideModal.bind(this, "bankInfo")} show={this.state.showBankInfoModalFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={sessionStorage.getItem('actionType')} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
+						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/*　 PW設定 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showPasswordSetModal} dialogClassName="modal-passwordSet">
+					onHide={this.handleHideModal.bind(this, "passwordSet")} show={this.state.showpasswordSetModalFlag} dialogClassName="modal-passwordSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
+						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
 				{/*　 pb情報*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModal} dialogClassName="modal-pbinfoSet">
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModalFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BpInfoModel bpInfoModel={bpInfoModel} customer={this.state.customer} actionType={sessionStorage.getItem('actionType')} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+						<BpInfoModel bpInfoModel={bpInfoModel} customer={this.state.customer} actionType={this.state.actionType} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
@@ -533,9 +565,8 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
-										autoComplete="off">
+										autoComplete="off" disabled="true">
 										{employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -555,8 +586,8 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -775,7 +806,7 @@ class employeeUpdate extends React.Component {
 											className="form-control form-control-sm"
 											disabled={retirementYearAndMonthDisabled ? false : true}
 											autoComplete="off"
-											id="datePicker"
+											id={retirementYearAndMonthDisabled ? "datePicker" : "datePickerReadonlyDefault"}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -810,9 +841,9 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
+										onChange={this.changeNationalityCodes}
 										name="nationalityCode" value={nationalityCode}
-										autoComplete="off" id="nationalityCodeId" >
+										autoComplete="off"  >
 										{nationalityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1113,23 +1144,21 @@ class employeeUpdate extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={2}>
+								<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										{this.state.residentCardInfoFlag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-											<Form.File id="residentCardInfo"
-												label={this.state.residentCardInfo === undefined ? "在留カード" : this.state.residentCardInfoName} data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />}
+										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
+								<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										{this.state.resumeInfo1Flag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-											<Form.File id="resumeInfo1"
-												label={this.state.resumeInfo1 === undefined ? "履歴書1" : this.state.resumeInfo1Name} data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />}
+										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1143,9 +1172,8 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										{this.state.resumeInfo2Flag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-											<Form.File id="resumeInfo2"
-												label={this.state.resumeInfo2 === undefined ? "履歴書2" : this.state.resumeInfo2Name} data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />}
+										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1159,21 +1187,20 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										{this.state.passportInfoFlag ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-											<Form.File id="passportInfo"
-												label={this.state.passportInfo === undefined ? "パスポート" : this.state.passportInfoName} data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />}
+										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 						</Row>
-						{sessionStorage.getItem('actionType') === "detail" ? "" : <div style={{ "textAlign": "center" }}>
-							<Button size="sm" variant="info" onClick={sessionStorage.getItem('actionType') === "update" ? this.updateEmployee : this.insertEmployee} type="button" on>
-								<FontAwesomeIcon icon={faSave} /> {sessionStorage.getItem('actionType') === "update" ? "更新" : "登録"}
+						<div style={{ "textAlign": "center" }}>
+							<Button size="sm" variant="info" onClick={this.updateEmployee} type="button" on>
+								<FontAwesomeIcon icon={faEdit} /> 更新"
 							</Button>{' '}
 							<Button size="sm" variant="info" type="reset">
 								<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
-						</div>}
+						</div>
 					</Form.Group>
 				</Form>
 			</div>

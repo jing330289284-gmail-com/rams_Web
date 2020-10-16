@@ -26,6 +26,8 @@ import EnterPeriodSearch from './enterPeriodSearch';
 import sendLettersConfirm from './sendLettersConfirm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
+import EmployeeUpdate from './employeeUpdate';
+import EmployeeDetail from './employeeDetail';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -79,7 +81,7 @@ class SubMenu extends Component {
 			<div className="mainBody">
 				<Row style={{ "backgroundColor": "#FFFAF0" }}>
 					<Navbar inline>
-					<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
+						<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
@@ -213,7 +215,7 @@ class SubMenu extends Component {
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/workRepot/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />作業報告書アップ</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/costRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />費用登録</Link></ListGroup.Item>
-												
+
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -247,6 +249,8 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
+								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
+								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
@@ -264,7 +268,7 @@ class SubMenu extends Component {
 }
 const mapStateToProps = state => {
 	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
 };
 
