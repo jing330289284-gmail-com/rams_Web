@@ -12,6 +12,7 @@ import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
+import salesProfit from './salesProfit';
 import WagesInfo from './wagesInfo';
 import workRepot from './workRepot';
 import costRegistration from './costRegistration';
@@ -166,7 +167,7 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="5">
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/salesPointSet"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/salesProfit"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
@@ -248,6 +249,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/costRegistration`} component={costRegistration} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
+								<Route exact path={`${this.props.match.url}/salesProfit`} component={salesProfit} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
