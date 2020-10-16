@@ -9,6 +9,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import DatePicker from "react-datepicker";
 import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 class sendLettersConfirm extends React.Component {
 	constructor(props) {
@@ -94,7 +96,7 @@ componentDidMount(){
 }
 	getDropDowns = () => {
 		var methodArray = ["getGender", "getEmployeeStatus", "getJapaneseLevel", "getEnglishLevel", "getSalesProgress", "getJapaneaseConversationLevel", "getEnglishConversationLevel", "getProjectPhase", "getStation", "getDevelopLanguage"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		this.setState(
 				{genders: data[0],
 				employees: data[1],
@@ -132,7 +134,7 @@ componentDidMount(){
 
 	}
 	searchPersonnalDetail=()=>{
-			axios.post("http://127.0.0.1:8080/salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
+			axios.post(this.props.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
 	.then(result=>{
 				console.log(result.data);
 				if (result.data[0].age === "") {
@@ -236,7 +238,7 @@ componentDidMount(){
 			});
 	}
 searchEmpDetail=()=>{
-	axios.post("http://127.0.0.1:8080/sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
+	axios.post(this.props.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
 	.then(result=>{
 		this.setState({
 				employeeInfo:result.data,
@@ -396,4 +398,15 @@ searchEmpDetail=()=>{
 		);
 	}
 }
-export default sendLettersConfirm;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(sendLettersConfirm);

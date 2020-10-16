@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Col, Row, InputGroup, FormControl} from 'react-bootstrap';
+import { Button, Form, Col, Row, InputGroup, FormControl, Modal} from 'react-bootstrap';
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
@@ -7,24 +7,25 @@ import $ from 'jquery'
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, {  } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+import OtherCostModel from './otherCost';
 class costRegistration extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		this.getDropDownｓ = this.getDropDownｓ.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
 		this.searchWorkRepot = this.searchWorkRepot.bind(this);
-		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
 
 	};
 	componentDidMount(){
-		$("#workRepotUpload").attr("disabled",true);
-		$("#workRepotDownload").attr("disabled",true);
-		this.getDropDownｓ();
+		this.props.fetchDropDown();
 		this.searchWorkRepot();
 		
 	}
@@ -38,20 +39,14 @@ class costRegistration extends React.Component {
 	initialState = {
 		employeeList: [],
 		approvalStatuslist:[],
-
-	};
-		getDropDownｓ = () => {
-		var methodArray = ["getApproval"]
-		var data = publicUtils.getPublicDropDown(methodArray);
-		this.setState(
-			{
-				approvalStatuslist: data[0],//　getApproval
-			}
-		);
+		stationCode1: '',　// 出発
+		stationCode2: '',　// 到着
+		showOtherCostModal: false,//他の費用
+		otherCostModel: null,
 	};
 	//　検索
 	searchWorkRepot = () => {
-		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -62,25 +57,76 @@ class costRegistration extends React.Component {
 								data[i].approvalStatusName=statuss[i2].name;
 							}
 						}
-						if(data[i].workingTimeReport!=null){
-							let fileName=data[i].workingTimeReport.split("/");
-							data[i].workingTimeReportFile=fileName[fileName.length-1];
-						}
-				
 					}
-				} else {
-					data.push({"approvalStatus":0,"approvalStatusName":"未","attendanceYearAndMonth":publicUtils.setFullYearMonth(new Date())});
-					}
+				} 
 				this.setState({ 
-					employeeList: data
+					employeeList: data,
+							stationCode1: '',　// 出発
+		stationCode2: '',　// 到着
 				})
 			});
 	};
+	/**
+	*修正
+	*/
+	listChange = () => {
+		const emp = {
+			employeeNo: this.state.rowSelectEmployeeNo,
+		}
+		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
+			.then(result => {
+				if (result.data == true) {
+					this.searchDutyManagement();
+					//削除の後で、rowSelectの値に空白をセットする
+					this.setState(
+						{
+							rowSelectEmployeeNo: '',
+							rowSelectCheckSection: ''
+						}
+					);
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				} else if (result.data == false) {
+					this.setState({ "myToastShow": false });
+				}
+			})
+			.catch(function(error) {
+				alert("承認失败，请检查程序");
+			});
+	}
+		/**
+	*削除
+	*/
+	listDel = () => {
+		const emp = {
+			employeeNo: this.state.rowSelectEmployeeNo,
+		}
+		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
+			.then(result => {
+				if (result.data == true) {
+					this.searchDutyManagement();
+					//削除の後で、rowSelectの値に空白をセットする
+					this.setState(
+						{
+							rowSelectEmployeeNo: '',
+							rowSelectCheckSection: ''
+						}
+					);
+					this.setState({ "myToastShow": true });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				} else if (result.data == false) {
+					this.setState({ "myToastShow": false });
+				}
+			})
+			.catch(function(error) {
+				alert("承認失败，请检查程序");
+			});
+	}
 		//　年月1
 	inactiveYearAndMonth1 = (date) => {
 		this.setState(
 			{
-				yearAndMonth: date,
+				yearAndMonth1: date,
 			}
 		);
 
@@ -89,32 +135,16 @@ class costRegistration extends React.Component {
 	inactiveYearAndMonth2 = (date) => {
 		this.setState(
 			{
-				yearAndMonth: date,
+				yearAndMonth2: date,
 			}
 		);
 	};
 	state = {
 		yearAndMonth: new Date()
 	};
-	//　変更
-	sumWorkTimeChange = (e) =>{
-		const emp = {
-			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
-			sumWorkTime:　e.sumWorkTime,
-		};
-		axios.post("http://127.0.0.1:8080/workRepot/updateworkRepot",emp)
-			.then(response => {
-				if (response.data != null) {
-					window.location.reload();
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else {
-					alert("err")
-				}
-			});
-	}
+	
   /**
-     * 作業報告書ボタン
+     * 添付ボタン
      */
     workRepotUpload=()=>{
 	let getfile=$("#getFile").val();
@@ -144,7 +174,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepotFile",formData)
+			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -161,37 +191,66 @@ if($("#getFile").get(0).files[0].size>1048576){
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#workRepotUpload").attr("disabled",true);
-			$("#workRepotDownload").attr("disabled",false);
-			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
 			this.setState(
 				{
 					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
-					rowSelectWorkingTimeReport: row.workingTimeReport,
-					rowSelectSumWorkTime: row.sumWorkTime,
-					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
 				}
 			);
-
-			if(row.attendanceYearAndMonth-0>=TheYearMonth){
-				$("#workRepotUpload").attr("disabled",false);
-			}
-			if(row.attendanceYearAndMonth-0>TheYearMonth){
-				$("#workRepotDownload").attr("disabled",true);
-			}
-
 		} else {
 			this.setState(
 				{	
 					rowSelectWorkingTimeReport:'',
-					rowSelectAttendanceYearAndMonth:'',
-					rowSelectSumWorkTime: '',
-					rowSelectapproval: '',
 				}
 			);
 		}
 	}
 
+		/**
+ 　　　*他の費用画面の開き
+    */
+	handleShowModal = () => {
+			this.setState({ showOtherCostModal: true })
+	}
+		/**
+	*他の費用画面の閉め 
+	*/
+	handleHideModal = () => {
+			this.setState({ showOtherCostModal: false })
+	}
+		/* 
+	他の費用情報の取得
+ 　　　*/
+	pbInfoGet = (otherCostGetTokuro) => {
+		this.setState({
+			otherCostModel: otherCostGetTokuro,
+			showOtherCostModal: false,
+		})
+	}
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (fieldName === "station" && this.props.station.find((v) => (v.name === value)) !== undefined) {
+				switch (id) {
+					case 'stationCode1':
+						this.setState({
+							stationCode1: this.props.station.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'stationCode2':
+						this.setState({
+							stationCode2: this.props.station.find((v) => (v.name === value)).code,
+						})
+						break;
+					default:
+				}
+			}
+		}
+	};
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -202,6 +261,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 
 	render() {
 		const {employeeList} = this.state;
+		const { otherCostModel } = this.state;
+		const station = this.props.station;
 		//　テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -234,11 +295,20 @@ if($("#getFile").get(0).files[0].size>1048576){
 			afterSaveCell: this.sumWorkTimeChange,
 		}
 		return (
+				
+				
 			<div>
+			{/*　 他の費用*/}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "otherCostModel")} show={this.state.showOtherCostModal} dialogClassName="modal-pbinfoSet">
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body >
+						<OtherCostModel bpInfoModel={otherCostModel} customer={this.state.customer} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} otherCostTokuro={this.otherCostGet} /></Modal.Body>
+				</Modal>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
 				</div>
-				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
 					<div>
 						<Form.Group>
@@ -260,14 +330,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 							<font style={{ whiteSpace: 'nowrap' }}>氏名：</font>
 							{"        "}
 						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="区分" />
-							</InputGroup>
-						</Col>
 						<Col sm={8}></Col>
 					</Row>	
 					<Row>
@@ -276,116 +338,88 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>	
 					</Row>	
 					<Row>
-						<Col sm={2}>
+						<Col sm={4}>
 						<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">期間</InputGroup.Text>
 									<DatePicker
-										selected={this.state.yearAndMonth}
+										selected={this.state.yearAndMonth1}
 										onChange={this.inactiveYearAndMonth1}
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM/dd"
-										maxDate={new Date()}
 										id="datePicker2"
 										className="form-control form-control-sm"
-									/>{" ～"}
+									/>{"　　   ～　　 　 "}
 								</InputGroup.Prepend>
-						</InputGroup>
-						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<DatePicker
-											selected={this.state.yearAndMonth}
-											onChange={this.inactiveYearAndMonth2}
-											autoComplete="off"
-											locale="ja"
-											dateFormat="yyyy/MM/dd"
-	
-											maxDate={new Date()}
-											id="datePicker"
-											className="form-control form-control-sm"
-										/>
-									</InputGroup.Prepend>
+								<InputGroup.Prepend>
+									<DatePicker
+										selected={this.state.yearAndMonth2}
+										onChange={this.inactiveYearAndMonth2}
+										autoComplete="off"
+										locale="ja"
+										dateFormat="yyyy/MM/dd"
+										id="datePicker"
+										className="form-control form-control-sm"
+									/>
+								</InputGroup.Prepend>
 							</InputGroup>	
 						</Col>
                         <Col sm={2}>
                             <div style={{ "float": "right" }}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
-	                          		 <FontAwesomeIcon icon={faDownload} />出張費用
-		                        </Button>{' '}
-                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
-									<FontAwesomeIcon icon={faUpload} />添付
-								</Button>{' '}
+		                        <Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
+	                          		 <FontAwesomeIcon />他の費用
+		                        </Button>
 	 						</div>
 						</Col>
 					</Row>
 					<Row>
 						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="出発" />
-							</InputGroup>
-						</Col>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete
+										value={station.find((v) => (v.code === this.state.stationCode1)) || {}}
+										options={station}
+										name="station"
+										getOptionLabel={(option) => option.name}
+										onSelect={(event) => this.handleTag(event, 'station')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="  出発" type="text" {...params.inputProps} className="auto" id="stationCode1"
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
+									/>
+								</InputGroup>
+							</Col>
 						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
-							</InputGroup>
-						</Col>
+								<InputGroup size="sm" className="mb-3" >
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete
+										value={station.find((v) => (v.code === this.state.stationCode2)) || {}}
+										options={station}
+										name="station"
+										getOptionLabel={(option) => option.name}
+										onSelect={(event) => this.handleTag(event, 'station')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input placeholder="  到着" type="text" {...params.inputProps} className="auto" id="stationCode2"
+													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+											</div>
+										)}
+									/>
+								</InputGroup>
+							</Col>
 						<Col sm={2}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">線路</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
-							</InputGroup>
-						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="到着" />
-							</InputGroup>
-						</Col>
-                      
-					</Row>
-					<Row>
-						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}><b>定期</b></font>
-						</Col>	
-					</Row>	
-					<Row>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
-										<DatePicker
-											selected={this.state.yearAndMonth}
-											onChange={this.inactiveYearAndMonth2}
-											autoComplete="off"
-											locale="ja"
-											dateFormat="yyyy/MM/dd"
-	
-											maxDate={new Date()}
-											id="datePicker"
-											className="form-control form-control-sm"
-										/>
-									</InputGroup.Prepend>
-							</InputGroup>
-						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="名称" />
+								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
 							</InputGroup>
 						</Col>
 						<Col sm={2}>
@@ -396,60 +430,67 @@ if($("#getFile").get(0).files[0].size>1048576){
 								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
 							</InputGroup>
 						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="備考" />
-							</InputGroup>
-						</Col>
-						 <Col sm={2}>
+                       <Col sm={2}>
                             <div style={{ "float": "right" }}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
-	                          		 <FontAwesomeIcon icon={faDownload} />登録
-		                        </Button>{' '}
-                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
-									<FontAwesomeIcon icon={faUpload} />添付
-								</Button>
+		                        <Button variant="info" size="sm" onClick={this.getFile}id="costRegistrationFile">
+	                          		 <FontAwesomeIcon icon={faDownload} />添付
+		                        </Button>
 	 						</div>
 						</Col>
 					</Row>
 					<Row>
-  						<Col sm={8}></Col>
+
+						 <Col sm={2}>
+                            <div style={{ "position": "relative","left": "300%"}}>
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="costRegistrationInsert">
+	                          		 <FontAwesomeIcon icon={faDownload} />登録
+		                        </Button>
+	 						</div>
+						</Col>
+					</Row>
+					<Row>
+						<Col sm={2}>
+							<font style={{ whiteSpace: 'nowrap' }}>総額：</font>
+						</Col>
+  						<Col sm={6}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
+                               <Button variant="info" size="sm" onClick={this.listChange} id="costRegistrationChange">
 									<FontAwesomeIcon icon={faUpload} />修正
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={this.listDel}id="costRegistrationDel">
 	                          		 <FontAwesomeIcon icon={faDownload} />削除
 		                        </Button>
 	 						</div>
 						</Col>
-                    </Row>	
-					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>日付</TableHeaderColumn>
-						<TableHeaderColumn width='80' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>名称</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>出発地</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>目的地</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>金額</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>備考</TableHeaderColumn>
-						<TableHeaderColumn width='100' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>片・往</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatusName' editable={false}>添付</TableHeaderColumn>
+                    </Row>
+						<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+						<TableHeaderColumn width='80'　tdStyle={ { padding: '.45em' } } dataField='No' editable={false} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='180'　tdStyle={ { padding: '.45em' } } dataField='attendanceYearAndMonth' editable={false}>日付</TableHeaderColumn>
+						<TableHeaderColumn width='80' tdStyle={ { padding: '.45em' } } dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } dataField='sumWorkTime' editable={this.state.rowSelectapproval}>名称</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='updateUser' editable={false}>出発地</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='updateTime' editable={false}>目的地</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>金額</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>備考</TableHeaderColumn>
+						<TableHeaderColumn width='100' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>片・往</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>添付</TableHeaderColumn>
 					</BootstrapTable>
-				</div>
-				<div>
-					<Row>
-						<Col sm={10}></Col>
-						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>総額：</font>
-						</Col>
-					</Row>
 				</div>
 			</div >
 		);
 	}
 }
-export default costRegistration;
+const mapStateToProps = state => {
+	return {
+		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14] : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(costRegistration);

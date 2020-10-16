@@ -85,7 +85,6 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
 		};
-		//axios.post("http://127.0.0.1:8080/employee/getEmployeeInfo", emp)
 		axios.post(this.props.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -581,7 +580,7 @@ class employeeSearch extends React.Component {
 					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
+					<Link to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
 					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
@@ -590,9 +589,9 @@ class employeeSearch extends React.Component {
 				<div>
 					<Row >
 						<Col sm={4}>
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.props.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 						</Col>
 						<Col sm={6}></Col>
 						<Col sm={2}>

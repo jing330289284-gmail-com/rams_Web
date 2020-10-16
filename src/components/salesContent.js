@@ -10,6 +10,8 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 
 class salesContent extends React.Component {
 	constructor(props) {
@@ -138,7 +140,7 @@ class salesContent extends React.Component {
 	};
 
 	updateSalesSentence = () => {
-		axios.post("http://127.0.0.1:8080/salesSituation/updateSalesSentence", this.state)
+		axios.post(this.props.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
 				this.init();
 				this.setState({ myToastShow: true });
@@ -154,7 +156,7 @@ class salesContent extends React.Component {
 			[event.target.name]: event.target.value,
 			stationCode: event.target.value,
 		})
-		axios.post("http://127.0.0.1:8080/salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.empNo, stationCode: event.target.value })
+		axios.post(this.props.serverIP + "salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.empNo, stationCode: event.target.value })
 			.then(result => {
 				this.setState({ myToastShow: true });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
@@ -181,7 +183,7 @@ class salesContent extends React.Component {
 	}
 
 	init = () => {
-		axios.post("http://127.0.0.1:8080/salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
+		axios.post(this.props.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
 			.then(result => {
 				console.log(result.data);
 				if (result.data[0].age === "") {
@@ -284,7 +286,7 @@ class salesContent extends React.Component {
 	
 	getDropDowns = () => {
 		var methodArray = ["getGender", "getEmployeeStatus", "getJapaneseLevel", "getEnglishLevel", "getSalesProgress", "getJapaneaseConversationLevel", "getEnglishConversationLevel", "getProjectPhase", "getStation", "getDevelopLanguage"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		this.setState(
 				{genders: data[0],
 				employees: data[1],
@@ -492,4 +494,15 @@ class salesContent extends React.Component {
 		);
 	}
 }
-export default salesContent;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(salesContent);

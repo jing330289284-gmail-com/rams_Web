@@ -36,17 +36,9 @@ class workRepot extends React.Component {
 	initialState = {
 		employeeList: [],
 	};
-	approvalStatus(code) {
-    let approvalStatuss = this.props.approvalStatuslist;
-        for (var i in approvalStatuss) {
-            if (code === approvalStatuss[i].code) {
-                return approvalStatuss[i].name;
-            }
-        }
-    };
 	//　検索
 	searchWorkRepot = () => {
-		axios.post("http://127.0.0.1:8080/workRepot/selectWorkRepot")
+		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -70,7 +62,7 @@ class workRepot extends React.Component {
 			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
 			sumWorkTime:　e.sumWorkTime,
 		};
-		axios.post("http://127.0.0.1:8080/workRepot/updateworkRepot",emp)
+		axios.post(this.props.serverIP + "workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -112,7 +104,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post("http://127.0.0.1:8080/workRepot/updateWorkRepotFile",formData)
+			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -227,7 +219,7 @@ if($("#getFile").get(0).files[0].size>1048576){
                                <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="workRepotDownload">
+		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport,this.props.serverIP)}id="workRepotDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
 		                        </Button>
 	 						</div>
@@ -236,12 +228,12 @@ if($("#getFile").get(0).files[0].size>1048576){
 					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
 						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
 						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
-						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange} headerAlign='center' dataAlign='center' dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
-						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  headerAlign='center' dataAlign='center' dataField='approvalStatus' editable={false} dataFormat={this.approvalStatus.bind(this)}>ステータス</TableHeaderColumn>
+						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }   dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
+						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }   dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange}  dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
+						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }   dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
+						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='approvalStatus' editable={false} dataFormat={this.approvalStatus.bind(this)}>ステータス</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
@@ -250,7 +242,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 }
 const mapStateToProps = state => {
 	return {
-		approvalStatuslist: state.data.dataReques.length >= 1 ? state.data.dataReques[27]: [],
+		costClassificationCode: state.data.dataReques.length >= 1 ? state.data.dataReques[30]: [],
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
 	}
 };
 

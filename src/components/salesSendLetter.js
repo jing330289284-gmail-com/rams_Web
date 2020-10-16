@@ -10,6 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
@@ -48,7 +50,7 @@ class salesSendLetter extends React.Component {
 
 	//初期化お客様取る
 	getCustomers = () => {
-		axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
+		axios.post(this.props.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
 				for (let i in result.data) {
@@ -68,7 +70,7 @@ class salesSendLetter extends React.Component {
 	//dropdown
 	getDropDowns = () => {
 		var methodArray = ["getCustomer", "getDepartmentMasterDrop", "getPosition"]
-		var data = publicUtils.getPublicDropDown(methodArray);
+		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
 		data[0].shift();
 		data[1].shift();
 		data[2].shift();
@@ -491,4 +493,15 @@ class salesSendLetter extends React.Component {
 		);
 	}
 }
-export default salesSendLetter;
+const mapStateToProps = state => {
+	return {
+		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+	}
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchDropDown: () => dispatch(fetchDropDown())
+	}
+};
+export default connect(mapStateToProps, mapDispatchToProps)(salesSendLetter);
