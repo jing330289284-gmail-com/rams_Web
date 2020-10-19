@@ -12,6 +12,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+/**
+ * 作業報告書登録画面
+ */
 class workRepot extends React.Component {
 	constructor(props) {
 		super(props);

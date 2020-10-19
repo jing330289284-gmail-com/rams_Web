@@ -15,6 +15,9 @@ import {faUpload,faDownload,faSave } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import OtherCostModel from './otherCost';
+/**
+ * 費用登録画面
+ */
 class costRegistration extends React.Component {
 	constructor(props) {
 		super(props);

@@ -13,7 +13,9 @@ import * as publicUtils from './utils/publicUtils.js';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
-
+/**
+ * 他の費用画面
+ */
 class otherCost extends React.Component {
 	constructor(props) {
 		super(props);

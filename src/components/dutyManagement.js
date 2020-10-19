@@ -15,6 +15,9 @@ import MyToast from './myToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 registerLocale("ja", ja);
+/**
+ * 社員勤務管理画面
+ */
 class dutyManagement extends React.Component {
 	constructor(props) {
 		super(props);
