@@ -12,7 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-class individualSales extends React.Component {
+class individualSales extends React.Component {//個人売上検索
     state = { 
         actionType:'',
         fiscalYear:'',
