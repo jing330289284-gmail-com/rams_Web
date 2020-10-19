@@ -3,15 +3,26 @@ import '../asserts/css/login.css';
 import title from '../asserts/images/LYCmark.png';
 import $ from 'jquery'
 import axios from 'axios';
-import { Row, Col, Form, Button, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
+import store from './reduxTest/store';
+
 axios.defaults.withCredentials = true;
 /**
  * 管理者ログイン画面
+ * 20201019 劉林涛
  */
 class Login extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//テスト
+		}
+	};
+
 	state = {
 		yztime: 59,
 		buttonText: "SMSを発信する",
@@ -24,8 +35,7 @@ class Login extends Component {
 		this.props.fetchDropDown();
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
-		//axios.get("/init")
-		axios.post(this.props.serverIP + "login/init")
+		axios.post(this.state.serverIP + "login/init")
 			.then(resultMap => {
 				if (resultMap.data) {
 					this.props.history.push("/subMenuManager");
@@ -40,8 +50,7 @@ class Login extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		//axios.post("/login" ,loginModel)
-		axios.post(this.props.serverIP + "login/login", loginModel)
+		axios.post(this.state.serverIP + "login/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
 					this.props.history.push("/subMenuManager");
@@ -81,9 +90,7 @@ class Login extends Component {
 			var loginModel = {};
 			loginModel["employeeNo"] = $("#employeeNo").val();
 			loginModel["password"] = $("#password").val();
-			//axios.post("/sendVerificationCode" ,loginModel)
-
-			axios.post(this.props.serverIP + "login/sendVerificationCode", loginModel)
+			axios.post(this.state.serverIP + "login/sendVerificationCode", loginModel)
 				.then(result => {
 					if (result.data.errorsMessage !== null && result.data.errorsMessage !== undefined) {
 						this.setState({ errorsMessageShow: true, errorsMessageValue: result.data.errorsMessage });
@@ -137,7 +144,7 @@ class Login extends Component {
 }
 const mapStateToProps = state => {
 	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
 };
 

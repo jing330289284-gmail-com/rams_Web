@@ -61,7 +61,6 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
-		alert(this.state.employeeStatus)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
