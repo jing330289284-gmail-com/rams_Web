@@ -43,6 +43,7 @@ export const fetchDropDown = () => {
 			"getTopCustomer",//35トップお客様を取得する
 			"getTypeOfIndustry",//36業種を取得する
 			"getRound",//37片往を取得する
+			"getSituationChange",//39状況変動を取得する
 		]
 		var outArray = [];
 		var serverIP = "http://127.0.0.1:8080/";
