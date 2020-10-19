@@ -129,7 +129,7 @@ class employeeUpdate extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		axios.post(this.props.serverIP + "employee/updateEmployee", formData)
+		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
@@ -167,7 +167,6 @@ class employeeUpdate extends React.Component {
 	  * 初期化メソッド
 	  */
 	componentDidMount() {
-		//this.props.fetchDropDown();
 		const { location } = this.props
 		this.setState(
 			{
@@ -180,7 +179,7 @@ class employeeUpdate extends React.Component {
 		const emp = {
 			employeeNo: employeeNo
 		};
-		axios.post(this.props.serverIP + "employee/getEmployeeByEmployeeNo", emp)
+		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
 				this.setState({
@@ -429,7 +428,7 @@ class employeeUpdate extends React.Component {
 			})
 		} else {
 			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.station.find((v) => (v.name === value)) !== undefined) {
+				this.state.station.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'developLanguage1':
 						this.setState({
