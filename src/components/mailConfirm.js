@@ -1,6 +1,9 @@
 import React from 'react';
 import "react-datepicker/dist/react-datepicker.css";
-
+/**
+ * メール確認
+ * 
+ */
 class mailConfirm extends React.Component {
 	constructor(props) {
 		super(props);

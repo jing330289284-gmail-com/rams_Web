@@ -5,7 +5,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 axios.defaults.withCredentials = true;
-
+/** 
+*営業送信TABLEのAUTOCOMPULETE
+ */
 class TableSelect extends React.Component {
 	constructor(props) {
 		super(props);

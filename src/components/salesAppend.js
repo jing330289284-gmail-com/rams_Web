@@ -7,7 +7,9 @@ import { faSave, faListOl } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
-
+/** 
+*営業送信画面お客営業追加
+ */
 class salesAppend extends Component {
 
 	initialState = {

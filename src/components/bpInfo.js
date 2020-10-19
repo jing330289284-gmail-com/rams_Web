@@ -1,4 +1,4 @@
-/* 社員を追加 */
+/* Bp情報を追加 */
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';

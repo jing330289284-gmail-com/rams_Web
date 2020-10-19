@@ -17,6 +17,7 @@ import { fetchDropDown } from './services/index';
 
 registerLocale('ja', ja);
 
+//現場情報検索
 class siteSearch extends Component {
 	constructor(props) {
 		super(props);

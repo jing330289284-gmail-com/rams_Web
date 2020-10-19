@@ -1,4 +1,8 @@
 
+/**
+ * 勤務->勤務登録 のJS
+ * 20201019 謝
+ */
 export function checkRowData(row){
 	for (var i = 0; i < row.cells.length; i++)	{
 //		console.log(i);

@@ -4,10 +4,12 @@ import $, { isNumeric } from 'jquery';
 import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ErrorsMessageToast from './errorsMessageToast';
+class PasswordSetManager extends Component {
 /**
  * パスワードリセット画面（管理者画面用）
  */
-class PasswordSet extends Component {
+
     state = { 
         actionType:'',
      }
@@ -50,9 +52,19 @@ class PasswordSet extends Component {
     passwordToroku=()=>{
         var reg = /(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[$@!%*#?&])[A-Za-z\d$@!%*#?&]{8,}$/;
         var actionType=this.props.actionType;
-        if(!reg.test($("#newPassword").val())){
-            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード書式再確認してください";
-            document.getElementById("passwordSetErorMsg").style = "visibility:visible";
+        if($("#newPassword").val()==""){
+            this.setState({ "errorsMessageShow": true, errorsMessageValue:  "パスワード入力してください" });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+        }
+        else if($("#passwordCheck").val()==""){
+            this.setState({ "errorsMessageShow": true, errorsMessageValue:  "パスワード再確認入力してください" });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+        }
+        else if(!reg.test($("#newPassword").val())){
+            this.setState({ "errorsMessageShow": true, errorsMessageValue:  "8桁以上、大文字、小文字、数字、記号を含めてパスワードを入力してください" });
+                    setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+            // document.getElementById("passwordSetErorMsg").innerHTML = "パスワード書式再確認してください";
+            // document.getElementById("passwordSetErorMsg").style = "visibility:visible";
         }
         else{
         if($("#newPassword").val() === $("#passwordCheck").val()){
@@ -64,16 +76,22 @@ class PasswordSet extends Component {
         }
     }
         else{
-            document.getElementById("passwordSetErorMsg").style = "visibility:visible";
-            document.getElementById("passwordSetErorMsg").innerHTML = "パスワード再確認と新しいパスワードが間違いため、チェックしてください"
+            this.setState({ "errorsMessageShow": true, errorsMessageValue:  "パスワード再確認と新しいパスワードが間違いため、チェックしてください" });
+            setTimeout(() => this.setState({ "errorsMessageShow": false }), 4000);
+            // document.getElementById("passwordSetErorMsg").style = "visibility:visible";
+            // document.getElementById("passwordSetErorMsg").innerHTML = "パスワード再確認と新しいパスワードが間違いため、チェックしてください"
      }
     }
     
    
 }
     render() {
+        const {errorsMessageValue} =this.state
         return (
             <div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
                 <Row inline="true">
                     <Col  className="text-center">
                     <h2>パースワード設定</h2>
@@ -81,9 +99,6 @@ class PasswordSet extends Component {
                 </Row>
                 <Row>
                     <Col sm={4}>
-                    </Col>
-                    <Col sm={7}>
-                    <p id="passwordSetErorMsg" style={{visibility:"hidden"}} class="font-italic font-weight-light text-danger">★</p>
                     </Col>
                 </Row>
                 <Form id="passwordSetForm">
@@ -128,14 +143,13 @@ class PasswordSet extends Component {
                 </Row>
                 <Row>
                     <Col sm={3}></Col>
-                        <Col sm={3} className="text-center">
-                                <Button block size="sm" onClick={this.passwordToroku.bind(this)} variant="info" id="toroku" type="button">
+                        <Col sm={7} className="text-center">
+                                <Button size="sm" onClick={this.passwordToroku.bind(this)} variant="info" id="toroku" type="button">
                                 <FontAwesomeIcon icon={faEdit} />登録
                                 </Button>
-                        </Col>
-                        <Col sm={3} className="text-center">
-                                <Button  block size="sm" id="reset" type="reset" variant="info">
-                                <FontAwesomeIcon icon={faEdit} />リセット
+                                {' '}
+                                <Button size="sm" id="reset" type="reset" variant="info">
+                                <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                         </Col>
                 </Row>
@@ -146,4 +160,4 @@ class PasswordSet extends Component {
     }
 }
 
-export default PasswordSet;
+export default PasswordSetManager;

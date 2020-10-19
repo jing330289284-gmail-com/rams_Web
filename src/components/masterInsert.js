@@ -11,6 +11,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 
+//マスター登録
 class masterInsert extends Component {
 
 	constructor(props) {
@@ -51,7 +52,7 @@ class masterInsert extends Component {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.props.masterStatus)
-		axios.post(this.props.serverIP+"masterInsert/toroku", masterModel)
+		axios.post(this.props.serverIP + "masterInsert/toroku", masterModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });

@@ -11,22 +11,25 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
+import {faUpload,faDownload,faSave } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import OtherCostModel from './otherCost';
+/**
+ * 費用登録画面
+ */
 class costRegistration extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
-		this.searchWorkRepot = this.searchWorkRepot.bind(this);
+		this.searchCostRegistration = this.searchCostRegistration.bind(this);
 
 	};
 	componentDidMount(){
 		this.props.fetchDropDown();
-		this.searchWorkRepot();
+		this.searchCostRegistration();
 		
 	}
 	//onchange
@@ -45,33 +48,22 @@ class costRegistration extends React.Component {
 		otherCostModel: null,
 	};
 	//　検索
-	searchWorkRepot = () => {
-		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
+	searchCostRegistration = () => {
+		axios.post(this.props.serverIP + "costRegistration/selectCostRegistration")
 			.then(response => response.data)
 			.then((data) => {
-				if (data.length!=0) {
-					var statuss = this.state.approvalStatuslist;
-					for(var i=0;i<data.length;i++){
-						for (var i2=0;i2<statuss.length;i2++) {
-							if (data[i].approvalStatus == statuss[i2].code) {
-								data[i].approvalStatusName=statuss[i2].name;
-							}
-						}
-					}
-				} 
 				this.setState({ 
 					employeeList: data,
-							stationCode1: '',　// 出発
-		stationCode2: '',　// 到着
 				})
 			});
+
+
 	};
 	/**
 	*修正
 	*/
 	listChange = () => {
 		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
 		}
 		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
@@ -146,7 +138,7 @@ class costRegistration extends React.Component {
   /**
      * 添付ボタン
      */
-    workRepotUpload=()=>{
+    fileUpload=()=>{
 	let getfile=$("#getFile").val();
 	let fileName = getfile.split('.');
 	if(
@@ -220,7 +212,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 		/* 
 	他の費用情報の取得
  　　　*/
-	pbInfoGet = (otherCostGetTokuro) => {
+	otherCostGet = (otherCostGetTokuro) => {
 		this.setState({
 			otherCostModel: otherCostGetTokuro,
 			showOtherCostModal: false,
@@ -300,7 +292,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			<div>
 			{/*　 他の費用*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "otherCostModel")} show={this.state.showOtherCostModal} dialogClassName="modal-pbinfoSet">
+					onHide={this.handleHideModal.bind(this, "otherCostModel")} show={this.state.showOtherCostModal} dialogClassName="modal-otherCost">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
@@ -323,7 +315,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</div>
 				</Form>
 				<div >
-				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.workRepotUpload}/>
+				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.fileUpload}/>
 	                <br/>
                     <Row>
 						<Col sm={2}>
@@ -350,7 +342,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 										dateFormat="yyyy/MM/dd"
 										id="datePicker2"
 										className="form-control form-control-sm"
-									/>{"　　   ～　　 　 "}
+									/>{" ～"}
 								</InputGroup.Prepend>
 								<InputGroup.Prepend>
 									<DatePicker
@@ -366,11 +358,9 @@ if($("#getFile").get(0).files[0].size>1048576){
 							</InputGroup>	
 						</Col>
                         <Col sm={2}>
-                            <div style={{ "float": "right" }}>
 		                        <Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
 	                          		 <FontAwesomeIcon />他の費用
 		                        </Button>
-	 						</div>
 						</Col>
 					</Row>
 					<Row>
@@ -431,11 +421,10 @@ if($("#getFile").get(0).files[0].size>1048576){
 							</InputGroup>
 						</Col>
                        <Col sm={2}>
-                            <div style={{ "float": "right" }}>
+                            
 		                        <Button variant="info" size="sm" onClick={this.getFile}id="costRegistrationFile">
-	                          		 <FontAwesomeIcon icon={faDownload} />添付
+	                          		 <FontAwesomeIcon icon={faUpload} />添付
 		                        </Button>
-	 						</div>
 						</Col>
 					</Row>
 					<Row>
@@ -443,7 +432,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						 <Col sm={2}>
                             <div style={{ "position": "relative","left": "300%"}}>
 		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="costRegistrationInsert">
-	                          		 <FontAwesomeIcon icon={faDownload} />登録
+	                          		 <FontAwesomeIcon icon={faSave} />登録
 		                        </Button>
 	 						</div>
 						</Col>
@@ -465,16 +454,17 @@ if($("#getFile").get(0).files[0].size>1048576){
 						</Col>
                     </Row>
 						<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='80'　tdStyle={ { padding: '.45em' } } dataField='No' editable={false} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='180'　tdStyle={ { padding: '.45em' } } dataField='attendanceYearAndMonth' editable={false}>日付</TableHeaderColumn>
-						<TableHeaderColumn width='80' tdStyle={ { padding: '.45em' } } dataField='workingTimeReportFile' editable={false}>区分</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } dataField='sumWorkTime' editable={this.state.rowSelectapproval}>名称</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='updateUser' editable={false}>出発地</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='updateTime' editable={false}>目的地</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>金額</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>備考</TableHeaderColumn>
-						<TableHeaderColumn width='100' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>片・往</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataField='approvalStatusName' editable={false}>添付</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='80'　tdStyle={ { padding: '.45em' } } dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='180'　tdStyle={ {padding: '.45em' } } dataField='happendDate' editable={false}>日付</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='80' tdStyle={ { padding: '.45em' } } dataField='costClassificationCode' editable={false}>区分</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='140' tdStyle={ { padding: '.45em' } } dataField='detailedName' editable={false}>名称</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='1' colSpan='2' tdStyle={ { padding: '.45em'}} headerAlign='center' dataField='stationCode' editable={false}>場所</TableHeaderColumn>
+						<TableHeaderColumn  row='1' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='transportationCode' editable={false}>出発地</TableHeaderColumn>
+						<TableHeaderColumn  row='1' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='destinationCode' editable={false}>目的地</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='cost' editable={false}>金額</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='remark' editable={false}>備考</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='100' tdStyle={ { padding: '.45em' } } dataField='roundCode' editable={false}>片・往</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='costFile' editable={false}>添付</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
