@@ -12,7 +12,9 @@ import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-
+/** 
+*営業文章画面
+ */
 class salesContent extends React.Component {
 	constructor(props) {
 		super(props);

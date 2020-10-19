@@ -14,7 +14,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
-
+/** 
+*営業送信お客画面
+ */
 class salesSendLetter extends React.Component {
 	constructor(props) {
 		super(props);
