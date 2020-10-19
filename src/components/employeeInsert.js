@@ -17,8 +17,10 @@ import { faSave, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+/* import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index'; */
+import store from './redux/store';
+
 
 axios.defaults.withCredentials = true;
 class employeeInsert extends React.Component {
@@ -50,6 +52,24 @@ class employeeInsert extends React.Component {
 		stationCode: '',
 		employeeStatus: 0,
 		authorityCode: 1,
+		genderStatuss: store.getState().dropDown[0],
+		intoCompanyCodes: store.getState().dropDown[1],
+		employeeFormCodes: store.getState().dropDown[2],
+		siteMaster: store.getState().dropDown[3],
+		employeeStatusS: store.getState().dropDown[4].slice(1),
+		japaneaseLevelCodes: store.getState().dropDown[5],
+		residenceCodes: store.getState().dropDown[6],
+		nationalityCodes: store.getState().dropDown[7],
+		developLanguageMaster: store.getState().dropDown[8].slice(1),
+		employeeInfo: store.getState().dropDown[9].slice(1),
+		occupationCodes: store.getState().dropDown[10],
+		departmentCodes: store.getState().dropDown[11],
+		authorityCodes: store.getState().dropDown[12].slice(1),
+		englishLeveCodes: store.getState().dropDown[13],
+		station: store.getState().dropDown[14].slice(1),
+		customer: store.getState().dropDown[15].slice(1),
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+
 	};
 	/**
 	 * リセット
@@ -99,11 +119,11 @@ class employeeInsert extends React.Component {
 			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
-			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.props.developLanguageMaster)),
-			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.props.developLanguageMaster)),
-			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.props.developLanguageMaster)),
-			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.props.developLanguageMaster)),
-			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.props.developLanguageMaster)),
+			developLanguage1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster)),
+			developLanguage2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster)),
+			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
+			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
+			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
@@ -121,7 +141,7 @@ class employeeInsert extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		axios.post(this.props.serverIP + "employee/insertEmployee", formData)
+		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -162,7 +182,7 @@ class employeeInsert extends React.Component {
 	 * 初期化メソッド
 	 */
 	componentDidMount() {
-		this.props.fetchDropDown();
+		//this.props.fetchDropDown();
 		const { location } = this.props
 		this.setState(
 			{
@@ -176,7 +196,7 @@ class employeeInsert extends React.Component {
 	* 採番番号
 	*/
 	getNO = (NO) => {
-		const promise = Promise.resolve(publicUtils.getNO("employeeNo", NO, "T001Employee", this.props.serverIP));
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", NO, "T001Employee", this.state.serverIP));
 		promise.then((value) => {
 			this.setState(
 				{
@@ -396,37 +416,37 @@ class employeeInsert extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.station.find((v) => (v.name === value)) !== undefined) {
+			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.station.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'developLanguage1':
 						this.setState({
-							developLanguage1: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage2':
 						this.setState({
-							developLanguage2: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage3':
 						this.setState({
-							developLanguage3: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage4':
 						this.setState({
-							developLanguage4: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage5':
 						this.setState({
-							developLanguage5: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'stationCode':
 						this.setState({
-							stationCode: this.props.station.find((v) => (v.name === value)).code,
+							stationCode: this.state.station.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -479,7 +499,7 @@ class employeeInsert extends React.Component {
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel } = this.state;
-		const genderStatuss = this.props.genderStatuss;
+/* 		const genderStatuss = this.props.genderStatuss;
 		const employeeFormCodes = this.props.employeeFormCodes;
 		const siteMaster = this.props.siteMaster;
 		const intoCompanyCodes = this.props.intoCompanyCodes;
@@ -492,7 +512,7 @@ class employeeInsert extends React.Component {
 		const authorityCodes = this.props.authorityCodes;
 		const englishLeveCodes = this.props.englishLeveCodes;
 		const station = this.props.station;
-		const employeeStatusS = this.props.employeeStatusS;
+		const employeeStatusS = this.props.employeeStatusS; */
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -538,7 +558,7 @@ class employeeInsert extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === 0 ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === 0 ? false : true}>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === 0 ? true : false}>BP情報</Button>{' '}
-					
+
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -553,7 +573,7 @@ class employeeInsert extends React.Component {
 										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
 										autoComplete="off">
-										{employeeStatusS.map(date =>
+										{this.state.employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -607,7 +627,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="genderStatus" value={genderStatus}
 										autoComplete="off" >
-										{genderStatuss.map(date =>
+										{this.state.genderStatuss.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -661,7 +681,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
 										autoComplete="off" >
-										{intoCompanyCodes.map(date =>
+										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -674,7 +694,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
 										autoComplete="off" >
-										{employeeFormCodes.map(date =>
+										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -691,7 +711,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
 										autoComplete="off" >
-										{departmentCodes.map(date =>
+										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -704,7 +724,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="occupationCode" value={occupationCode}
 										autoComplete="off" >
-										{occupationCodes.map(date =>
+										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -830,7 +850,7 @@ class employeeInsert extends React.Component {
 										onChange={this.changeNationalityCodes}
 										name="nationalityCode" value={nationalityCode}
 										autoComplete="off"  >
-										{nationalityCodes.map(date =>
+										{this.state.nationalityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -858,7 +878,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
 										autoComplete="off" id="authorityCodeId" disabled={employeeStatus === 0 ? false : true} >
-										{authorityCodes.map(date =>
+										{this.state.authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -878,7 +898,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange} size="sm"
 										name="japaneseLevelCode" value={japaneseLevelCode}
 										autoComplete="off" id="japaneaseLevelCodeId" >
-										{japaneaseLevelCodes.map(data =>
+										{this.state.japaneaseLevelCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -892,7 +912,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" onChange={this.valueChange} size="sm" name="englishLevelCode" value={englishLevelCode} autoComplete="off" id="englishLeveCodeId" >
-										{englishLeveCodes.map(data =>
+										{this.state.englishLeveCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -915,7 +935,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" >
-										{siteMaster.map(date =>
+										{this.state.siteMaster.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -932,8 +952,8 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
@@ -944,8 +964,8 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
@@ -956,8 +976,8 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
@@ -968,8 +988,8 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
@@ -980,8 +1000,8 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
@@ -1047,8 +1067,8 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={station.find((v) => (v.code === this.state.stationCode)) || {}}
-										options={station}
+										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
+										options={this.state.station}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
@@ -1072,7 +1092,7 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange}
 										name="residenceCode" value={residenceCode}
 										autoComplete="off" >
-										{residenceCodes.map(data =>
+										{this.state.residenceCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -1194,7 +1214,7 @@ class employeeInsert extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
+/* const mapStateToProps = state => {
 	return {
 		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
 		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
@@ -1221,5 +1241,6 @@ const mapDispatchToProps = dispatch => {
 		fetchDropDown: () => dispatch(fetchDropDown())
 	}
 };
-export default connect(mapStateToProps, mapDispatchToProps)(employeeInsert);
+export default connect(mapStateToProps, mapDispatchToProps)(employeeInsert); */
+export default employeeInsert;
 

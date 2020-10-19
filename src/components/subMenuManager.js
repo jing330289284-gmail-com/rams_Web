@@ -36,20 +36,29 @@ import {
 	faUserCircle, faFilePowerpoint, faChartPie, faTable, faCog, faUpload
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+/* import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index'; */
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 
 /**
  * サブメニュー画面（管理者用）
+ * 20201019 劉林涛
  */
 class SubMenu extends Component {
-	state = {
-		nowDate: '',//今の期日
-	}
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+			nowDate: '',//今の期日
+		}
+	};
+
 	async componentWillMount() {
-		this.props.fetchDropDown();
-		await axios.post(this.props.serverIP + "subMenu/init")
+		//this.props.fetchDropDown();
+		//await axios.post(this.props.serverIP + "subMenu/init")
+		await axios.post(this.state.serverIP + "subMenu/init")
 			.then(resultMap => {
 				if (resultMap.data !== null && resultMap.data !== '') {
 					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
@@ -267,7 +276,7 @@ class SubMenu extends Component {
 		);
 	}
 }
-const mapStateToProps = state => {
+/* const mapStateToProps = state => {
 	return {
 		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
@@ -277,5 +286,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		fetchDropDown: () => dispatch(fetchDropDown())
 	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);
+}; */
+//export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);
+export default SubMenu;
+

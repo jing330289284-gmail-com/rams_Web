@@ -9,8 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+/* import { connect } from 'react-redux';
+import { fetchDropDown } from './services/index'; */
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 
 class bpInfo extends React.Component {
@@ -21,12 +22,15 @@ class bpInfo extends React.Component {
 	}
 	//初期化
 	initialState = {
-		salesProgressCodes: [],
+		//salesProgressCodes: [],
 		bpBelongCustomerCode: '',//選択中のBP所属
 		bpUnitPrice: '',//単価
 		bpSalesProgressCode: '4',//選択中の営業状況
 		bpRemark: '',//備考
 		bpOtherCompanyAdmissionEndDate: '',
+		customer: store.getState().dropDown[15].slice(1),
+		salesProgressCodes: store.getState().dropDown[16].slice(1) ,
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	valueChange = event => {
 		this.setState({
@@ -50,7 +54,7 @@ class bpInfo extends React.Component {
 		if (this.props.actionType !== "insert") {
 			const formData = new FormData()
 			formData.append('bpEmployeeNo', this.props.employeeNo)
-			axios.post(this.props.serverIP + "bpInfo/getBpInfo", formData)
+			axios.post(this.state.serverIP + "bpInfo/getBpInfo", formData)
 				.then(response => response.data)
 				.then((data) => {
 					this.setState({
@@ -84,11 +88,11 @@ class bpInfo extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.props.customer.find((v) => (v.name === value)) !== undefined) {
+			if (this.state.customer.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'bpBelongCustomerCode':
 						this.setState({
-							bpBelongCustomerCode: this.props.customer.find((v) => (v.name === value)).code,
+							bpBelongCustomerCode: this.state.customer.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -119,8 +123,8 @@ class bpInfo extends React.Component {
 
 	render() {
 		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
-		const customer = this.props.customer;
-		const salesProgressCodes = this.props.salesProgressCodes;
+	/* 	const customer = this.props.customer;
+		const salesProgressCodes = this.props.salesProgressCodes; */
 		return (
 			<div>
 				<Row inline="true">
@@ -145,8 +149,8 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={customer.find((v) => (v.code === this.state.bpBelongCustomerCode)) || {}}
-										options={customer}
+										value={this.state.customer.find((v) => (v.code === this.state.bpBelongCustomerCode)) || {}}
+										options={this.state.customer}
 										getOptionLabel={(option) => option.name}
 										disabled={this.props.actionType === "detail" ? true : false}
 										onSelect={(event) => this.handleTag(event, 'bpBelongCustomerCode')}
@@ -182,7 +186,7 @@ class bpInfo extends React.Component {
 										onChange={this.valueChange}
 										name="bpSalesProgressCode" value={bpSalesProgressCode}
 										autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}>
-										{salesProgressCodes.map(date =>
+										{this.state.salesProgressCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -237,7 +241,7 @@ class bpInfo extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
+/* const mapStateToProps = state => {
 	return {
 		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
 		salesProgressCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[16].slice(1) : [],
@@ -251,5 +255,7 @@ const mapDispatchToProps = dispatch => {
 		fetchDropDown: () => dispatch(fetchDropDown())
 	}
 };
-export default connect(mapStateToProps, mapDispatchToProps)(bpInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(bpInfo); */
+export default bpInfo; 
+
 

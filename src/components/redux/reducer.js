@@ -5,7 +5,6 @@ const defaultState = {
 };
 
 export function fetchDropDown() {
-    alert(3)
     var methodNameList = ["getGender",//0.性別区別 
         "getIntoCompany",// 1入社区分 
         "getStaffForms", // 2 社員形式 
