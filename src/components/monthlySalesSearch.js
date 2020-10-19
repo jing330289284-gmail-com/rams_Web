@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import { Link } from "react-router-dom";
 import { ROW_SELECT_SINGLE } from 'react-bootstrap-table-next';
-class monthlySalesSearch extends Component {
+class monthlySalesSearch extends Component {//月次売上検索
     state = { 
         monthlySales_YearAndMonth:'',
         monthlySales_startYearAndMonth:'',
@@ -34,7 +34,7 @@ class monthlySalesSearch extends Component {
         this.state = this.initialState;
         this.valueChange = this.valueChange.bind(this);
 		this.options = {
-			sizePerPage: 12,
+			sizePerPage: 10,
 			pageStartIndex: 1,
 			paginationSize: 2,
 			prePage: '<', // Previous page button text
