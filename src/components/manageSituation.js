@@ -1,4 +1,3 @@
-/* 営業確認 */
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
@@ -18,7 +17,9 @@ import SalesContent from './salesContent';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
-
+/** 
+*営業状況画面
+ */
 class manageSituation extends React.Component {
 	constructor(props) {
 		super(props);

@@ -11,7 +11,9 @@ import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-
+/** 
+*営業送信お客確認画面
+ */
 class sendLettersConfirm extends React.Component {
 	constructor(props) {
 		super(props);
