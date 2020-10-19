@@ -36,6 +36,14 @@ class workRepot extends React.Component {
 	initialState = {
 		employeeList: [],
 	};
+	approvalStatus(code) {
+    let approvalStatuss = this.props.approvalStatuslist;
+        for (var i in approvalStatuss) {
+            if (code === approvalStatuss[i].code) {
+                return approvalStatuss[i].name;
+            }
+        }
+    };
 	//　検索
 	searchWorkRepot = () => {
 		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
