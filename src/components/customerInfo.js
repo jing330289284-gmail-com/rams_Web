@@ -22,7 +22,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 registerLocale('ja', ja);
-
+/**
+ * お客様情報登録画面
+ */
 class CustomerInfo extends Component {
     state = {
         showBankInfoModal: false,//口座情報画面フラグ

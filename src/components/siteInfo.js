@@ -66,6 +66,20 @@ class siteInfo extends Component {
 	// 页面加载
 	componentDidMount() {
 		this.props.fetchDropDown();
+		if (this.props.location.state !== undefined) {
+			axios.post(this.props.serverIP + "getSiteInfo", { employeeName: 'LYC001'})
+				.then(response => {
+					if (response.data != null) {
+						this.setState({
+							siteData: response.data,
+							employeeName: publicUtils.valueGetLabel('LYC001',this.props.employeeInfo),
+							disabledFlag: false,
+						});
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		}
 	}
 	//reset
 	reset = () => {
@@ -102,7 +116,7 @@ class siteInfo extends Component {
 			this.setState({
 				[id]: '',
 			})
-			if (fieldName==='employeeName') {
+			if (fieldName === 'employeeName') {
 				this.setState({
 					siteData: [],
 				})
@@ -673,13 +687,13 @@ class siteInfo extends Component {
 					</Row>
 					<div>
 						<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} headerAlign='center' isKey>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} headerAlign='center'>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} headerAlign='center'>責任者</TableHeaderColumn>
+							<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
+							<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
 							<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} headerAlign='center'>言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
 							<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
 							<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
 							<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>

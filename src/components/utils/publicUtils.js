@@ -70,7 +70,7 @@ export function getdropDown(method, serverIP) {
 		type: "POST",
 		url: serverIP + method,
 		async: false,
-		success: function (msg) {
+		success: function(msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -88,7 +88,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		data: par,
 		async: false,
 		contentType: "application/json",
-		success: function (resultList) {
+		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
@@ -112,7 +112,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		url: serverIP + "initializationPage",
 		contentType: "application/json",
 		async: false,
-		success: function (resultList) {
+		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ value: '', text: '選択ください' }];
 				var List = resultList[j];
@@ -146,7 +146,7 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function (data) {
+		success: function(data) {
 			if (data != null) {
 				no = data
 			}
@@ -278,6 +278,20 @@ export function labelGetValue(name, list) {
 	}
 }
 
+/**
+ * 联想框value的label取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function valueGetLabel(code, list) {
+	for (var i in list) {
+		if (code === list[i].code) {
+			return list[i].name;
+		}
+	}
+}
+
 //Download 方法
 // param path  備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
@@ -289,7 +303,7 @@ export function handleDownload(path, serverIP) {
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-		xhr.onload = function () {
+		xhr.onload = function() {
 			if (this.status === 200) {
 				var blob = this.response;
 				if (blob.size === 0) {
@@ -320,7 +334,7 @@ export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		await axios.post("/postcodeApi/search?zipcode=" + postcode)
-			.then(function (result) {
+			.then(function(result) {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
@@ -340,7 +354,7 @@ export async function calApi(date) {
 	var nowTime = new Date().getTime();
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function (result) {
+	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function(result) {
 		if (result.data != null) {
 			$("#japaneseCalendar").val(result.data);
 			$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
@@ -405,7 +419,7 @@ export function nullToEmpty(obj) {
  * @param {*} decimalPointFlag 小数点保留フラグ
  */
 export function addComma(money, decimalPointFlag) {
-	if (money === null || money === undefined) {
+	if (money === null || money === undefined || money === '') {
 		return "";
 	}
 	var moneyInt = parseInt(money.split(".")[0]);
@@ -426,7 +440,7 @@ export function dateFormate(dateStr) {
 	if (dateStr === null || dateStr === undefined) {
 		return "";
 	}
-	if (dateStr.dateStr == 8) {
+	if (dateStr.length == 8) {
 		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6) + "/" + dateStr.substring(6, 8);
 	} else if (dateStr.length == 6) {
 		return dateStr.substring(0, 4) + "/" + dateStr.substring(4, 6);
@@ -466,8 +480,8 @@ export async function katakanaApi(value) {
 		dataType: "json",
 		contentType: "application/x-www-form-urlencoded",
 		async: false,
-		success: function (data) {
-			value= data.converted;
+		success: function(data) {
+			value = data.converted;
 		}
 	});
 	return value;

@@ -19,7 +19,9 @@ import { fetchDropDown } from './services/index';
 
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
-
+/**
+ * お客様情報検索画面
+ */
 class CustomerInfoSearch extends Component {
     state = {
         radioValue: '',//稼働の表示

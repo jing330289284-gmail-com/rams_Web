@@ -18,7 +18,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
-
+/**
+ * 給料情報画面（社員用）
+ */
 class WagesInfo extends Component {
 
     constructor(props) {
@@ -94,6 +96,12 @@ class WagesInfo extends Component {
         this.getDropDowns();
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
+        if(this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== ''){
+            var employeeNo = this.props.location.state.employeeNo;
+            var wagesInfo = {};
+            wagesInfo["employeeNo"] = employeeNo;
+            this.search(wagesInfo);
+        }
     }
     /**
      * select取得
@@ -222,29 +230,31 @@ class WagesInfo extends Component {
             this.setState({
                 employeeNo: wagesInfoMod.employeeNo,
             })
-            axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
-                .then(result => {
-                    if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                        $("#expensesInfoBtn").attr("disabled", false);
-                        this.setState({
-                            wagesInfoList: result.data.wagesInfoList,
-                            lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
-                            kadouCheck:result.data.kadouCheck,
-                            relatedEmployees:result.data.relatedEmployees,
-                            "errorsMessageShow": false,
-                        })
-                    } else {
-                        $("#expensesInfoBtn").attr("disabled", true);
-                        this.setState({
-                            wagesInfoList: [],
-                        })
-                        this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-                    }
-                })
+            this.search(wagesInfoMod);
         }
         )
     }
-
+    search=(wagesInfoMod)=>{
+        axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
+        .then(result => {
+            if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                $("#expensesInfoBtn").attr("disabled", false);
+                this.setState({
+                    wagesInfoList: result.data.wagesInfoList,
+                    lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
+                    kadouCheck:result.data.kadouCheck,
+                    relatedEmployees:result.data.relatedEmployees,
+                    "errorsMessageShow": false,
+                })
+            } else {
+                $("#expensesInfoBtn").attr("disabled", true);
+                this.setState({
+                    wagesInfoList: [],
+                })
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+            }
+        })
+    }
     /**
      * 行Selectファンクション
      */

@@ -1,4 +1,6 @@
-/* 社員を追加 */
+/* 
+社員を登録
+ */
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
@@ -11,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -59,6 +61,7 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+		alert(this.state.employeeStatus)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -218,7 +221,7 @@ class employeeInsert extends React.Component {
 	* 漢字をカタカナに変更する
 	*/
 	katakanaApiChange = event => {
-		let name=event.target.name
+		let name = event.target.name
 		let value = event.target.value;
 		let promise = Promise.resolve(publicUtils.katakanaApi(value));
 		promise.then((date) => {
@@ -237,7 +240,6 @@ class employeeInsert extends React.Component {
 			}
 		});
 	};
-
 	/**
 	* 卒業年月
 	*/
@@ -296,6 +298,7 @@ class employeeInsert extends React.Component {
 			}
 		);
 	};
+
 	/**
 	* 在留期間
 	*/
@@ -350,6 +353,8 @@ class employeeInsert extends React.Component {
 			showBpInfoModalFlag: false,
 		})
 	}
+
+
 	/**
 	* 小さい画面の閉め 
 	*/
@@ -458,6 +463,16 @@ class employeeInsert extends React.Component {
 			})
 		}
 	}
+
+
+	/**
+	 * ファイルを処理
+	 * @param {*} event 
+	 * @param {*} name 
+	 */
+	addFile = (event, name) => {
+		$("#" + name).click();
+	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -482,7 +497,7 @@ class employeeInsert extends React.Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！." : "登録成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"登録成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
@@ -524,10 +539,11 @@ class employeeInsert extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === 0 ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === 0 ? false : true}>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === 0 ? true : false}>BP情報</Button>{' '}
+					
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
-						<Form.Label style={{ "color": "#00EE00" }}>基本情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -556,10 +572,9 @@ class employeeInsert extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									{/* onBlur={publicUtils.postcodeApi} ref="postcode" */}
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -853,7 +868,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>スキール情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>スキール情報</Form.Label>
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
@@ -1001,7 +1016,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>住所情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>住所情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -1047,7 +1062,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Form.Label style={{ "color": "#00EE00" }}>個人関連情報</Form.Label>
+						<Form.Label style={{ "color": "#000000" }}>個人関連情報</Form.Label>
 						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
@@ -1120,15 +1135,17 @@ class employeeInsert extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<Form.File id="residentCardInfo" data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
+								<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										<Form.File id="resumeInfo1" data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1142,7 +1159,8 @@ class employeeInsert extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<Form.File id="resumeInfo2" data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1156,8 +1174,8 @@ class employeeInsert extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<Form.File id="passportInfo"
-											data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>

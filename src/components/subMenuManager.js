@@ -12,6 +12,7 @@ import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
+import salesProfit from './salesProfit';
 import WagesInfo from './wagesInfo';
 import workRepot from './workRepot';
 import costRegistration from './costRegistration';
@@ -26,6 +27,8 @@ import EnterPeriodSearch from './enterPeriodSearch';
 import sendLettersConfirm from './sendLettersConfirm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
+import EmployeeUpdate from './employeeUpdate';
+import EmployeeDetail from './employeeDetail';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -37,7 +40,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 axios.defaults.withCredentials = true;
 
-
+/**
+ * サブメニュー画面（管理者用）
+ */
 class SubMenu extends Component {
 	state = {
 		nowDate: '',//今の期日
@@ -79,7 +84,7 @@ class SubMenu extends Component {
 			<div className="mainBody">
 				<Row style={{ "backgroundColor": "#FFFAF0" }}>
 					<Navbar inline>
-					<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
+						<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
@@ -162,7 +167,7 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="5">
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/salesPointSet"><FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/salesProfit"><FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>										</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
@@ -213,7 +218,7 @@ class SubMenu extends Component {
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/workRepot/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />作業報告書アップ</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/costRegistration/"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUpload} />費用登録</Link></ListGroup.Item>
-												
+
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -244,9 +249,12 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/costRegistration`} component={costRegistration} />
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
+								<Route exact path={`${this.props.match.url}/salesProfit`} component={salesProfit} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
+								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
+								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
@@ -264,7 +272,7 @@ class SubMenu extends Component {
 }
 const mapStateToProps = state => {
 	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
 };
 

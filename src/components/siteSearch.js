@@ -506,16 +506,16 @@ class siteSearch extends Component {
 					<div>
 						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }} headerAlign='center'>所属</TableHeaderColumn>
-							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} headerAlign='center'>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} headerAlign='center'>氏名</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120' eaderAlign='center'>システム名</TableHeaderColumn>
-							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} eaderAlign='center'>場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} eaderAlign='center'>お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' eaderAlign='center'>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} eaderAlign='center'>言語</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
+							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
+							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム名</TableHeaderColumn>
+							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
 							<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' eaderAlign='center'>役割</TableHeaderColumn>
+							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
 						</BootstrapTable>
 					</div>
 				</div>
