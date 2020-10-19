@@ -12,6 +12,9 @@ import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+/**
+ * 作業報告書登録画面
+ */
 class workRepot extends React.Component {
 	constructor(props) {
 		super(props);
@@ -36,6 +39,14 @@ class workRepot extends React.Component {
 	initialState = {
 		employeeList: [],
 	};
+	approvalStatus(code) {
+    let approvalStatuss = this.props.approvalStatuslist;
+        for (var i in approvalStatuss) {
+            if (code === approvalStatuss[i].code) {
+                return approvalStatuss[i].name;
+            }
+        }
+    };
 	//　検索
 	searchWorkRepot = () => {
 		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
