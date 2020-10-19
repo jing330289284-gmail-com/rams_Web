@@ -66,13 +66,17 @@ class EnterPeriodSearch extends React.Component {
      * 社員名連想
      * @param {} event 
      */
-    getEmployeeName = (event) => {
+    getEmployeeName = (event,values) => {
         this.setState({
             [event.target.name]: event.target.value,
         },()=>{
+            var employeeNo = '';
+            if(values !== null){
+                employeeNo = values.code;
+            }
             this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
                     this.state.enterPeriodKbn,
-                        utils.labelGetValue($("#employeeName").val() , this.state.employeeNameDrop));
+                    employeeNo);
         })
     }
     /**
@@ -244,7 +248,7 @@ class EnterPeriodSearch extends React.Component {
                 <br />
                 <Form id="enterPeriodForm">
                     <Row>
-                        <Col sm="3">
+                        <Col sm="3" lg="4">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
@@ -269,7 +273,7 @@ class EnterPeriodSearch extends React.Component {
                                 />
                             </InputGroup>
                         </Col>
-                        <Col sm="2">
+                        <Col sm="2" lg="3">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>区分</InputGroup.Text>
@@ -288,7 +292,7 @@ class EnterPeriodSearch extends React.Component {
                                 </FormControl>
                             </InputGroup>
                         </Col>
-                        <Col sm="3">
+                        <Col sm="3" lg="4">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>社員名</InputGroup.Text>
@@ -298,15 +302,22 @@ class EnterPeriodSearch extends React.Component {
                                     name="employeeName"
                                     value={employeeName}
                                     options={this.state.employeeNameDrop}
-                                    getOptionLabel={(option) => option.name}
-                                    onChange={this.getEmployeeName}
+                                    getOptionLabel={(option) => option.text}
+                                    onChange={(event,values)=>this.getEmployeeName(event,values)}
+                                    renderOption={(option) => {
+                                        return (
+                                        <React.Fragment>
+                                        {option.name}
+                                        </React.Fragment>
+                                        )
+                                    }}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="  例：田中" type="text" {...params.inputProps} className="auto"
-                                                style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        <input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="form-control Autocomplete-style"
+                                         />
                                         </div>
                                     )}
-                                />
+                                    />
                             </InputGroup>
                         </Col>
                     </Row>

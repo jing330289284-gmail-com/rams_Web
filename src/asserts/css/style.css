@@ -367,16 +367,6 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
-
-#enterPeriodSearchDatePicker {
-  background-repeat: no-repeat;
-  width: 190px;
-  background-position: 10px 7px;
-  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-  padding-right: 0px;
-  height: calc(1.5em + .5rem + 2px);
-  background-color: white;
-}
 #customerInfoDatePicker{
   background-repeat: no-repeat;
   width: 130%;
@@ -489,4 +479,40 @@ height:31px;
 .hikadoButton{
   font-size: 8px;
   height: 24px;
+}
+.Autocomplete-style{
+  width: 10rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057" 
+}
+#enterPeriodSearchDatePicker {
+  background-repeat: no-repeat;
+  width: 20rem;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+#datePicker {
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  width: 10rem;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+#datePickerReadonlyDefault {
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  width: 10rem;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: #e9ecef;/* color??��?��?��?��?��?��??��?��?��?��?��?��gray */
 }
