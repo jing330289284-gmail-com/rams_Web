@@ -4,15 +4,12 @@ import $, { isNumeric } from 'jquery';
 import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-<<<<<<< HEAD
 import ErrorsMessageToast from './errorsMessageToast';
 class PasswordSetManager extends Component {
-=======
 /**
  * パスワードリセット画面（管理者画面用）
  */
-class PasswordSet extends Component {
->>>>>>> branch 'teng' of https://github.com/jing330289284-gmail-com/rams_Web.git
+
     state = { 
         actionType:'',
      }
