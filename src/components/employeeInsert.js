@@ -17,8 +17,6 @@ import { faSave, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-/* import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index'; */
 import store from './redux/store';
 
 
@@ -499,20 +497,6 @@ class employeeInsert extends React.Component {
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel } = this.state;
-/* 		const genderStatuss = this.props.genderStatuss;
-		const employeeFormCodes = this.props.employeeFormCodes;
-		const siteMaster = this.props.siteMaster;
-		const intoCompanyCodes = this.props.intoCompanyCodes;
-		const japaneaseLevelCodes = this.props.japaneaseLevelCodes;
-		const residenceCodes = this.props.residenceCodes;
-		const nationalityCodes = this.props.nationalityCodes;
-		const developLanguageMaster = this.props.developLanguageMaster;
-		const occupationCodes = this.props.occupationCodes;
-		const departmentCodes = this.props.departmentCodes;
-		const authorityCodes = this.props.authorityCodes;
-		const englishLeveCodes = this.props.englishLeveCodes;
-		const station = this.props.station;
-		const employeeStatusS = this.props.employeeStatusS; */
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1214,33 +1198,5 @@ class employeeInsert extends React.Component {
 	}
 }
 
-/* const mapStateToProps = state => {
-	return {
-		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
-		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
-		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
-		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
-		employeeStatusS: state.data.dataReques.length >= 1 ? state.data.dataReques[4].slice(1) : [],
-		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
-		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
-		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
-		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
-		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
-		occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[10] : [],
-		departmentCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[11] : [],
-		authorityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[12].slice(1) : [],
-		englishLeveCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[13] : [],
-		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
-		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(employeeInsert); */
 export default employeeInsert;
 

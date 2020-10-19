@@ -5,8 +5,6 @@ import $ from 'jquery'
 import axios from 'axios';
 import { Form, Button, InputGroup, FormControl } from 'react-bootstrap';
 import ErrorsMessageToast from './errorsMessageToast';
-/* import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index'; */
 import store from './redux/store';
 
 axios.defaults.withCredentials = true;
@@ -30,10 +28,8 @@ class Login extends Component {
 	};
 
 	componentWillMount() {
-		//this.props.fetchDropDown();
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
-		//axios.post(this.props.serverIP + "login/init")
 		axios.post(this.state.serverIP + "login/init")
 			.then(resultMap => {
 				if (resultMap.data) {
@@ -49,7 +45,6 @@ class Login extends Component {
 		loginModel["employeeNo"] = $("#employeeNo").val();
 		loginModel["password"] = $("#password").val();
 		loginModel["verificationCode"] = $("#verificationCode").val();
-		//axios.post(this.props.serverIP + "login/login", loginModel)
 		axios.post(this.state.serverIP + "login/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -143,18 +138,6 @@ class Login extends Component {
 		)
 	}
 }
-/* const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-}; */
-//export default connect(mapStateToProps, mapDispatchToProps)(Login);
 export default Login;
 
 

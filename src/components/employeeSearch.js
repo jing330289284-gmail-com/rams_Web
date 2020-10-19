@@ -18,8 +18,6 @@ import { Link } from "react-router-dom";
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-/* import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index'; */
 import store from './redux/store';
 
 registerLocale("ja", ja);
@@ -295,17 +293,6 @@ class employeeSearch extends React.Component {
 			onDeleteRow: this.onDeleteRow,
 			handleConfirmDeleteRow: this.customConfirm,
 		};
-
-/* 		const genderStatuss = this.props.genderStatuss;
-		const intoCompanyCodes = this.props.nationalityCodes;
-		const employeeFormCodes = this.props.employeeFormCodes;
-		const siteMaster = this.props.siteMaster;
-		const employeeStatuss = this.props.employeeStatuss;
-		const japaneaseLevelCodes = this.props.japaneaseLevelCodes;
-		const residenceCodes = this.props.residenceCodes;
-		const nationalityCodes = this.props.nationalityCodes;
-		const developLanguageMaster = this.props.developLanguageMaster;
-		const employeeInfo = this.props.employeeInfo; */
 
 		return (
 			<div >
@@ -643,28 +630,5 @@ class employeeSearch extends React.Component {
 	}
 }
 
-
-/* const mapStateToProps = state => {
-	return {
-		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
-		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
-		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
-		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
-		employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
-		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
-		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
-		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
-		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
-		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-}; */
-//export default connect(mapStateToProps, mapDispatchToProps)(employeeSearch);
 export default employeeSearch;
 
