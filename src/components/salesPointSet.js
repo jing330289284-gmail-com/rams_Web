@@ -1,6 +1,6 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { Row, Form, Col, InputGroup, Button} from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button } from 'react-bootstrap';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
@@ -9,6 +9,7 @@ import { faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 
+//営業ポイント設定
 class salesPointSet extends React.Component {
 
 	constructor(props) {
@@ -417,7 +418,7 @@ const mapStateToProps = state => {
 		levelStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],
 		salesPutternStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[25] : [],
 		specialPointStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[26] : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
 };
 

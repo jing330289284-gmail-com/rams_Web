@@ -18,6 +18,7 @@ import { fetchDropDown } from './services/index';
 
 registerLocale('ja', ja);
 
+//現場情報
 class siteInfo extends Component {
 	constructor(props) {
 		super(props);
@@ -67,12 +68,12 @@ class siteInfo extends Component {
 	componentDidMount() {
 		this.props.fetchDropDown();
 		if (this.props.location.state !== undefined) {
-			axios.post(this.props.serverIP + "getSiteInfo", { employeeName: 'LYC001'})
+			axios.post(this.props.serverIP + "getSiteInfo", { employeeName: 'LYC001' })
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
 							siteData: response.data,
-							employeeName: publicUtils.valueGetLabel('LYC001',this.props.employeeInfo),
+							employeeName: publicUtils.valueGetLabel('LYC001', this.props.employeeInfo),
 							disabledFlag: false,
 						});
 					}

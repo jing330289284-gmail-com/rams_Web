@@ -12,6 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
 
+//マスター修正
 class masterUpdate extends Component {
 
 	constructor(props) {
