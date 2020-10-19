@@ -21,7 +21,10 @@ import * as DutyRegistrationJs from './dutyRegistrationJs.js';
 
 axios.defaults.withCredentials=true;
 
-
+/**
+ * 勤務->勤務登録 の画面
+ * 20201019 謝
+ */
 class DutyRegistration extends React.Component {
 	constructor(props) {
 		super(props);
