@@ -135,8 +135,8 @@ class employeeUpdate extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeRemark2: data.resumeRemark2,//履歴書備考1
+					resumeName1: data.resumeName1,//履歴書備考1
+					resumeName2: data.resumeName2,//履歴書備考1
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -356,7 +356,7 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -998,8 +998,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeRemark1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled/>
+									<FormControl  value={resumeName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName1" disabled/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -1012,8 +1012,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeRemark2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark2" disabled/>
+									<FormControl  value={resumeName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName2" disabled/>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>

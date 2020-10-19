@@ -117,8 +117,8 @@ class employeeUpdate extends React.Component {
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),//雇用保険番号
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),//マイナンバー
-			resumeRemark1: publicUtils.nullToEmpty(this.state.resumeRemark1),//履歴書備考1
-			resumeRemark2: publicUtils.nullToEmpty(this.state.resumeRemark2),//履歴書備考1
+			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),//履歴書備考1
+			resumeName1: publicUtils.nullToEmpty(this.state.resumeName2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
@@ -238,9 +238,9 @@ class employeeUpdate extends React.Component {
 					myNumber: data.myNumber,//マイナンバー
 					residentCardInfoFlag: data.residentCardInfo !== "" && data.residentCardInfo !== null && data.residentCardInfo !== undefined ? true : false,//在留カード
 					resumeInfo1Flag: data.resumeInfo1 !== "" && data.resumeInfo1 !== null && data.resumeInfo1 !== undefined ? true : false,//履歴書
-					resumeRemark1: data.resumeRemark1,//履歴書備考1
+					resumeName1: data.resumeName1,//履歴書備考1
 					resumeInfo2Flag: data.resumeInfo2 !== "" && data.resumeInfo2 !== null && data.resumeInfo2 !== undefined ? true : false,//履歴書2
-					resumeRemark2: data.resumeRemark2,//履歴書備考1
+					resumeName2: data.resumeName2,//履歴書備考1
 					passportInfoFlag: data.passportInfo !== "" && data.passportInfo !== null && data.passportInfo !== undefined ? true : false,//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
@@ -507,7 +507,7 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -1167,8 +1167,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考1" value={resumeRemark1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark1" />
+									<FormControl placeholder="備考1" value={resumeName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName1" />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -1182,8 +1182,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考2" value={resumeRemark2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark2" />
+									<FormControl placeholder="備考2" value={resumeName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName2" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
