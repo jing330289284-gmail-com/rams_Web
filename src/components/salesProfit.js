@@ -13,7 +13,8 @@ import DatePicker, { registerLocale } from "react-datepicker"
 
 registerLocale('ja', ja);
 
-class salesPointSet extends React.Component {
+//営業個別売上
+class salesProfit extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -458,4 +459,4 @@ const mapDispatchToProps = dispatch => {
 		fetchDropDown: () => dispatch(fetchDropDown())
 	}
 };
-export default connect(mapStateToProps, mapDispatchToProps)(salesPointSet);
+export default connect(mapStateToProps, mapDispatchToProps)(salesProfit);
