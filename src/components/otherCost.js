@@ -78,15 +78,7 @@ class otherCost extends React.Component {
 		);
 	};
 	inactivecostClassification(event){
-		if(event!=null){
-			if(event._targetInst.key==0){
-				this.setState({ costClassificationsts: 0 })
-			}else if(event._targetInst.key==1){
-				
-			}else{
-				
-			}
-		}
+		
 	};
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
@@ -96,14 +88,9 @@ class otherCost extends React.Component {
 			})
 		} else {
 			if (fieldName === "costClassification" && this.props.costClassification.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'costClassification':
-						this.setState({
-							costClassificationCode: this.props.costClassification.find((v) => (v.name === value)).code,
-						})
-					break;
-				default:
-				}
+				this.setState({
+					costClassificationCode: this.props.costClassification.find((v) => (v.name === value)).code,
+				})
 			}else if (fieldName === "transportation" && this.props.transportation.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'transportation':
@@ -141,34 +128,40 @@ class otherCost extends React.Component {
 		
 		}
 	};
-	UpdateotherCost = () => {
+	InsertCost = () => {
 		const formData = new FormData()
-		if(this.state.costClassificationCode==3){
+		if(this.state.costClassificationCode==1){
 			const otherCostModel = {
 				costClassificationCode: this.state.costClassificationCode,
+				happendDate: this.state.yearAndMonth3,
 				transportationCode: this.state.transportationCode,
-				stationCode3: this.state.stationCode3,
-				stationCode4: this.state.stationCode4,
+				originCode: this.state.stationCode3,
+				destinationCode: this.state.stationCode4,
 				round: this.state.round,
-				yearAndMonth3: this.state.yearAndMonth3,
+				cost: this.state.cost,
 			}
 			formData.append('otherCostModel', JSON.stringify(otherCostModel))
-			formData.append('otherCostFile2', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
+			if ($('#otherCostFile2') != null) {
+				formData.append('costRegistrationFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
+            }
 			this.props.otherCostTokuro(otherCostModel);
 		}else{
 			const otherCostModel = {
 				costClassificationCode: this.state.costClassificationCode,
+				happendDate: this.state.yearAndMonth4,
+				detailedName: this.state.detailedName,
+				stationCode: this.state.stationCode4,
 				transportationCode: this.state.transportationCode,
-				stationCode3: this.state.stationCode3,
-				stationCode4: this.state.stationCode4,
-				round: this.state.round,
-				yearAndMonth3: this.state.yearAndMonth3,
+				remark: this.state.remark,
+				cost: this.state.cost,
 			}
 			formData.append('otherCostModel', JSON.stringify(otherCostModel))
-			formData.append('otherCostFile3', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
+			if ($('#otherCostFile3') != null) {
+				formData.append('costRegistrationFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
+			}
 			this.props.otherCostTokuro(otherCostModel);
 		}
-		axios.post(this.props.serverIP + "costRegistration/updatecostRegistration", formData)
+		axios.post(this.props.serverIP + "costRegistration/insertcostRegistration", formData)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
@@ -180,7 +173,6 @@ class otherCost extends React.Component {
 				console.error("Error - " + error);
 			});
 	};
-
 	render() {
 		const {remark,costClassificationsts} = this.state;
 		const costClassification = this.props.costClassification;
@@ -201,6 +193,7 @@ class otherCost extends React.Component {
 								<Autocomplete
 									value={costClassification.find((v) => (v.code === this.state.costClassificationCode)) || {}}
 									options={costClassification}
+									id="costClassification"
 									name="station"
 									getOptionLabel={(option) => option.name}
 									onSelect={(event) => this.handleTag(event, 'costClassification')}
@@ -228,6 +221,7 @@ class otherCost extends React.Component {
 										<DatePicker
 											selected={this.state.yearAndMonth3}
 											onChange={this.inactiveYearAndMonth3}
+											disabled={this.state.costClassificationCode != 1 ? true : false}
 											autoComplete="off"
 											locale="ja"
 											dateFormat="yyyy/MM/dd"
@@ -245,7 +239,9 @@ class otherCost extends React.Component {
 									<Autocomplete
 										value={transportation.find((v) => (v.code === this.state.transportationCode)) || {}}
 										options={transportation}
+										id="transportation"
 										name="station"
+										disabled={this.state.costClassificationCode != 1 ? true : false}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'transportation')}
 										renderInput={(params) => (
@@ -265,6 +261,8 @@ class otherCost extends React.Component {
 									<Autocomplete
 										value={station.find((v) => (v.code === this.state.stationCode3)) || {}}
 										options={station}
+										id="station3"
+										disabled={this.state.costClassificationCode != 1 ? true : false}
 										name="station"
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'station')}
@@ -285,7 +283,9 @@ class otherCost extends React.Component {
 									<Autocomplete
 										value={station.find((v) => (v.code === this.state.stationCode4)) || {}}
 										options={station}
+										id="station4"
 										name="station"
+										disabled={this.state.costClassificationCode != 1 ? true : false}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'station')}
 										renderInput={(params) => (
@@ -305,7 +305,9 @@ class otherCost extends React.Component {
 									<Autocomplete
 										value={round.find((v) => (v.code === this.state.round)) || {}}
 										options={round}
+										id="round"
 										name="round"
+										disabled={this.state.costClassificationCode != 1 ? true : false}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'round')}
 										renderInput={(params) => (
@@ -324,7 +326,7 @@ class otherCost extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl disabled={this.state.costClassificationCode==1 ? true : false} placeholder="例：XXXXX"  autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+									<FormControl disabled={this.state.costClassificationCode != 1 ? true : false} placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
 								</InputGroup>
 							</Col>
 							 <Col sm={2}>
@@ -335,7 +337,7 @@ class otherCost extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
 											{this.state.costClassificationCode==1 ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 												<Form.File id="otherCostFile2"
-													label={this.state.otherCostFile2 === undefined ? "添付" : this.state.otherCostFileName2} data-browse="添付" value={this.state.otherCostFile2} custom onChange={(event) => this.changeFile(event, 'otherCostFile2')} />}
+														label={this.state.otherCostFile2 === undefined ? "添付" : this.state.otherCostFileName2} data-browse="添付" value={this.state.otherCostFile2} custom onChange={(event) => this.changeFile(event, 'otherCostFile2')} disabled={this.state.costClassificationCode != 1 ? true : false}/>}
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -359,6 +361,7 @@ class otherCost extends React.Component {
 												locale="ja"
 												dateFormat="yyyy/MM/dd"
 												id="datePicker4"
+												disabled={this.state.costClassificationCode <2 ? true : false}
 												className="form-control form-control-sm"
 											/>
 										</InputGroup.Prepend>
@@ -370,7 +373,7 @@ class otherCost extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
 										</InputGroup.Prepend>
 										<FormControl placeholder="" autoComplete="off"
-											onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
 								<Col sm={2}>
@@ -382,6 +385,7 @@ class otherCost extends React.Component {
 											value={station.find((v) => (v.code === this.state.stationCode5)) || {}}
 											options={station}
 											name="station"
+											disabled={this.state.costClassificationCode < 2 ? true : false}
 											getOptionLabel={(option) => option.name}
 											onSelect={(event) => this.handleTag(event, 'station')}
 											renderInput={(params) => (
@@ -398,8 +402,8 @@ class otherCost extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="例：XXXXX" name="remark" value={remark} autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}
-											onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+									<FormControl placeholder="例：XXXXX" name="remark" value={remark} autoComplete="off" disabled={this.state.costClassificationCode >1 ? true : false}
+										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
 							</Row>
@@ -409,7 +413,7 @@ class otherCost extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="例：XXXXX"  autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+									<FormControl placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
 								<Col sm={2}>
@@ -418,14 +422,14 @@ class otherCost extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
 											{this.state.costClassificationCode>1 ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
 												<Form.File id="otherCostFile3"
-													label={this.state.otherCostFile3 === undefined ? "添付" : this.state.otherCostFileName3} data-browse="添付" value={this.state.otherCostFile3} custom onChange={(event) => this.changeFile(event, 'otherCostFile3')} />}
+												label={this.state.otherCostFile3 === undefined ? "添付" : this.state.otherCostFileName3} data-browse="添付" value={this.state.otherCostFile3} custom onChange={(event) => this.changeFile(event, 'otherCostFile3')} disabled={this.state.costClassificationCode < 2 ? true : false}/>}
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 							</Row>
 						</Form.Group>
 						<div style={{ "textAlign": "center" }}>
-							<Button size="sm" variant="info" onClick={this.UpdateotherCost} type="button" on>
+						<Button size="sm" variant="info" onClick={this.InsertCost} type="button" on>
 								<FontAwesomeIcon icon={faSave} /> {"登録"}
 							</Button>
 						</div>
