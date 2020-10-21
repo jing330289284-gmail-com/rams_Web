@@ -44,6 +44,8 @@ export function fetchDropDown() {
         "getTypeOfIndustry",//36業種を取得する
         "getRound",//37片往を取得する
         "getEmployeeNameNoBP",//38社員氏名（BP社員ない）を取得する
+        "getSituationChange",//39状況変動を取得する
+        "getSiteStateStatus",//40现场状态
         "getServerIP",//最後
     ]
     var outArray = [];
