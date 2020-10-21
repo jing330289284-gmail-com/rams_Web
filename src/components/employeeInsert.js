@@ -1154,7 +1154,7 @@ class employeeInsert extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考1" value={resumeName1} autoComplete="off"
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 								</InputGroup>
 							</Col>
@@ -1169,7 +1169,7 @@ class employeeInsert extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考2" value={resumeName2} autoComplete="off"
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 								</InputGroup>
 							</Col>

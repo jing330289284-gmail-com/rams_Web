@@ -118,7 +118,7 @@ class employeeUpdate extends React.Component {
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),//雇用保険番号
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),//マイナンバー
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),//履歴書備考1
-			resumeName1: publicUtils.nullToEmpty(this.state.resumeName2),//履歴書備考1
+			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),//履歴書備考1
 			accountInfo: this.state.accountInfo,//口座情報
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
@@ -1166,7 +1166,7 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考1" value={resumeName1} autoComplete="off"
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 								</InputGroup>
 							</Col>
@@ -1181,7 +1181,7 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考2" value={resumeName2} autoComplete="off"
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 								</InputGroup>
 							</Col>
