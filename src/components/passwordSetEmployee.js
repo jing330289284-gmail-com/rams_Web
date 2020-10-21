@@ -6,8 +6,7 @@ import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 /**
  * パスワードリセット画面（社員画面用）
  */
@@ -21,6 +20,7 @@ class PasswordSetEmployee extends Component {
         myToastShow: false,//toastのフラグ
         errorsMessageShow: false,///エラーのメッセージのフラグ
         errorsMessageValue: '',//エラーのメッセージ
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     constructor(props) {
         super(props);
@@ -30,7 +30,6 @@ class PasswordSetEmployee extends Component {
      * 画面初期化
      */
     componentDidMount() {
-        this.props.fetchDropDown();
     }
     //onchange
     valueChange = event => {
@@ -44,7 +43,7 @@ class PasswordSetEmployee extends Component {
         $.each(formArray, function (i, item) {
             passwordSetEmployeeModel[item.name] = item.value;
         });
-        axios.post(this.props.serverIP + "passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
+        axios.post(this.state.serverIP + "passwordSetEmployee/passwordReset" , passwordSetEmployeeModel)
         .then(resultMap => {
             if (resultMap.data.errorsMessage !== null && resultMap.data.errorsMessage !== undefined ) {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: resultMap.data.errorsMessage });
@@ -125,15 +124,4 @@ class PasswordSetEmployee extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(PasswordSetEmployee);
+export default PasswordSetEmployee;

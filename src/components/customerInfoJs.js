@@ -34,6 +34,7 @@ export function setDisabled(){
     $("#toBankInfo").attr("disabled",false);
     $("#toCustomerInfo").attr("disabled",true);
     $("#dateButton").attr("disabled",true);
+    $("#capitalStock").attr("disabled",true);
 }
 /**
  * お客様名前を入力してないと、小さい画面を開けない

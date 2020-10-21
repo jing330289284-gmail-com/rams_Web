@@ -14,8 +14,7 @@ import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-tabl
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import ExpensesInfo from "./expensesInfo.js"
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 /**
@@ -66,6 +65,7 @@ class WagesInfo extends Component {
         expensesInfoModels: [],//諸費用履歴
         kadouCheck: true,//稼働フラグ
         relatedEmployees: '',//要員
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
     valueChange = event => {
@@ -92,7 +92,6 @@ class WagesInfo extends Component {
         )
     }
     componentDidMount() {
-        this.props.fetchDropDown();
         this.getDropDowns();
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
@@ -111,7 +110,7 @@ class WagesInfo extends Component {
      */
     getDropDowns = () => {
         var methodArray = ["getInsurance", "getBonus", "getStaffForms", "getEmployeeNameNoBP"]
-        var data = utils.getPublicDropDown(methodArray, this.props.serverIP);
+        var data = utils.getPublicDropDown(methodArray, this.state.serverIP);
         this.setState(
             {
                 socialInsuranceFlagDrop: data[0].slice(1),
@@ -235,7 +234,7 @@ class WagesInfo extends Component {
                 "employeeNo": employeeNo,
             }
             this.setState({
-                employeeNo: wagesInfoMod.employeeNo,
+                employeeNo: employeeNo,
                 employeeName:employeeNo,
             })
             this.search(wagesInfoMod);
@@ -244,7 +243,7 @@ class WagesInfo extends Component {
         )
     }
     search = (wagesInfoMod) => {
-        axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
+        axios.post(this.state.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     $("#expensesInfoBtn").attr("disabled", false);
@@ -259,6 +258,8 @@ class WagesInfo extends Component {
                     $("#expensesInfoBtn").attr("disabled", true);
                     this.setState({
                         wagesInfoList: [],
+                        kadouCheck: result.data.kadouCheck,
+                        relatedEmployees: result.data.relatedEmployees,
                     })
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -353,24 +354,9 @@ class WagesInfo extends Component {
                 costInfoShow: false,
             }, () => {
                 var wagesInfoMod = {
-                    "employeeNo": utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
+                    "employeeNo": this.state.employeeNo,
                 }
-                axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
-                    .then(result => {
-                        if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                            $("#expensesInfoBtn").attr("disabled", false);
-                            this.setState({
-                                wagesInfoList: result.data.wagesInfoList,
-                                lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
-                            })
-                        } else {
-                            $("#expensesInfoBtn").attr("disabled", true);
-                            this.setState({
-                                wagesInfoList: [],
-                            })
-                            this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-                        }
-                    })
+                this.search(wagesInfoMod);
             }
             )
         }
@@ -385,13 +371,13 @@ class WagesInfo extends Component {
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
         });
-        wagesInfoModel["employeeNo"] = utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop);
+        wagesInfoModel["employeeNo"] = this.state.employeeNo;
         wagesInfoModel["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate, false);
         wagesInfoModel["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate, false);
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
-        axios.post(this.props.serverIP + "wagesInfo/toroku", wagesInfoModel)
+        axios.post(this.state.serverIP + "wagesInfo/toroku", wagesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
@@ -908,15 +894,4 @@ class WagesInfo extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-    return {
-        serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchDropDown: () => dispatch(fetchDropDown())
-    }
-};
-export default connect(mapStateToProps, mapDispatchToProps)(WagesInfo);
+export default WagesInfo;

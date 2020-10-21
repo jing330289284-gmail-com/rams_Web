@@ -9,10 +9,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import $ from 'jquery';
 import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
-import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import store from './redux/store';
+
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 /**
@@ -27,17 +27,19 @@ class EnterPeriodSearch extends React.Component {
         enterPeriodList: [],//入社入場期限List
         actionType: '',//処理区分
         employeeNameDrop: [],//社員名Drop
+        employeeNameDropBp:[],//社員名Drop（BP含む）
         message: '',
         type: '',
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount(){
-        this.props.fetchDropDown();
         this.setState({
-            employeeNameDrop:this.props.getEmployeeName,
-            enterPeriodKbnDrop:this.props.getEnterPeriod,
+            employeeNameDrop:store.getState().dropDown[38].slice(1),
+            enterPeriodKbnDrop:store.getState().dropDown[29].slice(1),
+            employeeNameDropBp:store.getState().dropDown[9].slice(1),
         })
         this.search(utils.formateDate(this.state.yearAndMonthDate,false),this.state.enterPeriodKbn,utils.labelGetValue($("#employeeName").val(),this.state.employeeNameDrop));
     }
@@ -70,10 +72,13 @@ class EnterPeriodSearch extends React.Component {
         this.setState({
             [event.target.name]: event.target.value,
         },()=>{
-            var employeeNo = '';
+            var employeeNo = null;
             if(values !== null){
                 employeeNo = values.code;
             }
+            this.setState({
+                employeeName:employeeNo,
+            })
             this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
                     this.state.enterPeriodKbn,
                     employeeNo);
@@ -90,7 +95,7 @@ class EnterPeriodSearch extends React.Component {
         enterPeriodSearchModel["yearAndMonth"] = yearAndMonth;
         enterPeriodSearchModel["employeeNo"] = employeeNo;
         enterPeriodSearchModel["enterPeriodKbn"] = enterPeriodKbn;
-            axios.post(this.props.serverIP + "enterPeriodSearch/selectEnterPeriodData", enterPeriodSearchModel)
+            axios.post(this.state.serverIP + "enterPeriodSearch/selectEnterPeriodData", enterPeriodSearchModel)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                         this.setState({
@@ -126,6 +131,7 @@ class EnterPeriodSearch extends React.Component {
     valueChange = event => {
         this.setState({
             [event.target.name]: event.target.value,
+            employeeName:'',
         },()=>{
             this.search(utils.formateDate(this.state.yearAndMonthDate,false) ,
                     this.state.enterPeriodKbn,
@@ -248,7 +254,7 @@ class EnterPeriodSearch extends React.Component {
                 <br />
                 <Form id="enterPeriodForm">
                     <Row>
-                        <Col sm="3" lg="4">
+                        <Col sm="3">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
@@ -273,7 +279,7 @@ class EnterPeriodSearch extends React.Component {
                                 />
                             </InputGroup>
                         </Col>
-                        <Col sm="2" lg="3">
+                        <Col sm="2">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>区分</InputGroup.Text>
@@ -292,7 +298,7 @@ class EnterPeriodSearch extends React.Component {
                                 </FormControl>
                             </InputGroup>
                         </Col>
-                        <Col sm="3" lg="4">
+                        <Col sm="3">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>社員名</InputGroup.Text>
@@ -300,8 +306,9 @@ class EnterPeriodSearch extends React.Component {
                                 <Autocomplete
                                     id="employeeName"
                                     name="employeeName"
-                                    value={employeeName}
-                                    options={this.state.employeeNameDrop}
+                                    value={enterPeriodKbn === "1" ? this.state.employeeNameDropBp.find(v => v.code === this.state.employeeName) || {} : 
+                                    this.state.employeeNameDrop.find(v => v.code === this.state.employeeName) || {}}
+                                    options={enterPeriodKbn === "1" ? this.state.employeeNameDropBp : this.state.employeeNameDrop}
                                     getOptionLabel={(option) => option.text}
                                     onChange={(event,values)=>this.getEmployeeName(event,values)}
                                     renderOption={(option) => {
@@ -357,17 +364,4 @@ class EnterPeriodSearch extends React.Component {
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-        getEnterPeriod:state.data.dataReques.length >= 1 ? state.data.dataReques[29].slice(1) : [],
-        getEmployeeName:state.data.dataReques.length >= 1 ? state.data.dataReques[38].slice(1) : [],
-        serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(EnterPeriodSearch);
+export default EnterPeriodSearch;
