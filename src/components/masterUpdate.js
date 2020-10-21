@@ -9,8 +9,7 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 //マスター修正
 class masterUpdate extends Component {
@@ -23,7 +22,9 @@ class masterUpdate extends Component {
 
 	initialState = {
 		code: '',
-		flag: true//活性非活性flag
+		flag: true,//活性非活性flag
+		masterStatus: store.getState().dropDown[32].slice(1),
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
 	//onchange
@@ -35,7 +36,6 @@ class masterUpdate extends Component {
 
 	// 页面加载
 	componentDidMount() {
-		this.props.fetchDropDown();
 	}
 	//明细查询
 	selectMaster = (event) => {
@@ -48,7 +48,7 @@ class masterUpdate extends Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
-			axios.post(this.props.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.props.masterStatus) })
+			axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
@@ -86,16 +86,16 @@ class masterUpdate extends Component {
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
-		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.props.masterStatus)
+		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["code"] = this.state.code;
-		axios.post(this.props.serverIP + "masterUpdate/update", masterModel)
+		axios.post(this.state.serverIP + "masterUpdate/update", masterModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					axios.post(this.props.serverIP + "/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.props.masterStatus) })
+					axios.post(this.state.serverIP + "/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -127,13 +127,13 @@ class masterUpdate extends Component {
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
 			var masterModel = {};
-			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.props.masterStatus)
+			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 			masterModel["code"] = this.state.code;
-			axios.post(this.props.serverIP + "masterUpdate/delete", masterModel)
+			axios.post(this.state.serverIP + "masterUpdate/delete", masterModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					axios.post(this.props.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.props.masterStatus) })
+					axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -155,7 +155,7 @@ class masterUpdate extends Component {
 			this.refs.table.setState({
 				selectedRowKeys: []
 			});
-			axios.post(this.props.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.props.masterStatus) })
+			axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
@@ -222,7 +222,7 @@ class masterUpdate extends Component {
 									id="master"
 									name="master"
 									value={master}
-									options={this.props.masterStatus}
+									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									clearOnBlur
 									renderInput={(params) => (
@@ -266,16 +266,5 @@ class masterUpdate extends Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		masterStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[32].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(masterUpdate);
+export default masterUpdate;
