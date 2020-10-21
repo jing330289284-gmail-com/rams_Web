@@ -38,6 +38,7 @@ class CustomerInfoSearch extends Component {
         errorsMessageShow: false,
         errorsMessageValue: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+        transactionStatusDrop:store.getState().dropDown[46],
     }
     /**
      * 画面の初期化
@@ -47,7 +48,7 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite", "getStation", "getTopCustomer"]
-        var selectDataList = utils.getPublicDropDown(methodArray,this.state.serverIP);
+        var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
         //お客様ランキン
         var level = selectDataList[0];
         //会社性質
@@ -58,6 +59,7 @@ class CustomerInfoSearch extends Component {
         stationCode.shift();
         var topCustomerDrop = selectDataList[4];
         topCustomerDrop.shift();
+        var transactionStatusDrop = this.state.transactionStatusDrop;
         this.setState({
             stationCode: stationCode,
             topCustomerDrop: topCustomerDrop,
@@ -71,7 +73,25 @@ class CustomerInfoSearch extends Component {
         for (let i = 0; i < paymentsiteCode.length; i++) {
             $("#paymentsiteCode").append('<option value="' + paymentsiteCode[i].code + '">' + paymentsiteCode[i].name + '</option>');
         }
+        for (let i = 0; i < transactionStatusDrop.length; i++) {
+            $("#transactionStatus").append('<option value="' + transactionStatusDrop[i].code + '">' + transactionStatusDrop[i].name + '</option>');
+        }
     }
+    /**
+     * 数字チェック
+     * @param {*} e 
+     * @param {*} key 
+     */
+    vNumberChange = (e, key) => {
+        const {value} = e.target;
+
+        const reg = /^[0-9]*$/;
+        if((reg.test(value) && value.length<5)){
+            this.setState({
+            [key]: value
+            })
+        }
+    } 
     /**
       * 稼働のフラグ変化
       */
@@ -221,7 +241,7 @@ class CustomerInfoSearch extends Component {
             });
         }
     }
-    reset=()=>{
+    reset = () => {
         $("#topCustomer").val("");
         $("#stationCode").val("");
         $("#customerNo").val("");
@@ -258,7 +278,7 @@ class CustomerInfoSearch extends Component {
         );
     }
     render() {
-        const { radioValue, customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue } = this.state;
+        const { radioValue, customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue , traderPersonFront , traderPersonBack } = this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
             pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
@@ -314,7 +334,7 @@ class CustomerInfoSearch extends Component {
                 <Form id="conditionForm">
                     <div className="container">
                         <Row>
-                            <Col>
+                            <Col sm={3}>
                                 <InputGroup size="sm">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
@@ -322,7 +342,7 @@ class CustomerInfoSearch extends Component {
                                     <Form.Control placeholder="例：C001" id="customerNo" name="customerNo" />
                                 </InputGroup>
                             </Col>
-                            <Col>
+                            <Col sm={3}>
                                 <InputGroup size="sm">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
@@ -330,47 +350,7 @@ class CustomerInfoSearch extends Component {
                                     <Form.Control placeholder="例：LYC株式会社" id="customerName" name="customerName" />
                                 </InputGroup>
                             </Col>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Autocomplete
-                                        id="stationCode"
-                                        name="stationCode"
-                                        value={stationCodeValue}
-                                        options={this.state.stationCode}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 170, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-                                            </div>
-                                        )}
-                                    />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" id="levelCode" name="levelCode">
-                                    </Form.Control>
-                                </InputGroup>
-                            </Col>
-                            <Col>
+                            <Col sm={3}>
                                 <InputGroup size="sm">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
@@ -379,7 +359,30 @@ class CustomerInfoSearch extends Component {
                                     </Form.Control>
                                 </InputGroup>
                             </Col>
-                            <Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control as="select" id="levelCode" name="levelCode">
+                                    </Form.Control>
+                                </InputGroup>
+                            </Col>
+
+
+                        </Row>
+                        <br />
+                        <Row>
+                            <Col sm={3}>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control placeholder="資本金" id="capitalStockFront" name="capitalStockFront" />{"~"}
+                                    <Form.Control placeholder="資本金" id="capitalStockBack" name="capitalStockBack" />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
                                 <InputGroup size="sm">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
@@ -399,7 +402,45 @@ class CustomerInfoSearch extends Component {
                                     />
                                 </InputGroup>
                             </Col>
-                            <Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Autocomplete
+                                        id="stationCode"
+                                        name="stationCode"
+                                        value={stationCodeValue}
+                                        options={this.state.stationCode}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
+                                                    style={{ width: 170, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            </div>
+                                        )}
+                                    />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">取引区分</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control as="select" placeholder="取引区分" id="transactionStatus" name="transactionStatus" />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
@@ -422,6 +463,15 @@ class CustomerInfoSearch extends Component {
                                         name="businessStartDate"
                                         locale="ja"
                                     />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">取引人月</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control placeholder="取引人月" value={traderPersonFront} onChange={(e) => this.vNumberChange(e, 'traderPersonFront')} id="traderPersonFront" name="traderPersonFront" />
+                                    <Form.Control placeholder="取引人月" value={traderPersonBack} onChange={(e) => this.vNumberChange(e, 'traderPersonBack')} id="traderPersonBack" name="traderPersonBack" />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -476,24 +526,30 @@ class CustomerInfoSearch extends Component {
                             expandComponent={this.expandComponent}
                             headerStyle={{ background: '#5599FF' }} striped hover condensed
                         >
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
+                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentsiteCode' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160">資本金(百万円)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
                         :
                         <BootstrapTable selectRow={selectRow} pagination={true} data={customerInfoData} options={options} deleteRow
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
+                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentsiteCode' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160">資本金(百万円)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
                     }
                 </Form>

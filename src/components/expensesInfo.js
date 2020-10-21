@@ -146,6 +146,12 @@ class ExpensesInfo extends Component {
                     actionType: 'update',
                     btnText:'更新',
                 })
+            }else{
+                this.resetValue();
+                this.setState({
+                    actionType: 'insert',
+                    btnText: '登録',
+                })
             }
         } else {
             this.resetValue();
