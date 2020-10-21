@@ -51,6 +51,7 @@ export function fetchDropDown() {
         "getJapaneaseConversationLevel",//43日本語会話能力
         "getEnglishConversationLevel",//44英語会話能力
         "getProjectPhase",//45作業範囲
+        "getTransaction",//46取引区分
         "getServerIP",//最後
     ]
     var outArray = [];
