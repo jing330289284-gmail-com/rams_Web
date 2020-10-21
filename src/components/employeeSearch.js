@@ -78,7 +78,7 @@ class employeeSearch extends React.Component {
 	searchEmployee = () => {
 		const emp = {
 			employeeNo: this.state.employeeNo,
-			employeeFristName: this.state.employeeName,
+			employeeName: this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus,
 			genderStatus: this.state.genderStatus,
@@ -262,7 +262,23 @@ class employeeSearch extends React.Component {
 			}
 		}
 	};
-
+    /**
+     * 社員名連想
+     * @param {} event 
+     */
+    getEmployeeName = (event,values) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        },()=>{
+            let employeeName = null;
+            if(values !== null){
+                employeeName = values.text;
+            }
+            this.setState({
+                employeeName:employeeName,
+            })
+        })
+    }
 	render() {
 		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
@@ -326,7 +342,7 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Autocomplete
+									{/* 	<Autocomplete
 											id="employeeName"
 											name="employeeName"
 											options={this.state.employeeInfo}
@@ -339,7 +355,35 @@ class employeeSearch extends React.Component {
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
+										/> */}
+
+
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											value={this.state.employeeInfo.find(v => v.code === this.state.employeeName)}
+											options={this.state.employeeInfo}
+											getOptionLabel={(option) => option.text}
+											onChange={(event, values) => this.getEmployeeName(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														{option.name}
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }}
+													/>
+												</div>
+											)}
 										/>
+
+
+
+
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
