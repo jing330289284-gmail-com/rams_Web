@@ -403,8 +403,6 @@ class employeeUpdate extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: {  employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
-					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { 　　employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>

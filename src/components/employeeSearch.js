@@ -65,7 +65,6 @@ class employeeSearch extends React.Component {
 
 	//初期化メソッド
 	componentDidMount() {
-		//this.props.fetchDropDown();
 		this.clickButtonDisabled();
 	}
 
@@ -193,6 +192,8 @@ class employeeSearch extends React.Component {
 			$('#update').removeClass('disabled');
 			$('#detail').removeClass('disabled');
 			$('#delete').removeClass('disabled');
+			$('#wagesInfo').removeClass('disabled');
+			$('#siteInfo').removeClass('disabled');
 		} else {
 			this.setState(
 				{
@@ -205,6 +206,8 @@ class employeeSearch extends React.Component {
 			$('#update').addClass('disabled');
 			$('#detail').addClass('disabled');
 			$('#delete').addClass('disabled');
+			$('#wagesInfo').addClass('disabled');
+			$('#siteInfo').addClass('disabled');
 		}
 	}
 
@@ -266,19 +269,19 @@ class employeeSearch extends React.Component {
      * 社員名連想
      * @param {} event 
      */
-    getEmployeeName = (event,values) => {
-        this.setState({
-            [event.target.name]: event.target.value,
-        },()=>{
-            let employeeName = null;
-            if(values !== null){
-                employeeName = values.text;
-            }
-            this.setState({
-                employeeName:employeeName,
-            })
-        })
-    }
+	getEmployeeName = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let employeeName = null;
+			if (values !== null) {
+				employeeName = values.text;
+			}
+			this.setState({
+				employeeName: employeeName,
+			})
+		})
+	}
 	render() {
 		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
@@ -342,22 +345,6 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 										</InputGroup.Prepend>
-									{/* 	<Autocomplete
-											id="employeeName"
-											name="employeeName"
-											options={this.state.employeeInfo}
-											getOptionLabel={(option) => option.name}
-											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
-											onSelect={(event) => this.handleTag(event, 'employeeName')}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/> */}
-
-
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
@@ -374,16 +361,12 @@ class employeeSearch extends React.Component {
 											}}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
+													<input type="text" {...params.inputProps} className="auto"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }}
 													/>
 												</div>
 											)}
 										/>
-
-
-
-
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -630,15 +613,22 @@ class employeeSearch extends React.Component {
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
 				</div>
-
+				<br />
 				<div>
 					<Row >
 						<Col sm={4}>
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
-							<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+							<div style={{ "float": "left" }}>
+								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
+							</div>
 						</Col>
-						<Col sm={6}></Col>
+						<Col sm={6}>
+							<div style={{ "float": "center" }}>
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+							</div>
+						</Col>
 						<Col sm={2}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
