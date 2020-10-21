@@ -12,7 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
-class individualSales extends React.Component {
+class individualSales extends React.Component {//個人売上検索
     state = { 
         actionType:'',
         fiscalYear:'',
@@ -127,8 +127,12 @@ class individualSales extends React.Component {
                 monthlySales_endYearAndMonth = location.state.monthlySales_endYearAndMonth;
                 rowSelectemployeeNo = location.state.rowSelectemployeeNo;
                 rowSelectemployeeName = location.state.rowSelectemployeeName;
-                this.setState({individualSales_startYearAndMonth:monthlySales_startYearAndMonth});
-                this.setState({individualSales_endYearAndMonth: monthlySales_endYearAndMonth})
+                this.setState({individualSales_startYearAndMonth:monthlySales_startYearAndMonth,
+                    individualSales_endYearAndMonth: monthlySales_endYearAndMonth,
+                    employeeName:rowSelectemployeeName+"("+rowSelectemployeeNo+")"}, () => 
+
+                    this.searchEmployee()
+                    );
             }
     }
 	individualSalesStartYearAndMonthChange = date => {
@@ -164,16 +168,6 @@ class individualSales extends React.Component {
 			</p>
 		);
 	}
-    getDropDown = () => {
-		var method = ["getEmployeeName"]
-		var data = publicUtils.getPublicDropDown(method);
-		this.setState(
-			{
-				employeeName: data[0],
-
-			}
-		);
-	};
     unitPriceAddComma(cell,row){
         if(row.unitPrice ===null){
             return 
@@ -314,20 +308,6 @@ render (){
                 <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									{/* <Autocomplete
-									id="employeeName"
-                                    name="employeeName"
-                                    // value={this.state.employeeName.find((v) => (v.code === this.state.employeeName))}
-                                    // onSelect={(event) => this.handleTag(event)}
-									options={this.state.employeeName}
-									getOptionLabel={(option) => option.name}
-									renderInput={(params) => (
-										<div ref={params.InputProps.ref}>
-											<input placeholder="  社員名" type="text" {...params.inputProps}
-												style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-										</div>
-									)}
-								/> */}
                                 <Autocomplete
 											id="employeeName"
 											name="employeeName"
@@ -402,7 +382,6 @@ render (){
 						<Col sm={3}>
                     <label>粗利合計：
                     </label>
-                    <label>{this.state.totalgrosProfits} </label>
 						</Col>
 				</Row>
                   <div>

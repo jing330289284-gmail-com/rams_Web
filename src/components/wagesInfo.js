@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Form, Col, InputGroup, Button, FormControl, Modal ,  } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl, Modal, } from 'react-bootstrap';
 import MyToast from './myToast';
 import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -63,9 +63,9 @@ class WagesInfo extends Component {
         selectedWagesInfo: {},//選択された行
         expensesInfoModel: null,//諸費用データ
         torokuText: '登録',//登録ボタンの文字
-        expensesInfoModels:[],//諸費用履歴
-        kadouCheck:true,//稼働フラグ
-        relatedEmployees:'',//要員
+        expensesInfoModels: [],//諸費用履歴
+        kadouCheck: true,//稼働フラグ
+        relatedEmployees: '',//要員
     }
     //onchange
     valueChange = event => {
@@ -96,10 +96,13 @@ class WagesInfo extends Component {
         this.getDropDowns();
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
-        if(this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== ''){
+        if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
             var employeeNo = this.props.location.state.employeeNo;
             var wagesInfo = {};
             wagesInfo["employeeNo"] = employeeNo;
+            this.setState({
+                employeeName:employeeNo,
+            })
             this.search(wagesInfo);
         }
     }
@@ -108,7 +111,7 @@ class WagesInfo extends Component {
      */
     getDropDowns = () => {
         var methodArray = ["getInsurance", "getBonus", "getStaffForms", "getEmployeeNameNoBP"]
-        var data = utils.getPublicDropDown(methodArray,this.props.serverIP);
+        var data = utils.getPublicDropDown(methodArray, this.props.serverIP);
         this.setState(
             {
                 socialInsuranceFlagDrop: data[0].slice(1),
@@ -220,40 +223,46 @@ class WagesInfo extends Component {
             reflectStartDate: '',
         })
     }
-    getWagesInfo = (event) => {
+    getWagesInfo = (event,values) => {
         this.setState({
             [event.target.name]: event.target.value,
         }, () => {
+            var employeeNo = null;
+            if(values !== null){
+                employeeNo = values.code;
+            }
             var wagesInfoMod = {
-                "employeeNo": utils.labelGetValue($("#employeeName").val(), this.state.employeeNameDrop),
+                "employeeNo": employeeNo,
             }
             this.setState({
                 employeeNo: wagesInfoMod.employeeNo,
+                employeeName:employeeNo,
             })
             this.search(wagesInfoMod);
+            this.resetValue();
         }
         )
     }
-    search=(wagesInfoMod)=>{
+    search = (wagesInfoMod) => {
         axios.post(this.props.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
-        .then(result => {
-            if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                $("#expensesInfoBtn").attr("disabled", false);
-                this.setState({
-                    wagesInfoList: result.data.wagesInfoList,
-                    lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
-                    kadouCheck:result.data.kadouCheck,
-                    relatedEmployees:result.data.relatedEmployees,
-                    "errorsMessageShow": false,
-                })
-            } else {
-                $("#expensesInfoBtn").attr("disabled", true);
-                this.setState({
-                    wagesInfoList: [],
-                })
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-            }
-        })
+            .then(result => {
+                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                    $("#expensesInfoBtn").attr("disabled", false);
+                    this.setState({
+                        wagesInfoList: result.data.wagesInfoList,
+                        lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
+                        kadouCheck: result.data.kadouCheck,
+                        relatedEmployees: result.data.relatedEmployees,
+                        "errorsMessageShow": false,
+                    })
+                } else {
+                    $("#expensesInfoBtn").attr("disabled", true);
+                    this.setState({
+                        wagesInfoList: [],
+                    })
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+                }
+            })
     }
     /**
      * 行Selectファンクション
@@ -269,13 +278,13 @@ class WagesInfo extends Component {
                 this.resetValue();
                 $("#shusei").attr("disabled", true);
             }
-            if(row.expensesInfoModels != null){
+            if (row.expensesInfoModels != null) {
                 this.setState({
-                    expensesInfoModels:row.expensesInfoModels,
+                    expensesInfoModels: row.expensesInfoModels,
                 })
-            }else{
+            } else {
                 this.setState({
-                    expensesInfoModels:[],
+                    expensesInfoModels: [],
                 })
             }
         } else {
@@ -283,7 +292,7 @@ class WagesInfo extends Component {
             this.setState({
                 actionType: 'insert',
                 torokuText: '登録',
-                expensesInfoModels:[],
+                expensesInfoModels: [],
             })
             $("#shusei").attr("disabled", true);
         }
@@ -452,9 +461,9 @@ class WagesInfo extends Component {
             EmployeeFormCodeDrop,
             wagesInfoList,
             employeeNameDrop,
-            torokuText ,
-            expensesInfoModels ,
-            kadouCheck ,
+            torokuText,
+            expensesInfoModels,
+            kadouCheck,
             relatedEmployees } = this.state;
         //テーブルの列の選択
         const selectRow = {
@@ -502,13 +511,13 @@ class WagesInfo extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body >
-                            <ExpensesInfo 
-                            kadouCheck={kadouCheck}
-                            relatedEmployees={relatedEmployees} 
-                            expensesInfoModels={expensesInfoModels} 
-                            employeeNo={employeeNo} 
-                            expensesInfoModel={this.state.expensesInfoModel} 
-                            expensesInfoToroku={this.getExpensesInfo} />
+                            <ExpensesInfo
+                                kadouCheck={kadouCheck}
+                                relatedEmployees={relatedEmployees}
+                                expensesInfoModels={expensesInfoModels}
+                                employeeNo={employeeNo}
+                                expensesInfoModel={this.state.expensesInfoModel}
+                                expensesInfoToroku={this.getExpensesInfo} />
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">
@@ -527,19 +536,26 @@ class WagesInfo extends Component {
                                         <Autocomplete
                                             id="employeeName"
                                             name="employeeName"
-                                            value={employeeName}
+                                            value={this.state.employeeNameDrop.find(v => v.code === this.state.employeeName) || {}}
                                             options={this.state.employeeNameDrop}
-                                            getOptionLabel={(option) => option.name}
-                                            onChange={this.getWagesInfo}
+                                            getOptionLabel={(option) => option.text}
+                                            onChange={(event,values)=>this.getWagesInfo(event,values)}
+                                            renderOption={(option) => {
+                                                return (
+                                                    <React.Fragment>
+                                                        {option.name}
+                                                    </React.Fragment>
+                                                )
+                                            }}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="  例：田中" type="text" {...params.inputProps} className="auto"
-                                                        style={{ width: 150, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                                    <input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
+                                                        style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                                 </div>
                                             )}
                                         />
-                                        <font 
-                                        id="mark" color="red"
+                                        <font
+                                            id="mark" color="red"
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
@@ -571,9 +587,9 @@ class WagesInfo extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>円</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <font 
-                                        hidden={kadouCheck}
-                                        id="mark" color="red"
+                                        <font
+                                            hidden={kadouCheck}
+                                            id="mark" color="red"
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>非稼動費用</InputGroup.Text>
@@ -589,9 +605,9 @@ class WagesInfo extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>円</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <font 
-                                        hidden={!kadouCheck}
-                                        id="mark" color="red"
+                                        <font
+                                            hidden={!kadouCheck}
+                                            id="mark" color="red"
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
@@ -663,7 +679,7 @@ class WagesInfo extends Component {
                                                 showFullMonthYearPicker
                                                 minDate={new Date()}
                                                 showDisabledMonthNavigation
-                                                
+
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
                                                 dateFormat={"yyyy/MM"}
@@ -735,7 +751,7 @@ class WagesInfo extends Component {
                                                     showFullMonthYearPicker
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
-                                                    
+
                                                     className="form-control form-control-sm"
                                                     id="wagesInfoDatePicker"
                                                     name="nextBonusMonth"
@@ -785,7 +801,7 @@ class WagesInfo extends Component {
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
-                                                
+
                                                 dateFormat={"yyyy/MM"}
                                                 name="reflectYearAndMonth"
                                                 locale="ja"
@@ -874,11 +890,11 @@ class WagesInfo extends Component {
                             striped
                             hover
                             condensed>
-                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }}  width='145'>給料期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }}  width="100">社員形式</TableHeaderColumn>
-                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }}  width="100">給料</TableHeaderColumn>
-                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }}  width="100">社会保険</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }}  width="100">交通代</TableHeaderColumn>
+                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
+                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>
+                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100">給料</TableHeaderColumn>
+                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100">社会保険</TableHeaderColumn>
+                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100">交通代</TableHeaderColumn>
                             <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
                             <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
                             <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
@@ -893,14 +909,14 @@ class WagesInfo extends Component {
     }
 }
 const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
+    return {
+        serverIP: state.data.dataReques[state.data.dataReques.length - 1],
+    }
 };
 
 const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
+    return {
+        fetchDropDown: () => dispatch(fetchDropDown())
+    }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(WagesInfo);

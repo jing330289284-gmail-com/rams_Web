@@ -12,7 +12,10 @@ import { fetchDropDown } from './services/index';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
-
+/**
+ * 勤務->勤務登録->休憩時間 の画面
+ * 20201019 謝
+ */
 class BreakTime extends Component {
 	constructor() {
 		super();

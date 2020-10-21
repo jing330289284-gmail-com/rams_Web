@@ -13,11 +13,11 @@ import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faFile } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
+import store from './redux/store';
+
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -43,6 +43,23 @@ class employeeUpdate extends React.Component {
 		developLanguage5: '',
 		stationCode: '',
 		employeeStatusFlag: true,
+		genderStatuss: store.getState().dropDown[0],
+		intoCompanyCodes: store.getState().dropDown[1],
+		employeeFormCodes: store.getState().dropDown[2],
+		siteMaster: store.getState().dropDown[3],
+		employeeStatusS: store.getState().dropDown[4].slice(1),
+		japaneaseLevelCodes: store.getState().dropDown[5],
+		residenceCodes: store.getState().dropDown[6],
+		nationalityCodes: store.getState().dropDown[7],
+		developLanguageMaster: store.getState().dropDown[8].slice(1),
+		employeeInfo: store.getState().dropDown[9].slice(1),
+		occupationCodes: store.getState().dropDown[10],
+		departmentCodes: store.getState().dropDown[11],
+		authorityCodes: store.getState().dropDown[12].slice(1),
+		englishLeveCodes: store.getState().dropDown[13],
+		station: store.getState().dropDown[14].slice(1),
+		customer: store.getState().dropDown[15].slice(1),
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	};
 
 
@@ -50,7 +67,6 @@ class employeeUpdate extends React.Component {
 	  * 初期化メソッド
 	  */
 	componentDidMount() {
-		this.props.fetchDropDown();
 		const { location } = this.props
 		this.setState(
 			{
@@ -63,7 +79,7 @@ class employeeUpdate extends React.Component {
 		const emp = {
 			employeeNo: employeeNo
 		};
-		axios.post(this.props.serverIP + "employee/getEmployeeByEmployeeNo", emp)
+		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
 				this.setState({
@@ -119,8 +135,8 @@ class employeeUpdate extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					resumeRemark1: data.resumeRemark1,//履歴書備考1
-					resumeRemark2: data.resumeRemark2,//履歴書備考1
+					resumeName1: data.resumeName1,//履歴書備考1
+					resumeName2: data.resumeName2,//履歴書備考1
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -270,37 +286,37 @@ class employeeUpdate extends React.Component {
 				[id]: '',
 			})
 		} else {
-			if (this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.station.find((v) => (v.name === value)) !== undefined) {
+			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.station.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'developLanguage1':
 						this.setState({
-							developLanguage1: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage2':
 						this.setState({
-							developLanguage2: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage3':
 						this.setState({
-							developLanguage3: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage4':
 						this.setState({
-							developLanguage4: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'developLanguage5':
 						this.setState({
-							developLanguage5: this.props.developLanguageMaster.find((v) => (v.name === value)).code,
+							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'stationCode':
 						this.setState({
-							stationCode: this.props.station.find((v) => (v.name === value)).code,
+							stationCode: this.state.station.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -340,24 +356,10 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeRemark1, resumeRemark2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
-		const genderStatuss = this.props.genderStatuss;
-		const employeeFormCodes = this.props.employeeFormCodes;
-		const siteMaster = this.props.siteMaster;
-		const intoCompanyCodes = this.props.intoCompanyCodes;
-		const japaneaseLevelCodes = this.props.japaneaseLevelCodes;
-		const residenceCodes = this.props.residenceCodes;
-		const nationalityCodes = this.props.nationalityCodes;
-		const developLanguageMaster = this.props.developLanguageMaster;
-		const occupationCodes = this.props.occupationCodes;
-		const departmentCodes = this.props.departmentCodes;
-		const authorityCodes = this.props.authorityCodes;
-		const englishLeveCodes = this.props.englishLeveCodes;
-		const station = this.props.station;
-		const employeeStatusS = this.props.employeeStatusS;
 		return (
 			<div>
 				<FormControl value={actionType} name="actionType" hidden />
@@ -416,7 +418,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="employeeStatus" value={employeeStatus}
 										disabled>
-										{employeeStatusS.map(date =>
+										{this.state.employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -469,7 +471,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="genderStatus" value={genderStatus}
 										disabled>
-										{genderStatuss.map(date =>
+										{this.state.genderStatuss.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -521,7 +523,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="intoCompanyCode" value={intoCompanyCode}
 										disabled>
-										{intoCompanyCodes.map(date =>
+										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -534,7 +536,7 @@ class employeeUpdate extends React.Component {
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
 										disabled>
-										{employeeFormCodes.map(date =>
+										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -550,7 +552,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="departmentCode" value={departmentCode}
 										disabled>
-										{departmentCodes.map(date =>
+										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -562,7 +564,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="occupationCode" value={occupationCode}
 										disabled>
-										{occupationCodes.map(date =>
+										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -682,7 +684,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="nationalityCode" value={nationalityCode}
 										disabled　>
-										{nationalityCodes.map(date =>
+										{this.state.nationalityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -709,7 +711,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="authorityCode" value={authorityCode}
 										disabled >
-										{authorityCodes.map(date =>
+										{this.state.authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -729,7 +731,7 @@ class employeeUpdate extends React.Component {
 										size="sm"
 										name="japaneseLevelCode" value={japaneseLevelCode}
 										disabled >
-										{japaneaseLevelCodes.map(data =>
+										{this.state.japaneaseLevelCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -743,7 +745,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm" name="englishLevelCode" value={englishLevelCode} disabled >
-										{englishLeveCodes.map(data =>
+										{this.state.englishLeveCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -766,7 +768,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" name="siteRoleCode" value={siteRoleCode} disabled>
-										{siteMaster.map(date =>
+										{this.state.siteMaster.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
 											</option>
@@ -782,8 +784,8 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete disabled
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
@@ -794,8 +796,8 @@ class employeeUpdate extends React.Component {
 										)}
 									/>
 									<Autocomplete disabled
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
@@ -806,8 +808,8 @@ class employeeUpdate extends React.Component {
 										)}
 									/>
 									<Autocomplete disabled
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
@@ -818,8 +820,8 @@ class employeeUpdate extends React.Component {
 										)}
 									/>
 									<Autocomplete disabled
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
@@ -830,8 +832,8 @@ class employeeUpdate extends React.Component {
 										)}
 									/>
 									<Autocomplete disabled
-										value={developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
-										options={developLanguageMaster}
+										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
+										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
@@ -852,7 +854,6 @@ class employeeUpdate extends React.Component {
 										<DatePicker
 											selected={this.state.yearsOfExperience}
 											onChange={this.inactiveyearsOfExperience}
-											
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
@@ -898,8 +899,8 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Autocomplete
 										disabled
-										value={station.find((v) => (v.code === this.state.stationCode)) || {}}
-										options={station}
+										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
+										options={this.state.station}
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
@@ -922,7 +923,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										name="residenceCode" value={residenceCode}
 										disabled>
-										{residenceCodes.map(data =>
+										{this.state.residenceCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
@@ -997,8 +998,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeRemark1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark1" disabled/>
+									<FormControl  value={resumeName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName1" disabled/>
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -1011,8 +1012,8 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeRemark2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeRemark2" disabled/>
+									<FormControl  value={resumeName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName2" disabled/>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1031,32 +1032,6 @@ class employeeUpdate extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		genderStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[0] : [],
-		intoCompanyCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[1] : [],
-		employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
-		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
-		employeeStatusS: state.data.dataReques.length >= 1 ? state.data.dataReques[4].slice(1) : [],
-		japaneaseLevelCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[5] : [],
-		residenceCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[6] : [],
-		nationalityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[7] : [],
-		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],
-		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
-		occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[10] : [],
-		departmentCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[11] : [],
-		authorityCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[12].slice(1) : [],
-		englishLeveCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[13] : [],
-		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],
-		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(employeeUpdate);
+export default employeeUpdate;
 

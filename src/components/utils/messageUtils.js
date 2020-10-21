@@ -1,5 +1,8 @@
 import * as publicUtils from './publicUtils.js';
-//　
+/**
+ * フロントサイトしか使わないメッセージ
+ * 20201019 謝
+ */
 export function getMessage(key, option, isNextLine) {
 	let returnMessage = "";
 	let message = {};

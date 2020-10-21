@@ -36,20 +36,25 @@ import {
 	faUserCircle, faFilePowerpoint, faChartPie, faTable, faCog, faUpload
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 
 /**
  * サブメニュー画面（管理者用）
+ * 20201019 劉林涛
  */
 class SubMenu extends Component {
-	state = {
-		nowDate: '',//今の期日
-	}
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+			nowDate: '',//今の期日
+		}
+	};
+
 	async componentWillMount() {
-		this.props.fetchDropDown();
-		await axios.post(this.props.serverIP + "subMenu/init")
+		await axios.post(this.state.serverIP + "subMenu/init")
 			.then(resultMap => {
 				if (resultMap.data !== null && resultMap.data !== '') {
 					document.getElementById("kanriSha").innerHTML = resultMap.data["authorityName"] + "：" + resultMap.data["employeeName"];
@@ -136,7 +141,7 @@ class SubMenu extends Component {
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-											<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と単価</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と売上</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="3">
 												<ListGroup variant="flush">
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/wagesInfo">
@@ -145,10 +150,8 @@ class SubMenu extends Component {
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/situationChange">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/enterPeriodSearch">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />お客様売上一覧</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -178,20 +181,19 @@ class SubMenu extends Component {
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />勤務管理</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />勤務表送信</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />残業代一覧</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
-													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />履歴検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-											<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />非稼働</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />期限確認</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="7">
 												<ListGroup variant="flush">
-													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faTable} />非待機一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/situationChange">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}><Link className="linkFont" to="/subMenuManager/enterPeriodSearch">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -270,15 +272,5 @@ class SubMenu extends Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
+export default SubMenu;
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);
