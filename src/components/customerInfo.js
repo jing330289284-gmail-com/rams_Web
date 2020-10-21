@@ -18,8 +18,7 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TableSelect from './TableSelect';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 registerLocale('ja', ja);
 /**
@@ -52,6 +51,7 @@ class CustomerInfo extends Component {
         typeOfIndustryDrop: [],
         developLanguageDrop: [],
         currentPage:1,//今のページ
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     /**
      *  設立のonChange
@@ -110,7 +110,6 @@ class CustomerInfo extends Component {
     * 画面の初期化 
     */
     async componentDidMount() {
-        this.props.fetchDropDown();
         this.setState({
             actionType: this.props.location.state.actionType,
         })
@@ -118,7 +117,7 @@ class CustomerInfo extends Component {
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
-        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
+        var selectDataList = utils.getPublicDropDown(methodArray,this.state.serverIP);
         //上場会社
         var listedCompanyFlag = selectDataList[0];
         //お客様ランキン
@@ -169,7 +168,7 @@ class CustomerInfo extends Component {
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = $("#customerNo").val();
         customerInfoMod["actionType"] = this.props.location.state.actionType;
-        await axios.post(this.props.serverIP + "customerInfo/onloadPage", customerInfoMod)
+        await axios.post(this.state.serverIP + "customerInfo/onloadPage", customerInfoMod)
             .then(resultMap => {
                 var customerInfoMod;
                 var actionType = this.state.actionType;
@@ -229,7 +228,7 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
         customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
-        axios.post(this.props.serverIP + "customerInfo/toroku", customerInfoMod)
+        axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
@@ -367,7 +366,7 @@ class CustomerInfo extends Component {
         customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
         customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
         if (this.state.actionType === "update") {
-            axios.post(this.props.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+            axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                 .then(result => {
                     if (result.data === true) {
                         this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
@@ -583,6 +582,8 @@ class CustomerInfo extends Component {
         const cellEdit = {
             mode: 'click',
             blurToSave: true,
+        }
+        const cellEditDetail = {
         }
         //テーブルの定義
         const options = {
@@ -892,7 +893,7 @@ class CustomerInfo extends Component {
                                 options={options}
                                 deleteRow data={customerDepartmentList}
                                 insertRow
-                                cellEdit={cellEdit}
+                                cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
                                 <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='90'>番号</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}  width="130">責任者</TableHeaderColumn>
@@ -923,15 +924,4 @@ class CustomerInfo extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfo);
+export default CustomerInfo;

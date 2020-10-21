@@ -7,8 +7,8 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
+
 axios.defaults.withCredentials = true;
 /**
  * 口座情報画面
@@ -22,6 +22,7 @@ class BankInfo extends Component {
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
 
     constructor(props) {
@@ -29,7 +30,6 @@ class BankInfo extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchDropDown();
         if (!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== '') {//社員の場合
             $("#employeeOrCustomerNo").val($("#employeeNo").val())
             $("#accountBelongsStatus").val("0")
@@ -40,7 +40,7 @@ class BankInfo extends Component {
             document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
-        var bankCode = utils.getdropDown("getBankInfo",this.props.serverIP);
+        var bankCode = utils.getdropDown("getBankInfo",this.state.serverIP);
         bankCode[0].name = "銀行を選択してください";
         for (let i = 0; i < bankCode.length; i++) {
             $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');
@@ -72,7 +72,7 @@ class BankInfo extends Component {
                 onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
-                axios.post(this.props.serverIP + "bankInfo/init", onloadMol)
+                axios.post(this.state.serverIP + "bankInfo/init", onloadMol)
                     .then(function (resultMap) {
                         if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
                             $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
@@ -126,7 +126,7 @@ getBankBranchInfo(noORname){
     sendMap["bankCode"] = $('#bankCode').val();
     if($('#'+noORname+'').val() !== ""){
       
-      axios.post(this.props.serverIP + "getBankBranchInfo",sendMap)
+      axios.post(this.state.serverIP + "getBankBranchInfo",sendMap)
         .then(function (resultMap) {
           if(resultMap.data.length !== 0){
               $('#bankBranchCode').val(resultMap.data[0].code);
@@ -280,15 +280,4 @@ getBankBranchInfo(noORname){
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(BankInfo);
+export default BankInfo;

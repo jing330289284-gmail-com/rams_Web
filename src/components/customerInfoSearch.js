@@ -14,8 +14,7 @@ import ja from 'date-fns/locale/ja';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
@@ -38,17 +37,17 @@ class CustomerInfoSearch extends Component {
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     /**
      * 画面の初期化
      */
     componentDidMount() {
-        this.props.fetchDropDown();
         document.getElementById('shusei').className += " disabled";
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite", "getStation", "getTopCustomer"]
-        var selectDataList = utils.getPublicDropDown(methodArray,this.props.serverIP);
+        var selectDataList = utils.getPublicDropDown(methodArray,this.state.serverIP);
         //お客様ランキン
         var level = selectDataList[0];
         //会社性質
@@ -93,7 +92,7 @@ class CustomerInfoSearch extends Component {
         });
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCode);
-        axios.post(this.props.serverIP + "customerInfoSearch/search", customerInfoMod)
+        axios.post(this.state.serverIP + "customerInfoSearch/search", customerInfoMod)
             .then(resultList => {
                 this.setState({
                     customerInfoData: resultList.data,
@@ -183,7 +182,7 @@ class CustomerInfoSearch extends Component {
         })
         var customerInfoMod = {};
         customerInfoMod["customerNo"] = this.state.customerNo;
-        axios.post(this.props.serverIP + "customerInfoSearch/delete", customerInfoMod)
+        axios.post(this.state.serverIP + "customerInfoSearch/delete", customerInfoMod)
             .then(result => {
                 if (result.data === 0) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
@@ -509,15 +508,4 @@ class CustomerInfoSearch extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfoSearch);
+export default CustomerInfoSearch;
