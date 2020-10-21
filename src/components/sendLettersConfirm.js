@@ -9,8 +9,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import DatePicker from "react-datepicker";
 import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 /** 
 *営業送信お客確認画面
  */
@@ -21,6 +20,7 @@ class sendLettersConfirm extends React.Component {
 	}
 
 initialState=({
+	serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	selectedEmpNos:this.props.location.state.salesPersons,
 	selectedCusInfos:this.props.location.state.targetCusInfos,
 	employeeInfo:[],
@@ -55,17 +55,17 @@ initialState=({
 		developLanguageCode8: null,
 		developLanguageCode9: null,
 		developLanguageCode10: null,
-		genders: [],
-		employees: [],
-		japaneseLevels: [],
-		englishLevels: [],
-		salesProgresss: [],
-		japaneaseConversationLevels: [],
-		englishConversationLevels: [],
-		projectPhases: [],
-		stations: [],
-		developLanguages: [],
-		developLanguagesShow: [],
+		genders: store.getState().dropDown[0],
+		employees: store.getState().dropDown[4],
+		japaneseLevels: store.getState().dropDown[5],
+		englishLevels: store.getState().dropDown[13],
+		salesProgresss: store.getState().dropDown[16],
+		japaneaseConversationLevels: store.getState().dropDown[43],
+		englishConversationLevels: store.getState().dropDown[44],
+		projectPhases: store.getState().dropDown[45],
+		stations: store.getState().dropDown[14],
+		developLanguages: store.getState().dropDown[8],
+		developLanguagesShow: store.getState().dropDown[8],
 		wellUseLanguagss: [],
 		stationCode: '',
 		disbleState: false,
@@ -94,26 +94,7 @@ initialState=({
 })
 componentDidMount(){
 	this.searchEmpDetail();
-	this.getDropDowns();
 }
-	getDropDowns = () => {
-		var methodArray = ["getGender", "getEmployeeStatus", "getJapaneseLevel", "getEnglishLevel", "getSalesProgress", "getJapaneaseConversationLevel", "getEnglishConversationLevel", "getProjectPhase", "getStation", "getDevelopLanguage"]
-		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
-		this.setState(
-				{genders: data[0],
-				employees: data[1],
-				japaneseLevels: data[2],
-				englishLevels: data[3],
-				salesProgresss: data[4],
-				japaneaseConversationLevels: data[5],
-				englishConversationLevels: data[6],
-				projectPhases: data[7],
-				stations: data[8],
-				developLanguages: data[9],
-				developLanguagesShow: data[9],
-			}
-		);
-	}
 		fromCodeToNameLanguage = (code) => {
 		if (code === "" || code === null) {
 			return;
@@ -136,7 +117,7 @@ componentDidMount(){
 
 	}
 	searchPersonnalDetail=()=>{
-			axios.post(this.props.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
+			axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
 	.then(result=>{
 				console.log(result.data);
 				if (result.data[0].age === "") {
@@ -240,7 +221,7 @@ componentDidMount(){
 			});
 	}
 searchEmpDetail=()=>{
-	axios.post(this.props.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
+	axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
 	.then(result=>{
 		this.setState({
 				employeeInfo:result.data,
@@ -400,15 +381,4 @@ searchEmpDetail=()=>{
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(sendLettersConfirm);
+export default sendLettersConfirm;

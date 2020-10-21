@@ -1,6 +1,6 @@
 // 営業送信画面
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, Modal,FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
@@ -10,13 +10,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import { Link } from "react-router-dom";
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
-import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
+import store from './redux/store';
+import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
-/** 
-*営業送信お客画面
- */
+
 class salesSendLetter extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,10 +21,11 @@ class salesSendLetter extends React.Component {
 	}
 	//初期化
 	initialState = {
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		customers: [],// 全部お客様　dropDowm用
-		customerDepartmentNameDrop: [],//部門の連想数列
+		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
+		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
 		customerCode: '',
 		customerDepartmentName: '',
 		allCustomerNo: [],
@@ -39,20 +37,38 @@ class salesSendLetter extends React.Component {
 		linkDetail: '担当追加',
 		selectedCustomer: {},
 		daiologShowFlag: false,
-		positions: [],
+		positions: store.getState().dropDown[20],
 		selectedEmpNos:this.props.location.state.selectetRowIds,
 		selectedCusInfos: [],
+		listName:1,
+		salesLists: [],
+		listName1:"",
+		listName2:"",
+		listName3:"",
 	};
 
 	// 
 	componentDidMount() {
 		this.getCustomers();
-		this.getDropDowns();
+		this.getLists();
 	}
 
+getLists = () => {
+	axios.post("http://127.0.0.1:8080/salesSendLetters/getLists")
+			.then(result => {
+				this.setState({
+					salesLists: result.data,
+					listName:1+result.data.length,
+				});
+			})
+			.catch(function(err) {
+				alert(err)
+			})
+}
 	//初期化お客様取る
 	getCustomers = () => {
-		axios.post(this.props.serverIP + "salesSendLetters/getCustomers")
+		// axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
+		axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
 				for (let i in result.data) {
@@ -67,22 +83,6 @@ class salesSendLetter extends React.Component {
 			.catch(function(err) {
 				alert(err)
 			})
-	}
-
-	//dropdown
-	getDropDowns = () => {
-		var methodArray = ["getCustomer", "getDepartmentMasterDrop", "getPosition"]
-		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
-		data[0].shift();
-		data[1].shift();
-		data[2].shift();
-		this.setState(
-			{
-				customers: data[0],// 全部お客様　dropDowm用
-				customerDepartmentNameDrop: data[1],//部門の連想数列
-				positions: data[2],
-			}
-		);
 	}
 
 	// 行番号
@@ -156,6 +156,25 @@ class salesSendLetter extends React.Component {
 		})
 	}
 
+	createList = () => {
+		let {selectetRowIds,customerTemp,listName}=this.state;
+		let selectedArray=new Array();
+		for(let i in selectetRowIds){
+			selectedArray.push(customerTemp.find(v => v.rowId === selectetRowIds[i]));
+		}
+		let name=`送信対象${listName}`;
+		let selectedNoArray=new Array();
+		for(let i in selectedArray){
+			selectedNoArray.push(selectedArray[i].customerNo);
+		}
+		let code=selectedNoArray.join(',');
+		axios.post("http://127.0.0.1:8080/salesSendLetters/creatList",{name,code})
+		.then(result => {
+			/*listName=listName+1;
+			this.setState({listName});*/
+			this.getLists();
+			})
+	}
 	// deleteボタン事件
 	deleteLists = () => {
 		let selectedIndex = this.state.selectetRowIds;
@@ -376,6 +395,7 @@ class salesSendLetter extends React.Component {
 						<h2>お客様選択（要員送信）</h2>
 					</Col>
 				</Row>
+				<br/>
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row>
@@ -446,6 +466,32 @@ class salesSendLetter extends React.Component {
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 							</Col>
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">格納リスト：</InputGroup.Text>
+									</InputGroup.Prepend>
+									</InputGroup>
+
+							</Col>
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
+									<FormControl   autoComplete="off" value={this.state.salesLists.length>=2?this.state.salesLists[1].name:''}
+										disabled={this.state.salesLists.length>=2?false:true}
+										size="sm" name="alphabetName" />
+									<Button size="sm" variant="info" >
+									<FontAwesomeIcon icon={faPlusCircle} />詳細</Button>
+									</InputGroup>
+
+							</Col>
+							<Col sm={1}>
+								<InputGroup size="sm" className="mb-3">
+									<FormControl   autoComplete="off" value={this.state.salesLists.length>=3?this.state.salesLists[2].name:''}
+										disabled={this.state.salesLists.length>=3?false:true}
+										size="sm" name="alphabetName" />
+									</InputGroup>
+
+							</Col>
 						</Row>
 					</Form.Group>
 					<Row>
@@ -457,6 +503,8 @@ class salesSendLetter extends React.Component {
 						<Col sm={5}></Col>
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
+							<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" 
+									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>
 								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" onClick={this.clearLists}
 									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>
 								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton"
@@ -468,7 +516,8 @@ class salesSendLetter extends React.Component {
 						</Col>
 					</Row>
 				</Form>
-				<div >
+				<Row>
+						<Col sm={12}>
 					<BootstrapTable
 						ref="customersTable"
 						
@@ -488,22 +537,14 @@ class salesSendLetter extends React.Component {
 						<TableHeaderColumn width='12%' dataField='levelCode' >ランキング</TableHeaderColumn>
 						<TableHeaderColumn width='12%' dataField='monthCount' >取引数(今月)</TableHeaderColumn>
 						<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
+						<TableHeaderColumn width='12%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>
 						<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>
 					</BootstrapTable>
-				</div>
+					</Col>
+					</Row>
+				
 			</div>
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(salesSendLetter);
+export default salesSendLetter;
