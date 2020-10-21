@@ -79,6 +79,7 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+		alert(this.state.employeeFristName)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -245,12 +246,14 @@ class employeeInsert extends React.Component {
 			switch (name) {
 				case 'employeeFristName':
 					this.setState({
-						furigana1: date
+						furigana1: date,
+						employeeFristName: value,
 					})
 					break;
 				case 'employeeLastName':
 					this.setState({
-						furigana2: date
+						furigana2: date,
+						employeeLastName: value,
 					})
 					break;
 				default:

@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUndo,　faFile } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -259,12 +259,14 @@ class employeeUpdate extends React.Component {
 			switch (name) {
 				case 'employeeFristName':
 					this.setState({
-						furigana1: date
+						furigana1: date,
+						employeeFristName: value,
 					})
 					break;
 				case 'employeeLastName':
 					this.setState({
-						furigana2: date
+						furigana2: date,
+						employeeLastName: value,
 					})
 					break;
 				default:
@@ -1146,11 +1148,11 @@ class employeeUpdate extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-								<Col sm={2}>
+							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 								<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
@@ -1159,7 +1161,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 										<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 									</InputGroup.Prepend>
 								</InputGroup>
@@ -1174,7 +1176,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 										<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 									</InputGroup.Prepend>
 								</InputGroup>
@@ -1189,7 +1191,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
 								</InputGroup>
