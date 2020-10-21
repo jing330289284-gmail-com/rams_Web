@@ -141,9 +141,7 @@ class otherCost extends React.Component {
 				cost: this.state.cost,
 			}
 			formData.append('otherCostModel', JSON.stringify(otherCostModel))
-			if ($('#otherCostFile2') != null) {
-				formData.append('costRegistrationFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
-            }
+			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
 			this.props.otherCostTokuro(otherCostModel);
 		}else{
 			const otherCostModel = {
@@ -156,9 +154,7 @@ class otherCost extends React.Component {
 				cost: this.state.cost,
 			}
 			formData.append('otherCostModel', JSON.stringify(otherCostModel))
-			if ($('#otherCostFile3') != null) {
-				formData.append('costRegistrationFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
-			}
+			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
 			this.props.otherCostTokuro(otherCostModel);
 		}
 		axios.post(this.props.serverIP + "costRegistration/insertcostRegistration", formData)
