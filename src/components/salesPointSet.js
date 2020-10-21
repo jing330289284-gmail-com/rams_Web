@@ -6,8 +6,7 @@ import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 //営業ポイント設定
 class salesPointSet extends React.Component {
@@ -26,12 +25,18 @@ class salesPointSet extends React.Component {
 		updateFlag: true,
 		insertFlag: false,
 		currentPage: 1,//今のページ
-		insertNo: ''
+		insertNo: '',
+		employeeStatus: store.getState().dropDown[4],
+		newMemberStatus: store.getState().dropDown[23],
+		customerContractStatus: store.getState().dropDown[24],
+		levelStatus: store.getState().dropDown[18],
+		salesPutternStatus: store.getState().dropDown[25],
+		specialPointStatus: store.getState().dropDown[26],
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
 	// 页面加载
 	componentDidMount() {
-		this.props.fetchDropDown();
 		this.select();
 	}
 	//明细查询
@@ -48,7 +53,7 @@ class salesPointSet extends React.Component {
 
 	// レコードのステータス
 	employeeStatusFormat = (cell) => {
-		var statuss = this.props.employeeStatus;
+		var statuss = this.state.employeeStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -57,7 +62,7 @@ class salesPointSet extends React.Component {
 	}
 
 	newMemberStatusFormat = (cell) => {
-		var statuss = this.props.newMemberStatus;
+		var statuss = this.state.newMemberStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -66,7 +71,7 @@ class salesPointSet extends React.Component {
 	}
 
 	customerContractStatusFormat = (cell) => {
-		var statuss = this.props.customerContractStatus;
+		var statuss = this.state.customerContractStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -75,7 +80,7 @@ class salesPointSet extends React.Component {
 	}
 
 	levelStatusFormat = (cell) => {
-		var statuss = this.props.levelStatus;
+		var statuss = this.state.levelStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -84,7 +89,7 @@ class salesPointSet extends React.Component {
 	}
 
 	salesPutternStatusFormat = (cell) => {
-		var statuss = this.props.salesPutternStatus;
+		var statuss = this.state.salesPutternStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -93,7 +98,7 @@ class salesPointSet extends React.Component {
 	}
 
 	specialPointStatusFormat = (cell) => {
-		var statuss = this.props.specialPointStatus;
+		var statuss = this.state.specialPointStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return <span title={statuss[i].text}>{statuss[i].text}</span>;
@@ -108,7 +113,7 @@ class salesPointSet extends React.Component {
 		salesPointSetModel["employee"] = this.state.employeeSearch
 		salesPointSetModel["newMember"] = this.state.newMemberSearch
 		salesPointSetModel["customerContract"] = this.state.customerContractSearch
-		axios.post(this.props.serverIP + "getSalesPointInfo", salesPointSetModel)
+		axios.post(this.state.serverIP + "getSalesPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -182,7 +187,7 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
 		}
-		axios.post(this.props.serverIP + "salesPointInsert", salesPointSetModel)
+		axios.post(this.state.serverIP + "salesPointInsert", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -222,7 +227,7 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
 		}
-		axios.post(this.props.serverIP + "salesPointUpdate", salesPointSetModel)
+		axios.post(this.state.serverIP + "salesPointUpdate", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -251,7 +256,7 @@ class salesPointSet extends React.Component {
 		if (a) {
 			var salesPointSetModel = {};
 			salesPointSetModel["no"] = this.state.no
-			axios.post(this.props.serverIP + "salesPointDelete", salesPointSetModel)
+			axios.post(this.state.serverIP + "salesPointDelete", salesPointSetModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -368,40 +373,42 @@ class salesPointSet extends React.Component {
 									</div>
 								</Col>
 							</Row>
-							<div>
-								<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options}
-									insertRow cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-									<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+							<Row>
+								<Col sm={12}>
+									<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options}
+										insertRow cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+										<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.props.employeeStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.state.employeeStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)}
+											width='95' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='newMember' editable={{ type: 'select', options: { values: this.props.newMemberStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='newMember' editable={{ type: 'select', options: { values: this.state.newMemberStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
+											width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='customerContract' editable={{ type: 'select', options: { values: this.props.customerContractStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.customerContractStatusFormat.bind(this)}
-										width='95' tdStyle={{ padding: '.45em' }} >契約区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='customerContract' editable={{ type: 'select', options: { values: this.state.customerContractStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.customerContractStatusFormat.bind(this)}
+											width='95' tdStyle={{ padding: '.45em' }} >契約区分</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='level' editable={{ type: 'select', options: { values: this.props.levelStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.levelStatusFormat.bind(this)}
-										width='125' tdStyle={{ padding: '.45em' }} >お客様レベル</TableHeaderColumn>
+										<TableHeaderColumn dataField='level' editable={{ type: 'select', options: { values: this.state.levelStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.levelStatusFormat.bind(this)}
+											width='125' tdStyle={{ padding: '.45em' }} >お客様レベル</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='salesPuttern' editable={{ type: 'select', options: { values: this.props.salesPutternStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
-										width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
+										<TableHeaderColumn dataField='salesPuttern' editable={{ type: 'select', options: { values: this.state.salesPutternStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
+											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='specialPoint' editable={{ type: 'select', options: { values: this.props.specialPointStatus } }}
-										editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.specialPointStatusFormat.bind(this)}
-										tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialPoint' editable={{ type: 'select', options: { values: this.state.specialPointStatus } }}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.specialPointStatusFormat.bind(this)}
+											tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
 
-									<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
-									<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell"
-										dataFormat={this.remarkFormat.bind(this)}>備考</TableHeaderColumn>
-								</BootstrapTable>
-							</div>
+										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell"
+											dataFormat={this.remarkFormat.bind(this)}>備考</TableHeaderColumn>
+									</BootstrapTable>
+								</Col>
+							</Row>
 						</Form.Group>
 					</Form>
 				</div>
@@ -410,21 +417,4 @@ class salesPointSet extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		employeeStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
-		newMemberStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[23] : [],
-		customerContractStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[24] : [],
-		levelStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],
-		salesPutternStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[25] : [],
-		specialPointStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[26] : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(salesPointSet);
+export default salesPointSet;
