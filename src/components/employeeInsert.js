@@ -79,6 +79,7 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+		alert(this.state.employeeFristName)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -245,12 +246,14 @@ class employeeInsert extends React.Component {
 			switch (name) {
 				case 'employeeFristName':
 					this.setState({
-						furigana1: date
+						furigana1: date,
+						employeeFristName: value,
 					})
 					break;
 				case 'employeeLastName':
 					this.setState({
-						furigana2: date
+						furigana2: date,
+						employeeLastName: value,
 					})
 					break;
 				default:
@@ -1154,7 +1157,7 @@ class employeeInsert extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考1" value={resumeName1} autoComplete="off"
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 								</InputGroup>
 							</Col>
@@ -1169,7 +1172,7 @@ class employeeInsert extends React.Component {
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl placeholder="備考2" value={resumeName2} autoComplete="off"
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 								</InputGroup>
 							</Col>
