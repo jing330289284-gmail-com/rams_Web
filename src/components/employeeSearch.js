@@ -221,6 +221,7 @@ class employeeSearch extends React.Component {
 
 	formatBrthday(birthday) {
 		let value = publicUtils.converToLocalTime(birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(birthday, true).getTime()) / 31536000000);
+		//value=birthday+(value)
 		return value;
 	}
 
