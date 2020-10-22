@@ -71,7 +71,6 @@ class employeeUpdate extends React.Component {
 
 	//更新ボタン
 	updateEmployee = () => {
-		alert(publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
 		const formData = new FormData()
 		const emp = {
 			employeeNo: this.state.employeeNo,//社員番号
