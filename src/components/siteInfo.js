@@ -112,6 +112,7 @@ class siteInfo extends Component {
 	//リセット　reset
 	resetStates = {
 		admissionStartDate: '',
+		time: '',
 		admissionEndDate: '',
 		systemName: '',
 		location: '',
@@ -209,9 +210,10 @@ class siteInfo extends Component {
 			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate) {
 				this.setState({
 					admissionStartDate: row.admissionStartDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)),
+					time: publicUtils.getFullYearMonth( new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
 					workState: row.workState === null ? '' : row.workState,
-					dailyCalculationStatus: row.dailyCalculationStatus === '0'  ? false : true,
+					dailyCalculationStatus: row.dailyCalculationStatus === '1'  ? true : false,
 					systemName: row.systemName === null ? '' : row.systemName,
 					location: row.location === null ? '' : row.location,
 					customerNo: row.customerName === null ? '' : row.customerName,
@@ -233,6 +235,11 @@ class siteInfo extends Component {
 					disabledFlag: false
 
 				});
+				if ( new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
+					this.setState({
+						dailyCalculationStatusFlag: false
+					});
+				}
 			}
 			else {
 				this.setState(() => this.resetStates);
