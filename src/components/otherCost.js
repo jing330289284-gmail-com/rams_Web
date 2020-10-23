@@ -150,12 +150,12 @@ class otherCost extends React.Component {
 		if(this.state.costClassificationCode==1){
 			const emp = {
 				costClassificationCode: this.state.costClassificationCode,
-				happendDate: this.state.yearAndMonth3,
+				happendDate: publicUtils.formateDate(this.state.yearAndMonth3, true),
 				transportationCode: this.state.transportationCode,
 				originCode: this.state.stationCode3,
 				destinationCode: this.state.stationCode4,
 				round: this.state.round,
-				cost: this.state.cost,
+				cost: this.state.cost1,
 			}
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
@@ -163,12 +163,12 @@ class otherCost extends React.Component {
 		}else{
 			const emp = {
 				costClassificationCode: this.state.costClassificationCode,
-				happendDate: this.state.yearAndMonth4,
+				happendDate: publicUtils.formateDate(this.state.yearAndMonth4,true),
 				detailedName: this.state.detailedName,
 				stationCode: this.state.stationCode4,
 				transportationCode: this.state.transportationCode,
 				remark: this.state.remark,
-				cost: this.state.cost,
+				cost: this.state.cost2,
 			}
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
@@ -178,7 +178,6 @@ class otherCost extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
 					this.setState({ "myToastShow": false });
 				}
@@ -187,7 +186,7 @@ class otherCost extends React.Component {
 			});
 	};
 	render() {
-		const { remark, costClassificationsts, otherCostFileFlag2, otherCostFileFlag3} = this.state;
+		const { cost1,cost2,remark, costClassificationsts, otherCostFileFlag2, otherCostFileFlag3} = this.state;
 		const costClassification = this.props.costClassification;
 		const transportation = this.props.transportation;
 		const station = this.props.station;
@@ -339,7 +338,7 @@ class otherCost extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl disabled={this.state.costClassificationCode != 1 ? true : false} placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+									<FormControl value={cost1} name='cost1' disabled={this.state.costClassificationCode != 1 ? true : false} placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
 								</InputGroup>
 							</Col>
 							 <Col sm={2}>
@@ -425,7 +424,7 @@ class otherCost extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 										</InputGroup.Prepend>
-									<FormControl placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
+									<FormControl value={cost2} name='cost2' placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
 								<Col sm={2}>
