@@ -453,14 +453,14 @@ if($("#getFile").get(0).files[0].size>1048576){
 	 						</div>
 						</Col>
                     </Row>
-						<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 						<TableHeaderColumn  row='0' rowSpan='2' width='80'　tdStyle={ { padding: '.45em' } } dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='180'　tdStyle={ {padding: '.45em' } } dataField='happendDate' editable={false}>日付</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='80' tdStyle={ { padding: '.45em' } } dataField='costClassificationCode' editable={false}>区分</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='140' tdStyle={ { padding: '.45em' } } dataField='detailedName' editable={false}>名称</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='1' colSpan='2' tdStyle={ { padding: '.45em'}} headerAlign='center' dataField='stationCode' editable={false}>場所</TableHeaderColumn>
-						<TableHeaderColumn  row='1' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='transportationCode' editable={false}>出発地</TableHeaderColumn>
-						<TableHeaderColumn  row='1' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='destinationCode' editable={false}>目的地</TableHeaderColumn>
+						<TableHeaderColumn  row='1' rowSpan='1' width='150' tdStyle={ { padding: '.45em' } } dataField='transportationCode' editable={false}>出発地</TableHeaderColumn>
+						<TableHeaderColumn  row='1' rowSpan='1' width='150' tdStyle={ { padding: '.45em' } } dataField='destinationCode' editable={false}>目的地</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='cost' editable={false}>金額</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='remark' editable={false}>備考</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='100' tdStyle={ { padding: '.45em' } } dataField='roundCode' editable={false}>片・往</TableHeaderColumn>
