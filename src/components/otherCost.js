@@ -12,6 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as publicUtils from './utils/publicUtils.js';
 import { connect } from 'react-redux';
 import { fetchDropDown } from './services/index';
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 /**
  * 他の費用画面
@@ -31,6 +32,8 @@ class otherCost extends React.Component {
 		stationCode4: '',　// 到着
 		stationCode5: '',　// 場所
 		costClassificationsts: 0,//区分状態
+		otherCostFileFlag2: false,//ファイル2状態
+		otherCostFileFlag3: false,//ファイル3状態
 	};
 	valueChange = event => {
 		this.setState({
@@ -44,6 +47,9 @@ class otherCost extends React.Component {
 	/**
      * 添付ボタン
      */
+	addFile = (event, name) => {
+		$("#" + name).click();
+	}
 	changeFile = (event, name) => {
 		var filePath = event.target.value;
 		var arr = filePath.split('\\');
@@ -53,11 +59,22 @@ class otherCost extends React.Component {
 				otherCostFile2: filePath,
 				otherCostFileName2: fileName,
 			})
+			if (filePath != null) {
+				this.setState({
+					otherCostFileFlag2: true,
+				})
+            }
+			
 		} else if (name === "otherCostFile3") {
 			this.setState({
 				otherCostFile3: filePath,
 				otherCostFileName3: fileName,
 			})
+			if (filePath != null) {
+				this.setState({
+					otherCostFileFlag3: true,
+				})
+            }
 		}
 	}
 
@@ -131,7 +148,7 @@ class otherCost extends React.Component {
 	InsertCost = () => {
 		const formData = new FormData()
 		if(this.state.costClassificationCode==1){
-			const otherCostModel = {
+			const emp = {
 				costClassificationCode: this.state.costClassificationCode,
 				happendDate: this.state.yearAndMonth3,
 				transportationCode: this.state.transportationCode,
@@ -140,11 +157,11 @@ class otherCost extends React.Component {
 				round: this.state.round,
 				cost: this.state.cost,
 			}
-			formData.append('otherCostModel', JSON.stringify(otherCostModel))
+			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
-			this.props.otherCostTokuro(otherCostModel);
+			this.props.otherCostTokuro(emp);
 		}else{
-			const otherCostModel = {
+			const emp = {
 				costClassificationCode: this.state.costClassificationCode,
 				happendDate: this.state.yearAndMonth4,
 				detailedName: this.state.detailedName,
@@ -153,11 +170,11 @@ class otherCost extends React.Component {
 				remark: this.state.remark,
 				cost: this.state.cost,
 			}
-			formData.append('otherCostModel', JSON.stringify(otherCostModel))
+			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
-			this.props.otherCostTokuro(otherCostModel);
+			this.props.otherCostTokuro(emp);
 		}
-		axios.post(this.props.serverIP + "costRegistration/insertcostRegistration", formData)
+		axios.post(this.props.serverIP + "costRegistration/insertCostRegistration", formData)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
@@ -170,7 +187,7 @@ class otherCost extends React.Component {
 			});
 	};
 	render() {
-		const {remark,costClassificationsts} = this.state;
+		const { remark, costClassificationsts, otherCostFileFlag2, otherCostFileFlag3} = this.state;
 		const costClassification = this.props.costClassification;
 		const transportation = this.props.transportation;
 		const station = this.props.station;
@@ -327,13 +344,12 @@ class otherCost extends React.Component {
 							</Col>
 							 <Col sm={2}>
                             <div style={{ "float": "right" }}>
-								<Col sm={2}>
+								<Col sm={6}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
-											{this.state.costClassificationCode==1 ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-												<Form.File id="otherCostFile2"
-														label={this.state.otherCostFile2 === undefined ? "添付" : this.state.otherCostFileName2} data-browse="添付" value={this.state.otherCostFile2} custom onChange={(event) => this.changeFile(event, 'otherCostFile2')} disabled={this.state.costClassificationCode != 1 ? true : false}/>}
+											<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'otherCostFile2')}>{this.state.otherCostFile2 !== undefined ? "添付済み" : "添付"} </InputGroup.Text>
+											<Form.File id="otherCostFile2" hidden value={this.state.otherCostFile2} custom onChange={(event) => this.changeFile(event, 'otherCostFile2')} disabled={this.state.costClassificationCode != 1 ? true : false} />
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -416,9 +432,8 @@ class otherCost extends React.Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
-											{this.state.costClassificationCode>1 ? <InputGroup.Text id="inputGroup-sizing-sm" >添付済み</InputGroup.Text> :
-												<Form.File id="otherCostFile3"
-												label={this.state.otherCostFile3 === undefined ? "添付" : this.state.otherCostFileName3} data-browse="添付" value={this.state.otherCostFile3} custom onChange={(event) => this.changeFile(event, 'otherCostFile3')} disabled={this.state.costClassificationCode < 2 ? true : false}/>}
+											<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'otherCostFile3')}>{this.state.otherCostFile3 !== undefined ? "添付済み" : "添付"} </InputGroup.Text>
+											<Form.File id="otherCostFile3" hidden data-browse="添付" value={this.state.otherCostFile3} custom onChange={(event) => this.changeFile(event, 'otherCostFile3')} disabled={this.state.costClassificationCode < 2 ? true : false} />
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -440,8 +455,8 @@ const mapStateToProps = state => {
 		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14] : [],
 		costClassification: state.data.dataReques.length >= 1 ? state.data.dataReques[30] : [],
 		transportation: state.data.dataReques.length >= 1 ? state.data.dataReques[31] : [],
-		round: state.data.dataReques.length >= 1 ? state.data.dataReques[32]: [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
+		round: state.data.dataReques.length >= 1 ? state.data.dataReques[37] : [],
+		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
 	}
 };
 
