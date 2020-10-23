@@ -10,9 +10,7 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
-/** 
+import store from './redux/store';/** 
 *営業文章画面
  */
 class salesContent extends React.Component {
@@ -22,6 +20,7 @@ class salesContent extends React.Component {
 	}
 
 	initState = ({
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		myToastShow: false,// 状態ダイアログ
 		employeeNo: this.props.empNo,
 		employeeName: '',
@@ -48,17 +47,17 @@ class salesContent extends React.Component {
 		developLanguageCode8: null,
 		developLanguageCode9: null,
 		developLanguageCode10: null,
-		genders: [],
-		employees: [],
-		japaneseLevels: [],
-		englishLevels: [],
-		salesProgresss: [],
-		japaneaseConversationLevels: [],
-		englishConversationLevels: [],
-		projectPhases: [],
-		stations: [],
-		developLanguages: [],
-		developLanguagesShow: [],
+		genders: store.getState().dropDown[0],
+		employees: store.getState().dropDown[4],
+		japaneseLevels: store.getState().dropDown[5],
+		englishLevels: store.getState().dropDown[13],
+		salesProgresss: store.getState().dropDown[16],
+		japaneaseConversationLevels: store.getState().dropDown[43],
+		englishConversationLevels: store.getState().dropDown[44],
+		projectPhases: store.getState().dropDown[45],
+		stations: store.getState().dropDown[14],
+		developLanguages: store.getState().dropDown[8],
+		developLanguagesShow: store.getState().dropDown[8],
 		wellUseLanguagss: [],
 		stationCode: '',
 		disbleState: false,
@@ -84,7 +83,6 @@ class salesContent extends React.Component {
 	})
 	componentDidMount() {
 		this.init();
-		this.getDropDowns();
 		var clipboard2 = new Clipboard('#copyUrl', {
 			text: function() {
 				return document.getElementById('snippet').value;
@@ -142,7 +140,7 @@ class salesContent extends React.Component {
 	};
 
 	updateSalesSentence = () => {
-		axios.post(this.props.serverIP + "salesSituation/updateSalesSentence", this.state)
+		axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
 				this.init();
 				this.setState({ myToastShow: true });
@@ -158,7 +156,7 @@ class salesContent extends React.Component {
 			[event.target.name]: event.target.value,
 			stationCode: event.target.value,
 		})
-		axios.post(this.props.serverIP + "salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.empNo, stationCode: event.target.value })
+		axios.post(this.state.serverIP + "salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.empNo, stationCode: event.target.value })
 			.then(result => {
 				this.setState({ myToastShow: true });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
@@ -185,7 +183,7 @@ class salesContent extends React.Component {
 	}
 
 	init = () => {
-		axios.post(this.props.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
 			.then(result => {
 				console.log(result.data);
 				if (result.data[0].age === "") {
@@ -284,25 +282,6 @@ class salesContent extends React.Component {
 					})
 				}
 			})
-	}
-	
-	getDropDowns = () => {
-		var methodArray = ["getGender", "getEmployeeStatus", "getJapaneseLevel", "getEnglishLevel", "getSalesProgress", "getJapaneaseConversationLevel", "getEnglishConversationLevel", "getProjectPhase", "getStation", "getDevelopLanguage"]
-		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
-		this.setState(
-				{genders: data[0],
-				employees: data[1],
-				japaneseLevels: data[2],
-				englishLevels: data[3],
-				salesProgresss: data[4],
-				japaneaseConversationLevels: data[5],
-				englishConversationLevels: data[6],
-				projectPhases: data[7],
-				stations: data[8],
-				developLanguages: data[9],
-				developLanguagesShow: data[9],
-			}
-		);
 	}
 
 	setEndDate = (date) => {
@@ -496,15 +475,4 @@ class salesContent extends React.Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(salesContent);
+export default salesContent;

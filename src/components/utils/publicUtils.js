@@ -70,7 +70,7 @@ export function getdropDown(method, serverIP) {
 		type: "POST",
 		url: serverIP + method,
 		async: false,
-		success: function(msg) {
+		success: function (msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -88,7 +88,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		data: par,
 		async: false,
 		contentType: "application/json",
-		success: function(resultList) {
+		success: function (resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
@@ -112,7 +112,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		url: serverIP + "initializationPage",
 		contentType: "application/json",
 		async: false,
-		success: function(resultList) {
+		success: function (resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ value: '', text: '選択ください' }];
 				var List = resultList[j];
@@ -146,7 +146,7 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function(data) {
+		success: function (data) {
 			if (data != null) {
 				no = data
 			}
@@ -303,7 +303,7 @@ export function handleDownload(path, serverIP) {
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-		xhr.onload = function() {
+		xhr.onload = function () {
 			if (this.status === 200) {
 				var blob = this.response;
 				if (blob.size === 0) {
@@ -326,15 +326,12 @@ export function handleDownload(path, serverIP) {
 
 }
 
-/**
-//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
-* 郵便番号のApi
-*/
-export async function postcodeApi() {
+
+ export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		await axios.post("/postcodeApi/search?zipcode=" + postcode)
-			.then(function(result) {
+			.then(function (result) {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
@@ -345,24 +342,53 @@ export async function postcodeApi() {
 			});
 	} else {
 	}
-}
+} 
+
+
+/**
+//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
+* 郵便番号のApi
+*/
+/* export function postcodeApi(value) {
+
+	$.ajax({
+		type: "post",
+		url: "/postcodeApi/search?zipcode=" + value,
+		async: false,
+		contentType: "application/json",
+		success: function (result) {
+			console.log(result)
+			if (result.data.status === 200) {
+				$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
+			}
+
+		}
+	});
+};
+ */
+
+
 
 //　　年齢と和暦
-export async function calApi(date) {
-
+export function calApi(date) {
+	var outArray = [];
 	var birthDayTime = date.getTime();
 	var nowTime = new Date().getTime();
 	//http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-	await axios.get("/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1").then(function(result) {
-		if (result.data != null) {
-			$("#japaneseCalendar").val(result.data);
-			$("#temporary_age").val(Math.ceil((nowTime - birthDayTime) / 31536000000));
+	$.ajax({
+		type: "get",
+		url: "/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1",
+		async: false,
+		contentType: "application/json",
+		success: function (result) {
+			if (result != null) {
+				outArray.push(result)
+				outArray.push(Math.ceil((nowTime - birthDayTime) / 31536000000))
+			}
 		}
-	}).catch((error) => {
-		console.error("Error - " + error);
 	});
-
+	return outArray;
 };
 
 //diff time, 11:30 - 09:00 = 2.5(H)
@@ -480,7 +506,7 @@ export async function katakanaApi(value) {
 		dataType: "json",
 		contentType: "application/x-www-form-urlencoded",
 		async: false,
-		success: function(data) {
+		success: function (data) {
 			value = data.converted;
 		}
 	});

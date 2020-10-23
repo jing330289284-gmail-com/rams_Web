@@ -8,8 +8,7 @@ import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 //マスター登録
 class masterInsert extends Component {
@@ -23,7 +22,9 @@ class masterInsert extends Component {
 	initialState = {
 		myToastShow: false,
 		errorsMessageShow: false,
-		flag: true//活性非活性flag
+		flag: true,//活性非活性flag
+		masterStatus: store.getState().dropDown[32].slice(1),
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
 	onchange = event => {
@@ -38,7 +39,7 @@ class masterInsert extends Component {
 
 	// 页面加载
 	componentDidMount() {
-		this.props.fetchDropDown();
+
 	}
 
     /**
@@ -51,8 +52,8 @@ class masterInsert extends Component {
 		$.each(formArray, function(i, item) {
 			masterModel[item.name] = item.value;
 		});
-		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.props.masterStatus)
-		axios.post(this.props.serverIP + "masterInsert/toroku", masterModel)
+		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
+		axios.post(this.state.serverIP + "masterInsert/toroku", masterModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -99,7 +100,7 @@ class masterInsert extends Component {
 									name="master"
 									value={master}
 									onChange={this.onchange}
-									options={this.props.masterStatus}
+									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
@@ -134,16 +135,5 @@ class masterInsert extends Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		masterStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[32].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(masterInsert);
+export default masterInsert;

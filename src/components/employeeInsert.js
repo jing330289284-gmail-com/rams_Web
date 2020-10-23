@@ -79,7 +79,7 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
-		alert(this.state.employeeFristName)
+		alert(this.state.japaneseCalenda)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -108,7 +108,7 @@ class employeeInsert extends React.Component {
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
 			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
 			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo),//携帯電話
-			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
+			authorityCode: this.state.authorityCode,//権限
 			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
 			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
@@ -166,6 +166,9 @@ class employeeInsert extends React.Component {
 	 */
 	changeNationalityCodes = event => {
 		let value = event.target.value;
+		this.setState({
+			nationalityCode: value,
+		})
 		if (value === '3') {
 			this.setState({
 				japaneseLevelCode: 5,
@@ -222,13 +225,19 @@ class employeeInsert extends React.Component {
 	*/
 	inactiveBirthday = date => {
 		if (date !== undefined && date !== null && date !== "") {
-			publicUtils.calApi(date);
-			this.setState({
-				birthday: date
+			const promise = Promise.resolve(publicUtils.calApi(date));
+			promise.then((data) => {
+				this.setState(
+					{
+						birthday: date,
+						japaneseCalendar:data[0][0].text ,
+						temporary_age: data[1],
+					}
+				);
 			});
 		} else {
 			this.setState({
-				temporary_age: "0",
+				temporary_age: "",
 				birthday: "",
 				japaneseCalendar: ""
 			});
@@ -579,8 +588,8 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -654,7 +663,7 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" disabled />
+									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" size="sm" name="japaneseCalendar" disabled />
 								</InputGroup>
 							</Col>
 						</Row>

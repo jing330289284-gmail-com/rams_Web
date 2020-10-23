@@ -414,25 +414,29 @@ class salesProfit extends React.Component {
 									</Col>
 									<Col sm={4}>
 										<div style={{ "float": "right" }}>
-											<Button variant="info" size="sm" id="syounin" onClick={this.onchange} >
-												<FontAwesomeIcon icon={faEdit} />営業ポイント明細
+											<Button size="sm" id="syounin" onClick={this.onchange} className="btn btn-primary btn-sm">
+												営業ポイント明細
 								        </Button>
 										</div>
 									</Col>
 								</Row>
-								<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-									<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-									<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
-									<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
-									<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >所属</TableHeaderColumn>
-									<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
-									<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
-									<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >入場期間</TableHeaderColumn>
-									<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
-									<TableHeaderColumn dataField='developLanguageName' width='90' tdStyle={{ padding: '.45em' }} >売上</TableHeaderColumn>
-									<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >給料(発注額)</TableHeaderColumn>
-									<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >粗利</TableHeaderColumn>
-								</BootstrapTable>
+								<Row>
+									<Col sm={12}>
+										<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+											<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+											<TableHeaderColumn dataField='yearAndMonth' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
+											<TableHeaderColumn dataField='employeeStatus' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
+											<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} >所属</TableHeaderColumn>
+											<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
+											<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+											<TableHeaderColumn dataField='workDate' tdStyle={{ padding: '.45em' }} >入場期間</TableHeaderColumn>
+											<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
+											<TableHeaderColumn dataField='profit' width='90' tdStyle={{ padding: '.45em' }} >売上</TableHeaderColumn>
+											<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} >給料(発注額)</TableHeaderColumn>
+											<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >粗利</TableHeaderColumn>
+										</BootstrapTable>
+									</Col>
+								</Row>
 							</div>
 						</Form.Group>
 					</Form>

@@ -97,7 +97,7 @@ class employeeUpdate extends React.Component {
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
 			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
 			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo),//携帯電話
-			authorityCode: $('input:radio[name="employeeType"]:checked').val() === "0" ? $("#authorityCodeId").val() : "0",//権限
+			authorityCode: this.state.authorityCode,//権限
 			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
 			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
@@ -131,11 +131,13 @@ class employeeUpdate extends React.Component {
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
-				if (response.data != null) {
-					this.setState({ "myToastShow": true, "method": "put" });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				if (response.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": false });
+					this.setState({ "myToastShow": true, "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					window.location.reload();
+					this.getNO("LYC");//採番番号
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -149,10 +151,13 @@ class employeeUpdate extends React.Component {
 		})
 	}
 	/**
- * 出身地に変更する時、日本語ラベルとEnglishラベルを変更する
- */
+	 * 出身地に変更する時、日本語ラベルとEnglishラベルを変更する
+	 */
 	changeNationalityCodes = event => {
 		let value = event.target.value;
+		this.setState({
+			nationalityCode: value,
+		})
 		if (value === '3') {
 			this.setState({
 				japaneseLevelCode: 5,
@@ -219,8 +224,7 @@ class employeeUpdate extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: ((data.postcode + "       ").replace("null", "")).substring(0, 3).replace("   ", ""),//郵便番号
-					postcode2: ((data.postcode + "       ").replace("null", "")).substring(3, 4).replace("", ""),//郵便番号
+					postcode: data.postcode,//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -273,7 +277,21 @@ class employeeUpdate extends React.Component {
 			}
 		});
 	};
+	/**
+	* 郵便番号に変更する
+	*/
+/* 	postcodeChange = event => {
+		let value = event.target.value;
+		let promise = Promise.resolve(publicUtils.katakanaApi(value));
+		promise.then((date) => {
+			alert(date)
+			console.log(date)
+			this.setState({
+			})
 
+		});
+	};
+ */
 	//　　卒業年月
 	state = {
 		birthday: new Date(),
@@ -284,16 +302,24 @@ class employeeUpdate extends React.Component {
 		stayPeriod: new Date(),
 		graduationYearAndMonth: new Date(),
 	};
-	//　　年齢と和暦
+	/**
+	* 年齢と和暦
+	*/
 	inactiveBirthday = date => {
 		if (date !== undefined && date !== null && date !== "") {
-			publicUtils.calApi(date);
-			this.setState({
-				birthday: date
+			const promise = Promise.resolve(publicUtils.calApi(date));
+			promise.then((data) => {
+				this.setState(
+					{
+						birthday: date,
+						japaneseCalendar: data[0][0].text,
+						temporary_age: data[1],
+					}
+				);
 			});
 		} else {
 			this.setState({
-				temporary_age: "0",
+				temporary_age: "",
 				birthday: "",
 				japaneseCalendar: ""
 			});
@@ -1040,6 +1066,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
 									</InputGroup.Prepend>
+									{/* <FormControl value={postcode} autoComplete="off" onChange={publicUtils.postcodeApi}  size="sm" name="postcode"  /> */}
 									<FormControl value={postcode} autoComplete="off" onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
 							</Col>
@@ -1199,7 +1226,7 @@ class employeeUpdate extends React.Component {
 						</Row>
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" onClick={this.updateEmployee} type="button" on>
-								<FontAwesomeIcon icon={faEdit} /> 更新"
+								<FontAwesomeIcon icon={faEdit} /> 更新
 							</Button>{' '}
 							<Button size="sm" variant="info" type="reset">
 								<FontAwesomeIcon icon={faUndo} /> リセット

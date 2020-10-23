@@ -12,8 +12,8 @@ import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
+
 registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 /**
@@ -45,11 +45,11 @@ class ExpensesInfo extends Component {
         btnText:'登録',//ボタン文字
         kadouCheck:true,//稼働フラグ
         relatedEmployees:'',//要員
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
-        this.props.fetchDropDown();
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousingStatus",this.props.serverIP),
+            housingStatusDrop: utils.getdropDown("getHousing",this.state.serverIP),
             employeeNo: this.props.employeeNo,
             expensesInfoModels:this.props.expensesInfoModels,
             kadouCheck:this.props.kadouCheck,
@@ -119,7 +119,7 @@ class ExpensesInfo extends Component {
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);
-        axios.post(this.props.serverIP + "expensesInfo/toroku", expensesInfoModel)
+        axios.post(this.state.serverIP + "expensesInfo/toroku", expensesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
@@ -145,6 +145,12 @@ class ExpensesInfo extends Component {
                 this.setState({
                     actionType: 'update',
                     btnText:'更新',
+                })
+            }else{
+                this.resetValue();
+                this.setState({
+                    actionType: 'insert',
+                    btnText: '登録',
                 })
             }
         } else {
@@ -388,15 +394,4 @@ class ExpensesInfo extends Component {
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ExpensesInfo);
+export default ExpensesInfo;

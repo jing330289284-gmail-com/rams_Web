@@ -14,8 +14,7 @@ import DatePicker from "react-datepicker";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faFile } from '@fortawesome/free-solid-svg-icons';
-import { Link } from "react-router-dom";
+import { faFile } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
 
 
@@ -119,8 +118,7 @@ class employeeUpdate extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: ((data.postcode + "       ").replace("null", "")).substring(0, 3).replace("   ", ""),//郵便番号
-					postcode2: ((data.postcode + "       ").replace("null", "")).substring(3, 4).replace("", ""),//郵便番号
+					postcode:data.postcode,//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -135,8 +133,12 @@ class employeeUpdate extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
+					resumeInfo1: data.resumeInfo1,//履歴書1
 					resumeName1: data.resumeName1,//履歴書備考1
-					resumeName2: data.resumeName2,//履歴書備考1
+					resumeInfo2: data.resumeInfo2,//履歴書2
+					resumeName2: data.resumeName2,//履歴書備考2
+					residentCardInfo: data.residentCardInfo,//在留カード
+					passportInfo: data.passportInfo,//パスワード
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -325,34 +327,6 @@ class employeeUpdate extends React.Component {
 		}
 
 	};
-
-	changeFile = (event, name) => {
-		var filePath = event.target.value;
-		var arr = filePath.split('\\');
-		var fileName = arr[arr.length - 1];
-		if (name === "residentCardInfo") {
-			this.setState({
-				residentCardInfo: filePath,
-				residentCardInfoName: fileName,
-			})
-		} else if (name === "resumeInfo1") {
-			this.setState({
-				resumeInfo1: filePath,
-				resumeInfo1Name: fileName,
-			})
-		} else if (name === "resumeInfo2") {
-			this.setState({
-				resumeInfo2: filePath,
-				resumeInfo2Name: fileName,
-			})
-		} else if
-			(name === "passportInfo") {
-			this.setState({
-				passportInfo: filePath,
-				passportInfoName: fileName,
-			})
-		}
-	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -403,8 +377,6 @@ class employeeUpdate extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: {  employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
-					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { 　　employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -984,7 +956,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"  ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -992,35 +964,35 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeName1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName1" disabled/>
+									<FormControl value={resumeName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl  value={resumeName2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName2" disabled/>
+									<FormControl value={resumeName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName2" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo!==undefined?"添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>

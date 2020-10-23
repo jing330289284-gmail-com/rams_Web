@@ -46,6 +46,12 @@ export function fetchDropDown() {
         "getEmployeeNameNoBP",//38社員氏名（BP社員ない）を取得する
         "getSituationChange",//39状況変動を取得する
         "getSiteStateStatus",//40现场状态
+        "getSalesPriorityStatus",//41営業優先度
+        "getSalesPerson",//42営業者
+        "getJapaneaseConversationLevel",//43日本語会話能力
+        "getEnglishConversationLevel",//44英語会話能力
+        "getProjectPhase",//45作業範囲
+        "getTransaction",//46取引区分
         "getServerIP",//最後
     ]
     var outArray = [];
@@ -69,7 +75,7 @@ export function fetchDropDown() {
             }
         }
     });
-   outArray.push(outArray[outArray.length - 1].slice(1)[0].name);
+    outArray.push(outArray[outArray.length - 1].slice(1)[0].name);
     return outArray
 };
 

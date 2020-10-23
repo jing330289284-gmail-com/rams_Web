@@ -14,8 +14,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import SalesContent from './salesContent';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 /** 
 *営業状況画面
@@ -28,6 +27,7 @@ class manageSituation extends React.Component {
 
 	//初期化
 	initialState = {
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		rowNo: '',// 明細番号
 		employeeNo: '',// 社員NO
 		yearMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2))).getTime(),
@@ -47,8 +47,8 @@ class manageSituation extends React.Component {
 		style: {
 			"backgroundColor": ""
 		},// 単価エラー色
-		salesProgressCodes: [],// ステータス
-		allCustomer: [],// お客様レコード用
+		salesProgressCodes: store.getState().dropDown[16],// ステータス
+		allCustomer: store.getState().dropDown[15],// お客様レコード用
 		editFlag: false,// 確定客様編集flag
 		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
@@ -58,10 +58,10 @@ class manageSituation extends React.Component {
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
 		salesStaff: '',// 営業担当
-		salesPriorityStatuss: [],// 全部ステータス
-		salesPersons: [],// 全部営業
-		customers: [],// 全部お客様　画面入力用
-		getstations: [], // 全部場所
+		salesPriorityStatuss: store.getState().dropDown[41],// 全部ステータス
+		salesPersons: store.getState().dropDown[42],// 全部営業
+		customers: store.getState().dropDown[15],// 全部お客様　画面入力用
+		getstations: store.getState().dropDown[14], // 全部場所
 		totalPersons: '',// 合計人数
 		decidedPersons: '',// 確定人数
 		linkDisableFlag: true,// linkDisableFlag
@@ -74,7 +74,7 @@ class manageSituation extends React.Component {
 		myToastShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
 		errorsMessageValue: '',// ERRメッセージ
-		customerContracts: [],
+		customerContracts: store.getState().dropDown[24],
 		customerContractStatus: '',
 		modeSelect: 'radio',
 		selectetRowIds: [],
@@ -94,7 +94,7 @@ class manageSituation extends React.Component {
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		axios.post(this.props.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: '202009' })
+		axios.post(this.state.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: '202009' })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -156,31 +156,19 @@ class manageSituation extends React.Component {
 	}
 
 	getDropDowns = () => {
-		var methodArray = ["getSalesPriorityStatus", "getCustomer", "getStation"]
-		var data = publicUtils.getPublicDropDown(methodArray,this.props.serverIP);
-		data[2].shift();
-		data[1].shift();
+		var methodArray = ["getSalesPriorityStatus"]
+		var data = publicUtils.getPublicDropDown(methodArray,this.state.serverIP);
 		this.setState(
 			{
 				salesPriorityStatuss: data[0],//　営業優先度 
-				customers: data[1],//　お客様
-				getstations: data[2],//　 場所 
 			}
 		);
 		// レコードdropdown用
-		var methodArrayTleOnly = ["getSalesProgress", "getSalesPerson", "getCustomer", "getCustomerContractStatus"]
-		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly,this.props.serverIP);
-		dataTleOnly[0].shift();
-		dataTleOnly[1].shift();
-		dataTleOnly[2].shift();
-		//dataTleOnly[2].unshift({ value: '', text: '' })
-		dataTleOnly[3].shift();
+		var methodArrayTleOnly = ["getSalesPerson"]
+		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly,this.state.serverIP);
 		this.setState(
 			{
-				salesProgressCodes: dataTleOnly[0],//　営業状態
-				salesPersons: dataTleOnly[1],//　 営業担当 
-				allCustomer: dataTleOnly[2],//　お客様
-				customerContracts: dataTleOnly[3]
+				salesPersons: dataTleOnly[0],//　 営業担当 
 			}
 		);
 	};
@@ -310,7 +298,7 @@ class manageSituation extends React.Component {
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
-				axios.post(this.props.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
+				axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
 					.then(result => {
 						if (result.data != null) {
 							this.getSalesSituation(this.state.salesYearAndMonth)
@@ -354,7 +342,7 @@ class manageSituation extends React.Component {
 				})
 			}
 		} else {
-			axios.post(this.props.serverIP + "salesSituation/updateSalesSituation", this.state)
+			axios.post(this.state.serverIP + "salesSituation/updateSalesSituation", this.state)
 				.then(result => {
 					if (result.data != null) {
 						if (result.data.errorsMessage != null) {
@@ -910,8 +898,8 @@ class manageSituation extends React.Component {
 								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
 								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.props.serverIP)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.props.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.state.serverIP)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
 							</div>
 						</Col>
 					</Row>
@@ -968,16 +956,5 @@ class manageSituation extends React.Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(manageSituation);
+export default manageSituation;
 

@@ -13,8 +13,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 registerLocale('ja', ja);
 
@@ -34,6 +33,18 @@ class siteInfo extends Component {
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
+		nichiwariFlag: true,//日割フラグ
+		payOffRangeStatus: store.getState().dropDown[33].slice(1),//　精算時間
+		siteMaster: store.getState().dropDown[34],//　役割
+		customerMaster: store.getState().dropDown[15].slice(1),//お客様
+		topCustomerMaster: store.getState().dropDown[35].slice(1),//トップお客様
+		developLanguageMaster: store.getState().dropDown[8].slice(1),//開発言語
+		employeeInfo: store.getState().dropDown[9].slice(1),//社員名
+		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),//業種
+		getstations: store.getState().dropDown[14].slice(1),//　場所 
+		levelMaster: store.getState().dropDown[18],//　レベル
+		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
 	onchange = event => {
@@ -51,9 +62,17 @@ class siteInfo extends Component {
 		this.setState(
 			{
 				admissionStartDate: date,
-				time: publicUtils.getFullYearMonth(date, new Date())
+				time: publicUtils.getFullYearMonth(date, new Date()),
+				nichiwariFlag: true
 			}
+
 		);
+		if (date.getDate() > 2) {
+			this.setState(
+				{
+					nichiwariFlag: false
+				});
+		}
 	};
 	//　退場年月
 	admissionEndDate = (date) => {
@@ -66,14 +85,13 @@ class siteInfo extends Component {
 
 	// 页面加载
 	componentDidMount() {
-		this.props.fetchDropDown();
 		if (this.props.location.state !== undefined) {
-			axios.post(this.props.serverIP + "getSiteInfo", { employeeName: 'LYC001' })
+			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: 'LYC001' })
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
 							siteData: response.data,
-							employeeName: publicUtils.valueGetLabel('LYC001', this.props.employeeInfo),
+							employeeName: publicUtils.valueGetLabel('LYC001', this.state.employeeInfo),
 							disabledFlag: false,
 						});
 					}
@@ -123,18 +141,18 @@ class siteInfo extends Component {
 				})
 			}
 		} else {
-			if (this.props.customerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.getstations.find((v) => (v.name === value)) !== undefined ||
-				this.props.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
+				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
 						this.refs.table.setState({
 							selectedRowKeys: []
 						});
-						axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
+						axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 							.then(response => {
 								if (response.data != null) {
 									this.setState({
@@ -230,18 +248,18 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.props.customerMaster)
-		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.props.topCustomerMaster)
-		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.props.developLanguageMaster)
-		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo)
-		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.props.getstations)
-		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.props.typeOfIndustryMaster)
+		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
+		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
+		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
+		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
+		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.state.getstations)
+		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
 			siteModel["checkDate"] = "1";
 		}
-		axios.post(this.props.serverIP + "insertSiteInfo", siteModel)
+		axios.post(this.state.serverIP + "insertSiteInfo", siteModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -251,7 +269,7 @@ class siteInfo extends Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
-					axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
+					axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -275,19 +293,19 @@ class siteInfo extends Component {
 		$.each(formArray, function(i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.props.customerMaster)
-		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.props.topCustomerMaster)
-		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.props.developLanguageMaster)
-		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo)
-		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.props.getstations)
-		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.props.typeOfIndustryMaster)
+		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
+		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
+		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
+		siteModel["employeeNo"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
+		siteModel["location"] = publicUtils.labelGetValue($("#location").val(), this.state.getstations)
+		siteModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {
 			siteModel["checkDate"] = "1";
 		}
 		siteModel["workDate"] = this.state.siteData[this.state.siteData.length - 1].admissionStartDate
-		axios.post(this.props.serverIP + "updateSiteInfo", siteModel)
+		axios.post(this.state.serverIP + "updateSiteInfo", siteModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -297,7 +315,7 @@ class siteInfo extends Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
-					axios.post(this.props.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.props.employeeInfo) })
+					axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
@@ -374,9 +392,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											options={this.props.employeeInfo}
+											options={this.state.employeeInfo}
 											getOptionLabel={(option) => option.name}
-											value={this.props.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
+											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -420,8 +438,11 @@ class siteInfo extends Component {
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="workState" name="workState" value={workState}
 											onChange={this.onchange} disabled={this.state.employeeName === '' ? true : false}>
-											<option value="0">稼働中</option>
-											<option value="1">終了</option>
+											{this.state.siteStateStatus.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup>
 								</Col>
@@ -467,9 +488,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="location"
 											name="location"
-											value={this.props.getstations.find(v => v.name === this.state.location) || {}}
+											value={this.state.getstations.find(v => v.name === this.state.location) || {}}
 											onSelect={(event) => this.handleTag(event, 'location')}
-											options={this.props.getstations}
+											options={this.state.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -490,9 +511,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											options={this.props.customerMaster}
+											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.props.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -512,9 +533,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={this.props.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
 											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
-											options={this.props.topCustomerMaster}
+											options={this.state.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -534,9 +555,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="developLanguageCode"
 											name="developLanguageCode"
-											value={this.props.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
+											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
-											options={this.props.developLanguageMaster}
+											options={this.state.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -554,11 +575,12 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">&emsp;単&emsp;価&emsp;</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="単価" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">日割</InputGroup.Text>
+											<InputGroup.Checkbox aria-label="Checkbox for following text input" disabled={this.state.nichiwariFlag === true ? true : false} />
 										</InputGroup.Prepend>
 										<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									</InputGroup>
@@ -572,7 +594,7 @@ class siteInfo extends Component {
 											onChange={this.onchange}
 											id="payOffRange1" name="payOffRange1" value={payOffRange1}
 											autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.props.payOffRangeStatus.map(data =>
+											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -583,7 +605,7 @@ class siteInfo extends Component {
 											onChange={this.onchange}
 											id="payOffRange2" name="payOffRange2" value={payOffRange1 === '0' ? '0' : payOffRange2}
 											autoComplete="off" disabled={payOffRange1 === '0' ? true : false} >
-											{this.props.payOffRangeStatus.map(data =>
+											{this.state.payOffRangeStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
@@ -598,7 +620,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.props.siteMaster.map(date =>
+											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
@@ -612,7 +634,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
-											{this.props.levelMaster.map(date =>
+											{this.state.levelMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
@@ -650,9 +672,9 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="typeOfIndustryCode"
 											name="typeOfIndustryCode"
-											value={this.props.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
+											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
 											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
-											options={this.props.typeOfIndustryMaster}
+											options={this.state.typeOfIndustryMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
@@ -686,53 +708,36 @@ class siteInfo extends Component {
 					</Form>
 					<Row>
 					</Row>
-					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
-							<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
-							<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
-							<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='payOffRange2' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='related1Employees' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='related2Employees' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='related3Employees' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='related4Employees' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='typeOfIndustryName' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
-							<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
-						</BootstrapTable>
-					</div>
+					<Row>
+						<Col sm={12}>
+							<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
+								<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+								<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
+								<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+								<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='payOffRange2' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='related1Employees' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='related2Employees' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='related3Employees' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='related4Employees' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='typeOfIndustryName' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
+							</BootstrapTable>
+						</Col>
+					</Row>
 				</div>
 			</div >
 		)
 	}
 }
-const mapStateToProps = state => {
-	return {
-		payOffRangeStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[33].slice(1) : [],//　精算時間
-		siteMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[34] : [],//　役割
-		levelMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],//　レベル
-		customerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],//お客様
-		topCustomerMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[35].slice(1) : [],//トップお客様
-		developLanguageMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[8].slice(1) : [],//開発言語
-		employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],//社員名
-		typeOfIndustryMaster: state.data.dataReques.length >= 1 ? state.data.dataReques[36].slice(1) : [],//業種
-		getstations: state.data.dataReques.length >= 1 ? state.data.dataReques[14].slice(1) : [],//　場所 
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(siteInfo);
+export default siteInfo;
