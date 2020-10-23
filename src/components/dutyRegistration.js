@@ -322,7 +322,8 @@ class DutyRegistration extends React.Component {
 		axios.post(this.props.serverIP + "dutyRegistration/downloadPDF", dataInfo)
 			.then(resultMap => {
 			    if(resultMap.data){
-			        alert("更新成功");
+//					publicUtils.handleDownload(resultMap.data, this.props.serverIP);
+			        alert(resultMap.data);
 			    }else{
 			        alert("更新失败");
 			    }
