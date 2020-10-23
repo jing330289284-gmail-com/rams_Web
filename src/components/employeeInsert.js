@@ -184,7 +184,6 @@ class employeeInsert extends React.Component {
 	 * 初期化メソッド
 	 */
 	componentDidMount() {
-		//this.props.fetchDropDown();
 		const { location } = this.props
 		this.setState(
 			{
@@ -345,6 +344,7 @@ class employeeInsert extends React.Component {
 	*/
 	employeeStatusChange = event => {
 		const value = event.target.value;
+		alert(value)
 		if (value === '1') {
 			this.setState({ companyMail: '', authorityCode: 0, employeeStatus: 1 });
 			this.getNO("BP");
@@ -652,7 +652,7 @@ class employeeInsert extends React.Component {
 											dateFormat="yyyy/MM/dd"
 										/>
 									</InputGroup.Append>
-									<FormControl placeholder="0" id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" disabled />
+									<FormControl  id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" disabled />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
 									</InputGroup.Prepend>

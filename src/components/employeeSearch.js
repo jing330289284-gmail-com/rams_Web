@@ -344,7 +344,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員名(BP)</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="employeeName"
