@@ -12,9 +12,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import * as messageUtils from './utils/messageUtils.js';
 import { Link } from "react-router-dom";
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
-
+import store from './redux/store';
 
 import BreakTime from './breakTime';
 import * as DutyRegistrationJs from './dutyRegistrationJs.js';
@@ -40,6 +38,7 @@ class DutyRegistration extends React.Component {
 			workHours: 0,
 			isConfirmedPage: false,
 			breakTime: {},
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 		}
 		this.options = {
 			defaultSortName: 'day',
@@ -170,7 +169,7 @@ class DutyRegistration extends React.Component {
 		let postData = {
 			yearMonth: this.state.year + this.state.month,
 		}
-        axios.post(this.props.serverIP + "dutyRegistration/getDutyInfo", postData)
+        axios.post(this.state.serverIP + "dutyRegistration/getDutyInfo", postData)
             .then(resultMap => {
                 if(resultMap.data){
 					let dateData = [];
@@ -273,7 +272,7 @@ class DutyRegistration extends React.Component {
         dataInfo["dateData"] = submitData;
 		console.log(dataInfo);
         if(actionType === "insert"){
-            axios.post(this.props.serverIP + "dutyRegistration/dutyInsert", dataInfo)
+            axios.post(this.state.serverIP + "dutyRegistration/dutyInsert", dataInfo)
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
@@ -319,11 +318,11 @@ class DutyRegistration extends React.Component {
 	downloadPDF = (event) =>	{
 		let dataInfo = {};
 		dataInfo["yearMonth"] = this.state.year + this.state.month;
-		axios.post(this.props.serverIP + "dutyRegistration/downloadPDF", dataInfo)
+		axios.post(this.state.serverIP + "dutyRegistration/downloadPDF", dataInfo)
 			.then(resultMap => {
 			    if(resultMap.data){
-//					publicUtils.handleDownload(resultMap.data, this.props.serverIP);
-			        alert(resultMap.data);
+					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
+//			        alert(resultMap.data);
 			    }else{
 			        alert("更新失败");
 			    }
@@ -414,7 +413,7 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl value={this.state.siteCustomer} autoComplete="off" size="sm" name="siteCustomer" id="siteCustomer" onChange={this.valueChange} />
+									<FormControl value={this.state.siteCustomer} autoComplete="off" size="sm" name="siteCustomer" id="siteCustomer" onChange={this.valueChange} className="inputWithoutBorder"/>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">御中</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -425,7 +424,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.customer} autoComplete="off" size="sm" name="customer" id="customer" onChange={this.valueChange} />
+									<FormControl value={this.state.customer} autoComplete="off" size="sm" name="customer" id="customer" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -440,7 +439,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">責任者名</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.siteResponsiblePerson} autoComplete="off" size="sm" name="siteResponsiblePerson" id="siteResponsiblePerson" onChange={this.valueChange} />
+									<FormControl value={this.state.siteResponsiblePerson} autoComplete="off" size="sm" name="siteResponsiblePerson" id="siteResponsiblePerson" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -450,7 +449,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">業務名称</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.systemName} autoComplete="off" size="sm" name="systemName" id="systemName" onChange={this.valueChange} />
+									<FormControl value={this.state.systemName} autoComplete="off" size="sm" name="systemName" id="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
@@ -458,7 +457,7 @@ class DutyRegistration extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.employeeName} autoComplete="off" size="sm" name="employeeName" id="employeeName" onChange={this.valueChange} disabled />
+									<FormControl value={this.state.employeeName} autoComplete="off" size="sm" name="employeeName" id="employeeName" onChange={this.valueChange} className="inputWithoutBorder" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -511,15 +510,4 @@ class DutyRegistration extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(DutyRegistration);
+export default DutyRegistration;
