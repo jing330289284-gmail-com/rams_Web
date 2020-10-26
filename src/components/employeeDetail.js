@@ -119,8 +119,7 @@ class employeeUpdate extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode: ((data.postcode + "       ").replace("null", "")).substring(0, 3).replace("   ", ""),//郵便番号
-					postcode2: ((data.postcode + "       ").replace("null", "")).substring(3, 4).replace("", ""),//郵便番号
+					postcode: data.postcode,//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -135,8 +134,12 @@ class employeeUpdate extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
+					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),//在留カード
+					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),//　　履歴書
 					resumeName1: data.resumeName1,//履歴書備考1
+					resumeInfo2URL: publicUtils.nullToEmpty(data.resumeInfo2),//履歴書2
 					resumeName2: data.resumeName2,//履歴書備考1
+					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -411,7 +414,7 @@ class employeeUpdate extends React.Component {
 						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
 							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3" style={{ width: '150px' }}>
+								<InputGroup size="sm" className="mb-3" >
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -973,7 +976,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"  ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -981,7 +984,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -995,7 +998,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
@@ -1009,7 +1012,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
