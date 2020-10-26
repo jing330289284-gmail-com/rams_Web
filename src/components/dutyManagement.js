@@ -3,7 +3,7 @@ import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
-import $ from 'jquery'
+import $ from 'jquery';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";

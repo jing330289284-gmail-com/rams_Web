@@ -3,7 +3,7 @@ import { Button, Form, Col, Row, InputGroup, FormControl, Modal } from 'react-bo
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
-import $ from 'jquery'
+import $ from 'jquery';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
