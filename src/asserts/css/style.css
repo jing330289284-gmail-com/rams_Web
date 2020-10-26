@@ -333,16 +333,7 @@ body {
 }
 #customerInfoSearchDatePicker {
   background-repeat: no-repeat;
-  width: 140px;
-  background-position: 10px 7px;
-  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-  padding-right: 0px;
-  height: calc(1.5em + .5rem + 2px);
-  background-color: white;
-}
-#customerInfoSearchDatePicker {
-  background-repeat: no-repeat;
-  width: 140px;
+  width:230px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -517,4 +508,9 @@ height:31px;
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;/* color??��?��?��?��?��?��??��?��?��?��?��?��gray */
+}
+.input-group-text{
+  background-color: #76a8af;
+  font-family: "幼圆";
+  color: rgb(255, 255, 255);
 }

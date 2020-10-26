@@ -100,7 +100,7 @@ class WagesInfo extends Component {
             var wagesInfo = {};
             wagesInfo["employeeNo"] = employeeNo;
             this.setState({
-                employeeName:employeeNo,
+                employeeName: employeeNo,
             })
             this.search(wagesInfo);
         }
@@ -222,12 +222,12 @@ class WagesInfo extends Component {
             reflectStartDate: '',
         })
     }
-    getWagesInfo = (event,values) => {
+    getWagesInfo = (event, values) => {
         this.setState({
             [event.target.name]: event.target.value,
         }, () => {
             var employeeNo = null;
-            if(values !== null){
+            if (values !== null) {
                 employeeNo = values.code;
             }
             var wagesInfoMod = {
@@ -235,7 +235,7 @@ class WagesInfo extends Component {
             }
             this.setState({
                 employeeNo: employeeNo,
-                employeeName:employeeNo,
+                employeeName: employeeNo,
             })
             this.search(wagesInfoMod);
             this.resetValue();
@@ -410,15 +410,11 @@ class WagesInfo extends Component {
      * @param {*} total 
      */
     renderShowsTotal(start, to, total) {
-        if (total === 0) {
-            return (<></>);
-        } else {
-            return (
-                <p>
-                    ページ： { start} /{ to}, トータル件数： { total}&nbsp;&nbsp;
-                </p>
-            );
-        }
+        return (
+            <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+                {start}から  {to}まで , 総計{total}
+            </p>
+        );
     }
     render() {
         const {
@@ -511,6 +507,7 @@ class WagesInfo extends Component {
                             <h2>給料情報</h2>
                         </Col>
                     </Row>
+                    <br />
                     <Form id="wagesInfoForm">
                         <Form.Group>
                             <Row>
@@ -525,7 +522,7 @@ class WagesInfo extends Component {
                                             value={this.state.employeeNameDrop.find(v => v.code === this.state.employeeName) || {}}
                                             options={this.state.employeeNameDrop}
                                             getOptionLabel={(option) => option.text}
-                                            onChange={(event,values)=>this.getWagesInfo(event,values)}
+                                            onChange={(event, values) => this.getWagesInfo(event, values)}
                                             renderOption={(option) => {
                                                 return (
                                                     <React.Fragment>
@@ -851,7 +848,7 @@ class WagesInfo extends Component {
                     </Form>
                     <Row>
                         <Col sm={11}>
-                            <Form.Text style={{ "color": "#FFD700" }}>給料変動一覧</Form.Text>
+                            <Form.Text>給料変動一覧</Form.Text>
                         </Col>
                         <Col sm={1}>
                             <div style={{ "float": "right" }}>
@@ -867,27 +864,29 @@ class WagesInfo extends Component {
                         </Col>
                     </Row>
                     <div>
-                        <BootstrapTable
-                            selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
-                            pagination={true}
-                            options={options}
-                            data={wagesInfoList}
-                            headerStyle={{ background: '#5599FF' }}
-                            striped
-                            hover
-                            condensed>
-                            <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>
-                            <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100">給料</TableHeaderColumn>
-                            <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100">社会保険</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100">交通代</TableHeaderColumn>
-                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
-                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他の手当の費用</TableHeaderColumn>
-                            <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} >ボーナス</TableHeaderColumn>
-                            <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
-                        </BootstrapTable>
+                        <Col sm={12}>
+                            <BootstrapTable
+                                selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
+                                pagination={true}
+                                options={options}
+                                data={wagesInfoList}
+                                headerStyle={{ background: '#5599FF' }}
+                                striped
+                                hover
+                                condensed>
+                                <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
+                                <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>
+                                <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100">給料</TableHeaderColumn>
+                                <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100">社会保険</TableHeaderColumn>
+                                <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100">交通代</TableHeaderColumn>
+                                <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他の手当の費用</TableHeaderColumn>
+                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} >ボーナス</TableHeaderColumn>
+                                <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
+                            </BootstrapTable>
+                        </Col>
                     </div>
                 </div>
             </div>

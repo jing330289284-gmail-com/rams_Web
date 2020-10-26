@@ -117,15 +117,11 @@ class EnterPeriodSearch extends React.Component {
      * @param {*} total 
      */
     renderShowsTotal(start, to, total) {
-        if (total === 0) {
-            return (<></>);
-        } else {
-            return (
-                <p>
-                    ページ： { start} /{ to}, トータル件数： { total}&nbsp;&nbsp;
-                </p>
-            );
-        }
+        return (
+            <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+                {start}から  {to}まで , 総計{total}
+            </p>
+        );
     }
     //onchange
     valueChange = event => {
@@ -166,7 +162,7 @@ class EnterPeriodSearch extends React.Component {
                         pagination={true}
                         options={options}
                         data={row.nonSitePeriodsList}
-                        headerStyle={{ background: '#C1FFC1' }}
+                        headerStyle={{ background: '#5599FF' }}
                         striped
                         hover
                         condensed>
@@ -355,7 +351,7 @@ class EnterPeriodSearch extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataFormat={this.periodButton.bind(this)}>
                             非稼動月数</TableHeaderColumn>
                         <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkUnitPrice}>
-                            単価</TableHeaderColumn>
+                            単価（万円）</TableHeaderColumn>
                         <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkScheduleOfBonusAmount}>
                             ボーナス予定額</TableHeaderColumn>
                     </BootstrapTable>
