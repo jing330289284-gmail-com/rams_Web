@@ -8,12 +8,11 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, {  } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload,faSave } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+import store from './redux/store';
 import OtherCostModel from './otherCost';
 /**
  * 費用登録画面
@@ -28,7 +27,6 @@ class costRegistration extends React.Component {
 
 	};
 	componentDidMount(){
-		this.props.fetchDropDown();
 		this.searchCostRegistration();
 		
 	}
@@ -46,18 +44,64 @@ class costRegistration extends React.Component {
 		stationCode2: '',　// 到着
 		showOtherCostModal: false,//他の費用
 		otherCostModel: null,
+		station: store.getState().dropDown[14],
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	//　検索
 	searchCostRegistration = () => {
 		axios.post(this.props.serverIP + "costRegistration/selectCostRegistration")
 			.then(response => response.data)
 			.then((data) => {
-				this.setState({ 
-					employeeList: data,
-				})
+				
+					var sumCost = 0;
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							sumCost = sumCost + data[i].cost;
+						}
+					} else {
+						var sumCost = "";
+					}
+					this.setState({
+						employeeList: data, sumCost: sumCost
+					})
 			});
 
 
+	};
+	//登録
+	InsertCost = () => {
+		const formData = new FormData()
+		if (this.state.yearAndMonth1 == "" ||
+			this.state.yearAndMonth2 == "" ||
+			this.state.cost == "" ||
+			this.state.stationCode1 == "" ||
+			this.state.stationCode2 == "" ||
+			this.state.line == "" ||
+			this.state.costRegistrationFile == "") {
+				this.setState({ "myToastShow": true, "method": "put" });
+				return;
+        }
+		const emp = {
+			costClassificationCode:0,
+			happendDate: publicUtils.formateDate(this.state.yearAndMonth1, true),
+			dueDate: publicUtils.formateDate(this.state.yearAndMonth2, true),
+			transportationCode: this.state.stationCode1,
+			destinationCode: this.state.stationCode2,
+			cost: this.state.cost,
+		}
+		formData.append('emp', JSON.stringify(emp))
+		formData.append('costFile', publicUtils.nullToEmpty($('#costRegistrationFile').get(0).files[0]))
+	//	this.props.otherCostTokuro(emp);
+		axios.post(this.state.serverIP + "costRegistration/insertCostRegistration", formData)
+			.then(response => {
+				if (response.data != null) {
+					this.setState({ "myToastShow": true, "method": "put" });
+				} else {
+					this.setState({ "myToastShow": false });
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
 	};
 	/**
 	*修正
@@ -138,47 +182,22 @@ class costRegistration extends React.Component {
   /**
      * 添付ボタン
      */
-    fileUpload=()=>{
-	let getfile=$("#getFile").val();
-	let fileName = getfile.split('.');
-	if(
-		fileName[fileName.length -1]=== "xlsx" ||
-		fileName[fileName.length -1]=== "xls" ||
-		fileName[fileName.length -1]=== "xltx" ||
-		fileName[fileName.length -1]=== "xlt" ||
-		fileName[fileName.length -1]=== "xlsm" ||
-		fileName[fileName.length -1]=== "xlsb" ||
-		fileName[fileName.length -1]=== "xltm" ||
-		fileName[fileName.length -1]=== "csv"||
-		fileName[fileName.length -1]=== "pdf"
-	){
-  }else{
-    alert('PDF或いはexcelをアップロードしてください')
-    return false;
-  }
-if($("#getFile").get(0).files[0].size>1048576){
-	 alert('１M以下のファイルをアップロードしてください')
-    return false;
-}
-		const formData = new FormData()
-		const emp = {
-				attendanceYearAndMonth:this.state.rowSelectAttendanceYearAndMonth,
-			};
-			formData.append('emp', JSON.stringify(emp))
-			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
-			.then(response => {
-				if (response.data != null) {
-					window.location.reload();
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else {
-					alert("err")
-				}
-			});
-    }
-	getFile=()=>{
-		$("#getFile").click();
+	addFile = (event) => {
+		$("#costRegistrationFile").click();
+	}
+	changeFile = (event) => {
+		var filePath = event.target.value;
+		var arr = filePath.split('\\');
+		var fileName = arr[arr.length - 1];
+			this.setState({
+				costRegistrationFile: filePath,
+				costRegistrationFileName: fileName,
+			})
+			if (filePath != null) {
+				this.setState({
+					costRegistrationFileFlag: true,
+				})
+			}
 	}
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
@@ -226,16 +245,16 @@ if($("#getFile").get(0).files[0].size>1048576){
 				[id]: '',
 			})
 		} else {
-			if (fieldName === "station" && this.props.station.find((v) => (v.name === value)) !== undefined) {
+			if (fieldName === "station" && this.state.station.find((v) => (v.name === value)) !== undefined) {
 				switch (id) {
 					case 'stationCode1':
 						this.setState({
-							stationCode1: this.props.station.find((v) => (v.name === value)).code,
+							stationCode1: this.state.station.find((v) => (v.name === value)).code,
 						})
 						break;
 					case 'stationCode2':
 						this.setState({
-							stationCode2: this.props.station.find((v) => (v.name === value)).code,
+							stationCode2: this.state.station.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -315,11 +334,9 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</div>
 				</Form>
 				<div >
-				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.fileUpload}/>
-	                <br/>
                     <Row>
 						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>氏名：</font>
+							<font style={{ whiteSpace: 'nowrap' }}>氏名：{this.state.employeeName}</font>
 							{"        "}
 						</Col>
 						<Col sm={8}></Col>
@@ -340,7 +357,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM/dd"
-										id="datePicker2"
+										id="datePicker"
 										className="form-control form-control-sm"
 									/>{" ～"}
 								</InputGroup.Prepend>
@@ -351,7 +368,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM/dd"
-										id="datePicker"
+										id="datePicker2"
 										className="form-control form-control-sm"
 									/>
 								</InputGroup.Prepend>
@@ -370,8 +387,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 										<InputGroup.Text id="inputGroup-sizing-sm">出発</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={station.find((v) => (v.code === this.state.stationCode1)) || {}}
-										options={station}
+										value={this.state.station.find((v) => (v.code === this.state.stationCode1)) || {}}
+										options={this.state.station}
 										name="station"
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'station')}
@@ -390,8 +407,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 										<InputGroup.Text id="inputGroup-sizing-sm">到着</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={station.find((v) => (v.code === this.state.stationCode2)) || {}}
-										options={station}
+										value={this.state.station.find((v) => (v.code === this.state.stationCode2)) || {}}
+										options={this.state.station}
 										name="station"
 										getOptionLabel={(option) => option.name}
 										onSelect={(event) => this.handleTag(event, 'station')}
@@ -409,7 +426,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">線路</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
+								<Form.Control type="text" name="line" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
 							</InputGroup>
 						</Col>
 						<Col sm={2}>
@@ -417,29 +434,33 @@ if($("#getFile").get(0).files[0].size>1048576){
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
+								<Form.Control type="text" name='cost' autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
 							</InputGroup>
 						</Col>
-                       <Col sm={2}>
-                            
-		                        <Button variant="info" size="sm" onClick={this.getFile}id="costRegistrationFile">
-	                          		 <FontAwesomeIcon icon={faUpload} />添付
-		                        </Button>
+						<Col sm={6}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event)}>{this.state.costRegistrationFileFlag !== true ? "添付" : "添付済み"} </InputGroup.Text>
+									<Form.File id="costRegistrationFile" hidden value={this.state.costRegistrationFile} custom onChange={(event) => this.changeFile(event)} />
+								</InputGroup.Prepend>
+							</InputGroup>
 						</Col>
 					</Row>
 					<Row>
-
 						 <Col sm={2}>
-                            <div style={{ "position": "relative","left": "300%"}}>
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport)}id="costRegistrationInsert">
-	                          		 <FontAwesomeIcon icon={faSave} />登録
-		                        </Button>
-	 						</div>
-						</Col>
+							<div style={{ "position": "relative", "left": "300%" }}>
+								<div style={{ "textAlign": "center" }}>
+									<Button size="sm" variant="info" onClick={this.InsertCost} type="button" on>
+										<FontAwesomeIcon icon={faSave} /> {"登録"}
+									</Button>
+								</div>
+							</div>
+						 </Col>
 					</Row>
 					<Row>
 						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>総額：</font>
+							<font style={{ whiteSpace: 'nowrap' }}>総額：{this.state.sumCost}</font>
 						</Col>
   						<Col sm={6}></Col>
                         <Col sm={4}>
@@ -471,16 +492,4 @@ if($("#getFile").get(0).files[0].size>1048576){
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		station: state.data.dataReques.length >= 1 ? state.data.dataReques[14] : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(costRegistration);
+export default costRegistration;
