@@ -210,7 +210,7 @@ class siteInfo extends Component {
 			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate) {
 				this.setState({
 					admissionStartDate: row.admissionStartDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)),
-					time: publicUtils.getFullYearMonth( new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
+					time: publicUtils.getFullYearMonth(new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
 					workState: row.workState === null ? '' : row.workState,
 					dailyCalculationStatus: row.dailyCalculationStatus === '1'  ? true : false,
@@ -235,7 +235,7 @@ class siteInfo extends Component {
 					disabledFlag: false
 
 				});
-				if ( new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
+				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
 					this.setState({
 						dailyCalculationStatusFlag: false
 					});
@@ -336,7 +336,15 @@ class siteInfo extends Component {
 								this.setState({
 									siteData: response.data,
 								});
-								this.handleRowSelect();
+								this.setState({
+									updateFlag: true,
+									disabledFlag: false
+								})
+								if (siteModel["workState"] === '2') {
+
+								} else {
+									this.setState(() => this.resetStates);
+								}
 							}
 						}).catch((error) => {
 							console.error("Error - " + error);
@@ -706,7 +714,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
