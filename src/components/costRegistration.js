@@ -24,11 +24,9 @@ class costRegistration extends React.Component {
 		this.valueChange = this.valueChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 		this.searchCostRegistration = this.searchCostRegistration.bind(this);
-
 	};
 	componentDidMount(){
 		this.searchCostRegistration();
-		
 	}
 	//onchange
 	valueChange = event => {
@@ -49,7 +47,7 @@ class costRegistration extends React.Component {
 	};
 	//　検索
 	searchCostRegistration = () => {
-		axios.post(this.props.serverIP + "costRegistration/selectCostRegistration")
+		axios.post(this.state.serverIP + "costRegistration/selectCostRegistration")
 			.then(response => response.data)
 			.then((data) => {
 				
@@ -91,7 +89,6 @@ class costRegistration extends React.Component {
 		}
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('costFile', publicUtils.nullToEmpty($('#costRegistrationFile').get(0).files[0]))
-	//	this.props.otherCostTokuro(emp);
 		axios.post(this.state.serverIP + "costRegistration/insertCostRegistration", formData)
 			.then(response => {
 				if (response.data != null) {
@@ -109,7 +106,7 @@ class costRegistration extends React.Component {
 	listChange = () => {
 		const emp = {
 		}
-		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
+		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
@@ -137,7 +134,7 @@ class costRegistration extends React.Component {
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
 		}
-		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
+		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
@@ -273,7 +270,7 @@ class costRegistration extends React.Component {
 	render() {
 		const {employeeList} = this.state;
 		const { otherCostModel } = this.state;
-		const station = this.props.station;
+		const station = this.state.station;
 		//　テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
