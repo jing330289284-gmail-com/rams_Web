@@ -79,7 +79,6 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
-		alert(this.state.japaneseCalenda)
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
@@ -344,7 +343,6 @@ class employeeInsert extends React.Component {
 	*/
 	employeeStatusChange = event => {
 		const value = event.target.value;
-		alert(value)
 		if (value === '1') {
 			this.setState({ companyMail: '', authorityCode: 0, employeeStatus: 1 });
 			this.getNO("BP");
