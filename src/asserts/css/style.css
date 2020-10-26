@@ -8,11 +8,13 @@ padding: 0px;
 	border-left-width:0px;
 	border-top-width:0px;
 	border-right-width:0px;
-	border-bottom: 1px solid #000
+	border-bottom: 1px solid #000;
+	background-color: transparent;
 }
 .inputWithoutBorder:focus {
   outline:none;
-  border-bottom: 1px solid #000
+  border-bottom: 1px solid #000;
+  background-color: transparent;
 }
 .pageNumCss {
   width: 45px !important;

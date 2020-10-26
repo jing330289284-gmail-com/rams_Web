@@ -327,7 +327,7 @@ export function handleDownload(path, serverIP) {
 }
 
 
- export async function postcodeApi() {
+export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		await axios.post("/postcodeApi/search?zipcode=" + postcode)
@@ -335,14 +335,14 @@ export function handleDownload(path, serverIP) {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
-					//alert("必須パラメータが指定されていません。")//一時的な情報、後で修正します。
+					$("#firstHalfAddress").val("");
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
 	} else {
 	}
-} 
+}
 
 
 /**
