@@ -2,7 +2,7 @@
 社員を明細
  */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import * as publicUtils from './utils/publicUtils.js';
@@ -15,6 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
 import store from './redux/store';
 
 
@@ -118,7 +119,8 @@ class employeeUpdate extends React.Component {
 					certification1: data.certification1,//資格1
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
-					postcode:data.postcode,//郵便番号
+					postcode: ((data.postcode + "       ").replace("null", "")).substring(0, 3).replace("   ", ""),//郵便番号
+					postcode2: ((data.postcode + "       ").replace("null", "")).substring(3, 4).replace("", ""),//郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -133,12 +135,8 @@ class employeeUpdate extends React.Component {
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
 					myNumber: data.myNumber,//マイナンバー
-					resumeInfo1: data.resumeInfo1,//履歴書1
 					resumeName1: data.resumeName1,//履歴書備考1
-					resumeInfo2: data.resumeInfo2,//履歴書2
-					resumeName2: data.resumeName2,//履歴書備考2
-					residentCardInfo: data.residentCardInfo,//在留カード
-					passportInfo: data.passportInfo,//パスワード
+					resumeName2: data.resumeName2,//履歴書備考1
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
 				});
@@ -327,6 +325,34 @@ class employeeUpdate extends React.Component {
 		}
 
 	};
+
+	changeFile = (event, name) => {
+		var filePath = event.target.value;
+		var arr = filePath.split('\\');
+		var fileName = arr[arr.length - 1];
+		if (name === "residentCardInfo") {
+			this.setState({
+				residentCardInfo: filePath,
+				residentCardInfoName: fileName,
+			})
+		} else if (name === "resumeInfo1") {
+			this.setState({
+				resumeInfo1: filePath,
+				resumeInfo1Name: fileName,
+			})
+		} else if (name === "resumeInfo2") {
+			this.setState({
+				resumeInfo2: filePath,
+				resumeInfo2Name: fileName,
+			})
+		} else if
+			(name === "passportInfo") {
+			this.setState({
+				passportInfo: filePath,
+				passportInfoName: fileName,
+			})
+		}
+	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -377,13 +403,15 @@ class employeeUpdate extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
+					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
+					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
 						<Form.Label style={{ "color": "#000000" }}>基本情報</Form.Label>
 						<Row>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3" style={{ width: '150px' }}>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -397,45 +425,12 @@ class employeeUpdate extends React.Component {
 										)}
 									</Form.Control>
 								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
-									<FormControl value={employeeNo} disabled size="sm" name="employeeNo" />
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeFristName} size="sm" name="employeeFristName" maxlength="3" disabled />{' '}
 									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={furigana1}
-										size="sm" name="furigana1" disabled />{' '}
-									<FormControl value={furigana2}
-										size="sm" name="furigana2" disabled />
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={alphabetName}
-										size="sm" name="alphabetName" disabled />
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={3}>
+								{/*// line*/}
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
@@ -450,44 +445,6 @@ class employeeUpdate extends React.Component {
 										)}
 									</Form.Control>
 								</InputGroup>
-							</Col>
-
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Append>
-										<DatePicker
-											selected={this.state.birthday}
-											onChange={this.inactiveBirthday}
-											yearDropdownItemNumber={25}
-											scrollableYearDropdown
-											maxDate={new Date()}
-											id="datePickerReadonlyDefault"
-											className="form-control form-control-sm"
-											showYearDropdown
-											dateFormat="yyyy/MM/dd"
-											disabled
-										/>
-									</InputGroup.Append>
-									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled />
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={japaneseCalendar} id="japaneseCalendar" size="sm" name="japaneseCalendar" disabled />
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
@@ -518,6 +475,42 @@ class employeeUpdate extends React.Component {
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
+									<FormControl value={employeeNo} disabled size="sm" name="employeeNo" />
+								</InputGroup>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={furigana1}
+										size="sm" name="furigana1" disabled />{' '}
+									<FormControl value={furigana2}
+										size="sm" name="furigana2" disabled />
+								</InputGroup>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+									</InputGroup.Prepend>
+									<InputGroup.Append>
+										<DatePicker
+											selected={this.state.birthday}
+											onChange={this.inactiveBirthday}
+											yearDropdownItemNumber={25}
+											scrollableYearDropdown
+											maxDate={new Date()}
+											id="datePickerReadonlyDefault"
+											className="form-control form-control-sm"
+											showYearDropdown
+											dateFormat="yyyy/MM/dd"
+											disabled
+										/>
+									</InputGroup.Append>
+									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled />
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
+									</InputGroup.Prepend>
+								</InputGroup>
+								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
 									</InputGroup.Prepend>
@@ -545,6 +538,27 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3" style={{ visibility: "hidden" }}>
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={alphabetName}
+										size="sm" name="alphabetName" disabled />
+								</InputGroup>
+
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={alphabetName}
+										size="sm" name="alphabetName" disabled />
+								</InputGroup>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl value={japaneseCalendar} id="japaneseCalendar" size="sm" name="japaneseCalendar" disabled />
+								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社内メール</InputGroup.Text>
@@ -552,6 +566,9 @@ class employeeUpdate extends React.Component {
 									<Form.Control type="email" value={companyMail} disabled
 										size="sm" name="companyMail" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" />
 							</Col>
 						</Row>
 						<Row>
