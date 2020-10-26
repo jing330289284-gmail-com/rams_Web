@@ -41,19 +41,19 @@ class ExpensesInfo extends Component {
         errorsMessageValue: '',//エラーのメッセージ
         actionType: 'insert',//処理区分
         housingStatusDrop: [],//住宅ステータスselect
-        expensesInfoModels:[],//諸費用履歴
-        btnText:'登録',//ボタン文字
-        kadouCheck:true,//稼働フラグ
-        relatedEmployees:'',//要員
+        expensesInfoModels: [],//諸費用履歴
+        btnText: '登録',//ボタン文字
+        kadouCheck: true,//稼働フラグ
+        relatedEmployees: '',//要員
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousing",this.state.serverIP),
+            housingStatusDrop: utils.getdropDown("getHousing", this.state.serverIP),
             employeeNo: this.props.employeeNo,
-            expensesInfoModels:this.props.expensesInfoModels,
-            kadouCheck:this.props.kadouCheck,
-            relatedEmployees:this.props.relatedEmployees,
+            expensesInfoModels: this.props.expensesInfoModels,
+            kadouCheck: this.props.kadouCheck,
+            relatedEmployees: this.props.relatedEmployees,
         })
         if (this.props.expensesInfoModel !== null) {
             this.giveValue(this.props.expensesInfoModel);
@@ -95,7 +95,7 @@ class ExpensesInfo extends Component {
      */
     resetValue = () => {
         this.setState({
-            expensesReflectStartDate:'',
+            expensesReflectStartDate: '',
             transportationExpenses: '',
             otherAllowanceName: '',
             otherAllowanceAmount: '',
@@ -134,7 +134,7 @@ class ExpensesInfo extends Component {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
     }
-    
+
     /**
      * 行Selectファンクション
      */
@@ -144,9 +144,9 @@ class ExpensesInfo extends Component {
                 this.giveValue(row);
                 this.setState({
                     actionType: 'update',
-                    btnText:'更新',
+                    btnText: '更新',
                 })
-            }else{
+            } else {
                 this.resetValue();
                 this.setState({
                     actionType: 'insert',
@@ -161,6 +161,13 @@ class ExpensesInfo extends Component {
             })
         }
     }
+    renderShowsTotal(start, to, total) {
+        return (
+            <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+                {start}から  {to}まで , 総計{total}
+            </p>
+        );
+    }
     render() {
         const {
             transportationExpenses,
@@ -173,12 +180,12 @@ class ExpensesInfo extends Component {
             type,
             errorsMessageValue,
             actionType,
-            housingStatusDrop ,
-            expensesInfoModels ,
-            btnText ,
-            kadouCheck ,
+            housingStatusDrop,
+            expensesInfoModels,
+            btnText,
+            kadouCheck,
             relatedEmployees } = this.state;
-                    //テーブルの列の選択
+        //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
             bgColor: 'pink',
@@ -220,6 +227,7 @@ class ExpensesInfo extends Component {
                             <h2>諸費用</h2>
                         </Col>
                     </Row>
+                    <br />
                     <Form id="expensesInfoForm">
                         <Row>
                             <Col sm={6}>
@@ -345,7 +353,7 @@ class ExpensesInfo extends Component {
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
                                             id="expensesInfoDatePicker"
-                                            
+
                                             dateFormat={"yyyy/MM"}
                                             name="expensesReflectYearAndMonth"
                                             locale="ja"
@@ -358,36 +366,38 @@ class ExpensesInfo extends Component {
                         </Row>
                         <div style={{ "textAlign": "center" }}>
                             <Button
-                                    size="sm"
-                                    disabled={actionType === "detail" ? true : false}
-                                    variant="info"
-                                    onClick={this.expensesInfoToroku.bind(this)}>
-                                    <FontAwesomeIcon icon={faSave} />{btnText}
-                                </Button>{" "}
-                                <Button
-                                    size="sm"
-                                    disabled={actionType === "detail" ? true : false}
-                                    type="reset"
-                                    variant="info"
-                                    value="Reset" >
-                                    <FontAwesomeIcon icon={faUndo} />リセット
+                                size="sm"
+                                disabled={actionType === "detail" ? true : false}
+                                variant="info"
+                                onClick={this.expensesInfoToroku.bind(this)}>
+                                <FontAwesomeIcon icon={faSave} />{btnText}
+                            </Button>{" "}
+                            <Button
+                                size="sm"
+                                disabled={actionType === "detail" ? true : false}
+                                type="reset"
+                                variant="info"
+                                value="Reset" >
+                                <FontAwesomeIcon icon={faUndo} />リセット
                             </Button>
                         </div>
                         <div>
-                        <BootstrapTable
-                            selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
-                            pagination={true}
-                            options={options}
-                            data={expensesInfoModels}
-                            headerStyle={{ background: '#5599FF' }}
-                            striped>
-                            <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }}  width="230">諸費用期間</TableHeaderColumn>
-                            <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} >交通代</TableHeaderColumn>
-                            <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
-                            <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
-                            <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他</TableHeaderColumn>
-                        </BootstrapTable>
-                    </div>
+                            <Col sm={12}>
+                                <BootstrapTable
+                                    selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
+                                    pagination={true}
+                                    options={options}
+                                    data={expensesInfoModels}
+                                    headerStyle={{ background: '#5599FF' }}
+                                    striped>
+                                    <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} width="230">諸費用期間</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} >交通代</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他</TableHeaderColumn>
+                                </BootstrapTable>
+                            </Col>
+                        </div>
                     </Form>
                 </div>
             </div>
