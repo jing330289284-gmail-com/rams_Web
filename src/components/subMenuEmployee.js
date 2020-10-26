@@ -3,6 +3,8 @@ import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import PasswordSetEmployee from './passwordSetEmployee';
+import workRepot from './workRepot';
+import costRegistration from './costRegistration';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faFile , faUser , faFileExcel , faFileWord , faSearch , faSave , faThList} from '@fortawesome/free-solid-svg-icons';
@@ -100,10 +102,10 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="1">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
-                                                        <Link className="linkFont" to={customerInfoPath}>
+                                                        <Link className="linkFont" to="/subMenuManager/workRepot/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileExcel} />作業報告書</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
-                                                        <Link className="linkFont">
+                                                        <Link className="linkFont" to="/subMenuManager/costRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileWord} />履歴書</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
