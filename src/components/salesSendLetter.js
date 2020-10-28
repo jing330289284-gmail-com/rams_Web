@@ -61,7 +61,7 @@ selectedlistName:"",
 	}
 
 getLists = () => {
-	axios.post("http://127.0.0.1:8080/salesSendLetters/getLists")
+	axios.post(this.state.serverIP + "salesSendLetters/getLists")
 			.then(result => {
 				this.setState({
 					salesLists: result.data,
@@ -83,8 +83,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 }
 	//初期化お客様取る
 	getCustomers = () => {
-		// axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
-		axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomers")
+		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
 				for (let i in result.data) {
@@ -163,7 +162,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 	// clearボタン事件 
 	clearLists = () => {
 		if(this.state.selectedlistName!==''){
-			axios.post("http://127.0.0.1:8080/salesSendLetters/deleteList",{storageListName:this.state.selectedlistName})
+			axios.post(this.state.serverIP + "salesSendLetters/deleteList",{storageListName:this.state.selectedlistName})
 		.then(result => {
 		this.setState({
 			allCustomer: this.state.customerTemp,
@@ -200,7 +199,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 			selectedNoArray.push(selectedArray[i].customerNo);
 		}
 		let code=selectedNoArray.join(',');
-		axios.post("http://127.0.0.1:8080/salesSendLetters/creatList",{name,code})
+		axios.post(this.state.serverIP + "salesSendLetters/creatList",{name,code})
 		.then(result => {
 					this.refs.customersTable.store.selected = [];
 		this.refs.customersTable.setState({
@@ -378,7 +377,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 				alert("対象名を入力してください")
 				return;
 			}
-			axios.post("http://127.0.0.1:8080/salesSendLetters/listNameUpdate",salesSendLettersListNames)
+			axios.post(this.state.serverIP + "salesSendLetters/listNameUpdate",salesSendLettersListNames)
 			.then(result => {
 				this.getLists();
 				this.setState({
@@ -418,7 +417,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 			})
 		
 		}
-			axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomersByNos",{ctmNos:selectedNos.split(',')})
+			axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos",{ctmNos:selectedNos.split(',')})
 			.then(result => {
 				this.setState({
 					allCustomer:result.data,
