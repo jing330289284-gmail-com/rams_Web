@@ -21,7 +21,6 @@ import store from './redux/store';
 import ImageUploader from "react-images-upload";
 
 
-
 axios.defaults.withCredentials = true;
 class employeeInsert extends React.Component {
 	constructor(props) {
@@ -31,13 +30,7 @@ class employeeInsert extends React.Component {
 		this.insertEmployee = this.insertEmployee.bind(this);//登録
 		this.employeeStatusChange = this.employeeStatusChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
-		this.onDrop = this.onDrop.bind(this);
-
-	}
-	onDrop(pictureFiles, pictureDataURLs) {
-		this.setState({
-			pictures: this.state.pictures.concat(pictureFiles)
-		});
+		this.onDrop = this.onDrop.bind(this);//ImageUploader
 	}
 	/**
 	 * 初期化
@@ -76,8 +69,14 @@ class employeeInsert extends React.Component {
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
-		pictures: []
+		pictures: [],//ImageUploader
 	};
+	//ImageUploader繧貞�ｦ逅�縲�髢句ｧ�
+	onDrop(picture) {
+		this.setState({
+			pictures: this.state.pictures.concat(picture),
+		});
+	}
 	/**
 	 * リセット
 	 */
@@ -142,15 +141,12 @@ class employeeInsert extends React.Component {
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
-			//picInfo: this.state.pictures,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		formData.append('picInfo', this.state.pictures[0] )
-		console.log(this.state.pictures[0])
 		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -734,18 +730,27 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
-								<div id="fileUploader">
-									<ImageUploader
-										withIcon={false}
-										withPreview={true}
-										id="imageUploader"
-										label=""
-										buttonText="Upload Images"
-										onChange={this.onDrop}
-										imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
-										maxFileSize={1048576}
-										fileSizeError=" file size is too big"
-									/>
+								{/* 	<Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" /> */}
+								{/* 			<ImageUploader
+									withIcon={false}
+									withPreview={true}
+									label=""
+									buttonText="写真"
+									onChange={this.onDrop}
+									imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
+									maxFileSize={1048576}
+									fileSizeError=" file size is too big"
+								/> */}
+
+								<div>
+									{this.renderImg()}
+									<Modal visible={this.state.isPreview} footer={null}
+										onCancel={this.cancelModal.bind(this)}
+										width="auto" wrapClassName="img-center"
+										style={{ display: "inline-block" }}
+									>
+										<img src={this.state.imgSrc} className="preview-all" />
+									</Modal>
 								</div>
 							</Col>
 						</Row>
