@@ -89,7 +89,6 @@ class manageSituation extends React.Component {
 		let sysYearMonth = new Date();
 		let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
 		this.getSalesSituation("202009");
-		this.getDropDowns();
 	}
 
 	// レコードを取る
@@ -154,24 +153,6 @@ class manageSituation extends React.Component {
 				alert("ERR");
 			});
 	}
-
-	getDropDowns = () => {
-		var methodArray = ["getSalesPriorityStatus"]
-		var data = publicUtils.getPublicDropDown(methodArray,this.state.serverIP);
-		this.setState(
-			{
-				salesPriorityStatuss: data[0],//　営業優先度 
-			}
-		);
-		// レコードdropdown用
-		var methodArrayTleOnly = ["getSalesPerson"]
-		var dataTleOnly = publicUtils.getPublicDropDown(methodArrayTleOnly,this.state.serverIP);
-		this.setState(
-			{
-				salesPersons: dataTleOnly[0],//　 営業担当 
-			}
-		);
-	};
 
 	// レコードのステータス
 	formatType = (cell) => {

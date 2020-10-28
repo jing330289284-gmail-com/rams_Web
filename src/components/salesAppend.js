@@ -4,8 +4,7 @@ import axios from 'axios';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faListOl } from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 axios.defaults.withCredentials = true;
 /** 
 *営業送信画面お客営業追加
@@ -13,6 +12,7 @@ axios.defaults.withCredentials = true;
 class salesAppend extends Component {
 
 	initialState = {
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
 		selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
@@ -41,7 +41,7 @@ class salesAppend extends Component {
 	}
 
 	getSalesPersons = (customerNo) => {
-		axios.post(this.props.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
+		axios.post(this.state.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
 				for (let i in result.data) {
@@ -214,15 +214,4 @@ class salesAppend extends Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(salesAppend);
+export default salesAppend;

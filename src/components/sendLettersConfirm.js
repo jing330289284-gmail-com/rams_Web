@@ -1,15 +1,17 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Button, Col, Row, ListGroup,InputGroup, Modal } from 'react-bootstrap';
-import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl } from '@fortawesome/free-solid-svg-icons';
+import { Form, Button, Col, Row, ListGroup, InputGroup, Modal, FormControl } from 'react-bootstrap';
+import { faGlasses, faEnvelope, faMinusCircle, faBroom, faListOl, faUserPlus, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { Link } from "react-router-dom";
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DatePicker from "react-datepicker";
 import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
 import store from './redux/store';
+import SalesEmpAddPopup from './salesEmpAddPopup';
 /** 
 *営業送信お客確認画面
  */
@@ -19,23 +21,26 @@ class sendLettersConfirm extends React.Component {
 		this.state = this.initialState;//初期化
 	}
 
-initialState=({
-	serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-	selectedEmpNos:this.props.location.state.salesPersons,
-	selectedCusInfos:this.props.location.state.targetCusInfos,
-	employeeInfo:[],
-	employeeName:'',
-	hopeHighestPrice:'',
-	nationalityName:'',
-	birthday:'',
-	stationName:'',
-	developLanguage:'',
-	yearsOfExperience:'',
-	japaneseLevelName:'',
-	beginMonth:'',
-	salesProgressCode:'',
-	remark:'',
-			myToastShow: false,// 状態ダイアログ
+	initialState = ({
+		selectedmail:'',
+		selectedEmps:'',
+		mailTitle:'',
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		selectedEmpNos: this.props.location.state.salesPersons,
+		selectedCusInfos: this.props.location.state.targetCusInfos,
+		employeeInfo: [],
+		employeeName: '',
+		hopeHighestPrice: '',
+		nationalityName: '',
+		birthday: '',
+		stationName: '',
+		developLanguage: '',
+		yearsOfExperience: '',
+		japaneseLevelName: '',
+		beginMonth: '',
+		salesProgressCode: '',
+		remark: '',
+		myToastShow: false,// 状態ダイアログ
 		employeeNo: this.props.empNo,
 		genderStatus: '',
 		age: '',
@@ -55,25 +60,27 @@ initialState=({
 		developLanguageCode8: null,
 		developLanguageCode9: null,
 		developLanguageCode10: null,
-		genders: store.getState().dropDown[0],
-		employees: store.getState().dropDown[4],
-		japaneseLevels: store.getState().dropDown[5],
-		englishLevels: store.getState().dropDown[13],
-		salesProgresss: store.getState().dropDown[16],
-		japaneaseConversationLevels: store.getState().dropDown[43],
-		englishConversationLevels: store.getState().dropDown[44],
-		projectPhases: store.getState().dropDown[45],
-		stations: store.getState().dropDown[14],
-		developLanguages: store.getState().dropDown[8],
-		developLanguagesShow: store.getState().dropDown[8],
+		genders: store.getState().dropDown[0].slice(1),
+		employees: store.getState().dropDown[4].slice(1),
+		japaneseLevels: store.getState().dropDown[5].slice(1),
+		englishLevels: store.getState().dropDown[13].slice(1),
+		salesProgresss: store.getState().dropDown[16].slice(1),
+		japaneaseConversationLevels: store.getState().dropDown[43].slice(1),
+		englishConversationLevels: store.getState().dropDown[44].slice(1),
+		projectPhases: store.getState().dropDown[45].slice(1),
+		stations: store.getState().dropDown[14].slice(1),
+		developLanguages: store.getState().dropDown[8].slice(1),
+		developLanguagesShow: store.getState().dropDown[8].slice(1),
+		//employeeInfo: store.getState().dropDown[9].slice(1),//社員名
+		employeeStatusS: store.getState().dropDown[4].slice(1),
 		wellUseLanguagss: [],
 		stationCode: '',
 		disbleState: false,
 		japaneaseConversationLevel: '',
 		englishConversationLevel: '',
 		projectPhaseCode: '0',
-		empSelectedFlag:false,
-		ctmSelectedFlag:false,
+		empSelectedFlag: false,
+		ctmSelectedFlag: false,
 		selectedCustomerName: '',
 		selectedPurchasingManagers: '',
 		initAge: '',
@@ -86,23 +93,119 @@ initialState=({
 		initDevelopLanguageCode8: null,
 		initDevelopLanguageCode9: null,
 		initDevelopLanguageCode10: null,
-				initUnitPrice: '',
-				initRemark: '',
-				disableFlag:true,
-				initWellUseLanguagss: [],
-				daiologShowFlag: false,
-})
-componentDidMount(){
-	this.searchEmpDetail();
-}
-		fromCodeToNameLanguage = (code) => {
+		initUnitPrice: '',
+		initRemark: '',
+		disableFlag: true,
+		initWellUseLanguagss: [],
+		daiologShowFlag: false,
+		empAdddaiologShowFlag: false,
+		mails: [],
+		loginUserInfo: [],
+		appendEmps: [],
+		disbleState: false,
+		selectedMail: [],
+		popupFlag:true,
+	})
+	componentDidMount() {
+		this.searchEmpDetail();
+		this.getMail();
+		this.getLoginUserInfo();
+		this.getAllEmpsWithResume();
+	}
+	onTagsChange = (event, values, fieldName) => {
+		if (values.length === 2) {
+			this.setState({
+				disbleState: true,
+			});
+		} else {
+			this.setState({
+				disbleState: false,
+			});
+		}
+		this.setState({
+			selectedMail: [this.fromMailToEmp(values.length >= 1 ? values[0].companyMail : ''),
+			this.fromMailToEmp(values.length >= 2 ? values[1].companyMail : '')].filter(function(s) {
+				return s;
+			}),
+		});
+	}
+
+
+	fromMailToEmp = (mail) => {
+		if (mail === "" || mail === null) {
+			return '';
+		} else {
+			return this.state.mails.find((v) => (v.companyMail === mail));
+		}
+	}
+	getMail = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getMail")
+			.then(result => {
+				this.setState({
+					mails: result.data,
+				})
+			})
+			.catch(function(error) {
+				alert(error);
+			});
+
+	}
+
+	getLoginUserInfo = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+			.then(result => {
+				this.setState({
+					loginUserInfo: result.data,
+				})
+			})
+			.catch(function(error) {
+				alert(error);
+			});
+
+	}
+
+	getAllEmpsWithResume = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getAllEmpsWithResume")
+			.then(result => {
+				this.setState({
+					appendEmps: result.data,
+				})
+			})
+			.catch(function(error) {
+				alert(error);
+			});
+
+	}
+
+	/**
+	 * @param now 当前日期 格式:yyyy-MM
+	 * @param addMonths 传-1 上个月,传1 下个月
+	 */
+
+	getNextMonth = (addMonths) => {
+		var dd = new Date();
+		var m = dd.getMonth() + 1;
+		var y = dd.getMonth() + 1 + addMonths > 12 ? (dd.getFullYear() + 1) : dd.getFullYear();
+		if (m + addMonths == 0) {
+			y = y - 1;
+			m = 12;
+		} else {
+			if (m + addMonths > 12) {
+				m = '01';
+			} else {
+				m = m + 1 < 10 ? '0' + (m + addMonths) : (m + addMonths);
+			}
+		}
+		return y + "/" + m;
+	}
+	fromCodeToNameLanguage = (code) => {
 		if (code === "" || code === null) {
 			return;
 		} else {
 			return this.state.developLanguages.find((v) => (v.code === code)).name;
 		}
 	}
-	
+
 	fromCodeToListLanguage = (code) => {
 		if (code === "" || code === null) {
 			return '';
@@ -110,15 +213,15 @@ componentDidMount(){
 			return this.state.developLanguages.find((v) => (v.code === code));
 		}
 	}
-		openDaiolog = () => {
+	openDaiolog = () => {
 		this.setState({
 			daiologShowFlag: true,
 		});
 
 	}
-	searchPersonnalDetail=()=>{
-			axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
-	.then(result=>{
+	searchPersonnalDetail = () => {
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
+			.then(result => {
 				console.log(result.data);
 				if (result.data[0].age === "") {
 					this.setState({
@@ -130,28 +233,29 @@ componentDidMount(){
 						developLanguage: result.data[0].developLanguage,
 						yearsOfExperience: result.data[0].yearsOfExperience,
 						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: result.data[0].salesProgressCode,
+						//salesProgressCode: result.data[0].salesProgressCode,
+						salesProgressCode: '2',
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
 						employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
 						japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
-						
-								initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+
+						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-		initNearestStation: result.data[0].nearestStation,
-		initJapaneaseConversationLevel: '',
-		initEnglishConversationLevel: '',
-		initYearsOfExperience: result.data[0].yearsOfExperience,
-		initDevelopLanguageCode6: null,
-		initDevelopLanguageCode7: null,
-		initDevelopLanguageCode8: null,
-		initDevelopLanguageCode9: null,
-		initDevelopLanguageCode10: null,
-				initUnitPrice: '',
-				initRemark: '',
-				initWellUseLanguagss: [],
+						initNearestStation: result.data[0].nearestStation,
+						initJapaneaseConversationLevel: '',
+						initEnglishConversationLevel: '',
+						initYearsOfExperience: result.data[0].yearsOfExperience,
+						initDevelopLanguageCode6: null,
+						initDevelopLanguageCode7: null,
+						initDevelopLanguageCode8: null,
+						initDevelopLanguageCode9: null,
+						initDevelopLanguageCode10: null,
+						initUnitPrice: '',
+						initRemark: '',
+						initWellUseLanguagss: [],
 					})
 				} else {
 					this.setState({
@@ -193,20 +297,20 @@ componentDidMount(){
 						siteRoleCode: result.data[0].siteRoleCode,
 						unitPrice: result.data[0].unitPrice,
 						remark: result.data[0].remark,
-						
-						initAge:result.data[0].age,
+
+						initAge: result.data[0].age,
 						initNearestStation: result.data[0].nearestStation,
-		initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-		initEnglishConversationLevel: result.data[0].englishConversationLevel,
-		initYearsOfExperience: result.data[0].yearsOfExperience,
-		initDevelopLanguageCode6: result.data[0].developLanguage1,
-		initDevelopLanguageCode7: result.data[0].developLanguage2,
-		initDevelopLanguageCode8: result.data[0].developLanguage3,
-		initDevelopLanguageCode9: result.data[0].developLanguage4,
-		initDevelopLanguageCode10: result.data[0].developLanguage5,
-				initUnitPrice: result.data[0].unitPrice,
-				initRemark: result.data[0].remark,
-				initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
+						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
+						initEnglishConversationLevel: result.data[0].englishConversationLevel,
+						initYearsOfExperience: result.data[0].yearsOfExperience,
+						initDevelopLanguageCode6: result.data[0].developLanguage1,
+						initDevelopLanguageCode7: result.data[0].developLanguage2,
+						initDevelopLanguageCode8: result.data[0].developLanguage3,
+						initDevelopLanguageCode9: result.data[0].developLanguage4,
+						initDevelopLanguageCode10: result.data[0].developLanguage5,
+						initUnitPrice: result.data[0].unitPrice,
+						initRemark: result.data[0].remark,
+						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 						this.fromCodeToListLanguage(result.data[0].developLanguage2),
 						this.fromCodeToListLanguage(result.data[0].developLanguage3),
 						this.fromCodeToListLanguage(result.data[0].developLanguage4),
@@ -216,22 +320,22 @@ componentDidMount(){
 					})
 				}
 			})
-	.catch(function(error) {
+			.catch(function(error) {
 				alert(error);
 			});
 	}
-searchEmpDetail=()=>{
-	axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
-	.then(result=>{
-		this.setState({
-				employeeInfo:result.data,
-		})
-	})
-	.catch(function(error) {
+	searchEmpDetail = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
+			.then(result => {
+				this.setState({
+					employeeInfo: result.data,
+				})
+			})
+			.catch(function(error) {
 				alert(error);
 			});
-			this.searchPersonnalDetail();
-}
+		this.searchPersonnalDetail();
+	}
 
 	renderShowsTotal = (start, to, total) => {
 		return (
@@ -240,21 +344,62 @@ searchEmpDetail=()=>{
 			</p>
 		);
 	}
-	
+
 	closeDaiolog = () => {
 		this.setState({
 			daiologShowFlag: false,
 		})
 	}
-	
-	handleCtmSelect = (row, isSelected, e) => {
+
+	closeEmpAddDaiolog = () => {
 		this.setState({
-							selectedCustomerName: isSelected?row.customerName:'',
-		selectedPurchasingManagers: isSelected?row.purchasingManagers:'',
+			empAdddaiologShowFlag: false,
 		})
 	}
+
+	handleCtmSelect = (row, isSelected, e) => {
+		this.setState({
+			selectedCustomerName: isSelected ? row.customerName : '',
+			selectedPurchasingManagers: isSelected ? row.purchasingManagers : '',
+			//selectedSalesPerson: isSelected ? row.customerName : '',
+			selectedmail: isSelected ? row.purchasingManagersMail : '',
+		})
+	}
+
+	openEmpAddDaiolog = (flag) => {
+		this.setState({
+			empAdddaiologShowFlag: true,
+			popupFlag:flag,
+		});
+	}
+	
+			valueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+	};
+	handleEmpSelect=(row, isSelected, e)=>{
+		this.setState({
+			selectedEmps: row,
+		})
+	}
+		formatResume(cell, row, enumObject, index) {
+		
+			return (<div>
+<Form.Control as="select" size="sm"
+										onChange={this.resumeValueChange}
+										name="resume" 
+										autoComplete="off">
+										<option ></option>
+										
+											<option >{row.resumeInfo1.split('/')[4]}</option>
+											<option >{row.resumeInfo2.split('/')[4]}</option>
+									</Form.Control>
+</div>);
+		
+	}
 	render() {
-				const options = {
+		const options = {
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
 			defaultSortOrder: 'dsc',
 			sizePerPage: 10,
@@ -268,16 +413,16 @@ searchEmpDetail=()=>{
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 		};
-		
-				const selectRow = {
+
+		const selectRow = {
 			mode: "radio",
 			bgColor: 'pink',
 			hideSelectColumn: true,
 			clickToSelect: true,
 			onSelect: this.handleEmpSelect,
 		};
-		
-						const selectRow1 = {
+
+		const selectRow1 = {
 			mode: "radio",
 			bgColor: 'pink',
 			hideSelectColumn: true,
@@ -286,29 +431,104 @@ searchEmpDetail=()=>{
 		};
 		return (
 			<div>
-							<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton><Col className="text-center">
-					<h2>メール内容確認</h2>
+						<h2>メール内容確認</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<MailConfirm  personalInfo={this}/>
+						<MailConfirm personalInfo={this} />
+					</Modal.Body>
+				</Modal>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeEmpAddDaiolog} show={this.state.empAdddaiologShowFlag} dialogClassName="modal-bankInfo">
+					<Modal.Header closeButton><Col className="text-center">
+						<h2>{this.state.popupFlag?'要員追加':'履歴書選択'}</h2>
+					</Col></Modal.Header>
+					<Modal.Body >
+						<SalesEmpAddPopup personalInfo={this} />
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
 					<Col className="text-center">
-						<h2>営業状況確認一覧</h2>
+						<h2>要員送信確認</h2>
 					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
-				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col><Col sm={4}></Col><Col sm={1}>営業文章</Col></Row>
+				<Row style={{ padding: "10px" }}>
+					<Col sm={1}></Col>
+					<Col sm={3}>
+						<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">タイトル</InputGroup.Text>
+							</InputGroup.Prepend>
+							<Form.Control as="select" size="sm" onChange={this.valueChange} name="mailTitle" >
+								<option></option>
+								<option>{this.getNextMonth(1)}の要員提案に関して</option>
+								<option>即日要員提案に関して</option>
+								<option>{this.getNextMonth(2)}の要員提案に関して</option>
+							</Form.Control>
+						</InputGroup>
+					</Col>
+					<Col sm={5}>
+						<InputGroup size="sm" className="mb-3">
+							{/*<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">共用CCメール</InputGroup.Text>
+							</InputGroup.Prepend>*/}
+							<Autocomplete
+								multiple
+								size="small"
+								id="tags-standard"
+								options={this.state.mails}
+								getOptionDisabled={option => this.state.disbleState}
+								value={this.state.selectedMail}
+								getOptionLabel={(option) => option.companyMail ? option.companyMail : ""}
+								onChange={(event, values) => this.onTagsChange(event, values)}
+								renderInput={(params) => (
+									<TextField
+										{...params}
+										variant="standard"
+										/*label="共用CCメール"*/
+										placeholder="共用CCメール"
+										style={{ width: "680px", float: "right"  }}
+									/>
+								)}
+							/>
+						</InputGroup>
+					</Col>
+				</Row>
+				<Row style={{ padding: "10px" }}>
+					<Col sm={1}></Col>
+					<Col sm={10}>
+						<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">挨拶文章</InputGroup.Text>
+							</InputGroup.Prepend>
+							<textarea ref={(textarea) => this.textArea = textarea} maxLength="100"
+								style={{ height: '60px', width: '84%', resize: 'none', overflow: 'hidden' }}
+
+							/>
+
+						</InputGroup>
+
+					</Col>
+				</Row>
+				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
+					<Col sm={1}></Col>
+					<Col sm={2}>
+						<div style={{ "float": "right" }}>
+							<Button size="sm" variant="info" name="clickButton" onClick={this.openEmpAddDaiolog.bind(this,true)}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
+							<Button size="sm" variant="info" onClick={this.openEmpAddDaiolog.bind(this,false)}><FontAwesomeIcon icon={faFileExcel} />履歴書</Button></div>
+					</Col>
+					<Col sm={1}></Col><Col sm={1}>{'　'}営業文章</Col></Row>
 				<Row>
-				<Col sm={1}></Col>
+					<Col sm={1}></Col>
 					<Col sm={4}>
-						
-				<BootstrapTable
-				options={options}
-								selectRow={selectRow}
+
+						<BootstrapTable
+							options={options}
+							insertRow={true}
+							selectRow={selectRow}
 							ref='table'
 							data={this.state.employeeInfo}
 							className={"bg-white text-dark"}
@@ -318,43 +538,49 @@ searchEmpDetail=()=>{
 							<TableHeaderColumn width='8%' dataField='employeeName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeStatus' editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='resume' dataFormat={this.formatResume.bind(this)} editable={false}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 					<Col sm={1}></Col>
 					<Col sm={4}>
-					<ListGroup>
-					<ListGroup.Item>【名　　前】：{this.state.employeeName}{'　　　'}{this.state.nationalityName}{'　　　'}{this.state.genderStatus}</ListGroup.Item>
-					<ListGroup.Item>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
-					<ListGroup.Item>【年　　齢】：{this.state.age}歳</ListGroup.Item>
-					<ListGroup.Item>【最寄り駅】：{this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name:""}</ListGroup.Item>
-					<ListGroup.Item>【日本　語】：{this.state.nearestStation !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name:""}</ListGroup.Item>
-					<ListGroup.Item>【英　　語】：{this.state.nearestStation !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name:""}</ListGroup.Item>
-					<ListGroup.Item>【業務年数】：{this.state.yearsOfExperience}年</ListGroup.Item>
-					<ListGroup.Item>【対応工程】：{this.state.siteRoleCode}</ListGroup.Item>
-					<ListGroup.Item>【得意言語】：{this.state.developLanguage}</ListGroup.Item>
-					<ListGroup.Item>【単　　価】：{this.state.unitPrice}万円</ListGroup.Item>
-					<ListGroup.Item>【稼働開始】：{publicUtils.dateFormate(publicUtils.formateDate(this.state.beginMonth,false))}</ListGroup.Item>
-					<ListGroup.Item>【営業状況】：{this.state.nearestStation !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name:""}</ListGroup.Item>
-					<ListGroup.Item>【備　　考】：{this.state.remark}</ListGroup.Item>
-				    </ListGroup>
-</Col>
+						<textarea ref={(textarea) => this.textArea = textarea} disabled
+							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
+							value={`【名　　前】：` + this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
+【所　　属】：`+ this.state.employeeStatus + `
+【年　　齢】：`+ this.state.age + `歳
+【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
+【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
+【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
+【業務年数】：`+ this.state.yearsOfExperience + `年
+【対応工程】：`+ this.state.siteRoleCode + `
+【得意言語】：`+ this.state.developLanguage + `
+【単　　価】：`+ this.state.unitPrice + `万円
+【稼働開始】：2020/09
+【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
+【備　　考】：`+ this.state.remark}
+						/>
+
+					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
 				<Row>
-						<Col sm={8}></Col>
-						<Col sm={2}>
-							<div style={{ "float": "right" }}>
-								<Button onClick={this.openDaiolog}  size="sm" 　variant="info" name="clickButton" ><FontAwesomeIcon icon={faEnvelope} />メール確認</Button>
-							</div>
-						</Col>
-					</Row>
+					<Col sm={8}></Col>
+					<Col sm={2}>
+						<div style={{ "float": "right" }}>
+							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
+							<Button size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+
+					</Col>
+				</Row>
 				<Row>
-				<Col sm={1}></Col>
+					<Col sm={1}></Col>
 					<Col sm={9}>
-						
-				<BootstrapTable
-				options={options}
-				selectRow={selectRow1}
+
+						<BootstrapTable
+							options={options}
+							selectRow={selectRow1}
 							ref='table1'
 							data={this.state.selectedCusInfos}
 							className={"bg-white text-dark"}
@@ -372,11 +598,9 @@ searchEmpDetail=()=>{
 							<TableHeaderColumn width='8%' dataField='any' editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
-					</Row>
-							<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>			
-						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" >
-							<FontAwesomeIcon icon={faEnvelope} /> { "送信"}</Button></div>
-					
+				</Row>
+				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
+
 			</div>
 		);
 	}
