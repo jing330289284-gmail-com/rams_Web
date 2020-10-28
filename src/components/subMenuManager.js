@@ -75,7 +75,7 @@ class SubMenu extends Component {
 		})
 	}
 	logout = () => {
-		axios.post(this.props.serverIP + "subMenu/logout")
+		axios.post(this.state.serverIP + "subMenu/logout")
 			.then(resultMap => {
 				alert("ログアウトしました");
 			})
