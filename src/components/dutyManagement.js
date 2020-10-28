@@ -3,7 +3,7 @@ import { Button, Form, Col, Row, InputGroup, FormControl } from 'react-bootstrap
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
-import $ from 'jquery'
+import $ from 'jquery';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
@@ -12,8 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faUpload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 registerLocale("ja", ja);
 /**
  * 社員勤務管理画面
@@ -29,7 +28,6 @@ class dutyManagement extends React.Component {
 		$("#syounin").attr("disabled",true);
 		$("#workRepot").attr("disabled",true);
 		$("#datePicker").attr("readonly","readonly");
-		this.props.fetchDropDown();
 		this.searchDutyManagement();
 		
 	}
@@ -46,10 +44,13 @@ class dutyManagement extends React.Component {
 		employeeList: [],
 		totalPersons:"",
 		averageWorkingTime:"",
-		totalWorkingTime:"",
+		totalWorkingTime: "",
+		approvalStatuslist: store.getState().dropDown[27],
+		checkSectionlist: store.getState().dropDown[28],
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	checkSection(code) {
-    let checkSections = this.props.checkSectionlist;
+    let checkSections = this.state.checkSectionlist;
         for (var i in checkSections) {
             if (code === checkSections[i].code) {
                 return checkSections[i].name;
@@ -57,7 +58,7 @@ class dutyManagement extends React.Component {
         }
     };
 	approvalStatus(code) {
-    let approvalStatuss = this.props.approvalStatuslist;
+    let approvalStatuss = this.state.approvalStatuslist;
         for (var i in approvalStatuss) {
             if (code === approvalStatuss[i].code) {
                 return approvalStatuss[i].name;
@@ -70,7 +71,7 @@ class dutyManagement extends React.Component {
 			yearAndMonth: publicUtils.formateDate($("#datePicker").val(), false),
 			approvalStatus: $("#approvalStatus").val(),
 		};
-		axios.post(this.props.serverIP + "dutyManagement/selectDutyManagement", emp)
+		axios.post(this.state.serverIP + "dutyManagement/selectDutyManagement", emp)
 			.then(response => {
 				var totalPersons=0;
 				var averageWorkingTime=0;
@@ -105,7 +106,7 @@ class dutyManagement extends React.Component {
 			employeeNo: this.state.rowSelectEmployeeNo,
 			checkSection: this.state.rowSelectCheckSection,
 		}
-		axios.post(this.props.serverIP + "dutyManagement/updateDutyManagement", emp)
+		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
@@ -305,17 +306,4 @@ class dutyManagement extends React.Component {
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		approvalStatuslist: state.data.dataReques.length >= 1 ? state.data.dataReques[27]: [],
-		checkSectionlist: state.data.dataReques.length >= 1 ? state.data.dataReques[28]: [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(dutyManagement);
+export default dutyManagement;
