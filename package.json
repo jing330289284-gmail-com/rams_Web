@@ -75,6 +75,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-select": "^3.1.0",
+    "react-zmage": "^0.8.5-beta.36",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "resolve": "1.15.0",
@@ -88,7 +89,8 @@
     "webpack": "4.42.0",
     "webpack-dev-server": "3.11.0",
     "webpack-manifest-plugin": "2.2.0",
-    "workbox-webpack-plugin": "4.3.1"
+    "workbox-webpack-plugin": "4.3.1",
+    "yagoubi-upload-images": "^1.6.9"
   },
   "scripts": {
     "start": "node scripts/start.js",

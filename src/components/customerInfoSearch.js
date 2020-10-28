@@ -23,7 +23,6 @@ axios.defaults.withCredentials = true;
  */
 class CustomerInfoSearch extends Component {
     state = {
-        radioValue: '',//稼働の表示
         customerInfoData: [],//テーブルのデータ
         currentPage: 1,//テーブルの第一ページ
         emploryeesPerPage: 5,//毎ページの項目数
@@ -38,6 +37,7 @@ class CustomerInfoSearch extends Component {
         errorsMessageShow: false,
         errorsMessageValue: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+        transactionStatusDrop: store.getState().dropDown[46],
     }
     /**
      * 画面の初期化
@@ -47,7 +47,7 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite", "getStation", "getTopCustomer"]
-        var selectDataList = utils.getPublicDropDown(methodArray,this.state.serverIP);
+        var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
         //お客様ランキン
         var level = selectDataList[0];
         //会社性質
@@ -58,6 +58,7 @@ class CustomerInfoSearch extends Component {
         stationCode.shift();
         var topCustomerDrop = selectDataList[4];
         topCustomerDrop.shift();
+        var transactionStatusDrop = this.state.transactionStatusDrop;
         this.setState({
             stationCode: stationCode,
             topCustomerDrop: topCustomerDrop,
@@ -71,15 +72,28 @@ class CustomerInfoSearch extends Component {
         for (let i = 0; i < paymentsiteCode.length; i++) {
             $("#paymentsiteCode").append('<option value="' + paymentsiteCode[i].code + '">' + paymentsiteCode[i].name + '</option>');
         }
+        for (let i = 1; i < transactionStatusDrop.length; i++) {
+            $("#transactionStatus").append('<option value="' + transactionStatusDrop[i].code + '">' + transactionStatusDrop[i].name + '</option>');
+        }
     }
     /**
-      * 稼働のフラグ変化
-      */
-    radioChange = (e) => {
-        this.setState({
-            radioValue: e.target.value
+     * 数字チェック
+     * @param {*} e 
+     * @param {*} key 
+     */
+    vNumberChange = (e, key) => {
+        const { value } = e.target;
+
+        const reg = /^[0-9]*$/;
+        var keyLength = 5;
+        if (key === "capitalStockFront" || key === "capitalStockBack") {
+            keyLength = 6;
         }
-        )
+        if ((reg.test(value) && value.length < keyLength)) {
+            this.setState({
+                [key]: value
+            })
+        }
     }
     /**
       * 検索ボタン
@@ -92,11 +106,17 @@ class CustomerInfoSearch extends Component {
         });
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCode);
-        axios.post(this.state.serverIP + "customerInfoSearch/search", customerInfoMod)
-            .then(resultList => {
-                this.setState({
-                    customerInfoData: resultList.data,
-                })
+        customerInfoMod["businessStartDate"] = utils.dateFormate(this.state.businessStartDate, false);
+        axios.post(this.state.serverIP + "customerInfoSearch/customerSearch", customerInfoMod)
+            .then(result => {
+                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                    this.setState({
+                        customerInfoData: result.data.resultList,
+                        "errorsMessageShow": false,
+                    })
+                } else {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage, customerInfoData: [] });
+                }
             })
             .catch(error => {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
@@ -221,7 +241,7 @@ class CustomerInfoSearch extends Component {
             });
         }
     }
-    reset=()=>{
+    reset = () => {
         $("#topCustomer").val("");
         $("#stationCode").val("");
         $("#customerNo").val("");
@@ -258,7 +278,7 @@ class CustomerInfoSearch extends Component {
         );
     }
     render() {
-        const { radioValue, customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue } = this.state;
+        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack } = this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
             pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
@@ -312,127 +332,155 @@ class CustomerInfoSearch extends Component {
                 </Row>
                 <br />
                 <Form id="conditionForm">
-                    <div className="container">
-                        <Row>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：C001" id="customerNo" name="customerNo" />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：LYC株式会社" id="customerName" name="customerName" />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Autocomplete
-                                        id="stationCode"
-                                        name="stationCode"
-                                        value={stationCodeValue}
-                                        options={this.state.stationCode}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 170, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-                                            </div>
-                                        )}
-                                    />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" id="levelCode" name="levelCode">
-                                    </Form.Control>
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
-                                    </Form.Control>
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Autocomplete
-                                        id="topCustomer"
-                                        name="topCustomer"
-                                        value={topCustomerValue}
-                                        options={this.state.topCustomerDrop}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 160, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-                                            </div>
-                                        )}
-                                    />
-                                </InputGroup>
-                            </Col>
-                            <Col>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <DatePicker
-                                        selected={this.state.businessStartDate}
-                                        onChange={this.businessStartDateChange}
-                                        dateFormat={"yyyy/MM"}
-                                        autoComplete="off"
-                                        locale="pt-BR"
-                                        showYearDropdown
-                                        yearDropdownItemNumber={15}
-                                        scrollableYearDropdown
-                                        showMonthYearPicker
-                                        showFullMonthYearPicker
-                                        // minDate={new Date()}
-                                        showDisabledMonthNavigation
-                                        className="form-control form-control-sm"
-                                        id="customerInfoSearchDatePicker"
-                                        name="businessStartDate"
-                                        locale="ja"
-                                    />
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                            <Col className="text-center">
-                                <Form.Check defaultChecked={true} onChange={this.radioChange.bind("customerOnly")} label="お客様" inline="true" type="radio" id="customerOnly" name="sortCondition" value="customerOnly" />
-                                <Form.Check label="稼動者に付き" onChange={this.radioChange.bind("haveOperator")} inline="true" type="radio" name="sortCondition" id="haveOperator" value="haveOperator" />
-                            </Col>
-                        </Row>
-                    </div>
+                    <Row>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control placeholder="例：C001" id="customerNo" name="customerNo" />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control placeholder="例：LYC株式会社" id="customerName" name="customerName" />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
+                                </Form.Control>
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" id="levelCode" name="levelCode">
+                                </Form.Control>
+                            </InputGroup>
+                        </Col>
+
+
+                    </Row>
+                    <br />
+                    <Row>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control placeholder="資本金" id="capitalStockFront" name="capitalStockFront" value={capitalStockFront}
+                                    onChange={(e) => this.vNumberChange(e, 'capitalStockFront')} />{"~"}
+                                <Form.Control placeholder="資本金" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
+                                    onChange={(e) => this.vNumberChange(e, 'capitalStockBack')} />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text>百万円</InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Autocomplete
+                                    id="topCustomer"
+                                    name="topCustomer"
+                                    value={topCustomerValue}
+                                    options={this.state.topCustomerDrop}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto"
+                                                style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        </div>
+                                    )}
+                                />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Autocomplete
+                                    id="stationCode"
+                                    name="stationCode"
+                                    value={stationCodeValue}
+                                    options={this.state.stationCode}
+                                    getOptionLabel={(option) => option.name}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
+                                                style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                        </div>
+                                    )}
+                                />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm" className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                            </InputGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm={3}>
+                            <InputGroup size="sm" className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">取引区分</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" placeholder="取引区分" id="transactionStatus" name="transactionStatus" />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm" className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <DatePicker
+                                    selected={this.state.businessStartDate}
+                                    onChange={this.businessStartDateChange}
+                                    dateFormat={"yyyy/MM"}
+                                    autoComplete="off"
+                                    locale="pt-BR"
+                                    showYearDropdown
+                                    yearDropdownItemNumber={15}
+                                    scrollableYearDropdown
+                                    showMonthYearPicker
+                                    showFullMonthYearPicker
+                                    // minDate={new Date()}
+                                    showDisabledMonthNavigation
+                                    className="form-control form-control-sm"
+                                    id="customerInfoSearchDatePicker"
+                                    name="businessStartDate"
+                                    locale="ja"
+                                />
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
+                            <InputGroup size="sm" className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroup-sizing-sm">取引人月</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control placeholder="取引人月" value={traderPersonFront}
+                                    onChange={(e) => this.vNumberChange(e, 'traderPersonFront')} id="traderPersonFront" name="traderPersonFront" />{"~"}
+                                <Form.Control placeholder="取引人月" value={traderPersonBack}
+                                    onChange={(e) => this.vNumberChange(e, 'traderPersonBack')} id="traderPersonBack" name="traderPersonBack" />
+                            </InputGroup>
+                        </Col>
+                    </Row>
                     <br />
                     <div style={{ "textAlign": "center" }}>
                         <Button onClick={this.search} size="sm" variant="info">
@@ -459,43 +507,21 @@ class CustomerInfoSearch extends Component {
                             </div>
                         </Col>
                     </Row>
-                    {radioValue === "haveOperator" ?
-                        <BootstrapTable
-                            pagination={true}
-                            data={customerInfoData}
-                            options={options}
-                            expandColumnOptions={{
-                                expandColumnVisible: true,
-                                expandColumnComponent: this.expandColumnComponent,
-                                columnWidth: 50,
-                                text: "稼動者"
-                            }}
-                            selectRow={selectRow}
-                            deleteRow
-                            expandableRow={this.isExpandableRow}
-                            expandComponent={this.expandComponent}
-                            headerStyle={{ background: '#5599FF' }} striped hover condensed
-                        >
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
-                        </BootstrapTable>
-                        :
+                    <Col sm={12}>
                         <BootstrapTable selectRow={selectRow} pagination={true} data={customerInfoData} options={options} deleteRow
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }}  width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }}  width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }}  width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }}  width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }}  width="160">上位客様</TableHeaderColumn>
+                            <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160">資本金(百万円)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
-                    }
+                    </Col>
                 </Form>
             </div>
         );

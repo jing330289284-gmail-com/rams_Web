@@ -134,6 +134,7 @@ class TopCustomerInfo extends Component {
                     <h2>上位お客様情報</h2>
                     </Col>
                 </Row>
+                <br/>
                 <Form id="topCustomerInfoForm">
                 <Row>
                     <Col sm={6}>

@@ -33,7 +33,8 @@ class siteInfo extends Component {
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
-		nichiwariFlag: true,//日割フラグ
+		dailyCalculationStatusFlag: true,//日割フラグ
+		dailyCalculationStatus: false,
 		payOffRangeStatus: store.getState().dropDown[33].slice(1),//　精算時間
 		siteMaster: store.getState().dropDown[34],//　役割
 		customerMaster: store.getState().dropDown[15].slice(1),//お客様
@@ -59,19 +60,15 @@ class siteInfo extends Component {
 	}
 	//　入場年月
 	admissionStartDate = (date) => {
-		this.setState(
-			{
-				admissionStartDate: date,
-				time: publicUtils.getFullYearMonth(date, new Date()),
-				nichiwariFlag: true
-			}
-
-		);
+		this.setState({
+			admissionStartDate: date,
+			time: publicUtils.getFullYearMonth(date, new Date()),
+			dailyCalculationStatusFlag: true
+		});
 		if (date.getDate() > 2) {
-			this.setState(
-				{
-					nichiwariFlag: false
-				});
+			this.setState({
+				dailyCalculationStatusFlag: false
+			});
 		}
 	};
 	//　退場年月
@@ -82,6 +79,14 @@ class siteInfo extends Component {
 			}
 		);
 	};
+
+	dailyCalculationStatusChange = () => {
+		this.setState(
+			{
+				dailyCalculationStatus: !this.state.dailyCalculationStatus,
+			}
+		);
+	}
 
 	// 页面加载
 	componentDidMount() {
@@ -107,10 +112,12 @@ class siteInfo extends Component {
 	//リセット　reset
 	resetStates = {
 		admissionStartDate: '',
+		time: '',
 		admissionEndDate: '',
 		systemName: '',
 		location: '',
 		customerNo: '',
+		workState: '0',
 		topCustomerNo: '',
 		developLanguageCode: '',
 		unitPrice: '',
@@ -125,7 +132,9 @@ class siteInfo extends Component {
 		related2Employees: '',
 		related3Employees: '',
 		related4Employees: '',
-		workState: '0'
+		workState: '0',
+		dailyCalculationStatus: false,
+		dailyCalculationStatusFlag: true
 	};
 
 	// AUTOSELECT select事件
@@ -194,7 +203,6 @@ class siteInfo extends Component {
 				}
 			}
 		}
-
 	};
 	// レコードselect事件
 	handleRowSelect = (row, isSelected) => {
@@ -202,8 +210,10 @@ class siteInfo extends Component {
 			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate) {
 				this.setState({
 					admissionStartDate: row.admissionStartDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)),
+					time: publicUtils.getFullYearMonth(new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
-					workState: row.admissionEndDate === null ? '0' : '1',
+					workState: row.workState === null ? '' : row.workState,
+					dailyCalculationStatus: row.dailyCalculationStatus === '1'  ? true : false,
 					systemName: row.systemName === null ? '' : row.systemName,
 					location: row.location === null ? '' : row.location,
 					customerNo: row.customerName === null ? '' : row.customerName,
@@ -225,6 +235,11 @@ class siteInfo extends Component {
 					disabledFlag: false
 
 				});
+				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
+					this.setState({
+						dailyCalculationStatusFlag: false
+					});
+				}
 			}
 			else {
 				this.setState(() => this.resetStates);
@@ -321,7 +336,15 @@ class siteInfo extends Component {
 								this.setState({
 									siteData: response.data,
 								});
-								this.handleRowSelect();
+								this.setState({
+									updateFlag: true,
+									disabledFlag: false
+								})
+								if (siteModel["workState"] === '2') {
+
+								} else {
+									this.setState(() => this.resetStates);
+								}
 							}
 						}).catch((error) => {
 							console.error("Error - " + error);
@@ -580,9 +603,9 @@ class siteInfo extends Component {
 										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">日割</InputGroup.Text>
-											<InputGroup.Checkbox aria-label="Checkbox for following text input" disabled={this.state.nichiwariFlag === true ? true : false} />
+											<InputGroup.Checkbox aria-label="Checkbox for following text input" name="dailyCalculationStatus" checked={this.state.dailyCalculationStatus} onChange={this.dailyCalculationStatusChange} disabled={this.state.dailyCalculationStatusFlag === true ? true : false} />
+											<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 										</InputGroup.Prepend>
-										<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -691,7 +714,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -730,6 +753,8 @@ class siteInfo extends Component {
 								<TableHeaderColumn dataField='related4Employees' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='typeOfIndustryName' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='workState' hidden={true} ></TableHeaderColumn>
+								<TableHeaderColumn dataField='dailyCalculationStatus' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>

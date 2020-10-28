@@ -50,7 +50,7 @@ class CustomerInfo extends Component {
         positionDrop: [],
         typeOfIndustryDrop: [],
         developLanguageDrop: [],
-        currentPage:1,//今のページ
+        currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     /**
@@ -117,7 +117,7 @@ class CustomerInfo extends Component {
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
-        var selectDataList = utils.getPublicDropDown(methodArray,this.state.serverIP);
+        var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
         //上場会社
         var listedCompanyFlag = selectDataList[0];
         //お客様ランキン
@@ -234,7 +234,7 @@ class CustomerInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     window.location.reload();
-                }else {
+                } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
@@ -351,9 +351,9 @@ class CustomerInfo extends Component {
                 departmentList[i].rowNo = (i + 1);
             }
         }
-        var currentPage = Math.ceil(departmentList.length/5);
+        var currentPage = Math.ceil(departmentList.length / 5);
         this.setState({
-            currentPage:currentPage,
+            currentPage: currentPage,
             customerDepartmentList: departmentList,
             rowNo: '',
             customerDepartmentNameValue: '',
@@ -515,7 +515,7 @@ class CustomerInfo extends Component {
     /**
      * 行追加
      */
-    insertRow=()=>{
+    insertRow = () => {
         var customerDepartmentList = this.state.customerDepartmentList;
         var customerDepartment = {};
         customerDepartment["rowNo"] = customerDepartmentList.length + 1;
@@ -528,19 +528,19 @@ class CustomerInfo extends Component {
         customerDepartment["developLanguageCode1"] = "";
         customerDepartment["developLanguageCode2"] = "";
         customerDepartmentList.push(customerDepartment);
-        var currentPage = Math.ceil(customerDepartmentList.length/5);
+        var currentPage = Math.ceil(customerDepartmentList.length / 5);
         this.setState({
-            customerDepartmentList:customerDepartmentList,
-            currentPage:currentPage,
+            customerDepartmentList: customerDepartmentList,
+            currentPage: currentPage,
         })
     }
     /**
      * リセットブタン
      */
-    reset=()=>{
+    reset = () => {
         this.setState({
-            stationCode:'',
-            topCustomer:'',
+            stationCode: '',
+            topCustomer: '',
             establishmentDate: '',
             businessStartDate: '',
         })
@@ -558,7 +558,7 @@ class CustomerInfo extends Component {
         $("#representative").val("");
         $("#url").val("");
         $("#remark").val("");
-        $("#toBankInfo").attr("disabled",true);
+        $("#toBankInfo").attr("disabled", true);
     }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
@@ -588,9 +588,9 @@ class CustomerInfo extends Component {
         //テーブルの定義
         const options = {
             onPageChange: page => {
-				this.setState({ currentPage: page });
-			},
-			page: this.state.currentPage,
+                this.setState({ currentPage: page });
+            },
+            page: this.state.currentPage,
             noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
@@ -651,7 +651,7 @@ class CustomerInfo extends Component {
                             上位お客様
                         </Button>
                     </div>
-                    <br/>
+                    <br />
                     <Form id="customerForm">
                         <Row>
                             <Col sm={3}>
@@ -671,6 +671,8 @@ class CustomerInfo extends Component {
                                         style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                 </InputGroup>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -687,28 +689,15 @@ class CustomerInfo extends Component {
                                     <Form.Control placeholder="例：中山毛石" maxLength="20" id="representative" name="representative" />
                                 </InputGroup>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Autocomplete
-                                        disabled={this.state.actionType === "detail" ? true : false}
-                                        id="stationCode"
-                                        name="stationCode"
-                                        value={this.state.stationCodeDrop.find((v) => (v.code === this.state.stationCode)) || {}}
-                                        onSelect={(event) => this.handleTag(event, 'stationCode')}
-                                        options={this.state.stationCodeDrop}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 245, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-                                            </div>
-                                        )}
-                                    />
+                                    <Form.Control maxLength="5" placeholder="例：1000" id="capitalStock" name="capitalStock" />
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>万円</InputGroup.Text>
+                                    </InputGroup.Prepend>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -733,6 +722,38 @@ class CustomerInfo extends Component {
                                         locale="ja"
                                         disabled={actionType === "detail" ? true : false}
                                     />
+                                </InputGroup>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Autocomplete
+                                        disabled={this.state.actionType === "detail" ? true : false}
+                                        id="stationCode"
+                                        name="stationCode"
+                                        value={this.state.stationCodeDrop.find((v) => (v.code === this.state.stationCode)) || {}}
+                                        onSelect={(event) => this.handleTag(event, 'stationCode')}
+                                        options={this.state.stationCodeDrop}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto"
+                                                    style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            </div>
+                                        )}
+                                    />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode" />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -803,17 +824,17 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode" />
+                                    <Form.Control maxLength="" placeholder="www.lyc.co.jp" id="url" name="url" />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
+                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="" placeholder="www.lyc.co.jp" id="url" name="url" />
+                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -837,14 +858,6 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
-                                </InputGroup>
-                            </Col>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
@@ -852,17 +865,6 @@ class CustomerInfo extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control maxLength="5" placeholder="例：1000" id="capitalStock" name="capitalStock" />
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text>万円</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                </InputGroup>
-                            </Col>
                             <Col sm={7}>
                             </Col>
                             <Col className="text-right">
@@ -874,20 +876,21 @@ class CustomerInfo extends Component {
                     </Form>
                     <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
                     <Form.Text style={{ "color": "#FFD700" }}>部門情報</Form.Text>
-                        <Row>
-                            <Col sm={10}></Col>
-                            <Col sm={2}>
-                                <div style={{ "float": "right" }}>
-                                    <Button size="sm" variant="info" onClick={this.insertRow} id="insertRow" type="button">
-                                        <FontAwesomeIcon icon={faSave} />追加
+                    <Row>
+                        <Col sm={10}></Col>
+                        <Col sm={2}>
+                            <div style={{ "float": "right" }}>
+                                <Button size="sm" variant="info" onClick={this.insertRow} id="insertRow" type="button">
+                                    <FontAwesomeIcon icon={faSave} />追加
                         </Button>{" "}
-                                    <Button size="sm" onClick={this.listDelete} variant="info" id="sakujo" type="button">
-                                        <FontAwesomeIcon icon={faTrash} />删除
+                                <Button size="sm" onClick={this.listDelete} variant="info" id="sakujo" type="button">
+                                    <FontAwesomeIcon icon={faTrash} />删除
                         </Button>
-                                </div>
-                            </Col>
-                        </Row>
-                        <div>
+                            </div>
+                        </Col>
+                    </Row>
+                    <div>
+                        <Col sm={12}>
                             <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
                                 pagination={true}
                                 options={options}
@@ -895,9 +898,9 @@ class CustomerInfo extends Component {
                                 insertRow
                                 cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}  width='90'>番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}  width="130">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }}  width="230"
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='90'>番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="130">責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="230"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
                                     dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
@@ -912,13 +915,14 @@ class CustomerInfo extends Component {
                                 <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode2' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
                                     dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }}></TableHeaderColumn>
                             </BootstrapTable>
-                        </div>
-                        <input type="hidden" id="employeeNo" name="employeeNo" />
+                        </Col>
+                    </div>
+                    <input type="hidden" id="employeeNo" name="employeeNo" />
                 </div>
                 <div style={{ "textAlign": "center" }}>
-                        <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                            <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
-                        </Button>
+                    <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+                        <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
+                    </Button>
                 </div>
             </div>
         );

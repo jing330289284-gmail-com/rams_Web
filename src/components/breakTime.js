@@ -6,8 +6,7 @@ import axios from 'axios';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -30,6 +29,7 @@ class BreakTime extends Component {
 			breakTimeNightMinuteStart: [],//　　お昼分から
 			breakTimeNightHourEnd: [],//　　お昼時まで
 			breakTimeNightMinuteEnd: [],//　　お昼分まで
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 		};
 		
 		for (var i = 0; i <= 14; i++)	{
@@ -97,7 +97,7 @@ class BreakTime extends Component {
 		actionType = "insert";
         if(actionType === "insert"){
             breakTimeInfo["actionType"] = "insert";
-            axios.post(this.props.serverIP + "dutyRegistration/breakTimeInsert", breakTimeInfo)
+            axios.post(this.state.serverIP + "dutyRegistration/breakTimeInsert", breakTimeInfo)
             .then(resultMap => {
                 if(resultMap.data){
                     alert("更新成功");
@@ -347,15 +347,5 @@ class BreakTime extends Component {
     }
 }
 
-const mapStateToProps = state => {
-	return {
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(BreakTime);
+export default BreakTime;

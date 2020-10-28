@@ -3,14 +3,13 @@ import { Button, Form, Col, Row, InputGroup, FormControl, Modal } from 'react-bo
 import axios from 'axios';
 import '../asserts/css/development.css';
 import '../asserts/css/style.css';
-import $ from 'jquery'
+import $ from 'jquery';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
 import * as publicUtils from './utils/publicUtils.js';
+import store from './redux/store';
 import MyToast from './myToast';
 /**
  * 作業報告書登録画面
@@ -26,7 +25,6 @@ class workRepot extends React.Component {
 	componentDidMount(){
 		$("#workRepotUpload").attr("disabled",true);
 		$("#workRepotDownload").attr("disabled",true);
-		this.props.fetchDropDown();
 		this.searchWorkRepot();
 	}
 	//onchange
@@ -38,9 +36,11 @@ class workRepot extends React.Component {
 	//　初期化データ
 	initialState = {
 		employeeList: [],
+		costClassificationCode: store.getState().dropDown[30],
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	approvalStatus(code) {
-    let approvalStatuss = this.props.approvalStatuslist;
+		let approvalStatuss = this.state.approvalStatuslist;
         for (var i in approvalStatuss) {
             if (code === approvalStatuss[i].code) {
                 return approvalStatuss[i].name;
@@ -49,7 +49,7 @@ class workRepot extends React.Component {
     };
 	//　検索
 	searchWorkRepot = () => {
-		axios.post(this.props.serverIP + "workRepot/selectWorkRepot")
+		axios.post(this.state.serverIP + "workRepot/selectWorkRepot")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -73,7 +73,7 @@ class workRepot extends React.Component {
 			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
 			sumWorkTime:　e.sumWorkTime,
 		};
-		axios.post(this.props.serverIP + "workRepot/updateworkRepot",emp)
+		axios.post(this.state.serverIP + "workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -115,7 +115,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post(this.props.serverIP + "workRepot/updateWorkRepotFile",formData)
+			axios.post(this.state.serverIP + "workRepot/updateWorkRepotFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -230,7 +230,7 @@ if($("#getFile").get(0).files[0].size>1048576){
                                <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport,this.props.serverIP)}id="workRepotDownload">
+								<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport, this.state.serverIP)}id="workRepotDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
 		                        </Button>
 	 						</div>
@@ -251,16 +251,4 @@ if($("#getFile").get(0).files[0].size>1048576){
 		);
 	}
 }
-const mapStateToProps = state => {
-	return {
-		costClassificationCode: state.data.dataReques.length >= 1 ? state.data.dataReques[30]: [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(workRepot);
+export default workRepot;

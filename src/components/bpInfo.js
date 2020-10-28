@@ -9,8 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
-/* import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index'; */
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 
