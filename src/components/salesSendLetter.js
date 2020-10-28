@@ -1,9 +1,8 @@
 // 営業送信画面
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, Modal,FormControl } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, Modal,FormControl,ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
-import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import { Link } from "react-router-dom";
 import store from './redux/store';
-import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faBookmark} from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
 class salesSendLetter extends React.Component {
@@ -45,6 +44,14 @@ class salesSendLetter extends React.Component {
 		listName1:"",
 		listName2:"",
 		listName3:"",
+		listShowFlag:true,
+		oldListName1:"",
+oldListName2:"",
+oldListName3:"",
+selectedCtmNoStrs1:"",
+selectedCtmNoStrs2:"",
+selectedCtmNoStrs3:"",
+selectedlistName:"",
 	};
 
 	// 
@@ -59,6 +66,15 @@ getLists = () => {
 				this.setState({
 					salesLists: result.data,
 					listName:1+result.data.length,
+					listName1:result.data.length>=1?result.data[0].name:'',
+					listName2:result.data.length>=2?result.data[1].name:'',
+					listName3:result.data.length>=3?result.data[2].name:'',
+					oldListName1:result.data.length>=1?result.data[0].name:'',
+					oldListName2:result.data.length>=2?result.data[1].name:'',
+					oldListName3:result.data.length>=3?result.data[2].name:'',
+					selectedCtmNoStrs1:result.data.length>=1?result.data[0].customerNo:'',
+selectedCtmNoStrs2:result.data.length>=2?result.data[1].customerNo:'',
+selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 				});
 			})
 			.catch(function(err) {
@@ -134,7 +150,7 @@ getLists = () => {
 			}
 		}
 	}
-
+	
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.state.customerDepartmentNameDrop;
 		for (var i in customerDepartmentNameDropTem) {
@@ -146,6 +162,22 @@ getLists = () => {
 
 	// clearボタン事件 
 	clearLists = () => {
+		if(this.state.selectedlistName!==''){
+			axios.post("http://127.0.0.1:8080/salesSendLetters/deleteList",{storageListName:this.state.selectedlistName})
+		.then(result => {
+		this.setState({
+			allCustomer: this.state.customerTemp,
+			sendLetterBtnFlag: true,
+		})	
+		this.refs.customersTable.store.selected = [];
+		this.refs.customersTable.setState({
+			selectedRowKeys: [],
+		})
+			this.getLists();
+			
+			})
+				
+		}else{
 		this.setState({
 			allCustomer: [],
 			sendLetterBtnFlag: true,
@@ -153,7 +185,7 @@ getLists = () => {
 		this.refs.customersTable.store.selected = [];
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
-		})
+		})}
 	}
 
 	createList = () => {
@@ -170,8 +202,14 @@ getLists = () => {
 		let code=selectedNoArray.join(',');
 		axios.post("http://127.0.0.1:8080/salesSendLetters/creatList",{name,code})
 		.then(result => {
-			/*listName=listName+1;
-			this.setState({listName});*/
+					this.refs.customersTable.store.selected = [];
+		this.refs.customersTable.setState({
+			selectedRowKeys: [],
+		})
+			/*listName=listName+1;*/
+			this.setState({
+				selectetRowIds:[],
+			});
 			this.getLists();
 			})
 	}
@@ -326,6 +364,75 @@ getLists = () => {
 		});
 		this.CellFormatter(row.salesPersonsAppend, row);
 	}
+	changeName=()=>{
+		if(this.state.listShowFlag){
+					this.setState({
+			listShowFlag:!this.state.listShowFlag})
+		}else{
+			var salesSendLettersListNames={storageListName1:this.state.listName1,oldStorageListName1:this.state.oldListName1,
+			storageListName2:this.state.listName2,oldStorageListName2:this.state.oldListName2,
+			storageListName3:this.state.listName3,oldStorageListName3:this.state.oldListName3};
+			if((this.state.listName1===''&&this.state.oldListName1!=="")||
+			(this.state.listName2===''&&this.state.oldListName2!=="")||
+			(this.state.listName3===''&&this.state.oldListName3!=="")){
+				alert("対象名を入力してください")
+				return;
+			}
+			axios.post("http://127.0.0.1:8080/salesSendLetters/listNameUpdate",salesSendLettersListNames)
+			.then(result => {
+				this.getLists();
+				this.setState({
+					listShowFlag:true,
+				})
+				
+			})
+			.catch(function(err) {
+				alert(err)
+			})
+		}
+
+	}
+	
+	showSelectedCtms=(selectedNos,flag)=>{
+		
+		this.refs.customersTable.store.selected = [];
+		this.setState({
+			selectetRowIds: [],
+		});
+		this.refs.customersTable.setState({
+			selectedRowKeys: [],
+		})
+		if(flag==='1'){
+			this.setState({
+					selectedlistName:this.state.listName1,
+			})
+		
+		}else if(flag==='2'){
+			this.setState({
+					selectedlistName:this.state.listName2,
+			})
+		
+		}else if(flag==='3'){
+			this.setState({
+					selectedlistName:this.state.listName3,
+			})
+		
+		}
+			axios.post("http://127.0.0.1:8080/salesSendLetters/getCustomersByNos",{ctmNos:selectedNos.split(',')})
+			.then(result => {
+				this.setState({
+					allCustomer:result.data,
+				});
+			})
+			.catch(function(err) {
+				alert(err)
+			})
+	}
+	
+	changeListName=(event)=>{
+		this.setState({
+			[event.target.name]:event.target.value})
+	}
 
 	render() {
 		const selectRow = {
@@ -462,36 +569,36 @@ getLists = () => {
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={2}>
+							<Col sm={1}>
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 							</Col>
-							<Col sm={1}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">格納リスト：</InputGroup.Text>
-									</InputGroup.Prepend>
+							<Col sm={5} style={{ "display": this.state.salesLists.length>=1 ? "block" : "none" }}>
+								<InputGroup size="sm" className="mb-3" style={{position: 'relative'}}>
+									<div style={{  "display": this.state.listShowFlag ? "contents" : "none" }}>
+									格納リスト：
+									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs1,'1')} style={{"display": this.state.salesLists.length>=1? "block" : "none" }}>
+									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=1?' '+this.state.listName1:''}</Button>{'　'}
+									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs2,'2')} style={{"display": this.state.salesLists.length>=2? "block" : "none" }}>
+									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=2?' '+this.state.listName2:''}</Button>{'　'}
+									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs3,'3')} style={{"display": this.state.salesLists.length>=3? "block" : "none" }}>
+									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=3?' '+this.state.listName3:''}</Button>
+									
+									</div>
+										
+										
+										<span style={{ "display": !this.state.listShowFlag ? "contents" : "none" }}>格納リスト： <FormControl   autoComplete="off" value={this.state.listName1}
+										disabled={this.state.salesLists.length>=1?false:true}
+										size="sm" name="listName1" style={{width:"85px"}} onChange={this.changeListName}/>
+										<FormControl   autoComplete="off" value={this.state.listName2}
+										size="sm" name="listName2" style={{width:"85px","display": this.state.salesLists.length>=2? "block" : "none" }} onChange={this.changeListName}/>
+										<FormControl   autoComplete="off" value={this.state.listName3}
+										size="sm" name="listName3" style={{width:"85px","display": this.state.salesLists.length>=3? "block" : "none"}} onChange={this.changeListName}/>{'　　　'}</span>
+									<Button style={{position:'absolute',right:'0px'}} size="sm" variant="info"  onClick={this.changeName}><FontAwesomeIcon icon={faPencilAlt} />{this.state.listShowFlag?'対象名修正':'対象名更新'}</Button>
 									</InputGroup>
 
 							</Col>
-							<Col sm={1}>
-								<InputGroup size="sm" className="mb-3">
-									<FormControl   autoComplete="off" value={this.state.salesLists.length>=2?this.state.salesLists[1].name:''}
-										disabled={this.state.salesLists.length>=2?false:true}
-										size="sm" name="alphabetName" />
-									<Button size="sm" variant="info" >
-									<FontAwesomeIcon icon={faPlusCircle} />詳細</Button>
-									</InputGroup>
-
-							</Col>
-							<Col sm={1}>
-								<InputGroup size="sm" className="mb-3">
-									<FormControl   autoComplete="off" value={this.state.salesLists.length>=3?this.state.salesLists[2].name:''}
-										disabled={this.state.salesLists.length>=3?false:true}
-										size="sm" name="alphabetName" />
-									</InputGroup>
-
-							</Col>
+							
 						</Row>
 					</Form.Group>
 					<Row>
@@ -503,15 +610,18 @@ getLists = () => {
 						<Col sm={5}></Col>
 						<Col sm={5}>
 							<div style={{ "float": "right" }}>
-							<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" 
-									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" onClick={this.clearLists}
-									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>
-								<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton"
-									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
+							<Button size="sm" variant="info" name="clickButton" 
+									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length===3? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
+									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}
+								<Button  size="sm" variant="info" name="clickButton"
+									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
-								><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
+								><FontAwesomeIcon icon={faEnvelope} />要員送信</Button></Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
+								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
+								><FontAwesomeIcon icon={faEnvelope} />案件送信</Button></Link>
 							</div>
 						</Col>
 					</Row>
@@ -527,7 +637,7 @@ getLists = () => {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} caretRender={publicUtils.getCaret} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN}  autoValue dataSort={true}  editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='10%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
 						<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 						<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
