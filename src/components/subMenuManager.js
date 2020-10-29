@@ -162,6 +162,8 @@ class SubMenu extends Component {
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont" to="/subMenuManager/manageSituation"><FontAwesomeIcon className="fa-fw" size="lg" icon={faNewspaper} />営業状況確認一覧</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faPencilRuler} />提案送信</Link></ListGroup.Item>
 													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUserCircle} />要員提案送信</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
+													<ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}><Link className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />案件一覧</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>

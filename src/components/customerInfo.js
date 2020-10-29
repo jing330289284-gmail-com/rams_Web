@@ -696,7 +696,7 @@ class CustomerInfo extends Component {
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="5" placeholder="例：1000" id="capitalStock" name="capitalStock" />
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>万円</InputGroup.Text>
+                                        <InputGroup.Text>百万円</InputGroup.Text>
                                     </InputGroup.Prepend>
                                 </InputGroup>
                             </Col>
