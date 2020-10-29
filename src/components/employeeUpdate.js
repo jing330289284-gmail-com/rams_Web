@@ -18,6 +18,8 @@ import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+import ImageUploader from "react-images-upload";
+
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -26,6 +28,13 @@ class employeeUpdate extends React.Component {
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
+		this.onDrop = this.onDrop.bind(this);
+	}
+
+	onDrop(pictureFiles, pictureDataURLs) {
+		this.setState({
+			pictures: this.state.pictures.concat(pictureFiles)
+		});
 	}
 	//初期化
 	initialState = {
@@ -125,8 +134,9 @@ class employeeUpdate extends React.Component {
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]) === "" ? this.state.resumeInfo1URL : publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]) === "" ? this.state.resumeInfo2URL : publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
-		formData.append('residentCardInfo',publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) === "" ? this.state.residentCardInfoURL : publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
+		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) === "" ? this.state.residentCardInfoURL : publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		formData.append('picInfo', this.state.pictures[0])
 		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -589,13 +599,13 @@ class employeeUpdate extends React.Component {
 									</Form.Control>
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名　</InputGroup.Text></InputGroup.Prepend>
 									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
 									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">性別　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -653,7 +663,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">年齢　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Append>
 										<DatePicker
@@ -677,7 +687,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">部署　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -690,7 +700,7 @@ class employeeUpdate extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">職種　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -721,7 +731,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">和暦　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" onChange={this.valueChange} size="sm" name="japaneseCalendar" disabled />
 								</InputGroup>
@@ -734,7 +744,20 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
-								<Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" />
+								{/* <Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" /> */}
+								<div id="fileUploader">
+									<ImageUploader
+										withIcon={false}
+										withPreview={true}
+										id="imageUploader"
+										label=""
+										buttonText="Upload Images"
+										onChange={this.onDrop}
+										imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
+										maxFileSize={1048576}
+										fileSizeError=" file size is too big"
+									/>
+								</div>
 							</Col>
 						</Row>
 						<Row>
@@ -839,7 +862,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">出身地　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.changeNationalityCodes}
@@ -867,7 +890,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">権限</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">権限　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -887,7 +910,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">日本語　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select"
 										onChange={this.valueChange} size="sm"
@@ -904,7 +927,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">英語　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" onChange={this.valueChange} size="sm" name="englishLevelCode" value={englishLevelCode} autoComplete="off" id="englishLeveCodeId" >
 										{this.state.englishLeveCodes.map(data =>
@@ -918,7 +941,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">資格　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1" />
 									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" />
@@ -927,7 +950,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">役割　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" >
 										{this.state.siteMaster.map(date =>
@@ -1059,7 +1082,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}

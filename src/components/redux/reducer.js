@@ -66,7 +66,8 @@ export function fetchDropDown() {
         contentType: "application/json",
         success: function (resultList) {
             for (let j = 0; j < resultList.length; j++) {
-                var array = [{ code: '', name: '選択ください' }];
+               /*  var array = [{ code: '', name: '選択ください' }]; */
+                var array = [{ code: '', name: '' }];
                 var list = resultList[j];
                 for (var i in list) {
                     array.push(list[i])

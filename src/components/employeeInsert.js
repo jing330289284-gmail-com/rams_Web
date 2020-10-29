@@ -2,7 +2,7 @@
 社員を登録
  */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -106,7 +106,8 @@ class employeeInsert extends React.Component {
 			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
 			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
 			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
-			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",//社内メール
+			//companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",//社内メール
+			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail,//社内メール
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
@@ -586,14 +587,14 @@ class employeeInsert extends React.Component {
 									</Form.Control>
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名　</InputGroup.Text></InputGroup.Prepend>
 									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
 									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">性別　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -651,7 +652,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">年齢　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Append>
 										<DatePicker
@@ -676,7 +677,7 @@ class employeeInsert extends React.Component {
 
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">部署　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -689,7 +690,7 @@ class employeeInsert extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">職種　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -720,7 +721,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">和暦</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">和暦　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="和暦" value={japaneseCalendar} id="japaneseCalendar" autoComplete="off" size="sm" name="japaneseCalendar" disabled />
 								</InputGroup>
@@ -850,7 +851,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">出身地　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.changeNationalityCodes}
@@ -878,7 +879,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">権限</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">権限　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -898,7 +899,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">日本語　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select"
 										onChange={this.valueChange} size="sm"
@@ -915,7 +916,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">英語</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">英語　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" onChange={this.valueChange} size="sm" name="englishLevelCode" value={englishLevelCode} autoComplete="off" id="englishLeveCodeId" >
 										{this.state.englishLeveCodes.map(data =>
@@ -929,7 +930,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">資格　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1" />
 									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" />
@@ -938,7 +939,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">役割　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" >
 										{this.state.siteMaster.map(date =>
@@ -1070,7 +1071,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}

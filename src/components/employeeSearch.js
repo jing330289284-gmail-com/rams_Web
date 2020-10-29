@@ -406,7 +406,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">性別　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="genderStatus" value={genderStatus} autoComplete="off">
 											{this.state.genderStatuss.map(data =>
@@ -420,7 +420,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">年齢</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">年齢　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
 										/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
@@ -444,7 +444,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">国籍　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="nationalityCode" value={nationalityCode} autoComplete="off">
 											{this.state.nationalityCodes.map(data =>
@@ -482,7 +482,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">日本語　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneaseLeveCode" value={japaneaseLeveCode} autoComplete="off">
 											{this.state.japaneaseLevelCodes.map(data =>
@@ -496,7 +496,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">役割　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="siteRoleCode" value={siteRoleCode} autoComplete="off">
 											{this.state.siteMaster.map(data =>
@@ -592,7 +592,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">稼働　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
 											<option value=""　>選択ください</option>

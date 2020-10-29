@@ -341,6 +341,7 @@ export async function postcodeApi() {
 				console.error("Error - " + error);
 			});
 	} else {
+		$("#firstHalfAddress").val("");
 	}
 }
 
