@@ -142,7 +142,6 @@ class employeeInsert extends React.Component {
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
-			//picInfo: this.state.pictures,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
