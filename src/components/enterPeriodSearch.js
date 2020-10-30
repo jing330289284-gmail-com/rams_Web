@@ -182,19 +182,19 @@ class EnterPeriodSearch extends React.Component {
     }
     //以下の四つは金額マークの追加
     addMarkSalary=(cell,row)=>{
-        let salary = utils.addComma(row.salary,false);
+        let salary = utils.addComma(row.salary);
         return salary;
     }
     addMarkInsuranceFeeAmount=(cell,row)=>{
-        let insuranceFeeAmount = utils.addComma(row.insuranceFeeAmount,false);
+        let insuranceFeeAmount = utils.addComma(row.insuranceFeeAmount);
         return insuranceFeeAmount;
     }
     addMarkUnitPrice=(cell,row)=>{
-        let unitPrice = utils.addComma(row.unitPrice,false);
+        let unitPrice = utils.addComma(row.unitPrice);
         return unitPrice;
     }
     addMarkScheduleOfBonusAmount=(cell,row)=>{
-        let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount,false);
+        let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
         return scheduleOfBonusAmount;
     }
     //以下の二つは期日に/の追加

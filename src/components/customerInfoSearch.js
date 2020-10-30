@@ -83,16 +83,24 @@ class CustomerInfoSearch extends Component {
      */
     vNumberChange = (e, key) => {
         const { value } = e.target;
-
+        var num = value;
         const reg = /^[0-9]*$/;
+        num = utils.deleteComma(num);
         var keyLength = 5;
         if (key === "capitalStockFront" || key === "capitalStockBack") {
             keyLength = 6;
-        }
-        if ((reg.test(value) && value.length < keyLength)) {
-            this.setState({
-                [key]: value
-            })
+            if ((reg.test(num) && num.length < keyLength)) {
+                num = utils.addComma(num);
+                this.setState({
+                    [key]: num
+                })
+            }
+        }else{
+            if ((reg.test(num) && num.length < keyLength)) {
+                this.setState({
+                    [key]: num
+                })
+            }
         }
     }
     /**
@@ -104,6 +112,8 @@ class CustomerInfoSearch extends Component {
         $.each(formArray, function (i, item) {
             customerInfoMod[item.name] = item.value;
         });
+        customerInfoMod["capitalStockFront"] = utils.deleteComma($("#capitalStockFront").val());
+        customerInfoMod["capitalStockBack"] = utils.deleteComma($("#capitalStockBack").val());
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCode);
         customerInfoMod["businessStartDate"] = utils.dateFormate(this.state.businessStartDate, false);
@@ -277,6 +287,10 @@ class CustomerInfoSearch extends Component {
             </div>
         );
     }
+    addMarkCapitalStock=(cell,row)=>{
+        let capitalStock = utils.addComma(row.capitalStock);
+        return capitalStock;
+    }
     render() {
         const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack } = this.state;
         //画面遷移のパラメータ（追加）
@@ -336,7 +350,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control placeholder="例：C001" id="customerNo" name="customerNo" />
                             </InputGroup>
@@ -361,7 +375,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
+                                    <InputGroup.Text style={{width:"8rem"}}>お客様ランキング</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" id="levelCode" name="levelCode">
                                 </Form.Control>
@@ -389,7 +403,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">上位お客様</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Autocomplete
                                     id="topCustomer"
@@ -429,7 +443,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
                             </InputGroup>
@@ -447,7 +461,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">取引開始日</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <DatePicker
                                     selected={this.state.businessStartDate}
@@ -517,7 +531,7 @@ class CustomerInfoSearch extends Component {
                             <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
                             <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
-                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160">資本金(百万円)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160" dataFormat={this.addMarkCapitalStock}>資本金(百万円)</TableHeaderColumn>
                             <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
                             <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
