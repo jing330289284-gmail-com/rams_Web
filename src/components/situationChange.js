@@ -1,23 +1,15 @@
 import React,{Component} from 'react';
-import {Row , Col , InputGroup , Button , FormControl,Table,Form } from 'react-bootstrap';
+import {Row , Col , InputGroup ,Form } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
-import $ from 'jquery';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 class situationChange extends Component {//状況変動一覧
-    state = { 
-
-     }
      constructor(props){
-		super(props);
+        super(props);
+        this.state = this.initialState;//初期化
 		this.options = {
 			sizePerPage: 12,
 			pageStartIndex: 1,
@@ -33,25 +25,33 @@ class situationChange extends Component {//状況変動一覧
 		};
     }
 
+    initialState = {
+        startsituationChange:new Date(),
+        endsituationChange:new Date(),
+        situationChanges: store.getState().dropDown[39].slice(1),
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+        
+    }
+
                	//onchange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
-        })
-
+        } ,()=>{this.selectSituationChange()})       
     }
 
     componentDidMount(){
-        this.props.fetchDropDown();
+        this.selectSituationChange();
+
     }
     startsituationChange = date => {
         if(date !== null){
             this.setState({
                 startsituationChange: date,
-            });
+            },()=>{this.selectSituationChange()});
         }else{
             this.setState({
-                startsituationChange: '',
+                startsituationChange: new Date(),
             });
         }
     };
@@ -60,15 +60,48 @@ class situationChange extends Component {//状況変動一覧
         if(date !== null){
             this.setState({
                 endsituationChange: date,
-            });
+            },()=>{this.selectSituationChange()});
         }else{
             this.setState({
-                endsituationChange: '',
+                endsituationChange: new Date(),
             });
         }
-	};
+    };
+    
+selectSituationChange =() => {
+    if(this.state.startsituationChange!=null&&this.state.endsituationChange!=null){
+        const situationInfo = {
+            classification:this.state.situationChange,
+            startYandM: publicUtils.formateDate(this.state.startsituationChange,false),
+            endYandM: publicUtils.formateDate(this.state.endsituationChange,false),
+
+        };
+        axios.post(this.state.serverIP + "SituationChange/searchSituationChange", situationInfo)
+			.then(response => {
+				if (response.data.errorsMessage != null) {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+                }else if(response.data.noData != null){
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                }else {
+                    this.setState({"errorsMessageShow":false})
+                    this.setState({ situationInfoList: response.data.data })
+				 }
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+        }
+
+}
+
+renderShowsTotal(start, to, total) {
+    return (
+        <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
+            {start}から  {to}まで , 総計{total}
+        </p>
+    );
+}
     render(){
-        const  situationChanges= this.props.situationChanges;
+        const  situationChanges= this.state.situationChanges;
         return(
             <div>
                  <Row inline="true">
@@ -97,7 +130,6 @@ class situationChange extends Component {//状況変動一覧
                             <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                 selected={this.state.startsituationChange}
                                 onChange={this.startsituationChange}
-                                dateFormat={"yyyy MM"}
                                 autoComplete="off"
                                 locale="pt-BR"
                                 showMonthYearPicker
@@ -111,7 +143,6 @@ class situationChange extends Component {//状況変動一覧
 								</DatePicker><font id="mark">～</font><DatePicker
                                 selected={this.state.endsituationChange}
                                 onChange={this.endsituationChange}
-                                dateFormat={"yyyy MM"}
                                 autoComplete="off"
                                 locale="pt-BR"
                                 showMonthYearPicker
@@ -128,35 +159,22 @@ class situationChange extends Component {//状況変動一覧
                     </Col>
 				</Row>
                 <div>
-                    <BootstrapTable   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>                           
+                    <BootstrapTable data={this.state.situationInfoList}   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
+                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='reflectYearAndMonth'>年月</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>社員名</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='status'>区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>給料</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='socialInsurance'>社会保険</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bonus' >ボーナス</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='remarks' >備考</TableHeaderColumn>
-												</BootstrapTable>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='socialInsuranceFlag'>社会保険</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' >ボーナス</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='remark' >備考</TableHeaderColumn>
+					</BootstrapTable>
                     </div>
             </div>
         )
     }
 }
-    const mapStateToProps = state => {
-        return {
-            situationChanges: state.data.dataReques.length >= 1 ? state.data.dataReques[38].slice(1) : [],
-
-            serverIP: state.data.dataReques[state.data.dataReques.length-1],
-            
-        }
-    };
-    
-    const mapDispatchToProps = dispatch => {
-        return {
-            fetchDropDown: () => dispatch(fetchDropDown())
-        }
-};
-    export default connect(mapStateToProps, mapDispatchToProps) (situationChange);
+    export default situationChange;
 

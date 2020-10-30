@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Form , Col , InputGroup , Button , FormControl , select , Tooltip} from 'react-bootstrap';
+import {Row , Form , Col , InputGroup , Button , FormControl ,} from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -9,10 +9,8 @@ import { faUndo, faSearch  } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
 import { Link } from "react-router-dom";
-import { ROW_SELECT_SINGLE } from 'react-bootstrap-table-next';
+import store from './redux/store';
 class monthlySalesSearch extends Component {//月次売上検索
     state = { 
         monthlySales_YearAndMonth:'',
@@ -50,12 +48,14 @@ class monthlySalesSearch extends Component {//月次売上検索
 
         };
         
-        initialState = { occupationCodes: [],employeeFormCodes: [],employeeStatuss:[],
+        initialState = { 
+            employeeStatuss:  store.getState().dropDown[4],
+            employeeFormCodes: store.getState().dropDown[2],
+            occupationCodes: store.getState().dropDown[10],
+            serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         }
         componentDidMount(){
-            this.props.fetchDropDown();
-           this.clickButtonDisabled();
-       
+           this.clickButtonDisabled();      
         }
 
         clickButtonDisabled = () => {
@@ -126,7 +126,7 @@ class monthlySalesSearch extends Component {//月次売上検索
             endYandM: publicUtils.formateDate(this.state.monthlySales_endYearAndMonth,false),
 
         };
-        axios.post(this.props.serverIP + "monthlySales/searchMonthlySales", monthlyInfo)
+        axios.post(this.state.serverIP + "monthlySales/searchMonthlySales", monthlyInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -266,18 +266,22 @@ class monthlySalesSearch extends Component {//月次売上検索
 	}
     
     render(){
-        const { kadou,employeeOccupation,employeeForms,employeeClassification ,errorsMessageValue}= this.state;
-        const employeeStatuss = this.props.employeeStatuss;
-        const employeeFormCodes = this.props.employeeFormCodes;
-        const  occupationCodes= this.props.occupationCodes;
+        const { kadou,
+                employeeOccupation,
+                employeeForms,
+                employeeClassification,
+                errorsMessageValue,
+                employeeStatuss,
+                employeeFormCodes,
+                occupationCodes}= this.state;
         const selectRow = {
-			mode: 'radio',
-			bgColor: 'pink',
-			hideSelectColumn: true,
-			clickToSelect: true,
-			clickToExpand: true,
-			onSelect: this.handleRowSelect,
-		};
+                mode: 'radio',
+                bgColor: 'pink',
+                hideSelectColumn: true,
+                clickToSelect: true,
+                clickToExpand: true,
+                onSelect: this.handleRowSelect,
+		    };
         return(
             <div>   
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
@@ -475,21 +479,4 @@ class monthlySalesSearch extends Component {//月次売上検索
         );            
     }
 }
-
-const mapStateToProps = state => {
-	return {
-        employeeStatuss: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
-        employeeFormCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[2] : [],
-        occupationCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[3] : [],
-        serverIP: state.data.dataReques[state.data.dataReques.length-1],
-		
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(monthlySalesSearch) ;
+export default monthlySalesSearch ;

@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Col , InputGroup , Button , FormControl,Table } from 'react-bootstrap';
+import {Row , Col , InputGroup , Button , FormControl, } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -10,8 +10,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
+import store from './redux/store';
 class individualSales extends React.Component {//個人売上検索
     state = { 
         actionType:'',
@@ -23,7 +22,8 @@ class individualSales extends React.Component {//個人売上検索
         monthlySales_endYearAndMonth:'',
      }
      constructor(props){
-		super(props);
+        super(props);
+        this.state = this.initialState;//初期化
 		this.options = {
 			sizePerPage: 12,
 			pageStartIndex: 1,
@@ -38,15 +38,18 @@ class individualSales extends React.Component {//個人売上検索
 
 		};
     }
+    initialState = {
+        employeeInfo: store.getState().dropDown[9].slice(1),
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+    }
 	searchEmployee = () => { 
 		const empInfo = {
-           // employeeName: publicUtils.labelGetValue($("#employeeName").val() ,this.state.employeeInfo),
            employeeName:this.state.employeeName,
             fiscalYear:this.state.fiscalYear,
             startYearAndMonth:publicUtils.formateDate(this.state.individualSales_startYearAndMonth,false),
             endYearAndMonth:publicUtils.formateDate(this.state.individualSales_endYearAndMonth,false),
 		};
-        axios.post(this.props.serverIP + "personalSales/searchEmpDetails", empInfo)
+        axios.post(this.state.serverIP + "personalSales/searchEmpDetails", empInfo)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -106,8 +109,6 @@ class individualSales extends React.Component {//個人売上検索
         this.setState({paymentTotal:publicUtils.addComma(paymentTotal.toString(),false)})
     }
 	componentDidMount(){
-        this.props.fetchDropDown();
-        //this.getDropDown();
 		var date = new Date();
 		var year = date.getFullYear();
 		$('#fiscalYear').append('<option value="">'+""+'</option>');
@@ -262,7 +263,7 @@ class individualSales extends React.Component {//個人売上検索
 				[id]: '',
 			})
 		} else {
-			if (this.props.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+			if (this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					
 					case 'employeeName':
@@ -278,8 +279,7 @@ class individualSales extends React.Component {//個人売上検索
 
 
 render (){
-    const {employeeName,errorsMessageValue } = this.state;
-    const employeeInfo = this.props.employeeInfo;
+    const {employeeName,errorsMessageValue,employeeInfo } = this.state;
         return(
             
             <div>
@@ -404,15 +404,4 @@ render (){
         );
     }
 }
-const mapStateToProps = state => {
-	return {
-        employeeInfo: state.data.dataReques.length >= 1 ? state.data.dataReques[9].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length-1],
-	}
-};
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(individualSales);
+export default individualSales;
