@@ -445,7 +445,11 @@ export function nullToEmpty(obj) {
  * @param {*} num strの数字
  */
 export function addComma(num) {
-	num = num.toString();
+	if(num !== null && num !== "" && num !== undefined ){
+		num = num.toString();
+	}else{
+		return "";
+	}
 	var oldNum = num;
 	if(num !== null && num !== "" && num !== undefined ){
 		if(num.substring(0,1) === "-"){

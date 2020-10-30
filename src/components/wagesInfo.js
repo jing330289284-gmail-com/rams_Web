@@ -458,6 +458,34 @@ class WagesInfo extends Component {
             </p>
         );
     }
+    addMarkSalary=(cell,row)=>{
+        let salary = utils.addComma(row.salary);
+        return salary;
+    }
+    addMarkInsuranceFeeAmount=(cell,row)=>{
+        let insuranceFeeAmount = utils.addComma(row.insuranceFeeAmount);
+        return insuranceFeeAmount;
+    }
+    addMarkTransportationExpenses=(cell,row)=>{
+        let transportationExpenses = utils.addComma(row.transportationExpenses);
+        return transportationExpenses;
+    }
+    addMarkLeaderAllowanceAmount=(cell,row)=>{
+        let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
+        return leaderAllowanceAmount;
+    }
+    addMarkHousingAllowance=(cell,row)=>{
+        let housingAllowance = utils.addComma(row.housingAllowance);
+        return housingAllowance;
+    }
+    addMarkOtherAllowanceAmount=(cell,row)=>{
+        let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
+        return otherAllowanceAmount;
+    }
+    addMarkScheduleOfBonusAmount=(cell,row)=>{
+        let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
+        return scheduleOfBonusAmount;
+    }
     render() {
         const {
             employeeNo,
@@ -610,14 +638,14 @@ class WagesInfo extends Component {
                                             disabled={actionType === "detail" ? true : false}
                                             placeholder="例：220000"/>
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>円</InputGroup.Text>
+                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
                                             hidden={kadouCheck}
                                             id="mark" color="red"
-                                            style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                            style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>{" "}
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>非稼動費用</InputGroup.Text>
+                                            <InputGroup.Text id="fiveKanji">非稼動費用</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             maxLength="7"
@@ -628,7 +656,7 @@ class WagesInfo extends Component {
                                             onChange={this.valueChangeMoney}
                                             placeholder="例：220000" />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>円</InputGroup.Text>
+                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
                                             hidden={!kadouCheck}
@@ -691,7 +719,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>次回に昇給月</InputGroup.Text>
+                                            <InputGroup.Text id="sixKanji">次回に昇給月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <DatePicker
@@ -718,7 +746,7 @@ class WagesInfo extends Component {
                                 <Col sm={2}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>ボーナス：</InputGroup.Text>
+                                            <InputGroup.Text>ボーナス</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
@@ -763,7 +791,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="inputGroup-sizing-sm">次のボーナス月</InputGroup.Text>
+                                            <InputGroup.Text style={{width:"8rem"}}>次のボーナス月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
@@ -804,7 +832,7 @@ class WagesInfo extends Component {
                                             name="totalAmount"
                                             value={totalAmount} />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>円</InputGroup.Text>
+                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                     </InputGroup>
                                 </Col>
@@ -918,14 +946,14 @@ class WagesInfo extends Component {
                                 condensed>
                                 <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
                                 <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>
-                                <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100">給料</TableHeaderColumn>
-                                <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100">社会保険</TableHeaderColumn>
-                                <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100">交通代</TableHeaderColumn>
-                                <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
+                                <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkSalary}>給料</TableHeaderColumn>
+                                <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkInsuranceFeeAmount}>社会保険</TableHeaderColumn>
+                                <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
+                                <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}>リーダー手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}>住宅</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他の手当の費用</TableHeaderColumn>
-                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} >ボーナス</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkOtherAllowanceAmount}>他の手当の費用</TableHeaderColumn>
+                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
                                 <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
