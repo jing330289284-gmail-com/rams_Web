@@ -2,7 +2,7 @@
 社員を修正
  */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -137,6 +137,12 @@ class employeeUpdate extends React.Component {
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) === "" ? this.state.residentCardInfoURL : publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		formData.append('picInfo', this.state.pictures[0])
+
+		formData.append('resumeInfo1URL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		formData.append('resumeInfo2URL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		formData.append('residentCardInfoURL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		formData.append('passportInfoURL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+
 		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
