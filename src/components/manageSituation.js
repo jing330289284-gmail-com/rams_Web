@@ -847,7 +847,7 @@ class manageSituation extends React.Component {
 					</Form.Group>
 					<div>
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
-							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? "更新" : "解除"}</Button></div>
+							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button></div>
 					</div>
 					<Row>
 						<Col sm={1}>
@@ -873,14 +873,14 @@ class manageSituation extends React.Component {
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
-									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} />お客様送信</Button></Link>
+									<Button size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button></Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
-									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} />個人情報</Button></Link>
+									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button></Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
-									<Button style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} />現場情報</Button></Link>
-								<Button onClick={this.openDaiolog} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} />営業文章</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.state.serverIP)} style={{ marginRight: "10px" }} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書1</Button>
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} />履歴書2</Button>
+									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button></Link>{' '}
+								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>
 							</div>
 						</Col>
 					</Row>
@@ -898,7 +898,7 @@ class manageSituation extends React.Component {
 								cellEdit={cellEdit}
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn width='5%' dataField='rowNo' dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>

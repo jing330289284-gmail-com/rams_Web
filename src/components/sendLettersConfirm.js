@@ -22,6 +22,8 @@ class sendLettersConfirm extends React.Component {
 	}
 
 	initialState = ({
+		resumePath:'',
+		resumeName:'',
 		selectedmail:'',
 		selectedEmps:'',
 		mailTitle:'',
@@ -103,8 +105,10 @@ class sendLettersConfirm extends React.Component {
 		loginUserInfo: [],
 		appendEmps: [],
 		disbleState: false,
-		selectedMail: [],
+		selectedMailCC: [],
 		popupFlag:true,
+		
+					
 	})
 	componentDidMount() {
 		this.searchEmpDetail();
@@ -123,7 +127,7 @@ class sendLettersConfirm extends React.Component {
 			});
 		}
 		this.setState({
-			selectedMail: [this.fromMailToEmp(values.length >= 1 ? values[0].companyMail : ''),
+			selectedMailCC: [this.fromMailToEmp(values.length >= 1 ? values[0].companyMail : ''),
 			this.fromMailToEmp(values.length >= 2 ? values[1].companyMail : '')].filter(function(s) {
 				return s;
 			}),
@@ -144,6 +148,62 @@ class sendLettersConfirm extends React.Component {
 				this.setState({
 					mails: result.data,
 				})
+			})
+			.catch(function(error) {
+				alert(error);
+			});
+
+	}
+	
+		sendMailWithFile = () => {
+			const mailConfirmContont=`<br/>
+
+`+`<br/>`+
+this.state.selectedCustomerName + `株式会社<br/>
+`+ this.state.selectedPurchasingManagers + `様<br/>
+<br/>
+お世話になっております、`+this.state.loginUserInfo[0].employeeFristName+`です。<br/>
+<br/>
+以下の要員を提案させていただきます、案件がございましたら、<br/>
+ご検討の程宜しくお願い致します。<br/>
+<br/>
+【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `<br/>
+【所　　属】：`+ this.state.employeeStatus + `<br	/>
+【年　　齢】：`+ this.state.age + `歳<br/>
+【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
+【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
+【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
+【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
+【対応工程】：`+ this.state.siteRoleCode + `<br/>
+【得意言語】：`+ this.state.developLanguage + `<br/>
+【単　　価】：`+ this.state.unitPrice + `万円<br/>
+【稼働開始】：2020/09<br/>
+【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `<br/>
+【備　　考】：`+ this.state.remark + `<br/>
+<br/>
+以上、よろしくお願いいたします。<br/>
+******************************************************************<br/>
+LYC株式会社 `+this.state.loginUserInfo[0].employeeFristName+` `+this.state.loginUserInfo[0].employeeLastName+`<br/>
+〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F <br/> 
+http://www.lyc.co.jp/   <br/>
+TEL：03-6908-5796  携帯：`+this.state.loginUserInfo[0].phoneNo+`(優先）<br/>
+Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co.jp <br/>
+労働者派遣事業許可番号　派遣許可番号　派13-306371<br/>
+ＩＳＭＳ：MSA-IS-385<br/>
+*****************************************************************`;
+			const {resumeName,mailTitle,resumePath,selectedmail}=this.state;
+			let selectedMailCC=[this.state.selectedMailCC.length>=1?this.state.selectedMailCC[0].companyMail:'',
+		this.state.selectedMailCC.length>=2?this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
+				return s;
+			});
+			console.log(selectedMailCC);
+			let mailFrom = this.state.loginUserInfo[0].companyMail;
+			alert(resumePath);
+		axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile",{resumeName,mailTitle,resumePath,mailConfirmContont,selectedmail,selectedMailCC,mailFrom})
+			.then(result => {
+				/*this.setState({
+					mails: result.data,
+				})*/
 			})
 			.catch(function(error) {
 				alert(error);
@@ -383,12 +443,15 @@ class sendLettersConfirm extends React.Component {
 			selectedEmps: row,
 		})
 	}
+	formatEmpStatus=(cell, row, enumObject, index)=>{
+return this.state.employees.find((v) => (v.code === cell)).name;
+	}
 		formatResume(cell, row, enumObject, index) {
 		
 			return (<div>
 <Form.Control as="select" size="sm"
-										onChange={this.resumeValueChange}
-										name="resume" 
+										onChange={this.resumeValueChange.bind(this,row)}
+										name="resumeName" 
 										autoComplete="off">
 										<option ></option>
 										
@@ -398,6 +461,26 @@ class sendLettersConfirm extends React.Component {
 </div>);
 		
 	}
+	
+		resumeValueChange = (row,event) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+			
+		})
+		if(event.target.selectedIndex===1){
+			this.setState({
+				resumePath: row.resumeInfo1,
+			//resumeDetail: this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo1:'',
+			
+		})
+		}else if(event.target.selectedIndex===2){
+			this.setState({
+				resumePath: row.resumeInfo2,
+			//resumeDetail: this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo2:'',
+			
+		})
+		}
+	}; 
 	render() {
 		const options = {
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
@@ -429,6 +512,19 @@ class sendLettersConfirm extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleCtmSelect,
 		};
+		const mailContent = `【名　　前】：` + this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
+【所　　属】：`+ this.state.employeeStatus + `
+【年　　齢】：`+ this.state.age + `歳
+【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
+【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
+【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
+【業務年数】：`+ this.state.yearsOfExperience + `年
+【対応工程】：`+ this.state.siteRoleCode + `
+【得意言語】：`+ this.state.developLanguage + `
+【単　　価】：`+ this.state.unitPrice + `万円
+【稼働開始】：2020/09
+【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
+【備　　考】：`+ this.state.remark;
 		return (
 			<div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
@@ -443,7 +539,7 @@ class sendLettersConfirm extends React.Component {
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeEmpAddDaiolog} show={this.state.empAdddaiologShowFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton><Col className="text-center">
-						<h2>{this.state.popupFlag?'要員追加':'履歴書選択'}</h2>
+						<h2>要員追加</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
 						<SalesEmpAddPopup personalInfo={this} />
@@ -481,7 +577,7 @@ class sendLettersConfirm extends React.Component {
 								id="tags-standard"
 								options={this.state.mails}
 								getOptionDisabled={option => this.state.disbleState}
-								value={this.state.selectedMail}
+								value={this.state.selectedMailCC}
 								getOptionLabel={(option) => option.companyMail ? option.companyMail : ""}
 								onChange={(event, values) => this.onTagsChange(event, values)}
 								renderInput={(params) => (
@@ -518,7 +614,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={2}>
 						<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.openEmpAddDaiolog.bind(this,true)}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
-							<Button size="sm" variant="info" onClick={this.openEmpAddDaiolog.bind(this,false)}><FontAwesomeIcon icon={faFileExcel} />履歴書</Button></div>
+							</div>
 					</Col>
 					<Col sm={1}></Col><Col sm={1}>{'　'}営業文章</Col></Row>
 				<Row>
@@ -535,31 +631,19 @@ class sendLettersConfirm extends React.Component {
 							// pagination
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='employeeName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='employeeStatus' editable={false} >所属</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='resume' dataFormat={this.formatResume.bind(this)} editable={false}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='employeeName' autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus}editable={false} >所属</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
+							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+							<TableHeaderColumn width='20%' dataField='resume' dataFormat={this.formatResume.bind(this)} editable={false}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 					<Col sm={1}></Col>
 					<Col sm={4}>
 						<textarea ref={(textarea) => this.textArea = textarea} disabled
 							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
-							value={`【名　　前】：` + this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + `
-【年　　齢】：`+ this.state.age + `歳
-【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
-【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
-【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
-【業務年数】：`+ this.state.yearsOfExperience + `年
-【対応工程】：`+ this.state.siteRoleCode + `
-【得意言語】：`+ this.state.developLanguage + `
-【単　　価】：`+ this.state.unitPrice + `万円
-【稼働開始】：2020/09
-【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
-【備　　考】：`+ this.state.remark}
+							value={mailContent}
 						/>
 
 					</Col>
@@ -570,7 +654,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={2}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.sendMailWithFile} size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 
 					</Col>
 				</Row>

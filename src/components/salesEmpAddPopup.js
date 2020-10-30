@@ -62,7 +62,7 @@ empChange=(event, values)=>{
 	render() {
 		return (
 			<div>
-			<Form.Group style={{ "display": this.state.popupFlag ? "block" : "none" }}>
+			<Form.Group>
 							<Row>
 								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3" >
@@ -127,30 +127,6 @@ empChange=(event, values)=>{
 										
 											<option >{this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo1.split('/')[4]:'履歴書１なし'}</option>
 											<option >{this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo2.split('/')[4]:'履歴書２なし'}</option>
-									</Form.Control>
-								</InputGroup>
-							</Col>
-							</Row>
-							</Form.Group>
-							<Form.Group style={{ "display": !this.state.popupFlag ? "block" : "none" }}>
-							<Row>
-							<Col sm={3}></Col>
-							<Col sm={5}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">履歴書</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.resumeValueChange}
-										name="resume" 
-										autoComplete="off">
-										<option ></option>
-										
-											{/*<option >{this.state.selectedEmps.resumeInfo1.split('/')[4]}</option>
-											<option >{this.state.selectedEmps.resumeInfo2.split('/')[4]}</option>
-											*/}
-											<option >test1</option>
-											<option >test2</option>
 									</Form.Control>
 								</InputGroup>
 							</Col>

@@ -11,10 +11,11 @@ class mailConfirm extends React.Component {
 	}
 
 	initState = ({
-		companyMailNames:[this.props.personalInfo.state.selectedMail.length>=1?this.props.personalInfo.state.selectedMail[0].companyMail:'',
-		this.props.personalInfo.state.selectedMail.length>=2?this.props.personalInfo.state.selectedMail[1].companyMail:''].filter(function(s) {
+		companyMailNames:[this.props.personalInfo.state.selectedMailCC.length>=1?this.props.personalInfo.state.selectedMailCC[0].companyMail:'',
+		this.props.personalInfo.state.selectedMailCC.length>=2?this.props.personalInfo.state.selectedMailCC[1].companyMail:''].filter(function(s) {
 				return s;
 			}),
+			resumeName: this.props.personalInfo.state.resumeName,
 		mailTitle: this.props.personalInfo.state.mailTitle,
 		employeeName: this.props.personalInfo.state.employeeName,
 		nationalityName: this.props.personalInfo.state.nationalityName,
@@ -49,7 +50,7 @@ class mailConfirm extends React.Component {
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
 						style={{ height: '880px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
-						value={`To:`+this.state.selectedmail+`                          添付ファイル名前______`+`
+						value={`To:`+this.state.selectedmail+`         添付ファイル名前:`+this.state.resumeName+`
 CC:`+this.state.companyMailNames.join(';')+`
 
 タイトル:`+this.state.mailTitle+`
