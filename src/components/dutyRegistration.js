@@ -369,6 +369,9 @@ class DutyRegistration extends React.Component {
 		if (!this.state.isConfirmedPage && this.state.dateData[row.id].hasWork === this.state.hasWork[1] && this.state.breakTime.breakTimeFixedStatus == 0)	{
 			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="sleepHour" value={cell} onChange={(event) => this.tableValueChange(event ,cell ,row)} onBlur={(event) => this.tableValueChangeAfter(event ,cell ,row)} /></span>;
 		}
+		else if (!this.state.isConfirmedPage && this.state.dateData[row.id].hasWork === this.state.hasWork[1] && this.state.breakTime.breakTimeFixedStatus)	{
+			row.sleepHour = this.state.breakTime.totalBreakTime;
+		}
 		return returnItem;
 	}
 	workContentFormatter = (cell, row) => {
@@ -413,18 +416,14 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<FormControl value={this.state.siteCustomer} autoComplete="off" size="sm" name="siteCustomer" id="siteCustomer" onChange={this.valueChange} className="inputWithoutBorder"/>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">御中</InputGroup.Text>
-									</InputGroup.Prepend>
+									<input style={{ width: "150px" }} value={this.state.siteCustomer} name="siteCustomer" onChange={this.valueChange} className="inputWithoutBorder" />
+									御中
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.customer} autoComplete="off" size="sm" name="customer" id="customer" onChange={this.valueChange} className="inputWithoutBorder" />
+									会社名
+									<input style={{ width: "150px" }} value={this.state.customer} name="customer" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 						</Row>
@@ -436,28 +435,22 @@ class DutyRegistration extends React.Component {
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 2 }}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">責任者名</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.siteResponsiblePerson} autoComplete="off" size="sm" name="siteResponsiblePerson" id="siteResponsiblePerson" onChange={this.valueChange} className="inputWithoutBorder" />
+									責任者名
+									<input style={{ width: "150px" }} value={this.state.siteResponsiblePerson} name="siteResponsiblePerson" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">業務名称</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.systemName} autoComplete="off" size="sm" name="systemName" id="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
+									業務名称
+									<input style={{ width: "150px" }} value={this.state.systemName} name="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">作業担当者</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.employeeName} autoComplete="off" size="sm" name="employeeName" id="employeeName" onChange={this.valueChange} className="inputWithoutBorder" disabled />
+									作業担当者
+									<input style={{ width: "150px" }} value={this.state.employeeName} name="employeeName" onChange={this.valueChange} className="inputWithoutBorder" disabled />
 								</InputGroup>
 							</Col>
 						</Row>
