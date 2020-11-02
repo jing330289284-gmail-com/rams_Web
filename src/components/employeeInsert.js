@@ -88,8 +88,6 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
-		alert(publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false))
-		alert(publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false))
 		event.preventDefault();
 		const formData = new FormData()
 		const emp = {
