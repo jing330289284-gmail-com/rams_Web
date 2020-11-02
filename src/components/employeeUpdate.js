@@ -94,7 +94,7 @@ class employeeUpdate extends React.Component {
 			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
 			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
 			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
-			companyMail: publicUtils.nullToEmpty(this.state.companyMail),//社内メール
+			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",//社内メール
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
@@ -136,7 +136,7 @@ class employeeUpdate extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]) )
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) )
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) )
-		formData.append('picInfo', this.state.pictures[0])
+		//formData.append('picInfo', 　publicUtils.nullToEmpty(this.state.pictures[0]) )
 
 		formData.append('resumeInfo1URL', this.state.resumeInfo1URL )
 		formData.append('resumeInfo2URL', this.state.resumeInfo2URL )
@@ -200,6 +200,7 @@ class employeeUpdate extends React.Component {
 		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				alert(data.companyMail)
 				this.setState({
 					employeeNo: data.employeeNo,//社員番号
 					bpEmployeeNo: data.employeeNo,//社員番号
@@ -217,7 +218,7 @@ class employeeUpdate extends React.Component {
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
 					occupationCode: data.occupationCode,//職種
 					departmentCode: data.departmentCode,//部署
-					companyMail: data.companyMail.match(/(\S*)@/)[1],//社内メール
+					companyMail:　 data.companyMail　!== null && data.companyMail　!== ""? data.companyMail.match(/(\S*)@/)[1]:"",//社内メール　data.companyMail.match(/(\S*)@/)[1]
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
