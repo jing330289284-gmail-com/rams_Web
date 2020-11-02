@@ -189,7 +189,7 @@ body {
 
 #wagesInfoDatePicker {
   background-repeat: no-repeat;
-  width: 205px;
+  width: 190px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -426,8 +426,16 @@ body {
   font-family: "幼�?";
   color: rgb(255, 255, 255);
   width: 4.8rem;
+  /* width:4.5rem; */
 }
 
+#fiveKanji {
+  width: 5.5rem;
+}
+
+#sixKanji {
+  width: 6.5rem;
+}
 
 .fileUploader {
   width: 50% !important;
@@ -570,4 +578,83 @@ body {
 
 #sixKanji {
   width: 6.5rem;
+}
+
+.fileUploader .fileContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 10px 10px;
+  box-shadow: none;
+  margin: 0 0 0 0;
+}
+
+.fileUploader .fileContainer .uploadPicturesWrapper {
+  border: 1px solid #e1e1e1;
+  order: 1;
+  min-height: 200px;
+  margin-right: 15px;
+}
+
+*/ .ageCss {
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+
+.Autocompletestyle {
+  width: 10rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+
+@media screen and (max-width: 1550px) {
+
+  .ageccCss {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 7rem;
+  }
+
+  .ageCss {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 5.5rem;
+  }
+
+  .Autocompletestyle {
+    width: 8rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+
+  .input-group-text {
+    background-color: #76a8af;
+    font-family: "幼圆";
+    font-size: 0.5rem;
+    color: rgb(255, 255, 255);
+    width: 4.5rem;
+  }
+
+  #inputGroup-sizing-sm {
+    font-size: 0.85rem;
+  }
 }
