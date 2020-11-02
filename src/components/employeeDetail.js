@@ -142,6 +142,8 @@ class employeeUpdate extends React.Component {
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
+										image: data.picInfo
+
 				});
 			}
 			);
@@ -574,8 +576,14 @@ class employeeUpdate extends React.Component {
 									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
-								<Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" />
+								<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<Button size="sm" variant="info" onClick={(event) => this.addFile(event, 'image')} disabled type="button" on><FontAwesomeIcon icon={faFile} /> 写真</Button>
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
+									</InputGroup.Prepend>
+									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+								</InputGroup>
 							</Col>
 						</Row>
 						<Row>

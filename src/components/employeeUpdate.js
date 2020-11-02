@@ -2,7 +2,7 @@
 社員を修正
  */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -79,9 +79,11 @@ class employeeUpdate extends React.Component {
 	//更新ボタン
 	updateEmployee = () => {
 		const formData = new FormData()
+		let obj = document.getElementById("imageId");
+		let imgSrc = obj.getAttribute("src");
 		const emp = {
 			employeeNo: this.state.employeeNo,//社員番号
-			bpEmployeeNo: this.state.employeeNo,//社員番号
+			bpEmployeeNo: this.state.employeeNo,//社員番号s
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: publicUtils.nullToEmpty(this.state.furigana1),//カタカナ
@@ -130,18 +132,19 @@ class employeeUpdate extends React.Component {
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
+			picInfo: imgSrc,//pb情報
+
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]) )
-		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]) )
-		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) )
-		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) )
-		//formData.append('picInfo', 　publicUtils.nullToEmpty(this.state.pictures[0]) )
+		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
+		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
+		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
+		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 
-		formData.append('resumeInfo1URL', this.state.resumeInfo1URL )
-		formData.append('resumeInfo2URL', this.state.resumeInfo2URL )
-		formData.append('residentCardInfoURL',  this.state.residentCardInfoURL )
-		formData.append('passportInfoURL', this.state.passportInfoURL )
+		formData.append('resumeInfo1URL', this.state.resumeInfo1URL)
+		formData.append('resumeInfo2URL', this.state.resumeInfo2URL)
+		formData.append('residentCardInfoURL', this.state.residentCardInfoURL)
+		formData.append('passportInfoURL', this.state.passportInfoURL)
 		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -156,6 +159,7 @@ class employeeUpdate extends React.Component {
 				console.error("Error - " + error);
 			});
 	};
+
 
 	//onchange
 	valueChange = event => {
@@ -217,7 +221,7 @@ class employeeUpdate extends React.Component {
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
 					occupationCode: data.occupationCode,//職種
 					departmentCode: data.departmentCode,//部署
-					companyMail:　 data.companyMail　!== null && data.companyMail　!== ""? data.companyMail.match(/(\S*)@/)[1]:"",//社内メール　data.companyMail.match(/(\S*)@/)[1]
+					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
@@ -260,6 +264,7 @@ class employeeUpdate extends React.Component {
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
+					image: data.picInfo
 				});
 			}
 			);
@@ -513,12 +518,20 @@ class employeeUpdate extends React.Component {
 				resumeInfo2: filePath,
 				resumeInfo2Name: fileName,
 			})
-		} else if
-			(name === "passportInfo") {
+		} else if (name === "passportInfo") {
 			this.setState({
 				passportInfo: filePath,
 				passportInfoName: fileName,
 			})
+		} else if (name === "image") {
+			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
+				return
+			};
+			var reader = new FileReader();
+			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
+			reader.onload = function () {
+				document.getElementById("imageId").src = reader.result;
+			};
 		}
 	}
 
@@ -750,20 +763,13 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
-								{/* <Image src="https://hellorfimg.zcool.cn/provider_image/large/2238742315.jpg" rounded width="50%" height="160" /> */}
-								<div id="fileUploader">
-									<ImageUploader
-										withIcon={false}
-										withPreview={true}
-										id="imageUploader"
-										label=""
-										buttonText="Upload Images"
-										onChange={this.onDrop}
-										imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
-										maxFileSize={1048576}
-										fileSizeError=" file size is too big"
-									/>
-								</div>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<Button size="sm" variant="info" onClick={(event) => this.addFile(event, 'image')} type="button" on><FontAwesomeIcon icon={faFile} /> 写真</Button>
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
+									</InputGroup.Prepend>
+									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
@@ -1178,7 +1184,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ||this.state.residentCardInfo !== undefined? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 								</InputGroup>
 								<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
@@ -1187,7 +1193,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== ""||this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 								</InputGroup>
@@ -1202,7 +1208,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== ""||this.state.resumeInfo2 !== undefined  ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 										<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 									</InputGroup.Prepend>
 								</InputGroup>
@@ -1217,7 +1223,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ||this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
 								</InputGroup>

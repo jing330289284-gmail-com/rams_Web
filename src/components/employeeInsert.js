@@ -2,7 +2,7 @@
 社員を登録
  */
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, FormControl, Modal } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -19,8 +19,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import ImageUploader from "react-images-upload";
-
-
 
 axios.defaults.withCredentials = true;
 class employeeInsert extends React.Component {
@@ -88,8 +86,11 @@ class employeeInsert extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+
 		event.preventDefault();
 		const formData = new FormData()
+		let obj = document.getElementById("imageId");
+		let imgSrc = obj.getAttribute("src");
 		const emp = {
 			employeeStatus: this.state.employeeStatus,//社員区分
 			employeeNo: this.state.employeeNo,//社員番号
@@ -143,13 +144,14 @@ class employeeInsert extends React.Component {
 			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
+			picInfo: imgSrc,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		formData.append('picInfo', this.state.pictures[0])
+		//formData.append('picInfo', this.state.pictures[0])
 
 		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
@@ -494,12 +496,20 @@ class employeeInsert extends React.Component {
 				resumeInfo2: filePath,
 				resumeInfo2Name: fileName,
 			})
-		} else if
-			(name === "passportInfo") {
+		} else if (name === "passportInfo") {
 			this.setState({
 				passportInfo: filePath,
 				passportInfoName: fileName,
 			})
+		} else if (name === "image") {
+			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
+				return
+			};
+			var reader = new FileReader();
+			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
+			reader.onload = function () {
+				document.getElementById("imageId").src = reader.result;
+			};
 		}
 	}
 
@@ -735,19 +745,14 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
-								<div id="fileUploader">
-									<ImageUploader
-										withIcon={false}
-										withPreview={true}
-										id="imageUploader"
-										label=""
-										buttonText="Upload Images"
-										onChange={this.onDrop}
-										imgExtension={[".jpg", ".gif", ".png", ".gif", ".svg"]}
-										maxFileSize={1048576}
-										fileSizeError=" file size is too big"
-									/>
-								</div>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<Button size="sm" variant="info" onClick={(event) => this.addFile(event, 'image')} type="button" on><FontAwesomeIcon icon={faFile} /> 写真</Button>
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
+									</InputGroup.Prepend>
+									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+								</InputGroup>
+
 							</Col>
 						</Row>
 						<Row>
