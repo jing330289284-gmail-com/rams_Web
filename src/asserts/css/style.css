@@ -187,7 +187,7 @@ body {
 
 #wagesInfoDatePicker {
   background-repeat: no-repeat;
-  width: 205px;
+  width: 190px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -346,7 +346,7 @@ body {
   color: #ffc107;
 }
 
-.customé©ï½µ?¿½?½½?½²?¿½?½¿?½½?¿½?½½?½¿?¿½?½½?½½ {
+.customé©ï½µ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ {
   height: 31px;
 }
 
@@ -417,16 +417,21 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
-  /* color???¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½???¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½??¿½?¿½gray */
+  /* color???ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½???ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½gray */
 }
 
 .input-group-text {
   background-color: #76a8af;
-  font-family: "å¹¼åœ?";
+  font-family: "å¹¼ï¿½?";
   color: rgb(255, 255, 255);
+  width:4.5rem;
 }
-
-
+#fiveKanji{
+  width:5.5rem;
+}
+#sixKanji{
+  width:6.5rem;
+}
 .fileUploader {
   width: 50% !important;
 }
@@ -581,3 +586,61 @@ body {
   min-height: 200px;
   margin-right: 15px;
 } */
+
+.ageCss{
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+.Autocompletestyle {
+  width: 10rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+@media screen and (max-width: 1550px) {
+
+  .ageccCss{
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 7rem;
+  }
+  .ageCss{
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 5.5rem;
+  }
+  .Autocompletestyle {
+    width: 8rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .input-group-text {
+    background-color: #76a8af;
+    font-family: "å¹¼åœ†";
+    font-size: 0.5rem;
+    color: rgb(255, 255, 255);
+    width:4.5rem;
+  }
+  #inputGroup-sizing-sm{
+    font-size: 0.85rem;
+  }
+}
