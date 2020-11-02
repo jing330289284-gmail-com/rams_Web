@@ -132,17 +132,16 @@ class employeeUpdate extends React.Component {
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]) === "" ? this.state.resumeInfo1URL : publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
-		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]) === "" ? this.state.resumeInfo2URL : publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
-		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) === "" ? this.state.residentCardInfoURL : publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
-		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]) )
+		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]) )
+		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]) )
+		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) )
 		formData.append('picInfo', this.state.pictures[0])
 
-		formData.append('resumeInfo1URL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		formData.append('resumeInfo2URL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		formData.append('residentCardInfoURL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		formData.append('passportInfoURL', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]) === "" ? this.state.passportInfoURL : publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-
+		formData.append('resumeInfo1URL', this.state.resumeInfo1URL )
+		formData.append('resumeInfo2URL', this.state.resumeInfo2URL )
+		formData.append('residentCardInfoURL',  this.state.residentCardInfoURL )
+		formData.append('passportInfoURL', this.state.passportInfoURL )
 		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
