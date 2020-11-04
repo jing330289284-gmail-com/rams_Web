@@ -82,3 +82,23 @@ h2{
     background-color: #fff;
     border: none !important;
 }
+@media screen and (max-width: 1550px) {
+  .linkFont{
+    font-family: "黑体", Sans-serif;
+    font-size: .78rem;
+    color:rgb(247, 226, 248);
+    margin-left: -0.5rem;
+  }
+  .title-font{
+    font-family: "幼园", Sans-serif;
+    font-size: 1.2rem;
+    width: auto;
+    font-weight: bolder;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    text-align: center;
+    color:rgb(110, 70, 185);
+    text-shadow:5px 2px 6px rgb(148, 195, 207);
+  }
+}
