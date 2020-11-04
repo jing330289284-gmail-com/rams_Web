@@ -78,7 +78,7 @@ class PasswordSetEmployee extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="passwordSetText">既存パースワード</InputGroup.Text>
+                                    <InputGroup.Text id="passwordSetText" style={{width:"8rem"}}>既存パースワード</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control type="password" onChange={this.valueChange} value={oldPassword} name="oldPassword"/>
                             </InputGroup>
@@ -90,7 +90,7 @@ class PasswordSetEmployee extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="passwordSetText">新しいパスワード</InputGroup.Text>
+                                    <InputGroup.Text id="passwordSetText" style={{width:"8rem"}}>新しいパスワード</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control type="password" onChange={this.valueChange} value={newPassword} name="newPassword"/>
                             </InputGroup>
@@ -102,7 +102,7 @@ class PasswordSetEmployee extends Component {
                         <Col>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">パスワード再確認</InputGroup.Text>
+                                    <InputGroup.Text id="inputGroup-sizing-sm" style={{width:"8rem"}}>パスワード再確認</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control type="password" onChange={this.valueChange} value={passwordCheck} name="passwordCheck"/>
                             </InputGroup>
