@@ -595,7 +595,7 @@ body {
   margin-right: 15px;
 }
 
-*/ .ageCss {
+.ageCss {
   background-repeat: no-repeat;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
@@ -616,6 +616,15 @@ body {
 
 @media screen and (max-width: 1550px) {
 
+  #customerInfoDatePicker {
+    background-repeat: no-repeat;
+    width: 10rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+  }
   .ageccCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -645,16 +654,53 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
-
+  .Autocompletestyle-siteInfo {
+    width: 11rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-customerInfo {
+    width: 10rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-situation {
+    width: 5.6rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
   .input-group-text {
     background-color: #76a8af;
     font-family: "幼圆";
     font-size: 0.5rem;
     color: rgb(255, 255, 255);
-    width: 4.5rem;
+    width: 4.1rem;
   }
-
+.cssNikanji{
+  width: 3rem;
+}
   #inputGroup-sizing-sm {
     font-size: 0.85rem;
+  }
+  #wagesInfoDatePicker {
+    background-repeat: no-repeat;
+    width: 8rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
   }
 }
