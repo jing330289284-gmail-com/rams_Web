@@ -672,6 +672,15 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+  .Autocompletestyle-situation {
+    width: 5.6rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
   .input-group-text {
     background-color: #76a8af;
     font-family: "幼圆";
