@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUpload, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
@@ -86,12 +86,33 @@ class otherCost extends React.Component {
             }
 		}
 	}
+	//reset
+	resetBook = () => {
+		this.setState(() => this.resetStates);
 
+	};
+	//リセット　reset
+	resetStates = {
+		yearAndMonth1: null, yearAndMonth2: null, stationCode1: null, stationCode2: null, detailedNameOrLine2: '',
+		cost: '', costRegistrationFile: null, changeData: false, oldCostClassification1: null, oldHappendDate1: null,
+		changeFile: false, costRegistrationFileFlag: false,
+	};
+	costClassificationCode(code) {
+		let costClassificationCode = this.state.costClassification;
+		for (var i in costClassificationCode) {
+			if (costClassificationCode[i].code != "") {
+				if (code == costClassificationCode[i].code) {
+					return costClassificationCode[i].name;
+				}
+			}
+		}
+	};
 		//　年月3
 	inactiveYearAndMonth3 = (date) => {
 		this.setState(
 			{
 				yearAndMonth3: date,
+				changeFile: true,
 			}
 		);
 	};
@@ -100,6 +121,7 @@ class otherCost extends React.Component {
 		this.setState(
 			{
 				yearAndMonth4: date,
+				changeFile: true,
 			}
 		);
 	};
@@ -157,9 +179,26 @@ class otherCost extends React.Component {
 	//登録
 	InsertCost = () => {
 		const formData = new FormData()
-		if(this.state.costClassificationCode==1){
+		if (this.state.changeData) {
+			var theUrl = "costRegistration/updataCostRegistration"
+		} else {
+			var theUrl = "costRegistration/insertCostRegistration"
+		}
+		if (this.state.costClassificationCode == 1) {
+			if (this.state.yearAndMonth3 == "" ||
+				this.state.transportationCode == "" ||
+				this.state.stationCode3 == "" ||
+				this.state.stationCode4 == "" ||
+				this.state.roundCode == "" ||
+				this.state.cost1 == "") {
+				this.setState({ "myToastShow": false, "method": "put" });
+				return;
+			}
 			const emp = {
+				costClassificationName: this.costClassificationCode(this.state.costClassificationCode),
 				costClassificationCode: this.state.costClassificationCode,
+				oldCostClassification: this.state.rowSelectCostClassificationCode,
+				oldHappendDate: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
 				happendDate: publicUtils.formateDate(this.state.yearAndMonth3, true),
 				transportationCode: this.state.transportationCode,
 				originCode: this.state.stationCode3,
@@ -170,12 +209,24 @@ class otherCost extends React.Component {
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
 
-		}else{
+		} else if (this.state.costClassificationCode > 1) {
+			if (this.state.yearAndMonth4 == "" ||
+				this.state.detailedNameOrLine2 == "" ||
+				this.state.stationCode4 == "" ||
+				this.state.transportationCode == "" ||
+				this.state.remark == "" ||
+				this.state.cost2 == "") {
+					this.setState({ "myToastShow": false, "method": "put" });
+					return;
+				}
 			const emp = {
+				costClassificationName: this.costClassificationCode(this.state.costClassificationCode),
 				costClassificationCode: this.state.costClassificationCode,
-				happendDate: publicUtils.formateDate(this.state.yearAndMonth4,true),
-				detailedNameOrLine: this.state.detailedNameOrLine,
-				stationCode: this.state.stationCode4,
+				happendDate: publicUtils.formateDate(this.state.yearAndMonth4, true),
+				oldCostClassification: this.state.rowSelectCostClassificationCode,
+				oldHappendDate: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				detailedNameOrLine: this.state.detailedNameOrLine2,
+				stationCode: this.state.stationCode5,
 				transportationCode: this.state.transportationCode,
 				remark: this.state.remark,
 				cost: this.state.cost2,
@@ -183,8 +234,11 @@ class otherCost extends React.Component {
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
 
-		}
-		axios.post(this.state.serverIP + "costRegistration/insertCostRegistration", formData)
+		} else {
+			this.setState({ "myToastShow": false, "method": "put" });
+			return
+        }
+		axios.post(this.state.serverIP + theUrl, formData)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({ "myToastShow": true, "method": "put" });
@@ -239,6 +293,7 @@ class otherCost extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
 										<DatePicker
+											value={this.state.yearAndMonth3}
 											selected={this.state.yearAndMonth3}
 											onChange={this.inactiveYearAndMonth3}
 											disabled={this.state.costClassificationCode != 1 ? true : false}
@@ -266,7 +321,7 @@ class otherCost extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'transportation')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  区分" type="text" {...params.inputProps} className="auto" id="transportationCode"
+												<input placeholder="  交通手段" type="text" {...params.inputProps} className="auto" id="transportationCode"
 													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
@@ -391,7 +446,7 @@ class otherCost extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="" autoComplete="off" name="detailedNameOrLine" 
+										<FormControl placeholder="" autoComplete="off" name="detailedNameOrLine2" 
 										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
@@ -449,6 +504,9 @@ class otherCost extends React.Component {
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" onClick={this.InsertCost} type="button" on>
 								<FontAwesomeIcon icon={faSave} /> {"登録"}
+							</Button>{' '}
+							<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
+								<FontAwesomeIcon icon={faUndo} /> Reset
 							</Button>
 						</div>
 				</Form>
