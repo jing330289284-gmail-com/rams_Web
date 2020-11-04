@@ -6,7 +6,8 @@ import './asserts/css/index.css';
 
 import App from './App';
 import {Provider} from 'react-redux';
-import store from './components/services/store';
+import store from './components/redux/store';
+
 
 import * as serviceWorker from './serviceWorker';
 
