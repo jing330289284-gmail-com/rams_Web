@@ -421,8 +421,8 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
-														style={{ width: 181, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
+														 />
 												</div>
 											)}
 										/>
@@ -517,8 +517,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto"
-														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -540,8 +540,8 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto"
-														style={{ width: 186, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														 />
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -602,8 +602,8 @@ class siteInfo extends Component {
 										</InputGroup.Prepend>
 										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">日割</InputGroup.Text>
-											<InputGroup.Checkbox aria-label="Checkbox for following text input" name="dailyCalculationStatus" checked={this.state.dailyCalculationStatus} onChange={this.dailyCalculationStatusChange} disabled={this.state.dailyCalculationStatusFlag === true ? true : false} />
+											<InputGroup.Text className="cssNikanji">日割</InputGroup.Text>
+											<InputGroup.Checkbox className="cssNikanji" name="dailyCalculationStatus" checked={this.state.dailyCalculationStatus} onChange={this.dailyCalculationStatusChange} disabled={this.state.dailyCalculationStatusFlag === true ? true : false} />
 											<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
@@ -701,8 +701,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto"
-														style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}

@@ -747,8 +747,8 @@ class CustomerInfo extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                                <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+                                                     />
                                             </div>
                                         )}
                                     />
@@ -801,8 +801,8 @@ class CustomerInfo extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                                <input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                     />
                                             </div>
                                         )}
                                     />

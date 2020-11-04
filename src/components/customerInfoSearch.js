@@ -413,8 +413,8 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto"
-                                                style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                               />
                                         </div>
                                     )}
                                 />
@@ -433,8 +433,8 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                style={{ width: 230, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                />
                                         </div>
                                     )}
                                 />
@@ -477,7 +477,7 @@ class CustomerInfoSearch extends Component {
                                     // minDate={new Date()}
                                     showDisabledMonthNavigation
                                     className="form-control form-control-sm"
-                                    id="customerInfoSearchDatePicker"
+                                    id="customerInfoDatePicker"
                                     name="businessStartDate"
                                     locale="ja"
                                 />
@@ -511,9 +511,9 @@ class CustomerInfoSearch extends Component {
                 <Form>
                     <br />
                     <Row>
-                        <Col sm={10}>
+                        <Col sm={9}>
                         </Col>
-                        <Col sm={2}>
+                        <Col sm={3}>
                             <div style={{ "float": "right" }}>
                                 <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>{' '}
                                 <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>{' '}

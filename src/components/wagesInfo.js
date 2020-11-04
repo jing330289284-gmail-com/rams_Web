@@ -581,7 +581,7 @@ class WagesInfo extends Component {
                     <Form id="wagesInfoForm">
                         <Form.Group>
                             <Row>
-                                <Col sm={3}>
+                                <Col sm={4}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>社員名</InputGroup.Text>
@@ -612,7 +612,7 @@ class WagesInfo extends Component {
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={8}></Col>
+                                <Col sm={7}></Col>
                                 <Col sm={1}>
                                     <Button
                                         block
@@ -732,7 +732,6 @@ class WagesInfo extends Component {
                                                 showFullMonthYearPicker
                                                 minDate={new Date()}
                                                 showDisabledMonthNavigation
-
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
                                                 dateFormat={"yyyy/MM"}
@@ -791,7 +790,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{width:"8rem"}}>次のボーナス月</InputGroup.Text>
+                                            <InputGroup.Text style={{width:"7.5rem"}}>次のボーナス月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
