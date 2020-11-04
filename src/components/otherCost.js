@@ -45,7 +45,15 @@ class otherCost extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
+		this.costClassificationSet();
 	}
+	costClassificationSet = () => {
+		let costClassification = this.state.costClassification;
+		costClassification.splice(1, 1);
+				this.setState({
+					costClassification: costClassification,
+				})
+	};
 	/**
      * 添付ボタン
      */
@@ -166,7 +174,7 @@ class otherCost extends React.Component {
 			const emp = {
 				costClassificationCode: this.state.costClassificationCode,
 				happendDate: publicUtils.formateDate(this.state.yearAndMonth4,true),
-				detailedName: this.state.detailedName,
+				detailedNameOrLine: this.state.detailedNameOrLine,
 				stationCode: this.state.stationCode4,
 				transportationCode: this.state.transportationCode,
 				remark: this.state.remark,
@@ -383,7 +391,7 @@ class otherCost extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">名称</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="" autoComplete="off"
+										<FormControl placeholder="" autoComplete="off" name="detailedNameOrLine" 
 										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode < 2 ? true : false}/>
 									</InputGroup>
 								</Col>
