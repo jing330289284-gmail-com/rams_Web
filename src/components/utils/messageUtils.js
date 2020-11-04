@@ -7,6 +7,7 @@ export function getMessage(key, option, isNextLine) {
 	let returnMessage = "";
 	let message = {};
 	message["E0001"] = "day {{{0}}} work content";
+	message["E0002"] = "day {{{0}}} startTime endTime";
 	returnMessage = message[key];
 	if (!publicUtils.isNull(option))	{
 		if (Array.isArray(option))	{
