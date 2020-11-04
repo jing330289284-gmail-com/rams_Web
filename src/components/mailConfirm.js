@@ -11,6 +11,12 @@ class mailConfirm extends React.Component {
 	}
 
 	initState = ({
+		companyMailNames:[this.props.personalInfo.state.selectedMailCC.length>=1?this.props.personalInfo.state.selectedMailCC[0].companyMail:'',
+		this.props.personalInfo.state.selectedMailCC.length>=2?this.props.personalInfo.state.selectedMailCC[1].companyMail:''].filter(function(s) {
+				return s;
+			}),
+			resumeName: this.props.personalInfo.state.resumeName,
+		mailTitle: this.props.personalInfo.state.mailTitle,
 		employeeName: this.props.personalInfo.state.employeeName,
 		nationalityName: this.props.personalInfo.state.nationalityName,
 		genderStatus: this.props.personalInfo.state.genderStatus,
@@ -30,6 +36,8 @@ class mailConfirm extends React.Component {
 		salesProgresss:this.props.personalInfo.state.salesProgresss,
 		remark: this.props.personalInfo.state.remark,
 		selectedCustomerName: this.props.personalInfo.state.selectedCustomerName,
+		loginUserInfo:this.props.personalInfo.state.loginUserInfo,
+		selectedmail: this.props.personalInfo.state.selectedmail,
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
 	})
 	componentDidMount() {
@@ -41,11 +49,17 @@ class mailConfirm extends React.Component {
 			<div>
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
-						style={{ height: '780px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
-						value={this.state.selectedCustomerName + `株式会社
+						style={{ height: '880px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
+						value={`To:`+this.state.selectedmail+`         添付ファイル名前:`+this.state.resumeName+`
+CC:`+this.state.companyMailNames.join(';')+`
+
+タイトル:`+this.state.mailTitle+`
+
+`+
+this.state.selectedCustomerName + `株式会社
 `+ this.state.selectedPurchasingManagers + `様
 
-お世話になっております、＿＿です。
+お世話になっております、`+this.state.loginUserInfo[0].employeeFristName+`です。
 
 以下の要員を提案させていただきます、案件がございましたら、
 ご検討の程宜しくお願い致します。
@@ -66,11 +80,11 @@ class mailConfirm extends React.Component {
 
 以上、よろしくお願いいたします。
 ******************************************************************
-LYC株式会社  ____
-〒101-0032東京都千代田区岩本町3-3-3サザンビル3F  
+LYC株式会社 `+this.state.loginUserInfo[0].employeeFristName+` `+this.state.loginUserInfo[0].employeeLastName+`
+〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F  
 http://www.lyc.co.jp/   
-TEL：03-6908-5796  携帯：_________________ (優先）
-Email：______________ 営業共通：eigyou@lyc.co.jp 
+TEL：03-6908-5796  携帯：`+this.state.loginUserInfo[0].phoneNo+`(優先）
+Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co.jp 
 労働者派遣事業許可番号　派遣許可番号　派13-306371
 ＩＳＭＳ：MSA-IS-385
 *****************************************************************`}

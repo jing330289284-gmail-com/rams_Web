@@ -9,8 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
-/* import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index'; */
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 
@@ -123,8 +121,6 @@ class bpInfo extends React.Component {
 
 	render() {
 		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
-	/* 	const customer = this.props.customer;
-		const salesProgressCodes = this.props.salesProgressCodes; */
 		return (
 			<div>
 				<Row inline="true">
@@ -219,7 +215,7 @@ class bpInfo extends React.Component {
 							<Col sm={12}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">備考　　</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="例：XXXXX" name="bpRemark" value={bpRemark} autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}
 										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />

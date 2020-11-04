@@ -341,6 +341,7 @@ export async function postcodeApi() {
 				console.error("Error - " + error);
 			});
 	} else {
+		$("#firstHalfAddress").val("");
 	}
 }
 
@@ -441,22 +442,65 @@ export function nullToEmpty(obj) {
 }
 /**
  * お金の三枠でカンマ区切り
+ * @param {*} num strの数字
+ */
+export function addComma(num) {
+	if(num !== null && num !== "" && num !== undefined ){
+		num = num.toString();
+	}else{
+		return "";
+	}
+	var oldNum = num;
+	if(num !== null && num !== "" && num !== undefined ){
+		if(num.substring(0,1) === "-"){
+			num=num.replace("-","");
+		}
+	}
+	var type = true;
+	var value = '';
+	num = num.replace(/,/g, "");
+	if (num.indexOf(".") < 0) {
+		var t1 = num.toString().split('');
+	} else {
+		type = false;
+		var arr = num.toString().split('.');
+		var t1 = arr[0].toString().split('');
+		var t2 = arr[1].toString();
+	}
+	var result = [],
+		counter = 0;
+	for (var i = t1.length - 1; i >= 0; i--) {
+		counter++;
+		result.unshift(t1[i]);
+		if ((counter % 3) == 0 && i != 0) {
+			result.unshift(',');
+		}
+	}
+	if (type === true) {
+		value = result.join('');
+	} else {
+		value = result.join('') + '.' + t2;
+	}
+	if(oldNum !== null && oldNum !== "" && oldNum !== undefined ){
+		if(oldNum.substring(0,1) === "-"){
+			value = "-" + value;
+		}
+	}
+	return value;
+}
+
+/**
+ * お金の三枠でカンマ削除
  * @param {*} money strの数字
  * @param {*} decimalPointFlag 小数点保留フラグ
  */
-export function addComma(money, decimalPointFlag) {
+export function deleteComma(money) {
 	if (money === null || money === undefined || money === '') {
 		return "";
 	}
-	var moneyInt = parseInt(money.split(".")[0]);
-	var moneyPoi = parseInt(money.split(".")[1]);
-	var result = moneyInt.toLocaleString();
-	if (decimalPointFlag) {//trueは保留
-		result += "." + moneyPoi;
-	}
-	return result;
+	var moneyStr = money+'';
+	return moneyStr.replace(",","");
 }
-
 /**
  * YYYYMMDD→YYYY/MM/DDまたYYYYMM→YYYY/MM
  * @param {*} datestrの数字

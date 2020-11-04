@@ -1,21 +1,23 @@
-.styletest
-{
-margin: 0px;
-padding: 0px;
+.styletest {
+  margin: 0px;
+  padding: 0px;
 
 }
+
 .inputWithoutBorder {
-	border-left-width:0px;
-	border-top-width:0px;
-	border-right-width:0px;
-	border-bottom: 1px solid #000;
-	background-color: transparent;
-}
-.inputWithoutBorder:focus {
-  outline:none;
+  border-left-width: 0px;
+  border-top-width: 0px;
+  border-right-width: 0px;
   border-bottom: 1px solid #000;
   background-color: transparent;
 }
+
+.inputWithoutBorder:focus {
+  outline: none;
+  border-bottom: 1px solid #000;
+  background-color: transparent;
+}
+
 .pageNumCss {
   width: 45px !important;
   border: 1px solid #17A2B8;
@@ -57,136 +59,6 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
-
-
-.fileContainer {
-  background: #fff;
-  box-shadow: none;
-  position: relative;
-  border-radius: 10px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  transition: all 0.3s ease-in;
-  height: 160px;
-  float: left;
-
-}
-
-.fileContainer p:empty {
-  font-size: 12px;
-  margin: 0;
-}
-
-.fileContainer .uploadPicturesWrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  position: relative;
-  top: -51px;
-  width: 150px;
-  height: auto;
-}
-
-.uploadPicturesWrapper>div:empty {
-  height: 1px;
-}
-
-.fileContainer .uploadPictureContainer {
-  width: 150px;
-  height: 120px;
-  padding: 5px;
-  background: #edf2f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.fileContainer .deleteImage {
-  position: absolute;
-  right: unset;
-  top: unset;
-  border-radius: 0;
-  text-align: center;
-  cursor: pointer;
-  font-size: 26px;
-  font-weight: bold;
-  line-height: 30px;
-  width: 134px;
-  height: 30px;
-  left: 0;
-  bottom: -45px;
-  background-image: url(../images/img_96165.png);
-  background-position: left 4px top 3px;
-  background-repeat: no-repeat;
-  background-size: 17px 23px;
-  background-color: transparent;
-  color: black;
-  overflow: hidden;
-  text-indent: -156px;
-}
-
-.fileContainer .deleteImage:after {
-  content: "Delete image";
-  position: absolute;
-  right: -45px;
-  font-size: 16px;
-}
-
-.fileContainer .uploadPictureContainer img.uploadPicture {
-  width: 145px;
-  height: 130px;
-}
-
-.fileContainer .errorsContainer {
-  max-width: 150px;
-  font-size: 12px;
-  position: absolute;
-  z-index: 10;
-  top: 35%;
-  background: rgba(255, 0, 0, 0.7);
-  padding: 10px;
-  text-align: center;
-  color: white;
-  margin: 0 auto;
-  width: 79%;
-  border-radius: 6px;
-}
-
-.fileContainer .errorsContainer:empty {
-  opacity: 0;
-}
-
-.fileContainer .chooseFileButton {
-  padding: 6px 23px;
-  background-color: #c1c1c1;
-  background-repeat: no-repeat;
-  background-position: 50% 23%;
-  background-size: 25%;
-  border-radius: 0;
-  color: white;
-  font-weight: 300;
-  font-size: 14px;
-  margin: 10px 0;
-  transition: all 0.2s ease-in;
-  cursor: pointer;
-  outline: none;
-  border: none;
-  width: 95%;
-  height: 100%;
-}
-
-.fileContainer .chooseFileButton:hover {
-  background-color: #c1c1c1;
-  background-repeat: no-repeat;
-  background-position: 50% 23%;
-  background-size: 25%;
-}
-
 .modal-passwordSet {
   width: 30%;
   max-width: none !important;
@@ -221,22 +93,27 @@ body {
   width: 50%;
   max-width: none !important;
 }
-.modal-expensesInfo{
+
+.modal-expensesInfo {
   width: 50%;
   max-width: none !important;
 }
-.modal-accountInfo{
+
+.modal-accountInfo {
   width: 30%;
   max-width: none !important;
 }
-.modal-topCustomerInfo{
+
+.modal-topCustomerInfo {
   width: 28%;
   max-width: none !important;
 }
+
 .modal-otherCost {
   width: 70%;
   max-width: none !important;
 }
+
 #datePicker {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -244,6 +121,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
+  width: 8rem !important;
 }
 
 #datePickerReadonlyDefault {
@@ -253,7 +131,9 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
+  width: 8rem !important;
 }
+
 #siteDatePickerReadonlyDefault {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -261,8 +141,9 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
- width:159px;
+  width: 159px;
 }
+
 #datePickerReadonly {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -293,8 +174,9 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width:155px;
+  width: 155px;
 }
+
 #admissionEndDate {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -302,17 +184,19 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width:159px;
+  width: 159px;
 }
+
 #wagesInfoDatePicker {
   background-repeat: no-repeat;
-  width: 205px;
+  width: 190px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #expensesInfoDatePicker {
   background-repeat: no-repeat;
   width: 170px;
@@ -322,6 +206,7 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #nextRaiseMonthDatePicker {
   background-repeat: no-repeat;
   width: 240px;
@@ -331,18 +216,10 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #customerInfoSearchDatePicker {
   background-repeat: no-repeat;
-  width: 140px;
-  background-position: 10px 7px;
-  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-  padding-right: 0px;
-  height: calc(1.5em + .5rem + 2px);
-  background-color: white;
-}
-#customerInfoSearchDatePicker {
-  background-repeat: no-repeat;
-  width: 140px;
+  width: 230px;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -369,7 +246,8 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
-#customerInfoDatePicker{
+
+#customerInfoDatePicker {
   background-repeat: no-repeat;
   width: 130%;
   background-position: 10px 7px;
@@ -378,6 +256,7 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #monthlysalesSearchDatePicker {
   background-repeat: no-repeat;
   width: 215px;
@@ -387,110 +266,131 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 .modal-pbinfoSet {
   width: 40%;
   max-width: none !important;
 }
 
 .customClass {
-    line-height: 20px;
-    padding: 0px;
+  line-height: 20px;
+  padding: 0px;
 }
 
-.react-bs-table-tool-bar 
- {
-    display: none;
+.react-bs-table-tool-bar {
+  display: none;
 }
 
 .dutyRegistration-DataTable .table td {
-	padding: 5px 5px 5px 5px;
+  padding: 5px 5px 5px 5px;
 }
+
 .dutyRegistration-DataTableTh {
-	background-color: #4eacfe;
+  background-color: #4eacfe;
 }
+
 .dutyRegistration-DataTableRow {
-    line-height: 20px;
+  line-height: 20px;
 }
+
 .dutyRegistration-DataTableSleep {
-	background-color: #b6b2b2;
-	color: black;
+  background-color: #b6b2b2;
+  color: black;
 }
+
 .dutyRegistration-DataTableEditingCell input {
-    height: 20px;
-	padding: 1px 1px 1px 4px;
-} 
+  height: 20px;
+  padding: 1px 1px 1px 4px;
+}
+
 .dutyRegistration-DataTableEditingCell select {
-    height: 20px;
-	padding: 0px 0px 0px 0px;
-	font-size: 14px;
-} 
+  height: 20px;
+  padding: 0px 0px 0px 0px;
+  font-size: 14px;
+}
+
 .dutyRegistration-DataTableEditingCell {
-    height: 20px;
-	padding: 0px 0px 0px 0px;
-	font-size: 14px;
-} 
-.auto:focus{
-    background: #FFFFFF;
-    outline: 3px solid #B8D7F8;
+  height: 20px;
+  padding: 0px 0px 0px 0px;
+  font-size: 14px;
 }
+
+.auto:focus {
+  background: #FFFFFF;
+  outline: 3px solid #B8D7F8;
+}
+
 .dutyRegistration-Error {
-	background-color: #eb5959;
+  background-color: #eb5959;
 }
+
 .dutyRegistration-IsChanged {
-	background-color: #eb5959;
+  background-color: #eb5959;
 }
+
 .dutyRegistration-Work2Work {
-	background-color: #f5f5f5;
-	color: black;
+  background-color: #f5f5f5;
+  color: black;
 }
+
 .dutyRegistration-Work2Sleep {
-	background-color: yellow;
-	color: black;
+  background-color: yellow;
+  color: black;
 }
+
 .dutyRegistration-Sleep2Sleep {
-	background-color: #b6b2b2;
-	color: black;
+  background-color: #b6b2b2;
+  color: black;
 }
+
 .dutyRegistration-Sleep2Work {
-	background-color: #b6b2b2;
-	color: #ffc107;
-}
-.custom驍ｵ�ｽｲ�ｿｽ�ｽｿ�ｽｽ{
-height:31px;
+  background-color: #b6b2b2;
+  color: #ffc107;
 }
 
 .custom-file {
-	height:31px;
-	}
-	#custom-file {
-	height:31px;
-	}
-	.custom-file-input {
-	height:31px;
-	}
-	
-		.custom-file-label {
-	height:31px;
-	}
-.col-hidden{
+  height: 31px;
+}
+
+.custom-file {
+  height: 31px;
+}
+
+#custom-file {
+  height: 31px;
+}
+
+.custom-file-input {
+  height: 31px;
+}
+
+.custom-file-label {
+  height: 31px;
+}
+
+.col-hidden {
   display: none
 }
-.custom-file-input{
- width: 4px !important;
-	}
-.hikadoButton{
+
+.custom-file-input {
+  width: 4px !important;
+}
+
+.hikadoButton {
   font-size: 8px;
   height: 24px;
 }
-.Autocomplete-style{
+
+.Autocomplete-style {
   width: 10rem;
   height: 31px;
   border-color: "#ced4da";
   border-width: 1;
   border-style: "solid";
   font-size: ".875rem";
-  color: "#495057" 
+  color: "#495057"
 }
+
 #enterPeriodSearchDatePicker {
   background-repeat: no-repeat;
   width: 10rem;
@@ -500,6 +400,7 @@ height:31px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #datePicker {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -509,6 +410,7 @@ height:31px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
 #datePickerReadonlyDefault {
   background-repeat: no-repeat;
   background-position: 10px 7px;
@@ -516,5 +418,243 @@ height:31px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
-  background-color: #e9ecef;/* color??��?��?��?��?��?��??��?��?��?��?��?��gray */
+  background-color: #e9ecef;
+}
+
+.input-group-text {
+  background-color: #76a8af;
+  font-family: "幼�?";
+  color: rgb(255, 255, 255);
+  width: 4.8rem;
+  /* width:4.5rem; */
+}
+
+#fiveKanji {
+  width: 5.5rem;
+}
+
+#sixKanji {
+  width: 6.5rem;
+}
+
+.fileUploader {
+  width: 50% !important;
+}
+
+.fileContainer {
+  background: #fff;
+  box-shadow: none;
+  position: relative;
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: all 0.3s ease-in;
+  height: 160px;
+}
+
+.fileContainer p:empty {
+  font-size: 12px;
+  margin: 0;
+}
+
+.fileContainer .uploadPicturesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  /* top: -51px; */
+  width: 160px;
+  height: auto;
+}
+
+.uploadPicturesWrapper>div:empty {
+  height: 0px;
+}
+
+.fileContainer .uploadPictureContainer {
+  width: 160px !important;
+  /*  height: 160px !important; */
+  /* margin: 5%; */
+  /*  padding: 5px; */
+  background: #edf2f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* height: inherit; */
+  /*  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1); */
+  /* border: 1px solid #d0dbe4; */
+  position: relative;
+}
+
+.fileContainer .deleteImage {
+  position: absolute;
+  right: unset;
+  top: unset;
+  border-radius: 0;
+  text-align: center;
+  cursor: pointer;
+  font-size: 26px;
+  font-weight: bold;
+  line-height: 30px;
+  width: 134px;
+  height: 10px;
+  left: 0;
+  /*  bottom: -45px; */
+  background-image: url(../images/img_96165.png);
+  background-position: left 4px top 3px;
+  background-repeat: no-repeat;
+  background-size: 17px 23px;
+  background-color: transparent;
+  color: black;
+  overflow: hidden;
+  text-indent: -156px;
+}
+
+.fileContainer .deleteImage:after {
+  content: "Delete image";
+  position: absolute;
+  right: -45px;
+  font-size: 16px;
+}
+
+.fileContainer .uploadPictureContainer img.uploadPicture {
+  /* width: 160px; */
+  height: 90px !important;
+}
+
+.fileContainer .errorsContainer {
+  max-width: 160px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 10;
+  /*  top: 35%; */
+  background: rgba(255, 0, 0, 0.7);
+  /*  padding: 10px; */
+  text-align: center;
+  color: white;
+  margin: 0 auto;
+  width: 79%;
+  border-radius: 6px;
+}
+
+.fileContainer .errorsContainer:empty {
+  opacity: 0;
+}
+
+.fileContainer .chooseFileButton {
+  /*  padding: 6px 23px; */
+  /*   background-image: url(./icon_upload.svg); */
+  background-color: #c1c1c1;
+  background-repeat: no-repeat;
+  background-position: 50% 23%;
+  background-size: 25%;
+  border-radius: 0;
+  color: white;
+  font-weight: 300;
+  font-size: 14px;
+  /*  margin: 10px 0; */
+  transition: all 0.2s ease-in;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  width: 95%;
+  height: 100%;
+}
+
+.fileContainer .chooseFileButton:hover {
+  /*  background-image: url(./icon_upload.svg); */
+  background-color: #c1c1c1;
+  background-repeat: no-repeat;
+  background-position: 50% 23%;
+  background-size: 25%;
+}
+
+#fiveKanji {
+  width: 5.5rem;
+}
+
+#sixKanji {
+  width: 6.5rem;
+}
+
+.fileUploader .fileContainer {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 10px 10px;
+  box-shadow: none;
+  margin: 0 0 0 0;
+}
+
+.fileUploader .fileContainer .uploadPicturesWrapper {
+  border: 1px solid #e1e1e1;
+  order: 1;
+  min-height: 200px;
+  margin-right: 15px;
+}
+
+*/ .ageCss {
+  background-repeat: no-repeat;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+
+.Autocompletestyle {
+  width: 10rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+
+@media screen and (max-width: 1550px) {
+
+  .ageccCss {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 7rem;
+  }
+
+  .ageCss {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 5.5rem;
+  }
+
+  .Autocompletestyle {
+    width: 8rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+
+  .input-group-text {
+    background-color: #76a8af;
+    font-family: "幼圆";
+    font-size: 0.5rem;
+    color: rgb(255, 255, 255);
+    width: 4.5rem;
+  }
+
+  #inputGroup-sizing-sm {
+    font-size: 0.85rem;
+  }
 }

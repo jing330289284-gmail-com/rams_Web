@@ -5,11 +5,8 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
 import ja from 'date-fns/locale/ja';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { connect } from 'react-redux';
-import { fetchDropDown } from './services/index';
 import DatePicker, { registerLocale } from "react-datepicker"
+import store from './redux/store';
 
 registerLocale('ja', ja);
 
@@ -30,12 +27,18 @@ class salesProfit extends React.Component {
 		updateFlag: true,
 		insertFlag: false,
 		currentPage: 1,//今のページ
-		insertNo: ''
+		insertNo: '',
+		employeeStatus: store.getState().dataReques[4],
+		newMemberStatus: store.getState().dataReques[23],
+		customerContractStatus: store.getState().dataReques[24],
+		levelStatus: store.getState().dataReques[18],
+		salesPutternStatus: store.getState().dataReques[25],
+		specialPointStatus: store.getState().dataReques[26],
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	};
 
 	// 页面加载
 	componentDidMount() {
-		this.props.fetchDropDown();
 		this.select();
 	}
 	//明细查询
@@ -74,7 +77,7 @@ class salesProfit extends React.Component {
 
 	// レコードのステータス
 	employeeStatusFormat = (cell) => {
-		var statuss = this.props.employeeStatus;
+		var statuss = this.state.employeeStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -83,7 +86,7 @@ class salesProfit extends React.Component {
 	}
 
 	newMemberStatusFormat = (cell) => {
-		var statuss = this.props.newMemberStatus;
+		var statuss = this.state.newMemberStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -92,7 +95,7 @@ class salesProfit extends React.Component {
 	}
 
 	customerContractStatusFormat = (cell) => {
-		var statuss = this.props.customerContractStatus;
+		var statuss = this.state.customerContractStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -101,7 +104,7 @@ class salesProfit extends React.Component {
 	}
 
 	levelStatusFormat = (cell) => {
-		var statuss = this.props.levelStatus;
+		var statuss = this.state.levelStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -110,7 +113,7 @@ class salesProfit extends React.Component {
 	}
 
 	salesPutternStatusFormat = (cell) => {
-		var statuss = this.props.salesPutternStatus;
+		var statuss = this.state.salesPutternStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
@@ -119,7 +122,7 @@ class salesProfit extends React.Component {
 	}
 
 	specialPointStatusFormat = (cell) => {
-		var statuss = this.props.specialPointStatus;
+		var statuss = this.state.specialPointStatus;
 		for (var i in statuss) {
 			if (cell === statuss[i].value) {
 				return <span title={statuss[i].text}>{statuss[i].text}</span>;
@@ -134,7 +137,7 @@ class salesProfit extends React.Component {
 		salesPointSetModel["employee"] = this.state.employeeSearch
 		salesPointSetModel["newMember"] = this.state.newMemberSearch
 		salesPointSetModel["customerContract"] = this.state.customerContractSearch
-		axios.post(this.props.serverIP + "getSalesPointInfo", salesPointSetModel)
+		axios.post(this.state.serverIP + "getSalesPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -208,7 +211,7 @@ class salesProfit extends React.Component {
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
 		}
-		axios.post(this.props.serverIP + "salesPointInsert", salesPointSetModel)
+		axios.post(this.state.serverIP + "salesPointInsert", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -248,7 +251,7 @@ class salesProfit extends React.Component {
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
 		}
-		axios.post(this.props.serverIP + "salesPointUpdate", salesPointSetModel)
+		axios.post(this.state.serverIP + "salesPointUpdate", salesPointSetModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -277,7 +280,7 @@ class salesProfit extends React.Component {
 		if (a) {
 			var salesPointSetModel = {};
 			salesPointSetModel["no"] = this.state.no
-			axios.post(this.props.serverIP + "salesPointDelete", salesPointSetModel)
+			axios.post(this.state.serverIP + "salesPointDelete", salesPointSetModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -334,10 +337,6 @@ class salesProfit extends React.Component {
 				<div >
 					<Form id="siteForm">
 						<Form.Group>
-							{/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
-                    </Row> */}
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>営業個別売上</h2>
@@ -446,21 +445,5 @@ class salesProfit extends React.Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		employeeStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[4] : [],
-		newMemberStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[23] : [],
-		customerContractStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[24] : [],
-		levelStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[18] : [],
-		salesPutternStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[25] : [],
-		specialPointStatus: state.data.dataReques.length >= 1 ? state.data.dataReques[26] : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-	}
-};
 
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(salesProfit);
+export default (salesProfit);

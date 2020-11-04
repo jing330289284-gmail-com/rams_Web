@@ -220,6 +220,7 @@ class CustomerInfo extends Component {
         $.each(formArray, function (i, item) {
             customerInfoMod[item.name] = item.value;
         });
+        customerInfoMod["capitalStock"] = utils.deleteComma($("#capitalStock").val());
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate, false);
         customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
@@ -560,6 +561,11 @@ class CustomerInfo extends Component {
         $("#remark").val("");
         $("#toBankInfo").attr("disabled", true);
     }
+    moneyChange=(e)=>{
+        var id = e.target.id;
+        var money = document.getElementById(id).value;
+        $("#"+id+"").val(utils.addComma(money));
+    }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
             , actionType, topCustomer, errorsMessageValue, message, type, positionDrop } = this.state;
@@ -657,7 +663,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="6" placeholder="お客様番号" id="customerNo" name="customerNo" readOnly />
                                 </InputGroup>
@@ -684,7 +690,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">代表取締役</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">代表取締役</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：中山毛石" maxLength="20" id="representative" name="representative" />
                                 </InputGroup>
@@ -694,9 +700,9 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="5" placeholder="例：1000" id="capitalStock" name="capitalStock" />
+                                    <Form.Control maxLength="6" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e)=>this.moneyChange(e)}/>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>万円</InputGroup.Text>
+                                        <InputGroup.Text>百万円</InputGroup.Text>
                                     </InputGroup.Prepend>
                                 </InputGroup>
                             </Col>
@@ -742,7 +748,7 @@ class CustomerInfo extends Component {
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
                                                 <input placeholder="  例：秋葉原駅" type="text" {...params.inputProps} className="auto"
-                                                    style={{ width: 245, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                                    style={{ width: 240, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                             </div>
                                         )}
                                     />
@@ -759,7 +765,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">取引開始日</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">取引開始日</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <DatePicker
                                         selected={this.state.businessStartDate}
@@ -783,7 +789,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">上位お客様</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">上位お客様</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Autocomplete
                                         disabled={this.state.actionType === "detail" ? true : false}
@@ -807,7 +813,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様ランキング</InputGroup.Text>
+                                        <InputGroup.Text style={{width:"8rem"}}>お客様ランキング</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control as="select" placeholder="お客様ランキング" id="levelCode" name="levelCode" />
                                 </InputGroup>
@@ -832,7 +838,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">支払サイト</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
                                 </InputGroup>
@@ -890,30 +896,32 @@ class CustomerInfo extends Component {
                         </Col>
                     </Row>
                     <div>
-                        <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
-                            pagination={true}
-                            options={options}
-                            deleteRow data={customerDepartmentList}
-                            insertRow
-                            cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
-                            headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                            <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='90'>番号</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="130">責任者</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="230"
-                                dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
-                                dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190">メール</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
-                                dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }}>業種</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
-                                dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
-                            <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField='' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'>メイン言語</TableHeaderColumn>
-                            <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode1' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }}></TableHeaderColumn>
-                            <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode2' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }}></TableHeaderColumn>
-                        </BootstrapTable>
+                        <Col sm={12}>
+                            <BootstrapTable selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
+                                pagination={true}
+                                options={options}
+                                deleteRow data={customerDepartmentList}
+                                insertRow
+                                cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
+                                headerStyle={{ background: '#5599FF' }} striped hover condensed>
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='90'>番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="130">責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="230"
+                                    dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
+                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190">メール</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
+                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }}>業種</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
+                                    dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField='' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'>メイン言語</TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode1' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }}></TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode2' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }}></TableHeaderColumn>
+                            </BootstrapTable>
+                        </Col>
                     </div>
                     <input type="hidden" id="employeeNo" name="employeeNo" />
                 </div>

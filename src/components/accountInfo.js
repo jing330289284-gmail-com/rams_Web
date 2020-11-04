@@ -239,7 +239,7 @@ getBankBranchInfo(noORname){
                             <Col>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">口座名義人</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">口座名義人</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <OverlayTrigger
                                         overlay={
