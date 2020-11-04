@@ -9,7 +9,7 @@ import DatePicker, {  } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faUpload,faDownload,faSave } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faSave,faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import store from './redux/store';
@@ -17,6 +17,17 @@ import OtherCostModel from './otherCost';
 /**
  * 費用登録画面
  */
+function transportationCode(code, roundCode) {
+
+	for (var i in roundCode) {
+		if (roundCode[i].code != "") {
+			if (code == roundCode[i].code) {
+				return roundCode[i].name;
+			}
+		}
+	}
+
+};
 class costRegistration extends React.Component {
 	constructor(props) {
 		super(props);
@@ -41,8 +52,12 @@ class costRegistration extends React.Component {
 		stationCode1: '',　// 出発
 		stationCode2: '',　// 到着
 		showOtherCostModal: false,//他の費用
-		otherCostModel: null,
+		otherCostModel: null,//他の費用データ
+		changeData: false,//insert:false
 		station: store.getState().dropDown[14],
+		costClassification: store.getState().dropDown[30],
+		transportation: store.getState().dropDown[31],
+		round: store.getState().dropDown[37],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	//　検索
@@ -50,7 +65,6 @@ class costRegistration extends React.Component {
 		axios.post(this.state.serverIP + "costRegistration/selectCostRegistration")
 			.then(response => response.data)
 			.then((data) => {
-				
 					var sumCost = 0;
 					if (data.length > 0) {
 						for (var i = 0; i < data.length; i++) {
@@ -63,8 +77,6 @@ class costRegistration extends React.Component {
 						employeeList: data, sumCost: sumCost
 					})
 			});
-
-
 	};
 	//登録
 	InsertCost = () => {
@@ -74,10 +86,16 @@ class costRegistration extends React.Component {
 			this.state.cost == "" ||
 			this.state.stationCode1 == "" ||
 			this.state.stationCode2 == "" ||
-			this.state.line == "" ||
-			this.state.costRegistrationFile == "") {
-				this.setState({ "myToastShow": true, "method": "put" });
+			this.state.detailedNameOrLine == "" ||
+			this.state.costRegistrationFile == "" ||
+			this.state.yearAndMonth1 > this.state.yearAndMonth2) {
+				this.setState({ "myToastShow": false, "method": "put" });
 				return;
+		}
+		if (this.state.changeData) {
+			var theUrl = "costRegistration/updataCostRegistration"
+		} else {
+			var theUrl = "costRegistration/insertCostRegistration"
         }
 		const emp = {
 			costClassificationCode:0,
@@ -89,9 +107,12 @@ class costRegistration extends React.Component {
 		}
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('costFile', publicUtils.nullToEmpty($('#costRegistrationFile').get(0).files[0]))
-		axios.post(this.state.serverIP + "costRegistration/insertCostRegistration", formData)
+		axios.post(this.state.serverIP + theUrl, formData)
 			.then(response => {
 				if (response.data != null) {
+					this.setState({
+						changeData: false,
+					})
 					this.setState({ "myToastShow": true, "method": "put" });
 				} else {
 					this.setState({ "myToastShow": false });
@@ -100,51 +121,77 @@ class costRegistration extends React.Component {
 				console.error("Error - " + error);
 			});
 	};
-	/**
-	*修正
-	*/
+/**
+*修正ボタン
+*/
 	listChange = () => {
-		const emp = {
-		}
-		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
-			.then(result => {
-				if (result.data == true) {
-					this.searchDutyManagement();
-					//削除の後で、rowSelectの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: '',
-							rowSelectCheckSection: ''
-						}
-					);
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else if (result.data == false) {
-					this.setState({ "myToastShow": false });
-				}
+		if (this.state.rowSelectCostClassificationCode == 0) {
+			alert(publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true));
+			this.setState({
+				yearAndMonth1: publicUtils.converToLocalTime(this.state.rowSelectHappendDate,true),
+				yearAndMonth2: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				DetailedNameOrLine: this.state.rowSelectDetailedNameOrLine,
+				stationCode1: this.state.rowSelectTransportationCode,
+				stationCode2: this.state.rowSelectDestinationCode,
+				cost: this.state.rowSelectCost,
+				costRegistrationFile: this.state.rowSelectCostFile,
+				changeData: true,
+				changeFile: false,
 			})
-			.catch(function(error) {
-				alert("承認失败，请检查程序");
+		} else if (this.state.rowSelectCostClassificationCode == 1) {
+			this.setState({
+				costClassification: this.state.rowSelectCostClassificationCode,
+				datePicker3: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				transportationCode: this.state.rowSelectTransportationCode,
+				stationCode3: this.state.rowSelectTransportationCode,
+				stationCode4: this.state.rowSelectDestinationCode,
+				roundCode: this.state.rowSelectRoundCode,
+				cost1: this.state.rowSelectCost,
+				otherCostFile2: this.state.rowSelectCostFile,
+				changeData: true,
+				changeFile: false,
 			});
+			$("#OtherCost").click();
+		} else{
+			const otherCostModel = {
+				costClassification: this.state.rowSelectCostClassificationCode,
+				datePicker4: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				detailedNameOrLine: this.state.rowSelectDetailedNameOrLine,
+				stationCode5: this.state.rowSelectStationCode,
+				remark: this.state.rowSelectRemark,
+				cost2: this.state.rowSelectCost,
+				otherCostFile3: this.state.rowSelectCostFile,
+				changeData: true,
+				changeFile: false,
+			};
+			$("#OtherCost").click();
+        }		
 	}
 		/**
 	*削除
 	*/
 	listDel = () => {
 		const emp = {
-			employeeNo: this.state.rowSelectEmployeeNo,
-		}
-		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
+			costClassificationCode: this.state.rowSelectCostClassificationCode,
+			happendDate: this.state.rowSelectHappendDate,
+			costFile: this.state.rowSelectCostFile,
+		};
+		axios.post(this.state.serverIP + "costRegistration/deleteCostRegistration", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
 					//削除の後で、rowSelectの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: '',
-							rowSelectCheckSection: ''
-						}
-					);
+					this.setState({
+							rowSelectCostClassificationCode:'',
+							rowSelectHappendDate: '',
+							rowSelectTransportationCode: '',
+							rowSelectTransportationCode: '',
+							rowSelectDestinationCode: '',
+							rowSelectRoundCode: '',
+							rowSelectCost: '',
+							rowSelectCostFile: '',
+							changeData: false,
+					});
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else if (result.data == false) {
@@ -155,6 +202,15 @@ class costRegistration extends React.Component {
 				alert("承認失败，请检查程序");
 			});
 	}
+	//reset
+	resetBook = () => {
+		this.setState(() => this.resetStates);
+	};
+	//リセット　reset
+	resetStates = {
+		yearAndMonth1: null, yearAndMonth2: null, stationCode1: null, stationCode2: null, detailedNameOrLine: null,
+		cost: null, costRegistrationFile: null, changeData:false,
+	};
 		//　年月1
 	inactiveYearAndMonth1 = (date) => {
 		this.setState(
@@ -201,13 +257,30 @@ class costRegistration extends React.Component {
 		if (isSelected) {
 			this.setState(
 				{
-					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
+					rowSelectHappendDate: row.happendDate,
+					rowSelectCostClassificationCode: row.costClassificationCode,
+					rowSelectDetailedNameOrLine: row.detailedNameOrLine,
+					rowSelectStationCode: row.stationCode,
+					rowSelectTransportationCode: row.transportationCode,
+					rowSelectDestinationCode: row.destinationCode,
+					rowSelectCost: row.cost,
+					rowSelectRemark: row.remark,
+					rowSelectRoundCode: row.roundCode,
+					rowSelectCostFile: row.costFile,
 				}
 			);
 		} else {
 			this.setState(
 				{	
-					rowSelectWorkingTimeReport:'',
+					rowSelectCostClassificationCode: '',
+					rowSelectDetailedNameOrLine: '',
+					rowSelectStationCode: '',
+					rowSelectTransportationCode: '',
+					rowSelectDestinationCode: '',
+					rowSelectCost: '',
+					rowSelectRemark: '',
+					rowSelectRoundCode: '',
+					rowSelectCostFile: '',
 				}
 			);
 		}
@@ -266,10 +339,64 @@ class costRegistration extends React.Component {
 			</p>
 		);
 	}
+	testSpan = (cell, row) => {
+		if (row.costClassificationCode === 0) {
+			return transportationCode(row.stationCode, this.state.station)
+			
+		} else {
+			return (<div style={{ padding: '0px' }}>
+				<td style={{ border: 'none', width: "126px", padding: '0px', textAlign: "center", height: '20px' }} dataField='transportationCode' dataFormat={this.transportationCode.bind(this)}>{transportationCode(row.transportationCode, this.state.station)}</td>
+				<td style={{ textAlign: "center", border: "1px solid #ddd", borderTop: '0', borderBottom: '0', borderRight: '0', width: "126px", padding: '0px' }} dataField='destinationCode' dataFormat={this.destinationCode.bind(this)}>{transportationCode(row.destinationCode, this.state.station)}</td></div>)
+		}
+	}
+	roundCode(code) {
+		let roundCode = this.state.round;
+		for (var i in roundCode) {
+			if (roundCode[i].code != "") {
+				if (code == roundCode[i].code) {
+					return roundCode[i].name;
+				}
+			}
+		}
+	};
+	costClassificationCode(code) {
+		let costClassificationCode = this.state.costClassification;
+		for (var i in costClassificationCode) {
+			if (costClassificationCode[i].code != "") {
+				if (code == costClassificationCode[i].code) {
+					return costClassificationCode[i].name;
+				}
+			}
+		}
+	};
+	stationCode(code) {
+		let stationCode = this.state.station;
 
+		for (var i in stationCode) {
+			if (code == stationCode[i].code) {
+				return stationCode[i].name;
+			}
+		}
+	};
+	transportationCode(code) {
+		let transportationCode = this.state.station;
+		for (var i in transportationCode) {
+			if (code == transportationCode[i].code) {
+				return transportationCode[i].name;
+			}
+		}
+	};
+	destinationCode(code) {
+		let destinationCode = this.state.station;
+		for (var i in destinationCode) {
+			if (code == destinationCode[i].code) {
+				return destinationCode[i].name;
+			}
+		}
+	};
 	render() {
 		const {employeeList} = this.state;
-		const { otherCostModel } = this.state;
+		const { otherCostModel, otherCostTokuro } = this.state;
 		const station = this.state.station;
 		//　テーブルの行の選択
 		const selectRow = {
@@ -303,16 +430,14 @@ class costRegistration extends React.Component {
 			afterSaveCell: this.sumWorkTimeChange,
 		}
 		return (
-				
-				
 			<div>
 			{/*　 他の費用*/}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.handleHideModal.bind(this, "otherCostModel")} show={this.state.showOtherCostModal} dialogClassName="modal-otherCost">
+					onHide={this.handleHideModal.bind(this)} show={this.state.showOtherCostModal} dialogClassName="modal-otherCost">
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<OtherCostModel bpInfoModel={otherCostModel} customer={this.state.customer} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} otherCostTokuro={this.otherCostGet} /></Modal.Body>
+						<OtherCostModel otherCostModel={otherCostModel} customer={this.state.customer} otherCostTokuro={this.otherCostGet} /></Modal.Body>
 				</Modal>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
@@ -338,16 +463,19 @@ class costRegistration extends React.Component {
 						</Col>
 						<Col sm={8}></Col>
 					</Row>	
+					<br /><br />
 					<Row>
 						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}><b>定期</b></font>
 						</Col>	
 					</Row>	
 					<Row>
-						<Col sm={4}>
-						<InputGroup size="sm" className="mb-3">
+						<Col sm={5}>
+							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">期間</InputGroup.Text>
+								</InputGroup.Prepend>
+								<InputGroup.Prepend>
 									<DatePicker
 										selected={this.state.yearAndMonth1}
 										onChange={this.inactiveYearAndMonth1}
@@ -356,16 +484,15 @@ class costRegistration extends React.Component {
 										dateFormat="yyyy/MM/dd"
 										id="datePicker"
 										className="form-control form-control-sm"
-									/>{" ～"}
-								</InputGroup.Prepend>
-								<InputGroup.Prepend>
+										
+									/>～
 									<DatePicker
 										selected={this.state.yearAndMonth2}
 										onChange={this.inactiveYearAndMonth2}
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM/dd"
-										id="datePicker2"
+										id="datePicker"
 										className="form-control form-control-sm"
 									/>
 								</InputGroup.Prepend>
@@ -373,7 +500,7 @@ class costRegistration extends React.Component {
 						</Col>
                         <Col sm={2}>
 		                        <Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
-	                          		 <FontAwesomeIcon />他の費用
+									<FontAwesomeIcon /> 他の費用
 		                        </Button>
 						</Col>
 					</Row>
@@ -423,7 +550,7 @@ class costRegistration extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">線路</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" name="line" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
+								<Form.Control type="text" name="detailedNameOrLine" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
 							</InputGroup>
 						</Col>
 						<Col sm={2}>
@@ -434,7 +561,7 @@ class costRegistration extends React.Component {
 								<Form.Control type="text" name='cost' autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
 							</InputGroup>
 						</Col>
-						<Col sm={6}>
+						<Col sm={4}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm" >添付</InputGroup.Text>
@@ -445,11 +572,14 @@ class costRegistration extends React.Component {
 						</Col>
 					</Row>
 					<Row>
-						 <Col sm={2}>
-							<div style={{ "position": "relative", "left": "300%" }}>
+						 <Col sm={4}>
+							<div style={{ "position": "relative", "left": "100%" }}>
 								<div style={{ "textAlign": "center" }}>
 									<Button size="sm" variant="info" onClick={this.InsertCost} type="button" on>
-										<FontAwesomeIcon icon={faSave} /> {"登録"}
+										<FontAwesomeIcon icon={faSave} /> {" 登録"}
+									</Button>{' '}
+									<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
+										<FontAwesomeIcon icon={faUndo} /> Reset
 									</Button>
 								</div>
 							</div>
@@ -463,26 +593,28 @@ class costRegistration extends React.Component {
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
                                <Button variant="info" size="sm" onClick={this.listChange} id="costRegistrationChange">
-									<FontAwesomeIcon icon={faUpload} />修正
+									<FontAwesomeIcon icon={faEdit} /> 修正
 								</Button>{' '}
 		                        <Button variant="info" size="sm" onClick={this.listDel}id="costRegistrationDel">
-	                          		 <FontAwesomeIcon icon={faDownload} />削除
+									<FontAwesomeIcon icon={faTrash} /> 削除
 		                        </Button>
 	 						</div>
 						</Col>
                     </Row>
-					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn  row='0' rowSpan='2' width='80'　tdStyle={ { padding: '.45em' } } dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='180'　tdStyle={ {padding: '.45em' } } dataField='happendDate' editable={false}>日付</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='80' tdStyle={ { padding: '.45em' } } dataField='costClassificationCode' editable={false}>区分</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='140' tdStyle={ { padding: '.45em' } } dataField='detailedName' editable={false}>名称</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='1' colSpan='2' tdStyle={ { padding: '.45em'}} headerAlign='center' dataField='stationCode' editable={false}>場所</TableHeaderColumn>
-						<TableHeaderColumn  row='1' rowSpan='1' width='150' tdStyle={ { padding: '.45em' } } dataField='transportationCode' editable={false}>出発地</TableHeaderColumn>
-						<TableHeaderColumn  row='1' rowSpan='1' width='150' tdStyle={ { padding: '.45em' } } dataField='destinationCode' editable={false}>目的地</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='cost' editable={false}>金額</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='remark' editable={false}>備考</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='100' tdStyle={ { padding: '.45em' } } dataField='roundCode' editable={false}>片・往</TableHeaderColumn>
-						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='costFile' editable={false}>添付</TableHeaderColumn>
+					<BootstrapTable data={employeeList}  pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+						<TableHeaderColumn  row='0' rowSpan='2' width='80'　tdStyle={ { padding: '.45em' } } dataField='rowNo'  isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='180'　tdStyle={ {padding: '.45em' } } dataField='happendDate' >日付</TableHeaderColumn>
+						<TableHeaderColumn row='0' rowSpan='2' width='80' tdStyle={{ padding: '.45em' }} dataField='costClassificationCode' dataFormat={this.costClassificationCode.bind(this)}>区分</TableHeaderColumn>
+						<TableHeaderColumn row='0' rowSpan='2' width='140' tdStyle={{ padding: '.45em' }} dataField='detailedNameOrLine' >名称（線路）</TableHeaderColumn>
+						<TableHeaderColumn row='0' colSpan='1' width='20%' headerAlign='center' dataAlign='center' >場所</TableHeaderColumn>
+						<TableHeaderColumn row='1' width='20%' dataField='stationCode' dataAlign='center' dataFormat={this.testSpan}>
+								<th style={{ textAlign: "center", border: 'none', width: "126px", padding: '0px' }}>出発地</th>
+								<th style={{ textAlign: "center", border: "1px solid #ddd", borderTop: '0', borderBottom: '0', borderRight: '0', width: "126px", padding: '0px' }}>目的地</th>
+						</TableHeaderColumn> 
+						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='cost' >金額</TableHeaderColumn>
+						<TableHeaderColumn  row='0' rowSpan='2' width='150' tdStyle={ { padding: '.45em' } } dataField='remark' >備考</TableHeaderColumn>
+						<TableHeaderColumn row='0' rowSpan='2' width='100' tdStyle={{ padding: '.45em' }} dataField='roundCode' dataFormat={this.roundCode.bind(this)} >片・往</TableHeaderColumn>
+						<TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='costFile' >添付</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
