@@ -69,6 +69,9 @@ class costRegistration extends React.Component {
 					if (data.length > 0) {
 						for (var i = 0; i < data.length; i++) {
 							sumCost = sumCost + data[i].cost;
+							if (data[i].costClassificationCode == 0) {
+								data[i].happendDate = data[i].happendDate + "～" + data[i].dueDate;
+							}
 						}
 					} else {
 						var sumCost = "";
@@ -96,9 +99,10 @@ class costRegistration extends React.Component {
 			var theUrl = "costRegistration/updataCostRegistration"
 		} else {
 			var theUrl = "costRegistration/insertCostRegistration"
-        }
+		}
 		const emp = {
-			costClassificationCode:0,
+			costClassificationCode: 0,
+			costClassificationName:this.costClassificationCode(0),
 			happendDate: publicUtils.formateDate(this.state.yearAndMonth1, true),
 			dueDate: publicUtils.formateDate(this.state.yearAndMonth2, true),
 			transportationCode: this.state.stationCode1,
@@ -126,22 +130,27 @@ class costRegistration extends React.Component {
 */
 	listChange = () => {
 		if (this.state.rowSelectCostClassificationCode == 0) {
-			alert(publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true));
+			var splDate = (this.state.rowSelectHappendDate).split("～");
 			this.setState({
-				yearAndMonth1: publicUtils.converToLocalTime(this.state.rowSelectHappendDate,true),
-				yearAndMonth2: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
-				DetailedNameOrLine: this.state.rowSelectDetailedNameOrLine,
+				oldCostClassification: this.state.rowSelectCostClassificationCode,
+				oldHappendDate: splDate[0],
+				yearAndMonth1: publicUtils.converToLocalTime(splDate[0], true),
+				yearAndMonth2: publicUtils.converToLocalTime(splDate[1], true),
+				detailedNameOrLine: this.state.rowSelectDetailedNameOrLine,
 				stationCode1: this.state.rowSelectTransportationCode,
 				stationCode2: this.state.rowSelectDestinationCode,
 				cost: this.state.rowSelectCost,
 				costRegistrationFile: this.state.rowSelectCostFile,
 				changeData: true,
 				changeFile: false,
+				costRegistrationFileFlag: true,
 			})
 		} else if (this.state.rowSelectCostClassificationCode == 1) {
 			this.setState({
+				oldCostClassification: this.state.rowSelectCostClassificationCode,
+				oldHappendDate: this.state.rowSelectHappendDate,
 				costClassification: this.state.rowSelectCostClassificationCode,
-				datePicker3: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				yearAndMonth3: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
 				transportationCode: this.state.rowSelectTransportationCode,
 				stationCode3: this.state.rowSelectTransportationCode,
 				stationCode4: this.state.rowSelectDestinationCode,
@@ -150,72 +159,71 @@ class costRegistration extends React.Component {
 				otherCostFile2: this.state.rowSelectCostFile,
 				changeData: true,
 				changeFile: false,
+				costRegistrationFileFlag: true,
+				showOtherCostModal:true,
 			});
-			$("#OtherCost").click();
 		} else{
-			const otherCostModel = {
+			this.setState({
+				oldCostClassification: this.state.rowSelectCostClassificationCode,
+				oldHappendDate: this.state.rowSelectHappendDate,
 				costClassification: this.state.rowSelectCostClassificationCode,
-				datePicker4: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
-				detailedNameOrLine: this.state.rowSelectDetailedNameOrLine,
+				yearAndMonth4: publicUtils.converToLocalTime(this.state.rowSelectHappendDate, true),
+				detailedNameOrLine2: this.state.rowSelectDetailedNameOrLine,
 				stationCode5: this.state.rowSelectStationCode,
 				remark: this.state.rowSelectRemark,
 				cost2: this.state.rowSelectCost,
 				otherCostFile3: this.state.rowSelectCostFile,
 				changeData: true,
 				changeFile: false,
-			};
-			$("#OtherCost").click();
+				costRegistrationFileFlag: true,
+				showOtherCostModal: true,
+			});
         }		
 	}
 		/**
 	*削除
 	*/
 	listDel = () => {
+		var splDate = (this.state.rowSelectHappendDate).split("～");
 		const emp = {
-			costClassificationCode: this.state.rowSelectCostClassificationCode,
-			happendDate: this.state.rowSelectHappendDate,
+			oldCostClassificationCode: this.state.rowSelectCostClassificationCode,
+			oldHappendDate: splDate[0],
 			costFile: this.state.rowSelectCostFile,
 		};
 		axios.post(this.state.serverIP + "costRegistration/deleteCostRegistration", emp)
 			.then(result => {
-				if (result.data == true) {
-					this.searchDutyManagement();
+				if (result.data ==true) {
 					//削除の後で、rowSelectの値に空白をセットする
 					this.setState({
-							rowSelectCostClassificationCode:'',
-							rowSelectHappendDate: '',
-							rowSelectTransportationCode: '',
-							rowSelectTransportationCode: '',
-							rowSelectDestinationCode: '',
-							rowSelectRoundCode: '',
-							rowSelectCost: '',
-							rowSelectCostFile: '',
 							changeData: false,
-					});
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else if (result.data == false) {
+					})
+					this.setState({ "myToastShow": true, "method": "put" });
+					setTimeout(() => this.setState({ "myToastShow": true }), 3000);
+				} else{
 					this.setState({ "myToastShow": false });
 				}
-			})
-			.catch(function(error) {
-				alert("承認失败，请检查程序");
+			}).catch((error) => {
+				alert(error);
+				console.error("Error - " + error);
 			});
 	}
 	//reset
 	resetBook = () => {
 		this.setState(() => this.resetStates);
+		
 	};
 	//リセット　reset
 	resetStates = {
-		yearAndMonth1: null, yearAndMonth2: null, stationCode1: null, stationCode2: null, detailedNameOrLine: null,
-		cost: null, costRegistrationFile: null, changeData:false,
+		yearAndMonth1: null, yearAndMonth2: null, stationCode1: null, stationCode2: null, detailedNameOrLine: '',
+		cost: '', costRegistrationFile: null, changeData: false,oldCostClassification1: null,oldHappendDate1: null,
+		changeFile: false, costRegistrationFileFlag: false,
 	};
 		//　年月1
 	inactiveYearAndMonth1 = (date) => {
 		this.setState(
 			{
 				yearAndMonth1: date,
+				changeFile: true,
 			}
 		);
 
@@ -245,6 +253,7 @@ class costRegistration extends React.Component {
 			this.setState({
 				costRegistrationFile: filePath,
 				costRegistrationFileName: fileName,
+				changeFile:true,
 			})
 			if (filePath != null) {
 				this.setState({
@@ -271,7 +280,8 @@ class costRegistration extends React.Component {
 			);
 		} else {
 			this.setState(
-				{	
+				{
+					rowSelectHappendDate: '',
 					rowSelectCostClassificationCode: '',
 					rowSelectDetailedNameOrLine: '',
 					rowSelectStationCode: '',
@@ -296,7 +306,7 @@ class costRegistration extends React.Component {
 	*他の費用画面の閉め 
 	*/
 	handleHideModal = () => {
-			this.setState({ showOtherCostModal: false })
+		this.setState({ showOtherCostModal: false})
 	}
 		/* 
 	他の費用情報の取得
@@ -340,7 +350,7 @@ class costRegistration extends React.Component {
 		);
 	}
 	testSpan = (cell, row) => {
-		if (row.costClassificationCode === 0) {
+		if (row.costClassificationCode >1) {
 			return transportationCode(row.stationCode, this.state.station)
 			
 		} else {
@@ -359,6 +369,7 @@ class costRegistration extends React.Component {
 			}
 		}
 	};
+
 	costClassificationCode(code) {
 		let costClassificationCode = this.state.costClassification;
 		for (var i in costClassificationCode) {
@@ -437,7 +448,7 @@ class costRegistration extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<OtherCostModel otherCostModel={otherCostModel} customer={this.state.customer} otherCostTokuro={this.otherCostGet} /></Modal.Body>
+						<OtherCostModel otherCostModel={otherCostModel} otherCostTokuro={this.otherCostGet} customer={this.state.customer} otherCostTokuro={this.otherCostGet} /></Modal.Body>
 				</Modal>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
@@ -499,7 +510,7 @@ class costRegistration extends React.Component {
 							</InputGroup>	
 						</Col>
                         <Col sm={2}>
-		                        <Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
+							<Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)} id="OtherCost">
 									<FontAwesomeIcon /> 他の費用
 		                        </Button>
 						</Col>
@@ -518,8 +529,8 @@ class costRegistration extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'station')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  出発" type="text" {...params.inputProps} className="auto" id="stationCode1"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												<input placeholder="出発" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-costRe" id="stationCode1"
+													/>
 											</div>
 										)}
 									/>
@@ -538,8 +549,8 @@ class costRegistration extends React.Component {
 										onSelect={(event) => this.handleTag(event, 'station')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  到着" type="text" {...params.inputProps} className="auto" id="stationCode2"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												<input placeholder="到着" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-costRe" id="stationCode2"
+													 />
 											</div>
 										)}
 									/>
@@ -550,7 +561,7 @@ class costRegistration extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">線路</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" name="detailedNameOrLine" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
+								<Form.Control type="text" value={this.state.detailedNameOrLine} name="detailedNameOrLine" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="線路" />
 							</InputGroup>
 						</Col>
 						<Col sm={2}>
@@ -558,7 +569,7 @@ class costRegistration extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="text" name='cost' autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
+								<Form.Control type="text" value={this.state.cost} name='cost' autoComplete="off" size="sm" onChange={this.valueChange} placeholder="料金" />
 							</InputGroup>
 						</Col>
 						<Col sm={4}>
@@ -585,22 +596,28 @@ class costRegistration extends React.Component {
 							</div>
 						 </Col>
 					</Row>
-					<Row>
-						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>総額：{this.state.sumCost}</font>
-						</Col>
-  						<Col sm={6}></Col>
-                        <Col sm={4}>
-                            <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.listChange} id="costRegistrationChange">
-									<FontAwesomeIcon icon={faEdit} /> 修正
-								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={this.listDel}id="costRegistrationDel">
-									<FontAwesomeIcon icon={faTrash} /> 削除
-		                        </Button>
-	 						</div>
-						</Col>
-                    </Row>
+					<div>
+						<Row>
+							<Col sm={4}>
+								<div style={{ "float": "left" }}>
+									<font style={{ whiteSpace: 'nowrap' }}>総額：{this.state.sumCost}</font>
+								</div>
+							</Col>
+							<Col sm={6}><div style={{ "float": "center" }}>
+							</div></Col>
+							
+							<Col sm={2}>
+								<div style={{ "float": "right" }}>
+										<Button variant="info" size="sm" onClick={this.listChange} id="costRegistrationChange">
+											<FontAwesomeIcon icon={faEdit} /> 修正
+										</Button>{' '}
+										<Button variant="info" size="sm" onClick={this.listDel}id="costRegistrationDel">
+											<FontAwesomeIcon icon={faTrash} /> 削除
+										</Button>
+	 							</div>
+							</Col>
+						</Row>
+					</div>
 					<BootstrapTable data={employeeList}  pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 						<TableHeaderColumn  row='0' rowSpan='2' width='80'　tdStyle={ { padding: '.45em' } } dataField='rowNo'  isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn  row='0' rowSpan='2' width='180'　tdStyle={ {padding: '.45em' } } dataField='happendDate' >日付</TableHeaderColumn>

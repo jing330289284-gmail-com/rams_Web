@@ -613,7 +613,51 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
-
+.Autocompletestyle-master {
+  width: 17.8rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-costRe{
+  width: 7.9rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfo {
+  width: 15rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-customerInfo {
+  width: 14rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-situation {
+  width: 7.8rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {
@@ -634,7 +678,6 @@ body {
     background-color: white;
     width: 7rem;
   }
-
   .ageCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -674,6 +717,24 @@ body {
   }
   .Autocompletestyle-situation {
     width: 5.6rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-costRe{
+    width: 5.6rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-master {
+    width: 12rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;

@@ -562,8 +562,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto"
-														style={{ width: 145, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														 />
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -584,8 +584,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto"
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}

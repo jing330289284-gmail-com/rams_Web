@@ -4,6 +4,7 @@ import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import store from './redux/store';
 class situationChange extends Component {//状況変動一覧
@@ -26,6 +27,7 @@ class situationChange extends Component {//状況変動一覧
     }
 
     initialState = {
+        situationChange:'0',
         startsituationChange:new Date(),
         endsituationChange:new Date(),
         situationChanges: store.getState().dropDown[39].slice(1),
@@ -102,8 +104,12 @@ renderShowsTotal(start, to, total) {
 }
     render(){
         const  situationChanges= this.state.situationChanges;
+        const  errorsMessageValue= this.state.errorsMessageValue;
         return(
             <div>
+                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
                  <Row inline="true">
                      <Col  className="text-center">
                     <h2>状況変動一覧</h2>
@@ -162,9 +168,9 @@ renderShowsTotal(start, to, total) {
                     <BootstrapTable data={this.state.situationInfoList}   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
                             <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='reflectYearAndMonth'>年月</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>社員名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='status'>区分</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo'>社員番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeName'>社員名</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='status'>区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>給料</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='socialInsuranceFlag'>社会保険</TableHeaderColumn>
