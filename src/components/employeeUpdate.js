@@ -1192,7 +1192,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 										<InputGroup.Text id="inputGroup-sizing-sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
