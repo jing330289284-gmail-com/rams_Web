@@ -595,7 +595,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">稼働　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" value={kadou} autoComplete="off" >
-											<option value=""　>選択ください</option>
+											<option value=""　></option>
 											<option value="0">はい</option>
 											<option value="1">いいえ</option>
 										</Form.Control>

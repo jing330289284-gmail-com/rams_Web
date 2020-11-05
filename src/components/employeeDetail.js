@@ -15,7 +15,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
-import { Link } from "react-router-dom";
 import store from './redux/store';
 
 
@@ -408,8 +407,6 @@ class employeeUpdate extends React.Component {
 					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
 					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled>PW設定</Button>{' '}
 					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>給料情報</Link>{' '}
-					<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.employeeNo } }} className="btn btn-primary btn-sm" disabled={employeeStatus === 0 ? false : true}>現場情報</Link>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -510,13 +507,10 @@ class employeeUpdate extends React.Component {
 											showYearDropdown
 											dateFormat="yyyy/MM/dd"
 											disabled
-
 										/>
 									</InputGroup.Append>
-									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled />
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
-									</InputGroup.Prepend>
+									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled /> 
+									<FormControl value="歳" size="sm" disabled />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -579,8 +573,7 @@ class employeeUpdate extends React.Component {
 								<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<Button size="sm" variant="info" onClick={(event) => this.addFile(event, 'image')} disabled type="button" on><FontAwesomeIcon icon={faFile} /> 写真</Button>
-										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160"  />
 									</InputGroup.Prepend>
 									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
 								</InputGroup>

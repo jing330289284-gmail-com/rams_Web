@@ -18,7 +18,6 @@ import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
-import ImageUploader from "react-images-upload";
 
 axios.defaults.withCredentials = true;
 class employeeInsert extends React.Component {
@@ -29,14 +28,9 @@ class employeeInsert extends React.Component {
 		this.insertEmployee = this.insertEmployee.bind(this);//登録
 		this.employeeStatusChange = this.employeeStatusChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
-		this.onDrop = this.onDrop.bind(this);
 
 	}
-	onDrop(pictureFiles, pictureDataURLs) {
-		this.setState({
-			pictures: this.state.pictures.concat(pictureFiles)
-		});
-	}
+
 	/**
 	 * 初期化
 	 */
@@ -74,7 +68,6 @@ class employeeInsert extends React.Component {
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛テスト
-		pictures: []
 	};
 	/**
 	 * リセット
@@ -151,8 +144,6 @@ class employeeInsert extends React.Component {
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
-		//formData.append('picInfo', this.state.pictures[0])
-
 		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -507,7 +498,7 @@ class employeeInsert extends React.Component {
 			};
 			var reader = new FileReader();
 			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
-			reader.onload = function () {
+			reader.onload = function() {
 				document.getElementById("imageId").src = reader.result;
 			};
 		}
@@ -680,9 +671,8 @@ class employeeInsert extends React.Component {
 										/>
 									</InputGroup.Append>
 									<FormControl id="temporary_age" value={temporary_age} autoComplete="off" onChange={this.valueChange} size="sm" name="temporary_age" disabled />
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">歳</InputGroup.Text>
-									</InputGroup.Prepend>
+									<FormControl value="歳" size="sm" disabled />
+
 								</InputGroup>
 
 								<InputGroup size="sm" className="mb-3">
@@ -747,10 +737,9 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<Button size="sm" variant="info" onClick={(event) => this.addFile(event, 'image')} type="button" on><FontAwesomeIcon icon={faFile} /> 写真</Button>
-										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160" onClick={(event) => this.addFile(event, 'image')} />
 									</InputGroup.Prepend>
-									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+									<Form.File id="image" hidden data-browse="添付"  custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
 								</InputGroup>
 
 							</Col>
