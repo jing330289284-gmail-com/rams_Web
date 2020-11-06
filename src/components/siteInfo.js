@@ -54,6 +54,19 @@ class siteInfo extends Component {
 		})
 	}
 
+
+
+	onchangeSiteRoleCode = event => {
+		if (event.target.value === '1') {
+			this.setState({
+				relatedEmployeesFlag: true
+			})
+		} else {
+			this.setState({
+				relatedEmployeesFlag: false
+			})
+		}
+	}
 	state = {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date()
@@ -213,7 +226,7 @@ class siteInfo extends Component {
 					time: publicUtils.getFullYearMonth(new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
 					workState: row.workState === null ? '' : row.workState,
-					dailyCalculationStatus: row.dailyCalculationStatus === '1'  ? true : false,
+					dailyCalculationStatus: row.dailyCalculationStatus === '1' ? true : false,
 					systemName: row.systemName === null ? '' : row.systemName,
 					location: row.location === null ? '' : row.location,
 					customerNo: row.customerName === null ? '' : row.customerName,
@@ -422,7 +435,7 @@ class siteInfo extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
-														 />
+													/>
 												</div>
 											)}
 										/>
@@ -518,7 +531,7 @@ class siteInfo extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														/>
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -541,7 +554,7 @@ class siteInfo extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -563,7 +576,7 @@ class siteInfo extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -642,7 +655,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
+										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -681,10 +694,10 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related4Employees" name="related4Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
+										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
+										<FormControl id="related4Employees" name="related4Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -702,7 +715,7 @@ class siteInfo extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														/>
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
