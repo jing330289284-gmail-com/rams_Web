@@ -98,7 +98,7 @@ class employeeUpdate extends React.Component {
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
 					occupationCode: data.occupationCode,//職種
 					departmentCode: data.departmentCode,//部署
-					companyMail:　 data.companyMail　!== null && data.companyMail　!== ""? data.companyMail.match(/(\S*)@/)[1]:"",//社内メール　data.companyMail.match(/(\S*)@/)[1]
+					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
@@ -141,7 +141,7 @@ class employeeUpdate extends React.Component {
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
-										image: data.picInfo
+					image: data.picInfo
 
 				});
 			}
@@ -509,7 +509,7 @@ class employeeUpdate extends React.Component {
 											disabled
 										/>
 									</InputGroup.Append>
-									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled /> 
+									<FormControl id="temporary_age" value={temporary_age} size="sm" name="temporary_age" disabled />
 									<FormControl value="歳" size="sm" disabled />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -570,10 +570,10 @@ class employeeUpdate extends React.Component {
 									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 							</Col>
-								<Col sm={3}>
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<Image src={this.state.image} id="imageId" rounded width="180" height="160"  />
+										<Image src={this.state.image} id="imageId" rounded width="180" height="160" />
 									</InputGroup.Prepend>
 									<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
 								</InputGroup>
@@ -687,8 +687,8 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
-									<FormControl  value={birthplace} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="birthplace" disabled/>
+									<FormControl value={birthplace} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="birthplace" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -931,7 +931,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">在留カード</InputGroup.Text>
+										<InputGroup.Text id="fiveKanji">在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={residenceCardNo}
 										size="sm" name="residenceCardNo" disabled />
@@ -960,7 +960,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">雇用保険番号</InputGroup.Text>
+										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={employmentInsuranceNo}
 										size="sm" name="employmentInsuranceNo" disabled />
@@ -969,7 +969,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">マイナンバー</InputGroup.Text>
+										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={myNumber}
 										size="sm" name="myNumber" disabled />
@@ -980,45 +980,41 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >在留カード</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"  ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 添付済み" : " 添付"}</InputGroup.Text>
+										<InputGroup.Text id="fiveKanji" >在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 添付済み" : " 添付"}</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
-							<Col sm={1}>
-								<InputGroup size="sm" className="mb-3">
-									<FormControl value={resumeName1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 添付済み" : " 添付"}</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
-							<Col sm={1}>
-								<InputGroup size="sm" className="mb-3">
-									<FormControl value={resumeName2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName2" disabled />
+									<Button size="sm" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 添付済み" : " 添付"}</Button>
+									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">パスポート</InputGroup.Text>
-										<InputGroup.Text id="inputGroup-sizing-sm"   ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 添付済み" : " 添付"}</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
+									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 添付済み" : " 添付"}</Button>
+									<FormControl value={resumeName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
+									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
+								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 添付済み" : " 添付"}</Button>
+									<FormControl value={resumeName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="resumeName2" disabled />
+									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
+								</InputGroup>
+							</Col>
+							<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="fiveKanji" >パスポート</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 添付済み" : " 添付"}</Button>
+
 								</InputGroup>
 							</Col>
 						</Row>

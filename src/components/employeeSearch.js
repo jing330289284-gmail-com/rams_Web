@@ -344,7 +344,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員名(BP)</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">社員名(BP)</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="employeeName"
@@ -420,7 +420,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">年齢　　</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">年齢　　</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
 										/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
@@ -468,7 +468,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">入社区分</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode} autoComplete="off">
 											{this.state.intoCompanyCodes.map(data =>
