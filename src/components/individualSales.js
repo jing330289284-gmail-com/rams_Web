@@ -20,6 +20,9 @@ class individualSales extends React.Component {//個人売上検索
         individualSales_endYearAndMonth:'',
         monthlySales_startYearAndMonth:'',
         monthlySales_endYearAndMonth:'',
+        calStatus:'',
+        dailyCalculationStatus:'',
+        dailySalary:'',
      }
      constructor(props){
         super(props);
@@ -61,6 +64,8 @@ class individualSales extends React.Component {//個人売上検索
                     this.setState({ employeeInfoList: response.data.data })
                     this.setState({ workMonthCount:this.state.employeeInfoList[0].workMonthCount}) 
                     this.feeTotal();
+                    this.workDaysCal();
+                   
 					
 				}
 			}).catch((error) => {
@@ -131,7 +136,6 @@ class individualSales extends React.Component {//個人売上検索
                 this.setState({individualSales_startYearAndMonth:monthlySales_startYearAndMonth,
                     individualSales_endYearAndMonth: monthlySales_endYearAndMonth,
                     employeeName:rowSelectemployeeName+"("+rowSelectemployeeNo+")"}, () => 
-
                     this.searchEmployee()
                     );
             }
@@ -172,7 +176,7 @@ class individualSales extends React.Component {//個人売上検索
     unitPriceAddComma(cell,row){
         if(row.unitPrice ===null){
             return 
-        }else{
+        }else{            
             let formatUprice = publicUtils.addComma(row.unitPrice , false);
             return formatUprice;
         }   
@@ -214,12 +218,12 @@ class individualSales extends React.Component {//個人売上検索
         } 
     }
 
-    leaderAllowanceAmountAddComma(cell,row){
-        if(row.leaderAllowanceAmount ===null){
+    deductionsAndOvertimePayAddComma(cell,row){
+        if(row.deductionsAndOvertimePay ===null){
             return 
         }else{
-            let formatLeaderAllowanceAmount= publicUtils.addComma(row.leaderAllowanceAmount , false);
-            return formatLeaderAllowanceAmount;
+            let formatDeductionsAndOvertimePay= publicUtils.addComma(row.deductionsAndOvertimePay , false);
+            return formatDeductionsAndOvertimePay;
         }    
     }
 
@@ -242,20 +246,6 @@ class individualSales extends React.Component {//個人売上検索
         }
     }
 
-    handleTag = ({ target }) => {
-        const { value, id } = target;
-        if (value === '') {
-            this.setState({
-                [id]: '',
-            })
-        } else {
-            if (this.state.employeeName.find((v) => (v.name === value)) !== undefined) {
-                        this.setState({
-                            employeeName: this.state.employeeName.find((v) => (v.name === value)).code,
-                        })
-        }
-    }
-    };
 	handleTag = ({ target }, fieldName) => {
 		const { value, id } = target;
 		if (value === '') {
@@ -275,11 +265,50 @@ class individualSales extends React.Component {//個人売上検索
 				}
 			}
 		}
-	};
+    };
 
+workDaysCal = () =>{
+    var holidayCount=0;
+    var workdayCount=0;
+    var totalholidayCount=0;
+    var totalworkdayCount=0;
+    for(let n=0;n<this.state.employeeInfoList.length;n++){
+        if(this.state.employeeInfoList[n].dailyCalculationStatus=="0"){
+           var monthDayCount= new Date(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6), 0).getDate();
+           for(var i= this.state.employeeInfoList[n].admissionStartDate.substring(6,8);i<=monthDayCount;i++){
+               if(i<10){
+                i="0"+i
+               }
+            if(publicUtils.isHoliday(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6),i)){
+                holidayCount++;
+            }
+            else {
+                workdayCount++;
+            }
+           }
+           for(var j =1;j<=monthDayCount;j++){
+               if(j<10){
+                j="0"+j
+               }
+               if(publicUtils.isHoliday(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6),j)){
+                totalholidayCount++;
+            }
+            else {
+                totalworkdayCount++;
+            }
+           }
+           var dailySalary = workdayCount/totalworkdayCount*this.state.employeeInfoList[n].unitPrice
+           //alert(dailySalary)
+          // this.setState({this.state.employeeInfoList[n].unitPrice:dailySalary})
+           //this.state.employeeInfoList[n].unitPrice=dailySalary;
+           //this.setState({employeeInfoList[n].:dailySalary})
+           }
+    }   
+        }    
+        
 
 render (){
-    const {employeeName,errorsMessageValue,employeeInfo } = this.state;
+    const {errorsMessageValue,employeeInfo} = this.state;
         return(
             
             <div>
@@ -288,7 +317,7 @@ render (){
 				</div>
                 <Row inline="true">
                      <Col  className="text-center">
-                    <h2>個人売上検索</h2>
+                        <h2>個人売上検索</h2>
                     </Col> 
                 </Row>
 				<Row>
@@ -380,8 +409,8 @@ render (){
                       <label>{this.state.paymentTotal} </label>
 						</Col>
 						<Col sm={3}>
-                    <label>粗利合計：
-                    </label>
+                    <label>粗利合計：</label>
+                    <label>{this.state.totalgrosProfits} </label>
 						</Col>
 				</Row>
                   <div>
@@ -389,12 +418,12 @@ render (){
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.unitPriceAddComma} >単価</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.unitPriceAddComma}>単価</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }}dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='leaderAllowanceAmount' dataFormat={this.leaderAllowanceAmountAddComma}>リーダー手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma}>控除/残業</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='otherAllowanceAmount' dataFormat={this.otherAllowanceAmountAddComma}>他の手当</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>         
 					</BootstrapTable>

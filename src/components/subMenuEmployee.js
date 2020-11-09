@@ -11,6 +11,7 @@ import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, f
 import '../asserts/css/subMenu.css';
 import DutyRegistration from './dutyRegistration';
 import store from './redux/store';
+import BreakTime from './breakTime';
 axios.defaults.withCredentials = true;
 
 /**
@@ -90,10 +91,10 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="0">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/breakTime/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />休憩時間</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/dutyRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />勤務時間入力</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
                                                         <Link className="linkFont" to="/subMenuEmployee/">
@@ -129,6 +130,8 @@ class SubMenu extends Component {
                             <Router>
                                 <Route exact path={`${this.props.match.url}/`} component={DutyRegistration} />
                                 <Route exact path={`${this.props.match.url}/passwordSetEmployee`} component={PasswordSetEmployee} />
+                                <Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
+                                <Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
                             </Router>
                         </div>
                     </Col>
