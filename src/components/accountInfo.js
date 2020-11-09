@@ -40,7 +40,7 @@ class BankInfo extends Component {
             document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
         }
         //銀行名
-        var bankCode = utils.getdropDown("getBankInfo",this.state.serverIP);
+        var bankCode = utils.getdropDown("getBankInfo", this.state.serverIP);
         bankCode[0].name = "銀行を選択してください";
         for (let i = 0; i < bankCode.length; i++) {
             $("#bankCode").append('<option value="' + bankCode[i].code + '">' + bankCode[i].name + '</option>');
@@ -116,35 +116,35 @@ class BankInfo extends Component {
             }
         }
     }
-/**
- * 支店名と支店番号の検索
- * param 項目のid
- */
-getBankBranchInfo(noORname){
-    var sendMap = {};
-    sendMap[noORname] = $('#'+noORname+'').val();
-    sendMap["bankCode"] = $('#bankCode').val();
-    if($('#'+noORname+'').val() !== ""){
-      
-      axios.post(this.state.serverIP + "getBankBranchInfo",sendMap)
-        .then(function (resultMap) {
-          if(resultMap.data.length !== 0){
-              $('#bankBranchCode').val(resultMap.data[0].code);
-              $('#bankBranchName').val(resultMap.data[0].name);
-          }else{
+    /**
+     * 支店名と支店番号の検索
+     * param 項目のid
+     */
+    getBankBranchInfo(noORname) {
+        var sendMap = {};
+        sendMap[noORname] = $('#' + noORname + '').val();
+        sendMap["bankCode"] = $('#bankCode').val();
+        if ($('#' + noORname + '').val() !== "") {
+
+            axios.post(this.state.serverIP + "getBankBranchInfo", sendMap)
+                .then(function (resultMap) {
+                    if (resultMap.data.length !== 0) {
+                        $('#bankBranchCode').val(resultMap.data[0].code);
+                        $('#bankBranchName').val(resultMap.data[0].name);
+                    } else {
+                        $('#bankBranchCode').val("");
+                        $('#bankBranchName').val("");
+                    }
+
+                })
+                .catch(function (error) {
+                    alert("支店信息获取错误，请检查程序");
+                });
+        } else {
             $('#bankBranchCode').val("");
             $('#bankBranchName').val("");
-          }
-          
-        })
-        .catch(function (error) {
-          alert("支店信息获取错误，请检查程序");
-        });
-    }else{
-      $('#bankBranchCode').val("");
-      $('#bankBranchName').val("");
+        }
     }
-  }
     /**
      * 口座登録ボタン
      */
@@ -254,20 +254,17 @@ getBankBranchInfo(noORname){
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={3}></Col>
-                            <Col sm={3} className="text-center">
+                            <Col className="text-center">
                                 {actionType === "update" ?
-                                    <Button size="sm" block onClick={this.toroku} variant="info" id="toroku" type="button">
+                                    <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
                                         <FontAwesomeIcon icon={faSave} />更新
                         </Button>
                                     :
-                                    <Button block size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="accountToroku" type="button">
+                                    <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="accountToroku" type="button">
                                         <FontAwesomeIcon icon={faSave} />登録
                         </Button>
                                 }
-                            </Col>
-                            <Col sm={3} className="text-center">
-                                <Button onClick={bankInfoJs.setDisabled} block variant="info" size="sm" type="reset" id="accountReset" value="Reset" >
+                                {" "}<Button onClick={bankInfoJs.setDisabled} variant="info" size="sm" type="reset" id="accountReset" value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                             </Col>
