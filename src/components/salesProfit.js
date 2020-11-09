@@ -28,12 +28,12 @@ class salesProfit extends React.Component {
 		insertFlag: false,
 		currentPage: 1,//今のページ
 		insertNo: '',
-		employeeStatus: store.getState().dataReques[4],
-		newMemberStatus: store.getState().dataReques[23],
-		customerContractStatus: store.getState().dataReques[24],
-		levelStatus: store.getState().dataReques[18],
-		salesPutternStatus: store.getState().dataReques[25],
-		specialPointStatus: store.getState().dataReques[26],
+		employeeStatus: store.getState().dropDown[4],
+		newMemberStatus: store.getState().dropDown[23],
+		customerContractStatus: store.getState().dropDown[24],
+		levelStatus: store.getState().dropDown[18],
+		salesPutternStatus: store.getState().dropDown[25],
+		specialPointStatus: store.getState().dropDown[26],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	};
 
@@ -134,10 +134,14 @@ class salesProfit extends React.Component {
 	}
 	select = () => {
 		var salesPointSetModel = {};
-		salesPointSetModel["employee"] = this.state.employeeSearch
-		salesPointSetModel["newMember"] = this.state.newMemberSearch
-		salesPointSetModel["customerContract"] = this.state.customerContractSearch
-		axios.post(this.state.serverIP + "getSalesPointInfo", salesPointSetModel)
+		salesPointSetModel["employeeName"] = this.state.employeeName
+		salesPointSetModel["employeeStatus"] = this.state.employeeSearch
+		if (typeof this.state.admissionStartDate == "undefined" || typeof this.state.admissionEndDate == "undefined") {
+		  return;
+		}
+		salesPointSetModel["startDate"] = this.state.admissionStartDate
+		salesPointSetModel["endDate"] = this.state.admissionEndDate
+		axios.post(this.state.serverIP + "getSalesProfitInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -350,7 +354,7 @@ class salesProfit extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">営業担当</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} value={this.state.employeeSearch} />
+										<FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} name="employeeName"  value={this.state.employeeSearch} />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -421,7 +425,7 @@ class salesProfit extends React.Component {
 								</Row>
 								<Row>
 									<Col sm={12}>
-										<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+										<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 											<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 											<TableHeaderColumn dataField='yearAndMonth' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
 											<TableHeaderColumn dataField='employeeStatus' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
