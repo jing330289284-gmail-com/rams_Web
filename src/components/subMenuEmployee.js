@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, faThList } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import DutyRegistration from './dutyRegistration';
+import CostRegistration from './costRegistration';
 import store from './redux/store';
 import BreakTime from './breakTime';
 axios.defaults.withCredentials = true;
@@ -97,7 +98,7 @@ class SubMenu extends Component {
                                                         <Link className="linkFont" to="/subMenuEmployee/dutyRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />勤務時間入力</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/costRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />費用登録</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
                                                         <Link className="linkFont" to="/subMenuEmployee/">
@@ -131,6 +132,7 @@ class SubMenu extends Component {
                                 <Route exact path={`${this.props.match.url}/`} component={DutyRegistration} />
                                 <Route exact path={`${this.props.match.url}/passwordSetEmployee`} component={PasswordSetEmployee} />
                                 <Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
+                                <Route exact path={`${this.props.match.url}/costRegistration`} component={CostRegistration} />
                                 <Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
                             </Router>
                         </div>
