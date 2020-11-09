@@ -277,13 +277,13 @@ class DutyRegistration extends React.Component {
 		dataInfo["siteResponsiblePerson"] = this.state.siteResponsiblePerson;
 		dataInfo["systemName"] = this.state.systemName;
 		let submitData = [];
-		let j = 0;
+/* 		let j = 0; */
 		for (let i = 0; i < dataInfo["dateData"].length; i++) {
 			dataInfo["dateData"][i]["isWork"] = (dataInfo["dateData"][i]["hasWork"] == this.state.hasWork[0]) ? 0 : 1;
-			if (dataInfo["dateData"][i]["isChanged"]) {
-				submitData[j] = JSON.parse(JSON.stringify(dataInfo["dateData"][i]));
-				j++;
-			}
+			/* if (dataInfo["dateData"][i]["isChanged"]) { */
+				submitData[i] = JSON.parse(JSON.stringify(dataInfo["dateData"][i]));
+/* 				j++;
+			} */
 		}
 		dataInfo["dateData"] = submitData;
 		console.log(dataInfo);
