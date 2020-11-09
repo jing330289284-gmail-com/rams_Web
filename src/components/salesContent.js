@@ -454,7 +454,7 @@ class salesContent extends React.Component {
 【得意言語】：`+ this.state.developLanguage + `
 【単　　価】：`+ this.state.unitPrice + `万円
 【稼働開始】：2020/09
-【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
+【営業状況】：`+ (this.state.salesProgressCode !== ""&& this.state.salesProgressCode !== null? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
 【備　　考】：`+ this.state.remark}
 					/></div>
 				<div>

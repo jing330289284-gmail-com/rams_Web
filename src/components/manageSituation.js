@@ -703,8 +703,8 @@ class manageSituation extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="stationCode1" className="auto form-control Autocompletestyle-situation"
-													/>
+													id="stationCode1" className="auto"
+													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -725,8 +725,8 @@ class manageSituation extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="interviewCustomer1" className="auto form-control Autocompletestyle-situation"
-													 />
+													id="interviewCustomer1" className="auto"
+													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -768,8 +768,8 @@ class manageSituation extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="stationCode2" className="auto form-control Autocompletestyle-situation"
-													 />
+													id="stationCode2" className="auto"
+													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -790,8 +790,8 @@ class manageSituation extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="interviewCustomer2" className="auto form-control Autocompletestyle-situation"
-													 />
+													id="interviewCustomer2" className="auto"
+													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -869,12 +869,12 @@ class manageSituation extends React.Component {
 						<Col sm={1}>
 							<font style={{ whiteSpace: 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
 						</Col>
-						<Col sm={2}></Col>
-						<Col sm={7}>
+						<Col sm={3}></Col>
+						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button></Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/employee', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.employeeNo } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button></Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button></Link>{' '}
