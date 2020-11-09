@@ -623,18 +623,18 @@ class employeeSearch extends React.Component {
 								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
 							</div>
 						</Col>
-						<Col sm={6}>
+						<Col sm={5}>
 							<div style={{ "float": "center" }}>
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 							</div>
 						</Col>
-						<Col sm={2}>
+						<Col sm={3}>
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/EmployeeUpdate', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
-								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削除</Link>
+								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削	除</Link>
 							</div>
 						</Col>
 					</Row>

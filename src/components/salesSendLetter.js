@@ -519,8 +519,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto"
-													style={{ width: 110, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
+													 />
 											</div>
 										)}
 									/>
@@ -540,8 +540,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto"
-													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
+													 />
 											</div>
 										)}
 									/>
@@ -561,8 +561,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="customerDepartmentName" className="auto"
-													style={{ width: 120, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.allCustomer.length === this.state.customerTemp.length ? "#e9ecef" : "white" }} />
+													id="customerDepartmentName" className="auto form-control Autocompletestyle-salesSend"
+													/>
 											</div>
 										)}
 									/>
@@ -606,8 +606,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
-						<Col sm={5}></Col>
-						<Col sm={5}>
+						<Col sm={4}></Col>
+						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" name="clickButton" 
 									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length===3? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}

@@ -609,14 +609,13 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 
 					</Col>
 				</Row>
-				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
-					<Col sm={1}></Col>
+				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={2}>要員一覧</Col>
 					<Col sm={2}>
 						<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.openEmpAddDaiolog.bind(this,true)}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
 							</div>
 					</Col>
-					<Col sm={1}></Col><Col sm={1}>{'　'}営業文章</Col></Row>
+					<Col sm={1}></Col><Col sm={2}>{'　'}営業文章</Col></Row>
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={4}>
@@ -650,8 +649,8 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
 				<Row>
-					<Col sm={8}></Col>
-					<Col sm={2}>
+					<Col sm={7}></Col>
+					<Col sm={3}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.sendMailWithFile} size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
@@ -661,7 +660,6 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={9}>
-
 						<BootstrapTable
 							options={options}
 							selectRow={selectRow1}

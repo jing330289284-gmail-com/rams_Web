@@ -849,6 +849,7 @@ class manageSituation extends React.Component {
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
 							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button></div>
 					</div>
+					<br/>
 					<Row>
 						<Col sm={1}>
 							{/* <InputGroup size="sm" >
