@@ -704,7 +704,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode1" className="auto"
-													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 125, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -726,7 +726,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer1" className="auto"
-													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 125, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -769,7 +769,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode2" className="auto"
-													style={{ width: 135, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 125, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
@@ -791,7 +791,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer2" className="auto"
-													style={{ width: 143, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
+													style={{ width: 125, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", backgroundColor: this.state.readFlag ? "#e9ecef" : "white" }} />
 											</div>
 										)}
 									/>
