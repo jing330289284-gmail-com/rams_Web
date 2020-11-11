@@ -1167,7 +1167,7 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</Button>
+									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</Button>
 									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
