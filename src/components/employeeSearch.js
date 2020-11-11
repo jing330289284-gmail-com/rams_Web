@@ -59,7 +59,7 @@ class employeeSearch extends React.Component {
 	resetStates = {
 		employeeNo: null, employeeName: null, employeeFormCode: null, employeeStatus: null, genderStatus: null,
 		ageFrom: null, ageTo: null, residenceCode: null, nationalityCode: null, customer: null,
-		intoCompanyCode: null, japaneaseLeveCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null, intoCompanyYearAndMonthTo: null,
+		intoCompanyCode: null, japaneseLevelCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null, intoCompanyYearAndMonthTo: null,
 		kadou: null, developLanguage1: null, developLanguage2: null, developLanguage3: null,
 	};
 
@@ -75,6 +75,7 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
+		alert(this.state.siteRoleCode)
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeName: this.state.employeeName,
@@ -87,11 +88,11 @@ class employeeSearch extends React.Component {
 			nationalityCode: this.state.nationalityCode,
 			customer: this.state.customer,
 			intoCompanyCode: this.state.intoCompanyCode,
-			japaneaseLeveCode: this.state.japaneaseLeveCode,
+			japaneseLevelCode: this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.props.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.props.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.props.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
+			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
 			kadou: this.state.kadou,
@@ -285,7 +286,7 @@ class employeeSearch extends React.Component {
 	}
 	render() {
 		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
-			residenceCode, nationalityCode, customer, japaneaseLeveCode, siteRoleCode, kadou, intoCompanyCode,
+			residenceCode, nationalityCode, customer, japaneseLevelCode, siteRoleCode, kadou, intoCompanyCode,
 			employeeList, errorsMessageValue } = this.state;
 		//テーブルの行の選択
 		const selectRow = {
@@ -484,7 +485,7 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">日本語　</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneaseLeveCode" value={japaneaseLeveCode} autoComplete="off">
+										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneseLevelCode" value={japaneseLevelCode} autoComplete="off">
 											{this.state.japaneaseLevelCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
