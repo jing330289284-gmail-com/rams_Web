@@ -66,17 +66,18 @@ class BreakTime extends Component {
         axios.post(this.state.serverIP + "dutyRegistration/getDutyInfo", postData)
             .then(resultMap => {
                 if (resultMap.data) {
-                    alert(resultMap.data.breakTime.lunchBreakStartTime.toString().substring(0,2));
-                    $("#breakTimeDayHourStart").val(Number(resultMap.data.breakTime.lunchBreakStartTime.toString().substring(0,2)));
+                    $("#employeeNo").val(resultMap.data.breakTime.employeeNo);
+                    $("#breakTimeDayHourStart").val(Number(resultMap.data.breakTime.lunchBreakStartTime.toString().substring(0, 2)));
                     $("#breakTimeDayMinuteStart").val(Number(resultMap.data.breakTime.lunchBreakStartTime.toString().substring(2)));
-                    $("#breakTimeDayHourEnd").val(Number(resultMap.data.breakTime.lunchBreakFinshTime.toString().substring(0,2)));
+                    $("#breakTimeDayHourEnd").val(Number(resultMap.data.breakTime.lunchBreakFinshTime.toString().substring(0, 2)));
                     $("#breakTimeDayMinuteEnd").val(Number(resultMap.data.breakTime.lunchBreakFinshTime.toString().substring(2)));
-                    $("#breakTimeNightHourStart").val(Number(resultMap.data.breakTime.nightBreakStartTime.toString().substring(0,2)));
+                    $("#breakTimeNightHourStart").val(Number(resultMap.data.breakTime.nightBreakStartTime.toString().substring(0, 2)));
                     $("#breakTimeNightMinuteStart").val(Number(resultMap.data.breakTime.nightBreakStartTime.toString().substring(2)));
-                    $("#breakTimeNightHourEnd").val(Number(resultMap.data.breakTime.nightBreakfinshTime.toString().substring(0,2)));
+                    $("#breakTimeNightHourEnd").val(Number(resultMap.data.breakTime.nightBreakfinshTime.toString().substring(0, 2)));
                     $("#breakTimeNightMinuteEnd").val(Number(resultMap.data.breakTime.nightBreakfinshTime.toString().substring(2)));
                     this.setState({
-                        breakTimeUser: resultMap.data.employeeName,
+                        breakTimeUser: resultMap.data.employeeName, breakTimeDaybreakTimeHour: resultMap.data.breakTime.lunchBreakTime,
+                        breakTimeNightbreakTimeHour: resultMap.data.breakTime.nightBreakTime, breakTimeSumHour: resultMap.data.breakTime.totalBreakTime,
                     });
                 } else {
                     alert("fail");
@@ -109,7 +110,7 @@ class BreakTime extends Component {
     breakTimeRegister() {
         var breakTimeInfo = {};
         var actionType = this.state.actionType;
-        breakTimeInfo["employeeNo"] = $("#breakTimeUser").val();
+        breakTimeInfo["employeeNo"] = $("#employeeNo").val();
         breakTimeInfo["breakTimeIsConst"] = $("#isConst").val();
         breakTimeInfo["breakTimeYearMonth"] = utils.formateDate($("#breakTimeDate").val(), false);
         breakTimeInfo["breakTimeDayStart"] = $("#breakTimeDayHourStart").val().padStart(2, "0") + $("#breakTimeDayMinuteStart").val().padEnd(2, "0");
@@ -131,6 +132,7 @@ class BreakTime extends Component {
                     } else {
                         alert("更新失败");
                     }
+                    window.location.reload();
                 })
                 .catch(function () {
                     alert("更新错误，请检查程序");
@@ -263,7 +265,7 @@ class BreakTime extends Component {
                             <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control readOnly id="breakTimeDaybreakTimeHour" name="breakTimeDaybreakTimeHour" />
+                                    <Form.Control readOnly id="breakTimeDaybreakTimeHour" value={this.state.breakTimeDaybreakTimeHour} name="breakTimeDaybreakTimeHour" />
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                                     </InputGroup.Prepend>
@@ -323,7 +325,7 @@ class BreakTime extends Component {
                             <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">休憩時間</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control readOnly id="breakTimeNightbreakTimeHour" name="breakTimeNightbreakTimeHour" />
+                                    <Form.Control readOnly id="breakTimeNightbreakTimeHour" value={this.state.breakTimeNightbreakTimeHour} name="breakTimeNightbreakTimeHour" />
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                                     </InputGroup.Prepend>
@@ -339,7 +341,7 @@ class BreakTime extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">合計</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control readOnly id="breakTimeSumHour" name="breakTimeSumHour" />
+                                    <Form.Control readOnly id="breakTimeSumHour" value={this.state.breakTimeSumHour} name="breakTimeSumHour" />
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">時</InputGroup.Text>
                                     </InputGroup.Prepend>
@@ -347,33 +349,33 @@ class BreakTime extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={3}></Col>
-                            {actionType === "update" ?
+                            <Col sm={4}></Col>
+                            {/*                             {actionType === "update" ?
                                 <Col sm={3} className="text-center">
                                     <Button block size="sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="update" type="button">
                                         <FontAwesomeIcon icon={faSave} />更新
                             </Button>
                                 </Col>
-                                :
-                                <Col sm={3} className="text-center">
-                                    <Button block size="sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="toroku" type="button">
-                                        <FontAwesomeIcon icon={faSave} /> 登録
+                                : */}
+                            <Col sm={2} className="text-center">
+                                <Button block size="sm" className="btn btn-info btn-sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="toroku" type="button">
+                                    <FontAwesomeIcon icon={faSave} /> 登録
                                 </Button>
-                                </Col>
-                            }
-                            <Col sm={3} className="text-center">
-                                <Button block size="sm" variant="info" id="reset" onClick={TopCustomerInfoJs.reset} >
+                            </Col>
+                            {/*                             } */}
+                            <Col sm={2} className="text-center">
+                                <Button block size="sm" className="btn btn-info btn-sm" variant="info" id="reset" onClick={TopCustomerInfoJs.reset} >
                                     <FontAwesomeIcon icon={faUndo} /> リセット
                                 </Button>
                             </Col>
                         </Row>
                     </Form>
                     <input type="hidden" id="actionType" name="actionType" />
+                    <input type="hidden" id="employeeNo" name="employeeNo" />
                 </div>
             </div>
         );
     }
 }
-
 
 export default BreakTime;
