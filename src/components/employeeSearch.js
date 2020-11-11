@@ -75,7 +75,6 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
-		alert(this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode)
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeName: this.state.employeeName,
