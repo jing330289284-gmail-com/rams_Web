@@ -613,6 +613,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-master {
   width: 17.8rem;
   height: 31px;
@@ -622,7 +623,8 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
-.Autocompletestyle-costRe{
+
+.Autocompletestyle-costRe {
   width: 7.9rem;
   height: 31px;
   border-color: "#ced4da";
@@ -631,6 +633,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-siteInfo {
   width: 15rem;
   height: 31px;
@@ -640,6 +643,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-customerInfo {
   width: 14rem;
   height: 31px;
@@ -649,6 +653,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-situation {
   width: 7.8rem;
   height: 31px;
@@ -658,7 +663,8 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
-.Autocompletestyle-salesSend{
+
+.Autocompletestyle-salesSend {
   width: 7.8rem;
   height: 31px;
   border-color: "#ced4da";
@@ -667,6 +673,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {
@@ -678,6 +685,7 @@ body {
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
   }
+
   .ageccCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -687,6 +695,7 @@ body {
     background-color: white;
     width: 7rem;
   }
+
   .ageCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -706,6 +715,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-siteInfo {
     width: 11rem;
     height: 31px;
@@ -715,6 +725,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-customerInfo {
     width: 10rem;
     height: 31px;
@@ -724,6 +735,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-situation {
     width: 4.5rem;
     height: 31px;
@@ -733,7 +745,8 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
-  .Autocompletestyle-costRe{
+
+  .Autocompletestyle-costRe {
     width: 5.6rem;
     height: 31px;
     border-color: "#ced4da";
@@ -742,6 +755,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-master {
     width: 12rem;
     height: 31px;
@@ -751,6 +765,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .input-group-text {
     background-color: #76a8af;
     font-family: "幼圆";
@@ -758,12 +773,15 @@ body {
     color: rgb(255, 255, 255);
     width: 4.1rem;
   }
-.cssNikanji{
-  width: 3rem;
-}
+
+  .cssNikanji {
+    width: 3rem;
+  }
+
   #inputGroup-sizing-sm {
     font-size: 0.85rem;
   }
+
   #wagesInfoDatePicker {
     background-repeat: no-repeat;
     width: 8rem;
@@ -775,6 +793,9 @@ body {
   }
   .Autocompletestyle-salesSend{
     width: 4.5rem;
+ }
+  .Autocompletestyle-salesSend {
+    width: 5.5rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;
@@ -782,6 +803,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   #datePickerReadonly {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -793,6 +815,7 @@ body {
     height: calc(1.5em + .5rem + 2px);
     background-color: #e9ecef;
   }
+
   #datePicker2 {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -802,6 +825,7 @@ body {
     background-color: white;
     width: 6.5rem;
   }
+
   #datePicker {
     background-repeat: no-repeat;
     background-position: 10px 7px;
