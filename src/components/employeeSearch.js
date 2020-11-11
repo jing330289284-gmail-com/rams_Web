@@ -80,7 +80,7 @@ class employeeSearch extends React.Component {
 			employeeNo: this.state.employeeNo,
 			employeeName: this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode,
-			employeeStatus: this.state.employeeStatus,
+			employeeStatus:  this.state.employeeStatus=== ""? undefined : this.state.employeeStatus,
 			genderStatus: this.state.genderStatus=== ""? undefined : this.state.genderStatus,
 			ageFrom: publicUtils.birthday_age(this.state.ageFrom),
 			ageTo: publicUtils.birthday_age(this.state.ageTo),
