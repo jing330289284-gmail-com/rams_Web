@@ -12,6 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
+import costRegistration from './costRegistration';
 axios.defaults.withCredentials = true;
 /**1
  * 他の費用画面
@@ -37,7 +38,7 @@ class otherCost extends React.Component {
 		station: store.getState().dropDown[14],
 		costClassificationForOtherCost: store.getState().dropDown[47],
 		transportation: store.getState().dropDown[31],
-		round: store.getState().dropDown[37].splice(1),
+		round: store.getState().dropDown[37],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	valueChange = event => {
@@ -53,9 +54,13 @@ class otherCost extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
+	
 		//定期を選択欄から除去
 		if (this.state.costClassificationForOtherCost.length >= 6) {
 			this.costClassificationForOtherCost();
+		}
+		if (this.state.round.length > 3) {
+			this.roundSet();
 		}
 		if (this.props.changeData1) {
 			if (this.props.costClassification == 1) {
@@ -105,6 +110,14 @@ class otherCost extends React.Component {
 			costClassificationForOtherCost: this.state.costClassificationForOtherCost,
 		})
 	};
+	roundSet = () => {
+		var round = this.state.round;
+		console.log(this.state.round)
+		console.log(this.state.round.splice(1, 1))
+		this.setState({
+			round: this.state.round,
+		})
+	};
 	/**
      * 添付ボタン
      */
@@ -145,12 +158,13 @@ class otherCost extends React.Component {
 	//reset
 	resetBook = () => {
 		this.setState(() => this.resetStates);
-
 	};
 	//リセット　reset
 	resetStates = {
-		costClassificationCode: 0, yearAndMonth3: null, yearAndMonth4: null, stationCode2: null, stationCode3: null, stationCode4: null, stationCode5: null, detailedNameOrLine2: '',
-		roundCode: 0, cost1: '', cost2: '', transportationCode: null, costRegistrationFileFlag2: '', costRegistrationFileFlag3: '', remark: '', oldCostFile: null,
+		costClassificationCode: '0', yearAndMonth3: null, yearAndMonth4: null, stationCode2: '',
+		stationCode3: '', stationCode4: '', stationCode5: '', detailedNameOrLine2: '',
+		roundCode: 0, cost1: '', cost2: '', transportationCode: '', costRegistrationFileFlag2: '',
+		costRegistrationFileFlag3: '', remark: '', oldCostFile: '',
 	};
 	costClassificationCode(code) {
 		let costClassificationCode = this.state.costClassificationForOtherCost;
@@ -233,13 +247,34 @@ class otherCost extends React.Component {
 	};
 	//登録と修正
 	InsertCost = () => {
+		alert(this.costClassificationCode(this.state.costClassificationCode));
+		alert(this.state.oldCostClassification);
+		alert(this.state.oldHappendDate);
+		alert(this.state.transportationCode);
+		alert(this.state.stationCode3);
+		alert(this.state.stationCode4);
+		alert(this.state.roundCode);
+		alert(this.state.cost1);
+		alert(this.state.changeFile);
+		alert(this.state.oldCostFile);
+		alert(this.state.oldHappendDate);
+		alert(this.state.detailedNameOrLine2);
+		alert(this.state.stationCode5);
+		alert(this.state.transportationCode);
+		alert(this.state.remark);
+		alert(this.state.cost2);
+		alert(this.state.yearAndMonth3);
 		const formData = new FormData()
 		if (this.state.changeData) {
 			var theUrl = "costRegistration/updateCostRegistration"
 		} else {
 			var theUrl = "costRegistration/insertCostRegistration"
 		}
-	
+		if (this.state.costClassificationCode < 1) {
+				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
+				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				return;
+			}
 		if (this.state.costClassificationCode == 1) {
 			if ($('#otherCostFile2').val() == "" &&
 				!this.state.changeData) {
@@ -315,13 +350,15 @@ class otherCost extends React.Component {
 		}
 		axios.post(this.state.serverIP + theUrl, formData)
 			.then(response => {
-				if (response.data != null) {
+				if (response.data) {
 					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.setState({ showOtherCostModal: false, });
 				} else {
 					this.setState({ "myToastShow": true, "message": "登録失敗"  });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
+				
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});

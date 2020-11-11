@@ -37,9 +37,12 @@ class costRegistration extends React.Component {
 		this.valueChange = this.valueChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 		this.searchCostRegistration = this.searchCostRegistration.bind(this);
+		this.searchEmployeeName = this.searchEmployeeName.bind(this);
 	};
-	componentDidMount(){
+
+	componentDidMount() {
 		this.searchCostRegistration();
+		this.searchEmployeeName();
 	}
 	//onchange
 	valueChange = event => {
@@ -50,7 +53,7 @@ class costRegistration extends React.Component {
 	//　初期化データ
 	initialState = {
 		employeeList: [],
-		approvalStatuslist:[],
+		approvalStatuslist: [],
 		stationCode1: '',　// 出発
 		stationCode2: '',　// 到着
 		showOtherCostModal: false,//他の費用
@@ -65,7 +68,7 @@ class costRegistration extends React.Component {
 	//　検索
 	searchCostRegistration = () => {
 		this.setState({
-			yearAndMonth3:'',
+			yearAndMonth3: '',
 			transportationCode: '',
 			stationCode3: '',
 			stationCode4: '',
@@ -86,25 +89,36 @@ class costRegistration extends React.Component {
 		axios.post(this.state.serverIP + "costRegistration/selectCostRegistration")
 			.then(response => response.data)
 			.then((data) => {
-					var sumCost = 0;
-					if (data.length > 0) {
-						for (var i = 0; i < data.length; i++) {
-							sumCost = sumCost + (data[i].cost*1);
-							if (data[i].costFile != null) {
-								data[i].costFileForShow = (data[i].costFile).split("\\")[(data[i].costFile).split("\\").length - 1];
-							}
-							if (data[i].costClassificationCode == 0) {
-							data[i].happendDate = data[i].happendDate + "～" + data[i].dueDate;
-							}
+				var sumCost = 0;
+				if (data.length > 0) {
+					for (var i = 0; i < data.length; i++) {
+						sumCost = sumCost + (data[i].cost * 1);
+						if (data[i].costFile != null) {
+							data[i].costFileForShow = (data[i].costFile).split("\\")[(data[i].costFile).split("\\").length - 1];
 						}
-					} else {
-						var sumCost = "";
+						if (data[i].costClassificationCode == 0) {
+							data[i].happendDate = data[i].happendDate + "～" + data[i].dueDate;
+						}
 					}
-					this.setState({
-						employeeList: data, sumCost: sumCost
-					})
+				} else {
+					var sumCost = "";
+				}
+				this.setState({
+					employeeList: data, sumCost: sumCost
+				})
 			});
 	};
+	searchEmployeeName = () => {
+
+		axios.post(this.state.serverIP + "costRegistration/selectEmployeeName")
+			.then(response => {
+				this.setState({
+					employeeName: response.data.employeeName,
+				})
+
+			});
+	};
+
 	//登録と修正
 	InsertCost = () => {
 		if ($('#costRegistrationFile').val() == "" &&
@@ -141,7 +155,7 @@ class costRegistration extends React.Component {
 			detailedNameOrLine: this.state.detailedNameOrLine,
 			cost: this.state.cost,
 			oldHappendDate: this.state.oldHappendDate,
-			oldCostClassificationCode: this.state.oldCostClassificationCode,
+			oldCostClassificationCode: 0,
 			oldCostFile: this.state.oldCostFile,
 			changeFile: this.state.changeFile,
 		}
@@ -149,10 +163,8 @@ class costRegistration extends React.Component {
 		formData.append('costFile', publicUtils.nullToEmpty($('#costRegistrationFile').get(0).files[0]))
 		axios.post(this.state.serverIP + theUrl, formData)
 			.then(response => {
-				if (response.data != null) {
-					this.setState({
-						changeData: false,
-					})
+				if (response.data) {
+					this.setState({changeData: false,})
 					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
