@@ -3,7 +3,7 @@ import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import PasswordSetEmployee from './passwordSetEmployee';
-import workRepot from './workRepot';
+import WorkRepot from './workRepot';
 import costRegistration from './costRegistration';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -134,6 +134,7 @@ class SubMenu extends Component {
                                 <Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
                                 <Route exact path={`${this.props.match.url}/costRegistration`} component={CostRegistration} />
                                 <Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
+                                <Route exact path={`${this.props.match.url}/workRepot`} component={WorkRepot} />
                             </Router>
                         </div>
                     </Col>
