@@ -75,27 +75,27 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
-		alert(this.state.siteRoleCode)
+		alert(this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode)
 		const emp = {
 			employeeNo: this.state.employeeNo,
 			employeeName: this.state.employeeName,
-			employeeFormCode: this.state.employeeFormCode,
+			employeeFormCode: this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus,
-			genderStatus: this.state.genderStatus,
+			genderStatus: this.state.genderStatus=== ""? undefined : this.state.genderStatus,
 			ageFrom: publicUtils.birthday_age(this.state.ageFrom),
 			ageTo: publicUtils.birthday_age(this.state.ageTo),
-			residenceCode: this.state.residenceCode,
-			nationalityCode: this.state.nationalityCode,
+			residenceCode: this.state.residenceCode=== ""? undefined : this.state.residenceCode,
+			nationalityCode: this.state.nationalityCode=== ""? undefined : this.state.nationalityCode,
 			customer: this.state.customer,
-			intoCompanyCode: this.state.intoCompanyCode,
-			japaneseLevelCode: this.state.japaneseLevelCode,
-			siteRoleCode: this.state.siteRoleCode,
+			intoCompanyCode: this.state.intoCompanyCode=== ""? undefined : this.state.intoCompanyCode,
+			japaneseLevelCode: this.state.japaneseLevelCode=== ""? undefined : this.state.japaneseLevelCode,
+			siteRoleCode: this.state.siteRoleCode=== ""? undefined : this.state.siteRoleCode,
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
-			kadou: this.state.kadou,
+			kadou: this.state.kadou=== ""? undefined : this.state.kadou,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
