@@ -353,7 +353,6 @@ class ExpensesInfo extends Component {
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
                                             id="expensesInfoDatePicker"
-
                                             dateFormat={"yyyy/MM"}
                                             name="expensesReflectYearAndMonth"
                                             locale="ja"

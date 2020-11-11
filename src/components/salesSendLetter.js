@@ -629,7 +629,6 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 						<Col sm={12}>
 					<BootstrapTable
 						ref="customersTable"
-						
 						data={this.state.allCustomer}
 						pagination={true}
 						options={options}

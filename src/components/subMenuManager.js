@@ -229,10 +229,10 @@ class SubMenu extends Component {
 													<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="6">
 														<ListGroup variant="flush">
+															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務管理</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />勤務表送信</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
