@@ -1059,7 +1059,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
@@ -1067,7 +1067,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
@@ -1075,7 +1075,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">以降住所：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" />
 								</InputGroup>
