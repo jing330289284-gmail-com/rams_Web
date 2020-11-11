@@ -69,6 +69,7 @@ class employeeUpdate extends React.Component {
 
 	//更新ボタン
 	updateEmployee = () => {
+		alert(publicUtils.nullToEmpty(this.state.alphabetName))
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
@@ -1185,7 +1186,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</Button>
 									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
-										onChange={this.valueChange} size="sm" name="resumeName1" />
+										onChange={this.valueChange} size="sm" name="resumeName1" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 								</InputGroup>
 							</Col>

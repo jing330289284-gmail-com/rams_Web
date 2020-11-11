@@ -993,7 +993,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 添付済み" : " 添付"}</Button>
 									<FormControl value={resumeName1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
+										onChange={this.valueChange} size="sm" name="resumeName1" disabled /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 								</InputGroup>
 							</Col>
