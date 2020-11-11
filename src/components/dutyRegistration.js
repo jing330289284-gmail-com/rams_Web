@@ -470,12 +470,12 @@ class DutyRegistration extends React.Component {
 							</Col>
 						</Row>
 						<Row className="align-items-center">
-							<Col sm={4} md={{ span: 4, offset: 3 }}>
+							<Col sm={4} md={{ span: 4, offset: 4 }}>
 								<span size="lg" className="mb-3">
 									<h3 >{this.state.year}年{this.state.month}月　作業報告書</h3>
 								</span>
 							</Col>
-							<Col sm={3} md={{ span: 3, offset: 2 }}>
+							<Col sm={3} md={{ span: 3, offset: 1 }}>
 								<InputGroup size="sm" className="mb-3">
 									責任者名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									<input style={{ width: "150px" }} value={this.state.siteResponsiblePerson} name="siteResponsiblePerson" onChange={this.valueChange} className="inputWithoutBorder" />
@@ -486,7 +486,7 @@ class DutyRegistration extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									業務名称&nbsp;
-									<input style={{ width: "150px" }} value={this.state.systemName} name="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
+									<input style={{ width: "120px" }} value={this.state.systemName} name="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
