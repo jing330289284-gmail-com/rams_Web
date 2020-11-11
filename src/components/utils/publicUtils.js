@@ -5,7 +5,7 @@ const axios = require('axios');
 
 //　 時間段を取得
 export function getFullYearMonth(date, now) {
-	if (date !== undefined && date !== null && date !== "") {
+	if (date !== undefined && date !== null && date !== "" &&now !== undefined && now !== null && now !== "") {
 		var returnYears = 0;
 		var returnMonths = 0;
 		var yearmonth = -1;
@@ -70,7 +70,7 @@ export function getdropDown(method, serverIP) {
 		type: "POST",
 		url: serverIP + method,
 		async: false,
-		success: function (msg) {
+		success: function(msg) {
 			for (var i in msg) {
 				array.push(msg[i])
 			}
@@ -88,7 +88,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		data: par,
 		async: false,
 		contentType: "application/json",
-		success: function (resultList) {
+		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ code: '', name: '選択ください' }];
 				var list = resultList[j];
@@ -112,7 +112,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		url: serverIP + "initializationPage",
 		contentType: "application/json",
 		async: false,
-		success: function (resultList) {
+		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ value: '', text: '選択ください' }];
 				var List = resultList[j];
@@ -146,7 +146,7 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
-		success: function (data) {
+		success: function(data) {
 			if (data != null) {
 				no = data
 			}
@@ -303,7 +303,7 @@ export function handleDownload(path, serverIP) {
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-		xhr.onload = function () {
+		xhr.onload = function() {
 			if (this.status === 200) {
 				var blob = this.response;
 				if (blob.size === 0) {
@@ -331,7 +331,7 @@ export async function postcodeApi() {
 	var postcode = document.getElementById("postcode").value;
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		await axios.post("/postcodeApi/search?zipcode=" + postcode)
-			.then(function (result) {
+			.then(function(result) {
 				if (result.data.status === 200) {
 					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 				} else {
@@ -382,7 +382,7 @@ export function calApi(date) {
 		url: "/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1",
 		async: false,
 		contentType: "application/json",
-		success: function (result) {
+		success: function(result) {
 			if (result != null) {
 				outArray.push(result)
 				outArray.push(Math.ceil((nowTime - birthDayTime) / 31536000000))
@@ -445,15 +445,15 @@ export function nullToEmpty(obj) {
  * @param {*} num strの数字
  */
 export function addComma(num) {
-	if(num !== null && num !== "" && num !== undefined ){
+	if (num !== null && num !== "" && num !== undefined) {
 		num = num.toString();
-	}else{
+	} else {
 		return "";
 	}
 	var oldNum = num;
-	if(num !== null && num !== "" && num !== undefined ){
-		if(num.substring(0,1) === "-"){
-			num=num.replace("-","");
+	if (num !== null && num !== "" && num !== undefined) {
+		if (num.substring(0, 1) === "-") {
+			num = num.replace("-", "");
 		}
 	}
 	var type = true;
@@ -481,8 +481,8 @@ export function addComma(num) {
 	} else {
 		value = result.join('') + '.' + t2;
 	}
-	if(oldNum !== null && oldNum !== "" && oldNum !== undefined ){
-		if(oldNum.substring(0,1) === "-"){
+	if (oldNum !== null && oldNum !== "" && oldNum !== undefined) {
+		if (oldNum.substring(0, 1) === "-") {
 			value = "-" + value;
 		}
 	}
@@ -498,8 +498,8 @@ export function deleteComma(money) {
 	if (money === null || money === undefined || money === '') {
 		return "";
 	}
-	var moneyStr = money+'';
-	return moneyStr.replace(",","");
+	var moneyStr = money + '';
+	return moneyStr.replace(",", "");
 }
 /**
  * YYYYMMDD→YYYY/MM/DDまたYYYYMM→YYYY/MM
@@ -550,7 +550,7 @@ export async function katakanaApi(value) {
 		dataType: "json",
 		contentType: "application/x-www-form-urlencoded",
 		async: false,
-		success: function (data) {
+		success: function(data) {
 			value = data.converted;
 		}
 	});
