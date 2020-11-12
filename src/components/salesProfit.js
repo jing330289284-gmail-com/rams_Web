@@ -10,7 +10,7 @@ import store from './redux/store';
 
 registerLocale('ja', ja);
 
-//営業個別売上
+//　　営業個別売上
 class salesProfit extends React.Component {
 
 	constructor(props) {
