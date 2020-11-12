@@ -43,7 +43,6 @@ class employeeUpdate extends React.Component {
 		developLanguage4: '',
 		developLanguage5: '',
 		stationCode: '',
-		employeeStatusFlag: true,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -74,7 +73,7 @@ class employeeUpdate extends React.Component {
 		let imgSrc = obj.getAttribute("src");
 		const emp = {
 			employeeNo: this.state.employeeNo,//社員番号
-			bpEmployeeNo: this.state.employeeNo,//社員番号s
+			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: publicUtils.nullToEmpty(this.state.furigana1),//カタカナ
@@ -196,6 +195,7 @@ class employeeUpdate extends React.Component {
 			.then(response => response.data)
 			.then((data) => {
 				this.setState({
+					employeeStatus: data.employeeStatus,//社員区分
 					employeeNo: data.employeeNo,//社員番号
 					bpEmployeeNo: data.employeeNo,//社員番号
 					employeeFristName: data.employeeFristName,//社員氏
@@ -584,9 +584,9 @@ class employeeUpdate extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={this.state.employeeStatusFlag ? false : true} >口座情報</Button>{' '}
-					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={this.state.employeeStatusFlag ? false : true}>PW設定</Button>{' '}
-					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeStatusFlag ? true : false}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === "0" ? false : true} >口座情報</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === "0" ? false : true}>PW設定</Button>{' '}
+					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === "0" ? true : false}>BP情報</Button>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -634,7 +634,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" >
+										autoComplete="off" 　disabled={employeeStatus === "0" ? false : true} >
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -647,7 +647,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
-										autoComplete="off" >
+										autoComplete="off"　disabled={employeeStatus === "0" ? false : true} >
 										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -700,7 +700,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
-										autoComplete="off" >
+										autoComplete="off"　disabled={employeeStatus === "0" ? false : true} >
 										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -747,7 +747,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">メール</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={this.state.employeeStatusFlag ? false : true}
+									<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus ===  "0"? false : true}
 										onChange={this.valueChange} size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
 									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
@@ -896,7 +896,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
-										autoComplete="off" id="authorityCodeId" disabled={this.state.employeeStatusFlag ? false : true} >
+										autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0"? false : true} >
 										{this.state.authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}

@@ -101,7 +101,6 @@ class employeeInsert extends React.Component {
 			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
 			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
 			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",//社内メール
-			///companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail,//社内メール
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),//専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
@@ -349,7 +348,7 @@ class employeeInsert extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCode: 0, employeeStatus: 1 });
+			this.setState({ companyMail: '', authorityCode: 0, employeeStatus: 1,intoCompanyCode: '',departmentCode: '',retirementYearAndMonth: ''});
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
@@ -579,7 +578,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
-										autoComplete="off">
+										autoComplete="off" >
 										{this.state.employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -615,7 +614,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" >
+										autoComplete="off" disabled={employeeStatus === 0 ? false : true}>
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -628,7 +627,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
-										autoComplete="off" >
+										autoComplete="off" disabled={employeeStatus === 0 ? false : true}>
 										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -682,7 +681,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
-										autoComplete="off" >
+										autoComplete="off" disabled={employeeStatus === 0 ? false : true}>
 										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
