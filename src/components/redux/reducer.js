@@ -8,7 +8,7 @@ export function fetchDropDown() {
     var methodNameList = ["getGender",//0.性別区別 
         "getIntoCompany",// 1入社区分 
         "getStaffForms", // 2 社員形式 
-        "getOccupation",// 3役割
+        "getSiteMaster",// 3役割
         "getEmployeeStatus",// 4社員区分
         "getJapaneseLevel",//5日本語
         "getVisa",//6在留資格
