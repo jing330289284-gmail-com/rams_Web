@@ -193,7 +193,7 @@ class bpInfo extends React.Component {
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">所属現場終年月</InputGroup.Text>
+										<InputGroup.Text id="sevenKanji">所属現場終年月</InputGroup.Text>
 									</InputGroup.Prepend>
 									<DatePicker
 										selected={this.state.bpOtherCompanyAdmissionEndDate}

@@ -1111,7 +1111,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="fiveKanji">在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="在留カード" value={residenceCardNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="residenceCardNo" />
+										onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1141,7 +1141,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" />
+										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1150,7 +1150,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="myNumber" />
+										onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 								</InputGroup>
 							</Col>
 						</Row>

@@ -37,9 +37,6 @@ class employeeSearch extends React.Component {
 
 	//reset
 	resetBook = () => {
-		//document.getElementById("employeeName").value = "";
-		//document.getElementById("employeeNameOption").value = "";
-		//document.getElementById("employeeNameOption").getAttribute('data',456);
 		this.setState(() => this.resetStates);
 	};
 
@@ -88,15 +85,15 @@ class employeeSearch extends React.Component {
 			ageTo: this.state.ageTo=== ""? undefined : publicUtils.birthday_age(this.state.ageTo),
 			residenceCode: this.state.residenceCode=== ""? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode=== ""? undefined : this.state.nationalityCode,
-			customer: this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode,
+			customer: this.state.customer=== ""? undefined : this.state.customer,
 			intoCompanyCode: this.state.intoCompanyCode=== ""? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode=== ""? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode=== ""? undefined : this.state.siteRoleCode,
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom=== ""? undefined : publicUtils.birthday_age(this.state.intoCompanyYearAndMonthFrom),
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo=== ""? undefined : publicUtils.birthday_age(this.state.intoCompanyYearAndMonthTo),
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom=== ""||this.state.intoCompanyYearAndMonthFrom===undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo=== ""||this.state.intoCompanyYearAndMonthTo=== undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou=== ""? undefined : this.state.kadou,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)

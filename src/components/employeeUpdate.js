@@ -72,6 +72,7 @@ class employeeUpdate extends React.Component {
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
 		const emp = {
+			employeeStatus: this.state.employeeStatus,//社員区分
 			employeeNo: this.state.employeeNo,//社員番号
 			bpEmployeeNo: this.state.employeeNo,//社員番号
 			employeeFristName: this.state.employeeFristName,//社員氏
@@ -328,7 +329,7 @@ class employeeUpdate extends React.Component {
 			{
 				graduationYearAndMonth: date,
 				temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(date, new Date()),
-				temporary_yearsOfExperience: (this.state.yearsOfExperience === undefined) ? publicUtils.getFullYearMonth(date, new Date()) : this.state.temporary_yearsOfExperience
+				temporary_yearsOfExperience: (this.state.yearsOfExperience === "") ? publicUtils.getFullYearMonth(date, new Date()) : this.state.temporary_yearsOfExperience
 			}
 		);
 	};
@@ -1131,7 +1132,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="fiveKanji">在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="在留カード" value={residenceCardNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="residenceCardNo" />
+										onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1161,7 +1162,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" />
+										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1170,7 +1171,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="myNumber" />
+										onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 								</InputGroup>
 							</Col>
 						</Row>

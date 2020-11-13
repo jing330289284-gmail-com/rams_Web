@@ -579,8 +579,9 @@ body {
 #sixKanji {
   width: 6.5rem;
 }
-
-.fileUploader .fileContainer {
+#sevenKanji {
+  width: 7.5rem;
+}.fileUploader .fileContainer {
   display: flex;
   flex-direction: row-reverse;
   padding: 10px 10px;
