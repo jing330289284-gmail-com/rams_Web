@@ -95,7 +95,7 @@ class employeeUpdate extends React.Component {
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
 			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
-			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo),//携帯電話
+			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo1) + publicUtils.nullToEmpty(this.state.phoneNo2) + publicUtils.nullToEmpty(this.state.phoneNo3),//携帯電話
 			authorityCode: this.state.authorityCode,//権限
 			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
 			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
@@ -167,11 +167,11 @@ class employeeUpdate extends React.Component {
 		})
 		if (value === '3') {
 			this.setState({
-				japaneseLevelCode: 5,
+				japaneseLevelCode:'5',
 			})
 		} else if (value === '4' || value === '5' || value === '6') {
 			this.setState({
-				englishLevelCode: 8,
+				englishLevelCode: '8',
 			})
 		}
 	}
@@ -225,7 +225,9 @@ class employeeUpdate extends React.Component {
 					temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
 					nationalityCode: data.nationalityCode,//出身地
 					birthplace: data.birthplace,//出身県
-					phoneNo: data.phoneNo,//携帯電話
+					phoneNo1: publicUtils.nullToEmpty(data.phoneNo).slice(0, 3),//携帯電話
+					phoneNo2: publicUtils.nullToEmpty(data.phoneNo).slice(3, 7),//携帯電話
+					phoneNo3: publicUtils.nullToEmpty(data.phoneNo).slice(7, 11),//携帯電話					
 					authorityCode: data.authorityCode,//権限
 					japaneseLevelCode: data.japaneseLevelCode,//日本語
 					englishLevelCode: data.englishLevelCode,//英語
@@ -254,7 +256,7 @@ class employeeUpdate extends React.Component {
 					resumeName2: data.resumeName2,//履歴書備考1
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
-					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience, false), new Date()),
+					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience=== "" ? data.graduationYearAndMonth:data.yearsOfExperience, false), new Date()),
 					image: data.picInfo
 				});
 			}
@@ -536,7 +538,7 @@ class employeeUpdate extends React.Component {
 	}
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
-			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
+			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
@@ -634,7 +636,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" 　disabled={employeeStatus === "0" ? false : true} >
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -647,7 +649,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChangeEmployeeFormCode}
 										name="employeeFormCode" value={employeeFormCode}
-										autoComplete="off"　disabled={employeeStatus === "0" ? false : true} >
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
 										{this.state.employeeFormCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -700,7 +702,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
-										autoComplete="off"　disabled={employeeStatus === "0" ? false : true} >
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
 										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -747,7 +749,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">メール</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus ===  "0"? false : true}
+									<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
 										onChange={this.valueChange} size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
 									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
@@ -807,10 +809,9 @@ class employeeUpdate extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
+											id="datePicker" 
 											className="form-control form-control-sm"
 											autoComplete="off"
-											disabled={employeeStatus === 0 ? false : true}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -885,8 +886,12 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="携帯電話" value={phoneNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo" />
+									<FormControl value={phoneNo1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="phoneNo1" maxlength="3" />～
+											<FormControl value={phoneNo2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="phoneNo2" maxlength="4" />～
+											<FormControl value={phoneNo3} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="phoneNo3" maxlength="4" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -897,7 +902,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="authorityCode" value={authorityCode}
-										autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0"? false : true} >
+										autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0" ? false : true} >
 										{this.state.authorityCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1186,7 +1191,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</Button>
 									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
-										onChange={this.valueChange} size="sm" name="resumeName1" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 								</InputGroup>
 							</Col>
@@ -1210,7 +1215,6 @@ class employeeUpdate extends React.Component {
 										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "添付済み" : "添付"}</Button>
-
 								</InputGroup>
 							</Col>
 						</Row>
