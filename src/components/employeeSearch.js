@@ -37,7 +37,7 @@ class employeeSearch extends React.Component {
 
 	//reset
 	resetBook = () => {
-		document.getElementById("employeeName").value = "";
+		//document.getElementById("employeeName").value = "";
 		//document.getElementById("employeeNameOption").value = "";
 		//document.getElementById("employeeNameOption").getAttribute('data',456);
 		this.setState(() => this.resetStates);
@@ -59,7 +59,7 @@ class employeeSearch extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	};
 	//リセット　reset
-	resetStates = {
+	resetStates = {employeeName: '',
 		employeeNo: '', employeeFormCode: '', employeeStatus: '', genderStatus: '',
 		ageFrom: '', ageTo: '', residenceCode: '', nationalityCode: '', customer: '',
 		intoCompanyCode: '', japaneseLevelCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '',
@@ -353,9 +353,9 @@ class employeeSearch extends React.Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.employeeName)}
+											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName)||""}
 											options={this.state.employeeInfo}
-											getOptionLabel={(option) => option.text}
+											getOptionLabel={(option) => option.text?option.text:""}
 											onChange={(event, values) => this.getEmployeeName(event, values)}
 											renderOption={(option) => {
 												return (
