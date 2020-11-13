@@ -792,6 +792,7 @@ class employeeInsert extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											disabled={employeeStatus === 0 ? false : true}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -867,7 +868,11 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="携帯電話" value={phoneNo} autoComplete="off"
+									<FormControl  value={phoneNo} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="phoneNo" />
+											<FormControl  value={phoneNo} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="phoneNo" />
+											<FormControl  value={phoneNo} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="phoneNo" />
 								</InputGroup>
 							</Col>
