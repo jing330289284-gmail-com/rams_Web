@@ -12,6 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import costRegistration from './costRegistration';
 axios.defaults.withCredentials = true;
 /**1
@@ -54,7 +55,7 @@ class otherCost extends React.Component {
 	}
 	//初期化メソッド
 	componentDidMount() {
-	
+		this.setState({ "errorsMessageShow": false, "myToastShow": false, });
 		//定期を選択欄から除去
 		if (this.state.costClassificationForOtherCost.length >= 6) {
 			this.costClassificationForOtherCost();
@@ -158,13 +159,15 @@ class otherCost extends React.Component {
 	//reset
 	resetBook = () => {
 		this.setState(() => this.resetStates);
+		this.setState({ "errorsMessageShow": false, "myToastShow": false, });
 	};
 	//リセット　reset
 	resetStates = {
 		costClassificationCode: '0', yearAndMonth3: null, yearAndMonth4: null, stationCode2: '',
 		stationCode3: '', stationCode4: '', stationCode5: '', detailedNameOrLine2: '',
 		roundCode: 0, cost1: '', cost2: '', transportationCode: '', costRegistrationFileFlag2: '',
-		costRegistrationFileFlag3: '', remark: '', oldCostFile: '',
+		costRegistrationFileFlag3: '', remark: '', oldCostFile: '', otherCostFile2: '',
+		otherCostFile3: '',
 	};
 	costClassificationCode(code) {
 		let costClassificationCode = this.state.costClassificationForOtherCost;
@@ -247,23 +250,9 @@ class otherCost extends React.Component {
 	};
 	//登録と修正
 	InsertCost = () => {
-		alert(this.costClassificationCode(this.state.costClassificationCode));
-		alert(this.state.oldCostClassification);
-		alert(this.state.oldHappendDate);
-		alert(this.state.transportationCode);
-		alert(this.state.stationCode3);
-		alert(this.state.stationCode4);
-		alert(this.state.roundCode);
-		alert(this.state.cost1);
-		alert(this.state.changeFile);
-		alert(this.state.oldCostFile);
-		alert(this.state.oldHappendDate);
-		alert(this.state.detailedNameOrLine2);
-		alert(this.state.stationCode5);
-		alert(this.state.transportationCode);
-		alert(this.state.remark);
-		alert(this.state.cost2);
-		alert(this.state.yearAndMonth3);
+		this.setState({ "errorsMessageShow": false, "myToastShow": false,  });
+	
+
 		const formData = new FormData()
 		if (this.state.changeData) {
 			var theUrl = "costRegistration/updateCostRegistration"
@@ -271,15 +260,13 @@ class otherCost extends React.Component {
 			var theUrl = "costRegistration/insertCostRegistration"
 		}
 		if (this.state.costClassificationCode < 1) {
-				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			this.setState({ "errorsMessageShow": true, "type": "fail", "method": "put", "message": "区分を入力してください" });
 				return;
 			}
 		if (this.state.costClassificationCode == 1) {
 			if ($('#otherCostFile2').val() == "" &&
 				!this.state.changeData) {
-				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				this.setState({ "errorsMessageShow": true, "type": "fail", "method": "put", "message": "添付ファイルを入れてください" });
 				return;
 			}
 			if (this.state.yearAndMonth3 == "" ||
@@ -288,8 +275,7 @@ class otherCost extends React.Component {
 			this.state.stationCode4 == "" ||
 			this.state.roundCode ==0 ||
 			isNaN(this.state.cost1)) {
-				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				this.setState({ "errorsMessageShow": true, "type": "fail", "method": "put", "message": "全項目入力してください" });
 				return;
 			}
 			const emp = {
@@ -313,8 +299,7 @@ class otherCost extends React.Component {
 		} else if (this.state.costClassificationCode > 1) {
 			if ($('#otherCostFile3').val() == "" &&
 				!this.state.changeData) {
-				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				this.setState({ "errorsMessageShow": true, "method": "put", "message": "添付ファイルを入れてください" });
 				return;
 			}
 			if (this.state.yearAndMonth4 == "" ||
@@ -322,8 +307,7 @@ class otherCost extends React.Component {
 				this.state.stationCode5 == "" ||
 				this.state.remark == "" ||
 				isNaN(this.state.cost2)) {
-				this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合"  });
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				this.setState({ "errorsMessageShow": true, "method": "put", "message": "全項目入力してください"  });
 				return;
 			}
 			const emp = {
@@ -343,19 +327,15 @@ class otherCost extends React.Component {
 			}
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile3').get(0).files[0]))
-
-		} else {
-			this.setState({ "myToastShow": false, "method": "put", "message": "入力不具合" });
-			return
 		}
 		axios.post(this.state.serverIP + theUrl, formData)
 			.then(response => {
 				if (response.data) {
-					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
+					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了"});
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					this.setState({ showOtherCostModal: false, });
+					this.props.otherCostToroku();
 				} else {
-					this.setState({ "myToastShow": true, "message": "登録失敗"  });
+					this.setState({ "errorsMessageShow": true, "message": "データはすでに存在している"});
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
 				
@@ -368,11 +348,13 @@ class otherCost extends React.Component {
 		const station = this.state.station;
 		const round = this.state.round;
 		return (
-
 			<div>
 				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.fileUpload} />
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={this.state.message} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.message} type={"danger"} />
 				</div>
 				<Form >
 					<div>
@@ -388,6 +370,7 @@ class otherCost extends React.Component {
 				<Form >
 					<Form.Group>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -409,11 +392,13 @@ class otherCost extends React.Component {
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<font style={{ whiteSpace: 'nowrap' }}><b>出張費用</b></font>
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -451,7 +436,6 @@ class otherCost extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -470,7 +454,7 @@ class otherCost extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  出発" type="text" {...params.inputProps} className="auto" id="stationCode3"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31,borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
@@ -520,6 +504,7 @@ class otherCost extends React.Component {
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -536,11 +521,13 @@ class otherCost extends React.Component {
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<font style={{ whiteSpace: 'nowrap' }}><b>宿泊と食事費用など</b></font>
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -582,7 +569,7 @@ class otherCost extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  場所" type="text" {...params.inputProps} className="auto" id="stationCode5"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													style={{ width: 172, height: 31,borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 											</div>
 										)}
 									/>
@@ -599,6 +586,7 @@ class otherCost extends React.Component {
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={1}></Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
