@@ -803,7 +803,6 @@ class WagesInfo extends Component {
                                                     showFullMonthYearPicker
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
-
                                                     className="form-control form-control-sm"
                                                     id="wagesInfoDatePicker"
                                                     name="nextBonusMonth"

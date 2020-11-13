@@ -609,8 +609,8 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="3" />{' '}
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="3" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="6" />{' '}
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="6" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -1059,7 +1059,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号：〒</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
@@ -1067,7 +1067,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">都道府県＋市区町村：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
@@ -1075,7 +1075,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">以降住所：</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" />
 								</InputGroup>
@@ -1184,8 +1184,8 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="resumeName1" />
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
+										onChange={this.valueChange} size="sm" name="resumeName1" /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 								</InputGroup>
 							</Col>

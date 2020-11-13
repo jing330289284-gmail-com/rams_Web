@@ -10,6 +10,7 @@ import masterUpdate from './masterUpdate';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
+import SelectCustomers from './selectCustomers';
 import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
 import salesProfit from './salesProfit';
@@ -194,7 +195,7 @@ class SubMenu extends Component {
 														<ListGroup variant="flush">
 															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/manageSituation">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faNewspaper} />営業状況一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont">
+															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont"  to="/subMenuManager/selectCustomers">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />お客様選択</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
@@ -229,10 +230,10 @@ class SubMenu extends Component {
 													<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="6">
 														<ListGroup variant="flush">
+															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務管理</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />勤務表送信</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "2" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務登録</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
@@ -305,6 +306,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/siteSearch`} component={siteSearch} />
 								<Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
+								<Route exact path={`${this.props.match.url}/selectCustomers`} component={SelectCustomers} />
 								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
 
+import '../asserts/css/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 
@@ -169,14 +170,15 @@ class BreakTime extends Component {
                             <h2>現場休憩時間入力</h2>
                         </Col>
                     </Row>
+                    <br />
                     <Form id="topCustomerInfoForm">
                         <Row inline="true" className="justify-content-md-center">
-                            <Col xs lg="4" className="text-center">
+                            <Col xs lg="2" className="text-center">
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">休憩時間固定</InputGroup.Text>
+                                        <InputGroup.Text id="sixKanji">休憩時間固定</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control id="isConst" name="isConst" as="select" onChange={this.isConst} >
+                                    <Form.Control id="isConst" name="isConst" as="select" onChange={this.isConst} style={{ width: "5rem" }}>
                                         <option value="1">はい</option>
                                         <option value="0">いいえ</option>
                                     </Form.Control>
@@ -350,25 +352,19 @@ class BreakTime extends Component {
                         </Row>
                         <Row>
                             <Col sm={4}></Col>
-                            {/*                             {actionType === "update" ?
-                                <Col sm={3} className="text-center">
-                                    <Button block size="sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="update" type="button">
-                                        <FontAwesomeIcon icon={faSave} />更新
-                            </Button>
-                                </Col>
-                                : */}
-                            <Col sm={2} className="text-center">
-                                <Button block size="sm" className="btn btn-info btn-sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="toroku" type="button">
-                                    <FontAwesomeIcon icon={faSave} /> 登録
-                                </Button>
-                            </Col>
-                            {/*                             } */}
-                            <Col sm={2} className="text-center">
-                                <Button block size="sm" className="btn btn-info btn-sm" variant="info" id="reset" onClick={TopCustomerInfoJs.reset} >
-                                    <FontAwesomeIcon icon={faUndo} /> リセット
-                                </Button>
+                            <Col sm={4} className="text-center">
+                                <div >
+                                    <Button size="sm" className="btn btn-info btn-sm" onClick={this.breakTimeRegister.bind(this)} variant="info" id="toroku" type="button">
+                                        <FontAwesomeIcon icon={faSave} /> 登録
+										</Button>
+										&nbsp;&nbsp;
+										<Button size="sm" className="btn btn-info btn-sm" onClick={TopCustomerInfoJs.reset} >
+                                        <FontAwesomeIcon icon={faUndo} /> リセット
+										</Button>
+                                </div>
                             </Col>
                         </Row>
+                        <br />
                     </Form>
                     <input type="hidden" id="actionType" name="actionType" />
                     <input type="hidden" id="employeeNo" name="employeeNo" />

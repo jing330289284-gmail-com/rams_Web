@@ -117,7 +117,7 @@ class salesPointSet extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						salesPointData: response.data
+						salesPointData: response.data,
 					});
 				}
 			}).catch((error) => {
@@ -289,7 +289,7 @@ class salesPointSet extends React.Component {
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
 		const { employeeSearch, newMemberSearch, customerContractSearch, errorsMessageValue } = this.state;
-		//テーブルの列の選択
+		//	テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
