@@ -53,6 +53,11 @@ export function fetchDropDown() {
         "getProjectPhase",//45作業範囲
         "getTransaction",//46取引区分
         "getCostClassification",//47費用区分を取得する
+        "getSuccessRate",//48確率取得
+        "getAgeClassification",//49年齢制限取得
+        "getNoOfInterview",//50面談回数取得
+        "getAdmissionPeriod",//51入場期限取得
+        "getProjectType",//52案件タイプ取得
         "getServerIP",//最後
     ]
     var outArray = [];
