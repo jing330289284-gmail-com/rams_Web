@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faSave, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import OtherCostModel from './otherCost';
 /**
@@ -43,6 +44,7 @@ class costRegistration extends React.Component {
 	componentDidMount() {
 		this.searchCostRegistration();
 		this.searchEmployeeName();
+		this.setState({ "errorsMessageShow": false, "myToastShow": false, });
 	}
 	//onchange
 	valueChange = event => {
@@ -123,8 +125,7 @@ class costRegistration extends React.Component {
 	InsertCost = () => {
 		if ($('#costRegistrationFile').val() == "" &&
 			!this.state.changeData) {
-			this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-			setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			this.setState({ "errorsMessageShow": true, "method": "put", "message": "添付ファイルを入れてください" });
 			return;
         }
 		const formData = new FormData()
@@ -136,8 +137,7 @@ class costRegistration extends React.Component {
 			this.state.detailedNameOrLine == "" ||
 			this.state.costRegistrationFile == "" ||
 			this.state.yearAndMonth1 > this.state.yearAndMonth2) {
-			this.setState({ "myToastShow": true, "method": "put", "message": "入力不具合" });
-			setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			this.setState({ "errorsMessageShow": true, "method": "put", "message": "全項目入力してください" });
 			return;
 		}
 		if (this.state.changeData) {
@@ -167,9 +167,10 @@ class costRegistration extends React.Component {
 					this.setState({changeData: false,})
 					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.resetBook();
+					this.searchCostRegistration();
 				} else {
-					this.setState({ "myToastShow": true, "method": "put", "message": "登録失敗" });
+					this.setState({ "errorsMessageShow": true, "method": "put", "message": "データはすでに存在している" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
 			}).catch((error) => {
@@ -234,6 +235,7 @@ class costRegistration extends React.Component {
 		/**
 	*削除
 	*/
+	onDeleteRow(rows) { alert(rows) }
 	listDel = () => {
 		var a = window.confirm("削除していただきますか？");
 		if (!a) {
@@ -254,7 +256,8 @@ class costRegistration extends React.Component {
 					})
 					this.setState({ "myToastShow": true, "method": "put", "message": "削除完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					this.resetBook();
+					this.searchCostRegistration();
 				} else{
 					this.setState({ "myToastShow": true, "method": "put", "message": "削除失敗" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -385,9 +388,9 @@ class costRegistration extends React.Component {
  　　　*/
 	otherCostGet = (otherCostGetTokuro) => {
 		this.setState({
-			otherCostModel: otherCostGetTokuro,
 			showOtherCostModal: false,
 		})
+		this.searchCostRegistration();
 	}
 	// AUTOSELECT select事件
 	handleTag = ({ target }, fieldName) => {
@@ -421,18 +424,16 @@ class costRegistration extends React.Component {
 			</p>
 		);
 	}
-	otherCostClick = () => {
-		alert(123);
-
-		} 
 	testSpan = (cell, row) => {
 		if (row.costClassificationCode >1) {
 			return transportationCode(row.stationCode, this.state.station)
 			
 		} else {
-			return (<div style={{ padding: '0px' }}>
-				<td style={{ border: 'none', width: "126px", padding: '0px', textAlign: "center", height: '20px' }} dataField='transportationCode' dataFormat={this.transportationCode.bind(this)}>{transportationCode(row.transportationCode, this.state.station)}</td>
-				<td style={{ textAlign: "center", border: "1px solid #ddd", borderTop: '0', borderBottom: '0', borderRight: '0', width: "126px", padding: '0px' }} dataField='destinationCode' dataFormat={this.destinationCode.bind(this)}>{transportationCode(row.destinationCode, this.state.station)}</td></div>)
+			return (<div style={{ padding: '0px', width: "100%"}}>
+				<td style={{ border: 'none', width: "150px", padding: '0px', textAlign: "center", height: '20px' }} >{transportationCode(row.transportationCode, this.state.station)}</td>
+
+				<td style={{ textAlign: "center", border: "1px solid #ddd", borderTop: '0', borderBottom: '0', borderRight: '0', width: "150px", padding: '0px' }} >{transportationCode(row.destinationCode, this.state.station)}</td></div>
+			)
 		}
 	}
 	roundCode(code) {
@@ -483,8 +484,8 @@ class costRegistration extends React.Component {
 	};
 	render() {
 		const {employeeList} = this.state;
-		const { otherCostModel, otherCostTokuro } = this.state;
 		const station = this.state.station;
+
 		//　テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
@@ -510,6 +511,7 @@ class costRegistration extends React.Component {
 			approvalBtn: this.createCustomApprovalButton,
 			onApprovalRow: this.onApprovalRow,
 			handleConfirmApprovalRow: this.customConfirm,
+			onDeleteRow: this.onDeleteRow,
 		};
 		const cellEdit = {
 			mode: 'click',
@@ -523,7 +525,7 @@ class costRegistration extends React.Component {
 					onHide={this.handleHideModal.bind(this)} show={this.state.showOtherCostModal} dialogClassName="modal-otherCost">
 					<Modal.Header closeButton>
 					</Modal.Header>
-					<Modal.Body >
+					<Modal.Body size="sm">
 						<OtherCostModel
 							yearAndMonth3={this.state.yearAndMonth3}
 							transportationCode={this.state.transportationCode}
@@ -543,10 +545,14 @@ class costRegistration extends React.Component {
 							changeData1={this.state.changeData1}
 							changeFile1={this.state.changeFile1}
 							costRegistrationFileFlag1={this.state.costRegistrationFileFlag1}
+							otherCostToroku={this.otherCostGet} 
 						/></Modal.Body>
 				</Modal>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={this.state.message}  type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.message} type={"danger"} />
 				</div>
 				<Form >
 					<div>
@@ -569,7 +575,7 @@ class costRegistration extends React.Component {
 						</Col>
 						<Col sm={8}></Col>
 					</Row>	
-					<br /><br />
+					<br />
 					<Row>
 						<Col sm={2}>
 							<font style={{ whiteSpace: 'nowrap' }}><b>定期</b></font>
@@ -711,7 +717,7 @@ class costRegistration extends React.Component {
 						</Row>
 					</div>
 					<div><Col sm={12}>
-						<BootstrapTable data={employeeList}  pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+						<BootstrapTable data={employeeList} id="table" pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn  row='0' rowSpan='2' width='5%'　tdStyle={ { padding: '.45em' } } dataField='rowNo'  isKey>番号</TableHeaderColumn>
 							<TableHeaderColumn  row='0' rowSpan='2' width='10%'　tdStyle={ {padding: '.45em' } } dataField='happendDate' >日付</TableHeaderColumn>
 							<TableHeaderColumn row='0' rowSpan='2' width='10%' tdStyle={{ padding: '.45em' }} dataField='costClassificationCode' dataFormat={this.costClassificationCode.bind(this)}>区分</TableHeaderColumn>
