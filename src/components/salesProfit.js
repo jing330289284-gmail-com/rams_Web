@@ -52,7 +52,7 @@ class salesProfit extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
-			//this.select();
+			this.select();
 		})
 	}
 
@@ -100,9 +100,9 @@ class salesProfit extends React.Component {
 
 	//	現場情報を取得する
 	getSalesInfo = (start, end) => {
-		alert(start);
-		alert(end);
 		var salesPointSetModel = {};
+		salesPointSetModel["employeeName"] = this.state.employeeName
+		salesPointSetModel["employeeStatus"] = this.state.employeeSearch
 		salesPointSetModel["startDate"] = start;
 		salesPointSetModel["endDate"] = end;
 		axios.post(this.state.serverIP + "getSalesInfo", salesPointSetModel)
