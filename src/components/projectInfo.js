@@ -67,10 +67,10 @@ class projectInfo extends Component {
         japaneaseConversationLevelDrop: store.getState().dropDown[43],
         projectPhaseDrop: store.getState().dropDown[45],
         noOfInterviewDrop: store.getState().dropDown[50],
-        customerDrop: store.getState().dropDown[15],
-        personInChargeDrop: store.getState().dropDown[0],
+        customerDrop: store.getState().dropDown[15].slice(1),
+        personInChargeDrop: [],
         mailDrop: store.getState().dropDown[0],
-        stationDrop: store.getState().dropDown[14],
+        stationDrop: store.getState().dropDown[14].slice(1),
         successRateDrop: store.getState().dropDown[48],
         developLanguageDrop: store.getState().dropDown[8].slice(1),
         ageClassificationDrop: store.getState().dropDown[49],
@@ -154,10 +154,25 @@ class projectInfo extends Component {
         if (values != null) {
             this.setState({
                 customerNo: values.code,
+            },()=>{
+                var projectInfoModel = {
+                    customerNo:this.state.customerNo,
+                }
+                axios.post(this.state.serverIP + "projectInfo/getPersonInCharge" , projectInfoModel)
+                .then(result => {
+                    this.setState({
+                        personInChargeDrop:result.data.personInChargeDrop,
+                        personInCharge:'',
+                        mail:'',
+                    })
+                })
             })
         } else {
             this.setState({
                 customerNo: "",
+                personInChargeDrop:[],
+                personInCharge:'',
+                mail:'',
             })
         }
     }
@@ -210,6 +225,19 @@ class projectInfo extends Component {
             })
         }
     }
+    getPersonInChange = (event, values) => {
+        if (values != null) {
+            this.setState({
+                personInCharge: values.code,
+                mail:values.mail,
+            })
+        } else {
+            this.setState({
+                personInCharge: "",
+                mail:"",
+            })
+        }
+    }
     /**
      * 数字のみ入力
      */
@@ -217,18 +245,35 @@ class projectInfo extends Component {
         const { value } = e.target;
         var num = value;
         const reg = /^[0-9]*$/;
-        num = utils.deleteComma(num);
-        var keyLength = 2;
+        var keyLength = 3;
+        if (key === "unitPriceRangeLowest" || key === "unitPriceRangeHighest") { 
+            keyLength = 4;
+        }
         if ((reg.test(num) && num.length < keyLength)) {
             this.setState({
                 [key]: num
             })
         }
     }
-    numLimit = () => {
-        var text = this.state.projectInfoDetail;
-        this.setState({
-            nowNum: text.length,
+    componentDidMount(){
+        var projectNo = "";
+        if(this.props.state !== null && this.props.state !== undefined){
+            this.setState({
+                projectNo:this.props.state.projectNo,
+            })
+            projectNo = this.props.state.projectNo;
+        }
+        var projectInfoModel = {
+            actionType:this.state.actionType,
+            projectNo:projectNo,
+        }
+        axios.post(this.state.serverIP + "projectInfo/init" , projectInfoModel)
+        .then(result => {
+            if(this.state.actionType === "insert" ){
+                this.setState({
+                    projectNo:result.data.projectNo,
+                })
+            }
         })
     }
     render() {
@@ -395,13 +440,13 @@ class projectInfo extends Component {
                                             maxLength="3"
                                             value={unitPriceRangeLowest}
                                             name="unitPriceRangeLowest"
-                                            onChange={this.valueChange}
+                                            onChange={(e) => this.vNumberChange(e, 'unitPriceRangeLowest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>{"~"}
                                         <FormControl
                                             maxLength="3"
                                             value={unitPriceRangeHighest}
                                             name="unitPriceRangeHighest"
-                                            onChange={this.valueChange}
+                                            onChange={(e) => this.vNumberChange(e, 'unitPriceRangeHighest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>
                                     </InputGroup>
                                 </Col>
@@ -558,7 +603,7 @@ class projectInfo extends Component {
                                             maxLength="2"
                                             value={experienceYear}
                                             name="experienceYear"
-                                            onChange={this.vNumberChange}
+                                            onChange={(e) => this.vNumberChange(e, 'experienceYear')}
                                             disabled={actionType === "detail" ? true : false}>
                                         </FormControl>
                                     </InputGroup>
@@ -730,12 +775,20 @@ class projectInfo extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="fiveKanji">担当者</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <FormControl
-                                            value={personInCharge}
+                                        <Autocomplete
+                                            id="personInCharge"
                                             name="personInCharge"
-                                            onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}>
-                                        </FormControl>
+                                            value={personInChargeDrop.find(v => v.code === personInCharge) || {}}
+                                            options={personInChargeDrop}
+                                            getOptionLabel={(option) => option.name}
+                                            onChange={(event, values) => this.getPersonInChange(event, values)}
+                                            renderInput={(params) => (
+                                                <div ref={params.InputProps.ref}>
+                                                    <input placeholder="例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    />
+                                                </div>
+                                            )}
+                                        />
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
@@ -786,6 +839,24 @@ class projectInfo extends Component {
                                     as="textarea">
                                 </FormControl>
                             </Row>
+                            <br/>
+                            <div style={{ "textAlign": "center" }}>
+                                <Button
+                                    size="sm"
+                                    disabled={actionType === "detail" ? true : false}
+                                    variant="info"
+                                >
+                                    <FontAwesomeIcon icon={faSave} />{torokuText}
+                                </Button>{" "}
+                                <Button
+                                    size="sm"
+                                    disabled={actionType === "detail" ? true : false}
+                                    onClick={this.resetValue}
+                                    variant="info"
+                                    value="Reset" >
+                                    <FontAwesomeIcon icon={faUndo} />リセット
+                            </Button>
+                            </div>
                         </Form.Group>
                     </Form>
                 </div>
