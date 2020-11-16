@@ -195,6 +195,7 @@ class employeeUpdate extends React.Component {
 		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				$("#firstHalfAddress").val(data.firstHalfAddress);
 				this.setState({
 					employeeStatus: data.employeeStatus,//社員区分
 					employeeNo: data.employeeNo,//社員番号
@@ -236,7 +237,6 @@ class employeeUpdate extends React.Component {
 					certification2: data.certification2,//資格2
 					siteRoleCode: data.siteRoleCode,//役割
 					postcode: data.postcode,//郵便番号
-					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
 					developLanguage1: data.developLanguage1,//スキール1
@@ -544,7 +544,7 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -1080,7 +1080,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} onChange={this.valueChange} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl  autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
