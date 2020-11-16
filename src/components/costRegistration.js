@@ -281,7 +281,11 @@ class costRegistration extends React.Component {
 	resetBook = () => {
 		this.setState(() => this.resetStates);
 		this.refs.table.setState({
-			selectedRowKeys: []
+			selectedRowKeys: [],
+		});
+		this.setState({ 
+			"myToastShow": false,
+				"message": "",
 		});
 	};
 	//リセット　reset
@@ -289,32 +293,32 @@ class costRegistration extends React.Component {
 		yearAndMonth1: null, yearAndMonth2: null, stationCode1: null, stationCode2: null, detailedNameOrLine: '',
 		cost: '', costRegistrationFile: null, changeData: false,oldCostClassification1: null,oldHappendDate1: null,
 		changeFile: false, costRegistrationFileFlag: false, costClassification1: null,rowSelectHappendDate: '',
-					rowSelectCostClassificationCode: '',
-					rowSelectDetailedNameOrLine: '',
-					rowSelectStationCode: '',
-					rowSelectTransportationCode: '',
-					rowSelectDestinationCode: '',
-					rowSelectCost: '',
-					rowSelectRemark: '',
-					rowSelectRoundCode: '',
-					rowSelectCostFile: '',
-					oldCostClassification1: '',
-					oldHappendDate1: '',
-					costClassification1: '',
-					yearAndMonth3: '',
-					transportationCode: '',
-					stationCode3: '',
-					stationCode4: '',
-					roundCode: '',
-					cost1: '',
-					oldCostFile: '',
-					yearAndMonth4: '',
-					detailedNameOrLine2: '',
-					stationCode5: '',
-					remark: '',
-					cost2: '',
-					changeData: false,
-					changeFile: false,
+		rowSelectCostClassificationCode: '',
+		rowSelectDetailedNameOrLine: '',
+		rowSelectStationCode: '',
+		rowSelectTransportationCode: '',
+		rowSelectDestinationCode: '',
+		rowSelectCost: '',
+		rowSelectRemark: '',
+		rowSelectRoundCode: '',
+		rowSelectCostFile: '',
+		oldCostClassification1: '',
+		oldHappendDate1: '',
+		costClassification1: '',
+		yearAndMonth3: '',
+		transportationCode: '',
+		stationCode3: '',
+		stationCode4: '',
+		roundCode: '',
+		cost1: '',
+		oldCostFile: '',
+		yearAndMonth4: '',
+		detailedNameOrLine2: '',
+		stationCode5: '',
+		remark: '',
+		cost2: '',
+		changeData: false,
+		changeFile: false,
 	};
 		//　年月1
 	inactiveYearAndMonth1 = (date) => {
