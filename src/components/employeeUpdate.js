@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo, faFile, faList} from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -168,7 +168,7 @@ class employeeUpdate extends React.Component {
 		})
 		if (value === '3') {
 			this.setState({
-				japaneseLevelCode:'5',
+				japaneseLevelCode: '5',
 			})
 		} else if (value === '4' || value === '5' || value === '6') {
 			this.setState({
@@ -257,7 +257,7 @@ class employeeUpdate extends React.Component {
 					resumeName2: data.resumeName2,//履歴書備考1
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
-					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience=== "" ? data.graduationYearAndMonth:data.yearsOfExperience, false), new Date()),
+					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
 					image: data.picInfo
 				});
 			}
@@ -537,6 +537,10 @@ class employeeUpdate extends React.Component {
 	addFile = (event, name) => {
 		$("#" + name).click();
 	}
+	
+		back = () => {
+        return this.props.history.push("/subMenuManager/employeeSearch");
+    };
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -810,7 +814,7 @@ class employeeUpdate extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker" 
+											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
 										/>
@@ -1225,6 +1229,9 @@ class employeeUpdate extends React.Component {
 							</Button>{' '}
 							<Button size="sm" variant="info" type="reset">
 								<FontAwesomeIcon icon={faUndo} /> リセット
+                        </Button>{' '}
+							<Button size="sm" variant="info" type="button"　onClick={this.back}>
+								<FontAwesomeIcon icon={faList} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>

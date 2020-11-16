@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faFile, faList } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -511,6 +511,10 @@ class employeeInsert extends React.Component {
 	addFile = (event, name) => {
 		$("#" + name).click();
 	}
+
+	back = () => {
+        return this.props.history.push("/subMenuManager/employeeSearch");
+	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -613,7 +617,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" disabled={employeeStatus ==="0"? false : true}>
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true}>
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -680,7 +684,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="departmentCode" value={departmentCode}
-										autoComplete="off" disabled={employeeStatus ==="0"? false : true}>
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true}>
 										{this.state.departmentCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -788,10 +792,10 @@ class employeeInsert extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker" 
+											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
-											/>
+										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
 									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
@@ -1202,6 +1206,9 @@ class employeeInsert extends React.Component {
 							</Button>{' '}
 							<Button size="sm" variant="info" type="reset">
 								<FontAwesomeIcon icon={faUndo} /> リセット
+                        </Button>{' '}
+							<Button size="sm" variant="info" type="button" onClick={this.back}>
+								<FontAwesomeIcon icon={faList} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>

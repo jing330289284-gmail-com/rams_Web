@@ -13,10 +13,9 @@ import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFile , faList} from '@fortawesome/free-solid-svg-icons';
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -143,7 +142,7 @@ class employeeUpdate extends React.Component {
 					resumeName2: data.resumeName2,//履歴書備考1
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
-					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience=== "" ? data.graduationYearAndMonth:data.yearsOfExperience, false), new Date()),
+					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
 					image: data.picInfo
 
 				});
@@ -360,6 +359,9 @@ class employeeUpdate extends React.Component {
 			})
 		}
 	}
+	back = () => {
+        return this.props.history.push("/subMenuManager/employeeSearch");
+    };
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1021,10 +1023,14 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="fiveKanji" >パスポート</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 添付済み" : " 添付"}</Button>
-
 								</InputGroup>
 							</Col>
 						</Row>
+						<div style={{ "textAlign": "center" }}>
+							<Button size="sm" variant="info" type="button"　onClick={this.back}>
+								<FontAwesomeIcon icon={faList} /> 戻る
+                        </Button>
+						</div>
 					</Form.Group>
 				</Form>
 			</div>
