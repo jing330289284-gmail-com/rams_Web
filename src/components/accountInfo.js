@@ -233,7 +233,7 @@ class BankInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="9" name="accountNo" />
+                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="7" name="accountNo" />
                                 </InputGroup>
                             </Col>
                             <Col>

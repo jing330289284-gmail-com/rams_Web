@@ -513,7 +513,7 @@ class employeeInsert extends React.Component {
 	}
 
 	back = () => {
-        return this.props.history.push("/subMenuManager/employeeSearch");
+		return this.props.history.push("/subMenuManager/employeeSearch");
 	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
@@ -1059,7 +1059,7 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl value={firstHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>

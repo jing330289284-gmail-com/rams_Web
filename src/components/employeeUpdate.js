@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUndo, faFile, faList} from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo, faFile, faList } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -537,10 +537,10 @@ class employeeUpdate extends React.Component {
 	addFile = (event, name) => {
 		$("#" + name).click();
 	}
-	
-		back = () => {
-        return this.props.history.push("/subMenuManager/employeeSearch");
-    };
+
+	back = () => {
+		return this.props.history.push("/subMenuManager/employeeSearch");
+	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1080,7 +1080,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={firstHalfAddress} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl value={firstHalfAddress} onChange={this.valueChange} autoComplete="off" size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
@@ -1088,7 +1088,8 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" />
+									<FormControl placeholder="以降住所" value={lastHalfAddress} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="lastHalfAddress" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1230,7 +1231,7 @@ class employeeUpdate extends React.Component {
 							<Button size="sm" variant="info" type="reset">
 								<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>{' '}
-							<Button size="sm" variant="info" type="button"　onClick={this.back}>
+							<Button size="sm" variant="info" type="button" onClick={this.back}>
 								<FontAwesomeIcon icon={faList} /> 戻る
                         </Button>
 						</div>
