@@ -14,6 +14,7 @@ import store from './redux/store';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import costRegistration from './costRegistration';
+import * as utils from './utils/publicUtils.js';
 axios.defaults.withCredentials = true;
 /**1
  * 他の費用画面
@@ -47,15 +48,30 @@ class otherCost extends React.Component {
 			[event.target.name]: event.target.value,
 		})
 	}
+	costValueChange = (e) => {
+		let cost = e.target.value
+		cost = utils.addComma(cost)
+		this.setState({
+			[e.target.name]: cost
+		})
+	}
 	valueChangeAndFlag = event => {
+		if (event.target.value > 1 && this.state.costClassificationCode ==1) {
+			this.resetBook2();
+		} else if(this.state.costClassificationCode > 1 && event.target.value == 1){
+			this.resetBook2();
+        }
 		this.setState({
 			[event.target.name]: event.target.value,
 			changeFile: true,
 		})
+
+		
+
 	}
 	//初期化メソッド
 	componentDidMount() {
-		this.setState({ "errorsMessageShow": false, "myToastShow": false, });
+		this.setState({ "errorsMessageShow": false, "myToastShow": false, minDate: this.props.minDate, deleteFile:false });
 		//定期を選択欄から除去
 		if (this.state.costClassificationForOtherCost.length >= 6) {
 			this.costClassificationForOtherCost();
@@ -169,6 +185,16 @@ class otherCost extends React.Component {
 		costRegistrationFileFlag3: '', remark: '', oldCostFile: '', otherCostFile2: '',
 		otherCostFile3: '',
 	};
+	resetBook2 = () => {
+		this.setState(() => this.changeCostClassificationCode);
+		this.setState({ "errorsMessageShow": false, "myToastShow": false, });
+	};
+	changeCostClassificationCode={
+		yearAndMonth3: null, yearAndMonth4: null, stationCode2: '',
+		stationCode3: '', stationCode4: '', stationCode5: '', detailedNameOrLine2: '',
+		roundCode: 0, cost1: '', cost2: '', transportationCode: '', costRegistrationFileFlag2: '',
+		costRegistrationFileFlag3: '', remark: '', otherCostFile2: '',otherCostFile3: '',
+	};
 	costClassificationCode(code) {
 		let costClassificationCode = this.state.costClassificationForOtherCost;
 		for (var i in costClassificationCode) {
@@ -251,8 +277,6 @@ class otherCost extends React.Component {
 	//登録と修正
 	InsertCost = () => {
 		this.setState({ "errorsMessageShow": false, "myToastShow": false,  });
-	
-
 		const formData = new FormData()
 		if (this.state.changeData) {
 			var theUrl = "costRegistration/updateCostRegistration"
@@ -264,17 +288,17 @@ class otherCost extends React.Component {
 				return;
 			}
 		if (this.state.costClassificationCode == 1) {
-			if ($('#otherCostFile2').val() == "" &&
+			/*if ($('#otherCostFile2').val() == "" &&
 				!this.state.changeData) {
 				this.setState({ "errorsMessageShow": true, "type": "fail", "method": "put", "message": "添付ファイルを入れてください" });
 				return;
-			}
+			}*/
 			if (this.state.yearAndMonth3 == "" ||
 			this.state.transportationCode == "" ||
 			this.state.stationCode3 == "" ||
 			this.state.stationCode4 == "" ||
 			this.state.roundCode ==0 ||
-			isNaN(this.state.cost1)) {
+			isNaN(utils.deleteComma(this.state.cost1))) {
 				this.setState({ "errorsMessageShow": true, "type": "fail", "method": "put", "message": "全項目入力してください" });
 				return;
 			}
@@ -289,7 +313,7 @@ class otherCost extends React.Component {
 				originCode: this.state.stationCode3,
 				destinationCode: this.state.stationCode4,
 				roundCode: this.state.roundCode,
-				cost: this.state.cost1,
+				cost: utils.deleteComma(this.state.cost1),
 				changeFile: this.state.changeFile,
 				oldCostFile: this.state.oldCostFile,
 			}
@@ -297,16 +321,16 @@ class otherCost extends React.Component {
 			formData.append('costFile', publicUtils.nullToEmpty($('#otherCostFile2').get(0).files[0]))
 
 		} else if (this.state.costClassificationCode > 1) {
-			if ($('#otherCostFile3').val() == "" &&
+/*			if ($('#otherCostFile3').val() == "" &&
 				!this.state.changeData) {
 				this.setState({ "errorsMessageShow": true, "method": "put", "message": "添付ファイルを入れてください" });
 				return;
-			}
+			}*/
 			if (this.state.yearAndMonth4 == "" ||
 				this.state.detailedNameOrLine2 == "" ||
 				this.state.stationCode5 == "" ||
 				this.state.remark == "" ||
-				isNaN(this.state.cost2)) {
+				isNaN(utils.deleteComma(this.state.cost2))) {
 				this.setState({ "errorsMessageShow": true, "method": "put", "message": "全項目入力してください"  });
 				return;
 			}
@@ -321,7 +345,7 @@ class otherCost extends React.Component {
 				stationCode: this.state.stationCode5,
 				transportationCode: this.state.transportationCode,
 				remark: this.state.remark,
-				cost: this.state.cost2,
+				cost: utils.deleteComma(this.state.cost2),
 				changeFile: this.state.changeFile,
 				oldCostFile: this.state.oldCostFile,
 			}
@@ -377,7 +401,7 @@ class otherCost extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select"
-										onChange={this.valueChangeAndFlag}
+										onChange={this.valueChangeAndFlag.bind(this)}
 										size="sm"
 										name="costClassificationCode"
 										value={this.state.costClassificationCode}
@@ -410,6 +434,7 @@ class otherCost extends React.Component {
 											disabled={this.state.costClassificationCode != 1 ? true : false}
 											autoComplete="off"
 											locale="ja"
+											minDate={this.state.minDate}
 											dateFormat="yyyy/MM/dd"
 											id="datePicker3"
 											className="form-control form-control-sm"
@@ -510,7 +535,7 @@ class otherCost extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={cost1} name='cost1' disabled={this.state.costClassificationCode != 1 ? true : false} placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
+									<FormControl value={cost1} name='cost1' maxLength='7' onChange={(e) => this.costValueChange(e)}  disabled={this.state.costClassificationCode != 1 ? true : false} placeholder="例：XXXXX" autoComplete="off"  type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />
 								</InputGroup>
 							</Col>
 							<Col sm={2}>
@@ -537,6 +562,7 @@ class otherCost extends React.Component {
 											onChange={this.inactiveYearAndMonth4}
 											autoComplete="off"
 											locale="ja"
+											minDate={this.state.minDate}
 											dateFormat="yyyy/MM/dd"
 											id="datePicker4"
 											disabled={this.state.costClassificationCode > 1 ? false : true}
@@ -592,7 +618,7 @@ class otherCost extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">料金</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={cost2} name='cost2' value={this.state.cost2} placeholder="例：XXXXX" autoComplete="off" onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode > 1 ? false : true} />
+									<FormControl value={cost2} name='cost2' maxLength='7' onChange={(e) => this.costValueChange(e)}  value={this.state.cost2} placeholder="例：XXXXX" autoComplete="off" type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" disabled={this.state.costClassificationCode > 1 ? false : true} />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
