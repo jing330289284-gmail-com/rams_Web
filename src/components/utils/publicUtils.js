@@ -261,8 +261,11 @@ export function birthday_age(age) {
 		var month = date.getMonth() + 1;
 		var day = date.getDate();
 		var value = (year - age) + '' + (month < 10 ? '0' + month : month) + '' + (day < 10 ? '0' + day : day);
+		return value;
+	}else{
+		return age;
 	}
-	return value;
+	
 }
 /**
  * 联想框label的value取得

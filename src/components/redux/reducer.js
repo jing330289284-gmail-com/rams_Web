@@ -8,7 +8,7 @@ export function fetchDropDown() {
     var methodNameList = ["getGender",//0.性別区別 
         "getIntoCompany",// 1入社区分 
         "getStaffForms", // 2 社員形式 
-        "getOccupation",// 3役割
+        "getSiteMaster",// 3役割
         "getEmployeeStatus",// 4社員区分
         "getJapaneseLevel",//5日本語
         "getVisa",//6在留資格
@@ -53,6 +53,11 @@ export function fetchDropDown() {
         "getProjectPhase",//45作業範囲
         "getTransaction",//46取引区分
         "getCostClassification",//47費用区分を取得する
+        "getSuccessRate",//48確率取得
+        "getAgeClassification",//49年齢制限取得
+        "getNoOfInterview",//50面談回数取得
+        "getAdmissionPeriod",//51入場期限取得
+        "getProjectType",//52案件タイプ取得
         "getServerIP",//最後
     ]
     var outArray = [];

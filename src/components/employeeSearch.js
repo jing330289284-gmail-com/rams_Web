@@ -56,11 +56,11 @@ class employeeSearch extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	};
 	//リセット　reset
-	resetStates = {
-		employeeNo: null, employeeName: null, employeeFormCode: null, employeeStatus: null, genderStatus: null,
-		ageFrom: null, ageTo: null, residenceCode: null, nationalityCode: null, customer: null,
-		intoCompanyCode: null, japaneseLevelCode: null, siteRoleCode: null, intoCompanyYearAndMonthFrom: null, intoCompanyYearAndMonthTo: null,
-		kadou: null, developLanguage1: null, developLanguage2: null, developLanguage3: null,
+	resetStates = {employeeName: '',
+		employeeNo: '', employeeFormCode: '', employeeStatus: '', genderStatus: '',
+		ageFrom: '', ageTo: '', residenceCode: '', nationalityCode: '', customer: '',
+		intoCompanyCode: '', japaneseLevelCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '',
+		kadou: '', developLanguage1: '', developLanguage2: '', developLanguage3: '',
 	};
 
 	//初期化メソッド
@@ -76,24 +76,24 @@ class employeeSearch extends React.Component {
 	//検索s
 	searchEmployee = () => {
 		const emp = {
-			employeeNo: this.state.employeeNo,
-			employeeName: this.state.employeeName,
+			employeeNo: this.state.employeeNo=== ""? undefined : this.state.employeeNo,
+			employeeName: this.state.employeeName=== ""? undefined : this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode,
 			employeeStatus:  this.state.employeeStatus=== ""? undefined : this.state.employeeStatus,
 			genderStatus: this.state.genderStatus=== ""? undefined : this.state.genderStatus,
-			ageFrom: publicUtils.birthday_age(this.state.ageFrom),
-			ageTo: publicUtils.birthday_age(this.state.ageTo),
+			ageFrom:  this.state.ageFrom=== ""? undefined : publicUtils.birthday_age(this.state.ageFrom),
+			ageTo: this.state.ageTo=== ""? undefined : publicUtils.birthday_age(this.state.ageTo),
 			residenceCode: this.state.residenceCode=== ""? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode=== ""? undefined : this.state.nationalityCode,
-			customer: this.state.customer,
+			customer: this.state.customer=== ""? undefined : this.state.customer,
 			intoCompanyCode: this.state.intoCompanyCode=== ""? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode=== ""? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode=== ""? undefined : this.state.siteRoleCode,
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
 			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom,
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo,
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom=== ""||this.state.intoCompanyYearAndMonthFrom===undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo=== ""||this.state.intoCompanyYearAndMonthTo=== undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou=== ""? undefined : this.state.kadou,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
@@ -259,6 +259,7 @@ class employeeSearch extends React.Component {
 					case 'employeeName':
 						this.setState({
 							employeeName: value,
+							//employeeName: this.state.employeeInfo.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -349,14 +350,14 @@ class employeeSearch extends React.Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.employeeName)}
+											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName)||""}
 											options={this.state.employeeInfo}
-											getOptionLabel={(option) => option.text}
+											getOptionLabel={(option) => option.text?option.text:""}
 											onChange={(event, values) => this.getEmployeeName(event, values)}
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														{option.name}
+														<p >{option.name}></p>
 													</React.Fragment>
 												)
 											}}
