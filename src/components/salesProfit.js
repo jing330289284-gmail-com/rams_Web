@@ -107,11 +107,11 @@ class salesProfit extends React.Component {
 		salesPointSetModel["endDate"] = end;
 		axios.post(this.state.serverIP + "getSalesInfo", salesPointSetModel)
 			.then(response => {
-				/* if (response.data != null) {
+				if (response.data != null) {
 					this.setState({
 						salesPointData: response.data
 					});
-				} */
+				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -287,10 +287,10 @@ class salesProfit extends React.Component {
 											<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
 											<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 											<TableHeaderColumn dataField='workDate' tdStyle={{ padding: '.45em' }} >入場期間</TableHeaderColumn>
-											<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
-											<TableHeaderColumn dataField='profit' width='90' tdStyle={{ padding: '.45em' }} >売上</TableHeaderColumn>
-											<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} >給料(発注額)</TableHeaderColumn>
-											<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >粗利</TableHeaderColumn>
+											<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='120' >単価</TableHeaderColumn>
+											<TableHeaderColumn dataField='profit' tdStyle={{ padding: '.45em' }} width='120' >売上</TableHeaderColumn>
+											<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='150' >給料(発注)合計</TableHeaderColumn>
+											<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='150' >粗利</TableHeaderColumn>
 										</BootstrapTable>
 									</Col>
 								</Row>
