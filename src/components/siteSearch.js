@@ -25,12 +25,12 @@ class siteSearch extends Component {
 	}
 	//初期化
 	initialState = {
-		payOffRange1: '0',// 単価1
-		payOffRange2: '0',// 単価2
+		//payOffRange1: '0',// 単価1
+		//payOffRange2: '0',// 単価2
 		customerNo: '',
 		topCustomerNo: '',
 		employeeName: '',
-		payOffRangeStatus: store.getState().dropDown[33].slice(1),//　精算時間
+		payOffRangeStatus: store.getState().dropDown[33],//　精算時間
 		siteMaster: store.getState().dropDown[34],//　役割
 		customerMaster: store.getState().dropDown[15].slice(1),//お客様
 		topCustomerMaster: store.getState().dropDown[35].slice(1),//トップお客様
@@ -38,7 +38,7 @@ class siteSearch extends Component {
 		employeeInfo: store.getState().dropDown[9].slice(1),//社員名
 		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),//業種
 		getstations: store.getState().dropDown[14].slice(1),//　場所 
-		employeeStatuss: store.getState().dropDown[4].slice(1),//　社員区分 
+		employeeStatuss: store.getState().dropDown[4],//　社員区分 
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
@@ -69,9 +69,6 @@ class siteSearch extends Component {
 			}
 		);
 	};
-	// 页面加载
-	componentDidMount() {
-	}
 	//reset
 	reset = () => {
 		this.setState(() => this.resetStates);
@@ -79,7 +76,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '0'
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: ''
 	};
 
 	// AUTOSELECT select事件
@@ -139,7 +136,7 @@ class siteSearch extends Component {
 
 	};
 	//検索処理
-	tokuro = () => {
+	siteSearch = () => {
 		var SiteSearchModel = {};
 		var formArray = $("#siteForm").serializeArray();
 		$.each(formArray, function(i, item) {
@@ -224,7 +221,7 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員・BP名</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">社員名(BP)</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="employeeName"
@@ -263,7 +260,7 @@ class siteSearch extends Component {
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="employeeForm" name="employeeForm" value={employeeForm}
 											onChange={this.onchange}>
-											<option value="">選択くだいさい</option>
+											<option value=""></option>
 											<option value="0">在職</option>
 											<option value="1">離職済み</option>
 										</Form.Control>
@@ -301,7 +298,7 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														/>
+													/>
 												</div>
 											)}
 										/>
@@ -310,7 +307,7 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="topCustomerNo"
@@ -322,7 +319,7 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 										/>
@@ -343,7 +340,7 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 										/>
@@ -364,7 +361,7 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 										/>
@@ -388,7 +385,7 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													/>
 												</div>
 											)}
 										/>
@@ -459,7 +456,7 @@ class siteSearch extends Component {
 								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker
@@ -490,7 +487,7 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">データ期間</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">データ期間</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="dataAcquisitionPeriod" name="dataAcquisitionPeriod" value={dataAcquisitionPeriod}
 											onChange={this.onchange}>
@@ -502,7 +499,7 @@ class siteSearch extends Component {
 							</Row>
 
 							<div style={{ "textAlign": "center" }}>
-								<Button size="sm" onClick={this.tokuro} variant="info" id="toroku" type="button" color={{ background: '#5599FF' }}>
+								<Button size="sm" onClick={this.siteSearch} variant="info" id="toroku" type="button" color={{ background: '#5599FF' }}>
 									<FontAwesomeIcon icon={faSearch} /> 検索
 									</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
