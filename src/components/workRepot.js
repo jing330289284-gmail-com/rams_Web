@@ -76,7 +76,7 @@ class workRepot extends React.Component {
 		axios.post(this.state.serverIP + "workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
-					window.location.reload();
+					this.searchWorkRepot();
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
