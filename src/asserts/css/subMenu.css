@@ -63,7 +63,14 @@ h2{
   .linkFont{
     font-family: "黑体", Sans-serif;
     font-size: 1rem;
+    margin-left: -0.5rem;
     color:rgb(247, 226, 248);
+  }
+  .collapse{
+    margin-left: 1rem;
+  }
+  .collapsing{
+    margin-left: 1rem;
   }
   .title-all{
     background-color: #f5f5f5;
@@ -88,6 +95,12 @@ h2{
     font-size: .78rem;
     color:rgb(247, 226, 248);
     margin-left: -0.5rem;
+  }
+  .collapse{
+    margin-left: 0.05rem;
+  }
+  .collapsing{
+    margin-left: 0.05rem;
   }
   .title-font{
     font-family: "幼园", Sans-serif;
