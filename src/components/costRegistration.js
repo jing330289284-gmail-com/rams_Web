@@ -717,19 +717,16 @@ class costRegistration extends React.Component {
 								<Form.Control type="text" value={this.state.cost} name='cost' autoComplete="off" size="sm" maxLength='7' onChange={(e) => this.costValueChange(e)}  placeholder="料金" />
 							</InputGroup>
 						</Col>
-						<Col sm={2}>
+						<Col sm={4}>
 							<InputGroup size="sm" className="mb-3">
-									<Button size="sm" onClick={(event) => this.addFile(event)}><FontAwesomeIcon icon={faFile} />{this.state.costRegistrationFileFlag !== true ? " 添付" : " 添付済み"} </Button>
-									<Form.File id="costRegistrationFile" hidden value={this.state.costRegistrationFile} custom onChange={(event) => this.changeFile(event)} />
-							</InputGroup>
-						</Col>
-						<Col sm={2}>
-							<InputGroup size="sm" className="mb-3" id="inputGroup-sizing-sm">
+								<Button size="sm" onClick={(event) => this.addFile(event)}><FontAwesomeIcon icon={faFile} />{this.state.costRegistrationFileFlag !== true ? " 添付    " : " 添付済み"}</Button>
+									<Form.File id="costRegistrationFile" hidden value={this.state.costRegistrationFile}  onChange={(event) => this.changeFile(event)} />
 								<Button variant="info" size="sm" onClick={this.handleShowModal.bind(this)}>
 									<FontAwesomeIcon /> {" 他の費用"}
 								</Button>
 							</InputGroup>
 						</Col>
+
 					</Row>
 					<Row>
 						 <Col sm={4}>
