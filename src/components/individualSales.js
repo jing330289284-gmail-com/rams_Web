@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Row , Col , InputGroup , Button , FormControl, } from 'react-bootstrap';
+import {Row , Col , InputGroup , Button , FormControl, Popover,OverlayTrigger,Table} from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -45,12 +45,15 @@ class individualSales extends React.Component {//個人売上検索
         employeeInfo: store.getState().dropDown[9].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
     }
+
+
 	searchEmployee = () => { 
 		const empInfo = {
            employeeName:this.state.employeeName,
             fiscalYear:this.state.fiscalYear,
             startYearAndMonth:publicUtils.formateDate(this.state.individualSales_startYearAndMonth,false),
             endYearAndMonth:publicUtils.formateDate(this.state.individualSales_endYearAndMonth,false),
+            status:"0",
 		};
         axios.post(this.state.serverIP + "personalSales/searchEmpDetails", empInfo)
 			.then(response => {
@@ -58,15 +61,19 @@ class individualSales extends React.Component {//個人売上検索
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
                 }else if(response.data.noData!= null){
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                    this.setState({ employeeInfoList:[]});
+                    this.setState({workMonthCount:''})
+                    this.setState({unitPriceTotal:''})
+                    this.setState({paymentTotal:''})
+                    this.setState({totalgrosProfits:''})
                 }
                  else {
                     this.setState({"errorsMessageShow":false})
                     this.setState({ employeeInfoList: response.data.data })
                     this.setState({ workMonthCount:this.state.employeeInfoList[0].workMonthCount}) 
                     this.feeTotal();
-                    this.workDaysCal();
-                   
-					
+                    //this.workDaysCal();	
+                    this.unitPriceTotalCal(response.data.data);				
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -97,11 +104,6 @@ class individualSales extends React.Component {//個人売上検索
             }else{
             paymentTotal = parseInt(paymentTotal)+parseInt(this.state.employeeInfoList[i].paymentTotal)
             }
-            if(this.state.employeeInfoList[i].unitPrice == null){
-                totalutilPrice = totalutilPrice + 0;
-            }else{
-                totalutilPrice = parseInt(totalutilPrice) + parseInt(this.state.employeeInfoList[i].unitPrice)
-            }
             if(this.state.employeeInfoList[i].grosProfits==null){
                 totalgrosProfits = parseInt(totalgrosProfits) + 0;
             }else{
@@ -109,7 +111,6 @@ class individualSales extends React.Component {//個人売上検索
             }
         }
         
-        this.setState({totalutilPrice:publicUtils.addComma(totalutilPrice.toString(),false)})
         this.setState({totalgrosProfits:publicUtils.addComma(totalgrosProfits.toString(),false)})
         this.setState({paymentTotal:publicUtils.addComma(paymentTotal.toString(),false)})
     }
@@ -176,7 +177,8 @@ class individualSales extends React.Component {//個人売上検索
     unitPriceAddComma(cell,row){
         if(row.unitPrice ===null){
             return 
-        }else{            
+        }else{          
+
             let formatUprice = publicUtils.addComma(row.unitPrice , false);
             return formatUprice;
         }   
@@ -227,12 +229,12 @@ class individualSales extends React.Component {//個人売上検索
         }    
     }
 
-    otherAllowanceAmountAddComma(cell,row){
-        if(row. otherAllowanceAmount ===null){
+    AllowanceAmountAddComma(cell,row){
+        if(row.allowanceAmount ===null){
             return 
         }else{
-            let formatOtherAllowanceAmount= publicUtils.addComma(row. otherAllowanceAmount , false);
-            return formatOtherAllowanceAmount;
+            let formatAllowanceAmount= publicUtils.addComma(row.allowanceAmount , false);
+            return formatAllowanceAmount;
         }
     }
 
@@ -267,19 +269,36 @@ class individualSales extends React.Component {//個人売上検索
 		}
     };
 
-workDaysCal = () =>{
+workDaysCal = (cell,row) =>{
     var holidayCount=0;
     var workdayCount=0;
     var totalholidayCount=0;
     var totalworkdayCount=0;
-    for(let n=0;n<this.state.employeeInfoList.length;n++){
-        if(this.state.employeeInfoList[n].dailyCalculationStatus=="0"){
-           var monthDayCount= new Date(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6), 0).getDate();
-           for(var i= this.state.employeeInfoList[n].admissionStartDate.substring(6,8);i<=monthDayCount;i++){
+        if(row.dailyCalculationStatus=="0"){
+            if(row.admissionStartDate.substring(0,6)==row.onlyYandM){
+                if(row.admissionStartDate.substring(6,8)=="01"){
+                    if(row.deductionsAndOvertimePay!=null){
+                        var dailySalayCal = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
+                    }else {
+                        var dailySalayCal = parseInt(row.unitPrice)
+                    }
+                var addComma= publicUtils.addComma(dailySalayCal, false);
+                let returnItem = cell;
+                returnItem=addComma;
+                if(returnItem==0){
+                    returnItem='';
+                }
+                return returnItem;   
+                    
+                }
+           var monthDayCount= new Date(row.admissionStartDate.substring(0,4), row.admissionStartDate.substring(4,6), 0).getDate();
+           var a =row.admissionStartDate.substring(0,4);
+           var b =row.admissionStartDate.substring(4,6);
+           for(var i= row.admissionStartDate.substring(6,8);i<=monthDayCount;i++){
                if(i<10){
                 i="0"+i
                }
-            if(publicUtils.isHoliday(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6),i)){
+            if(publicUtils.isHoliday(row.admissionStartDate.substring(0,4), row.admissionStartDate.substring(4,6),i)){
                 holidayCount++;
             }
             else {
@@ -290,23 +309,303 @@ workDaysCal = () =>{
                if(j<10){
                 j="0"+j
                }
-               if(publicUtils.isHoliday(this.state.employeeInfoList[n].admissionStartDate.substring(0,4), this.state.employeeInfoList[n].admissionStartDate.substring(4,6),j)){
+               if(publicUtils.isHoliday(row.admissionStartDate.substring(0,4), row.admissionStartDate.substring(4,6),j)){
                 totalholidayCount++;
             }
             else {
                 totalworkdayCount++;
             }
            }
-           var dailySalary = workdayCount/totalworkdayCount*this.state.employeeInfoList[n].unitPrice
-           //alert(dailySalary)
-          // this.setState({this.state.employeeInfoList[n].unitPrice:dailySalary})
-           //this.state.employeeInfoList[n].unitPrice=dailySalary;
-           //this.setState({employeeInfoList[n].:dailySalary})
-           }
-    }   
-        }    
-        
+           var dailySalary = parseInt(workdayCount/totalworkdayCount*row.unitPrice)
+                if(row.deductionsAndOvertimePay!=null){
+                    var dailySalayCal = dailySalary + parseInt(row.deductionsAndOvertimePay);
+                }else {
+                    var dailySalayCal = dailySalary
+                }
 
+                    var addComma= publicUtils.addComma(dailySalayCal, false)+"(日割)";
+                    let returnItem = cell;
+                    returnItem=addComma;  
+                    if(returnItem==0){
+                        returnItem='';
+                    }      
+                    return returnItem;   
+        }
+        if(row.admissionEndDate.substring(0,6)==row.onlyYandM){
+                var monthDayCount= new Date(row.admissionEndDate.substring(0,4), row.admissionEndDate.substring(4,6), 0).getDate();
+                if(row.admissionEndDate.substring(6,8)==monthDayCount){
+                    var salary =publicUtils.addComma(row.unitPrice, false)
+                    let returnItem = cell;
+                    returnItem=salary;
+                    if(returnItem==0){
+                        returnItem='';
+                    }
+                  return returnItem;   
+
+                }
+                else{
+                var a =row.admissionEndDate.substring(0,4);
+                var b =row.admissionEndDate.substring(4,6);
+                for(var i= 0;i<=row.admissionEndDate.substring(6,8);i++){
+                    if(i<10){
+                     i="0"+i
+                    }
+                 if(publicUtils.isHoliday(row.admissionEndDate.substring(0,4), row.admissionEndDate.substring(4,6),i)){
+                     holidayCount++;
+                 }
+                 else {
+                     workdayCount++;
+                 }
+                }
+                for(var j =1;j<=monthDayCount;j++){
+                    if(j<10){
+                     j="0"+j
+                    }
+                    if(publicUtils.isHoliday(row.admissionEndDate.substring(0,4), row.admissionEndDate.substring(4,6),j)){
+                     totalholidayCount++;
+                 }
+                 else {
+                     totalworkdayCount++;
+                }  
+        }
+                var dailySalay = parseInt(workdayCount/totalworkdayCount*row.unitPrice)
+                if(row.deductionsAndOvertimePay!=null){
+                    var dailySalay = dailySalay + parseInt(row.deductionsAndOvertimePay);
+                }
+                var addComma= publicUtils.addComma(dailySalay, false)+"(日割)";
+                let returnItem = cell;
+                returnItem=addComma;
+                if(returnItem==0){
+                    returnItem='';
+                }
+                return returnItem;   
+            }
+        }
+            else{
+                if(row.deductionsAndOvertimePay!=null){
+                    var dailySalay = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
+                }else{
+                    var dailySalay =row.unitPrice
+                }
+                var dailySalay=publicUtils.addComma(dailySalay, false)
+                let returnItem = cell;
+                returnItem=dailySalay;
+                if(returnItem==0){
+                    returnItem='';
+                }
+                return returnItem;   
+            }
+        
+        }
+        
+        else{
+            if(row.deductionsAndOvertimePay!=null){
+                var dailySalay = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
+            }else{
+                var dailySalay = row.unitPrice
+            }
+            var dailySalay=publicUtils.addComma(dailySalay, false)
+            let returnItem = cell;
+            returnItem=dailySalay;
+            if(returnItem==0){
+                returnItem='';
+            }
+            return returnItem;  
+        }
+       
+    } 
+
+unitPriceTotalCal =(empList) =>{    
+    
+    var unitPriceTotal=0;
+    var dailySalary=0;
+    var totalunitPrice=0;
+    for(var m=0;m<empList.length;m++){
+        var holidayCount=0;
+        var workdayCount=0;
+        var totalholidayCount=0;
+        var totalworkdayCount=0;
+        var startDate=empList[m].admissionStartDate;
+        var endDate =empList[m].admissionEndDate;
+        var unPrice=empList[m].unitPrice;
+        if(empList[m].unitPrice==null){
+            unPrice =0;
+        }
+        if(empList[m].unitPrice==""){
+            unPrice =0;
+        }
+        var deductionsAndOver =empList[m].deductionsAndOvertimePay;
+        
+        if(empList[m].dailyCalculationStatus=="0"){
+            if(startDate.substring(0,6)==empList[m].onlyYandM){
+                if(startDate.substring(6,8)=="01"){
+                    if(deductionsAndOver!=null){
+                        unitPriceTotal=parseInt(unitPriceTotal) + parseInt(unPrice) + parseInt(deductionsAndOver)
+                    }else{
+                        unitPriceTotal=parseInt(unitPriceTotal) + parseInt(unPrice)
+                    }
+                    
+                }
+                else{
+           var monthDayCount= new Date(startDate.substring(0,4), startDate.substring(4,6), 0).getDate();
+           for(var i= startDate.substring(6,8);i<=monthDayCount;i++){
+               if(i<10){
+                i="0"+i
+               }
+            if(publicUtils.isHoliday(startDate.substring(0,4),startDate.substring(4,6),i)){
+                holidayCount++;
+            }
+            else {
+                workdayCount++;
+            }
+           }
+           for(var j =1;j<=monthDayCount;j++){
+               if(j<10){
+                j="0"+j
+               }
+               if(publicUtils.isHoliday(startDate.substring(0,4), startDate.substring(4,6),j)){
+                totalholidayCount++;
+            }
+            else {
+                totalworkdayCount++;
+            }
+           }
+           dailySalary = parseInt(workdayCount/totalworkdayCount*unPrice)
+                if(deductionsAndOver!=null){
+                    var dailySalayCal = parseInt(dailySalary) + parseInt(deductionsAndOver);
+                    unitPriceTotal= parseInt(unitPriceTotal) + parseInt(dailySalayCal)
+                }else {
+                    var dailySalayCal = parseInt(dailySalary)
+                    unitPriceTotal= parseInt(unitPriceTotal) + parseInt(dailySalayCal)
+                }
+               
+
+    }
+}
+        if(endDate.substring(0,6)==empList[m].onlyYandM){
+                var monthDayCount= new Date(endDate.substring(0,4), endDate.substring(4,6), 0).getDate();
+                if(endDate.substring(6,8)==monthDayCount){
+                    unitPriceTotal =parseInt(unitPriceTotal) + parseInt(unPrice)
+                }
+                else{
+                for(var i= 0;i<=endDate.substring(6,8);i++){
+                    if(i<10){
+                     i="0"+i
+                    }
+                 if(publicUtils.isHoliday(endDate.substring(0,4), endDate.substring(4,6),i)){
+                     holidayCount++;
+                 }
+                 else {
+                     workdayCount++;
+                 }
+                }
+                for(var j =1;j<=monthDayCount;j++){
+                    if(j<10){
+                     j="0"+j
+                    }
+                    if(publicUtils.isHoliday(endDate.substring(0,4), endDate.substring(4,6),j)){
+                     totalholidayCount++;
+                 }
+                 else {
+                     totalworkdayCount++;
+                }  
+        }
+             dailySalary = parseInt(workdayCount/totalworkdayCount*unPrice)
+                var dailySalarys
+                if(deductionsAndOver!=null){
+                    dailySalarys = parseInt(dailySalary) + parseInt(deductionsAndOver);
+                    unitPriceTotal= parseInt(unitPriceTotal)+parseInt(dailySalarys)
+                }else{
+                    
+                     unitPriceTotal =parseInt(unitPriceTotal)+parseInt(dailySalary)
+                }
+            }
+        }
+            if(startDate.substring(0,6)!=empList[m].onlyYandM&&endDate.substring(0,6)!=empList[m].onlyYandM) {
+                
+                if(deductionsAndOver!=null){
+                     dailySalary = parseInt(unPrice) + parseInt(deductionsAndOver);
+                     unitPriceTotal =parseInt(unitPriceTotal)+parseInt(dailySalary)
+                }else{
+                     dailySalary =parseInt(unPrice)
+                     unitPriceTotal =parseInt(unitPriceTotal)+parseInt(dailySalary)
+                }
+                
+            }
+    }
+        else if(empList[m].dailyCalculationStatus=="1"){
+
+            if(deductionsAndOver!=null){
+                dailySalary = parseInt(unPrice) + parseInt(deductionsAndOver);
+                unitPriceTotal =parseInt(unitPriceTotal)+parseInt(dailySalary)
+            }else{
+                dailySalary = parseInt(unPrice)
+                unitPriceTotal= parseInt(unitPriceTotal) + parseInt(dailySalary)
+            }
+
+        }
+
+    
+}
+    this.setState({unitPriceTotal:publicUtils.addComma(unitPriceTotal, false)})
+
+}
+
+allowanceDetail=(cell,row)=>{ 
+  const listItems = row.empNameList.map((empNameList) => 
+    <li>{empNameList}</li>
+);
+    if(row.allowanceAmount ===null){
+        return 
+    }else{
+    
+    let formatAllowanceAmount= publicUtils.addComma(row.allowanceAmount , false);
+    let returnItem = cell;
+        returnItem = 
+        <OverlayTrigger
+            trigger={"focus"}
+            placement={"left"}
+            overlay={
+            <Popover>
+                <Popover.Content>
+                    
+                <strong>
+                    <Table id="detailTable" striped bordered hover
+                        data={row.employeeInfoList}>
+                        <tr>
+                            <td >手当名称</td>
+                            <td >費用</td>
+                        </tr>
+                        <tr>
+                            <td >{row.otherAllowanceName}</td>
+                            <td >{row.otherAllowanceAmount}</td>
+                        </tr>
+                        <tr>
+                            <td >住宅</td>
+                            <td >{row.housingAllowance}</td>
+                        </tr>
+                        <tr>
+                            <td >リーダー</td>
+                            <td >{row.leaderAllowanceAmount}</td>
+                        </tr>
+                        <tr>
+                            <td >関連社員</td>
+                            <td>{listItems}</td>
+                                                                                
+                        </tr>
+                    </Table>
+                </strong>
+                </Popover.Content>
+            </Popover>
+            }
+        >
+        <button style={{outline: 'none',border: 'none',background: 'none'}}>{formatAllowanceAmount}</button>
+      </OverlayTrigger>
+        return returnItem;
+    }
+}
+
+       
 render (){
     const {errorsMessageValue,employeeInfo} = this.state;
         return(
@@ -354,7 +653,7 @@ render (){
                                     <font color="red" style={{ marginLeft: "15px"}}>★</font>
 								</InputGroup>
 							</Col>
-                    <Col sm={4}>
+                    <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
@@ -370,8 +669,8 @@ render (){
                                 id="personalsalesSearchDatePicker"
                                 dateFormat={"yyyy/MM"}
                                 name="individualSales_startYearAndMonth"
-                                locale="ja">
-								</DatePicker><font id="mark">～</font><DatePicker
+                                locale="ja"/>
+								<font id="mark">～</font><DatePicker
                                 selected={this.state.individualSales_endYearAndMonth}
                                 onChange={this.individualSalesEndYearAndMonthChange}
                                 dateFormat={"yyyy MM"}
@@ -384,13 +683,12 @@ render (){
                                 id="personalsalesSearchBackDatePicker"
                                 dateFormat={"yyyy/MM"}
                                 name="individualSales_endYearAndMonth"
-                                locale="ja">
-								</DatePicker>
+                                locale="ja"/>
                             </InputGroup.Prepend>
                         </InputGroup>                       
                     </Col>                    
-                    <Col sm={4}>
-                    <Button variant="info" type = "submit"size="sm" id="search"style={{marginLeft:"100px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
+                    <Col sm={3}>
+                    <Button variant="info" type = "submit"size="sm" id="search"style={{marginLeft:"0px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
                     </Col>
 
                 </Row>
@@ -402,7 +700,7 @@ render (){
                     
 						<Col sm={3}>
                     <label>単価合計：</label>
-                    <label>{this.state.totalutilPrice} </label>
+                    <label>{this.state.unitPriceTotal} </label>
 						</Col>
 						<Col sm={3}>
                     <label>支払合計：</label>
@@ -414,21 +712,21 @@ render (){
 						</Col>
 				</Row>
                   <div>
-                    <BootstrapTable data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed>
+                    <BootstrapTable  data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}}  options={this.options} striped hover condensed 
+                    onClickCell>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.unitPriceAddComma}>単価</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma}>控除/残業</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='otherAllowanceAmount' dataFormat={this.otherAllowanceAmountAddComma}>他の手当</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma} >控除/残業</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>手当合計</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
-						
 			</div>
         );
     }
