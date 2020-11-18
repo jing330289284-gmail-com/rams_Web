@@ -11,23 +11,21 @@ import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
-axios.defaults.withCredentials = true;
-
 /**
  * 作業報告書登録画面
  */
-class workRepot extends React.Component {
+class resume extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		this.searchWorkRepot = this.searchWorkRepot.bind(this);
+		this.searchResume = this.searchResume.bind(this);
 		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
 	};
 	componentDidMount(){
-		$("#workRepotUpload").attr("disabled",true);
-		$("#workRepotDownload").attr("disabled",true);
-		this.searchWorkRepot();
+		$("#resumeUpload").attr("disabled",true);
+		$("#resumeDownload").attr("disabled",true);
+		this.searchResume();
 	}
 	//onchange
 	valueChange = event => {
@@ -50,8 +48,8 @@ class workRepot extends React.Component {
         }
     };
 	//　検索
-	searchWorkRepot = () => {
-		axios.post(this.state.serverIP + "workRepot/selectWorkRepot")
+	searchResume = () => {
+		axios.post(this.state.serverIP + "resume/selectResume")
 			.then(response => response.data)
 			.then((data) => {
 				if (data.length!=0) {
@@ -75,10 +73,10 @@ class workRepot extends React.Component {
 			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
 			sumWorkTime:　e.sumWorkTime,
 		};
-		axios.post(this.state.serverIP + "workRepot/updateworkRepot",emp)
+		axios.post(this.state.serverIP + "resume/updateresume",emp)
 			.then(response => {
 				if (response.data != null) {
-					this.searchWorkRepot();
+					this.searchResume();
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
@@ -89,7 +87,7 @@ class workRepot extends React.Component {
   /**
      * 作業報告書ボタン
      */
-    workRepotUpload=()=>{
+    resumeUpload=()=>{
 	let getfile=$("#getFile").val();
 	let fileName = getfile.split('.');
 	if(
@@ -116,8 +114,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 				attendanceYearAndMonth:this.state.rowSelectAttendanceYearAndMonth,
 			};
 			formData.append('emp', JSON.stringify(emp))
-			formData.append('workRepotFile', $("#getFile").get(0).files[0])
-			axios.post(this.state.serverIP + "workRepot/updateWorkRepotFile",formData)
+			formData.append('resumeFile', $("#getFile").get(0).files[0])
+			axios.post(this.state.serverIP + "resume/updateResumeFile",formData)
 			.then(response => {
 				if (response.data != null) {
 					window.location.reload();
@@ -134,8 +132,8 @@ if($("#getFile").get(0).files[0].size>1048576){
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#workRepotUpload").attr("disabled",true);
-			$("#workRepotDownload").attr("disabled",false);
+			$("#resumeUpload").attr("disabled",true);
+			$("#resumeDownload").attr("disabled",false);
 			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
 			this.setState(
 				{
@@ -146,10 +144,10 @@ if($("#getFile").get(0).files[0].size>1048576){
 				}
 			);
 			if(row.attendanceYearAndMonth-0>=TheYearMonth){
-				$("#workRepotUpload").attr("disabled",false);
+				$("#resumeUpload").attr("disabled",false);
 			}
 			if(row.attendanceYearAndMonth-0>TheYearMonth){
-				$("#workRepotDownload").attr("disabled",true);
+				$("#resumeDownload").attr("disabled",true);
 			}
 		} else {
 			this.setState(
@@ -220,7 +218,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</div>
 				</Form>
 				<div >
-				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.workRepotUpload}/>
+				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.resumeUpload}/>
 	                <br/>
                     <Row>
 						<Col sm={2}>
@@ -229,10 +227,10 @@ if($("#getFile").get(0).files[0].size>1048576){
   						<Col sm={6}></Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.getFile} id="workRepotUpload">
+                               <Button variant="info" size="sm" onClick={this.getFile} id="resumeUpload">
 									<FontAwesomeIcon icon={faUpload} />Upload
 								</Button>{' '}
-								<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport, this.state.serverIP)}id="workRepotDownload">
+								<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport, this.state.serverIP)}id="resumeDownload">
 	                          		 <FontAwesomeIcon icon={faDownload} />Download
 		                        </Button>
 	 						</div>
@@ -253,4 +251,4 @@ if($("#getFile").get(0).files[0].size>1048576){
 		);
 	}
 }
-export default workRepot;
+export default resume;

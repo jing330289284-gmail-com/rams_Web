@@ -13,6 +13,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 registerLocale('ja', ja);
 

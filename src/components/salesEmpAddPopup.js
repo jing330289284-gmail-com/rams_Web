@@ -4,6 +4,8 @@ import { faSave, faEnvelope, faMinusCircle, faBroom, faListOl,faUserPlus ,faFile
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import "react-datepicker/dist/react-datepicker.css";
+axios.defaults.withCredentials = true;
+
 /**
  * メール確認
  * 

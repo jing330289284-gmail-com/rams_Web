@@ -14,6 +14,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 registerLocale('ja', ja);
 
@@ -54,16 +55,20 @@ class siteInfo extends Component {
 		})
 	}
 
-
-
 	onchangeSiteRoleCode = event => {
-		if (event.target.value === '1') {
+		if (event.target.value === '1'||event.target.value === '0') {
 			this.setState({
-				relatedEmployeesFlag: true
+				relatedEmployeesFlag: true,
+				[event.target.name]: event.target.value
 			})
 		} else {
 			this.setState({
-				relatedEmployeesFlag: false
+				relatedEmployeesFlag: false,
+				related1Employees: '',
+				related2Employees: '',
+				related3Employees: '',
+				related4Employees: '',
+				[event.target.name]: event.target.value
 			})
 		}
 	}
@@ -434,7 +439,7 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
+													<input  type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
 													/>
 												</div>
 											)}
@@ -447,7 +452,7 @@ class siteInfo extends Component {
 								<Col sm={4}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker
@@ -485,7 +490,7 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">退場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker
@@ -507,9 +512,9 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">システム名</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="systemName" name="systemName" type="text" placeholder="例：請求システム" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="systemName" name="systemName" type="text"  onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -530,7 +535,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input  type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
 												</div>
 											)}
@@ -553,7 +558,7 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input  type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
 												</div>
 											)}
@@ -564,7 +569,7 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="topCustomerNo"
@@ -575,7 +580,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input  type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
 												</div>
 											)}
@@ -597,7 +602,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input  type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
@@ -613,7 +618,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="unitPrice" name="unitPrice" type="text"  onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 										<InputGroup.Prepend>
 											<InputGroup.Text className="cssNikanji">日割</InputGroup.Text>
 											<InputGroup.Checkbox className="cssNikanji" name="dailyCalculationStatus" checked={this.state.dailyCalculationStatus} onChange={this.dailyCalculationStatusChange} disabled={this.state.dailyCalculationStatusFlag === true ? true : false} />
@@ -683,7 +688,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="siteManager" name="siteManager" type="text"  onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -694,10 +699,10 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
-										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
-										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
-										<FormControl id="related4Employees" name="related4Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
+										<FormControl id="related1Employees" name="related1Employees" type="text"  onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+										<FormControl id="related2Employees" name="related2Employees" type="text"  onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
+										<FormControl id="related3Employees" name="related3Employees" type="text"  onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
+										<FormControl id="related4Employees" name="related4Employees" type="text"  onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag  ? false : true} />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -714,7 +719,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input  type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
 												</div>
 											)}
@@ -727,7 +732,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="remark" name="remark" type="text"  onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>

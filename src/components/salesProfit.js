@@ -7,6 +7,7 @@ import axios from 'axios'
 import ja from 'date-fns/locale/ja';
 import DatePicker, { registerLocale } from "react-datepicker"
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 registerLocale('ja', ja);
 

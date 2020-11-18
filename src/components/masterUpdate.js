@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 //マスター修正
 class masterUpdate extends Component {

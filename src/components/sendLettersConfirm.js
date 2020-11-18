@@ -12,6 +12,8 @@ import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
 import store from './redux/store';
 import SalesEmpAddPopup from './salesEmpAddPopup';
+axios.defaults.withCredentials = true;
+
 /** 
 *営業送信お客確認画面
  */

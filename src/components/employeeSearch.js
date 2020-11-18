@@ -19,6 +19,7 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 registerLocale("ja", ja);
 class employeeSearch extends React.Component {
@@ -53,14 +54,16 @@ class employeeSearch extends React.Component {
 		nationalityCodes: store.getState().dropDown[7],
 		developLanguageMaster: store.getState().dropDown[8].slice(1),
 		employeeInfo: store.getState().dropDown[9].slice(1),
-		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		customerMaster: store.getState().dropDown[15].slice(1),
 	};
 	//リセット　reset
-	resetStates = {employeeName: '',
-		employeeNo: '', employeeFormCode: '', employeeStatus: '', genderStatus: '',
-		ageFrom: '', ageTo: '', residenceCode: '', nationalityCode: '', customer: '',
+	resetStates = {
+		employeeName: '',
+		employeeFormCode: '', employeeStatus: '', genderStatus: '',
+		ageFrom: '', ageTo: '', residenceCode: '', nationalityCode: '', customerNo: '',
 		intoCompanyCode: '', japaneseLevelCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '',
-		kadou: '', developLanguage1: '', developLanguage2: '', developLanguage3: '',
+		kadou: '', developLanguage1: '', developLanguage2: ''
 	};
 
 	//初期化メソッド
@@ -75,26 +78,25 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
+		alert(publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster))
 		const emp = {
-			employeeNo: this.state.employeeNo=== ""? undefined : this.state.employeeNo,
-			employeeName: this.state.employeeName=== ""? undefined : this.state.employeeName,
-			employeeFormCode: this.state.employeeFormCode=== ""? undefined : this.state.employeeFormCode,
-			employeeStatus:  this.state.employeeStatus=== ""? undefined : this.state.employeeStatus,
-			genderStatus: this.state.genderStatus=== ""? undefined : this.state.genderStatus,
-			ageFrom:  this.state.ageFrom=== ""? undefined : publicUtils.birthday_age(this.state.ageFrom),
-			ageTo: this.state.ageTo=== ""? undefined : publicUtils.birthday_age(this.state.ageTo),
-			residenceCode: this.state.residenceCode=== ""? undefined : this.state.residenceCode,
-			nationalityCode: this.state.nationalityCode=== ""? undefined : this.state.nationalityCode,
-			customer: this.state.customer=== ""? undefined : this.state.customer,
-			intoCompanyCode: this.state.intoCompanyCode=== ""? undefined : this.state.intoCompanyCode,
-			japaneseLevelCode: this.state.japaneseLevelCode=== ""? undefined : this.state.japaneseLevelCode,
-			siteRoleCode: this.state.siteRoleCode=== ""? undefined : this.state.siteRoleCode,
+			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
+			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
+			employeeStatus: this.state.employeeStatus === "" ? undefined : this.state.employeeStatus,
+			genderStatus: this.state.genderStatus === "" ? undefined : this.state.genderStatus,
+			ageFrom: this.state.ageFrom === "" ? undefined : publicUtils.birthday_age(this.state.ageFrom),
+			ageTo: this.state.ageTo === "" ? undefined : publicUtils.birthday_age(this.state.ageTo),
+			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
+			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
+			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
+			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
+			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
+			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
 			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
-			developLanguage3: publicUtils.labelGetValue($("#developLanguageCode3").val(), this.state.developLanguageMaster),
-			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom=== ""||this.state.intoCompanyYearAndMonthFrom===undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo=== ""||this.state.intoCompanyYearAndMonthTo=== undefined? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
-			kadou: this.state.kadou=== ""? undefined : this.state.kadou,
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
+			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
@@ -165,7 +167,7 @@ class employeeSearch extends React.Component {
 					this.setState({ "myToastShow": false });
 				}
 			})
-			.catch(function (error) {
+			.catch(function(error) {
 				alert("删除错误，请检查程序");
 			});
 	}
@@ -239,6 +241,7 @@ class employeeSearch extends React.Component {
 			})
 		} else {
 			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
+				this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
 				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'developLanguage1':
@@ -251,15 +254,14 @@ class employeeSearch extends React.Component {
 							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
 						})
 						break;
-					case 'developLanguage3':
-						this.setState({
-							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
 					case 'employeeName':
 						this.setState({
 							employeeName: value,
-							//employeeName: this.state.employeeInfo.find((v) => (v.name === value)).code,
+						})
+						break;
+					case 'customerNo':
+						this.setState({
+							customerNo:  this.state.customerMaster.find((v) => (v.name === value)).code,
 						})
 						break;
 					default:
@@ -284,8 +286,24 @@ class employeeSearch extends React.Component {
 			})
 		})
 	}
+
+
+	/**
+* タイプが違う時に、色々な操作をします。
+*/
+	employeeStatusChange = event => {
+		const value = event.target.value;
+		if (value === '1') {
+			this.setState({ employeeStatus: '1', intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '' });
+		} else if (value === '0') {
+			this.setState({ employeeStatus: "0" });
+		} else {
+			this.setState({ employeeStatus: "" });
+		}
+	}
+
 	render() {
-		const { employeeNo, employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
+		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneseLevelCode, siteRoleCode, kadou, intoCompanyCode,
 			employeeList, errorsMessageValue } = this.state;
 		//テーブルの行の選択
@@ -334,12 +352,18 @@ class employeeSearch extends React.Component {
 					<div >
 						<Form.Group>
 							<Row>
-								<Col lg={3}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl name="employeeNo" autoComplete="off" value={employeeNo} size="sm" onChange={this.valueChange} placeholder="社員番号" />
+										<Form.Control as="select" size="sm" onChange={this.employeeStatusChange.bind(this)} name="employeeStatus" value={employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
+										</Form.Control>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -350,9 +374,9 @@ class employeeSearch extends React.Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName)||""}
+											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName) || ""}
 											options={this.state.employeeInfo}
-											getOptionLabel={(option) => option.text?option.text:""}
+											getOptionLabel={(option) => option.text ? option.text : ""}
 											onChange={(event, values) => this.getEmployeeName(event, values)}
 											renderOption={(option) => {
 												return (
@@ -371,43 +395,14 @@ class employeeSearch extends React.Component {
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
-											name="employeeFormCode" value={employeeFormCode}
-											autoComplete="off">
-											{this.state.employeeFormCodes.map(data =>
-												<option key={data.code} value={data.code}>
-													{data.name}
-												</option>
-											)}
-										</Form.Control>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeStatus" value={employeeStatus} autoComplete="off">
-											{this.state.employeeStatuss.map(data =>
-												<option key={data.code} value={data.code}>
-													{data.name}
-												</option>
-											)}
-										</Form.Control>
-									</InputGroup>
-								</Col>
+
+
 							</Row>
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">性別　　</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="genderStatus" value={genderStatus} autoComplete="off">
 											{this.state.genderStatuss.map(data =>
@@ -421,7 +416,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="fiveKanji">年齢　　</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">年齢</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
 										/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
@@ -445,7 +440,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">国籍　　</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="nationalityCode" value={nationalityCode} autoComplete="off">
 											{this.state.nationalityCodes.map(data =>
@@ -463,15 +458,34 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control type="text" name="customer" autoComplete="off" value={customer} size="sm" onChange={this.valueChange} className={"optionCss"} placeholder="社お客様先" />
+
+
+		<Autocomplete
+											id="customerNo"
+											name="customerNo"
+											options={this.state.customerMaster}
+											getOptionLabel={(option) => option.name}
+											value={this.state.customerMaster.find(v => v.code === this.state.customerNo) || {}}
+											onSelect={(event) => this.handleTag(event, 'customerNo')}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input  type="text" {...params.inputProps} className="auto"
+														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+
+
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="sixKanji">入社区分</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode} autoComplete="off">
+										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode}
+											disabled={employeeStatus === "1" ? true : false}
+											autoComplete="off">
 											{this.state.intoCompanyCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -483,7 +497,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">日本語　</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">日本語</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="japaneseLevelCode" value={japaneseLevelCode} autoComplete="off">
 											{this.state.japaneaseLevelCodes.map(data =>
@@ -497,7 +511,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割　　</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm" onChange={this.valueChange} name="siteRoleCode" value={siteRoleCode} autoComplete="off">
 											{this.state.siteMaster.map(data =>
@@ -510,12 +524,29 @@ class employeeSearch extends React.Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={6}>
+								<Col sm={2}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" size="sm"
+											onChange={this.valueChange}
+											disabled={employeeStatus === "1" ? true : false}
+											name="employeeFormCode" value={employeeFormCode}
+											autoComplete="off">
+											{this.state.employeeFormCodes.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={4}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
-
 										<Autocomplete
 											id="developLanguageCode1"
 											name="developLanguageCode1"
@@ -544,21 +575,6 @@ class employeeSearch extends React.Component {
 												</div>
 											)}
 										/>
-										<Autocomplete
-											id="developLanguageCode3"
-											name="developLanguageCode3"
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguage3) || {}}
-											onSelect={(event) => this.handleTag(event, 'developLanguage3')}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
-												</div>
-											)}
-										/>
-
 									</InputGroup>
 								</Col>
 
@@ -567,13 +583,14 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">入社年月</InputGroup.Text>
 											<DatePicker
+												disabled={employeeStatus === "1" ? true : false}
+												id={employeeStatus === "1" ? "datePickerReadonlyDefault" : "datePicker"}
 												selected={this.state.intoCompanyYearAndMonthFrom}
 												onChange={this.inactiveintoCompanyYearAndMonthFrom}
 												locale="ja"
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
-												id="datePicker"
 												className="form-control form-control-sm"
 												autoComplete="off"
 											/>～<DatePicker
@@ -583,8 +600,8 @@ class employeeSearch extends React.Component {
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
-												id="datePicker"
-												className="form-control form-control-sm"
+												disabled={employeeStatus === "1" ? true : false}
+												id={employeeStatus === "1" ? "datePickerReadonlyDefault" : "datePicker"} className="form-control form-control-sm"
 												autoComplete="off"
 											/>
 										</InputGroup.Prepend>
