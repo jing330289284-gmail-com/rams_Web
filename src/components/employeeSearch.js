@@ -78,7 +78,6 @@ class employeeSearch extends React.Component {
 
 	//検索s
 	searchEmployee = () => {
-		alert(publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster))
 		const emp = {
 			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
