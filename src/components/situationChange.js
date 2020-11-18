@@ -7,6 +7,8 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 class situationChange extends Component {//状況変動一覧
      constructor(props){
         super(props);

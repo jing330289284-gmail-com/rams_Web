@@ -14,6 +14,8 @@ import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import store from './redux/store';
 registerLocale("ja", ja);
+axios.defaults.withCredentials = true;
+
 /**
  * 社員勤務管理画面
  */

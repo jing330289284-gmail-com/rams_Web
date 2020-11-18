@@ -11,6 +11,7 @@ import store from './redux/store';
 import '../asserts/css/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
+axios.defaults.withCredentials = true;
 
 /**
  * 勤務->勤務登録->休憩時間 の画面
