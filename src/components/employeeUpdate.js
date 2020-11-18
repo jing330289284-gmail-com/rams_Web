@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUndo, faFile, faList } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo, faFile, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -1242,7 +1242,7 @@ class employeeUpdate extends React.Component {
 								<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>{' '}
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
-								<FontAwesomeIcon icon={faList} /> 戻る
+								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>

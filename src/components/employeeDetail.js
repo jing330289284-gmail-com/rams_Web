@@ -15,7 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile, faList } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -1035,7 +1035,7 @@ class employeeUpdate extends React.Component {
 						</Row>
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
-								<FontAwesomeIcon icon={faList} /> 戻る
+								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>
