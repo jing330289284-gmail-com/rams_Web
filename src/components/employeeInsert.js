@@ -517,7 +517,7 @@ class employeeInsert extends React.Component {
 		if (backPage !== null && backPage !== undefined && backPage !== '') {
 			return this.props.history.push("/subMenuManager/" + backPage);
 		} else {
-			return this.props.history.push("/subMenuManager/employeeInsert");
+			return this.props.history.push("/subMenuManager/employeeSearch");
 		}
 	};
 	render() {
@@ -548,7 +548,7 @@ class employeeInsert extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
+						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/* PW設定 */}
@@ -684,7 +684,7 @@ class employeeInsert extends React.Component {
 
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">部署</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -697,7 +697,7 @@ class employeeInsert extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">職種</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}

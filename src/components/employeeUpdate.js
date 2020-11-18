@@ -68,6 +68,7 @@ class employeeUpdate extends React.Component {
 
 	//更新ボタン
 	updateEmployee = () => {
+		alert(this.state.passportInfoURL)
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
@@ -196,6 +197,8 @@ class employeeUpdate extends React.Component {
 		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				console.log(data)
+				console.log(data.passportInfo)
 				$("#firstHalfAddress").val(data.firstHalfAddress);
 				this.setState({
 					employeeStatus: data.employeeStatus,//社員区分
@@ -576,7 +579,7 @@ class employeeUpdate extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
+						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/* PW設定 */}
@@ -708,7 +711,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">部署</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -721,7 +724,7 @@ class employeeUpdate extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">職種</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
