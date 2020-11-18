@@ -2,34 +2,6 @@ const $ = require('jquery');
 const axios = require('axios');
 
 /**
- * 銀行の選択と項目の活性
- */
-export function canSelect(){
-	var val = $("#bankCode").val();
-	if(val !== ''){
-        $("#bankBranchName").attr("readonly",false);
-        $("#bankBranchCode").attr("readonly",false);
-        $("#accountNo").attr("readonly",false);
-        $("#accountName").attr("readonly",false);
-        $("#futsu").attr("disabled",false);
-        $("#toza").attr("disabled",false);
-        $("#futsu").attr("checked",true);
-    }else{
-        $("#bankBranchName").attr("readonly",true);
-        $("#bankBranchCode").attr("readonly",true);
-        $("#accountNo").attr("readonly",true);
-        $("#accountName").attr("readonly",true);
-        $("#futsu").attr("disabled",true);
-        $("#toza").attr("disabled",true);
-        $("#futsu").attr("checked",true);
-    }
-    $("#bankBranchName").val("");
-    $("#bankBranchCode").val("");
-    $("#accountNo").val("");
-    $("#accountName").val("");
-    $("#futsu").attr("checked",true);
-}
-/**
  * 非活性になる
  */
 export function setDisabled(){
