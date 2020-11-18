@@ -15,7 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile , faList} from '@fortawesome/free-solid-svg-icons';
+import { faFile, faList } from '@fortawesome/free-solid-svg-icons';
 
 axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
@@ -69,6 +69,8 @@ class employeeUpdate extends React.Component {
 		this.setState(
 			{
 				actionType: location.state.actionType,
+				backPage: location.state.backPage,
+
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -98,7 +100,7 @@ class employeeUpdate extends React.Component {
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
 					occupationCode: data.occupationCode,//職種
 					departmentCode: data.departmentCode,//部署
-					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
+					companyMail: data.companyMail !== null && data.companyMail !== ""&&data.companyMail!== undefined? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
@@ -360,8 +362,13 @@ class employeeUpdate extends React.Component {
 		}
 	}
 	back = () => {
-        return this.props.history.push("/subMenuManager/employeeSearch");
-    };
+		let backPage = this.state.backPage
+		if (backPage !== null && backPage !== undefined && backPage !== '') {
+			return this.props.history.push("/subMenuManager/" + backPage);
+		} else {
+			return this.props.history.push("/subMenuManager/employeeInsert");
+		}
+	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1027,7 +1034,7 @@ class employeeUpdate extends React.Component {
 							</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
-							<Button size="sm" variant="info" type="button"　onClick={this.back}>
+							<Button size="sm" variant="info" type="button" onClick={this.back}>
 								<FontAwesomeIcon icon={faList} /> 戻る
                         </Button>
 						</div>

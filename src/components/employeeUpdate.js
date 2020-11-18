@@ -184,6 +184,7 @@ class employeeUpdate extends React.Component {
 		this.setState(
 			{
 				actionType: location.state.actionType,
+				backPage: location.state.backPage,
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -539,7 +540,12 @@ class employeeUpdate extends React.Component {
 	}
 
 	back = () => {
-		return this.props.history.push("/subMenuManager/employeeSearch");
+		let backPage = this.state.backPage
+		if (backPage !== null && backPage !== undefined && backPage !== '') {
+			return this.props.history.push("/subMenuManager/" + backPage);
+		} else {
+			return this.props.history.push("/subMenuManager/employeeInsert");
+		}
 	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
@@ -1080,7 +1086,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl  autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>

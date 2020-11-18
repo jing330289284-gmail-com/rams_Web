@@ -190,6 +190,7 @@ class employeeInsert extends React.Component {
 		this.setState(
 			{
 				actionType: location.state.actionType,
+				backPage: location.state.backPage,
 			}
 		);
 		this.getNO('LYC');//採番番号
@@ -301,7 +302,6 @@ class employeeInsert extends React.Component {
 			{
 				retirementYearAndMonth: date,
 				temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(date, new Date()),
-
 			}
 		);
 	};
@@ -513,7 +513,12 @@ class employeeInsert extends React.Component {
 	}
 
 	back = () => {
-		return this.props.history.push("/subMenuManager/employeeSearch");
+		let backPage = this.state.backPage
+		if (backPage !== null && backPage !== undefined && backPage !== '') {
+			return this.props.history.push("/subMenuManager/" + backPage);
+		} else {
+			return this.props.history.push("/subMenuManager/employeeInsert");
+		}
 	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
