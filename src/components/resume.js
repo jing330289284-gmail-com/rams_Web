@@ -20,7 +20,6 @@ class resume extends React.Component {
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.searchResume = this.searchResume.bind(this);
-		this.sumWorkTimeChange = this.sumWorkTimeChange.bind(this);
 	};
 	componentDidMount(){
 		$("#resumeUpload").attr("disabled",true);
@@ -36,42 +35,22 @@ class resume extends React.Component {
 	//　初期化データ
 	initialState = {
 		employeeList: [],
-		costClassificationCode: store.getState().dropDown[30],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
-	approvalStatus(code) {
-		let approvalStatuss = this.state.approvalStatuslist;
-        for (var i in approvalStatuss) {
-            if (code === approvalStatuss[i].code) {
-                return approvalStatuss[i].name;
-            }
-        }
-    };
 	//　検索
 	searchResume = () => {
 		axios.post(this.state.serverIP + "resume/selectResume")
 			.then(response => response.data)
-			.then((data) => {
-				if (data.length!=0) {
-					for(var i=0;i<data.length;i++){
-						if(data[i].workingTimeReport!=null){
-							let fileName=data[i].workingTimeReport.split("/");
-							data[i].workingTimeReportFile=fileName[fileName.length-1];
-						}
-					}
-				} else {
-					data.push({"approvalStatus":0,"approvalStatusName":"未","attendanceYearAndMonth":publicUtils.setFullYearMonth(new Date())});
-					}
-				this.setState({ 
-					employeeList: data
-				})
-			});
+				.then((data) => {
+				data.push({ "rowNo": 2, "resumeInfo1": data[0].resumeInfo2, "resumeName1": data[0].resumeName2, "updateTime": data[0].updateTime, "updateUser": data[0].updateUser});
+					this.setState({ 
+						employeeList: data
+					})
+				});
 	};
 	//　変更
-	sumWorkTimeChange = (e) =>{
+	resumeName1Change = (e) =>{
 		const emp = {
-			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
-			sumWorkTime:　e.sumWorkTime,
 		};
 		axios.post(this.state.serverIP + "resume/updateresume",emp)
 			.then(response => {
@@ -111,7 +90,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 }
 		const formData = new FormData()
 		const emp = {
-				attendanceYearAndMonth:this.state.rowSelectAttendanceYearAndMonth,
 			};
 			formData.append('emp', JSON.stringify(emp))
 			formData.append('resumeFile', $("#getFile").get(0).files[0])
@@ -134,38 +112,19 @@ if($("#getFile").get(0).files[0].size>1048576){
 		if (isSelected) {
 			$("#resumeUpload").attr("disabled",true);
 			$("#resumeDownload").attr("disabled",false);
-			var TheYearMonth=publicUtils.setFullYearMonth(new Date())-1;
-			this.setState(
-				{
-					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
-					rowSelectWorkingTimeReport: row.workingTimeReport,
-					rowSelectSumWorkTime: row.sumWorkTime,
-					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
-				}
-			);
-			if(row.attendanceYearAndMonth-0>=TheYearMonth){
-				$("#resumeUpload").attr("disabled",false);
-			}
-			if(row.attendanceYearAndMonth-0>TheYearMonth){
-				$("#resumeDownload").attr("disabled",true);
-			}
-		} else {
-			this.setState(
-				{	
-					rowSelectWorkingTimeReport:'',
-					rowSelectAttendanceYearAndMonth:'',
-					rowSelectSumWorkTime: '',
-					rowSelectapproval: '',
-				}
-			);
+			
+		
 		}
 	}
-	renderShowsTotal(start, to, total) {
-		return (
-			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
-				{start}から  {to}まで , 総計{total}
-			</p>
-		);
+	setButton = (cell, row) => {
+		return (<div style={{ padding: '0px', width: "100%" }}>
+				<td>
+					<Button variant="info" size="sm" onClick={this.getFile} id="resumeUpload">
+						<FontAwesomeIcon icon={faUpload} />Upload
+					</Button>{row.resumeInfo1}
+				</td>
+				</div>
+		)
 	}
 	render() {
 		const {employeeList} = this.state;
@@ -180,15 +139,6 @@ if($("#getFile").get(0).files[0].size>1048576){
 		};
 		//　 テーブルの定義
 		const options = {
-			page: 1, 
-			sizePerPage: 5,  // which size per page you want to locate as default
-			pageStartIndex: 1, // where to start counting the pages
-			paginationSize: 3,  // the pagination bar size.
-			prePage: 'Prev', // Previous page button text
-			nextPage: 'Next', // Next page button text
-			firstPage: 'First', // First page button text
-			lastPage: 'Last', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 			expandRowBgColor: 'rgb(165, 165, 165)',
 			approvalBtn: this.createCustomApprovalButton,
@@ -198,7 +148,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 		const cellEdit = {
 			mode: 'click',
 			blurToSave: true,
-			afterSaveCell: this.sumWorkTimeChange,
+			afterSaveCell: this.resumeNameChange,
 		}
 		return (
 			<div>
@@ -211,7 +161,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						<Form.Group>
 							<Row inline="true">
 								<Col className="text-center">
-									<h2>作業報告書アップロード</h2>
+									<h2>履歴書アップロード</h2>
 								</Col>
 							</Row>
 						</Form.Group>
@@ -222,7 +172,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 	                <br/>
                     <Row>
 						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>作業報告書</font>
+							<font style={{ whiteSpace: 'nowrap' }}>履歴書</font>
 						</Col>
   						<Col sm={6}></Col>
                         <Col sm={4}>
@@ -236,15 +186,14 @@ if($("#getFile").get(0).files[0].size>1048576){
 	 						</div>
 						</Col>
                     </Row>	
-					<BootstrapTable data={employeeList} cellEdit={cellEdit} pagination={true}  options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='0'　hidden={true} tdStyle={ { padding: '.0em' } }  dataField='approvalStatus' ></TableHeaderColumn>
-						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
-						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }   dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
-						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }   dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange}  dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
-						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }   dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='approvalStatus' editable={false} dataFormat={this.approvalStatus.bind(this)}>ステータス</TableHeaderColumn>
+					<BootstrapTable data={employeeList} cellEdit={cellEdit}   options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+						<TableHeaderColumn width='5%'  tdStyle={{ padding: '.45em' }} editable={false} dataField='rowNo' isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeInfo1' editable={false} dataFormat={this.setButton}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} onChange={this.resumeNameChange} dataField='resumeName1' editable={true}>備考</TableHeaderColumn>
+						<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeInfo2' editable={false}>ファイル名</TableHeaderColumn>
+						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} onChange={this.resumeNameChange} dataField='resumeName2' editable={true}>備考</TableHeaderColumn>
+						<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' editable={false}>更新者</TableHeaderColumn>
+						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
