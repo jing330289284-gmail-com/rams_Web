@@ -1139,6 +1139,7 @@ class employeeInsert extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											minDate={new Date()}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
