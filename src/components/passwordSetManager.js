@@ -5,6 +5,8 @@ import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ErrorsMessageToast from './errorsMessageToast';
+axios.defaults.withCredentials = true;
+
 class PasswordSetManager extends Component {
 	/**
 	 * パスワードリセット画面（管理者画面用）

@@ -11,6 +11,8 @@ import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 class individualSales extends React.Component {//個人売上検索
     state = { 
         actionType:'',

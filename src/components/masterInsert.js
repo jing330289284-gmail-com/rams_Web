@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 //マスター登録
 class masterInsert extends Component {

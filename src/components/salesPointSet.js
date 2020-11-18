@@ -7,6 +7,8 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 
 //営業ポイント設定
 class salesPointSet extends React.Component {

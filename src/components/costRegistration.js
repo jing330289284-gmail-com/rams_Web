@@ -16,6 +16,8 @@ import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import OtherCostModel from './otherCost';
 import * as utils from './utils/publicUtils.js';
+axios.defaults.withCredentials = true;
+
 /**
  * 費用登録画面
  */

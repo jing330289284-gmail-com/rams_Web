@@ -10,7 +10,10 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
-import store from './redux/store';/** 
+import store from './redux/store';
+axios.defaults.withCredentials = true;
+
+/** 
 *営業文章画面
  */
 class salesContent extends React.Component {

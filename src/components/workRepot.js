@@ -11,6 +11,8 @@ import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
+axios.defaults.withCredentials = true;
+
 /**
  * 作業報告書登録画面
  */
