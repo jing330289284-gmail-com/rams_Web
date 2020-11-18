@@ -521,7 +521,7 @@ class employeeInsert extends React.Component {
 		}
 	};
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
@@ -655,10 +655,8 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={alphabetName1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="alphabetName1" />
-									<FormControl value={alphabetName2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="alphabetName2" />
+									<FormControl value={alphabetName} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="alphabetName" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
