@@ -40,6 +40,7 @@ class CustomerInfo extends Component {
         actionType: '',//処理区分
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: [],//本社場所
+        customerNo:'',
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
@@ -115,6 +116,9 @@ class CustomerInfo extends Component {
             actionType: this.props.location.state.actionType,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
+        this.setState({
+            customerNo:this.props.location.state.customerNo,
+        })
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
@@ -180,6 +184,7 @@ class CustomerInfo extends Component {
                     $("#customerNo").attr("readOnly", true);
                     this.setState({
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
+                        customerNo:customerNoSaiBan,
                     })
                 } else {
                     $("#customerName").val(customerInfoMod.customerName);
@@ -206,6 +211,7 @@ class CustomerInfo extends Component {
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
                     }
+                    $("#toBankInfo").attr("disabled",false);
                     if (actionType === 'detail') {
                         customerInfoJs.setDisabled();
                     }
@@ -603,7 +609,7 @@ class CustomerInfo extends Component {
     }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
-            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop } = this.state;
+            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop , customerNo} = this.state;
         const accountPath = {
             pathName: `${this.props.match.url}/`, state: this.state.accountInfo,
         }
@@ -667,7 +673,7 @@ class CustomerInfo extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body >
-                            <BankInfo accountInfo={accountInfo} actionType={actionType} accountTokuro={this.accountInfoGet} />
+                            <BankInfo accountInfo={accountInfo} actionType={actionType} customerNo={customerNo} accountTokuro={this.accountInfoGet} />
                         </Modal.Body>
                     </Modal>
                     <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-topCustomerInfo"

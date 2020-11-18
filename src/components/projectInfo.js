@@ -3,18 +3,12 @@ import { Row, Form, Col, InputGroup, Button, FormControl, Modal, } from 'react-b
 import MyToast from './myToast';
 import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker, { registerLocale } from "react-datepicker"
-import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave , faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
-import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-table';
-import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
-registerLocale('ja', ja);
 axios.defaults.withCredentials = true;
 
 class projectInfo extends Component {
@@ -52,7 +46,6 @@ class projectInfo extends Component {
         noOfInterviewCode: '',
         //パラメータ
         actionType: "insert",
-        nowNum: "0",
         message: '',//toastのメッセージ
         type: '',//成功や失敗
         myToastShow: false,//toastのフラグ
@@ -69,7 +62,6 @@ class projectInfo extends Component {
         noOfInterviewDrop: store.getState().dropDown[50],
         customerDrop: store.getState().dropDown[15].slice(1),
         personInChargeDrop: [],
-        mailDrop: store.getState().dropDown[0],
         stationDrop: store.getState().dropDown[14].slice(1),
         successRateDrop: store.getState().dropDown[48],
         developLanguageDrop: store.getState().dropDown[8].slice(1),
@@ -112,6 +104,9 @@ class projectInfo extends Component {
             requiredItem1: '',
             requiredItem2: '',
             noOfInterviewCode: '',
+            personInChargeDrop: [],
+            experienceYear: '',
+            siteLoaction: '',
         })
     }
     /**
@@ -119,13 +114,14 @@ class projectInfo extends Component {
      */
     giveValue = (projectInfoMod) => {
         this.setState({
+            projectNo: projectInfoMod.projectNo,
             projectName: projectInfoMod.projectName,
             nationalityCode: projectInfoMod.nationalityCode,
             admissionPeriod: projectInfoMod.admissionPeriod,
             projectType: projectInfoMod.projectType,
             successRate: projectInfoMod.successRate,
             customerNo: projectInfoMod.customerNo,
-            personInCharge: projectInfoMod.personInCharge,
+            personInCharge: utils.labelGetValue(projectInfoMod.personInCharge, this.state.personInChargeDrop),
             mail: projectInfoMod.mail,
             phoneNo: projectInfoMod.phoneNo,
             keyWordOfLanagurue1: projectInfoMod.keyWordOfLanagurue1,
@@ -144,7 +140,9 @@ class projectInfo extends Component {
             workStartPeriod: projectInfoMod.workStartPeriod,
             requiredItem1: projectInfoMod.requiredItem1,
             requiredItem2: projectInfoMod.requiredItem2,
+            experienceYear: projectInfoMod.experienceYear,
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
+            siteLoaction: projectInfoMod.siteLoaction,
         })
     }
     /**
@@ -154,25 +152,28 @@ class projectInfo extends Component {
         if (values != null) {
             this.setState({
                 customerNo: values.code,
-            },()=>{
+            }, () => {
                 var projectInfoModel = {
-                    customerNo:this.state.customerNo,
+                    customerNo: this.state.customerNo,
                 }
-                axios.post(this.state.serverIP + "projectInfo/getPersonInCharge" , projectInfoModel)
-                .then(result => {
-                    this.setState({
-                        personInChargeDrop:result.data.personInChargeDrop,
-                        personInCharge:'',
-                        mail:'',
+                axios.post(this.state.serverIP + "projectInfo/getPersonInCharge", projectInfoModel)
+                    .then(result => {
+                        this.setState({
+                            personInChargeDrop: result.data.personInChargeDrop,
+                            personInCharge: '',
+                            mail: '',
+                        })
                     })
-                })
+                    .catch(error => {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                    });
             })
         } else {
             this.setState({
                 customerNo: "",
-                personInChargeDrop:[],
-                personInCharge:'',
-                mail:'',
+                personInChargeDrop: [],
+                personInCharge: '',
+                mail: '',
             })
         }
     }
@@ -217,11 +218,11 @@ class projectInfo extends Component {
     getStation = (event, values) => {
         if (values != null) {
             this.setState({
-                stationCode: values.code,
+                siteLoaction: values.code,
             })
         } else {
             this.setState({
-                stationCode: "",
+                siteLoaction: "",
             })
         }
     }
@@ -229,12 +230,12 @@ class projectInfo extends Component {
         if (values != null) {
             this.setState({
                 personInCharge: values.code,
-                mail:values.mail,
+                mail: values.mail,
             })
         } else {
             this.setState({
                 personInCharge: "",
-                mail:"",
+                mail: "",
             })
         }
     }
@@ -246,7 +247,7 @@ class projectInfo extends Component {
         var num = value;
         const reg = /^[0-9]*$/;
         var keyLength = 3;
-        if (key === "unitPriceRangeLowest" || key === "unitPriceRangeHighest") { 
+        if (key === "unitPriceRangeLowest" || key === "unitPriceRangeHighest") {
             keyLength = 4;
         }
         if ((reg.test(num) && num.length < keyLength)) {
@@ -255,26 +256,84 @@ class projectInfo extends Component {
             })
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         var projectNo = "";
-        if(this.props.state !== null && this.props.state !== undefined){
+        if (this.props.state !== null && this.props.state !== undefined) {
             this.setState({
-                projectNo:this.props.state.projectNo,
+                projectNo: this.props.state.projectNo,
             })
             projectNo = this.props.state.projectNo;
         }
         var projectInfoModel = {
-            actionType:this.state.actionType,
-            projectNo:projectNo,
+            actionType: this.state.actionType,
+            projectNo: projectNo,
         }
-        axios.post(this.state.serverIP + "projectInfo/init" , projectInfoModel)
-        .then(result => {
-            if(this.state.actionType === "insert" ){
-                this.setState({
-                    projectNo:result.data.projectNo,
-                })
-            }
-        })
+        axios.post(this.state.serverIP + "projectInfo/init", projectInfoModel)
+            .then(result => {
+                if (this.state.actionType === "insert") {
+                    this.setState({
+                        projectNo: result.data.projectNo,
+                        torokuText: "登録",
+                    })
+                } else {
+                    var customerNo = result.data.resultList[0].customerNo;
+                    var projectInfoMod = result.data.resultList[0];
+                    var projectInfoModel = {
+                        customerNo: customerNo,
+                    }
+                    axios.post(this.state.serverIP + "projectInfo/getPersonInCharge", projectInfoModel)
+                        .then(result => {
+                            this.setState({
+                                personInChargeDrop: result.data.personInChargeDrop,
+                            }, () => {
+                                this.giveValue(projectInfoMod);
+                            })
+                        })
+                        .catch(error => {
+                            this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                        });
+                    if (this.state.actionType === "update") {
+                        this.setState({
+                            torokuText: "更新",
+                        })
+                    }
+                }
+            })
+            .catch(error => {
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+            });
+    }
+    /**
+     * 登録ボタン
+     */
+    toroku = () => {
+        var projectInfoModel = {};
+        var formArray = $("#projectInfoForm").serializeArray();
+        $.each(formArray, function (i, item) {
+            projectInfoModel[item.name] = item.value;
+        });
+        projectInfoModel["personInCharge"] = utils.valueGetLabel(this.state.personInCharge, this.state.personInChargeDrop);
+        projectInfoModel["siteLoaction"] = this.state.siteLoaction;
+        projectInfoModel["keyWordOfLanagurue1"] = this.state.keyWordOfLanagurue1;
+        projectInfoModel["keyWordOfLanagurue2"] = this.state.keyWordOfLanagurue2;
+        projectInfoModel["keyWordOfLanagurue3"] = this.state.keyWordOfLanagurue3;
+        projectInfoModel["customerNo"] = this.state.customerNo;
+        projectInfoModel["actionType"] = this.state.actionType;
+        axios.post(this.state.serverIP + "projectInfo/toroku", projectInfoModel)
+            .then(result => {
+                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
+                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    if(this.state.actionType === "insert"){
+                        window.location.reload();
+                    }
+                } else {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+                }
+            })
+            .catch(error => {
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+            });
     }
     render() {
         const {
@@ -303,18 +362,16 @@ class projectInfo extends Component {
             workStartPeriod,
             requiredItem1,
             requiredItem2,
-            stationCode,
+            siteLoaction,
             noOfInterviewCode,
             experienceYear,
             actionType,
-            nowNum,
             message,//toastのメッセージ
             type,//成功や失敗
             myToastShow,//toastのフラグ
             errorsMessageShow,///エラーのメッセージのフラグ
             errorsMessageValue,//エラーのメッセージ
             torokuText,//登録ボタンの文字
-            serverIP,//バックエンドのリンク
             //Drop 
             projectTypeDrop,
             payOffRangeDrop,
@@ -324,7 +381,6 @@ class projectInfo extends Component {
             noOfInterviewDrop,
             customerDrop,
             personInChargeDrop,
-            mailDrop,
             stationDrop,
             successRateDrop,
             developLanguageDrop,
@@ -334,11 +390,11 @@ class projectInfo extends Component {
         } = this.state;
         return (
             <div>
-                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-                    <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+                <div style={{ "display": myToastShow ? "block" : "none" }}>
+                    <MyToast myToastShow={myToastShow} message={message} type={type} />
                 </div>
-                <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-                    <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+                <div style={{ "display": errorsMessageShow ? "block" : "none" }}>
+                    <ErrorsMessageToast errorsMessageShow={errorsMessageShow} message={errorsMessageValue} type={"danger"} />
                 </div>
                 <div id="Home">
                     <Row inline="true">
@@ -439,12 +495,14 @@ class projectInfo extends Component {
                                         <FormControl
                                             maxLength="3"
                                             value={unitPriceRangeLowest}
+                                            placeholder="123"
                                             name="unitPriceRangeLowest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeLowest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>{"~"}
                                         <FormControl
                                             maxLength="3"
                                             value={unitPriceRangeHighest}
+                                            placeholder="123"
                                             name="unitPriceRangeHighest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeHighest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>
@@ -579,11 +637,12 @@ class projectInfo extends Component {
                                             <InputGroup.Text>現場場所</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <Autocomplete
-                                            id="stationCode"
-                                            name="stationCode"
-                                            value={stationDrop.find(v => v.code === stationCode) || {}}
+                                            id="siteLoaction"
+                                            name="siteLoaction"
+                                            value={stationDrop.find(v => v.code === siteLoaction) || {}}
                                             options={stationDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getStation(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
@@ -601,6 +660,7 @@ class projectInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             maxLength="2"
+                                            placeholder="例：10"
                                             value={experienceYear}
                                             name="experienceYear"
                                             onChange={(e) => this.vNumberChange(e, 'experienceYear')}
@@ -679,6 +739,7 @@ class projectInfo extends Component {
                                             value={developLanguageDrop.find(v => v.code === keyWordOfLanagurue1) || {}}
                                             options={developLanguageDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getJapanese1(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
@@ -693,6 +754,7 @@ class projectInfo extends Component {
                                             value={developLanguageDrop.find(v => v.code === keyWordOfLanagurue2) || {}}
                                             options={developLanguageDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getJapanese2(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
@@ -707,6 +769,7 @@ class projectInfo extends Component {
                                             value={developLanguageDrop.find(v => v.code === keyWordOfLanagurue3) || {}}
                                             options={developLanguageDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getJapanese3(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
@@ -728,6 +791,7 @@ class projectInfo extends Component {
                                             maxLength="50"
                                             value={requiredItem1}
                                             name="requiredItem1"
+                                            placeholder="例：リーダー経験がある、springboot経験がある"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
                                         </FormControl>
@@ -741,6 +805,7 @@ class projectInfo extends Component {
                                         <FormControl
                                             maxLength="50"
                                             value={requiredItem2}
+                                            placeholder="例：リーダー経験がある、springboot経験がある"
                                             name="requiredItem2"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
@@ -760,6 +825,7 @@ class projectInfo extends Component {
                                             value={customerDrop.find(v => v.code === customerNo) || {}}
                                             options={customerDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getCustomer(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
@@ -781,10 +847,11 @@ class projectInfo extends Component {
                                             value={personInChargeDrop.find(v => v.code === personInCharge) || {}}
                                             options={personInChargeDrop}
                                             getOptionLabel={(option) => option.name}
+                                            disabled={actionType === "detail" ? true : false}
                                             onChange={(event, values) => this.getPersonInChange(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：田中" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
                                                     />
                                                 </div>
                                             )}
@@ -799,6 +866,7 @@ class projectInfo extends Component {
                                         <FormControl
                                             value={mail}
                                             name="mail"
+                                            placeholder="例：XXXXXXXXXXX@gmail.com"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
                                         </FormControl>
@@ -834,27 +902,37 @@ class projectInfo extends Component {
                                     cols="10"
                                     rows="8"
                                     value={projectInfoDetail}
+                                    disabled={actionType === "detail" ? true : false}
                                     onChange={this.valueChange}
                                     name="projectInfoDetail"
                                     as="textarea">
                                 </FormControl>
                             </Row>
-                            <br/>
+                            <br />
                             <div style={{ "textAlign": "center" }}>
                                 <Button
                                     size="sm"
-                                    disabled={actionType === "detail" ? true : false}
+                                    hidden={actionType === "detail" ? true : false}
+                                    onClick={this.toroku}
                                     variant="info"
                                 >
                                     <FontAwesomeIcon icon={faSave} />{torokuText}
                                 </Button>{" "}
                                 <Button
                                     size="sm"
-                                    disabled={actionType === "detail" ? true : false}
+                                    hidden={actionType === "detail" ? true : false}
                                     onClick={this.resetValue}
                                     variant="info"
                                     value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
+                            </Button>
+                                <Button
+                                    size="sm"
+                                    hidden={actionType !== "detail" ? true : false}
+                                    onClick={this.resetValue}
+                                    variant="info"
+                                    >
+                                    <FontAwesomeIcon icon={faUndo} />戻る
                             </Button>
                             </div>
                         </Form.Group>
