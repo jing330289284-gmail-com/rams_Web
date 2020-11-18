@@ -27,6 +27,8 @@ class salesProfit extends React.Component {
 		employee: '',
 		newMember: '',
 		customerContract: '',
+		siteRoleNameAll: '',
+		profitAll: '',
 		updateFlag: true,
 		insertFlag: false,
 		currentPage: 1,//今のページ
@@ -60,7 +62,10 @@ class salesProfit extends React.Component {
 	//时间入力框初始值
 	state = {
 		admissionStartDate: new Date(),
-		admissionEndDate: new Date()
+		admissionEndDate: new Date(),
+		no: 0,
+		siteRoleNameAll: 0,
+		profitAll: 0,
 	}
 	//　入場年月
 	admissionStartDate = (date) => {
@@ -110,7 +115,10 @@ class salesProfit extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						salesPointData: response.data
+						salesPointData: response.data,
+						no: response.data.length,
+						siteRoleNameAll: response.data[0].siteRoleNameAll,
+						profitAll: response.data[0].profitAll,
 					});
 				}
 			}).catch((error) => {
@@ -130,16 +138,29 @@ class salesProfit extends React.Component {
 		}
 		salesPointSetModel["startDate"] = this.state.admissionStartDate
 		salesPointSetModel["endDate"] = this.state.admissionEndDate
-		axios.post(this.state.serverIP + "getSalesProfitInfo", salesPointSetModel)
+		axios.post(this.state.serverIP + "getSalesInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						salesPointData: response.data
+						salesPointData: response.data,
+						no: response.data.length,
+						siteRoleNameAll: response.data[0].siteRoleNameAll,
+						profitAll: response.data[0].profitAll,
 					});
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+		/* 		axios.post(this.state.serverIP + "getSalesProfitInfo", salesPointSetModel)
+					.then(response => {
+						if (response.data != null) {
+							this.setState({
+								salesPointData: response.data
+							});
+						}
+					}).catch((error) => {
+						console.error("Error - " + error);
+					}); */
 	}
 	/**
 	* 行Selectファンクション
@@ -262,13 +283,13 @@ class salesProfit extends React.Component {
 								<br />
 								<Row>
 									<Col sm={3}>
-										<font style={{ whiteSpace: 'nowrap' }}>入場人数：</font>
+										<font style={{ whiteSpace: 'nowrap' }}>入場人数：{this.state.no}</font>
 									</Col>
 									<Col sm={3}>
-										<font style={{ whiteSpace: 'nowrap' }}>売上合計：</font>
+										<font style={{ whiteSpace: 'nowrap' }}>売上合計：{this.state.profitAll}</font>
 									</Col>
 									<Col sm={2}>
-										<font style={{ whiteSpace: 'nowrap' }}>粗利合計：</font>
+										<font style={{ whiteSpace: 'nowrap' }}>粗利合計：{this.state.siteRoleNameAll}</font>
 									</Col>
 									<Col sm={4}>
 										<div style={{ "float": "right" }}>
