@@ -11,6 +11,8 @@ import axios from 'axios';
 import ErrorsMessageToast from './errorsMessageToast';
 import { Link } from "react-router-dom";
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 class monthlySalesSearch extends Component {//月次売上検索
     state = { 
         monthlySales_YearAndMonth:'',

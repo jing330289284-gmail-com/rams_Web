@@ -3,14 +3,16 @@ import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import PasswordSetEmployee from './passwordSetEmployee';
-import workRepot from './workRepot';
-import costRegistration from './costRegistration';
+import WorkRepot from './workRepot';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, faThList } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import DutyRegistration from './dutyRegistration';
+import CostRegistration from './costRegistration';
+import Resume from './resume';
 import store from './redux/store';
+import BreakTime from './breakTime';
 axios.defaults.withCredentials = true;
 
 /**
@@ -90,13 +92,13 @@ class SubMenu extends Component {
                                             <Accordion.Collapse eventKey="0">
                                                 <ListGroup variant="flush">
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/breakTime/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />休憩時間</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/dutyRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />勤務時間入力</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/costRegistration/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />費用登録</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#1a94a8" }}>
                                                         <Link className="linkFont" to="/subMenuEmployee/">
@@ -113,7 +115,7 @@ class SubMenu extends Component {
                                                         <Link className="linkFont" to="/subMenuEmployee/workRepot/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileExcel} />作業報告書</Link></ListGroup.Item>
                                                     <ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
-                                                        <Link className="linkFont" to="/subMenuEmployee/costRegistration/">
+                                                        <Link className="linkFont" to="/subMenuEmployee/resume/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileWord} />履歴書</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
@@ -129,6 +131,11 @@ class SubMenu extends Component {
                             <Router>
                                 <Route exact path={`${this.props.match.url}/`} component={DutyRegistration} />
                                 <Route exact path={`${this.props.match.url}/passwordSetEmployee`} component={PasswordSetEmployee} />
+                                <Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
+                                <Route exact path={`${this.props.match.url}/costRegistration`} component={CostRegistration} />
+                                <Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
+                                <Route exact path={`${this.props.match.url}/workRepot`} component={WorkRepot} />
+                                <Route exact path={`${this.props.match.url}/resume`} component={Resume} />
                             </Router>
                         </div>
                     </Col>

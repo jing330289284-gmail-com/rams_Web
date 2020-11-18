@@ -60,7 +60,7 @@ body {
 }
 
 .modal-passwordSet {
-  width: 30%;
+  width: 25%;
   max-width: none !important;
 }
 
@@ -199,7 +199,7 @@ body {
 
 #expensesInfoDatePicker {
   background-repeat: no-repeat;
-  width: 170px;
+  width: 10rem;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -429,13 +429,6 @@ body {
   /* width:4.5rem; */
 }
 
-#fiveKanji {
-  width: 5.5rem;
-}
-
-#sixKanji {
-  width: 6.5rem;
-}
 
 .fileUploader {
   width: 50% !important;
@@ -572,12 +565,23 @@ body {
   background-size: 25%;
 }
 
+#twoKanji {
+  width: 3rem;
+}
+
 #fiveKanji {
   width: 5.5rem;
 }
 
 #sixKanji {
   width: 6.5rem;
+}
+#sevenKanji {
+  width: 7.5rem;
+}
+
+.eightKanji {
+  width: 8.5rem;
 }
 
 .fileUploader .fileContainer {
@@ -613,6 +617,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-master {
   width: 17.8rem;
   height: 31px;
@@ -622,7 +627,8 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
-.Autocompletestyle-costRe{
+
+.Autocompletestyle-costRe {
   width: 7.9rem;
   height: 31px;
   border-color: "#ced4da";
@@ -631,8 +637,9 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-siteInfo {
-  width: 15rem;
+  width: 13.5rem;
   height: 31px;
   border-color: "#ced4da";
   border-width: 1;
@@ -640,6 +647,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-customerInfo {
   width: 14rem;
   height: 31px;
@@ -649,6 +657,7 @@ body {
   font-size: ".875rem";
   color: "#495057"
 }
+
 .Autocompletestyle-situation {
   width: 7.8rem;
   height: 31px;
@@ -657,6 +666,51 @@ body {
   border-style: "solid";
   font-size: ".875rem";
   color: "#495057"
+}
+
+.Autocompletestyle-salesSend {
+  width: 7.8rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+
+.Autocompletestyle-projectInfo {
+  width: 12.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+#projectInfoDatepicker{
+  background-repeat: no-repeat;
+  width: 8rem;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+.projectInfoDetailTitle{
+padding: 1rem;
+}
+.projectInfoDetail{
+  height: 10rem;
+	border-bottom-color: #ffffff;
+  margin-bottom: -0.3rem;
+  resize:none
+}
+.textNum{
+  padding: 1rem;
+  margin-top: -1rem;
+  font-size: 14px;
+  margin-bottom: -0.3rem;
+  color: rgb(179, 179, 179);
 }
 @media screen and (max-width: 1550px) {
 
@@ -669,6 +723,7 @@ body {
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
   }
+
   .ageccCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -678,6 +733,7 @@ body {
     background-color: white;
     width: 7rem;
   }
+
   .ageCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -697,6 +753,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-siteInfo {
     width: 11rem;
     height: 31px;
@@ -706,6 +763,7 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-customerInfo {
     width: 10rem;
     height: 31px;
@@ -715,7 +773,18 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
+
   .Autocompletestyle-situation {
+    width: 4.5rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+
+  .Autocompletestyle-costRe {
     width: 5.6rem;
     height: 31px;
     border-color: "#ced4da";
@@ -724,17 +793,18 @@ body {
     font-size: ".875rem";
     color: "#495057"
   }
-  .Autocompletestyle-costRe{
-    width: 5.6rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
+
   .Autocompletestyle-master {
     width: 12rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-projectInfo {
+    width: 9.2rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;
@@ -749,15 +819,91 @@ body {
     color: rgb(255, 255, 255);
     width: 4.1rem;
   }
-.cssNikanji{
-  width: 3rem;
-}
+
+  .cssNikanji {
+    width: 3rem;
+  }
+
   #inputGroup-sizing-sm {
     font-size: 0.85rem;
+  }
+  #projectInfoDatepicker{
+    background-repeat: no-repeat;
+    width: 8rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
   }
   #wagesInfoDatePicker {
     background-repeat: no-repeat;
     width: 8rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+  }
+  .Autocompletestyle-salesSend {
+    width: 4.5rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+.Autocompletestyle-salesEmpAdd{
+  width: 3.5rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+  #datePickerReadonly {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: #e9ecef;
+    width: 6.2rem;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: #e9ecef;
+  }
+
+  #datePicker2 {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 6.5rem;
+  }
+
+  #datePicker {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 5.5rem !important;
+  }
+  .input-group-text {
+    background-color: #76a8af;
+    font-family: "幼�?";
+    color: rgb(255, 255, 255);
+    width: 5.1rem;
+    /* width:4.5rem; */
+  }
+  #expensesInfoDatePicker {
+    background-repeat: no-repeat;
+    width: 6rem;
     background-position: 10px 7px;
     background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
     padding-right: 0px;

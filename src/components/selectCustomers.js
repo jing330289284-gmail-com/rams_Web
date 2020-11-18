@@ -37,7 +37,7 @@ class salesSendLetter extends React.Component {
 		selectedCustomer: {},
 		daiologShowFlag: false,
 		positions: store.getState().dropDown[20],
-		selectedEmpNos:this.props.location.state.selectetRowIds,
+		//selectedEmpNos:this.props.location.state.selectetRowIds,
 		selectedCusInfos: [],
 		listName:1,
 		salesLists: [],
@@ -629,6 +629,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 						<Col sm={12}>
 					<BootstrapTable
 						ref="customersTable"
+						
 						data={this.state.allCustomer}
 						pagination={true}
 						options={options}

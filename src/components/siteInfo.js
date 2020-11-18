@@ -14,6 +14,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
 
 registerLocale('ja', ja);
 
@@ -54,6 +55,37 @@ class siteInfo extends Component {
 		})
 	}
 
+	onchangeworkState = event => {
+		if (event.target.value === '0') {
+			this.setState({
+				workStateFlag: false,
+				[event.target.name]: event.target.value
+			})
+		} else {
+			this.setState({
+				workStateFlag: true,
+				levelCode: '',
+				[event.target.name]: event.target.value
+			})
+		}
+	}
+	onchangeSiteRoleCode = event => {
+		if (event.target.value === '1' ||  event.target.value === '0') {
+			this.setState({
+				relatedEmployeesFlag: true,
+				[event.target.name]: event.target.value
+			})
+		} else {
+			this.setState({
+				relatedEmployeesFlag: false,
+				related1Employees: '',
+				related2Employees: '',
+				related3Employees: '',
+				related4Employees: '',
+				[event.target.name]: event.target.value
+			})
+		}
+	}
 	state = {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date()
@@ -90,13 +122,14 @@ class siteInfo extends Component {
 
 	// 页面加载
 	componentDidMount() {
-		if (this.props.location.state !== undefined) {
-			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: 'LYC001' })
+		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+			let employeeNo = this.props.location.state.employeeNo
+			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: employeeNo })
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
 							siteData: response.data,
-							employeeName: publicUtils.valueGetLabel('LYC001', this.state.employeeInfo),
+							employeeName: publicUtils.valueGetLabel(employeeNo, this.state.employeeInfo),
 							disabledFlag: false,
 						});
 					}
@@ -213,7 +246,7 @@ class siteInfo extends Component {
 					time: publicUtils.getFullYearMonth(new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
 					workState: row.workState === null ? '' : row.workState,
-					dailyCalculationStatus: row.dailyCalculationStatus === '1'  ? true : false,
+					dailyCalculationStatus: row.dailyCalculationStatus === '1' ? true : false,
 					systemName: row.systemName === null ? '' : row.systemName,
 					location: row.location === null ? '' : row.location,
 					customerNo: row.customerName === null ? '' : row.customerName,
@@ -374,7 +407,7 @@ class siteInfo extends Component {
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
-		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager, workStateFlag } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -421,8 +454,8 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
-														 />
+													<input type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
+													/>
 												</div>
 											)}
 										/>
@@ -434,7 +467,7 @@ class siteInfo extends Component {
 								<Col sm={4}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入場年月日</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker
@@ -460,7 +493,7 @@ class siteInfo extends Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="workState" name="workState" value={workState}
-											onChange={this.onchange} disabled={this.state.employeeName === '' ? true : false}>
+											onChange={this.onchangeworkState} disabled={this.state.employeeName === '' ? true : false}>
 											{this.state.siteStateStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
@@ -472,7 +505,7 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">退場年月日</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">退場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker
@@ -494,9 +527,9 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">システム名</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="systemName" name="systemName" type="text" placeholder="例：請求システム" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -517,8 +550,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														/>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -540,8 +573,8 @@ class siteInfo extends Component {
 											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -551,7 +584,7 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">トップお客様</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="topCustomerNo"
@@ -562,8 +595,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														 />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -584,7 +617,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
@@ -600,7 +633,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" placeholder="万円" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 										<InputGroup.Prepend>
 											<InputGroup.Text className="cssNikanji">日割</InputGroup.Text>
 											<InputGroup.Checkbox className="cssNikanji" name="dailyCalculationStatus" checked={this.state.dailyCalculationStatus} onChange={this.dailyCalculationStatusChange} disabled={this.state.dailyCalculationStatusFlag === true ? true : false} />
@@ -642,7 +675,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
+										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -656,7 +689,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off" disabled={this.state.employeeName === '' ? true : false}>
+										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off" disabled={this.state.employeeName === '' || workStateFlag ? true : false}>
 											{this.state.levelMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -670,7 +703,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" placeholder="例：田中" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="siteManager" name="siteManager" type="text" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -681,10 +714,10 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="related1Employees" name="related1Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related2Employees" name="related2Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related3Employees" name="related3Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
-										<FormControl id="related4Employees" name="related4Employees" type="text" placeholder="例：田中" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="related1Employees" name="related1Employees" type="text" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+										<FormControl id="related2Employees" name="related2Employees" type="text" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+										<FormControl id="related3Employees" name="related3Employees" type="text" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+										<FormControl id="related4Employees" name="related4Employees" type="text" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -701,8 +734,8 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-														/>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
@@ -714,7 +747,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" placeholder="例：java十年経験" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
+										<FormControl id="remark" name="remark" type="text" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.employeeName === '' ? true : false} />
 									</InputGroup>
 								</Col>
 							</Row>

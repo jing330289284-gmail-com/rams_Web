@@ -10,6 +10,7 @@ import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
 import store from './redux/store';
+import $ from 'jquery';
 axios.defaults.withCredentials = true;
 
 class bpInfo extends React.Component {
@@ -27,7 +28,7 @@ class bpInfo extends React.Component {
 		bpRemark: '',//備考
 		bpOtherCompanyAdmissionEndDate: '',
 		customer: store.getState().dropDown[15].slice(1),
-		salesProgressCodes: store.getState().dropDown[16].slice(1) ,
+		salesProgressCodes: store.getState().dropDown[16].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	valueChange = event => {
@@ -64,6 +65,17 @@ class bpInfo extends React.Component {
 					});
 				}
 				);
+		}
+		var bpInfoModel = this.props.bpInfoModel;//父画面のパラメータ（画面既存口座情報）
+		if (!$.isEmptyObject(bpInfoModel)) {
+			this.setState({
+				bpBelongCustomerCode: bpInfoModel["bpBelongCustomerCode"],
+				bpUnitPrice: bpInfoModel["bpUnitPrice"],
+				bpSalesProgressCode: bpInfoModel["bpSalesProgressCode"],
+				bpOtherCompanyAdmissionEndDate: utils.converToLocalTime(bpInfoModel["bpOtherCompanyAdmissionEndDate"], false),
+				bpRemark: bpInfoModel["bpRemark"],
+			});
+
 		}
 	}
 
@@ -124,10 +136,10 @@ class bpInfo extends React.Component {
 		return (
 			<div>
 				<Row inline="true">
-                        <Col className="text-center">
-                            <h2>BP情報入力</h2>
-                        </Col>
-                </Row>
+					<Col className="text-center">
+						<h2>BP情報入力</h2>
+					</Col>
+				</Row>
 				<br />
 				<Form >
 					<Form.Group>
@@ -153,7 +165,7 @@ class bpInfo extends React.Component {
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  BP所属" type="text" {...params.inputProps} className="auto" id="bpBelongCustomerCode"
-													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.props.actionType === "detail"  ? "#e9ecef" : "" }} />
+													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.props.actionType === "detail" ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
@@ -193,7 +205,7 @@ class bpInfo extends React.Component {
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">所属現場終年月</InputGroup.Text>
+										<InputGroup.Text id="sevenKanji">所属現場終年月</InputGroup.Text>
 									</InputGroup.Prepend>
 									<DatePicker
 										selected={this.state.bpOtherCompanyAdmissionEndDate}
@@ -252,6 +264,6 @@ const mapDispatchToProps = dispatch => {
 	}
 };
 export default connect(mapStateToProps, mapDispatchToProps)(bpInfo); */
-export default bpInfo; 
+export default bpInfo;
 
 

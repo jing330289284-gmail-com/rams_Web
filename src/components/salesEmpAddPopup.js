@@ -4,6 +4,10 @@ import { faSave, faEnvelope, faMinusCircle, faBroom, faListOl,faUserPlus ,faFile
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
+
 /**
  * メール確認
  * 
@@ -79,8 +83,8 @@ empChange=(event, values)=>{
 											onChange={(event,values)=>this.empChange(event,values)}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
-														style={{ width: 121, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-salesEmpAdd"
+														 />
 												</div>
 											)}
 										/>

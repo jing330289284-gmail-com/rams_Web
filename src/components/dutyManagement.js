@@ -14,6 +14,8 @@ import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import store from './redux/store';
 registerLocale("ja", ja);
+axios.defaults.withCredentials = true;
+
 /**
  * 社員勤務管理画面
  */
@@ -77,7 +79,7 @@ class dutyManagement extends React.Component {
 				var averageWorkingTime=0;
 				var totalWorkingTime=0;
 				if (response.data.length>0) {
-					var totalPersons=response.data.length;
+					totalPersons=response.data.length;
 					for(var i=0;i<totalPersons;i++){
 						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
 						if(totalWorkingTime<response.data[i].workTime){
@@ -89,9 +91,9 @@ class dutyManagement extends React.Component {
 						averageWorkingTime=0
 					}
 				} else {
-					var totalPersons="";
-					var averageWorkingTime="";
-					var totalWorkingTime="";
+					totalPersons="";
+					averageWorkingTime="";
+					totalWorkingTime="";
 				}
 				this.setState({ employeeList: response.data,totalPersons: totalPersons,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
 			}

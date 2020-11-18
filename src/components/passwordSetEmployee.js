@@ -7,6 +7,8 @@ import axios from 'axios';
 import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 /**
  * パスワードリセット画面（社員画面用）
  */

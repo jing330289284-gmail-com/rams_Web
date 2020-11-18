@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faDownload, faUndo } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as publicUtils from './utils/publicUtils.js';
 import * as messageUtils from './utils/messageUtils.js';
@@ -67,10 +67,11 @@ class DutyRegistration extends React.Component {
 	//onChange
 	tableValueChange = (event, cell, row) => {
 		let dataData = this.state.dateData;
-		if (publicUtils.isNull(event.target.dataset["beforevalue"])) {
-			event.target.dataset["beforevalue"] = dataData[row.id][event.target.name];
-		}
+		/* 		if (publicUtils.isNull(event.target.dataset["beforevalue"])) {
+					event.target.dataset["beforevalue"] = dataData[row.id][event.target.name];
+				} */
 		dataData[row.id][event.target.name] = event.target.value;
+
 		if (dataData[row.id]["hasWork"] === "休憩") {
 			row.startTime = "";
 			row.endTime = "";
@@ -81,28 +82,29 @@ class DutyRegistration extends React.Component {
 		} else {
 			dataData[row.id]["sleepHour"] = this.state.sleepHour;
 		}
+		row['isChanged'] = true;
 		this.setState({
 			dateData: dataData
 		})
 	}
 	//onChangeAfter
 	tableValueChangeAfter = (event, cell, row) => {
-		var regExp = /.*/;
-		switch (event.target.name) {
-			case "startTime":
-			case "endTime":
-				regExp = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-				break;
-			default:
-				break;
-		}
-		cell = publicUtils.nullToEmpty(cell);
-		if (!cell.toString().match(regExp)) {
-			event.target.value = publicUtils.nullToEmpty(event.target.dataset["beforevalue"]);
-			return;
-		}
-		event.target.dataset["beforevalue"] = cell;
-		row['isChanged'] = true;
+		//var regExp = /.*/;
+		/* 		switch (event.target.name) {
+					case "startTime":
+					case "endTime":
+						regExp = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+						break;
+					default:
+						break;
+				}
+				cell = publicUtils.nullToEmpty(cell);
+				if (!cell.toString().match(regExp)) {
+					event.target.value = publicUtils.nullToEmpty(event.target.dataset["beforevalue"]);
+					return;
+				}
+				event.target.dataset["beforevalue"] = cell; */
+
 		this.setTableStyle(row.id);
 
 		let dataData = this.state.dateData;
@@ -196,7 +198,7 @@ class DutyRegistration extends React.Component {
 						resultMap.data.breakTime = {};
 					}
 					//					console.log(resultMap.data);
-					if (!publicUtils.isNull(resultMap.data.breakTime) && resultMap.data.breakTime["breakTimeFixedStatus"] === "1") {
+					if (!publicUtils.isNull(resultMap.data.breakTime) && resultMap.data.breakTime["breakTimeFixedStatus"] === "1" && resultMap.data.breakTime !== "0") {
 						sleepHour = resultMap.data.breakTime["totalBreakTime"];
 					}
 					let dayIndex = -1;
@@ -213,7 +215,7 @@ class DutyRegistration extends React.Component {
 							dateData[dayIndex].endTime = publicUtils.timeInsertChar(publicUtils.nullToEmpty(defaultDateData[i].endTime));
 							dateData[dayIndex]['workContent'] = publicUtils.nullToEmpty(defaultDateData[i].workContent);
 							dateData[dayIndex]['remark'] = publicUtils.nullToEmpty(defaultDateData[i].remark);
-						}
+						} else { dateData[dayIndex].sleepHour = ""; }
 					}
 					this.setState({
 						breakTime: resultMap.data.breakTime, dateData: dateData, workDays: workDays, workHours: workHours,
@@ -222,7 +224,6 @@ class DutyRegistration extends React.Component {
 						employeeName: resultMap.data.employeeName, sleepHour: sleepHour
 					});
 					//					console.log(resultMap.data);
-
 				} else {
 					alert("fail");
 				}
@@ -276,13 +277,13 @@ class DutyRegistration extends React.Component {
 		dataInfo["siteResponsiblePerson"] = this.state.siteResponsiblePerson;
 		dataInfo["systemName"] = this.state.systemName;
 		let submitData = [];
-		let j = 0;
+/* 		let j = 0; */
 		for (let i = 0; i < dataInfo["dateData"].length; i++) {
 			dataInfo["dateData"][i]["isWork"] = (dataInfo["dateData"][i]["hasWork"] == this.state.hasWork[0]) ? 0 : 1;
-			if (dataInfo["dateData"][i]["isChanged"]) {
-				submitData[j] = JSON.parse(JSON.stringify(dataInfo["dateData"][i]));
-				j++;
-			}
+			/* if (dataInfo["dateData"][i]["isChanged"]) { */
+				submitData[i] = JSON.parse(JSON.stringify(dataInfo["dateData"][i]));
+/* 				j++;
+			} */
 		}
 		dataInfo["dateData"] = submitData;
 		console.log(dataInfo);
@@ -291,10 +292,10 @@ class DutyRegistration extends React.Component {
 				.then(resultMap => {
 					if (resultMap.data) {
 						alert("更新成功");
-						window.location.reload();
 					} else {
 						alert("更新失败");
 					}
+					window.location.reload();
 					this.onBack();
 				})
 				.catch(function () {
@@ -309,12 +310,30 @@ class DutyRegistration extends React.Component {
 		let nowDay = new Date().getDate();
 		for (let i = 0; i < this.state.dateData.length; i++) {
 			if (this.state.dateData[i]["hasWork"] == this.state.hasWork[1]) {
-				if (nowDay >= this.state.dateData[i]["day"] && publicUtils.isEmpty(this.state.dateData[i]["workContent"])) {
-					errorMessage += messageUtils.getMessage("E0001", this.state.dateData[i]["day"], true);
+				if (publicUtils.isEmpty(this.state.dateData[i]["startTime"])) {
+					errorMessage += messageUtils.getMessage("E0003", this.state.dateData[i]["day"], true);
 					break;
 				}
+				if (publicUtils.isEmpty(this.state.dateData[i]["endTime"])) {
+					errorMessage += messageUtils.getMessage("E0004", this.state.dateData[i]["day"], true);
+					break;
+				}
+				if (nowDay >= this.state.dateData[i]["day"]) {
+					if (publicUtils.isEmpty(this.state.dateData[i]["workContent"])) {
+						errorMessage += messageUtils.getMessage("E0001", this.state.dateData[i]["day"], true);
+						break;
+					}
+				}
 			}
-			if (this.state.dateData[i]["startTime"] !== "" && this.state.dateData[i]["endTime"] !== "") {
+			if (!publicUtils.isEmpty(this.state.dateData[i]["startTime"]) && !this.state.dateData[i]["startTime"].toString().match(/^((0[0-9]|1[0-9]|2[0-3]):(0[0]|1[5]|3[0]|4[5])|24:00)$/)) {
+				errorMessage += messageUtils.getMessage("E0005", this.state.dateData[i]["day"], true);
+				break;
+			}
+			if (!publicUtils.isEmpty(this.state.dateData[i]["endTime"]) && !this.state.dateData[i]["endTime"].toString().match(/^((0[0-9]|1[0-9]|2[0-3]):(0[0]|1[5]|3[0]|4[5])|24:00)$/)) {
+				errorMessage += messageUtils.getMessage("E0006", this.state.dateData[i]["day"], true);
+				break;
+			}
+			if (!publicUtils.isEmpty(this.state.dateData[i]["startTime"]) && !publicUtils.isEmpty(this.state.dateData[i]["endTime"])) {
 				if (this.state.dateData[i]["startTime"] >= this.state.dateData[i]["endTime"]) {
 					errorMessage += messageUtils.getMessage("E0002", this.state.dateData[i]["day"], true);
 					break;
@@ -375,14 +394,14 @@ class DutyRegistration extends React.Component {
 	startTimeFormatter = (cell, row) => {
 		let returnItem = cell;
 		if (!this.state.isConfirmedPage && this.state.dateData[row.id].hasWork === this.state.hasWork[1]) {
-			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="startTime" value={cell} onChange={(event) => this.tableValueChange(event, cell, row)} onBlur={(event) => this.tableValueChangeAfter(event, cell, row)} /></span>;
+			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="startTime" value={cell} maxLength="5" onChange={(event) => this.tableValueChange(event, cell, row)} onBlur={(event) => this.tableValueChangeAfter(event, cell, row)} /></span>;
 		}
 		return returnItem;
 	}
 	endTimeFormatter = (cell, row) => {
 		let returnItem = cell;
 		if (!this.state.isConfirmedPage && this.state.dateData[row.id].hasWork === this.state.hasWork[1]) {
-			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="endTime" value={cell} onChange={(event) => this.tableValueChange(event, cell, row)} onBlur={(event) => this.tableValueChangeAfter(event, cell, row)} /></span>;
+			returnItem = <span class="dutyRegistration-DataTableEditingCell"><input type="text" class=" form-control editor edit-text" name="endTime" value={cell} maxLength="5" onChange={(event) => this.tableValueChange(event, cell, row)} onBlur={(event) => this.tableValueChangeAfter(event, cell, row)} /></span>;
 		}
 		return returnItem;
 	}
@@ -440,25 +459,25 @@ class DutyRegistration extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<input style={{ width: "150px" }} value={this.state.siteCustomer} name="siteCustomer" onChange={this.valueChange} className="inputWithoutBorder" />
-									御中
+									&nbsp;御中
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
-									会社名
+									会社名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									<input style={{ width: "150px" }} value={this.state.customer} name="customer" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row className="align-items-center">
-							<Col sm={4} md={{ span: 4, offset: 3 }}>
+							<Col sm={4} md={{ span: 4, offset: 4 }}>
 								<span size="lg" className="mb-3">
 									<h3 >{this.state.year}年{this.state.month}月　作業報告書</h3>
 								</span>
 							</Col>
-							<Col sm={3} md={{ span: 3, offset: 2 }}>
+							<Col sm={3} md={{ span: 3, offset: 1 }}>
 								<InputGroup size="sm" className="mb-3">
-									責任者名
+									責任者名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 									<input style={{ width: "150px" }} value={this.state.siteResponsiblePerson} name="siteResponsiblePerson" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
@@ -466,13 +485,13 @@ class DutyRegistration extends React.Component {
 						<Row>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									業務名称
-									<input style={{ width: "150px" }} value={this.state.systemName} name="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
+									業務名称&nbsp;
+									<input style={{ width: "120px" }} value={this.state.systemName} name="systemName" onChange={this.valueChange} className="inputWithoutBorder" />
 								</InputGroup>
 							</Col>
 							<Col sm={3} md={{ span: 3, offset: 6 }}>
 								<InputGroup size="sm" className="mb-3">
-									作業担当者
+									作業担当者&nbsp;
 									<input style={{ width: "150px" }} value={this.state.employeeName} name="employeeName" onChange={this.valueChange} className="inputWithoutBorder" disabled />
 								</InputGroup>
 							</Col>
@@ -486,7 +505,7 @@ class DutyRegistration extends React.Component {
 						</Row>
 						<Row>
 							<Col sm={12}>
-								<BootstrapTable className={"bg-white text-dark"} data={this.state.dateData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} >
+								<BootstrapTable className={"bg-white text-dark"} data={this.state.dateData} pagination={false} options={this.options} headerStyle={{ background: '#5599FF' }} >
 									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='hasWork' dataFormat={this.hasWorkFormatter} >勤務</TableHeaderColumn>
 									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='day' dataSort={true} isKey>日</TableHeaderColumn>
 									<TableHeaderColumn tdStyle={{ padding: '.20em' }} width='50' dataField='week' >曜日</TableHeaderColumn>
@@ -510,18 +529,24 @@ class DutyRegistration extends React.Component {
 							</Col>
 							<Col style={{ "textAlign": "right" }} sm={3} md={{ span: 0, offset: 3 }} >
 								<div hidden={this.state.isConfirmedPage}>
-									<Button size="sm" className="btn btn-info btn-sm" onClick={this.beforeSubmit.bind(this)}>提出</Button>
+									<Button size="sm" className="btn btn-info btn-sm" onClick={this.beforeSubmit.bind(this)}>
+										<FontAwesomeIcon icon={faUpload} /> 提出
+									</Button>
 								</div>
 								<div hidden={!this.state.isConfirmedPage}>
-									<Button size="sm" className="btn btn-info btn-sm" onClick={this.onBack.bind(this)}>戻る</Button>
-									&nbsp;&nbsp;
-									<Button size="sm" className="btn btn-info btn-sm" onClick={this.onSubmit.bind(this)}>確認</Button>
+									<Button size="sm" className="btn btn-info btn-sm" onClick={this.onBack.bind(this)}>
+										<FontAwesomeIcon icon={faUndo} /> 戻る
+										</Button>
+										&nbsp;&nbsp;
+										<Button size="sm" className="btn btn-info btn-sm" onClick={this.onSubmit.bind(this)}>
+										<FontAwesomeIcon icon={faUpload} /> 確認
+										</Button>
 								</div>
 							</Col>
 						</Row>
 					</Form.Group>
 				</div>
-			</div>
+			</div >
 		);
 	}
 }

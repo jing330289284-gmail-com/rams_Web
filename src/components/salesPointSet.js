@@ -7,6 +7,8 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faSave } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
+axios.defaults.withCredentials = true;
+
 
 //営業ポイント設定
 class salesPointSet extends React.Component {
@@ -15,6 +17,7 @@ class salesPointSet extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.onchange = this.onchange.bind(this);
+		this.checkRows = this.checkRows.bind(this);
 	}
 
 	initialState = {
@@ -117,7 +120,7 @@ class salesPointSet extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
-						salesPointData: response.data
+						salesPointData: response.data,
 					});
 				}
 			}).catch((error) => {
@@ -174,6 +177,10 @@ class salesPointSet extends React.Component {
 	  */
 	insert = () => {
 		var salesPointSetModel = {};
+		if (this.checkRows()) {
+			this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData.length + " is be not normative" });
+			return;
+		}
 		for (let i = 0; i < this.state.salesPointData.length; i++) {
 			if (this.state.salesPointData[i].no === this.state.no) {
 				salesPointSetModel["no"] = this.state.no
@@ -214,6 +221,10 @@ class salesPointSet extends React.Component {
 	 */
 	update = () => {
 		var salesPointSetModel = {};
+		if (this.checkRows()) {
+			this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData.length + " is be not normative" });
+			return;
+		}
 		for (let i = 0; i < this.state.salesPointData.length; i++) {
 			if (this.state.salesPointData[i].no === this.state.no) {
 				salesPointSetModel["no"] = this.state.no
@@ -271,6 +282,20 @@ class salesPointSet extends React.Component {
 		}
 	}
 
+	checkRows = () => {
+		let isNull = false;
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].employee === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].newMember === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].customerContract === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].level === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].specialPoint === "" ||
+			this.state.salesPointData[this.state.salesPointData.length - 1].point === "") {
+			isNull = true;
+		}
+		return isNull;
+	}
+
 	render() {
 		//表格样式设定
 		this.options = {
@@ -289,7 +314,7 @@ class salesPointSet extends React.Component {
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 		};
 		const { employeeSearch, newMemberSearch, customerContractSearch, errorsMessageValue } = this.state;
-		//テーブルの列の選択
+		//	テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',

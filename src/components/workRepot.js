@@ -11,6 +11,8 @@ import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
+axios.defaults.withCredentials = true;
+
 /**
  * 作業報告書登録画面
  */
@@ -76,7 +78,7 @@ class workRepot extends React.Component {
 		axios.post(this.state.serverIP + "workRepot/updateworkRepot",emp)
 			.then(response => {
 				if (response.data != null) {
-					window.location.reload();
+					this.searchWorkRepot();
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
