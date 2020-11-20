@@ -5,7 +5,7 @@ import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave , faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave , faUndo , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
@@ -46,6 +46,7 @@ class projectInfo extends Component {
         noOfInterviewCode: '',
         //パラメータ
         actionType: "insert",
+        backPage:"",//遷移元
         message: '',//toastのメッセージ
         type: '',//成功や失敗
         myToastShow: false,//toastのフラグ
@@ -335,6 +336,12 @@ class projectInfo extends Component {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
     }
+     /**
+     * 戻るボタン
+     */
+    back=()=>{
+        this.props.history.push(this.state.backPage);
+    }
     render() {
         const {
             projectNo,
@@ -366,6 +373,7 @@ class projectInfo extends Component {
             noOfInterviewCode,
             experienceYear,
             actionType,
+            backPage,
             message,//toastのメッセージ
             type,//成功や失敗
             myToastShow,//toastのフラグ
@@ -495,14 +503,14 @@ class projectInfo extends Component {
                                         <FormControl
                                             maxLength="3"
                                             value={unitPriceRangeLowest}
-                                            placeholder="123"
+                                            placeholder="例：123"
                                             name="unitPriceRangeLowest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeLowest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>{"~"}
                                         <FormControl
                                             maxLength="3"
                                             value={unitPriceRangeHighest}
-                                            placeholder="123"
+                                            placeholder="例：123"
                                             name="unitPriceRangeHighest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeHighest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>
@@ -925,14 +933,14 @@ class projectInfo extends Component {
                                     variant="info"
                                     value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
-                            </Button>
+                            </Button>{" "}
                                 <Button
                                     size="sm"
-                                    hidden={actionType !== "detail" ? true : false}
-                                    onClick={this.resetValue}
+                                    hidden={backPage !== "projectInfoSearch" ? true : false}
                                     variant="info"
+                                    onClick={this.back}
                                     >
-                                    <FontAwesomeIcon icon={faUndo} />戻る
+                                    <FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
                             </div>
                         </Form.Group>
