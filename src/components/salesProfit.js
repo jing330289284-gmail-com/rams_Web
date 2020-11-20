@@ -121,6 +121,12 @@ class salesProfit extends React.Component {
 						profitAll: response.data[0].profitAll,
 					});
 				}
+				if (response.data[0].rowNo == null) {
+					this.setState({
+						salesPointData: "",
+						no: "",
+					});
+				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -148,19 +154,15 @@ class salesProfit extends React.Component {
 						profitAll: response.data[0].profitAll,
 					});
 				}
+				if (response.data[0].rowNo == null) {
+					this.setState({
+						salesPointData: "",
+						no: "",
+					});
+				}
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
-		/* 		axios.post(this.state.serverIP + "getSalesProfitInfo", salesPointSetModel)
-					.then(response => {
-						if (response.data != null) {
-							this.setState({
-								salesPointData: response.data
-							});
-						}
-					}).catch((error) => {
-						console.error("Error - " + error);
-					}); */
 	}
 	/**
 	* 行Selectファンクション

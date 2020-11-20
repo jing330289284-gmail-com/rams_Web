@@ -156,6 +156,7 @@ class siteSearch extends Component {
 
 		axios.post(this.state.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
+				alert(response.data.errorsMessage);
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 				}
