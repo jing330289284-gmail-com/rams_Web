@@ -150,7 +150,7 @@ class TopCustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：富士通" id="topCustomerName" name="topCustomerName" /><font color="red"
+                                    <Form.Control placeholder="例：富士通株式会社" id="topCustomerName" name="topCustomerName" /><font color="red"
                                         style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                 </InputGroup>
                             </Col>
@@ -159,7 +159,7 @@ class TopCustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">略称</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="略称" id="topCustomerAbbreviation" name="topCustomerAbbreviation" />
+                                    <Form.Control placeholder="例：富士通" id="topCustomerAbbreviation" name="topCustomerAbbreviation" />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -169,7 +169,7 @@ class TopCustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="www.123321.com" id="topUrl" name="topUrl" />
+                                    <Form.Control placeholder="例：www.123321.com" id="topUrl" name="topUrl" />
                                 </InputGroup>
                             </Col>
                             <Col sm={6}>
@@ -177,7 +177,7 @@ class TopCustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="備考" id="topRemark" name="topRemark" />
+                                    <Form.Control placeholder="例：備考" id="topRemark" name="topRemark" />
                                 </InputGroup>
                             </Col>
                         </Row>
