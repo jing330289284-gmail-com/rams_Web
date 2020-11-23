@@ -200,7 +200,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			});
 			console.log(selectedMailCC);
 			let mailFrom = this.state.loginUserInfo[0].companyMail;
-			alert(resumePath);
 		axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile",{resumeName,mailTitle,resumePath,mailConfirmContont,selectedmail,selectedMailCC,mailFrom})
 			.then(result => {
 				/*this.setState({
@@ -281,10 +280,9 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 		});
 
 	}
-	searchPersonnalDetail = () => {
-		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.selectedEmpNos[0] })
+	searchPersonnalDetail = (employeeNo) => {
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo})
 			.then(result => {
-				console.log(result.data);
 				if (result.data[0].age === "") {
 					this.setState({
 						employeeName: result.data[0].employeeFullName,
@@ -396,7 +394,7 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			.catch(function(error) {
 				alert(error);
 			});
-		this.searchPersonnalDetail();
+		this.searchPersonnalDetail(this.state.selectedEmpNos[0]);
 	}
 
 	renderShowsTotal = (start, to, total) => {
@@ -444,6 +442,8 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 		this.setState({
 			selectedEmps: row,
 		})
+		
+				this.searchPersonnalDetail(row.employeeNo);
 	}
 	formatEmpStatus=(cell, row, enumObject, index)=>{
 return this.state.employees.find((v) => (v.code === cell)).name;
@@ -637,6 +637,7 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
 							<TableHeaderColumn width='20%' dataField='resume' dataFormat={this.formatResume.bind(this)} editable={false}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
@@ -671,8 +672,8 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							// pagination
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='customerName' dataAlign='center' autoValue dataSort={true} editable={false}>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagers' editable={false} isKey>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='customerName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='positionCode' editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
