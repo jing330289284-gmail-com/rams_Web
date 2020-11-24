@@ -26,6 +26,7 @@ class siteInfo extends Component {
 		this.onchange = this.onchange.bind(this);
 	}
 	initialState = {
+		workStateFlag: true,
 		payOffRange1: '0',
 		payOffRange2: '0',
 		workState: '0',
@@ -58,19 +59,19 @@ class siteInfo extends Component {
 	onchangeworkState = event => {
 		if (event.target.value === '0') {
 			this.setState({
-				workStateFlag: false,
+				workStateFlag: true,
+				levelCode: '',
 				[event.target.name]: event.target.value
 			})
 		} else {
 			this.setState({
-				workStateFlag: true,
-				levelCode: '',
+				workStateFlag: false,
 				[event.target.name]: event.target.value
 			})
 		}
 	}
 	onchangeSiteRoleCode = event => {
-		if (event.target.value === '1' ||  event.target.value === '0') {
+		if (event.target.value === '1' || event.target.value === '0') {
 			this.setState({
 				relatedEmployeesFlag: true,
 				[event.target.name]: event.target.value
