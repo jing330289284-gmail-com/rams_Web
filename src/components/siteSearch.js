@@ -26,8 +26,6 @@ class siteSearch extends Component {
 	}
 	//初期化
 	initialState = {
-		//payOffRange1: '0',// 単価1
-		//payOffRange2: '0',// 単価2
 		customerNo: '',
 		topCustomerNo: '',
 		employeeName: '',
@@ -76,7 +74,7 @@ class siteSearch extends Component {
 	};
 	//リセット　reset
 	resetStates = {
-		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
+		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '',
 		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: ''
 	};
 
@@ -156,7 +154,6 @@ class siteSearch extends Component {
 
 		axios.post(this.state.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
-				alert(response.data.errorsMessage);
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 				}

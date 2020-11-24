@@ -57,6 +57,7 @@ class employeeUpdate extends React.Component {
 		englishLeveCodes: store.getState().dropDown[13],
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
+		qualification: store.getState().dropDown[54],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛テスト
 	};
 
@@ -100,7 +101,7 @@ class employeeUpdate extends React.Component {
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
 					occupationCode: data.occupationCode,//職種
 					departmentCode: data.departmentCode,//部署
-					companyMail: data.companyMail !== null && data.companyMail !== ""&&data.companyMail!== undefined? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
+					companyMail: data.companyMail !== null && data.companyMail !== "" && data.companyMail !== undefined ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
 					graduationUniversity: data.graduationUniversity,//卒業学校
 					major: data.major,//専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
@@ -287,52 +288,7 @@ class employeeUpdate extends React.Component {
 		}
 	}
 
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.station.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'developLanguage1':
-						this.setState({
-							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage2':
-						this.setState({
-							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage3':
-						this.setState({
-							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage4':
-						this.setState({
-							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage5':
-						this.setState({
-							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'stationCode':
-						this.setState({
-							stationCode: this.state.station.find((v) => (v.name === value)).code,
-						})
-						break;
-					default:
-				}
-			}
-		}
-
-	};
+	
 
 	changeFile = (event, name) => {
 		var filePath = event.target.value;
@@ -771,8 +727,22 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl disabled value={certification1} size="sm" name="certification1" />
-									<FormControl disabled value={certification2} size="sm" name="certification2" />
+
+									<Form.Control as="select"　disabled name="certification1" onChange={this.valueChange} value={certification1} autoComplete="off" >
+										{this.state.qualification.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
+									<Form.Control as="select"　disabled name="certification2" onChange={this.valueChange} value={certification2} autoComplete="off" >
+										{this.state.qualification.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
+
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -800,7 +770,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
@@ -812,7 +781,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
@@ -824,7 +792,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="developLanguage3"
@@ -836,7 +803,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="developLanguage4"
@@ -848,7 +814,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="developLanguage5"
@@ -915,7 +880,6 @@ class employeeUpdate extends React.Component {
 										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps} className="auto" id="stationCode"

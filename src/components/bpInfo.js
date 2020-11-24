@@ -91,25 +91,7 @@ class bpInfo extends React.Component {
 		}
 	}
 
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.customer.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'bpBelongCustomerCode':
-						this.setState({
-							bpBelongCustomerCode: this.state.customer.find((v) => (v.name === value)).code,
-						})
-						break;
-					default:
-				}
-			}
-		}
-	};
+	
 
 	bpOtherCompanyAdmissionEndDateChange = (date) => {
 		this.setState(
@@ -131,6 +113,17 @@ class bpInfo extends React.Component {
 		this.props.pbInfoTokuro(bpInfoModel);
 	};
 
+	getCustomer = (event, values) => {
+		if (values != null) {
+			this.setState({
+				bpBelongCustomerCode: values.code,
+			})
+		} else {
+			this.setState({
+				bpBelongCustomerCode: "",
+			})
+		}
+	}
 	render() {
 		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
 		return (
@@ -157,11 +150,13 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={this.state.customer.find((v) => (v.code === this.state.bpBelongCustomerCode)) || {}}
+										id="bpBelongCustomerCode"
+										name="bpBelongCustomerCode"
+										value={this.state.customer.find(v => v.code === this.state.bpBelongCustomerCode) || {}}
+										onChange={(event, values) => this.getCustomer(event, values)}
 										options={this.state.customer}
-										getOptionLabel={(option) => option.name}
 										disabled={this.props.actionType === "detail" ? true : false}
-										onSelect={(event) => this.handleTag(event, 'bpBelongCustomerCode')}
+										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  BP所属" type="text" {...params.inputProps} className="auto" id="bpBelongCustomerCode"
@@ -169,6 +164,10 @@ class bpInfo extends React.Component {
 											</div>
 										)}
 									/>
+
+
+
+
 								</InputGroup>
 							</Col>
 							<Col sm={6}>

@@ -67,6 +67,7 @@ class employeeInsert extends React.Component {
 		englishLeveCodes: store.getState().dropDown[13],
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
+		qualification: store.getState().dropDown[54],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛テスト
 	};
 	/**
@@ -420,52 +421,6 @@ class employeeInsert extends React.Component {
 		}
 	}
 
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.station.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'developLanguage1':
-						this.setState({
-							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage2':
-						this.setState({
-							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage3':
-						this.setState({
-							developLanguage3: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage4':
-						this.setState({
-							developLanguage4: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage5':
-						this.setState({
-							developLanguage5: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'stationCode':
-						this.setState({
-							stationCode: this.state.station.find((v) => (v.name === value)).code,
-						})
-						break;
-					default:
-				}
-			}
-		}
-	};
-
 	changeFile = (event, name) => {
 		var filePath = event.target.value;
 		var arr = filePath.split('\\');
@@ -521,10 +476,10 @@ class employeeInsert extends React.Component {
 		}
 	};
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
+			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus, stationCodeValue, developLanguage1Value, developLanguage2Value, developLanguage3Value, developLanguage4Value, developLanguage5Value,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel } = this.state;
 		return (
@@ -723,9 +678,9 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl  value={furigana1} autoComplete="off"
+									<FormControl value={furigana1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="furigana1" />{' '}
-									<FormControl  value={furigana2} autoComplete="off"
+									<FormControl value={furigana2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="furigana2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -941,8 +896,20 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">資格</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="資格1" value={certification1} autoComplete="off" onChange={this.valueChange} size="sm" name="certification1" />
-									<FormControl placeholder="資格2" value={certification2} autoComplete="off" onChange={this.valueChange} size="sm" name="certification2" />
+									<Form.Control as="select" name="certification1" onChange={this.valueChange} value={certification1} autoComplete="off" >
+										{this.state.qualification.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
+									<Form.Control as="select" name="certification2" onChange={this.valueChange} value={certification2} autoComplete="off" >
+										{this.state.qualification.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -968,10 +935,11 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage1)) || {}}
+										id="developLanguage1"
+										name="developLanguage1"
+										value={developLanguage1Value}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto" id="developLanguage1"
@@ -980,10 +948,11 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage2)) || {}}
+										id="developLanguage2"
+										name="developLanguage2"
+										value={developLanguage2Value}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto" id="developLanguage2"
@@ -992,10 +961,11 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage3)) || {}}
+										id="developLanguage3"
+										name="developLanguage3"
+										value={developLanguage4Value}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage3')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語3" type="text" {...params.inputProps} className="auto" id="developLanguage3"
@@ -1004,10 +974,11 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage4)) || {}}
+										id="developLanguage4"
+										name="developLanguage4"
+										value={developLanguage4Value}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage4')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語4" type="text" {...params.inputProps} className="auto" id="developLanguage4"
@@ -1016,10 +987,11 @@ class employeeInsert extends React.Component {
 										)}
 									/>
 									<Autocomplete
-										value={this.state.developLanguageMaster.find((v) => (v.code === this.state.developLanguage5)) || {}}
+										id="developLanguage5"
+										name="developLanguage5"
+										value={developLanguage5Value}
 										options={this.state.developLanguageMaster}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'developLanguage5')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input placeholder="  開発言語5" type="text" {...params.inputProps} className="auto" id="developLanguage5"
@@ -1027,6 +999,7 @@ class employeeInsert extends React.Component {
 											</div>
 										)}
 									/>
+
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1082,15 +1055,17 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">最寄駅</InputGroup.Text>
 									</InputGroup.Prepend>
+
 									<Autocomplete
-										value={this.state.station.find((v) => (v.code === this.state.stationCode)) || {}}
+										id="stationCode"
+										name="stationCode"
+										value={stationCodeValue}
 										options={this.state.station}
 										getOptionLabel={(option) => option.name}
-										onSelect={(event) => this.handleTag(event, 'stationCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  最寄駅" type="text" {...params.inputProps} className="auto" id="stationCode"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												<input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+												/>
 											</div>
 										)}
 									/>
