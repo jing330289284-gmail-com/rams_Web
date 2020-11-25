@@ -74,8 +74,8 @@ class siteSearch extends Component {
 	};
 	//リセット　reset
 	resetStates = {
-		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '',
-		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: ''
+		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '',siteRoleCode: '',employeeForm: '',
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: '', dataAcquisitionPeriod: ''
 	};
 
 	// AUTOSELECT select事件
@@ -205,10 +205,6 @@ class siteSearch extends Component {
 				<div >
 					<Form id="siteForm">
 						<Form.Group>
-							{/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
-                    </Row> */}
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>現場情報検索</h2>

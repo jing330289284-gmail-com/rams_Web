@@ -69,7 +69,6 @@ class employeeUpdate extends React.Component {
 
 	//更新ボタン
 	updateEmployee = () => {
-		alert(publicUtils.labelGetValue($("#stationCode").val(), this.state.station))
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");

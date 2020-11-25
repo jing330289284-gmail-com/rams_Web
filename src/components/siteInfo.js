@@ -586,8 +586,7 @@ class siteInfo extends Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
+											<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
 											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
@@ -601,7 +600,8 @@ class siteInfo extends Component {
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
-										/>
+										/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
