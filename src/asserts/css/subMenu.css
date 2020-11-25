@@ -31,13 +31,8 @@ h2{
   color:rgb(198, 251, 255);
 }
 .logout{
-  color: #7087b0 !important;
   background-color: rgba(112, 135, 176, 0) !important;
-  border-radius: 40px 40px 40px 40px !important;
-  padding: 14px 40px 15px 40px !important;
-  border-style: solid !important;
-  border-width: 1px 1px 1px 1px !important;
-  border-color: #7087b0 !important;
+  padding: 0px 40px 0px 0px !important;
   }
   .loginPeople{
     font-family: "黑体", Sans-serif;
