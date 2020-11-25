@@ -348,7 +348,7 @@ class employeeInsert extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '' });
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3', });
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
@@ -657,6 +657,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="occupationCode" value={occupationCode}
+										disabled={occupationCode === "3" ? true : false}>
 										autoComplete="off" >
 										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
