@@ -60,6 +60,7 @@ export function fetchDropDown() {
 		"getProjectType",//52案件タイプ取得
 		"getCustomerName",//53お客様名
 		"getQualification",//54資格
+        "getDepartmentMasterDrop",//55お客様部門
 		"getServerIP",//最後
 	]
 	var outArray = [];
@@ -74,7 +75,6 @@ export function fetchDropDown() {
 		contentType: "application/json",
 		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
-				/*  var array = [{ code: '', name: '選択ください' }]; */
 				var array = [{ code: '', name: '' }];
 				var list = resultList[j];
 				for (var i in list) {
@@ -86,6 +86,7 @@ export function fetchDropDown() {
 	});
 	outArray.push(outArray[outArray.length - 1].slice(1)[0].name);
 	return outArray
+   
 };
 
 

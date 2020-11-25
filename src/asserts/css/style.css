@@ -196,6 +196,15 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+#wagesInfoDatePickerReadOnly {
+  background-repeat: no-repeat;
+  width: 190px;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: #e9ecef;
+}
 
 #expensesInfoDatePicker {
   background-repeat: no-repeat;
@@ -256,6 +265,18 @@ body {
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
 }
+
+
+#customerInfoDatePickerReadOnly {
+  background-repeat: no-repeat;
+  width: 130%;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: #e9ecef;
+}
+
 
 #monthlysalesSearchDatePicker {
   background-repeat: no-repeat;
@@ -724,6 +745,16 @@ padding: 1rem;
     background-color: white;
   }
 
+  #customerInfoDatePickerReadOnly {
+    background-repeat: no-repeat;
+    width: 10rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: #e9ecef;
+  }
+
   .ageccCss {
     background-repeat: no-repeat;
     background-position: 10px 7px;
@@ -843,7 +874,16 @@ padding: 1rem;
     background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
-    background-color: white;
+    background-color: white;background-color: #e9ecef;
+  }
+  #wagesInfoDatePickerReadOnly {
+    background-repeat: no-repeat;
+    width: 8rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: #e9ecef;
   }
   .Autocompletestyle-salesSend {
     width: 4.5rem;

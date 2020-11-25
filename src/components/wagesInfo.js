@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEdit, faUndo , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
@@ -64,6 +64,7 @@ class WagesInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         expensesInfoModels: [],//諸費用履歴
         kadouCheck: true,//稼働フラグ
+        backPage:"",
         relatedEmployees: '',//要員
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -125,6 +126,8 @@ class WagesInfo extends Component {
             wagesInfo["employeeNo"] = employeeNo;
             this.setState({
                 employeeName: employeeNo,
+                employeeNo: employeeNo,
+                backPage: this.props.location.state.backPage,
             })
             this.search(wagesInfo);
         }
@@ -486,6 +489,12 @@ class WagesInfo extends Component {
         let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
         return scheduleOfBonusAmount;
     }
+    /**
+     * 戻るボタン
+     */
+    back = () => {
+        this.props.history.push(this.state.backPage);
+    }
     render() {
         const {
             employeeNo,
@@ -516,7 +525,8 @@ class WagesInfo extends Component {
             torokuText,
             expensesInfoModels,
             kadouCheck,
-            relatedEmployees } = this.state;
+            relatedEmployees,
+            backPage } = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -804,7 +814,7 @@ class WagesInfo extends Component {
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
                                                     className="form-control form-control-sm"
-                                                    id="wagesInfoDatePicker"
+                                                    id={bonusFlag === "1" ? "wagesInfoDatePicker": "wagesInfoDatePickerReadOnly"}
                                                     name="nextBonusMonth"
                                                     dateFormat={"yyyy/MM"}
                                                     locale="ja"
@@ -910,6 +920,14 @@ class WagesInfo extends Component {
                                     variant="info"
                                     value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
+                            </Button>{" "}
+                            <Button
+                                size="sm"
+                                hidden={backPage !== "employeeSearch" ? true : false}
+                                variant="info"
+                                onClick={this.back}
+                            >
+                                <FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
                             </div>
                         </Form.Group>
