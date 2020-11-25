@@ -12,7 +12,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
-
 class individualSales extends React.Component {//個人売上検索
     state = { 
         actionType:'',
@@ -25,7 +24,9 @@ class individualSales extends React.Component {//個人売上検索
         calStatus:'',
         dailyCalculationStatus:'',
         dailySalary:'',
+        
      }
+
      constructor(props){
         super(props);
         this.state = this.initialState;//初期化
@@ -40,12 +41,12 @@ class individualSales extends React.Component {//個人売上検索
 			hideSizePerPage: true,
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
-
-		};
     }
+}
     initialState = {
         employeeInfo: store.getState().dropDown[9].slice(1),
-		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+        textcolorCheck:'',
     }
 
 
@@ -74,7 +75,6 @@ class individualSales extends React.Component {//個人売上検索
                     this.setState({ employeeInfoList: response.data.data })
                     this.setState({ workMonthCount:this.state.employeeInfoList[0].workMonthCount}) 
                     this.feeTotal();
-                    //this.workDaysCal();	
                     this.unitPriceTotalCal(response.data.data);				
 				}
 			}).catch((error) => {
@@ -222,12 +222,17 @@ class individualSales extends React.Component {//個人売上検索
         } 
     }
 
-    deductionsAndOvertimePayAddComma(cell,row){
+    deductionsAndOvertimePayAddComma=(cell,row)=>{
+        //this.setState({textcolorCheck:"1"})
         if(row.deductionsAndOvertimePay ===null){
             return 
         }else{
             let formatDeductionsAndOvertimePay= publicUtils.addComma(row.deductionsAndOvertimePay , false);
-            return formatDeductionsAndOvertimePay;
+            if(row.deductionsAndOvertimePay<0){
+                return (<div style={{color:'red'}}>{formatDeductionsAndOvertimePay}</div>);
+            }else{             
+                return formatDeductionsAndOvertimePay;
+            }               
         }    
     }
 
@@ -250,26 +255,18 @@ class individualSales extends React.Component {//個人売上検索
         }
     }
 
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
+	handleTag = (event, values) => {
+		if (values != null) {
+            this.setState({
+                employeeName: values.name,
+            })
+			
+		} else {	
 			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					
-					case 'employeeName':
-						this.setState({
-							employeeName: value,
-						})
-						break;
-					default:
-				}
+				employeeName: '',
+			})						
 			}
 		}
-    };
 
 workDaysCal = (cell,row) =>{
     var holidayCount=0;
@@ -324,8 +321,8 @@ workDaysCal = (cell,row) =>{
                 }else {
                     var dailySalayCal = dailySalary
                 }
-
-                    var addComma= publicUtils.addComma(dailySalayCal, false)+"(日割)";
+                    var addC =publicUtils.addComma(dailySalayCal, false)
+                    var addComma= <div>{addC}<font color="red">(日割)</font></div> 
                     let returnItem = cell;
                     returnItem=addComma;  
                     if(returnItem==0){
@@ -374,7 +371,8 @@ workDaysCal = (cell,row) =>{
                 if(row.deductionsAndOvertimePay!=null){
                     var dailySalay = dailySalay + parseInt(row.deductionsAndOvertimePay);
                 }
-                var addComma= publicUtils.addComma(dailySalay, false)+"(日割)";
+               var addC = publicUtils.addComma(dailySalay, false);
+                var addComma= <div>{addC}<font color="red">(日割)</font></div>               
                 let returnItem = cell;
                 returnItem=addComma;
                 if(returnItem==0){
@@ -560,17 +558,16 @@ allowanceDetail=(cell,row)=>{
     if(row.allowanceAmount ===null){
         return 
     }else{
-    
+        
     let formatAllowanceAmount= publicUtils.addComma(row.allowanceAmount , false);
     let returnItem = cell;
         returnItem = 
         <OverlayTrigger
             trigger={"focus"}
-            placement={"left"}
+            placement={"left"}          
             overlay={
             <Popover>
-                <Popover.Content>
-                    
+                <Popover.Content>                   
                 <strong>
                     <Table id="detailTable" striped bordered hover
                         data={row.employeeInfoList}>
@@ -580,15 +577,15 @@ allowanceDetail=(cell,row)=>{
                         </tr>
                         <tr>
                             <td >{row.otherAllowanceName}</td>
-                            <td >{row.otherAllowanceAmount}</td>
+                            <td >{publicUtils.addComma(row.otherAllowanceAmount, false)}</td>
                         </tr>
                         <tr>
                             <td >住宅</td>
-                            <td >{row.housingAllowance}</td>
+                            <td >{publicUtils.addComma(row.housingAllowance, false)}</td>
                         </tr>
                         <tr>
                             <td >リーダー</td>
-                            <td >{row.leaderAllowanceAmount}</td>
+                            <td >{publicUtils.addComma(row.leaderAllowanceAmount, false)}</td>
                         </tr>
                         <tr>
                             <td >関連社員</td>
@@ -601,13 +598,15 @@ allowanceDetail=(cell,row)=>{
             </Popover>
             }
         >
-        <button style={{outline: 'none',border: 'none',background: 'none'}}>{formatAllowanceAmount}</button>
+        <button style={{outline: 'none',border: 'none',background: 'none',width:"110px",textAlign:"left"}} onClick={this.changeRowcolor.bind(this)}>{formatAllowanceAmount}</button>
       </OverlayTrigger>
         return returnItem;
     }
 }
-
-       
+ 
+changeRowcolor=()=>{
+    return (<row style={{bgcolor:'red'}}></row>)
+} 
 render (){
     const {errorsMessageValue,employeeInfo} = this.state;
         return(
@@ -635,8 +634,8 @@ render (){
                     </Col>
 				</Row>
 				<Row>
-                <Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
+                <Col >
+								<InputGroup size="sm" >
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
                                 <Autocomplete
 											id="employeeName"
@@ -644,7 +643,7 @@ render (){
 											options={employeeInfo}
 											getOptionLabel={(option) => option.name}
 											value={employeeInfo.find(v => v.name === this.state.employeeName) || {}}
-											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											onChange={(event,values) => this.handleTag(event, values)}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
@@ -653,11 +652,7 @@ render (){
 											)}
 										/>
                                     <font color="red" style={{ marginLeft: "15px"}}>★</font>
-								</InputGroup>
-							</Col>
-                    <Col sm={6}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
+                            <InputGroup.Prepend style={{ marginLeft: "30px"}}>
                             <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                 selected={this.state.individualSales_startYearAndMonth}
                                 onChange={this.individualSalesStartYearAndMonthChange}
@@ -687,14 +682,13 @@ render (){
                                 name="individualSales_endYearAndMonth"
                                 locale="ja"/>
                             </InputGroup.Prepend>
-                        </InputGroup>                       
-                    </Col>                    
-                    <Col sm={3}>
-                    <Button variant="info" type = "submit"size="sm" id="search"style={{marginLeft:"0px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
-                    </Col>
+                                             
 
+                    <Button variant="info" type = "submit"size="sm" id="search"style={{marginLeft:"30px",width:"60px"}} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>              
+                    </InputGroup>  
+                    </Col>
                 </Row>
-				<Row>
+				<Row style={{marginTop:"10px"}}>
                     <Col sm={3}>
                     <label>稼働月数：</label>
                     <label>{this.state.workMonthCount}</label>
@@ -713,9 +707,8 @@ render (){
                     <label>{this.state.totalgrosProfits} </label>
 						</Col>
 				</Row>
-                  <div>
-                    <BootstrapTable  data={this.state.employeeInfoList} pagination={true}  headerStyle={{ background: '#5599FF'}}  options={this.options} striped hover condensed 
-                    onClickCell>
+                  <div >
+                    <BootstrapTable  data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed >
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
@@ -724,7 +717,7 @@ render (){
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma} >控除/残業</TableHeaderColumn>
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控除/残業</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>手当合計</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>         
 					</BootstrapTable>

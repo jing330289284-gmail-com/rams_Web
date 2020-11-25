@@ -241,7 +241,12 @@ class monthlySalesSearch extends Component {//月次売上検索
             return
         }else{
             let formatwaitingCost = publicUtils.addComma(row.waitingCost , false)
+            if(row.waitingCost==="0"){
+                return ""
+            }    
+            else{
             return formatwaitingCost;
+            }
         }
     }
 
@@ -251,6 +256,9 @@ class monthlySalesSearch extends Component {//月次売上検索
        }else{
         let mGrosProfits = row.monthlyGrosProfits.split('.')[0];
         let formatmGrosProfits = publicUtils.addComma(mGrosProfits,false)
+        if(row.monthlyGrosProfits<0){
+            return(<div style={{color:'red'}}>{formatmGrosProfits}</div>);
+        }
         return formatmGrosProfits;
        }
         
