@@ -152,7 +152,7 @@ class EnterPeriodSearch extends React.Component {
         };
         returnItem = 
         <OverlayTrigger
-            trigger="click"
+            trigger="focus"
             placement={"left"}
             overlay={
             <Popover>

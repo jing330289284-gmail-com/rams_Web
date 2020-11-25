@@ -58,7 +58,8 @@ export function fetchDropDown() {
         "getNoOfInterview",//50面談回数取得
         "getAdmissionPeriod",//51入場期限取得
         "getProjectType",//52案件タイプ取得
-        "getCustomerName",//53お客様名
+        "getCustomerName",//53お客様名(番号付き)
+        "getDepartmentMasterDrop",//54お客様部門
         "getServerIP",//最後
     ]
     var outArray = [];

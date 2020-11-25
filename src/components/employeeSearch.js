@@ -636,7 +636,7 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={4}>
 							<div style={{ "float": "left" }}>
-								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo , backPage:"employeeSearch"} }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
 							</div>
 						</Col>

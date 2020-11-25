@@ -13,7 +13,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash , faArrowCircleUp , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash, faArrowCircleUp, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -30,18 +30,22 @@ class CustomerInfo extends Component {
         showCustomerInfoModal: false,//上位お客様情報画面フラグ
         establishmentDate: '',//設立の期日
         businessStartDate: '',//取引開始の期日
-        topCustomerDrop: [],//上位お客様連想の数列
+        topCustomerDrop: store.getState().dropDown[35].slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
         customerDepartmentName: '',//部門コード
-        customerDepartmentNameDrop: [],//部門の連想数列
+        customerDepartmentNameDrop: store.getState().dropDown[54].slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
         topCustomerInfo: null,//上位お客様情報データ
-        stationCodeDrop: [],//本社場所
-        customerNo:'',
-        backPage:"",//遷移元
+        stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
+        listedCompanyFlag: store.getState().dropDown[17],
+        levelCodeDrop: store.getState().dropDown[18],
+        companyNatureDrop: store.getState().dropDown[19],
+        paymentsiteCodeDrop: store.getState().dropDown[21],
+        customerNo: '',
+        backPage: "",//遷移元
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
@@ -50,9 +54,9 @@ class CustomerInfo extends Component {
         type: '',
         topCustomer: '',
         insertFlag: false,
-        positionDrop: [],
-        typeOfIndustryDrop: [],
-        developLanguageDrop: [],
+        positionDrop: store.getState().dropDown[20],
+        typeOfIndustryDrop: store.getState().dropDown[36],
+        developLanguageDrop: store.getState().dropDown[8],
         currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -115,60 +119,13 @@ class CustomerInfo extends Component {
     async componentDidMount() {
         this.setState({
             actionType: this.props.location.state.actionType,
-            backPage:this.props.location.state.backPage,
+            backPage: this.props.location.state.backPage,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
-            customerNo:this.props.location.state.customerNo,
+            customerNo: this.props.location.state.customerNo,
         })
         $("#sakujo").attr("disabled", true);
-        var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
-            "getTypeOfIndustry", "getDevelopLanguage"]
-        var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
-        //上場会社
-        var listedCompanyFlag = selectDataList[0];
-        //お客様ランキン
-        var levelCode = selectDataList[1];
-        //会社性質
-        var companyNature = selectDataList[2];
-        //職位
-        var positionCode = selectDataList[3];
-        //支払サイト
-        var paymentsiteCode = selectDataList[4];
-        var topCustomerDrop = [];
-        var customerDepartmentNameDrop = [];
-        var stationCodeDrop = [];
-        var typeOfIndustryDrop = selectDataList[8];
-        var developLanguageDrop = selectDataList[9];
-        topCustomerDrop = selectDataList[5];
-        topCustomerDrop.shift();
-        customerDepartmentNameDrop = selectDataList[6];
-        customerDepartmentNameDrop.shift();
-        stationCodeDrop = selectDataList[7];
-        stationCodeDrop.shift();
-        this.setState({
-            topCustomerDrop: topCustomerDrop,
-            customerDepartmentNameDrop: customerDepartmentNameDrop,
-            stationCodeDrop: stationCodeDrop,
-            positionDrop: positionCode,
-            typeOfIndustryDrop: typeOfIndustryDrop,
-            developLanguageDrop: developLanguageDrop,
-        })
-        for (let i = 1; i < listedCompanyFlag.length; i++) {
-            $("#listedCompanyFlag").append('<option value="' + listedCompanyFlag[i].code + '">' + listedCompanyFlag[i].name + '</option>');
-        }
-        for (let i = 0; i < levelCode.length; i++) {
-            $("#levelCode").append('<option value="' + levelCode[i].code + '">' + levelCode[i].name + '</option>');
-        }
-        for (let i = 0; i < companyNature.length; i++) {
-            $("#companyNatureCode").append('<option value="' + companyNature[i].code + '">' + companyNature[i].name + '</option>');
-        }
-        for (let i = 0; i < positionCode.length; i++) {
-            $("#positionCode").append('<option value="' + positionCode[i].code + '">' + positionCode[i].name + '</option>');
-        }
-        for (let i = 0; i < paymentsiteCode.length; i++) {
-            $("#paymentsiteCode").append('<option value="' + paymentsiteCode[i].code + '">' + paymentsiteCode[i].name + '</option>');
-        }
         if (this.state.actionType !== "update") {
             $("#toBankInfo").attr("disabled", true);
         }
@@ -186,7 +143,7 @@ class CustomerInfo extends Component {
                     $("#customerNo").attr("readOnly", true);
                     this.setState({
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
-                        customerNo:customerNoSaiBan,
+                        customerNo: customerNoSaiBan,
                     })
                 } else {
                     $("#customerName").val(customerInfoMod.customerName);
@@ -213,7 +170,7 @@ class CustomerInfo extends Component {
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
                     }
-                    $("#toBankInfo").attr("disabled",false);
+                    $("#toBankInfo").attr("disabled", false);
                     if (actionType === 'detail') {
                         customerInfoJs.setDisabled();
                     }
@@ -601,7 +558,7 @@ class CustomerInfo extends Component {
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "明細登録成功" ,customerDepartmentList:result.data.customerDepartmentList});
+                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "明細登録成功", customerDepartmentList: result.data.customerDepartmentList });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -645,12 +602,12 @@ class CustomerInfo extends Component {
     /**
      * 戻るボタン
      */
-    back=()=>{
+    back = () => {
         this.props.history.push(this.state.backPage);
     }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
-            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop , customerNo , backPage} = this.state;
+            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop, customerNo, backPage } = this.state;
         const accountPath = {
             pathName: `${this.props.match.url}/`, state: this.state.accountInfo,
         }
@@ -799,7 +756,7 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        id="customerInfoDatePicker"
+                                        id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
                                         showMonthYearPicker
@@ -823,7 +780,7 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="stationCode"
                                         name="stationCode"
-                                        value={this.state.stationCodeDrop.find(v => v.code ===  this.state.stationCode) || {}}
+                                        value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode) || {}}
                                         onChange={(event, values) => this.getStationCode(event, values)}
                                         options={this.state.stationCodeDrop}
                                         getOptionLabel={(option) => option.name}
@@ -841,7 +798,13 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>会社性質</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode" />
+                                    <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode">
+                                        {this.state.companyNatureDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
+                                    </Form.Control>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -855,7 +818,7 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        id="customerInfoDatePicker"
+                                        id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
                                         showMonthYearPicker
@@ -877,7 +840,7 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="topCustomer"
                                         name="topCustomer"
-                                        value={this.state.topCustomerDrop.find(v => v.code ===  this.state.topCustomer) || {}}
+                                        value={this.state.topCustomerDrop.find(v => v.code === this.state.topCustomer) || {}}
                                         onChange={(event, values) => this.getTopCustomer(event, values)}
                                         options={this.state.topCustomerDrop}
                                         getOptionLabel={(option) => option.name}
@@ -897,7 +860,13 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text style={{ width: "8rem" }}>お客様ランキング</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="お客様ランキング" id="levelCode" name="levelCode" />
+                                    <Form.Control as="select" placeholder="お客様ランキング" id="levelCode" name="levelCode">
+                                        {this.state.levelCodeDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
+                                    </Form.Control>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -906,6 +875,11 @@ class CustomerInfo extends Component {
                                         <InputGroup.Text>上場会社</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control as="select" placeholder="上場会社" id="listedCompanyFlag" name="listedCompanyFlag">
+                                        {this.state.listedCompanyFlag.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
                                     </Form.Control>
                                 </InputGroup>
                             </Col>
@@ -922,7 +896,13 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" >
+                                        {this.state.paymentsiteCodeDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
+                                    </Form.Control>
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -952,22 +932,22 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
-                            <div style={{ "textAlign": "center" }}>
-                                <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
-                                    <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
+                        <div style={{ "textAlign": "center" }}>
+                            <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+                                <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
+                            </Button>{" "}
+                            <Button size="sm" variant="info" id="reset" onClick={this.reset} >
+                                <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>{" "}
-                                <Button size="sm" variant="info" id="reset" onClick={this.reset} >
-                                    <FontAwesomeIcon icon={faUndo} />リセット
-                                </Button>{" "}
-                                <Button
-                                    size="sm"
-                                    hidden={backPage !== "customerInfoSearch" ? true : false}
-                                    variant="info"
-                                    onClick={this.back}
-                                    >
-                                    <FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            <Button
+                                size="sm"
+                                hidden={backPage !== "customerInfoSearch" ? true : false}
+                                variant="info"
+                                onClick={this.back}
+                            >
+                                <FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
-                            </div>
+                        </div>
                     </Form>
                     <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
                     <Form.Text style={{ "color": "#FFD700" }}>部門情報</Form.Text>
