@@ -146,6 +146,9 @@ class resume extends React.Component {
 	}
 	changeFile = (event, row) => {
 		var filePath = event.target.value;
+		if (filePath == "") {
+			return;
+        }
 		var arr = filePath.split('\\');
 		let fileName = filePath.split('.');
 		if (
@@ -161,7 +164,7 @@ class resume extends React.Component {
 		) {
 		} else {
 			alert('PDF或いはexcelをアップロードしてください')
-			return false;
+			return;
 		}
 		let data = this.state.employeeList
 		data[row.rowNo - 1]["filePath"] = filePath;
