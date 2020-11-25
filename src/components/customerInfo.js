@@ -34,7 +34,7 @@ class CustomerInfo extends Component {
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
         customerDepartmentName: '',//部門コード
-        customerDepartmentNameDrop: store.getState().dropDown[54].slice(1),//部門の連想数列
+        customerDepartmentNameDrop: store.getState().dropDown[55].slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分

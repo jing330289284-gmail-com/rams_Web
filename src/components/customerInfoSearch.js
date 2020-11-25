@@ -109,28 +109,6 @@ class CustomerInfoSearch extends Component {
             });
     }
     /**
-      * 稼働テーブルの開き
-      */
-    isExpandableRow(row) {
-        if (row.employeeNameList !== null) return true;
-        else return false;
-    }
-    /**
-      * 稼働テーブル開きアイコン
-      */
-    expandColumnComponent({ isExpandableRow, isExpanded }) {
-        let content = '';
-
-        if (isExpandableRow) {
-            content = (isExpanded ? '(-)' : '(+)');
-        } else {
-            content = ' ';
-        }
-        return (
-            <div> { content} </div>
-        );
-    }
-    /**
       * 行Selectファンクション
       */
     handleRowSelect = (row, isSelected, e) => {
@@ -139,7 +117,7 @@ class CustomerInfoSearch extends Component {
             document.getElementById('shosai').className = "btn btn-sm btn-info";
             $("#sakujo").attr("disabled", false);
             this.setState({
-                customerNo: row.customerNo,
+                customerNoForPageChange: row.customerNo,
                 rowNo: row.rowNo,
             })
         } else {
@@ -147,7 +125,7 @@ class CustomerInfoSearch extends Component {
             document.getElementById('shosai').className = "btn btn-sm btn-info disabled";
             $("#sakujo").attr("disabled", true);
             this.setState({
-                customerNo: '',
+                customerNoForPageChange: '',
                 rowNo: row.rowNo,
             })
         }
@@ -266,10 +244,10 @@ class CustomerInfoSearch extends Component {
         }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo, backPage: "customerInfoSearch" },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
         }
         var shosaiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo, backPage: "customerInfoSearch" },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
         }
         //テーブルの行の選択
         const selectRow = {
@@ -293,7 +271,6 @@ class CustomerInfoSearch extends Component {
             lastPage: '>>', // Last page button text
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-            expandRowBgColor: 'rgb(165, 165, 165)',
             deleteBtn: this.createCustomDeleteButton,
             onDeleteRow: this.onDeleteRow,
             handleConfirmDeleteRow: this.customConfirm,
