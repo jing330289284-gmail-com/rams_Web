@@ -38,6 +38,7 @@ class CustomerInfoSearch extends Component {
         errorsMessageValue: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
         transactionStatusDrop: store.getState().dropDown[46],
+        customerDrop:store.getState().dropDown[53].slice(1),
     }
     /**
      * 画面の初期化
@@ -112,6 +113,7 @@ class CustomerInfoSearch extends Component {
         $.each(formArray, function (i, item) {
             customerInfoMod[item.name] = item.value;
         });
+        customerInfoMod["customerNo"] = this.state.customerNo;
         customerInfoMod["capitalStockFront"] = utils.deleteComma($("#capitalStockFront").val());
         customerInfoMod["capitalStockBack"] = utils.deleteComma($("#capitalStockBack").val());
         customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
@@ -261,48 +263,39 @@ class CustomerInfoSearch extends Component {
         $("#companyNatureCode").val("");
     }
     /**
-    * 稼働テーブル
-    */
-    expandComponent(row) {
-        return (
-            <div>
-                <Table>
-                    <thead>
-                        <th>稼動者</th>
-                        <th>現場</th>
-                        <th>責任者</th>
-                        <th>単価</th>
-                    </thead>
-                    <tbody>
-                        {row.employeeNameList === null ? null : row.employeeNameList.map((employeeName, index) =>
-                            <tr key={row.rowNo} align="center">
-                                <td>{employeeName}</td>
-                                <td>{row.locationList[index]}</td>
-                                <td>{row.siteManagerList[index]}</td>
-                                <td>{row.unitPriceList[index]}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </Table>
-            </div>
-        );
-    }
+     * 社員名連想
+     * @param {} event 
+     */
+	getCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let customerNo = null;
+			if (values !== null) {
+				customerNo = values.code;
+			}
+			this.setState({
+				customerNo: customerNo,
+			})
+		})
+	}
     addMarkCapitalStock=(cell,row)=>{
         let capitalStock = utils.addComma(row.capitalStock);
         return capitalStock;
     }
     render() {
-        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack } = this.state;
+        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack 
+        , customerNo} = this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' , backPage:"customerInfoSearch" },
         }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo  , backPage:"customerInfoSearch" },
         }
         var shosaiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo  , backPage:"customerInfoSearch" },
         }
         //テーブルの行の選択
         const selectRow = {
@@ -350,50 +343,51 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">お客様名</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control placeholder="例：C001" id="customerNo" name="customerNo" />
+                                    <Autocomplete
+                                        id="customerNo"
+                                        name="customerNo"
+                                        value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || ""}
+                                        options={this.state.customerDrop}
+                                        getOptionLabel={(option) => option.text ? option.text : ""}
+                                        onChange={(event, values) => this.getCustomer(event, values)}
+                                        renderOption={(option) => {
+                                            return (
+                                                <React.Fragment>
+                                                    <p >{option.name}</p>
+                                                </React.Fragment>
+                                            )
+                                        }}
+                                        renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                />
+                                            </div>
+                                        )}
+                                    />
                             </InputGroup>
                         </Col>
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control placeholder="例：LYC株式会社" id="customerName" name="customerName" />
-                            </InputGroup>
-                        </Col>
-                        <Col sm={3}>
-                            <InputGroup size="sm">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
+                                    <InputGroup.Text>会社性質</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
                                 </Form.Control>
                             </InputGroup>
                         </Col>
-                        <Col sm={3}>
-                            <InputGroup size="sm">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text style={{width:"8rem"}}>お客様ランキング</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control as="select" id="levelCode" name="levelCode">
-                                </Form.Control>
-                            </InputGroup>
-                        </Col>
-
-
                     </Row>
                     <br />
                     <Row>
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
+                                    <InputGroup.Text>資本金</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control placeholder="資本金" id="capitalStockFront" name="capitalStockFront" value={capitalStockFront}
+                                <Form.Control placeholder="例：100" id="capitalStockFront" name="capitalStockFront" value={capitalStockFront}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockFront')} />{"~"}
-                                <Form.Control placeholder="資本金" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
+                                <Form.Control placeholder="例：100" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockBack')} />
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>百万円</InputGroup.Text>
@@ -413,7 +407,7 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="上位お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder="例：上位お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
                                                />
                                         </div>
                                     )}
@@ -423,7 +417,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                    <InputGroup.Text>本社場所</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Autocomplete
                                     id="stationCode"
@@ -451,9 +445,18 @@ class CustomerInfoSearch extends Component {
                     </Row>
                     <Row>
                         <Col sm={3}>
+                            <InputGroup size="sm">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text style={{width:"8rem"}}>お客様ランキング</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" id="levelCode" name="levelCode">
+                                </Form.Control>
+                            </InputGroup>
+                        </Col>
+                        <Col sm={3}>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">取引区分</InputGroup.Text>
+                                    <InputGroup.Text>取引区分</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" placeholder="取引区分" id="transactionStatus" name="transactionStatus" />
                             </InputGroup>
@@ -486,11 +489,11 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">取引人月</InputGroup.Text>
+                                    <InputGroup.Text>取引人月</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control placeholder="取引人月" value={traderPersonFront}
+                                <Form.Control placeholder="例：12" value={traderPersonFront}
                                     onChange={(e) => this.vNumberChange(e, 'traderPersonFront')} id="traderPersonFront" name="traderPersonFront" />{"~"}
-                                <Form.Control placeholder="取引人月" value={traderPersonBack}
+                                <Form.Control placeholder="例：12" value={traderPersonBack}
                                     onChange={(e) => this.vNumberChange(e, 'traderPersonBack')} id="traderPersonBack" name="traderPersonBack" />
                             </InputGroup>
                         </Col>

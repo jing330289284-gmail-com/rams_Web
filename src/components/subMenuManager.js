@@ -172,8 +172,6 @@ class SubMenu extends Component {
 														<ListGroup variant="flush">
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/wagesInfo">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />給料情報</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />給料検索</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">

@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faFile, faList } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faFile, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -190,6 +190,7 @@ class employeeInsert extends React.Component {
 		this.setState(
 			{
 				actionType: location.state.actionType,
+				backPage: location.state.backPage,
 			}
 		);
 		this.getNO('LYC');//採番番号
@@ -301,7 +302,6 @@ class employeeInsert extends React.Component {
 			{
 				retirementYearAndMonth: date,
 				temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(date, new Date()),
-
 			}
 		);
 	};
@@ -513,10 +513,15 @@ class employeeInsert extends React.Component {
 	}
 
 	back = () => {
-		return this.props.history.push("/subMenuManager/employeeSearch");
+		let backPage = this.state.backPage
+		if (backPage !== null && backPage !== undefined && backPage !== '') {
+			return this.props.history.push("/subMenuManager/" + backPage);
+		} else {
+			return this.props.history.push("/subMenuManager/employeeSearch");
+		}
 	};
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
@@ -543,7 +548,7 @@ class employeeInsert extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
+						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/* PW設定 */}
@@ -645,13 +650,13 @@ class employeeInsert extends React.Component {
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
+
+
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="カタカナ" value={furigana1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="furigana1" />{' '}
-									<FormControl placeholder="カタカナ" value={furigana2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="furigana2" />
+									<FormControl value={alphabetName} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="alphabetName" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -679,7 +684,7 @@ class employeeInsert extends React.Component {
 
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">部署</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -692,7 +697,7 @@ class employeeInsert extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">職種</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -709,17 +714,19 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3" style={{ visibility: "hidden" }}>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm"></InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl
 										size="sm" disabled />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="ローマ字" value={alphabetName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="alphabetName" />
+									<FormControl  value={furigana1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="furigana1" />{' '}
+									<FormControl  value={furigana2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="furigana2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -1134,6 +1141,7 @@ class employeeInsert extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											minDate={new Date()}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1208,7 +1216,7 @@ class employeeInsert extends React.Component {
 								<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>{' '}
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
-								<FontAwesomeIcon icon={faList} /> 戻る
+								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>

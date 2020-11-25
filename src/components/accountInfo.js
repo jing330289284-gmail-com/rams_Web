@@ -19,6 +19,14 @@ class BankInfo extends Component {
         actionType: '',//処理区分
         message: '',
         type: '',
+        accountInfoName:'', 
+        bankCode:'', 
+        bankBranchName:'', 
+        bankBranchCode:'',  
+        accountNo:'', 
+        employeeOrCustomerNo:'',
+        accountBelongsStatus:"0",
+        accountName:'', 
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
@@ -30,14 +38,26 @@ class BankInfo extends Component {
     }
 
     componentDidMount() {
-        if (!isNaN(this.props.employeeFristName + this.props.employeeLastName) && (this.props.employeeFristName + this.props.employeeLastName) !== '') {//社員の場合
-            $("#employeeOrCustomerNo").val($("#employeeNo").val())
-            $("#accountBelongsStatus").val("0")
-            document.getElementById("No").innerHTML = "社員：" + this.props.employeeFristName + this.props.employeeLastName;
-        } else if ($("#employeeNo").val() === '' || $("#employeeNo").val() === null) {//お客様の場合
-            $("#employeeOrCustomerNo").val($("#customerNo").val())
-            $("#accountBelongsStatus").val("1")
-            document.getElementById("No").innerHTML = "お客様：" + $("#customerName").val();
+        var employeeOrCustomerNo = "";
+        var accountBelongsStatus = this.state.accountBelongsStatus;
+        if (this.props.employeeNo !== null && this.props.employeeNo !== undefined) {//社員の場合
+            employeeOrCustomerNo = this.props.employeeNo;
+            var employeeName = this.props.employeeFristName + "" + this.props.employeeLastName;
+            if(this.props.employeeFristName === undefined && this.props.employeeLastName === undefined){
+                employeeName = "";
+            }
+            this.setState({
+                employeeOrCustomerNo:this.props.employeeNo,
+                accountInfoName:"社員：" + employeeName,
+            })
+        } else{//お客様の場合
+            employeeOrCustomerNo = this.props.customerNo;
+            accountBelongsStatus = "1";
+            this.setState({
+                employeeOrCustomerNo:this.props.customerNo,
+                accountInfoName:"お客様：" + $("#customerName").val(),
+                accountBelongsStatus:"1",
+            })
         }
         //銀行名
         var bankCode = utils.getdropDown("getBankInfo", this.state.serverIP);
@@ -51,52 +71,33 @@ class BankInfo extends Component {
         })
         var accountInfo = this.props.accountInfo;//父画面のパラメータ（画面既存口座情報）
         if (!$.isEmptyObject(accountInfo)) {
-            $("#bankBranchName").val(accountInfo["bankBranchName"]);
-            $("#bankBranchCode").val(accountInfo["bankBranchCode"]);
-            $("#accountNo").val(accountInfo["accountNo"]);
-            $("#accountName").val(accountInfo["accountName"]);
-            $("#bankCode").val(accountInfo["bankCode"]);
-            if (accountInfo["accountBelongsStatus"] !== null && accountInfo["accountBelongsStatus"] !== '') {
-                $("#accountBelongsStatus").val(accountInfo["accountBelongsStatus"]);
-            }
-            if (accountInfo["accountTypeStatus"] === '0') {
-                $("#futsu").attr("checked", true);
-            } else if (accountInfo["accountTypeStatus"] === '1') {
-                $("#toza").attr("checked", true);
-            }
+            this.giveValue(accountInfo);
             bankInfoJs.takeDisabled();
         } else {
             if (actionType !== "insert") {
                 var onloadMol = {};
-                onloadMol["employeeOrCustomerNo"] = $("#employeeOrCustomerNo").val();
-                onloadMol["accountBelongsStatus"] = $("#accountBelongsStatus").val();
+                onloadMol["employeeOrCustomerNo"] = employeeOrCustomerNo;
+                onloadMol["accountBelongsStatus"] = accountBelongsStatus;
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
                 axios.post(this.state.serverIP + "bankInfo/init", onloadMol)
-                    .then(function (resultMap) {
-                        if (resultMap.data.accountInfoMod !== '' && resultMap.data.accountInfoMod !== null) {
-                            $("#bankBranchName").val(resultMap.data.accountInfoMod["bankBranchName"]);
-                            $("#bankBranchCode").val(resultMap.data.accountInfoMod["bankBranchCode"]);
-                            $("#accountNo").val(resultMap.data.accountInfoMod["accountNo"]);
-                            $("#accountName").val(resultMap.data.accountInfoMod["accountName"]);
-                            $("#bankCode").val(resultMap.data.accountInfoMod["bankCode"]);
-                            if (resultMap.data.accountInfoMod["accountBelongsStatus"] !== null && resultMap.data.accountInfoMod["accountBelongsStatus"] !== '') {
-                                $("#accountBelongsStatus").val(resultMap.data.accountInfoMod["accountBelongsStatus"]);
-                            }
+                    .then(resultMap=> {
+                        if(resultMap.data.accountInfoMod !== null){
+                            this.giveValue(resultMap.data.accountInfoMod);
                             if (resultMap.data.accountInfoMod["accountTypeStatus"] === '0') {
                                 $("#futsu").attr("checked", true);
                             } else if (resultMap.data.accountInfoMod["accountTypeStatus"] === '1') {
                                 $("#toza").attr("checked", true);
                             }
-                            //修正の場合
-                            if (actionType === 'update') {
-                                $("#bankBranchName").attr("readonly", false);
-                                $("#bankBranchCode").attr("readonly", false);
-                                $("#accountNo").attr("readonly", false);
-                                $("#accountName").attr("readonly", false);
-                                $("#futsu").attr("disabled", false);
-                                $("#toza").attr("disabled", false);
-                            }
+                        }
+                        //修正の場合
+                        if (actionType === 'update' && resultMap.data.accountInfoMod !== null) {
+                            $("#bankBranchName").attr("readonly", false);
+                            $("#bankBranchCode").attr("readonly", false);
+                            $("#accountNo").attr("readonly", false);
+                            $("#accountName").attr("readonly", false);
+                            $("#futsu").attr("disabled", false);
+                            $("#toza").attr("disabled", false);
                         }
                     })
                     .catch(function (error) {
@@ -116,6 +117,22 @@ class BankInfo extends Component {
             }
         }
     }
+    giveValue=(accountInfoMod)=>{
+        this.setState({
+            bankCode:accountInfoMod.bankCode, 
+            bankBranchName:accountInfoMod.bankBranchName, 
+            bankBranchCode:accountInfoMod.bankBranchCode,  
+            accountNo:accountInfoMod.accountNo, 
+            employeeOrCustomerNo:accountInfoMod.employeeOrCustomerNo,
+            accountName:accountInfoMod.accountName, 
+        })
+        if (accountInfoMod.accountTypeStatus === '0') {
+            $("#futsu").attr("checked", true);
+        } else if (accountInfoMod.accountTypeStatus === '1') {
+            $("#toza").attr("checked", true);
+        }
+
+    }
     /**
      * 支店名と支店番号の検索
      * param 項目のid
@@ -127,23 +144,33 @@ class BankInfo extends Component {
         if ($('#' + noORname + '').val() !== "") {
 
             axios.post(this.state.serverIP + "getBankBranchInfo", sendMap)
-                .then(function (resultMap) {
+                .then(resultMap=>{
                     if (resultMap.data.length !== 0) {
-                        $('#bankBranchCode').val(resultMap.data[0].code);
-                        $('#bankBranchName').val(resultMap.data[0].name);
+                        this.setState({
+                            bankBranchCode:resultMap.data[0].code,
+                            bankBranchName:resultMap.data[0].name,
+                        })
                     } else {
-                        $('#bankBranchCode').val("");
-                        $('#bankBranchName').val("");
+                        this.setState({
+                            bankBranchCode:"",
+                            bankBranchName:"",
+                        })
                     }
 
                 })
-                .catch(function (error) {
+                .catch(error=> {
                     alert("支店信息获取错误，请检查程序");
                 });
         } else {
             $('#bankBranchCode').val("");
             $('#bankBranchName').val("");
         }
+    }
+    //onchange
+    valueChange = event => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        })
     }
     /**
      * 口座登録ボタン
@@ -163,8 +190,39 @@ class BankInfo extends Component {
             this.setState({ "errorsMessageShow": true, errorsMessageValue: '銀行関連を入力してください' });
         }
     }
+    /**
+ * 銀行の選択と項目の活性
+ */
+canSelect=event=>{
+	var val = $("#bankCode").val();
+	if(val !== ''){
+        $("#bankBranchName").attr("readonly",false);
+        $("#bankBranchCode").attr("readonly",false);
+        $("#accountNo").attr("readonly",false);
+        $("#accountName").attr("readonly",false);
+        $("#futsu").attr("disabled",false);
+        $("#toza").attr("disabled",false);
+        $("#futsu").attr("checked",true);
+    }else{
+        $("#bankBranchName").attr("readonly",true);
+        $("#bankBranchCode").attr("readonly",true);
+        $("#accountNo").attr("readonly",true);
+        $("#accountName").attr("readonly",true);
+        $("#futsu").attr("disabled",true);
+        $("#toza").attr("disabled",true);
+        $("#futsu").attr("checked",true);
+    }
+    $("#bankBranchName").val("");
+    $("#bankBranchCode").val("");
+    $("#accountNo").val("");
+    $("#accountName").val("");
+    $("#futsu").attr("checked",true);
+    this.setState({
+        [event.target.name]: event.target.value,
+    })
+}
     render() {
-        const { actionType, errorsMessageValue } = this.state;
+        const { actionType, errorsMessageValue, accountInfoName, bankCode, bankBranchName, bankBranchCode, accountNo, accountName } = this.state;
         return (
             <div  >
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
@@ -182,7 +240,7 @@ class BankInfo extends Component {
                                 <Navbar>
                                     <Navbar.Collapse>
                                         <Navbar.Text>
-                                            <a id="No"></a>
+                                            <a>{accountInfoName}</a>
                                         </Navbar.Text>
                                     </Navbar.Collapse>
                                 </Navbar>
@@ -192,9 +250,9 @@ class BankInfo extends Component {
                             <Col>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
+                                        <InputGroup.Text>銀行名</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control id="bankCode" name="bankCode" as="select" onChange={bankInfoJs.canSelect}>
+                                    <Form.Control id="bankCode" name="bankCode" value={bankCode} as="select" onChange={this.canSelect}>
                                     </Form.Control>
                                 </InputGroup>
                             </Col>
@@ -210,12 +268,12 @@ class BankInfo extends Component {
                             <Col>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
+                                        <InputGroup.Text>支店名</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control readOnly
                                         placeholder="例：浦和支店"
                                         onBlur={this.getBankBranchInfo.bind(this, "bankBranchName")}
-                                        id="bankBranchName" maxLength="20" name="bankBranchName" />
+                                        id="bankBranchName" maxLength="20" name="bankBranchName" value={bankBranchName} onChange={this.valueChange}/>
                                 </InputGroup>
                             </Col>
                             <Col>
@@ -223,7 +281,8 @@ class BankInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly id="bankBranchCode" maxLength="3" name="bankBranchCode" />
+                                    <Form.Control placeholder="例：010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly
+                                        id="bankBranchCode" maxLength="3" name="bankBranchCode" value={bankBranchCode} onChange={this.valueChange}/>
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -233,7 +292,8 @@ class BankInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="7" name="accountNo" />
+                                    <Form.Control placeholder="例：123456" readOnly id="accountNo" maxLength="7" name="accountNo"
+                                        value={accountNo} onChange={this.valueChange}/>
                                 </InputGroup>
                             </Col>
                             <Col>
@@ -248,7 +308,8 @@ class BankInfo extends Component {
                                     </Tooltip>
                                         }
                                     >
-                                        <Form.Control placeholder="カタカナ" onChange={bankInfoJs.checkAccountName} readOnly id="accountName" maxLength="20" name="accountName" />
+                                        <Form.Control placeholder="例：カタカナ" onChange={bankInfoJs.checkAccountName} readOnly
+                                            id="accountName" maxLength="20" name="accountName" value={accountName} onChange={this.valueChange}/>
                                     </OverlayTrigger>
                                 </InputGroup>
                             </Col>
@@ -256,7 +317,7 @@ class BankInfo extends Component {
                         <Row>
                             <Col className="text-center">
                                 {actionType === "update" ?
-                                    <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+                                    <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="toroku" type="button">
                                         <FontAwesomeIcon icon={faSave} />更新
                         </Button>
                                     :
@@ -269,8 +330,6 @@ class BankInfo extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                        <input type="hidden" id="employeeOrCustomerNo" name="employeeOrCustomerNo" />
-                        <input type="hidden" id="accountBelongsStatus" name="accountBelongsStatus" />
                     </Form>
                 </div>
             </div>

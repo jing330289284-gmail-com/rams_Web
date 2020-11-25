@@ -565,6 +565,10 @@ body {
   background-size: 25%;
 }
 
+#twoKanji {
+  width: 3rem;
+}
+
 #fiveKanji {
   width: 5.5rem;
 }

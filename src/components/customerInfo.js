@@ -13,7 +13,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash , faArrowCircleUp} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash , faArrowCircleUp , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -40,6 +40,8 @@ class CustomerInfo extends Component {
         actionType: '',//処理区分
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: [],//本社場所
+        customerNo:'',
+        backPage:"",//遷移元
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
@@ -113,8 +115,12 @@ class CustomerInfo extends Component {
     async componentDidMount() {
         this.setState({
             actionType: this.props.location.state.actionType,
+            backPage:this.props.location.state.backPage,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
+        this.setState({
+            customerNo:this.props.location.state.customerNo,
+        })
         $("#sakujo").attr("disabled", true);
         var methodArray = ["getListedCompany", "getLevel", "getCompanyNature", "getPosition", "getPaymentsite", "getTopCustomer", "getDepartmentMasterDrop", "getStation",
             "getTypeOfIndustry", "getDevelopLanguage"]
@@ -180,6 +186,7 @@ class CustomerInfo extends Component {
                     $("#customerNo").attr("readOnly", true);
                     this.setState({
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
+                        customerNo:customerNoSaiBan,
                     })
                 } else {
                     $("#customerName").val(customerInfoMod.customerName);
@@ -206,6 +213,7 @@ class CustomerInfo extends Component {
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
                     }
+                    $("#toBankInfo").attr("disabled",false);
                     if (actionType === 'detail') {
                         customerInfoJs.setDisabled();
                     }
@@ -397,37 +405,70 @@ class CustomerInfo extends Component {
         const dropRowKeysStr = dropRowKeys.join(',');
         next();
     }
-    handleTag = ({ target }, fieldName) => {
-        const { value, id } = target;
-        if (value === '') {
+    getStationCode = (event, values) => {
+        if (values != null) {
             this.setState({
-                [id]: '',
+                stationCode: values.code,
             })
         } else {
-            if (this.state.customerDepartmentNameDrop.find((v) => (v.name === value)) !== undefined ||
-                this.state.topCustomerDrop.find((v) => (v.name === value)) !== undefined ||
-                this.state.stationCodeDrop.find((v) => (v.name === value)) !== undefined) {
-                switch (fieldName) {
-                    case 'customerDepartment':
-                        this.setState({
-                            customerDepartmentName: this.state.customerDepartmentNameDrop.find((v) => (v.name === value)).code,
-                        })
-                        break;
-                    case 'topCustomer':
-                        this.setState({
-                            topCustomer: this.state.topCustomerDrop.find((v) => (v.name === value)).code,
-                        })
-                        break;
-                    case 'stationCode':
-                        this.setState({
-                            stationCode: this.state.stationCodeDrop.find((v) => (v.name === value)).code,
-                        })
-                        break;
-                    default:
-                }
-            }
+            this.setState({
+                stationCode: "",
+            })
         }
-    };
+    }
+    // getCustomerDepartment = (event, values) => {
+    //     if (values != null) {
+    //         this.setState({
+    //             customerDepartment: values.code,
+    //         })
+    //     } else {
+    //         this.setState({
+    //             customerDepartment: "",
+    //         })
+    //     }
+    // }
+    getTopCustomer = (event, values) => {
+        if (values != null) {
+            this.setState({
+                topCustomer: values.code,
+            })
+        } else {
+            this.setState({
+                topCustomer: "",
+            })
+        }
+    }
+    // handleTag = ({ target }, fieldName) => {
+    //     const { value, id } = target;
+    //     if (value === '') {
+    //         this.setState({
+    //             [id]: '',
+    //         })
+    //     } else {
+    //         if (this.state.customerDepartmentNameDrop.find((v) => (v.name === value)) !== undefined ||
+    //             this.state.topCustomerDrop.find((v) => (v.name === value)) !== undefined ||
+    //             this.state.stationCodeDrop.find((v) => (v.name === value)) !== undefined) {
+    //             switch (fieldName) {
+    //                 case 'customerDepartment':
+    //                     this.setState({
+    //                         customerDepartmentName: this.state.customerDepartmentNameDrop.find((v) => (v.name === value)).code,
+    //                     })
+    //                     break;
+    //                 case 'topCustomer':
+    //                     this.setState({
+    //                         topCustomer: this.state.topCustomerDrop.find((v) => (v.name === value)).code,
+    //                     })
+    //                     break;
+    //                 case 'stationCode':
+    //                     this.setState({
+    //                         stationCode: this.state.stationCodeDrop.find((v) => (v.name === value)).code,
+    //                     })
+    //                     break;
+    //                 default:
+    //             }
+    //         }
+    //     }
+    // };
     // レコードおきゃく表示
     formatCustomerDepartment = (cell) => {
         var customerDepartmentNameDrop = this.state.customerDepartmentNameDrop;
@@ -601,9 +642,15 @@ class CustomerInfo extends Component {
         var money = document.getElementById(id).value;
         $("#" + id + "").val(utils.addComma(money));
     }
+    /**
+     * 戻るボタン
+     */
+    back=()=>{
+        this.props.history.push(this.state.backPage);
+    }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
-            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop } = this.state;
+            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop , customerNo , backPage} = this.state;
         const accountPath = {
             pathName: `${this.props.match.url}/`, state: this.state.accountInfo,
         }
@@ -667,7 +714,7 @@ class CustomerInfo extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body >
-                            <BankInfo accountInfo={accountInfo} actionType={actionType} accountTokuro={this.accountInfoGet} />
+                            <BankInfo accountInfo={accountInfo} actionType={actionType} customerNo={customerNo} accountTokuro={this.accountInfoGet} />
                         </Modal.Body>
                     </Modal>
                     <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-topCustomerInfo"
@@ -700,13 +747,13 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="6" placeholder="お客様番号" id="customerNo" name="customerNo" readOnly />
+                                    <Form.Control maxLength="6" id="customerNo" name="customerNo" readOnly />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+                                        <InputGroup.Text >お客様名</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font color="red"
                                         style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
@@ -717,9 +764,9 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">略称</InputGroup.Text>
+                                        <InputGroup.Text>略称</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
+                                    <Form.Control placeholder="例：LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -733,7 +780,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">資本金</InputGroup.Text>
+                                        <InputGroup.Text>資本金</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="6" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
                                     <InputGroup.Prepend>
@@ -744,7 +791,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">設立</InputGroup.Text>
+                                        <InputGroup.Text>設立</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <DatePicker
                                         selected={this.state.establishmentDate}
@@ -770,14 +817,14 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">本社場所</InputGroup.Text>
+                                        <InputGroup.Text>本社場所</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Autocomplete
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="stationCode"
                                         name="stationCode"
-                                        value={this.state.stationCodeDrop.find((v) => (v.code === this.state.stationCode)) || {}}
-                                        onSelect={(event) => this.handleTag(event, 'stationCode')}
+                                        value={this.state.stationCodeDrop.find(v => v.code ===  this.state.stationCode) || {}}
+                                        onChange={(event, values) => this.getStationCode(event, values)}
                                         options={this.state.stationCodeDrop}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
@@ -792,7 +839,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">会社性質</InputGroup.Text>
+                                        <InputGroup.Text>会社性質</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control as="select" placeholder="会社性質" id="companyNatureCode" name="companyNatureCode" />
                                 </InputGroup>
@@ -830,8 +877,8 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="topCustomer"
                                         name="topCustomer"
-                                        value={this.state.topCustomerDrop.find((v) => (v.code === this.state.topCustomer)) || {}}
-                                        onSelect={(event) => this.handleTag(event, 'topCustomer')}
+                                        value={this.state.topCustomerDrop.find(v => v.code ===  this.state.topCustomer) || {}}
+                                        onChange={(event, values) => this.getTopCustomer(event, values)}
                                         options={this.state.topCustomerDrop}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
@@ -856,7 +903,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">上場会社</InputGroup.Text>
+                                        <InputGroup.Text>上場会社</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control as="select" placeholder="上場会社" id="listedCompanyFlag" name="listedCompanyFlag">
                                     </Form.Control>
@@ -865,9 +912,9 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
+                                        <InputGroup.Text>URL</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="" placeholder="www.lyc.co.jp" id="url" name="url" />
+                                    <Form.Control maxLength="" placeholder="例：www.lyc.co.jp" id="url" name="url" />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -883,7 +930,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">購買担当</InputGroup.Text>
+                                        <InputGroup.Text>購買担当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="20" placeholder="例：田中" id="purchasingManagers" name="purchasingManagers" />
                                 </InputGroup>
@@ -891,17 +938,17 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">メール</InputGroup.Text>
+                                        <InputGroup.Text>メール</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="50" placeholder="xxxxxxxxx@xxx.xxx.com" id="purchasingManagersMail" name="purchasingManagersMail" />
+                                    <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="purchasingManagersMail" name="purchasingManagersMail" />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
+                                        <InputGroup.Text>備考</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
+                                    <Form.Control maxLength="50" placeholder="例：備考" id="remark" name="remark" />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -911,7 +958,15 @@ class CustomerInfo extends Component {
                                 </Button>{" "}
                                 <Button size="sm" variant="info" id="reset" onClick={this.reset} >
                                     <FontAwesomeIcon icon={faUndo} />リセット
-                                </Button>
+                                </Button>{" "}
+                                <Button
+                                    size="sm"
+                                    hidden={backPage !== "customerInfoSearch" ? true : false}
+                                    variant="info"
+                                    onClick={this.back}
+                                    >
+                                    <FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            </Button>
                             </div>
                     </Form>
                     <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />

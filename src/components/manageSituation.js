@@ -52,9 +52,9 @@ class manageSituation extends React.Component {
 		editFlag: false,// 確定客様編集flag
 		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
-		salesYearAndMonth: '202009',
-		// new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),// 終わり年月
-		// updateUser: sessionStorage.getItem('employeeName'),//更新者
+		salesYearAndMonth: '',
+		//'202009',
+		// new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),//終わり年月
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
 		salesStaff: '',// 営業担当
@@ -86,14 +86,36 @@ class manageSituation extends React.Component {
 
 	// 初期表示のレコードを取る
 	componentDidMount() {
-		let sysYearMonth = new Date();
-		let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
-		this.getSalesSituation("202009");
+		//let sysYearMonth = new Date();
+		//　let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
+		this.getSalesSituation(this.getNextMonth(new Date(),1));
+		this.setState({
+						salesYearAndMonth: this.getNextMonth(new Date(),1),
+					});
+		
+	}
+	
+	
+		getNextMonth = (date,addMonths) => {
+		//var dd = new Date();
+		var m = date.getMonth() + 1;
+		var y = date.getMonth() + 1 + addMonths > 12 ? (date.getFullYear() + 1) : date.getFullYear();
+		if (m + addMonths == 0) {
+			y = y - 1;
+			m = 12;
+		} else {
+			if (m + addMonths > 12) {
+				m = '01';
+			} else {
+				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+			}
+		}
+		return y + "" + m;
 	}
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		axios.post(this.state.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: '202009' })
+		axios.post(this.state.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -413,8 +435,8 @@ class manageSituation extends React.Component {
 			yearMonth: date,
 			salesYearAndMonth: publicUtils.formateDate(date, false),
 		});
-		let searchYearMonth = date.getFullYear() + '' + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
-		this.getSalesSituation(searchYearMonth)
+		//let searchYearMonth = date.getFullYear() + '' + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
+		this.getSalesSituation(this.getNextMonth(date,0))
 	}
 
 	// setinterviewDate1
@@ -875,7 +897,7 @@ class manageSituation extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button></Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.employeeNo } }}>
+								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.employeeNo, backPage: 'manageSituation' } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button></Link>{' '}
 								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
 									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button></Link>{' '}

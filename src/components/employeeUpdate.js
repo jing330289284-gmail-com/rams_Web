@@ -13,7 +13,7 @@ import PasswordSet from './passwordSetManager';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUndo, faFile, faList } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUndo, faFile, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import MyToast from './myToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -68,6 +68,7 @@ class employeeUpdate extends React.Component {
 
 	//更新ボタン
 	updateEmployee = () => {
+		alert(this.state.passportInfoURL)
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
@@ -184,6 +185,7 @@ class employeeUpdate extends React.Component {
 		this.setState(
 			{
 				actionType: location.state.actionType,
+				backPage: location.state.backPage,
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -195,6 +197,8 @@ class employeeUpdate extends React.Component {
 		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				console.log(data)
+				console.log(data.passportInfo)
 				$("#firstHalfAddress").val(data.firstHalfAddress);
 				this.setState({
 					employeeStatus: data.employeeStatus,//社員区分
@@ -539,7 +543,12 @@ class employeeUpdate extends React.Component {
 	}
 
 	back = () => {
-		return this.props.history.push("/subMenuManager/employeeSearch");
+		let backPage = this.state.backPage
+		if (backPage !== null && backPage !== undefined && backPage !== '') {
+			return this.props.history.push("/subMenuManager/" + backPage);
+		} else {
+			return this.props.history.push("/subMenuManager/employeeInsert");
+		}
 	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
@@ -570,7 +579,7 @@ class employeeUpdate extends React.Component {
 					<Modal.Header closeButton>
 					</Modal.Header>
 					<Modal.Body >
-						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
+						<BankInfo accountInfo={accountInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} accountTokuro={this.accountInfoGet} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} />
 					</Modal.Body>
 				</Modal>
 				{/* PW設定 */}
@@ -702,7 +711,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部署</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">部署</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -715,7 +724,7 @@ class employeeUpdate extends React.Component {
 										)}
 									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">職種</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -1080,7 +1089,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl  autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>
@@ -1156,6 +1165,7 @@ class employeeUpdate extends React.Component {
 											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											minDate={new Date()}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1232,7 +1242,7 @@ class employeeUpdate extends React.Component {
 								<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>{' '}
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
-								<FontAwesomeIcon icon={faList} /> 戻る
+								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
 					</Form.Group>
