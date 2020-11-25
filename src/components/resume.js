@@ -101,7 +101,7 @@ class resume extends React.Component {
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('filePath1', publicUtils.nullToEmpty($('#filePath1').get(0).files[0]))
 		formData.append('filePath2', publicUtils.nullToEmpty($('#filePath2').get(0).files[0]))
-		axios.post(this.state.serverIP + "resume/insertResume",emp)
+		axios.post(this.state.serverIP + "resume/insertResume", formData)
 			.then(response => {
 				if (response.data) {
 					this.searchResume();
