@@ -40,11 +40,15 @@ class BankInfo extends Component {
     componentDidMount() {
         var employeeOrCustomerNo = "";
         var accountBelongsStatus = this.state.accountBelongsStatus;
-        if (this.props.employeeNo !== null && this.props.employeeFristName !== "" && this.props.employeeFristName !== undefined) {//社員の場合
+        if (this.props.employeeNo !== null && this.props.employeeNo !== undefined) {//社員の場合
             employeeOrCustomerNo = this.props.employeeNo;
+            var employeeName = this.props.employeeFristName + "" + this.props.employeeLastName;
+            if(this.props.employeeFristName === undefined && this.props.employeeLastName === undefined){
+                employeeName = "";
+            }
             this.setState({
                 employeeOrCustomerNo:this.props.employeeNo,
-                accountInfoName:"社員：" + this.props.employeeFristName + this.props.employeeLastName,
+                accountInfoName:"社員：" + employeeName,
             })
         } else{//お客様の場合
             employeeOrCustomerNo = this.props.customerNo;
@@ -140,17 +144,21 @@ class BankInfo extends Component {
         if ($('#' + noORname + '').val() !== "") {
 
             axios.post(this.state.serverIP + "getBankBranchInfo", sendMap)
-                .then(function (resultMap) {
+                .then(resultMap=>{
                     if (resultMap.data.length !== 0) {
-                        $('#bankBranchCode').val(resultMap.data[0].code);
-                        $('#bankBranchName').val(resultMap.data[0].name);
+                        this.setState({
+                            bankBranchCode:resultMap.data[0].code,
+                            bankBranchName:resultMap.data[0].name,
+                        })
                     } else {
-                        $('#bankBranchCode').val("");
-                        $('#bankBranchName').val("");
+                        this.setState({
+                            bankBranchCode:"",
+                            bankBranchName:"",
+                        })
                     }
 
                 })
-                .catch(function (error) {
+                .catch(error=> {
                     alert("支店信息获取错误，请检查程序");
                 });
         } else {
@@ -273,7 +281,7 @@ canSelect=event=>{
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly
+                                    <Form.Control placeholder="例：010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly
                                         id="bankBranchCode" maxLength="3" name="bankBranchCode" value={bankBranchCode} onChange={this.valueChange}/>
                                 </InputGroup>
                             </Col>
@@ -284,7 +292,7 @@ canSelect=event=>{
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="123456" readOnly id="accountNo" maxLength="7" name="accountNo"
+                                    <Form.Control placeholder="例：123456" readOnly id="accountNo" maxLength="7" name="accountNo"
                                         value={accountNo} onChange={this.valueChange}/>
                                 </InputGroup>
                             </Col>
@@ -300,7 +308,7 @@ canSelect=event=>{
                                     </Tooltip>
                                         }
                                     >
-                                        <Form.Control placeholder="カタカナ" onChange={bankInfoJs.checkAccountName} readOnly
+                                        <Form.Control placeholder="例：カタカナ" onChange={bankInfoJs.checkAccountName} readOnly
                                             id="accountName" maxLength="20" name="accountName" value={accountName} onChange={this.valueChange}/>
                                     </OverlayTrigger>
                                 </InputGroup>
@@ -309,7 +317,7 @@ canSelect=event=>{
                         <Row>
                             <Col className="text-center">
                                 {actionType === "update" ?
-                                    <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
+                                    <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="toroku" type="button">
                                         <FontAwesomeIcon icon={faSave} />更新
                         </Button>
                                     :
