@@ -59,6 +59,7 @@ export function fetchDropDown() {
         "getAdmissionPeriod",//51入場期限取得
         "getProjectType",//52案件タイプ取得
         "getCustomerName",//53お客様名
+        "getEmployeeNameByOccupationName",//54社員名(営業、管理者)
         "getServerIP",//最後
     ]
     var outArray = [];
