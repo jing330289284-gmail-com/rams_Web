@@ -35,14 +35,14 @@ class salesProfit extends React.Component {
 		insertFlag: false,
 		currentPage: 1,//今のページ
 		insertNo: '',
-		employeeStatus: store.getState().dropDown[4],
-		newMemberStatus: store.getState().dropDown[23],
-		customerContractStatus: store.getState().dropDown[24],
-		levelStatus: store.getState().dropDown[18],
-		salesPutternStatus: store.getState().dropDown[25],
-		specialPointStatus: store.getState().dropDown[26],
+		employeeStatus: store.getState().dropDown[4].slice(1),
+		newMemberStatus: store.getState().dropDown[23].slice(1),
+		customerContractStatus: store.getState().dropDown[24].slice(1),
+		levelStatus: store.getState().dropDown[18].slice(1),
+		salesPutternStatus: store.getState().dropDown[25].slice(1),
+		specialPointStatus: store.getState().dropDown[26].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
-		customerDrop: store.getState().dropDown[54].slice(1),
+		customerDrop: store.getState().dropDown[56].slice(1),
 	};
 
 	// 页面加载
