@@ -49,13 +49,14 @@ class resume extends React.Component {
 				} else {
 					data[0]["fileSts"] =true;
 				}
-				if (data[0].resumeInfo2 == null || data[0].resumeInfo1 == "") {
+				if (data[0].resumeInfo2 == null || data[0].resumeInfo2 == "") {
 					data[1]["fileSts"] = false;
 				} else {
 					data[1]["fileSts"] = true;
 				}
 					this.setState({ 
-						employeeList: data
+						employeeList: data,
+						haveChange: false,
 					})
 				});
 	};
@@ -64,12 +65,12 @@ class resume extends React.Component {
 			.then(response => {
 				this.setState({
 					employeeName: response.data.employeeName,
-					haveChange: false,
 				})
 			});
 	};
 	//　変更と追加
 	InsertResume = (e) => {
+		this.setState({ "errorsMessageShow": false });
 		var a = new RegExp("^" + this.state.employeeName + "_.")
 		if (!this.state.haveChange) {
 			this.setState({ "errorsMessageShow": true, "method": "put", "message": "変更ありません" });
@@ -104,9 +105,13 @@ class resume extends React.Component {
 		axios.post(this.state.serverIP + "resume/insertResume", formData)
 			.then(response => {
 				if (response.data) {
-					this.searchResume();
 					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.searchResume();
+					var file = document.getElementById('UpButtonForm1');
+					file.reset();
+					var file = document.getElementById('UpButtonForm2');
+					file.reset();
 				} else {
 					this.setState({ "errorsMessageShow": true, "method": "put", "message": "登録失敗" });
 				}
@@ -131,12 +136,23 @@ class resume extends React.Component {
 			
 		}
 	}
+	setDownButton = (cell, row) => {
+		return (
+			<div style={{ padding: '0px', width: "100%", fontSize: "24px" }} >
+				<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, row.resumeInfo1, this.state.serverIP)} id={"resumeDownload" + row.rowNo} >
+					<FontAwesomeIcon icon={faDownload} />Download
+				</Button>
+			</div >
+		)
+	}
 	setUpButton = (cell, row) => {
 		return (
-			<div style={{ padding: '0px', width: "100%"}}>
+			<div style={{ padding: '0px', width: "100%", fontSize: "24px" }} >
 				<InputGroup size="sm" className="mb-3">
+					<form id={"UpButtonForm"+ row.rowNo}>
 					<Button size="sm" onClick={(event) => this.addFile(event, row.rowNo)}><FontAwesomeIcon />{row.haveFile !==true ? " 添付" : " 添付済み"} </Button>
-					<Form.File id={"filePath" + row.rowNo} value={row.filePath}  hidden custom onChange={(event) => this.changeFile(event, row)} custom />
+					<Form.File id={"filePath" + row.rowNo} hidden custom onChange={(event) => this.changeFile(event, row)} custom />
+					</form>
 				</InputGroup>
 			</div>
 		)
@@ -174,17 +190,10 @@ class resume extends React.Component {
 		}
 		this.setState({
 			employeeList: data,
+			haveChange: true,
 		})
 	}
-	setDownButton = (cell, row) => {
-	return(
-			<div style = {{ padding: '0px', width: "100%" }}>
-			<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, row.resumeInfo1, this.state.serverIP)} id={"resumeDownload" +row.rowNo} >
-						<FontAwesomeIcon icon={faDownload} />Download
-					</Button>
-			</div >
-		)
-	}
+
 	setSts(flag) {
 		if (flag === true) {
 			return "存在";
@@ -202,6 +211,11 @@ class resume extends React.Component {
 			cell.resumeName1 = this.state.employeeName + "_";
 			return;
 		}
+		if (cell.resumeName1.length > 15) {
+			alert("最大文字数を超えてます")
+			cell.resumeName1 = cell.resumeName1.substr(0, 15);
+			return;
+        }
 		this.setState({
 			haveChange: true,
 		})
@@ -221,6 +235,7 @@ class resume extends React.Component {
 		//　 テーブルの定義
 		const options = {
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			hidePageListOnlyOnePage: true,
 			expandRowBgColor: 'rgb(165, 165, 165)',
 			approvalBtn: this.createCustomApprovalButton,
 			onApprovalRow: this.onApprovalRow,
@@ -260,10 +275,10 @@ class resume extends React.Component {
 						</Col>
 						<Col sm={10}></Col>
 						<Col sm={12}>
-							<BootstrapTable data={employeeList} cellEdit={cellEdit} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+							<BootstrapTable pagination={true} data={employeeList} cellEdit={cellEdit} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 								<TableHeaderColumn dataField='filePath' editable={false} hidden></TableHeaderColumn>
 								<TableHeaderColumn dataField='haveFile' editable={false} hidden></TableHeaderColumn>
-								<TableHeaderColumn dataField='resumeInfo1' editable={false}></TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo1' editable={false} hidden></TableHeaderColumn>
 								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
 								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' editable={false} dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
