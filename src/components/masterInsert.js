@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
+import { Hidden } from '@material-ui/core';
 axios.defaults.withCredentials = true;
 
 //マスター登録
@@ -25,10 +26,13 @@ class masterInsert extends Component {
 		errorsMessageShow: false,
 		flag: true,//活性非活性flag
 		masterStatus: store.getState().dropDown[32].slice(1),
+		bankInfo: store.getState().dropDown[54].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		bankName: '',
+		branchName: '',
 	};
 
-	onchange = event => {
+	onchange = (event, values) => {
 		this.setState({ flag: false });
 		this.setState({ [event.target.name]: event.target.value }
 			, () => {
@@ -36,6 +40,16 @@ class masterInsert extends Component {
 					this.setState({ flag: true });
 				}
 			})
+		if (values != null) {
+			this.setState({
+				master: values.name,
+			})
+
+		} else {
+			this.setState({
+				master: '',
+			})
+		}
 	}
 
 	// 页面加载
@@ -43,33 +57,98 @@ class masterInsert extends Component {
 
 	}
 
-    /**
-     * 登録ボタン
-     */
+	/**
+	 * 登録ボタン
+	 */
 	toroku = () => {
-		var masterModel = {};
-		//画面输入信息取得
-		var formArray = $("#masterInsertForm").serializeArray();
-		$.each(formArray, function(i, item) {
-			masterModel[item.name] = item.value;
-		});
-		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		axios.post(this.state.serverIP + "masterInsert/toroku", masterModel)
-			.then(result => {
-				if (result.data.errorsMessage != null) {
-					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-				} else {
-					this.setState({ "myToastShow": true, "errorsMessageShow": false });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
-				}
-			}).catch((error) => {
-				console.error("Error - " + error);
+		if (this.state.master != '支店マスタ') {
+			var masterModel = {};
+			//画面输入信息取得
+			var formArray = $("#masterInsertForm").serializeArray();
+			$.each(formArray, function (i, item) {
+				masterModel[item.name] = item.value;
 			});
+			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
+			axios.post(this.state.serverIP + "masterInsert/toroku", masterModel)
+				.then(result => {
+					if (result.data.errorsMessage != null) {
+						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+					} else {
+						this.setState({ "myToastShow": true, "errorsMessageShow": false });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						window.location.reload();
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		} else {
+			const branchDetails = {
+				bankBranchCode: this.state.branchCode,
+				bankBranchName: this.state.branchName,
+				bankCode: this.state.bankName,
+			};
+			axios.post(this.state.serverIP + "branchInsert/toroku", branchDetails)
+				.then(result => {
+					if (result.data.errorsMessage != null) {
+						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+					} else {
+						this.setState({ "myToastShow": true, "errorsMessageShow": false });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						this.setState({branchCode:'',
+										branchName:''})
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		}
+	}
+
+	handleTag = (event, values) => {
+		if (values != null) {
+			this.setState({
+				bankName: values.code,
+				branchName:'',
+				branchCode:'',
+			})
+	
+
+		} else {
+			this.setState({
+				bankName: '',
+			})
+		}
+	}
+	valueChange = event => {
+		if(event.target.value===''){
+			this.setState({
+				[event.target.name]: event.target.value,
+				branchCode:''})
+		}else{
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+	}
+	}
+	vNumberChange = (e, key) => {
+		const { value } = e.target;
+
+		const reg = /^[0-9]*$/;
+		if ((reg.test(value))&&value.length<4) {
+			this.setState({
+				[key]: value,
+			})
+		}
+		if(value===''){
+			this.setState({
+				[key]: value,
+				branchName:''
+			})
+		}
 	}
 
 	render() {
-		const { master, errorsMessageValue } = this.state;
+		const { master, errorsMessageValue, masterStatus, bankName, bankInfo } = this.state;
+
 		return (
 			<div className="container col-7">
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -99,30 +178,83 @@ class masterInsert extends Component {
 								<Autocomplete
 									id="master"
 									name="master"
-									value={master}
-									onChange={this.onchange}
+									value={masterStatus.find(v => v.name === this.state.master) || {}}
+									onChange={(event, values) => this.onchange(event, values)}
 									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-											<input placeholder="  マスター名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-master"
-												 />
+											<input placeholder="マスター名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-master"
+											/>
 										</div>
 									)}
 								/>
 							</InputGroup>
 						</Col>
 					</Row>
-					<Row>
-						<Col>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
-								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" disabled={this.state.flag === true ? true : false} />
-							</InputGroup>
-						</Col>
-					</Row>
+					{master === "支店マスタ" ?
+						<div>
+							<Row >
+								<Col >
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="bankName"
+											name="bankName"
+											options={bankInfo}
+											getOptionLabel={(option) => option.name}
+											value={bankInfo.find(v => v.code === this.state.bankName) || {}}
+											onChange={(event, values) => this.handleTag(event, values)}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  銀行名" type="text" {...params.inputProps} className="auto"
+														style={{ width: 288, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+							</Row>
+
+							<Row>
+								<Col>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl name="branchName" id="branchName" value={this.state.branchName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店名" disabled={bankName === '' ? true : false} maxLength={20}/>
+									</InputGroup>
+								</Col>
+							</Row>
+
+							<Row>
+								<Col>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
+										</InputGroup.Prepend>
+										<FormControl name="branchCode" id="branchCode" value={this.state.branchCode} onChange={(e) => this.vNumberChange(e, "branchCode")} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店番号" disabled={bankName === '' ? true : false} />
+									</InputGroup>
+								</Col>
+							</Row>
+						</div> :
+						null
+					}
+					{master != "支店マスタ" ?
+						<Row>
+							<Col>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl placeholder="データ" id="data" name="data" disabled={this.state.flag === true ? true : false} />
+								</InputGroup>
+							</Col>
+						</Row> :
+						null
+					}
 					<Row>
 						<Col sm={4}></Col>
 						<Col sm={4} className="text-center">
