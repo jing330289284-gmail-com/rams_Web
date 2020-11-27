@@ -26,6 +26,7 @@ class siteInfo extends Component {
 		this.onchange = this.onchange.bind(this);
 	}
 	initialState = {
+		workStateFlag: true,
 		payOffRange1: '0',
 		payOffRange2: '0',
 		workState: '0',
@@ -58,19 +59,19 @@ class siteInfo extends Component {
 	onchangeworkState = event => {
 		if (event.target.value === '0') {
 			this.setState({
-				workStateFlag: false,
+				workStateFlag: true,
+				levelCode: '',
 				[event.target.name]: event.target.value
 			})
 		} else {
 			this.setState({
-				workStateFlag: true,
-				levelCode: '',
+				workStateFlag: false,
 				[event.target.name]: event.target.value
 			})
 		}
 	}
 	onchangeSiteRoleCode = event => {
-		if (event.target.value === '1' ||  event.target.value === '0') {
+		if (event.target.value === '1' || event.target.value === '0') {
 			this.setState({
 				relatedEmployeesFlag: true,
 				[event.target.name]: event.target.value
@@ -585,8 +586,7 @@ class siteInfo extends Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
+											<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
 											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
@@ -600,7 +600,8 @@ class siteInfo extends Component {
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
-										/>
+										/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>

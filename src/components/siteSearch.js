@@ -26,8 +26,6 @@ class siteSearch extends Component {
 	}
 	//初期化
 	initialState = {
-		//payOffRange1: '0',// 単価1
-		//payOffRange2: '0',// 単価2
 		customerNo: '',
 		topCustomerNo: '',
 		employeeName: '',
@@ -76,8 +74,8 @@ class siteSearch extends Component {
 	};
 	//リセット　reset
 	resetStates = {
-		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '',
-		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: ''
+		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '',siteRoleCode: '',employeeForm: '',
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: '', dataAcquisitionPeriod: ''
 	};
 
 	// AUTOSELECT select事件
@@ -156,7 +154,6 @@ class siteSearch extends Component {
 
 		axios.post(this.state.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
-				alert(response.data.errorsMessage);
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 				}
@@ -208,10 +205,6 @@ class siteSearch extends Component {
 				<div >
 					<Form id="siteForm">
 						<Form.Group>
-							{/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
-                    </Row> */}
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>現場情報検索</h2>

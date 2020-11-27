@@ -26,7 +26,7 @@ class masterInsert extends Component {
 		errorsMessageShow: false,
 		flag: true,//活性非活性flag
 		masterStatus: store.getState().dropDown[32].slice(1),
-		bankInfo: store.getState().dropDown[54].slice(1),
+		bankInfo: store.getState().dropDown[57].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		bankName: '',
 		branchName: '',

@@ -35,7 +35,7 @@ import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
 	faCommentDollar, faList, faSearchMinus, faNewspaper,
-	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars
+	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars , faCaretSquareLeft
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import store from './redux/store';
@@ -111,7 +111,7 @@ class SubMenu extends Component {
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
-						<Link as="button" className="logout" to="/" id="logout" onClick={this.logout}>sign out</Link>
+						<Link as="button" className="logout" to="/" id="logout" onClick={this.logout}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCaretSquareLeft} />sign out</Link>
 					</div>
 
 				</Row>
@@ -229,7 +229,7 @@ class SubMenu extends Component {
 													<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="6">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyRegistration/">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyManagement/">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務管理</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />勤務表送信</Link></ListGroup.Item>

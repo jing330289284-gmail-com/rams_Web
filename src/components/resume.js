@@ -6,8 +6,9 @@ import '../asserts/css/style.css';
 import $ from 'jquery';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import "react-datepicker/dist/react-datepicker.css";
+import ErrorsMessageToast from './errorsMessageToast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faUpload,faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faDownload, faSave } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import store from './redux/store';
 import MyToast from './myToast';
@@ -22,9 +23,9 @@ class resume extends React.Component {
 		this.searchResume = this.searchResume.bind(this);
 	};
 	componentDidMount(){
-		$("#resumeUpload").attr("disabled",true);
 		$("#resumeDownload").attr("disabled",true);
 		this.searchResume();
+		this.searchEmployeeName();
 	}
 	//onchange
 	valueChange = event => {
@@ -41,91 +42,171 @@ class resume extends React.Component {
 	searchResume = () => {
 		axios.post(this.state.serverIP + "resume/selectResume")
 			.then(response => response.data)
-				.then((data) => {
-				data.push({ "rowNo": 2, "resumeInfo1": data[0].resumeInfo2, "resumeName1": data[0].resumeName2, "updateTime": data[0].updateTime, "updateUser": data[0].updateUser});
+			.then((data) => {
+				data.push({ "rowNo": 2, "resumeInfo1": data[0].resumeInfo2, "resumeName1": data[0].resumeName2, "updateTime": data[0].updateTime, "updateUser": data[0].updateUser });
+				if (data[0].resumeInfo1 == null || data[0].resumeInfo1 =="") {
+					data[0]["fileSts"]=false ;
+				} else {
+					data[0]["fileSts"] =true;
+				}
+				if (data[0].resumeInfo2 == null || data[0].resumeInfo1 == "") {
+					data[1]["fileSts"] = false;
+				} else {
+					data[1]["fileSts"] = true;
+				}
 					this.setState({ 
 						employeeList: data
 					})
 				});
 	};
-	//　変更
-	resumeName1Change = (e) =>{
-		const emp = {
-		};
-		axios.post(this.state.serverIP + "resume/updateresume",emp)
+	searchEmployeeName = () => {
+		axios.post(this.state.serverIP + "resume/selectEmployeeName")
 			.then(response => {
-				if (response.data != null) {
-					this.searchResume();
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				} else {
-					alert("err")
-				}
+				this.setState({
+					employeeName: response.data.employeeName,
+					haveChange: false,
+				})
 			});
-	}
-  /**
-     * 作業報告書ボタン
-     */
-    resumeUpload=()=>{
-	let getfile=$("#getFile").val();
-	let fileName = getfile.split('.');
-	if(
-		fileName[fileName.length -1]=== "xlsx" ||
-		fileName[fileName.length -1]=== "xls" ||
-		fileName[fileName.length -1]=== "xltx" ||
-		fileName[fileName.length -1]=== "xlt" ||
-		fileName[fileName.length -1]=== "xlsm" ||
-		fileName[fileName.length -1]=== "xlsb" ||
-		fileName[fileName.length -1]=== "xltm" ||
-		fileName[fileName.length -1]=== "csv"||
-		fileName[fileName.length -1]=== "pdf"
-	){
-  }else{
-    alert('PDF或いはexcelをアップロードしてください')
-    return false;
-  }
-if($("#getFile").get(0).files[0].size>1048576){
-	 alert('１M以下のファイルをアップロードしてください')
-    return false;
-}
+	};
+	//　変更と追加
+	InsertResume = (e) => {
+		var a = new RegExp("^" + this.state.employeeName + "_.")
+		if (!this.state.haveChange) {
+			this.setState({ "errorsMessageShow": true, "method": "put", "message": "変更ありません" });
+			return;
+		}
+		if (this.state.employeeList[0].filePath != undefined) {
+			if (!a.test(this.state.employeeList[0].resumeName1)){
+				this.setState({ "errorsMessageShow": true, "method": "put", "message": "ファイル名修正してください" });
+				return;
+			}
+		}
+		if (this.state.employeeList[1].filePath != undefined) {
+			if (!a.test(this.state.employeeList[1].resumeName1)) {
+				this.setState({ "errorsMessageShow": true, "method": "put", "message": "ファイル名修正してください" });
+				return;
+			}
+		}
+		if (this.state.employeeList[0].resumeName1 === this.state.employeeList[1].resumeName1) {
+			this.setState({ "errorsMessageShow": true, "method": "put", "message": "ファイル名が同じです" });
+			return;
+        }
 		const formData = new FormData()
 		const emp = {
-			};
-			formData.append('emp', JSON.stringify(emp))
-			formData.append('resumeFile', $("#getFile").get(0).files[0])
-			axios.post(this.state.serverIP + "resume/updateResumeFile",formData)
+			resumeInfo1: this.state.employeeList[0].resumeInfo1,
+			resumeInfo2: this.state.employeeList[1].resumeInfo1,
+			resumeName1: this.state.employeeList[0].resumeName1,
+			resumeName2: this.state.employeeList[1].resumeName1,
+		};
+		formData.append('emp', JSON.stringify(emp))
+		formData.append('filePath1', publicUtils.nullToEmpty($('#filePath1').get(0).files[0]))
+		formData.append('filePath2', publicUtils.nullToEmpty($('#filePath2').get(0).files[0]))
+		axios.post(this.state.serverIP + "resume/insertResume", formData)
 			.then(response => {
-				if (response.data != null) {
-					window.location.reload();
-					this.setState({ "myToastShow": true });
+				if (response.data) {
+					this.searchResume();
+					this.setState({ "myToastShow": true, "method": "put", "message": "登録完了" });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else {
-					alert("err")
+					this.setState({ "errorsMessageShow": true, "method": "put", "message": "登録失敗" });
 				}
 			});
-    }
-	getFile=()=>{
-		$("#getFile").click();
 	}
 	//行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-			$("#resumeUpload").attr("disabled",true);
-			$("#resumeDownload").attr("disabled",false);
+			if (row.fileSts || row.haveFile) {
+				this.setState(
+					{
+						rowSelectfileSts: true,
+					}
+				);
+			} else {
+				this.setState(
+					{
+						rowSelectfileSts: false,
+					}
+				);
+            }
 			
-		
 		}
 	}
-	setButton = (cell, row) => {
-		return (<div style={{ padding: '0px', width: "100%" }}>
-				<td>
-					<Button variant="info" size="sm" onClick={this.getFile} id="resumeUpload">
-						<FontAwesomeIcon icon={faUpload} />Upload
-					</Button>{row.resumeInfo1}
-				</td>
-				</div>
+	setUpButton = (cell, row) => {
+		return (
+			<div style={{ padding: '0px', width: "100%"}}>
+				<InputGroup size="sm" className="mb-3">
+					<Button size="sm" onClick={(event) => this.addFile(event, row.rowNo)}><FontAwesomeIcon />{row.haveFile !==true ? " 添付" : " 添付済み"} </Button>
+					<Form.File id={"filePath" + row.rowNo} value={row.filePath}  hidden custom onChange={(event) => this.changeFile(event, row)} custom />
+				</InputGroup>
+			</div>
 		)
 	}
+	addFile = (event, name) => {
+		$("#filePath"+name).click();
+	}
+	changeFile = (event, row) => {
+		var filePath = event.target.value;
+		if (filePath == "") {
+			return;
+        }
+		var arr = filePath.split('\\');
+		let fileName = filePath.split('.');
+		if (
+			fileName[fileName.length - 1] === "xlsx" ||
+			fileName[fileName.length - 1] === "xls" ||
+			fileName[fileName.length - 1] === "xltx" ||
+			fileName[fileName.length - 1] === "xlt" ||
+			fileName[fileName.length - 1] === "xlsm" ||
+			fileName[fileName.length - 1] === "xlsb" ||
+			fileName[fileName.length - 1] === "xltm" ||
+			fileName[fileName.length - 1] === "csv" ||
+			fileName[fileName.length - 1] === "pdf"
+		) {
+		} else {
+			alert('PDF或いはexcelをアップロードしてください')
+			return;
+		}
+		let data = this.state.employeeList
+		data[row.rowNo - 1]["filePath"] = filePath;
+		data[row.rowNo - 1]["haveFile"] = true;
+		if (!row.fileSts) {
+			data[row.rowNo - 1]["resumeName1"] = this.state.employeeName+"_";
+		}
+		this.setState({
+			employeeList: data,
+		})
+	}
+	setDownButton = (cell, row) => {
+	return(
+			<div style = {{ padding: '0px', width: "100%" }}>
+			<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, row.resumeInfo1, this.state.serverIP)} id={"resumeDownload" +row.rowNo} >
+						<FontAwesomeIcon icon={faDownload} />Download
+					</Button>
+			</div >
+		)
+	}
+	setSts(flag) {
+		if (flag === true) {
+			return "存在";
+		} else {
+			return "存在なし";
+        }
+	};
+	setUpDate = (cell, row) => {
+		return row.updateTime.substr(0,16);
+};
+	resumeNameChange = (cell, row) => {
+		var a = new RegExp("^" + this.state.employeeName + "_")
+		if (!a.test(cell.resumeName1)) {
+			alert(this.state.employeeName + "_は変更できません")
+			cell.resumeName1 = this.state.employeeName + "_";
+			return;
+		}
+		this.setState({
+			haveChange: true,
+		})
+		
+	};
 	render() {
 		const {employeeList} = this.state;
 		//　テーブルの行の選択
@@ -153,7 +234,10 @@ if($("#getFile").get(0).files[0].size>1048576){
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={"アップロード成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.message} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.message} type={"danger"} />
 				</div>
 				<FormControl id="rowSelectCheckSection" name="rowSelectCheckSection" hidden />
 				<Form >
@@ -168,33 +252,41 @@ if($("#getFile").get(0).files[0].size>1048576){
 					</div>
 				</Form>
 				<div >
-				<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel" custom hidden="hidden" onChange={this.resumeUpload}/>
+					<Form.File id="getFile" accept="application/pdf,application/vnd.ms-excel"  custom hidden="hidden" onChange={this.resumeUpload}/>
 	                <br/>
                     <Row>
 						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>履歴書</font>
+							<font style={{ whiteSpace: 'nowrap'}}>履歴書</font>
 						</Col>
-  						<Col sm={6}></Col>
-                        <Col sm={4}>
-                            <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" onClick={this.getFile} id="resumeUpload">
-									<FontAwesomeIcon icon={faUpload} />Upload
-								</Button>{' '}
-								<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, this.state.rowSelectWorkingTimeReport, this.state.serverIP)}id="resumeDownload">
-	                          		 <FontAwesomeIcon icon={faDownload} />Download
-		                        </Button>
-	 						</div>
+						<Col sm={10}></Col>
+						<Col sm={12}>
+							<BootstrapTable data={employeeList} cellEdit={cellEdit} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+								<TableHeaderColumn dataField='filePath' editable={false} hidden></TableHeaderColumn>
+								<TableHeaderColumn dataField='haveFile' editable={false} hidden></TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo1' editable={false}></TableHeaderColumn>
+								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
+								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' editable={false} dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' editable={this.state.rowSelectfileSts} onChange={this.resumeNameChange.bind(this)}>履歴書名</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setDownButton}>履歴書DownLoad</TableHeaderColumn>
+								<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' editable={false}>更新者</TableHeaderColumn>
+								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' editable={false} dataFormat={this.setUpDate.bind(this)}>更新日</TableHeaderColumn>
+							</BootstrapTable>
 						</Col>
-                    </Row>	
-					<BootstrapTable data={employeeList} cellEdit={cellEdit}   options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='5%'  tdStyle={{ padding: '.45em' }} editable={false} dataField='rowNo' isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeInfo1' editable={false} dataFormat={this.setButton}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} onChange={this.resumeNameChange} dataField='resumeName1' editable={true}>備考</TableHeaderColumn>
-						<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeInfo2' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} onChange={this.resumeNameChange} dataField='resumeName2' editable={true}>備考</TableHeaderColumn>
-						<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' editable={false}>更新者</TableHeaderColumn>
-						<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
-					</BootstrapTable>
+					</Row>
+					<br/>
+					<Row>
+						<Col sm={4}>
+							<div style={{ "position": "relative", "left": "100%" }}>
+								<div style={{ "textAlign": "center" }}>
+									<Button size="sm" variant="info" type="button" onClick={this.InsertResume} on>
+										<FontAwesomeIcon icon={faSave} /> {" 登録"}
+									</Button>
+								</div>
+							</div>
+						</Col>
+					</Row>
+					<br />
 				</div>
 			</div >
 		);
