@@ -38,12 +38,15 @@ class CustomerInfo extends Component {
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
+        customerNoForPageChange:"",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
         paymentsiteCodeDrop: store.getState().dropDown[21],
+        searchFlag:true,
+        sendValue:{},
         customerNo: '',
         backPage: "",//遷移元
         myToastShow: false,
@@ -117,9 +120,13 @@ class CustomerInfo extends Component {
     * 画面の初期化 
     */
     async componentDidMount() {
+        console.log(this.props.history);
         this.setState({
             actionType: this.props.location.state.actionType,
             backPage: this.props.location.state.backPage,
+            sendValue: this.props.location.state.sendValue,
+            searchFlag: this.props.location.state.searchFlag,
+            customerNoForPageChange:this.props.location.state.customerNo,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
@@ -373,17 +380,6 @@ class CustomerInfo extends Component {
             })
         }
     }
-    // getCustomerDepartment = (event, values) => {
-    //     if (values != null) {
-    //         this.setState({
-    //             customerDepartment: values.code,
-    //         })
-    //     } else {
-    //         this.setState({
-    //             customerDepartment: "",
-    //         })
-    //     }
-    // }
     getTopCustomer = (event, values) => {
         if (values != null) {
             this.setState({
@@ -603,7 +599,12 @@ class CustomerInfo extends Component {
      * 戻るボタン
      */
     back = () => {
-        this.props.history.push(this.state.backPage);
+        var path = {};
+        path = {
+            pathname: this.state.backPage,
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue , customerNo:this.state.customerNoForPageChange},
+        }
+        this.props.history.push(path);
     }
     render() {
         const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo

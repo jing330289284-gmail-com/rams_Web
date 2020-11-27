@@ -29,7 +29,9 @@ class CustomerInfoSearch extends Component {
         customerNo: '',//選択した列のお客様番号
         rowNo: '',//選択した行番号
         businessStartDate: '',//取引開始の期日
-        stationCode: store.getState().dropDown[14].slice(1),//本社場所
+        stationCode: "",
+        topCustomerCode: "",
+        stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
         topCustomerDrop: store.getState().dropDown[35].slice(1),//上位お客様連想の数列
         levelDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
@@ -42,14 +44,43 @@ class CustomerInfoSearch extends Component {
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
         transactionStatusDrop: store.getState().dropDown[46].slice(1),
         customerDrop: store.getState().dropDown[53].slice(1),
+        searchFlag: false,//検索ボタン押下フラグ
+        sendValue: {},
+    }
+
+    constructor(props) {
+        super(props);
     }
     /**
      * 画面の初期化
      */
     componentDidMount() {
-        document.getElementById('shusei').className += " disabled";
-        document.getElementById('shosai').className += " disabled";
+        $("#shusei").attr("disabled", true);
+        $("#shosai").attr("disabled", true);
         $("#sakujo").attr("disabled", true);
+        if (this.props.location.state !== undefined) {
+            var sendValue = this.props.location.state.sendValue;
+            var searchFlag = this.props.location.state.searchFlag;
+            $("#capitalStockFront").val(utils.addComma(sendValue.capitalStockFront));
+            $("#capitalStockBack").val(utils.addComma(sendValue.capitalStockBack));
+            $("#companyNatureCode").val(utils.addComma(sendValue.companyNatureCode));
+            $("#paymentsiteCode").val(utils.addComma(sendValue.paymentsiteCode));
+            $("#levelCode").val(utils.addComma(sendValue.levelCode));
+            $("#transactionStatus").val(utils.addComma(sendValue.transactionStatus));
+            $("#traderPersonFront").val(utils.addComma(sendValue.traderPersonFront));
+            $("#traderPersonBack").val(utils.addComma(sendValue.traderPersonBack));
+            this.setState({
+                customerNo:sendValue.customerNo,
+                customerNoForPageChange:this.props.location.state.customerNo,
+                topCustomerCode:sendValue.topCustomerNo,
+                stationCode:sendValue.stationCode,
+                businessStartDate:utils.converToLocalTime(sendValue.businessStartDate,false),
+            },()=>{
+                if (searchFlag) {
+                    this.search();
+                }
+            })
+        }
     }
     /**
      * 数字チェック
@@ -90,19 +121,31 @@ class CustomerInfoSearch extends Component {
         customerInfoMod["customerNo"] = this.state.customerNo;
         customerInfoMod["capitalStockFront"] = utils.deleteComma($("#capitalStockFront").val());
         customerInfoMod["capitalStockBack"] = utils.deleteComma($("#capitalStockBack").val());
-        customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
-        customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCode);
-        customerInfoMod["businessStartDate"] = utils.dateFormate(this.state.businessStartDate, false);
+        customerInfoMod["topCustomerNo"] = this.state.topCustomerCode;
+        customerInfoMod["stationCode"] = this.state.stationCode;
+        customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
         axios.post(this.state.serverIP + "customerInfoSearch/customerSearch", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({
                         customerInfoData: result.data.resultList,
                         "errorsMessageShow": false,
+                    },()=>{
+                        if(this.state.customerNoForPageChange !== "" && this.state.customerNoForPageChange !== undefined){
+                            this.refs.customerInfoSearchTable.setState({
+                                selectedRowKeys:this.state.customerNoForPageChange,
+                            })
+                            $("#shusei").attr("disabled", false);
+                            $("#shosai").attr("disabled", false);
+                            $("#sakujo").attr("disabled", false);
+                        }
                     })
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage, customerInfoData: [] });
                 }
+                this.setState({
+                    searchFlag: true,
+                })
             })
             .catch(error => {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
@@ -113,16 +156,16 @@ class CustomerInfoSearch extends Component {
       */
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
-            document.getElementById('shusei').className = "btn btn-sm btn-info";
-            document.getElementById('shosai').className = "btn btn-sm btn-info";
+            $("#shusei").attr("disabled", false);
+            $("#shosai").attr("disabled", false);
             $("#sakujo").attr("disabled", false);
             this.setState({
                 customerNoForPageChange: row.customerNo,
                 rowNo: row.rowNo,
             })
         } else {
-            document.getElementById('shusei').className = "btn btn-sm btn-info disabled";
-            document.getElementById('shosai').className = "btn btn-sm btn-info disabled";
+            $("#shusei").attr("disabled", true);
+            $("#shosai").attr("disabled", true);
             $("#sakujo").attr("disabled", true);
             this.setState({
                 customerNoForPageChange: '',
@@ -235,20 +278,62 @@ class CustomerInfoSearch extends Component {
         let capitalStock = utils.addComma(row.capitalStock);
         return capitalStock;
     }
+    shuseiTo = (actionType) => {
+        var path = {};
+        var sendValue = {};
+        var formArray = $("#conditionForm").serializeArray();
+        $.each(formArray, function (i, item) {
+            sendValue[item.name] = item.value;
+        });
+        sendValue["customerNo"] = this.state.customerNo;
+        sendValue["capitalStockFront"] = utils.deleteComma($("#capitalStockFront").val());
+        sendValue["capitalStockBack"] = utils.deleteComma($("#capitalStockBack").val());
+        sendValue["topCustomerNo"] = this.state.topCustomerCode;
+        sendValue["stationCode"] = this.state.stationCode;
+        sendValue["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
+        if (actionType === "update") {
+            path = {
+                pathname: '/subMenuManager/customerInfo',
+                state: { actionType: 'update', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
+            }
+        } else if (actionType === "insert") {
+            path = {
+                pathname: '/subMenuManager/customerInfo',
+                state: { actionType: 'insert', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
+            }
+        } else if (actionType === "detail") {
+            path = {
+                pathname: '/subMenuManager/customerInfo',
+                state: { actionType: 'detail', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
+            }
+        }
+        this.props.history.push(path);
+    }
+    getStationCode = (event, values) => {
+        if (values != null) {
+            this.setState({
+                stationCode: values.code,
+            })
+        } else {
+            this.setState({
+                stationCode: "",
+            })
+        }
+    }
+    getTopCustomer = (event, values) => {
+        if (values != null) {
+            this.setState({
+                topCustomerCode: values.code,
+            })
+        } else {
+            this.setState({
+                topCustomerCode: "",
+            })
+        }
+    }
     render() {
-        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
+        const { customerInfoData, stationCode, topCustomerCode, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
             , customerNo } = this.state;
-        //画面遷移のパラメータ（追加）
-        var tsuikaPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert', backPage: "customerInfoSearch" },
-        }
-        //画面遷移のパラメータ（修正）
-        var shuseiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
-        }
-        var shosaiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
-        }
         //テーブルの行の選択
         const selectRow = {
             mode: 'radio',
@@ -325,11 +410,11 @@ class CustomerInfoSearch extends Component {
                                     <InputGroup.Text>会社性質</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
-                                {this.state.companyNatureDrop.map(date =>
-                                            <option key={date.code} value={date.code}>
-                                                {date.name}
-                                            </option>
-                                        )}
+                                    {this.state.companyNatureDrop.map(date =>
+                                        <option key={date.code} value={date.code}>
+                                            {date.name}
+                                        </option>
+                                    )}
                                 </Form.Control>
                             </InputGroup>
                         </Col>
@@ -356,14 +441,16 @@ class CustomerInfoSearch extends Component {
                                     <InputGroup.Text id="fiveKanji">上位お客様</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Autocomplete
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     id="topCustomer"
                                     name="topCustomer"
-                                    value={topCustomerValue}
+                                    value={this.state.topCustomerDrop.find(v => v.code === this.state.topCustomerCode) || {}}
+                                    onChange={(event, values) => this.getTopCustomer(event, values)}
                                     options={this.state.topCustomerDrop}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="例：上位お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
                                             />
                                         </div>
                                     )}
@@ -376,14 +463,16 @@ class CustomerInfoSearch extends Component {
                                     <InputGroup.Text>本社場所</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Autocomplete
+                                    disabled={this.state.actionType === "detail" ? true : false}
                                     id="stationCode"
                                     name="stationCode"
-                                    value={stationCodeValue}
-                                    options={this.state.stationCode}
+                                    value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode) || {}}
+                                    onChange={(event, values) => this.getStationCode(event, values)}
+                                    options={this.state.stationCodeDrop}
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
                                             />
                                         </div>
                                     )}
@@ -476,9 +565,9 @@ class CustomerInfoSearch extends Component {
                         <Button onClick={this.search} size="sm" variant="info">
                             <FontAwesomeIcon icon={faSearch} /> 検索
                             </Button>{' '}
-                        <Link to={tsuikaPath} className="btn btn-sm btn-info">
-                            <FontAwesomeIcon icon={faSave} />追加
-                            </Link>{' '}
+                        <Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">
+                            <FontAwesomeIcon icon={faSave} /> 追加
+                            </Button>{' '}
                         <Button size="sm" variant="info" onClick={this.reset}>
                             <FontAwesomeIcon icon={faUndo} /> Reset
                             </Button>
@@ -491,14 +580,15 @@ class CustomerInfoSearch extends Component {
                         </Col>
                         <Col sm={3}>
                             <div style={{ "float": "right" }}>
-                                <Link to={shosaiPath} className="btn btn-sm btn-info" id="shosai"><FontAwesomeIcon icon={faList} />詳細</Link>{' '}
-                                <Link to={shuseiPath} className="btn btn-sm btn-info" id="shusei"><FontAwesomeIcon icon={faEdit} />修正</Link>{' '}
+                                <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} id="shosai" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
+                                <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} id="shusei" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
                                 <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
                             </div>
                         </Col>
                     </Row>
                     <Col sm={12}>
                         <BootstrapTable selectRow={selectRow} pagination={true} data={customerInfoData} options={options} deleteRow
+                            ref="customerInfoSearchTable"
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
                             <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
                             <TableHeaderColumn dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
