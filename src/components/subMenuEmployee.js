@@ -6,7 +6,7 @@ import PasswordSetEmployee from './passwordSetEmployee';
 import WorkRepot from './workRepot';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, faThList } from '@fortawesome/free-solid-svg-icons';
+import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, faThList , faCaretSquareLeft} from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import DutyRegistration from './dutyRegistration';
 import CostRegistration from './costRegistration';
@@ -63,7 +63,7 @@ class SubMenu extends Component {
                     </Navbar>
                     <div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
                         <font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
-                        <Link as="button" className="logout" to="/" id="logout" onClick={this.logout}>sign out</Link>
+                        <Link as="button" className="logout" to="/" id="logout" onClick={this.logout}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCaretSquareLeft} />sign out</Link>
                     </div>
 
                 </Row>

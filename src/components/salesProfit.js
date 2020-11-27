@@ -7,6 +7,7 @@ import axios from 'axios'
 import ja from 'date-fns/locale/ja';
 import DatePicker, { registerLocale } from "react-datepicker"
 import store from './redux/store';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 axios.defaults.withCredentials = true;
 
 registerLocale('ja', ja);
@@ -26,6 +27,7 @@ class salesProfit extends React.Component {
 		no: '',
 		employee: '',
 		newMember: '',
+		customerNo: '',//選択した列のお客様番号
 		customerContract: '',
 		siteRoleNameAll: '',
 		profitAll: '',
@@ -40,11 +42,32 @@ class salesProfit extends React.Component {
 		salesPutternStatus: store.getState().dropDown[25],
 		specialPointStatus: store.getState().dropDown[26],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+		customerDrop: store.getState().dropDown[54].slice(1),
 	};
 
 	// 页面加载
 	componentDidMount() {
 		this.select();
+	}
+
+    /**
+     * 社員名連想
+     * @param {} event 
+     */
+	getCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let customerNo = null;
+			if (values !== null) {
+				customerNo = values.code;
+			}
+			this.setState({
+				customerNo: customerNo,
+			}, () => {
+				this.select();
+			})
+		})
 	}
 
 	//明细查询
@@ -107,25 +130,28 @@ class salesProfit extends React.Component {
 	//	現場情報を取得する
 	getSalesInfo = (start, end) => {
 		var salesPointSetModel = {};
-		salesPointSetModel["employeeName"] = this.state.employeeName
+		salesPointSetModel["employeeName"] = this.state.customerNo
 		salesPointSetModel["employeeStatus"] = this.state.employeeSearch
 		salesPointSetModel["startDate"] = start;
 		salesPointSetModel["endDate"] = end;
 		axios.post(this.state.serverIP + "getSalesInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
-					this.setState({
-						salesPointData: response.data,
-						no: response.data.length,
-						siteRoleNameAll: response.data[0].siteRoleNameAll,
-						profitAll: response.data[0].profitAll,
-					});
-				}
-				if (response.data[0].rowNo == null) {
-					this.setState({
-						salesPointData: "",
-						no: "",
-					});
+					if (response.data[0] != null) {
+						this.setState({
+							salesPointData: response.data,
+							no: response.data.length,
+							siteRoleNameAll: response.data[0].siteRoleNameAll,
+							profitAll: response.data[0].profitAll,
+						});
+					} else {
+						this.setState({
+							salesPointData: response.data,
+							no: '',
+							siteRoleNameAll: '',
+							profitAll: '',
+						});
+					}
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -137,7 +163,7 @@ class salesProfit extends React.Component {
 	}
 	select = () => {
 		var salesPointSetModel = {};
-		salesPointSetModel["employeeName"] = this.state.employeeName
+		salesPointSetModel["employeeName"] = this.state.customerNo
 		salesPointSetModel["employeeStatus"] = this.state.employeeSearch
 		if (typeof this.state.admissionStartDate == "undefined" || typeof this.state.admissionEndDate == "undefined") {
 			return;
@@ -147,18 +173,21 @@ class salesProfit extends React.Component {
 		axios.post(this.state.serverIP + "getSalesInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
-					this.setState({
-						salesPointData: response.data,
-						no: response.data.length,
-						siteRoleNameAll: response.data[0].siteRoleNameAll,
-						profitAll: response.data[0].profitAll,
-					});
-				}
-				if (response.data[0].rowNo == null) {
-					this.setState({
-						salesPointData: "",
-						no: "",
-					});
+					if (response.data[0] != null) {
+						this.setState({
+							salesPointData: response.data,
+							no: response.data.length,
+							siteRoleNameAll: response.data[0].siteRoleNameAll,
+							profitAll: response.data[0].profitAll,
+						});
+					} else {
+						this.setState({
+							salesPointData: response.data,
+							no: '',
+							siteRoleNameAll: '',
+							profitAll: '',
+						});
+					}
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -232,7 +261,28 @@ class salesProfit extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">営業担当</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} name="employeeName" value={this.state.employeeName} />
+										{/* <FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} name="employeeName" value={this.state.employeeName} /> */}
+										<Autocomplete
+											id="customerNo"
+											name="customerNo"
+											value={this.state.employeeName}
+											options={this.state.customerDrop}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											onChange={(event, values) => this.getCustomer(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+													/>
+												</div>
+											)}
+										/>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>

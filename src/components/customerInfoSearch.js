@@ -29,16 +29,19 @@ class CustomerInfoSearch extends Component {
         customerNo: '',//選択した列のお客様番号
         rowNo: '',//選択した行番号
         businessStartDate: '',//取引開始の期日
-        stationCode: [],//本社場所
-        topCustomerDrop: [],//上位お客様連想の数列
+        stationCode: store.getState().dropDown[14].slice(1),//本社場所
+        topCustomerDrop: store.getState().dropDown[35].slice(1),//上位お客様連想の数列
+        levelDrop: store.getState().dropDown[18],
+        companyNatureDrop: store.getState().dropDown[19],
+        paymentsiteCodeDrop: store.getState().dropDown[21],
         message: '',
         type: '',
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
-        transactionStatusDrop: store.getState().dropDown[46],
-        customerDrop:store.getState().dropDown[53].slice(1),
+        transactionStatusDrop: store.getState().dropDown[46].slice(1),
+        customerDrop: store.getState().dropDown[53].slice(1),
     }
     /**
      * 画面の初期化
@@ -47,35 +50,6 @@ class CustomerInfoSearch extends Component {
         document.getElementById('shusei').className += " disabled";
         document.getElementById('shosai').className += " disabled";
         $("#sakujo").attr("disabled", true);
-        var methodArray = ["getLevel", "getCompanyNature", "getPaymentsite", "getStation", "getTopCustomer"]
-        var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
-        //お客様ランキン
-        var level = selectDataList[0];
-        //会社性質
-        var companyNature = selectDataList[1];
-        //支払サイト
-        var paymentsiteCode = selectDataList[2];
-        var stationCode = selectDataList[3];
-        stationCode.shift();
-        var topCustomerDrop = selectDataList[4];
-        topCustomerDrop.shift();
-        var transactionStatusDrop = this.state.transactionStatusDrop;
-        this.setState({
-            stationCode: stationCode,
-            topCustomerDrop: topCustomerDrop,
-        })
-        for (let i = 0; i < level.length; i++) {
-            $("#levelCode").append('<option value="' + level[i].code + '">' + level[i].name + '</option>');
-        }
-        for (let i = 0; i < companyNature.length; i++) {
-            $("#companyNatureCode").append('<option value="' + companyNature[i].code + '">' + companyNature[i].name + '</option>');
-        }
-        for (let i = 0; i < paymentsiteCode.length; i++) {
-            $("#paymentsiteCode").append('<option value="' + paymentsiteCode[i].code + '">' + paymentsiteCode[i].name + '</option>');
-        }
-        for (let i = 1; i < transactionStatusDrop.length; i++) {
-            $("#transactionStatus").append('<option value="' + transactionStatusDrop[i].code + '">' + transactionStatusDrop[i].name + '</option>');
-        }
     }
     /**
      * 数字チェック
@@ -96,7 +70,7 @@ class CustomerInfoSearch extends Component {
                     [key]: num
                 })
             }
-        }else{
+        } else {
             if ((reg.test(num) && num.length < keyLength)) {
                 this.setState({
                     [key]: num
@@ -135,28 +109,6 @@ class CustomerInfoSearch extends Component {
             });
     }
     /**
-      * 稼働テーブルの開き
-      */
-    isExpandableRow(row) {
-        if (row.employeeNameList !== null) return true;
-        else return false;
-    }
-    /**
-      * 稼働テーブル開きアイコン
-      */
-    expandColumnComponent({ isExpandableRow, isExpanded }) {
-        let content = '';
-
-        if (isExpandableRow) {
-            content = (isExpanded ? '(-)' : '(+)');
-        } else {
-            content = ' ';
-        }
-        return (
-            <div> { content} </div>
-        );
-    }
-    /**
       * 行Selectファンクション
       */
     handleRowSelect = (row, isSelected, e) => {
@@ -165,7 +117,7 @@ class CustomerInfoSearch extends Component {
             document.getElementById('shosai').className = "btn btn-sm btn-info";
             $("#sakujo").attr("disabled", false);
             this.setState({
-                customerNo: row.customerNo,
+                customerNoForPageChange: row.customerNo,
                 rowNo: row.rowNo,
             })
         } else {
@@ -173,7 +125,7 @@ class CustomerInfoSearch extends Component {
             document.getElementById('shosai').className = "btn btn-sm btn-info disabled";
             $("#sakujo").attr("disabled", true);
             this.setState({
-                customerNo: '',
+                customerNoForPageChange: '',
                 rowNo: row.rowNo,
             })
         }
@@ -266,36 +218,36 @@ class CustomerInfoSearch extends Component {
      * 社員名連想
      * @param {} event 
      */
-	getCustomer = (event, values) => {
-		this.setState({
-			[event.target.name]: event.target.value,
-		}, () => {
-			let customerNo = null;
-			if (values !== null) {
-				customerNo = values.code;
-			}
-			this.setState({
-				customerNo: customerNo,
-			})
-		})
-	}
-    addMarkCapitalStock=(cell,row)=>{
+    getCustomer = (event, values) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            let customerNo = null;
+            if (values !== null) {
+                customerNo = values.code;
+            }
+            this.setState({
+                customerNo: customerNo,
+            })
+        })
+    }
+    addMarkCapitalStock = (cell, row) => {
         let capitalStock = utils.addComma(row.capitalStock);
         return capitalStock;
     }
     render() {
-        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack 
-        , customerNo} = this.state;
+        const { customerInfoData, stationCodeValue, topCustomerValue, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
+            , customerNo } = this.state;
         //画面遷移のパラメータ（追加）
         var tsuikaPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' , backPage:"customerInfoSearch" },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert', backPage: "customerInfoSearch" },
         }
         //画面遷移のパラメータ（修正）
         var shuseiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNo  , backPage:"customerInfoSearch" },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'update', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
         }
         var shosaiPath = {
-            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNo  , backPage:"customerInfoSearch" },
+            pathname: '/subMenuManager/customerInfo', state: { actionType: 'detail', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch" },
         }
         //テーブルの行の選択
         const selectRow = {
@@ -319,7 +271,6 @@ class CustomerInfoSearch extends Component {
             lastPage: '>>', // Last page button text
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-            expandRowBgColor: 'rgb(165, 165, 165)',
             deleteBtn: this.createCustomDeleteButton,
             onDeleteRow: this.onDeleteRow,
             handleConfirmDeleteRow: this.customConfirm,
@@ -345,27 +296,27 @@ class CustomerInfoSearch extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">お客様名</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                    <Autocomplete
-                                        id="customerNo"
-                                        name="customerNo"
-                                        value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || ""}
-                                        options={this.state.customerDrop}
-                                        getOptionLabel={(option) => option.text ? option.text : ""}
-                                        onChange={(event, values) => this.getCustomer(event, values)}
-                                        renderOption={(option) => {
-                                            return (
-                                                <React.Fragment>
-                                                    <p >{option.name}</p>
-                                                </React.Fragment>
-                                            )
-                                        }}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
-                                                />
-                                            </div>
-                                        )}
-                                    />
+                                <Autocomplete
+                                    id="customerNo"
+                                    name="customerNo"
+                                    value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || ""}
+                                    options={this.state.customerDrop}
+                                    getOptionLabel={(option) => option.text ? option.text : ""}
+                                    onChange={(event, values) => this.getCustomer(event, values)}
+                                    renderOption={(option) => {
+                                        return (
+                                            <React.Fragment>
+                                                <p >{option.name}</p>
+                                            </React.Fragment>
+                                        )
+                                    }}
+                                    renderInput={(params) => (
+                                        <div ref={params.InputProps.ref}>
+                                            <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            />
+                                        </div>
+                                    )}
+                                />
                             </InputGroup>
                         </Col>
                         <Col sm={3}>
@@ -374,6 +325,11 @@ class CustomerInfoSearch extends Component {
                                     <InputGroup.Text>会社性質</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" id="companyNatureCode" name="companyNatureCode">
+                                {this.state.companyNatureDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
                                 </Form.Control>
                             </InputGroup>
                         </Col>
@@ -408,7 +364,7 @@ class CustomerInfoSearch extends Component {
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
                                             <input placeholder="例：上位お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
-                                               />
+                                            />
                                         </div>
                                     )}
                                 />
@@ -428,7 +384,7 @@ class CustomerInfoSearch extends Component {
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
                                             <input placeholder="例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
-                                                />
+                                            />
                                         </div>
                                     )}
                                 />
@@ -439,7 +395,13 @@ class CustomerInfoSearch extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" />
+                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode">
+                                    {this.state.paymentsiteCodeDrop.map(date =>
+                                        <option key={date.code} value={date.code}>
+                                            {date.name}
+                                        </option>
+                                    )}
+                                </Form.Control>
                             </InputGroup>
                         </Col>
                     </Row>
@@ -447,9 +409,14 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text style={{width:"8rem"}}>お客様ランキング</InputGroup.Text>
+                                    <InputGroup.Text style={{ width: "8rem" }}>お客様ランキング</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control as="select" id="levelCode" name="levelCode">
+                                    {this.state.levelDrop.map(date =>
+                                        <option key={date.code} value={date.code}>
+                                            {date.name}
+                                        </option>
+                                    )}
                                 </Form.Control>
                             </InputGroup>
                         </Col>
@@ -458,7 +425,13 @@ class CustomerInfoSearch extends Component {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>取引区分</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="取引区分" id="transactionStatus" name="transactionStatus" />
+                                <Form.Control as="select" placeholder="取引区分" id="transactionStatus" name="transactionStatus">
+                                    {this.state.transactionStatusDrop.map(date =>
+                                        <option key={date.code} value={date.code}>
+                                            {date.name}
+                                        </option>
+                                    )}
+                                </Form.Control>
                             </InputGroup>
                         </Col>
                         <Col sm={3}>

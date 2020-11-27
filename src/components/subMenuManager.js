@@ -35,7 +35,7 @@ import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
 	faCommentDollar, faList, faSearchMinus, faNewspaper,
-	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars
+	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars , faCaretSquareLeft
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import store from './redux/store';
@@ -111,7 +111,7 @@ class SubMenu extends Component {
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
-						<Link as="button" className="logout" to="/" id="logout" onClick={this.logout}>sign out</Link>
+						<Link as="button" className="logout" to="/" id="logout" onClick={this.logout}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCaretSquareLeft} />sign out</Link>
 					</div>
 
 				</Row>

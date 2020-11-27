@@ -91,8 +91,8 @@ class employeeSearch extends React.Component {
 			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguageCode1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguageCode2").val(), this.state.developLanguageMaster),
+			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
@@ -231,43 +231,7 @@ class employeeSearch extends React.Component {
 		return value;
 	}
 
-	// AUTOSELECT select事件
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'developLanguage1':
-						this.setState({
-							developLanguage1: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'developLanguage2':
-						this.setState({
-							developLanguage2: this.state.developLanguageMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					case 'employeeName':
-						this.setState({
-							employeeName: value,
-						})
-						break;
-					case 'customerNo':
-						this.setState({
-							customerNo:  this.state.customerMaster.find((v) => (v.name === value)).code,
-						})
-						break;
-					default:
-				}
-			}
-		}
-	};
+
     /**
      * 社員名連想
      * @param {} event 
@@ -300,6 +264,42 @@ class employeeSearch extends React.Component {
 			this.setState({ employeeStatus: "" });
 		}
 	}
+
+	getDevelopLanguage1 = (event, values) => {
+		if (values != null) {
+			this.setState({
+				developLanguage1: values.code,
+			})
+		} else {
+			this.setState({
+				developLanguage1: "",
+			})
+		}
+	}
+	getDevelopLanguage2 = (event, values) => {
+		if (values != null) {
+			this.setState({
+				developLanguage2: values.code,
+			})
+		} else {
+			this.setState({
+				developLanguage2: "",
+			})
+		}
+	}
+
+	getCustomerNo = (event, values) => {
+		if (values != null) {
+			this.setState({
+				customerNo: values.code,
+			})
+		} else {
+			this.setState({
+				customerNo: "",
+			})
+		}
+	}
+
 
 	render() {
 		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
@@ -457,15 +457,13 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
 										</InputGroup.Prepend>
-
-
-		<Autocomplete
+										<Autocomplete
 											id="customerNo"
 											name="customerNo"
+											value={this.state.customerMaster.find(v => v.code === this.state.customerNo) || {}}
+											onChange={(event, values) => this.getCustomerNo(event, values)}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.customerMaster.find(v => v.code === this.state.customerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'customerNo')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input  type="text" {...params.inputProps} className="auto"
@@ -473,7 +471,6 @@ class employeeSearch extends React.Component {
 												</div>
 											)}
 										/>
-
 
 									</InputGroup>
 								</Col>
@@ -547,29 +544,30 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
-											id="developLanguageCode1"
-											name="developLanguageCode1"
+											id="developLanguage1"
+											name="developLanguage1"
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguage1) || {}}
+											onChange={(event, values) => this.getDevelopLanguage1(event, values)}
 											options={this.state.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguage1) || {}}
-											onSelect={(event) => this.handleTag(event, 'developLanguage1')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語1" type="text" {...params.inputProps} className="auto"
+													<input  type="text" {...params.inputProps} className="auto" id="developLanguage1"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
+
 										<Autocomplete
-											id="developLanguageCode2"
-											name="developLanguageCode2"
+											id="developLanguage2"
+											name="developLanguage2"
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguage2) || {}}
+											onChange={(event, values) => this.getDevelopLanguage2(event, values)}
 											options={this.state.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguage2) || {}}
-											onSelect={(event) => this.handleTag(event, 'developLanguage2')}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  開発言語2" type="text" {...params.inputProps} className="auto"
+													<input  type="text" {...params.inputProps} className="auto" id="developLanguage2"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -636,8 +634,8 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={4}>
 							<div style={{ "float": "left" }}>
-								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
 							</div>
 						</Col>
 						<Col sm={5}>
@@ -649,8 +647,8 @@ class employeeSearch extends React.Component {
 						</Col>
 						<Col sm={3}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo , backPage: 'employeeSearch'} }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/EmployeeUpdate', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo , backPage: 'employeeSearch'} }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
+								<Link to={{ pathname: '/subMenuManager/EmployeeUpdate', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
 								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削	除</Link>
 							</div>
 						</Col>
