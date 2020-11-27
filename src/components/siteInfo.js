@@ -644,7 +644,7 @@ class siteInfo extends Component {
 													</div>
 												)}
 												disabled={this.state.employeeName === '' ? true : false}
-											/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+											/>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
