@@ -302,6 +302,9 @@ export function handleDownload(path, serverIP) {
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
 		NewPath = path.split("/");
+		if (NewPath.length==1) {
+			NewPath = path.split("\\");
+        }
 		var xhr = new XMLHttpRequest();
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
