@@ -709,7 +709,7 @@ render (){
 				</Row>
                   <div >
                     <BootstrapTable  data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF'}} options={this.options} striped hover condensed >
-							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM'dataSort={true} caretRender={publicUtils.getCaret} isKey>年月</TableHeaderColumn>                           
+							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey>年月</TableHeaderColumn>                           
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
 							<TableHeaderColumn  tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>

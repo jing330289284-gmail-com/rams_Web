@@ -104,7 +104,7 @@ class employeeUpdate extends React.Component {
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
 			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
 			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
-			postcode: publicUtils.nullToEmpty(this.refs.postcode.value),//郵便番号
+			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
 			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
@@ -125,7 +125,6 @@ class employeeUpdate extends React.Component {
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
 			bpInfoModel: this.state.bpInfoModel,//pb情報
 			picInfo: imgSrc,//pb情報
-
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
@@ -448,7 +447,7 @@ class employeeUpdate extends React.Component {
 		}
 	}
 
-	
+
 
 	changeFile = (event, name) => {
 		var filePath = event.target.value;
@@ -570,11 +569,26 @@ class employeeUpdate extends React.Component {
 			})
 		}
 	}
+
+	/**
+	* 郵便番号API
+	*/
+	postApi = event => {
+		let value = event.target.value;
+		const promise = Promise.resolve(publicUtils.postcodeApi(value));
+		promise.then((data) => {
+			if (data !== undefined && data !== null && data !== ""){
+				this.setState({ firstHalfAddress: data })
+			}else{
+				this.setState({ firstHalfAddress: "" })
+			}
+		});
+	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
+			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
@@ -1130,7 +1144,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
+									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={this.postApi.bind(this)} size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1138,7 +1152,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl autoComplete="off" size="sm" id="firstHalfAddress" ref="firstHalfAddress" disabled />
+									<FormControl autoComplete="off" size="sm" id="firstHalfAddress" value={firstHalfAddress} ref="firstHalfAddress" disabled />
 								</InputGroup>
 							</Col>
 							<Col sm={4}>

@@ -116,7 +116,7 @@ class employeeInsert extends React.Component {
 			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
 			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
 			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
-			postcode: publicUtils.nullToEmpty(this.refs.postcode.value),//郵便番号
+			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
 			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
@@ -474,6 +474,21 @@ class employeeInsert extends React.Component {
 		} else {
 			return this.props.history.push("/subMenuManager/employeeSearch");
 		}
+	};
+	
+	/**
+	* 郵便番号API
+	*/
+	postApi = event => {
+		let value = event.target.value;
+		const promise = Promise.resolve(publicUtils.postcodeApi(value));
+		promise.then((data) => {
+			if (data !== undefined && data !== null && data !== ""){
+				this.setState({ firstHalfAddress: data })
+			}else{
+				this.setState({ firstHalfAddress: null })
+			}
+		});
 	};
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
@@ -1032,7 +1047,7 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={publicUtils.postcodeApi} ref="postcode" size="sm" name="postcode" id="postcode" maxlength="7" />
+									<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur=　{this.postApi.bind(this)}  size="sm" name="postcode" id="postcode" maxlength="7" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
