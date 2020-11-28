@@ -1,13 +1,11 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Button, Col, Row, ListGroup, InputGroup, Modal, FormControl } from 'react-bootstrap';
-import { faGlasses, faEnvelope, faMinusCircle, faBroom, faListOl, faUserPlus, faFileExcel } from '@fortawesome/free-solid-svg-icons';
+import { Form, Button, Col, Row,InputGroup, Modal} from 'react-bootstrap';
+import { faGlasses, faEnvelope, faUserPlus} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { Link } from "react-router-dom";
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import DatePicker from "react-datepicker";
 import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
 import store from './redux/store';
@@ -24,11 +22,11 @@ class sendLettersConfirm extends React.Component {
 	}
 
 	initialState = ({
-		resumePath:'',
-		resumeName:'',
-		selectedmail:'',
-		selectedEmps:'',
-		mailTitle:'',
+		resumePath: '',
+		resumeName: '',
+		selectedmail: '',
+		selectedEmps: '',
+		mailTitle: '',
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		selectedEmpNos: this.props.location.state.salesPersons,
 		selectedCusInfos: this.props.location.state.targetCusInfos,
@@ -75,7 +73,6 @@ class sendLettersConfirm extends React.Component {
 		stations: store.getState().dropDown[14].slice(1),
 		developLanguages: store.getState().dropDown[8].slice(1),
 		developLanguagesShow: store.getState().dropDown[8].slice(1),
-		//employeeInfo: store.getState().dropDown[9].slice(1),//社員名
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		wellUseLanguagss: [],
 		stationCode: '',
@@ -108,9 +105,7 @@ class sendLettersConfirm extends React.Component {
 		appendEmps: [],
 		disbleState: false,
 		selectedMailCC: [],
-		popupFlag:true,
-		
-					
+		popupFlag: true,
 	})
 	componentDidMount() {
 		this.searchEmpDetail();
@@ -118,6 +113,7 @@ class sendLettersConfirm extends React.Component {
 		this.getLoginUserInfo();
 		this.getAllEmpsWithResume();
 	}
+	
 	onTagsChange = (event, values, fieldName) => {
 		if (values.length === 2) {
 			this.setState({
@@ -136,7 +132,6 @@ class sendLettersConfirm extends React.Component {
 		});
 	}
 
-
 	fromMailToEmp = (mail) => {
 		if (mail === "" || mail === null) {
 			return '';
@@ -144,6 +139,7 @@ class sendLettersConfirm extends React.Component {
 			return this.state.mails.find((v) => (v.companyMail === mail));
 		}
 	}
+	
 	getMail = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getMail")
 			.then(result => {
@@ -156,15 +152,15 @@ class sendLettersConfirm extends React.Component {
 			});
 
 	}
-	
-		sendMailWithFile = () => {
-			const mailConfirmContont=`<br/>
 
-`+`<br/>`+
-this.state.selectedCustomerName + `株式会社<br/>
+	sendMailWithFile = () => {
+		const mailConfirmContont = `<br/>
+
+`+ `<br/>` +
+			this.state.selectedCustomerName + `株式会社<br/>
 `+ this.state.selectedPurchasingManagers + `様<br/>
 <br/>
-お世話になっております、`+this.state.loginUserInfo[0].employeeFristName+`です。<br/>
+お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
 <br/>
 以下の要員を提案させていただきます、案件がございましたら、<br/>
 ご検討の程宜しくお願い致します。<br/>
@@ -185,22 +181,22 @@ this.state.selectedCustomerName + `株式会社<br/>
 <br/>
 以上、よろしくお願いいたします。<br/>
 ******************************************************************<br/>
-LYC株式会社 `+this.state.loginUserInfo[0].employeeFristName+` `+this.state.loginUserInfo[0].employeeLastName+`<br/>
+LYC株式会社 `+ this.state.loginUserInfo[0].employeeFristName + ` ` + this.state.loginUserInfo[0].employeeLastName + `<br/>
 〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F <br/> 
 http://www.lyc.co.jp/   <br/>
-TEL：03-6908-5796  携帯：`+this.state.loginUserInfo[0].phoneNo+`(優先）<br/>
-Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co.jp <br/>
+TEL：03-6908-5796  携帯：`+ this.state.loginUserInfo[0].phoneNo + `(優先）<br/>
+Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc.co.jp <br/>
 労働者派遣事業許可番号　派遣許可番号　派13-306371<br/>
 ＩＳＭＳ：MSA-IS-385<br/>
 *****************************************************************`;
-			const {resumeName,mailTitle,resumePath,selectedmail}=this.state;
-			let selectedMailCC=[this.state.selectedMailCC.length>=1?this.state.selectedMailCC[0].companyMail:'',
-		this.state.selectedMailCC.length>=2?this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
-				return s;
-			});
-			console.log(selectedMailCC);
-			let mailFrom = this.state.loginUserInfo[0].companyMail;
-		axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile",{resumeName,mailTitle,resumePath,mailConfirmContont,selectedmail,selectedMailCC,mailFrom})
+		const { resumeName, mailTitle, resumePath, selectedmail } = this.state;
+		let selectedMailCC = [this.state.selectedMailCC.length >= 1 ? this.state.selectedMailCC[0].companyMail : '',
+		this.state.selectedMailCC.length >= 2 ? this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
+			return s;
+		});
+		console.log(selectedMailCC);
+		let mailFrom = this.state.loginUserInfo[0].companyMail;
+		axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
 			.then(result => {
 				/*this.setState({
 					mails: result.data,
@@ -209,7 +205,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			.catch(function(error) {
 				alert(error);
 			});
-
 	}
 
 	getLoginUserInfo = () => {
@@ -222,7 +217,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			.catch(function(error) {
 				alert(error);
 			});
-
 	}
 
 	getAllEmpsWithResume = () => {
@@ -235,14 +229,12 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			.catch(function(error) {
 				alert(error);
 			});
-
 	}
 
 	/**
 	 * @param now 当前日期 格式:yyyy-MM
 	 * @param addMonths 传-1 上个月,传1 下个月
 	 */
-
 	getNextMonth = (addMonths) => {
 		var dd = new Date();
 		var m = dd.getMonth() + 1;
@@ -259,6 +251,7 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 		}
 		return y + "/" + m;
 	}
+	
 	fromCodeToNameLanguage = (code) => {
 		if (code === "" || code === null) {
 			return;
@@ -274,14 +267,16 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 			return this.state.developLanguages.find((v) => (v.code === code));
 		}
 	}
+	
 	openDaiolog = () => {
 		this.setState({
 			daiologShowFlag: true,
 		});
 
 	}
+	
 	searchPersonnalDetail = (employeeNo) => {
-		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo})
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo })
 			.then(result => {
 				if (result.data[0].age === "") {
 					this.setState({
@@ -293,7 +288,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 						developLanguage: result.data[0].developLanguage,
 						yearsOfExperience: result.data[0].yearsOfExperience,
 						beginMonth: new Date("2020/09").getTime(),
-						//salesProgressCode: result.data[0].salesProgressCode,
 						salesProgressCode: '2',
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
@@ -301,7 +295,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 						japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
-
 						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
 						initNearestStation: result.data[0].nearestStation,
@@ -357,7 +350,6 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 						siteRoleCode: result.data[0].siteRoleCode,
 						unitPrice: result.data[0].unitPrice,
 						remark: result.data[0].remark,
-
 						initAge: result.data[0].age,
 						initNearestStation: result.data[0].nearestStation,
 						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
@@ -384,6 +376,7 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 				alert(error);
 			});
 	}
+	
 	searchEmpDetail = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
 			.then(result => {
@@ -429,60 +422,57 @@ Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co
 	openEmpAddDaiolog = (flag) => {
 		this.setState({
 			empAdddaiologShowFlag: true,
-			popupFlag:flag,
+			popupFlag: flag,
 		});
 	}
-	
-			valueChange = event => {
+
+	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
 	};
-	handleEmpSelect=(row, isSelected, e)=>{
+	
+	handleEmpSelect = (row, isSelected, e) => {
 		this.setState({
 			selectedEmps: row,
 		})
-		
-				this.searchPersonnalDetail(row.employeeNo);
-	}
-	formatEmpStatus=(cell, row, enumObject, index)=>{
-return this.state.employees.find((v) => (v.code === cell)).name;
-	}
-		formatResume(cell, row, enumObject, index) {
-		
-			return (<div>
-<Form.Control as="select" size="sm"
-										onChange={this.resumeValueChange.bind(this,row)}
-										name="resumeName" 
-										autoComplete="off">
-										<option ></option>
-										
-											<option >{row.resumeInfo1.split('/')[4]}</option>
-											<option >{row.resumeInfo2.split('/')[4]}</option>
-									</Form.Control>
-</div>);
-		
+
+		this.searchPersonnalDetail(row.employeeNo);
 	}
 	
-		resumeValueChange = (row,event) => {
+	formatEmpStatus = (cell, row, enumObject, index) => {
+		return this.state.employees.find((v) => (v.code === cell)).name;
+	}
+	
+	formatResume(cell, row, enumObject, index) {
+		return (<div>
+			<Form.Control as="select" size="sm"
+				onChange={this.resumeValueChange.bind(this, row)}
+				name="resumeName"
+				autoComplete="off">
+				<option ></option>
+
+				<option >{row.resumeInfo1.split('/')[4]}</option>
+				<option >{row.resumeInfo2.split('/')[4]}</option>
+			</Form.Control>
+		</div>);
+	}
+
+	resumeValueChange = (row, event) => {
 		this.setState({
 			[event.target.name]: event.target.value,
-			
 		})
-		if(event.target.selectedIndex===1){
+		if (event.target.selectedIndex === 1) {
 			this.setState({
 				resumePath: row.resumeInfo1,
-			//resumeDetail: this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo1:'',
-			
-		})
-		}else if(event.target.selectedIndex===2){
+			})
+		} else if (event.target.selectedIndex === 2) {
 			this.setState({
 				resumePath: row.resumeInfo2,
-			//resumeDetail: this.state.employeeName!==''?this.state.appendEmps.find(v => v.employeeName === this.state.employeeName).resumeInfo2:'',
-			
-		})
+			})
 		}
-	}; 
+	};
+	
 	render() {
 		const options = {
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
@@ -588,7 +578,7 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 										variant="standard"
 										/*label="共用CCメール"*/
 										placeholder="共用CCメール"
-										style={{ width: "680px", float: "right"  }}
+										style={{ width: "680px", float: "right" }}
 									/>
 								)}
 							/>
@@ -604,24 +594,20 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							</InputGroup.Prepend>
 							<textarea ref={(textarea) => this.textArea = textarea} maxLength="100"
 								style={{ height: '60px', width: '84%', resize: 'none', overflow: 'hidden' }}
-
 							/>
-
 						</InputGroup>
-
 					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={2}>要員一覧</Col>
 					<Col sm={2}>
 						<div style={{ "float": "right" }}>
-							<Button size="sm" variant="info" name="clickButton" onClick={this.openEmpAddDaiolog.bind(this,true)}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
-							</div>
+							<Button size="sm" variant="info" name="clickButton" onClick={this.openEmpAddDaiolog.bind(this, true)}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
+						</div>
 					</Col>
 					<Col sm={1}></Col><Col sm={2}>{'　'}営業文章</Col></Row>
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={4}>
-
 						<BootstrapTable
 							options={options}
 							insertRow={true}
@@ -629,11 +615,10 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							ref='table'
 							data={this.state.employeeInfo}
 							className={"bg-white text-dark"}
-							// pagination
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='employeeName' autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
-							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus}editable={false} >所属</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
@@ -647,7 +632,6 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
 							value={mailContent}
 						/>
-
 					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
@@ -657,7 +641,6 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.sendMailWithFile} size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
-
 					</Col>
 				</Row>
 				<Row>
@@ -669,7 +652,6 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 							ref='table1'
 							data={this.state.selectedCusInfos}
 							className={"bg-white text-dark"}
-							// pagination
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='customerName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>お客様名</TableHeaderColumn>
@@ -685,7 +667,6 @@ return this.state.employees.find((v) => (v.code === cell)).name;
 					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
-
 			</div>
 		);
 	}

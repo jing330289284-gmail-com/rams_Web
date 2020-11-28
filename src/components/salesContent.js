@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Col, Row, ListGroup, InputGroup, FormControl } from 'react-bootstrap';
+import { Form, Button,ListGroup} from 'react-bootstrap';
 import { faSave, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as publicUtils from './utils/publicUtils.js';
@@ -68,7 +68,6 @@ class salesContent extends React.Component {
 		englishConversationLevel: '',
 		projectPhaseCode: '0',
 		remark: '',
-		
 		initAge: '',
 		initNearestStation: '',
 		initJapaneaseConversationLevel: '',
@@ -79,11 +78,13 @@ class salesContent extends React.Component {
 		initDevelopLanguageCode8: null,
 		initDevelopLanguageCode9: null,
 		initDevelopLanguageCode10: null,
-				initUnitPrice: '',
-				initRemark: '',
-				disableFlag:true,
-				initWellUseLanguagss: [],
+		initUnitPrice: '',
+		initRemark: '',
+		disableFlag: true,
+		initWellUseLanguagss: [],
+		projectPhase: '',
 	})
+	
 	componentDidMount() {
 		this.init();
 		var clipboard2 = new Clipboard('#copyUrl', {
@@ -98,14 +99,16 @@ class salesContent extends React.Component {
 		clipboard2.on('error', function() {
 			console.log("err！");
 		});
-
 	}
+	
+	//　valueChange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
 	};
 
+	//　コピー
 	copyToClipboard = () => {
 		let tempValue = this.textArea.value;
 		var clipboard2 = new Clipboard('#copyUrl', {
@@ -120,28 +123,9 @@ class salesContent extends React.Component {
 		clipboard2.on('error', function() {
 			console.log("已复制qqqqqqqqqqqqqqqqqqqq剪贴板！");
 		});
-		/*var textField = document.createElement('textarea');
-		this.textArea.value = this.textArea.value.replace(/\n/g,"<br/>");
-		this.textArea.value = this.textArea.value.replace(/\r/g,"<br />");
-		this.textArea.value = this.textArea.value.replace(/\t/g,"!@");
-		textField.innerText = this.textArea.value;
-		document.body.appendChild(textField);
-		textField.select();
-		document.execCommand('copy');
-		textField.remove();*/
-		/*target.value=myimg.value;
-		target.select();
-		js=myimg.createTextRange();
-		js.execCommand("Copy");
-		alert("复制成功!");*/
-		//this.textArea.select();
-		//document.execCommand('copy');
-		// This is just personal preference.
-		// I prefer to not show the whole text area selected.
-		// e.target.focus();
-		// this.setState({ copySuccess: 'Copied!' });
 	};
 
+	//　更新ボタン
 	updateSalesSentence = () => {
 		axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
@@ -154,6 +138,7 @@ class salesContent extends React.Component {
 			});
 	}
 
+	//　駅LOST FOCUS
 	updateAddress = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -168,7 +153,7 @@ class salesContent extends React.Component {
 				alert(error);
 			});
 	};
-	
+
 	fromCodeToNameLanguage = (code) => {
 		if (code === "" || code === null) {
 			return;
@@ -176,7 +161,7 @@ class salesContent extends React.Component {
 			return this.state.developLanguages.find((v) => (v.code === code)).name;
 		}
 	}
-	
+
 	fromCodeToListLanguage = (code) => {
 		if (code === "" || code === null) {
 			return '';
@@ -185,11 +170,24 @@ class salesContent extends React.Component {
 		}
 	}
 
+	getProjectPhase = (siteRoleCode) => {
+		if (siteRoleCode === '2') {
+			this.setState({
+				projectPhase: '基本設計',
+			})
+		} else if (siteRoleCode === '3') {
+			this.setState({
+				projectPhase: '詳細設計',
+			})
+		}
+	}
+	
 	init = () => {
 		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
 			.then(result => {
 				console.log(result.data);
 				if (result.data[0].age === "") {
+					this.getProjectPhase(result.data[0].siteRoleCode);
 					this.setState({
 						employeeName: result.data[0].employeeFullName,
 						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
@@ -206,23 +204,23 @@ class salesContent extends React.Component {
 						japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
-						
-								initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-		initNearestStation: result.data[0].nearestStation,
-		initJapaneaseConversationLevel: '',
-		initEnglishConversationLevel: '',
-		initYearsOfExperience: result.data[0].yearsOfExperience,
-		initDevelopLanguageCode6: null,
-		initDevelopLanguageCode7: null,
-		initDevelopLanguageCode8: null,
-		initDevelopLanguageCode9: null,
-		initDevelopLanguageCode10: null,
-				initUnitPrice: '',
-				initRemark: '',
-				initWellUseLanguagss: [],
+						initNearestStation: result.data[0].nearestStation,
+						initJapaneaseConversationLevel: '',
+						initEnglishConversationLevel: '',
+						initYearsOfExperience: result.data[0].yearsOfExperience,
+						initDevelopLanguageCode6: null,
+						initDevelopLanguageCode7: null,
+						initDevelopLanguageCode8: null,
+						initDevelopLanguageCode9: null,
+						initDevelopLanguageCode10: null,
+						initUnitPrice: '',
+						initRemark: '',
+						initWellUseLanguagss: [],
 					})
 				} else {
+					this.getProjectPhase(result.data[0].siteRoleCode);
 					this.setState({
 						employeeName: result.data[0].employeeFullName,
 						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
@@ -253,7 +251,6 @@ class salesContent extends React.Component {
 						englishConversationLevel: result.data[0].englishConversationLevel,
 						beginMonth: new Date("2020/09").getTime(),
 						salesProgressCode: '1',
-						//salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
 						employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
@@ -262,20 +259,19 @@ class salesContent extends React.Component {
 						siteRoleCode: result.data[0].siteRoleCode,
 						unitPrice: result.data[0].unitPrice,
 						remark: result.data[0].remark,
-						
-						initAge:result.data[0].age,
+						initAge: result.data[0].age,
 						initNearestStation: result.data[0].nearestStation,
-		initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-		initEnglishConversationLevel: result.data[0].englishConversationLevel,
-		initYearsOfExperience: result.data[0].yearsOfExperience,
-		initDevelopLanguageCode6: result.data[0].developLanguage1,
-		initDevelopLanguageCode7: result.data[0].developLanguage2,
-		initDevelopLanguageCode8: result.data[0].developLanguage3,
-		initDevelopLanguageCode9: result.data[0].developLanguage4,
-		initDevelopLanguageCode10: result.data[0].developLanguage5,
-				initUnitPrice: result.data[0].unitPrice,
-				initRemark: result.data[0].remark,
-				initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
+						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
+						initEnglishConversationLevel: result.data[0].englishConversationLevel,
+						initYearsOfExperience: result.data[0].yearsOfExperience,
+						initDevelopLanguageCode6: result.data[0].developLanguage1,
+						initDevelopLanguageCode7: result.data[0].developLanguage2,
+						initDevelopLanguageCode8: result.data[0].developLanguage3,
+						initDevelopLanguageCode9: result.data[0].developLanguage4,
+						initDevelopLanguageCode10: result.data[0].developLanguage5,
+						initUnitPrice: result.data[0].unitPrice,
+						initRemark: result.data[0].remark,
+						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 						this.fromCodeToListLanguage(result.data[0].developLanguage2),
 						this.fromCodeToListLanguage(result.data[0].developLanguage3),
 						this.fromCodeToListLanguage(result.data[0].developLanguage4),
@@ -292,6 +288,7 @@ class salesContent extends React.Component {
 			beginMonth: date,
 		});
 	}
+	
 	onTagsChange = (event, values, fieldName) => {
 		if (values.length === 5) {
 			this.setState({
@@ -317,7 +314,7 @@ class salesContent extends React.Component {
 			}),
 		})
 	}
-	
+
 	render() {
 		return (
 			<div>
@@ -339,7 +336,7 @@ class salesContent extends React.Component {
 										{date.name}
 									</option>
 								)}
-						</Form.Control></span>
+							</Form.Control></span>
 					</ListGroup.Item>
 					<ListGroup.Item>
 						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
@@ -350,7 +347,7 @@ class salesContent extends React.Component {
 										{date.name}
 									</option>
 								)}
-						</Form.Control></span>
+							</Form.Control></span>
 						{this.state.japaneseLevelCode}</ListGroup.Item>
 					<ListGroup.Item>
 						<span style={{ flexFlow: "nowrap" }}>【英　　語】：
@@ -367,33 +364,8 @@ class salesContent extends React.Component {
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
-					<ListGroup.Item>【対応工程】：{this.state.siteRoleCode}</ListGroup.Item>
+					<ListGroup.Item>【対応工程】：{this.state.projectPhase}</ListGroup.Item>
 					<ListGroup.Item width="200px">【得意言語】：{this.state.developLanguage}
-						{/*<Form.Control as="select"    style={{display: "inherit",width: "150px",height:"30px"}} onChange={this.valueChange}
-										name="addDevelopLanguage" value={this.state.addDevelopLanguage}
-										>
-										{this.state.developLanguages.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-    </Form.Control>*/}
-
-						{/*<span style={{  width: 135 }}>	<Autocomplete
-			multiple
-										options={this.state.developLanguages}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.developLanguages.find(v => v.code === '1') || ""}
-										//onSelect={(event) => this.handleTag(event, 'station')}
-										renderInput={(params) => (
-											<TextField
-            {...params}
-            variant="standard"
-            label="Multiple values"
-            placeholder="Favorites"
-          />
-										)}
-									/></span>*/}
 						<Autocomplete
 							multiple
 							id="tags-standard"
@@ -453,26 +425,26 @@ class salesContent extends React.Component {
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
 【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
 【業務年数】：`+ this.state.yearsOfExperience + `年
-【対応工程】：`+ this.state.siteRoleCode + `
+【対応工程】：`+ this.state.projectPhase + `
 【得意言語】：`+ this.state.developLanguage + `
 【単　　価】：`+ this.state.unitPrice + `万円
 【稼働開始】：2020/09
-【営業状況】：`+ (this.state.salesProgressCode !== ""&& this.state.salesProgressCode !== null? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
+【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
 【備　　考】：`+ this.state.remark}
 					/></div>
 				<div>
 					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" variant="info" onClick={this.updateSalesSentence} disabled={this.state.age!==this.state.initAge ||
-		this.state.nearestStation!==this.state.initNearestStation ||
-		this.state.japaneaseConversationLevel!==this.state.initJapaneaseConversationLevel ||
-		this.state.englishConversationLevel!==this.state.initEnglishConversationLevel ||
-		this.state.yearsOfExperience!==this.state.initYearsOfExperience ||
-		this.state.unitPrice!==this.state.initUnitPrice ||
-		this.state.remark!==this.state.initRemark||
-		this.state.wellUseLanguagss.sort().toString()!==this.state.initWellUseLanguagss.sort().toString()?false:true}>
-						<FontAwesomeIcon icon={faSave} /> {"更新"}</Button>{' '}
+						<Button size="sm" variant="info" onClick={this.updateSalesSentence} disabled={this.state.age !== this.state.initAge ||
+							this.state.nearestStation !== this.state.initNearestStation ||
+							this.state.japaneaseConversationLevel !== this.state.initJapaneaseConversationLevel ||
+							this.state.englishConversationLevel !== this.state.initEnglishConversationLevel ||
+							this.state.yearsOfExperience !== this.state.initYearsOfExperience ||
+							this.state.unitPrice !== this.state.initUnitPrice ||
+							this.state.remark !== this.state.initRemark ||
+							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : true}>
+							<FontAwesomeIcon icon={faSave} /> {"更新"}</Button>{' '}
 						<Button id='copyUrl' size="sm" variant="info" /*onClick={this.copyToClipboard}*/>
-						<FontAwesomeIcon icon={faCopy} /> {"コピー"}</Button></div>
+							<FontAwesomeIcon icon={faCopy} /> {"コピー"}</Button></div>
 				</div>
 			</div>
 		);
