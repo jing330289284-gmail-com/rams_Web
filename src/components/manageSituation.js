@@ -88,15 +88,22 @@ class manageSituation extends React.Component {
 	componentDidMount() {
 		//let sysYearMonth = new Date();
 		//　let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
-		this.getSalesSituation(this.getNextMonth(new Date(),1));
-		this.setState({
-						salesYearAndMonth: this.getNextMonth(new Date(),1),
-					});
-		
+		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+			this.getSalesSituation(this.props.location.state.sendValue.salesYearAndMonth);
+			this.setState({
+				salesYearAndMonth: this.props.location.state.sendValue.salesYearAndMonth,
+				yearMonth:publicUtils.converToLocalTime(this.props.location.state.sendValue.salesYearAndMonth,false),
+			});
+		}else{
+			this.getSalesSituation(this.getNextMonth(new Date(), 1));
+			this.setState({
+				salesYearAndMonth: this.getNextMonth(new Date(), 1),
+			});
+		}
 	}
-	
-	
-		getNextMonth = (date,addMonths) => {
+
+
+	getNextMonth = (date, addMonths) => {
 		//var dd = new Date();
 		var m = date.getMonth() + 1;
 		var y = date.getMonth() + 1 + addMonths > 12 ? (date.getFullYear() + 1) : date.getFullYear();
@@ -115,7 +122,7 @@ class manageSituation extends React.Component {
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		axios.post(this.state.serverIP+"salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
+		axios.post(this.state.serverIP + "salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -166,12 +173,21 @@ class manageSituation extends React.Component {
 						decidedPersons: decidedPersons,// 確定人数
 						errorsMessageShow: false,
 						errorsMessageValue: '',
+					},()=>{
+						if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+							this.refs.table.setState({
+								selectedRowKeys: this.props.location.state.sendValue.selectetRowIds,
+							});
+							this.setState({
+								linkDisableFlag: false,// linkDisableFlag
+							})
+						}
 					});
 				} else {
 					alert("FAIL");
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				alert("ERR");
 			});
 	}
@@ -260,7 +276,6 @@ class manageSituation extends React.Component {
 		this.setState({
 			checkFlag: !this.state.checkFlag,
 			modeSelect: this.state.modeSelect === 'radio' ? 'checkbox' : 'radio',
-
 			onSelectFlag: !this.state.onSelectFlag,
 			interviewDate1Show: '',
 			interviewDate2Show: '',
@@ -311,7 +326,7 @@ class manageSituation extends React.Component {
 							alert("FAIL");
 						}
 					})
-					.catch(function(error) {
+					.catch(function (error) {
 						alert("ERR");
 					});
 			}
@@ -365,7 +380,7 @@ class manageSituation extends React.Component {
 						alert("FAIL");
 					}
 				})
-				.catch(function(error) {
+				.catch(function (error) {
 					alert("ERR");
 				});
 		}
@@ -436,7 +451,7 @@ class manageSituation extends React.Component {
 			salesYearAndMonth: publicUtils.formateDate(date, false),
 		});
 		//let searchYearMonth = date.getFullYear() + '' + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
-		this.getSalesSituation(this.getNextMonth(date,0))
+		this.getSalesSituation(this.getNextMonth(date, 0))
 	}
 
 	// setinterviewDate1
@@ -590,6 +605,50 @@ class manageSituation extends React.Component {
 		
 		} */
 
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+			salesYearAndMonth: this.state.salesYearAndMonth,
+			selectetRowIds: this.state.selectetRowIds,
+		};
+		switch (actionType) {
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/employeeDetail',
+					state: {
+						actionType: 'detail',
+						id: this.state.employeeNo,
+						backPage: 'manageSituation',
+						sendValue: sendValue,
+					},
+				}
+				break;
+			case "salesSendLetter":
+				path = {
+					pathname: '/subMenuManager/salesSendLetter',
+					state: {
+						actionType: 'detail',
+						id: this.state.employeeNo,
+						backPage: "manageSituation",
+						sendValue: sendValue,
+						selectetRowIds: this.state.selectetRowIds,
+					},
+				}
+				break;
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.employeeNo,
+						backPage: "manageSituation",
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
 	render() {
 		const selectRow = {
 			mode: this.state.modeSelect,
@@ -726,7 +785,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode1" className="auto form-control Autocompletestyle-situation"
-													/>
+												/>
 											</div>
 										)}
 									/>
@@ -748,7 +807,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer1" className="auto form-control Autocompletestyle-situation"
-													 />
+												/>
 											</div>
 										)}
 									/>
@@ -791,7 +850,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="stationCode2" className="auto form-control Autocompletestyle-situation"
-													 />
+												/>
 											</div>
 										)}
 									/>
@@ -813,7 +872,7 @@ class manageSituation extends React.Component {
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
 													id="interviewCustomer2" className="auto form-control Autocompletestyle-situation"
-													/>
+												/>
 											</div>
 										)}
 									/>
@@ -871,7 +930,7 @@ class manageSituation extends React.Component {
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
 							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button></div>
 					</div>
-					<br/>
+					<br />
 					<Row>
 						<Col sm={1}>
 							{/* <InputGroup size="sm" >
@@ -895,22 +954,17 @@ class manageSituation extends React.Component {
 						<Col sm={2}></Col>
 						<Col sm={7}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenuManager/salesSendLetter', state: { actionType: 'detail', id: this.state.employeeNo, selectetRowIds: this.state.selectetRowIds } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button></Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.employeeNo, backPage: 'manageSituation' } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button></Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/siteSearch', state: { id: this.state.employeeNo } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button></Link>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2,this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>
 							</div>
 						</Col>
 					</Row>
-
 					<Row>
 						<Col sm={12}>
-
 							<BootstrapTable
 								ref='table'
 								className={"bg-white text-dark"}
@@ -949,10 +1003,7 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
 									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
-
 							</BootstrapTable>
-
-
 						</Col>
 					</Row>
 				</Form>
