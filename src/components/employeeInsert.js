@@ -92,7 +92,8 @@ class employeeInsert extends React.Component {
 			employeeLastName: this.state.employeeLastName,//社員名
 			furigana1: publicUtils.nullToEmpty(this.state.furigana1),//カタカナ
 			furigana2: publicUtils.nullToEmpty(this.state.furigana2),//カタカナ
-			alphabetName: publicUtils.nullToEmpty(this.state.alphabetName),//ローマ字
+			alphabetName1: publicUtils.nullToEmpty(this.state.alphabetName1) ,
+			alphabetName2:  publicUtils.nullToEmpty(this.state.alphabetName2) ,
 			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
 			japaneseCalendar: publicUtils.nullToEmpty(this.state.japaneseCalendar),//和暦
 			genderStatus: publicUtils.nullToEmpty(this.state.genderStatus),//性別
@@ -491,7 +492,7 @@ class employeeInsert extends React.Component {
 		});
 	};
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName, alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1, alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus, stationCodeValue, developLanguage1Value, developLanguage2Value, developLanguage3Value, developLanguage4Value, developLanguage5Value,
@@ -620,13 +621,13 @@ class employeeInsert extends React.Component {
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
-
-
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={alphabetName} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="alphabetName" />
+									<FormControl value={alphabetName1} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="alphabetName1" />{' '}
+									<FormControl value={alphabetName2} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="alphabetName2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
