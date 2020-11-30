@@ -1,11 +1,8 @@
 import JapaneseHolidays from 'japanese-holidays';
 const $ = require('jquery');
-const axios = require('axios');
-
-
 //　 時間段を取得
 export function getFullYearMonth(date, now) {
-	if (date !== undefined && date !== null && date !== "" &&now !== undefined && now !== null && now !== "") {
+	if (date !== undefined && date !== null && date !== "" && now !== undefined && now !== null && now !== "") {
 		var returnYears = 0;
 		var returnMonths = 0;
 		var yearmonth = -1;
@@ -65,7 +62,7 @@ export function setFullYearMonth(date) {
 
 //　ドロップダウン
 export function getdropDown(method, serverIP) {
-	var array = [{ code: '', name: '選択ください' }];
+	var array = [{ code: '', name: '' }];
 	$.ajax({
 		type: "POST",
 		url: serverIP + method,
@@ -90,7 +87,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		contentType: "application/json",
 		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
-				var array = [{ code: '', name: '選択ください' }];
+				var array = [{ code: '', name: '' }];
 				var list = resultList[j];
 				for (var i in list) {
 					array.push(list[i])
@@ -114,7 +111,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		async: false,
 		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
-				var array = [{ value: '', text: '選択ください' }];
+				var array = [{ value: '', text: '' }];
 				var List = resultList[j];
 				for (var k in List) {
 					var arrayDetail1 = { value: '', text: '' }
@@ -155,36 +152,6 @@ export async function getNO(columnName, typeName, table, serverIP) {
 	return no;
 }
 
-
-export function escapeRegexCharacters(str) {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-export function getSuggestionDlt(suggestion) {
-	return suggestion.name;
-}
-export function getSuggestions(value, datas) {
-	const escapedValue = escapeRegexCharacters(value.trim());
-	const regex = new RegExp('^' + escapedValue, 'i');
-	return datas.filter(data => regex.test(data.name));
-}
-export function renderSuggestion(suggestion) {
-	return (
-		suggestion.name
-	);
-}
-
-//　　　テーブルのsort
-export function getCaret(direction) {
-	if (direction === 'asc') {
-		return "▲";
-	}
-	if (direction === 'desc') {
-		return "▼"
-			;
-	}
-	return "▲/▼";
-}
 /**
  * 前到后时间格式
  * @param {*} datetime 日本时间时间戳
@@ -262,10 +229,10 @@ export function birthday_age(age) {
 		var day = date.getDate();
 		var value = (year - age) + '' + (month < 10 ? '0' + month : month) + '' + (day < 10 ? '0' + day : day);
 		return value;
-	}else{
+	} else {
 		return age;
 	}
-	
+
 }
 /**
  * 联想框label的value取得
@@ -302,6 +269,9 @@ export function handleDownload(path, serverIP) {
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
 		NewPath = path.split("/");
+		if (NewPath.length==1) {
+			NewPath = path.split("\\");
+        }
 		var xhr = new XMLHttpRequest();
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
@@ -330,48 +300,32 @@ export function handleDownload(path, serverIP) {
 }
 
 
-export async function postcodeApi() {
-	var postcode = document.getElementById("postcode").value;
+
+export function postcodeApi(postcode) {
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
-		await axios.post("/postcodeApi/search?zipcode=" + postcode)
-			.then(function(result) {
-				if (result.data.status === 200) {
-					$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
+		var outArray = [];
+		$.ajax({
+			type: "post",
+			url: "/postcodeApi/search?zipcode=" + postcode,
+			async: false,
+			contentType: "application/json",
+			dataType: "json",
+			success: function(result) {
+				console.log(result)
+				if (result.status === 200) {
+					if (result.results != null) {
+						outArray.push(result.results[0].address1 + result.results[0].address2 + result.results[0].address3)
+					} else {
+						//alert("郵便番号がわからない場合もこちら")
+					}
 				} else {
-					$("#firstHalfAddress").val("");
+					//alert(result.message)
 				}
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
-	} else {
-		$("#firstHalfAddress").val("");
-	}
-}
-
-
-/**
-//http://zipcloud.ibsnet.co.jp/doc/api 郵便番号検索API
-* 郵便番号のApi
-*/
-/* export function postcodeApi(value) {
-
-	$.ajax({
-		type: "post",
-		url: "/postcodeApi/search?zipcode=" + value,
-		async: false,
-		contentType: "application/json",
-		success: function (result) {
-			console.log(result)
-			if (result.data.status === 200) {
-				$("#firstHalfAddress").val(result.data.results[0].address1 + result.data.results[0].address2 + result.data.results[0].address3);
 			}
-
-		}
-	});
+		});
+	}
+	return outArray;
 };
- */
-
-
 
 //　　年齢と和暦
 export function calApi(date) {

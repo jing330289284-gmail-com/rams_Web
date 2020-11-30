@@ -47,6 +47,7 @@ class WagesInfo extends Component {
         bonusStartDate: '',//ボーナスの期日
         raiseStartDate: '',//昇給の期日
         reflectStartDate: '',//反映年月
+        lastTimeBonusAmountForInsert:"",//前回のボーナス額（）
         costInfoShow: false,//諸費用画面フラグ
         message: '',//toastのメッセージ
         type: '',//成功や失敗
@@ -283,6 +284,7 @@ class WagesInfo extends Component {
                     this.setState({
                         wagesInfoList: result.data.wagesInfoList,
                         lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
+                        lastTimeBonusAmountForInsert:result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
                         kadouCheck: result.data.kadouCheck,
                         relatedEmployees: result.data.relatedEmployees,
                         "errorsMessageShow": false,
@@ -428,6 +430,13 @@ class WagesInfo extends Component {
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     this.search(wagesInfoModel);
                     this.resetValue();
+                    this.refs.wagesInfoTable.setState({
+                        selectedRowKeys:[],
+                    });
+                    this.setState({
+                        torokuText:"登録",
+                    })
+                    $("#shusei").attr("disabled", true);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -783,7 +792,7 @@ class WagesInfo extends Component {
                                             maxLength="7"
                                             readOnly
                                             placeholder="例：400000"
-                                            value={lastTimeBonusAmount} />
+                                            value={lastTimeBonusAmount === "" ? this.state.lastTimeBonusAmountForInsert : lastTimeBonusAmount} />
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>予定額</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -959,6 +968,7 @@ class WagesInfo extends Component {
                                 headerStyle={{ background: '#5599FF' }}
                                 striped
                                 hover
+                                ref="wagesInfoTable"
                                 condensed>
                                 <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
                                 <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>

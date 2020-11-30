@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -15,10 +15,11 @@ import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
-
 registerLocale('ja', ja);
 
-//現場情報
+/* 
+  現場情報
+ */
 class siteInfo extends Component {
 	constructor(props) {
 		super(props);
@@ -35,6 +36,7 @@ class siteInfo extends Component {
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
+		deleteFlag: true,//活性非活性フラグ
 		dailyCalculationStatusFlag: true,//日割フラグ
 		dailyCalculationStatus: false,
 		payOffRangeStatus: store.getState().dropDown[33].slice(1),//　精算時間
@@ -266,16 +268,16 @@ class siteInfo extends Component {
 					related3Employees: row.related3Employees === null ? '' : row.related3Employees,
 					related4Employees: row.related4Employees === null ? '' : row.related4Employees,
 					updateFlag: false,
-					disabledFlag: false
-
+					disabledFlag: false,
+					deleteFlag: false,
 				});
 				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
 					this.setState({
-						dailyCalculationStatusFlag: false
+						dailyCalculationStatusFlag: false,
+						deleteFlag: false,
 					});
 				}
-			}
-			else {
+			}else {
 				this.setState(() => this.resetStates);
 				this.setState({
 					updateFlag: true,
@@ -286,7 +288,8 @@ class siteInfo extends Component {
 			this.setState(() => this.resetStates);
 			this.setState({
 				updateFlag: true,
-				disabledFlag: false
+				disabledFlag: false,
+				deleteFlag: true
 			})
 		}
 	}
@@ -395,6 +398,43 @@ class siteInfo extends Component {
 			</p>
 		);
 	}
+
+	siteInfoeDelete = () => {
+		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+		var a = window.confirm("削除していただきますか？");
+		if (a) {
+			$("#deleteBtn").click();
+		}
+	}
+	//隠した削除ボタン
+	createCustomDeleteButton = (onClick) => {
+		return (
+			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
+		);
+	}
+	//隠した削除ボタンの実装
+	onDeleteRow = (rows) => {
+		axios.post(this.state.serverIP + "deleteSiteInfo", { employeeNo: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo),
+		                                                     admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
+		 })
+			.then(result => {
+				if (result.data) {
+				
+				} else {
+					
+				}
+			})
+			.catch(function(error) {
+				alert("删除错误，请检查程序");
+			});
+	}
+	//　　削除前のデフォルトお知らせの削除
+	customConfirm(next, dropRowKeys) {
+		const dropRowKeysStr = dropRowKeys.join(',');
+		next();
+	}
+
+
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
@@ -407,6 +447,10 @@ class siteInfo extends Component {
 			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			deleteBtn: this.createCustomDeleteButton,
+			onDeleteRow: this.onDeleteRow,
+			handleConfirmDeleteRow: this.customConfirm,
+
 		};
 		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager, workStateFlag } = this.state;
 		//テーブルの列の選択
@@ -564,8 +608,7 @@ class siteInfo extends Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
+														<Autocomplete
 											id="customerNo"
 											name="customerNo"
 											options={this.state.customerMaster}
@@ -579,7 +622,8 @@ class siteInfo extends Component {
 												</div>
 											)}
 											disabled={this.state.employeeName === '' ? true : false}
-										/>
+										/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -587,20 +631,20 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
 											<Autocomplete
-											id="topCustomerNo"
-											name="topCustomerNo"
-											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
-											options={this.state.topCustomerMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-											disabled={this.state.employeeName === '' ? true : false}
-										/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+												id="topCustomerNo"
+												name="topCustomerNo"
+												value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
+												onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
+												options={this.state.topCustomerMaster}
+												getOptionLabel={(option) => option.name}
+												renderInput={(params) => (
+													<div ref={params.InputProps.ref}>
+														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														/>
+													</div>
+												)}
+												disabled={this.state.employeeName === '' ? true : false}
+											/>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -763,11 +807,17 @@ class siteInfo extends Component {
 							</div>
 						</Form.Group>
 					</Form>
-					<Row>
+					<Row >
+						<Col sm={12}>
+							<div style={{ "float": "right" }}>
+								<Button size="sm" onClick={this.siteInfoeDelete} variant="info" type="button" disabled={this.state.deleteFlag === true ? true : false}>
+									<FontAwesomeIcon icon={faTrash} /> 削除</Button>
+							</div>
+						</Col>
 					</Row>
 					<Row>
 						<Col sm={12}>
-							<BootstrapTable selectRow={selectRow} data={siteData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+							<BootstrapTable selectRow={selectRow} data={siteData} ref='table' deleteRow pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 								<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
 								<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
 								<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
