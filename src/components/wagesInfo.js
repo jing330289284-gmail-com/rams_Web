@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEdit, faUndo, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
@@ -47,7 +47,7 @@ class WagesInfo extends Component {
         bonusStartDate: '',//ボーナスの期日
         raiseStartDate: '',//昇給の期日
         reflectStartDate: '',//反映年月
-        lastTimeBonusAmountForInsert:"",//前回のボーナス額（）
+        lastTimeBonusAmountForInsert: "",//前回のボーナス額（）
         costInfoShow: false,//諸費用画面フラグ
         message: '',//toastのメッセージ
         type: '',//成功や失敗
@@ -65,7 +65,9 @@ class WagesInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         expensesInfoModels: [],//諸費用履歴
         kadouCheck: true,//稼働フラグ
-        backPage:"",
+        backPage: "",
+        searchFlag: true,
+        sendValue: [],
         relatedEmployees: '',//要員
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -80,11 +82,11 @@ class WagesInfo extends Component {
         var value = event.target.value;
         this.setState({
             [event.target.name]: event.target.value,
-        },()=>{
-            if(value === "0"){
+        }, () => {
+            if (value === "0") {
                 this.setState({
-                    scheduleOfBonusAmount:'',
-                    bonusStartDate:'',
+                    scheduleOfBonusAmount: '',
+                    bonusStartDate: '',
                 })
                 this.totalKeisan();
             }
@@ -97,13 +99,13 @@ class WagesInfo extends Component {
         this.setState({
             [event.target.name]: event.target.value,
         }, () => {
-            if(this.state.socialInsuranceFlag === "1"){
+            if (this.state.socialInsuranceFlag === "1") {
                 this.hokenKeisan();
-            }else{
+            } else {
                 this.totalKeisan();
             }
             this.setState({
-                [name]:utils.addComma(value)
+                [name]: utils.addComma(value)
             });
         }
         )
@@ -119,6 +121,12 @@ class WagesInfo extends Component {
     }
     componentDidMount() {
         this.getDropDowns();
+        console.log(this.props.history);
+        this.setState({
+            backPage: this.props.location.state.backPage,
+            sendValue: this.props.location.state.sendValue,
+            searchFlag: this.props.location.state.searchFlag,
+        })
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
         if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
@@ -284,7 +292,7 @@ class WagesInfo extends Component {
                     this.setState({
                         wagesInfoList: result.data.wagesInfoList,
                         lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
-                        lastTimeBonusAmountForInsert:result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
+                        lastTimeBonusAmountForInsert: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
                         kadouCheck: result.data.kadouCheck,
                         relatedEmployees: result.data.relatedEmployees,
                         "errorsMessageShow": false,
@@ -352,10 +360,10 @@ class WagesInfo extends Component {
         var salary = utils.deleteComma(this.state.salary);
         if (this.state.socialInsuranceFlag === "1") {
             if (salary === '') {
-                this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を入力してください", socialInsuranceFlag: "0", healthInsuranceAmount:'',welfarePensionAmount:'',insuranceFeeAmount:''});
+                this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を入力してください", socialInsuranceFlag: "0", healthInsuranceAmount: '', welfarePensionAmount: '', insuranceFeeAmount: '' });
                 setTimeout(() => this.setState({ "errorsMessageValue": false }), 3000);
             } else if (salary === '0') {
-                this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を0以上に入力してください", socialInsuranceFlag: "0", healthInsuranceAmount:'',welfarePensionAmount:'',insuranceFeeAmount:''});
+                this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を0以上に入力してください", socialInsuranceFlag: "0", healthInsuranceAmount: '', welfarePensionAmount: '', insuranceFeeAmount: '' });
                 setTimeout(() => this.setState({ "errorsMessageValue": false }), 3000);
             } else {
                 await axios.post("/api/getSocialInsurance202003?salary=" + salary + "&kaigo=0")
@@ -431,10 +439,10 @@ class WagesInfo extends Component {
                     this.search(wagesInfoModel);
                     this.resetValue();
                     this.refs.wagesInfoTable.setState({
-                        selectedRowKeys:[],
+                        selectedRowKeys: [],
                     });
                     this.setState({
-                        torokuText:"登録",
+                        torokuText: "登録",
                     })
                     $("#shusei").attr("disabled", true);
                 } else {
@@ -470,39 +478,47 @@ class WagesInfo extends Component {
             </p>
         );
     }
-    addMarkSalary=(cell,row)=>{
+    addMarkSalary = (cell, row) => {
         let salary = utils.addComma(row.salary);
         return salary;
     }
-    addMarkInsuranceFeeAmount=(cell,row)=>{
+    addMarkInsuranceFeeAmount = (cell, row) => {
         let insuranceFeeAmount = utils.addComma(row.insuranceFeeAmount);
         return insuranceFeeAmount;
     }
-    addMarkTransportationExpenses=(cell,row)=>{
+    addMarkTransportationExpenses = (cell, row) => {
         let transportationExpenses = utils.addComma(row.transportationExpenses);
         return transportationExpenses;
     }
-    addMarkLeaderAllowanceAmount=(cell,row)=>{
+    addMarkLeaderAllowanceAmount = (cell, row) => {
         let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
         return leaderAllowanceAmount;
     }
-    addMarkHousingAllowance=(cell,row)=>{
+    addMarkHousingAllowance = (cell, row) => {
         let housingAllowance = utils.addComma(row.housingAllowance);
         return housingAllowance;
     }
-    addMarkOtherAllowanceAmount=(cell,row)=>{
+    addMarkOtherAllowanceAmount = (cell, row) => {
         let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
         return otherAllowanceAmount;
     }
-    addMarkScheduleOfBonusAmount=(cell,row)=>{
+    addMarkScheduleOfBonusAmount = (cell, row) => {
         let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
         return scheduleOfBonusAmount;
     }
     /**
      * 戻るボタン
      */
+    /**
+     * 戻るボタン
+     */
     back = () => {
-        this.props.history.push(this.state.backPage);
+        var path = {};
+        path = {
+            pathname: this.state.backPage,
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue },
+        }
+        this.props.history.push(path);
     }
     render() {
         const {
@@ -655,9 +671,9 @@ class WagesInfo extends Component {
                                             onChange={this.valueChangeMoney}
                                             readOnly={kadouCheck}
                                             disabled={actionType === "detail" ? true : false}
-                                            placeholder="例：220000"/>
+                                            placeholder="例：220000" />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
                                             hidden={kadouCheck}
@@ -675,7 +691,7 @@ class WagesInfo extends Component {
                                             onChange={this.valueChangeMoney}
                                             placeholder="例：220000" />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
                                             hidden={!kadouCheck}
@@ -809,7 +825,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{width:"7.5rem"}}>次のボーナス月</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "7.5rem" }}>次のボーナス月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
@@ -823,7 +839,7 @@ class WagesInfo extends Component {
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
                                                     className="form-control form-control-sm"
-                                                    id={bonusFlag === "1" ? "wagesInfoDatePicker": "wagesInfoDatePickerReadOnly"}
+                                                    id={bonusFlag === "1" ? "wagesInfoDatePicker" : "wagesInfoDatePickerReadOnly"}
                                                     name="nextBonusMonth"
                                                     dateFormat={"yyyy/MM"}
                                                     locale="ja"
@@ -849,7 +865,7 @@ class WagesInfo extends Component {
                                             name="totalAmount"
                                             value={totalAmount} />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{width:"2rem"}}>円</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                     </InputGroup>
                                 </Col>
@@ -930,13 +946,13 @@ class WagesInfo extends Component {
                                     value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
                             </Button>{" "}
-                            <Button
-                                size="sm"
-                                hidden={backPage !== "employeeSearch" ? true : false}
-                                variant="info"
-                                onClick={this.back}
-                            >
-                                <FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                                <Button
+                                    size="sm"
+                                    hidden={backPage !== "employeeSearch" ? true : false}
+                                    variant="info"
+                                    onClick={this.back}
+                                >
+                                    <FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
                             </div>
                         </Form.Group>

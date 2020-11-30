@@ -40,7 +40,6 @@ class siteSearch extends Component {
 		employeeStatuss: store.getState().dropDown[4],//　社員区分 
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
-
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -74,8 +73,8 @@ class siteSearch extends Component {
 	};
 	//リセット　reset
 	resetStates = {
-		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '',siteRoleCode: '',employeeForm: '',
-		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '',employeeStatus: '', dataAcquisitionPeriod: ''
+		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '', siteRoleCode: '', employeeForm: '',
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '', employeeStatus: '', dataAcquisitionPeriod: ''
 	};
 
 	// AUTOSELECT select事件
@@ -138,7 +137,7 @@ class siteSearch extends Component {
 	siteSearch = () => {
 		var SiteSearchModel = {};
 		var formArray = $("#siteForm").serializeArray();
-		$.each(formArray, function(i, item) {
+		$.each(formArray, function (i, item) {
 			SiteSearchModel[item.name] = item.value;
 		});
 		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)

@@ -308,6 +308,7 @@ class projectInfo extends Component {
      * 登録ボタン
      */
     toroku = () => {
+        $("#toroku").attr("disabled",true);
         var projectInfoModel = {};
         var formArray = $("#projectInfoForm").serializeArray();
         $.each(formArray, function (i, item) {
@@ -330,10 +331,12 @@ class projectInfo extends Component {
                     }
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+                    $("#toroku").attr("disabled",false);
                 }
             })
             .catch(error => {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                $("#toroku").attr("disabled",false);
             });
     }
      /**
@@ -922,6 +925,7 @@ class projectInfo extends Component {
                                     size="sm"
                                     hidden={actionType === "detail" ? true : false}
                                     onClick={this.toroku}
+                                    id="toroku"
                                     variant="info"
                                 >
                                     <FontAwesomeIcon icon={faSave} />{torokuText}

@@ -70,12 +70,12 @@ class CustomerInfoSearch extends Component {
             $("#traderPersonFront").val(utils.addComma(sendValue.traderPersonFront));
             $("#traderPersonBack").val(utils.addComma(sendValue.traderPersonBack));
             this.setState({
-                customerNo:sendValue.customerNo,
-                customerNoForPageChange:this.props.location.state.customerNo,
-                topCustomerCode:sendValue.topCustomerNo,
-                stationCode:sendValue.stationCode,
-                businessStartDate:utils.converToLocalTime(sendValue.businessStartDate,false),
-            },()=>{
+                customerNo: sendValue.customerNo,
+                customerNoForPageChange: this.props.location.state.customerNo,
+                topCustomerCode: sendValue.topCustomerNo,
+                stationCode: sendValue.stationCode,
+                businessStartDate: utils.converToLocalTime(sendValue.businessStartDate, false),
+            }, () => {
                 if (searchFlag) {
                     this.search();
                 }
@@ -130,14 +130,18 @@ class CustomerInfoSearch extends Component {
                     this.setState({
                         customerInfoData: result.data.resultList,
                         "errorsMessageShow": false,
-                    },()=>{
-                        if(this.state.customerNoForPageChange !== "" && this.state.customerNoForPageChange !== undefined){
+                    }, () => {
+                        if (this.state.customerNoForPageChange !== "" && this.state.customerNoForPageChange !== undefined) {
                             this.refs.customerInfoSearchTable.setState({
-                                selectedRowKeys:this.state.customerNoForPageChange,
+                                selectedRowKeys: this.state.customerNoForPageChange,
                             })
                             $("#shusei").attr("disabled", false);
                             $("#shosai").attr("disabled", false);
                             $("#sakujo").attr("disabled", false);
+                        } else {
+                            this.refs.customerInfoSearchTable.setState({
+                                selectedRowKeys: [],
+                            })
                         }
                     })
                 } else {
@@ -291,21 +295,41 @@ class CustomerInfoSearch extends Component {
         sendValue["topCustomerNo"] = this.state.topCustomerCode;
         sendValue["stationCode"] = this.state.stationCode;
         sendValue["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
-        if (actionType === "update") {
-            path = {
-                pathname: '/subMenuManager/customerInfo',
-                state: { actionType: 'update', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
-            }
-        } else if (actionType === "insert") {
-            path = {
-                pathname: '/subMenuManager/customerInfo',
-                state: { actionType: 'insert', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
-            }
-        } else if (actionType === "detail") {
-            path = {
-                pathname: '/subMenuManager/customerInfo',
-                state: { actionType: 'detail', customerNo: this.state.customerNoForPageChange, backPage: "customerInfoSearch", sendValue: sendValue , searchFlag:this.state.searchFlag},
-            }
+        switch (actionType) {
+            case "update":
+                path = {
+                    pathname: '/subMenuManager/customerInfo',
+                    state: {
+                        actionType: 'update',
+                        customerNo: this.state.customerNoForPageChange,
+                        backPage: "customerInfoSearch", sendValue: sendValue,
+                        searchFlag: this.state.searchFlag
+                    },
+                }
+                break;
+            case "detail":
+                path = {
+                    pathname: '/subMenuManager/customerInfo',
+                    state: {
+                        actionType: 'detail',
+                        customerNo: this.state.customerNoForPageChange,
+                        backPage: "customerInfoSearch", sendValue: sendValue,
+                        searchFlag: this.state.searchFlag
+                    },
+                }
+                break;
+            case "insert":
+                path = {
+                    pathname: '/subMenuManager/customerInfo',
+                    state: {
+                        actionType: 'insert',
+                        customerNo: this.state.customerNoForPageChange,
+                        backPage: "customerInfoSearch", sendValue: sendValue,
+                        searchFlag: this.state.searchFlag
+                    },
+                }
+                break;
+            default:
         }
         this.props.history.push(path);
     }

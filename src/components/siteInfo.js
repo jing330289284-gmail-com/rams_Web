@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -50,6 +50,10 @@ class siteInfo extends Component {
 		levelMaster: store.getState().dropDown[18],//　レベル
 		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		backPage: "",
+		searchFlag: true,
+		sendValue: [],
+
 	};
 
 	onchange = event => {
@@ -127,6 +131,11 @@ class siteInfo extends Component {
 	componentDidMount() {
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			let employeeNo = this.props.location.state.employeeNo
+			this.setState({
+				backPage: this.props.location.state.backPage,
+				sendValue: this.props.location.state.sendValue,
+				searchFlag: this.props.location.state.searchFlag,
+			})
 			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: employeeNo })
 				.then(response => {
 					if (response.data != null) {
@@ -277,7 +286,7 @@ class siteInfo extends Component {
 						deleteFlag: false,
 					});
 				}
-			}else {
+			} else {
 				this.setState(() => this.resetStates);
 				this.setState({
 					updateFlag: true,
@@ -297,7 +306,7 @@ class siteInfo extends Component {
 	tokuro = () => {
 		var siteModel = {};
 		var formArray = $("#siteForm").serializeArray();
-		$.each(formArray, function(i, item) {
+		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
@@ -342,7 +351,7 @@ class siteInfo extends Component {
 	update = () => {
 		var siteModel = {};
 		var formArray = $("#siteForm").serializeArray();
-		$.each(formArray, function(i, item) {
+		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
@@ -414,17 +423,18 @@ class siteInfo extends Component {
 	}
 	//隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
-		axios.post(this.state.serverIP + "deleteSiteInfo", { employeeNo: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo),
-		                                                     admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
-		 })
+		axios.post(this.state.serverIP + "deleteSiteInfo", {
+			employeeNo: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo),
+			admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
+		})
 			.then(result => {
 				if (result.data) {
-				
+
 				} else {
-					
+
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				alert("删除错误，请检查程序");
 			});
 	}
@@ -434,6 +444,17 @@ class siteInfo extends Component {
 		next();
 	}
 
+	/**
+	 * 戻るボタン
+	 */
+	back = () => {
+		var path = {};
+		path = {
+			pathname: this.state.backPage,
+			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue },
+		}
+		this.props.history.push(path);
+	}
 
 	render() {
 		this.options = {
@@ -452,7 +473,8 @@ class siteInfo extends Component {
 			handleConfirmDeleteRow: this.customConfirm,
 
 		};
-		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees, related3Employees, related4Employees, remark, siteManager, workStateFlag } = this.state;
+		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees,
+			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage } = this.state;
 		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
@@ -608,21 +630,21 @@ class siteInfo extends Component {
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
-														<Autocomplete
-											id="customerNo"
-											name="customerNo"
-											options={this.state.customerMaster}
-											getOptionLabel={(option) => option.name}
-											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'customerNo')}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-											disabled={this.state.employeeName === '' ? true : false}
-										/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+											<Autocomplete
+												id="customerNo"
+												name="customerNo"
+												options={this.state.customerMaster}
+												getOptionLabel={(option) => option.name}
+												value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
+												onSelect={(event) => this.handleTag(event, 'customerNo')}
+												renderInput={(params) => (
+													<div ref={params.InputProps.ref}>
+														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														/>
+													</div>
+												)}
+												disabled={this.state.employeeName === '' ? true : false}
+											/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -803,7 +825,15 @@ class siteInfo extends Component {
 								</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
 									<FontAwesomeIcon icon={faUndo} /> リセット
-                                    </Button>
+                                    </Button>{" "}
+								<Button
+									size="sm"
+									hidden={backPage === "" ? true : false}
+									variant="info"
+									onClick={this.back}
+								>
+									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            </Button>
 							</div>
 						</Form.Group>
 					</Form>
