@@ -203,23 +203,40 @@ class resume extends React.Component {
 	setUpDate = (cell, row) => {
 		return row.updateTime.substr(0,16);
 };
-	resumeNameChange = (cell, row) => {
+	resumeNameChange = (event, cell, row) => {
+		let data = this.state.employeeList;
 		var a = new RegExp("^" + this.state.employeeName + "_")
-		if (!a.test(cell.resumeName1)) {
-			alert(this.state.employeeName + "_は変更できません")
-			cell.resumeName1 = this.state.employeeName + "_";
+		var b = new RegExp(".*[\u4e00-\u9fa5]+.*$")
+		if (b.test((event.target.value).substring((this.state.employeeName + "_").length))) {
+			alert("漢字は使えません")
+			data[row.rowNo - 1]["resumeName1"] = this.state.employeeName + "_";
+			this.setState({
+				employeeList: data,
+			})
 			return;
 		}
-		if (cell.resumeName1.length > 15) {
-			alert("最大文字数を超えてます")
-			cell.resumeName1 = cell.resumeName1.substr(0, 15);
+		if (!a.test(event.target.value)) {
+			alert(this.state.employeeName + "_は変更できません")
+			data[row.rowNo - 1]["resumeName1"] = this.state.employeeName + "_";
+			this.setState({
+				employeeList: data,
+			})
 			return;
-        }
+		}
+		data[row.rowNo - 1][event.target.name] = event.target.value;
 		this.setState({
 			haveChange: true,
 		})
 		
 	};
+	test = (cell, row) => {
+		let returnItem = cell;
+		returnItem = <span>
+			<input type="text" class=" form-control editor edit-text" name="resumeName1" maxLength="25" value={cell}
+				onChange={(event) => this.resumeNameChange(event, cell, row)} />
+		</span>;
+		return returnItem;
+	}
 	render() {
 		const {employeeList} = this.state;
 		//　テーブルの行の選択
@@ -243,7 +260,6 @@ class resume extends React.Component {
 		const cellEdit = {
 			mode: 'click',
 			blurToSave: true,
-			afterSaveCell: this.resumeNameChange,
 		}
 		return (
 			<div>
@@ -274,17 +290,17 @@ class resume extends React.Component {
 						</Col>
 						<Col sm={10}></Col>
 						<Col sm={12}>
-							<BootstrapTable pagination={true} data={employeeList} cellEdit={cellEdit} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+							<BootstrapTable pagination={true} data={employeeList} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 								<TableHeaderColumn dataField='filePath' hidden></TableHeaderColumn>
 								<TableHeaderColumn dataField='haveFile' hidden></TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden></TableHeaderColumn>
-								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
-								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' editable={false} dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' editable={this.state.rowSelectfileSts} onInput={this.resumeNameChange.bind(this)}>履歴書名</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setDownButton}>履歴書DownLoad</TableHeaderColumn>
-								<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' editable={false}>更新者</TableHeaderColumn>
-								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' editable={false} dataFormat={this.setUpDate.bind(this)}>更新日</TableHeaderColumn>
+								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
+								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' dataFormat={this.test}>履歴書名</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' dataFormat={this.setDownButton}>履歴書DownLoad</TableHeaderColumn>
+								<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' >更新者</TableHeaderColumn>
+								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' dataFormat={this.setUpDate.bind(this)}>更新日</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>
