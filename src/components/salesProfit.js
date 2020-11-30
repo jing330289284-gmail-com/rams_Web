@@ -161,6 +161,18 @@ class salesProfit extends React.Component {
 	remarkFormat = (cell) => {
 		return <span title={cell}>{cell}</span>;
 	}
+
+	//页面跳转
+	shuseiTo = () => {
+		var path = {};
+		var sendValue = {};
+		path = {
+			pathname: '/subMenuManager/salesPoint',
+			state: { pointData: this.state.salesPointData },
+		}
+		this.props.history.push(path);
+	}
+
 	select = () => {
 		var salesPointSetModel = {};
 		salesPointSetModel["employeeName"] = this.state.customerNo
@@ -345,7 +357,7 @@ class salesProfit extends React.Component {
 									</Col>
 									<Col sm={4}>
 										<div style={{ "float": "right" }}>
-											<Button size="sm" id="syounin" onClick={this.onchange} className="btn btn-primary btn-sm">
+											<Button size="sm" id="syounin" onClick={this.shuseiTo.bind(this)} disabled={this.state.no === "" ? true : false} className="btn btn-primary btn-sm">
 												営業ポイント明細
 								        </Button>
 										</div>

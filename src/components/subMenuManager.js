@@ -14,6 +14,7 @@ import SelectCustomers from './selectCustomers';
 import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
 import salesProfit from './salesProfit';
+import salesPoint from './salesPoint';
 import WagesInfo from './wagesInfo';
 import workRepot from './workRepot';
 import costRegistration from './costRegistration';
@@ -35,7 +36,7 @@ import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
 	faCommentDollar, faList, faSearchMinus, faNewspaper,
-	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars , faCaretSquareLeft
+	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars, faCaretSquareLeft
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
 import store from './redux/store';
@@ -194,7 +195,7 @@ class SubMenu extends Component {
 														<ListGroup variant="flush">
 															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/manageSituation">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faNewspaper} />営業状況一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont"  to="/subMenuManager/selectCustomers">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/selectCustomers">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />お客様選択</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/projectInfo">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
@@ -216,7 +217,7 @@ class SubMenu extends Component {
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesProfit">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesProfit">
+															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesPoint">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faBars} />営業ポイント明細</Link></ListGroup.Item>										</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
@@ -316,6 +317,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/monthlySalesSearch`} component={monthlySalesSearch} />
 								<Route exact path={`${this.props.match.url}/salesPointSet`} component={salesPointSet} />
 								<Route exact path={`${this.props.match.url}/salesProfit`} component={salesProfit} />
+								<Route exact path={`${this.props.match.url}/salesPoint`} component={salesPoint} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
