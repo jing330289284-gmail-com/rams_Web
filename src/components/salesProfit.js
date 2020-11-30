@@ -200,7 +200,7 @@ class salesProfit extends React.Component {
 
 		if (isSelected) {
 			this.setState({
-				no: row.no,
+				//no: row.no,
 				updateFlag: false
 			});
 		} else {
