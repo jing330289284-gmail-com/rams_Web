@@ -11,11 +11,11 @@ class mailConfirm extends React.Component {
 	}
 
 	initState = ({
-		companyMailNames:[this.props.personalInfo.state.selectedMailCC.length>=1?this.props.personalInfo.state.selectedMailCC[0].companyMail:'',
-		this.props.personalInfo.state.selectedMailCC.length>=2?this.props.personalInfo.state.selectedMailCC[1].companyMail:''].filter(function(s) {
-				return s;
-			}),
-			resumeName: this.props.personalInfo.state.resumeName,
+		companyMailNames: [this.props.personalInfo.state.selectedMailCC.length >= 1 ? this.props.personalInfo.state.selectedMailCC[0].companyMail : '',
+		this.props.personalInfo.state.selectedMailCC.length >= 2 ? this.props.personalInfo.state.selectedMailCC[1].companyMail : ''].filter(function(s) {
+			return s;
+		}),
+		resumeName: this.props.personalInfo.state.resumeName,
 		mailTitle: this.props.personalInfo.state.mailTitle,
 		employeeName: this.props.personalInfo.state.employeeName,
 		nationalityName: this.props.personalInfo.state.nationalityName,
@@ -33,15 +33,14 @@ class mailConfirm extends React.Component {
 		developLanguage: this.props.personalInfo.state.developLanguage,
 		unitPrice: this.props.personalInfo.state.unitPrice,
 		salesProgressCode: this.props.personalInfo.state.salesProgressCode,
-		salesProgresss:this.props.personalInfo.state.salesProgresss,
+		salesProgresss: this.props.personalInfo.state.salesProgresss,
 		remark: this.props.personalInfo.state.remark,
 		selectedCustomerName: this.props.personalInfo.state.selectedCustomerName,
-		loginUserInfo:this.props.personalInfo.state.loginUserInfo,
+		loginUserInfo: this.props.personalInfo.state.loginUserInfo,
 		selectedmail: this.props.personalInfo.state.selectedmail,
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
 	})
 	componentDidMount() {
-
 	}
 
 	render() {
@@ -50,16 +49,16 @@ class mailConfirm extends React.Component {
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
 						style={{ height: '880px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
-						value={`To:`+this.state.selectedmail+`         添付ファイル名前:`+this.state.resumeName+`
-CC:`+this.state.companyMailNames.join(';')+`
+						value={`To:` + this.state.selectedmail + `         添付ファイル名前:` + this.state.resumeName + `
+CC:`+ this.state.companyMailNames.join(';') + `
 
-タイトル:`+this.state.mailTitle+`
+タイトル:`+ this.state.mailTitle + `
 
 `+
-this.state.selectedCustomerName + `株式会社
+							this.state.selectedCustomerName + `株式会社
 `+ this.state.selectedPurchasingManagers + `様
 
-お世話になっております、`+this.state.loginUserInfo[0].employeeFristName+`です。
+お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。
 
 以下の要員を提案させていただきます、案件がございましたら、
 ご検討の程宜しくお願い致します。
@@ -80,11 +79,11 @@ this.state.selectedCustomerName + `株式会社
 
 以上、よろしくお願いいたします。
 ******************************************************************
-LYC株式会社 `+this.state.loginUserInfo[0].employeeFristName+` `+this.state.loginUserInfo[0].employeeLastName+`
+LYC株式会社 `+ this.state.loginUserInfo[0].employeeFristName + ` ` + this.state.loginUserInfo[0].employeeLastName + `
 〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F  
 http://www.lyc.co.jp/   
-TEL：03-6908-5796  携帯：`+this.state.loginUserInfo[0].phoneNo+`(優先）
-Email：`+this.state.loginUserInfo[0].companyMail+` 営業共通：eigyou@lyc.co.jp 
+TEL：03-6908-5796  携帯：`+ this.state.loginUserInfo[0].phoneNo + `(優先）
+Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc.co.jp 
 労働者派遣事業許可番号　派遣許可番号　派13-306371
 ＩＳＭＳ：MSA-IS-385
 *****************************************************************`}

@@ -53,8 +53,6 @@ class manageSituation extends React.Component {
 		priceEditFlag: false,// 確定単価編集flag
 		updateBtnflag: false,//　レコード選択flag
 		salesYearAndMonth: '',
-		//'202009',
-		// new Date().getFullYear() + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2)),//終わり年月
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
 		salesStaff: '',// 営業担当
@@ -135,7 +133,7 @@ class manageSituation extends React.Component {
 					var decidedPersons = 0;
 					if (totalPersons !== 0) {
 						for (var i = 0; i < result.data.length; i++) {
-							if (result.data[i].salesProgressCode === '3') {
+							if (result.data[i].salesProgressCode === '4') {
 								decidedPersons = decidedPersons + 1;
 							}
 						}
@@ -192,7 +190,7 @@ class manageSituation extends React.Component {
 			});
 	}
 
-	// レコードのステータス
+	//　レコードのステータス
 	formatType = (cell) => {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
@@ -202,6 +200,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
+	//　契約区分
 	formatcustomerContract = (cell) => {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
@@ -211,7 +210,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	// レコードおきゃく表示
+	//　レコードおきゃく表示
 	formatCustome = (cell) => {
 		var allCustomers = this.state.allCustomer;
 		if (cell === '') {
@@ -225,15 +224,17 @@ class manageSituation extends React.Component {
 		}
 	}
 
+	//　明細選択したCustomerNoを設定する
 	getCustomerNo = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].customer = no;
 		this.formatCustome(no);
 		this.afterSaveCell(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
+	//　明細選択したSalesProgressCodeを設定する
 	getSalesProgressCode = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesProgressCode = no;
-		if (!(no === '3' || no === '5')) {
+		if (!(no === '4' || no === '5')) {
 			this.state.salesSituationLists[this.state.rowNo - 1].customer = '';
 			this.formatCustome(no);
 		}
@@ -244,8 +245,8 @@ class manageSituation extends React.Component {
 		this.formatType(no);
 	}
 
+	//　明細選択したSalesStaffを設定する
 	getSalesStaff = (no) => {
-		//alert(no);
 		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
 		this.formatStaff(no);
 		this.setState({
@@ -253,8 +254,8 @@ class manageSituation extends React.Component {
 		});
 	}
 
+	//　明細選択したCustomerContractを設定する
 	getCustomerContract = (no) => {
-		alert(no);
 		this.state.salesSituationLists[this.state.rowNo - 1].customerContractStatus = no;
 		this.formatcustomerContract(no);
 		this.setState({
@@ -262,7 +263,7 @@ class manageSituation extends React.Component {
 		});
 	}
 
-	// レコードおきゃく表示
+	//　レコードおきゃく表示
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
@@ -271,8 +272,9 @@ class manageSituation extends React.Component {
 			}
 		}
 	}
+	
+	//　明細単選と明細多選変更
 	changeMode = () => {
-		//alert(e);
 		this.setState({
 			checkFlag: !this.state.checkFlag,
 			modeSelect: this.state.modeSelect === 'radio' ? 'checkbox' : 'radio',
@@ -291,16 +293,15 @@ class manageSituation extends React.Component {
 			checkSelect: true,
 			selectetRowIds: [],
 		});
-
 		this.refs.table.store.selected = [];
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
-
 	}
+	
 	// table編集保存
 	afterSaveCell = (row) => {
-		if (row.salesProgressCode === '3' || row.salesProgressCode === '5') {
+		if (row.salesProgressCode === '4' || row.salesProgressCode === '5') {
 			if (row.customer === '' || row.customer === undefined) {
 				row.customer = '';
 			}
@@ -308,10 +309,8 @@ class manageSituation extends React.Component {
 				customerNo: row.customer,
 				unitPrice: row.price
 			})
-			// 
+			//　ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
 			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
-				alert(row.customer);
-				alert(row.price);
 				row.customerNo = row.customer;
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
@@ -335,12 +334,12 @@ class manageSituation extends React.Component {
 		}
 	};
 
-	// 行番号
+	//　メモ　INDEX取る方法
 	/*	indexN(cell, row, enumObject, index) {
 			return (<div>{index + 1}</div>);
 		}*/
 
-	// 優先度表示
+	//　優先度表示
 	showPriority(cell, row, enumObject, index) {
 		if (row.salesPriorityStatus === '1') {
 			return (<div>{row.employeeNo}<font color="red">★</font></div>);
@@ -349,7 +348,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	// 更新ボタン
+	//　 更新ボタン
 	changeState = () => {
 		if (this.state.readFlag) {
 			if (!this.state.updateBtnflag) {
@@ -444,7 +443,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	// 年月変更後、レコ＾ド再取る
+	//　 年月変更後、レコ＾ド再取る
 	setEndDate = (date) => {
 		this.setState({
 			yearMonth: date,
@@ -470,7 +469,7 @@ class manageSituation extends React.Component {
 		});
 	}
 
-	// レコードselect事件
+	//　 レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
 		console.log(this.refs.table);
 		this.refs.table.setState({
@@ -494,8 +493,8 @@ class manageSituation extends React.Component {
 				salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
 				salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
 				remark: row.remark === null ? '' : row.remark,
-				editFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
-				priceEditFlag: row.salesProgressCode === '3' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
+				editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
 				updateBtnflag: isSelected,
 				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
 				readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
@@ -522,21 +521,18 @@ class manageSituation extends React.Component {
 				hopeLowestPrice: '',
 				hopeHighestPrice: '',
 				salesPriorityStatus: '',
-				//salesProgressCode: '',
 				remark: '',
-				editFlag: row.salesProgressCode === '3' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+				editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
-				//salesStaff: '',
 				readFlag: true,
 				linkDisableFlag: true,
 			});
 		}
 	}
 
+	//　明細多選処理
 	handleCheckModeSelect = (row, isSelected, e) => {
-
 		if (isSelected) {
-			//alert(this.refs.customersTable.state.selectedRowKeys);table
 			let tempSelectetRowIds = this.state.selectetRowIds.concat([row.employeeNo]);
 			this.setState({
 				selectetRowIds: tempSelectetRowIds,
@@ -552,19 +548,21 @@ class manageSituation extends React.Component {
 		}
 	}
 
+	//　サブ画面消す
 	closeDaiolog = () => {
 		this.setState({
 			daiologShowFlag: false,
 		})
 	}
 
+	//　//　サブ画面表示
 	openDaiolog = () => {
 		this.setState({
 			daiologShowFlag: true,
 		});
-
 	}
 
+	//　TABLE共通
 	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -573,7 +571,7 @@ class manageSituation extends React.Component {
 		);
 	}
 
-	// react download Excel
+	// react download Excel-----------メモ
 	/* 	handleDownload = (resumeInfo) => {
 			var resumeInfos= new Array();
 			console.log(resumeInfo);
@@ -659,6 +657,7 @@ class manageSituation extends React.Component {
 			clickToExpand: true,
 			onSelect: this.state.onSelectFlag ? this.handleRowSelect : this.handleCheckModeSelect,
 		};
+		
 		const cellEdit = {
 			mode: 'click',
 			blurToSave: true,
@@ -684,6 +683,7 @@ class manageSituation extends React.Component {
 		const tableSelect2 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={2} onUpdate={onUpdate} {...props} />);
 		const tableSelect3 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={3} onUpdate={onUpdate} {...props} />);
 		const tableSelect4 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={4} onUpdate={onUpdate} {...props} />);
+		
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -933,14 +933,6 @@ class manageSituation extends React.Component {
 					<br />
 					<Row>
 						<Col sm={1}>
-							{/* <InputGroup size="sm" >
-								<InputGroup.Prepend style={{ height: '31px' }} >
-									<InputGroup.Checkbox />
-								</InputGroup.Prepend>
-								<InputGroup.Append>
-									<InputGroup.Text >選択</InputGroup.Text>
-								</InputGroup.Append>
-							</InputGroup> */}
 							<div >
 								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" checked={this.state.checkFlag} disabled={this.state.checkDisabledFlag} onChange={this.changeMode} /></span>
 							</div>
@@ -999,8 +991,8 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn width='8%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)} customEditor={{ getElement: tableSelect4 }}
 									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
 								<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
-									editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '3' || this.state.salesProgressCode === '5' ? true : false}
+									editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}
 									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 							</BootstrapTable>
