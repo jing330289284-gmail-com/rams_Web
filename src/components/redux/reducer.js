@@ -61,7 +61,8 @@ export function fetchDropDown() {
 		"getCustomerName",//53お客様名
 		"getQualification",//54資格
         "getDepartmentMasterDrop",//55お客様部門
-        "getEmployeeNameByOccupationName",//54社員名(営業、管理者)
+        "getEmployeeNameByOccupationName",//56社員名(営業、管理者)
+        "getBankInfo",//57銀行名
 		"getServerIP",//最後
 	]
 	var outArray = [];
