@@ -295,9 +295,9 @@ class resume extends React.Component {
 								<TableHeaderColumn dataField='haveFile' hidden></TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden></TableHeaderColumn>
 								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' isKey>番号</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
+								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='nodata' dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' dataFormat={this.test}>履歴書名</TableHeaderColumn>
+								<TableHeaderColumn width='25%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' dataFormat={this.test}>履歴書名</TableHeaderColumn>
 								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' dataFormat={this.setDownButton}>履歴書DownLoad</TableHeaderColumn>
 								<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' >更新者</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' dataFormat={this.setUpDate.bind(this)}>更新日</TableHeaderColumn>
