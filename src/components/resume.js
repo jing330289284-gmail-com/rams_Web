@@ -138,23 +138,18 @@ class resume extends React.Component {
 	}
 	setDownButton = (cell, row) => {
 		return (
-			<div style={{ padding: '0px', width: "100%", fontSize: "24px" }} >
 				<Button variant="info" size="sm" onClick={publicUtils.handleDownload.bind(this, row.resumeInfo1, this.state.serverIP)} id={"resumeDownload" + row.rowNo} >
 					<FontAwesomeIcon icon={faDownload} />Download
 				</Button>
-			</div >
 		)
 	}
 	setUpButton = (cell, row) => {
 		return (
-			<div style={{ padding: '0px', width: "100%", fontSize: "24px" }} >
-				<InputGroup size="sm" className="mb-3">
+
 					<form id={"UpButtonForm"+ row.rowNo}>
 					<Button size="sm" onClick={(event) => this.addFile(event, row.rowNo)}><FontAwesomeIcon />{row.haveFile !==true ? " 添付" : " 添付済み"} </Button>
-					<Form.File id={"filePath" + row.rowNo} hidden custom onChange={(event) => this.changeFile(event, row)} custom />
+					<Form.File id={"filePath" + row.rowNo} hidden onChange={(event) => this.changeFile(event, row)}/>
 					</form>
-				</InputGroup>
-			</div>
 		)
 	}
 	addFile = (event, name) => {
@@ -179,7 +174,11 @@ class resume extends React.Component {
 			fileName[fileName.length - 1] === "pdf"
 		) {
 		} else {
-			alert('PDF或いはexcelをアップロードしてください')
+			alert('PDF或いはexcelをアップロードしてください');
+			var file = document.getElementById('UpButtonForm1');
+			file.reset();
+			var file = document.getElementById('UpButtonForm2');
+			file.reset();
 			return;
 		}
 		let data = this.state.employeeList
@@ -276,13 +275,13 @@ class resume extends React.Component {
 						<Col sm={10}></Col>
 						<Col sm={12}>
 							<BootstrapTable pagination={true} data={employeeList} cellEdit={cellEdit} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-								<TableHeaderColumn dataField='filePath' editable={false} hidden></TableHeaderColumn>
-								<TableHeaderColumn dataField='haveFile' editable={false} hidden></TableHeaderColumn>
-								<TableHeaderColumn dataField='resumeInfo1' editable={false} hidden></TableHeaderColumn>
+								<TableHeaderColumn dataField='filePath' hidden></TableHeaderColumn>
+								<TableHeaderColumn dataField='haveFile' hidden></TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeInfo1' hidden></TableHeaderColumn>
 								<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }}  dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
 								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setUpButton.bind(this)}>添付状況</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='fileSts' editable={false} dataFormat={this.setSts}  >ファイルステータス</TableHeaderColumn>
-								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' editable={this.state.rowSelectfileSts} onChange={this.resumeNameChange.bind(this)}>履歴書名</TableHeaderColumn>
+								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='resumeName1' editable={this.state.rowSelectfileSts} onInput={this.resumeNameChange.bind(this)}>履歴書名</TableHeaderColumn>
 								<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='nodata' editable={false} dataFormat={this.setDownButton}>履歴書DownLoad</TableHeaderColumn>
 								<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='updateUser' editable={false}>更新者</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='updateTime' editable={false} dataFormat={this.setUpDate.bind(this)}>更新日</TableHeaderColumn>
