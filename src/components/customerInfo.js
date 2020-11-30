@@ -38,15 +38,15 @@ class CustomerInfo extends Component {
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
-        customerNoForPageChange:"",
+        customerNoForPageChange: "",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
         paymentsiteCodeDrop: store.getState().dropDown[21],
-        searchFlag:true,
-        sendValue:{},
+        searchFlag: true,
+        sendValue: {},
         customerNo: '',
         backPage: "",//遷移元
         myToastShow: false,
@@ -126,7 +126,7 @@ class CustomerInfo extends Component {
             backPage: this.props.location.state.backPage,
             sendValue: this.props.location.state.sendValue,
             searchFlag: this.props.location.state.searchFlag,
-            customerNoForPageChange:this.props.location.state.customerNo,
+            customerNoForPageChange: this.props.location.state.customerNo,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
@@ -391,37 +391,6 @@ class CustomerInfo extends Component {
             })
         }
     }
-    // handleTag = ({ target }, fieldName) => {
-    //     const { value, id } = target;
-    //     if (value === '') {
-    //         this.setState({
-    //             [id]: '',
-    //         })
-    //     } else {
-    //         if (this.state.customerDepartmentNameDrop.find((v) => (v.name === value)) !== undefined ||
-    //             this.state.topCustomerDrop.find((v) => (v.name === value)) !== undefined ||
-    //             this.state.stationCodeDrop.find((v) => (v.name === value)) !== undefined) {
-    //             switch (fieldName) {
-    //                 case 'customerDepartment':
-    //                     this.setState({
-    //                         customerDepartmentName: this.state.customerDepartmentNameDrop.find((v) => (v.name === value)).code,
-    //                     })
-    //                     break;
-    //                 case 'topCustomer':
-    //                     this.setState({
-    //                         topCustomer: this.state.topCustomerDrop.find((v) => (v.name === value)).code,
-    //                     })
-    //                     break;
-    //                 case 'stationCode':
-    //                     this.setState({
-    //                         stationCode: this.state.stationCodeDrop.find((v) => (v.name === value)).code,
-    //                     })
-    //                     break;
-    //                 default:
-    //             }
-    //         }
-    //     }
-    // };
     // レコードおきゃく表示
     formatCustomerDepartment = (cell) => {
         var customerDepartmentNameDrop = this.state.customerDepartmentNameDrop;
@@ -602,7 +571,7 @@ class CustomerInfo extends Component {
         var path = {};
         path = {
             pathname: this.state.backPage,
-            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue , customerNo:this.state.customerNoForPageChange},
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange },
         }
         this.props.history.push(path);
     }
