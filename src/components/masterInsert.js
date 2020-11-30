@@ -61,7 +61,9 @@ class masterInsert extends Component {
 	 * 登録ボタン
 	 */
 	toroku = () => {
-		if (this.state.master != '支店マスタ') {
+		$("#toroku").attr({"disabled":"disabled"});
+		//setTimeout($("#toroku").removeAttr("disabled"),2000)
+		if (this.state.master != '支店マスター') {
 			var masterModel = {};
 			//画面输入信息取得
 			var formArray = $("#masterInsertForm").serializeArray();
@@ -73,6 +75,7 @@ class masterInsert extends Component {
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+						$("#toroku").removeAttr("disabled");
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -82,6 +85,7 @@ class masterInsert extends Component {
 					console.error("Error - " + error);
 				});
 		} else {
+			$("#toroku").attr({"disabled":"disabled"});
 			const branchDetails = {
 				bankBranchCode: this.state.branchCode,
 				bankBranchName: this.state.branchName,
@@ -91,11 +95,13 @@ class masterInsert extends Component {
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+						$("#toroku").removeAttr("disabled");
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						this.setState({branchCode:'',
 										branchName:''})
+					$("#toroku").removeAttr("disabled");
 					}
 				}).catch((error) => {
 					console.error("Error - " + error);
@@ -192,7 +198,7 @@ class masterInsert extends Component {
 							</InputGroup>
 						</Col>
 					</Row>
-					{master === "支店マスタ" ?
+					{master === "支店マスター" ?
 						<div>
 							<Row >
 								<Col >
@@ -209,8 +215,7 @@ class masterInsert extends Component {
 											onChange={(event, values) => this.handleTag(event, values)}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  銀行名" type="text" {...params.inputProps} className="auto"
-														style={{ width: 288, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input placeholder=" 銀行名" type="text" {...params.inputProps} className=" auto form-control Autocompletestyle-branchInsertInfo "/>
 												</div>
 											)}
 										/>
@@ -242,7 +247,7 @@ class masterInsert extends Component {
 						</div> :
 						null
 					}
-					{master != "支店マスタ" ?
+					{master != "支店マスター" ?
 						<Row>
 							<Col>
 								<InputGroup size="sm" className="mb-3">

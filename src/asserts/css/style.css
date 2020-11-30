@@ -743,6 +743,15 @@ padding: 1rem;
   margin-bottom: -0.3rem;
   color: rgb(179, 179, 179);
 }
+.Autocompletestyle-branchInsertInfo {
+  width: 17.8rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {
@@ -836,7 +845,7 @@ padding: 1rem;
   }
 
   .Autocompletestyle-master {
-    width: 12rem;
+    width: 11.7rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;
@@ -959,5 +968,15 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
+  }
+
+  .Autocompletestyle-branchInsertInfo {
+    width: 11.7rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
   }
 }
