@@ -56,6 +56,7 @@ class employeeSearch extends React.Component {
 		employeeInfo: store.getState().dropDown[9].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerMaster: store.getState().dropDown[15].slice(1),
+		searchFlag: false,
 	};
 	//リセット　reset
 	resetStates = {
@@ -73,7 +74,7 @@ class employeeSearch extends React.Component {
 
 	//初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
-		$('button[name="clickButton"]').prop('disabled', true);
+		$('button[name="clickButton"]').attr('disabled', true);
 	};
 
 	//検索s
@@ -104,6 +105,9 @@ class employeeSearch extends React.Component {
 				} else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
+				this.setState({
+					searchFlag: true,
+				})
 			}
 			);
 	}
@@ -166,7 +170,7 @@ class employeeSearch extends React.Component {
 					this.setState({ "myToastShow": false });
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				alert("删除错误，请检查程序");
 			});
 	}
@@ -190,11 +194,11 @@ class employeeSearch extends React.Component {
 			$('#resumeInfo1').prop('disabled', false);
 			$('#resumeInfo2').prop('disabled', false);
 			$('#residentCardInfo').prop('disabled', false);
-			$('#update').removeClass('disabled');
-			$('#detail').removeClass('disabled');
-			$('#delete').removeClass('disabled');
-			$('#wagesInfo').removeClass('disabled');
-			$('#siteInfo').removeClass('disabled');
+			$('#delete').attr('disabled', false);
+			$('#update').attr('disabled', false);
+			$('#detail').attr('disabled', false);
+			$('#wagesInfo').attr('disabled', false);
+			$('#siteInfo').attr('disabled', false);
 		} else {
 			this.setState(
 				{
@@ -204,11 +208,11 @@ class employeeSearch extends React.Component {
 			$('#resumeInfo1').prop('disabled', true);
 			$('#resumeInfo2').prop('disabled', true);
 			$('#residentCardInfo').prop('disabled', true);
-			$('#update').addClass('disabled');
-			$('#detail').addClass('disabled');
-			$('#delete').addClass('disabled');
-			$('#wagesInfo').addClass('disabled');
-			$('#siteInfo').addClass('disabled');
+			$('#delete').attr('disabled', true);
+			$('#update').attr('disabled', true);
+			$('#detail').attr('disabled', true);
+			$('#wagesInfo').attr('disabled', true);
+			$('#siteInfo').attr('disabled', true);
 		}
 	}
 
@@ -232,10 +236,10 @@ class employeeSearch extends React.Component {
 	}
 
 
-    /**
-     * 社員名連想
-     * @param {} event 
-     */
+	/**
+	 * 社員名連想
+	 * @param {} event 
+	 */
 	getEmployeeName = (event, values) => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -299,7 +303,89 @@ class employeeSearch extends React.Component {
 			})
 		}
 	}
-
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
+			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
+			employeeStatus: this.state.employeeStatus === "" ? undefined : this.state.employeeStatus,
+			genderStatus: this.state.genderStatus === "" ? undefined : this.state.genderStatus,
+			ageFrom: this.state.ageFrom === "" ? undefined : publicUtils.birthday_age(this.state.ageFrom),
+			ageTo: this.state.ageTo === "" ? undefined : publicUtils.birthday_age(this.state.ageTo),
+			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
+			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
+			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
+			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
+			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
+			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
+			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
+			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
+		};
+		switch (actionType) {
+			case "update":
+				path = {
+					pathname: '/subMenuManager/employeeUpdate',
+					state: {
+						actionType: 'update',
+						id: this.state.rowSelectEmployeeNo,
+						backPage: "employeeSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/employeeDetail',
+					state: {
+						actionType: 'detail',
+						id: this.state.rowSelectEmployeeNo,
+						backPage: "employeeSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "insert":
+				path = {
+					pathname: '/subMenuManager/employeeInsert',
+					state: {
+						actionType: 'insert',
+						backPage: "employeeSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "wagesInfo":
+				path = {
+					pathname: '/subMenuManager/wagesInfo',
+					state: {
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "employeeSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "employeeSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
 
 	render() {
 		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
@@ -380,7 +466,7 @@ class employeeSearch extends React.Component {
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}></p>
+														<p >{option.name}</p>
 													</React.Fragment>
 												)
 											}}
@@ -466,7 +552,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input  type="text" {...params.inputProps} className="auto"
+													<input type="text" {...params.inputProps} className="auto"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -552,7 +638,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input  type="text" {...params.inputProps} className="auto" id="developLanguage1"
+													<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -567,7 +653,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input  type="text" {...params.inputProps} className="auto" id="developLanguage2"
+													<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
 														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
@@ -624,7 +710,9 @@ class employeeSearch extends React.Component {
 					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
-					<Link to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert', backPage: 'employeeSearch' } }} size="sm" variant="info" className="btn btn-info btn-sm" ><FontAwesomeIcon icon={faSave} /> 追加</Link>{' '}
+					<Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">
+						<FontAwesomeIcon icon={faSave} /> 追加
+                            </Button>{' '}
 					<Button size="sm" variant="info" type="reset" onClick={this.resetBook}>
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
@@ -634,8 +722,8 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={4}>
 							<div style={{ "float": "left" }}>
-								<Link to={{ pathname: '/subMenuManager/wagesInfo', state: { employeeNo: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="wagesInfo" >給料情報</Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/siteInfo', state: { employeeNo: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="siteInfo">現場情報</Link>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} name="clickButton" variant="info" id="wagesInfo">給料情報</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 							</div>
 						</Col>
 						<Col sm={5}>
@@ -647,9 +735,9 @@ class employeeSearch extends React.Component {
 						</Col>
 						<Col sm={3}>
 							<div style={{ "float": "right" }}>
-								<Link to={{ pathname: '/subMenuManager/EmployeeDetail', state: { actionType: 'detail', id: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="detail"><FontAwesomeIcon icon={faList} /> 詳細</Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/EmployeeUpdate', state: { actionType: 'update', id: this.state.rowSelectEmployeeNo, backPage: 'employeeSearch' } }} className="btn btn-info btn-sm disabled" id="update"><FontAwesomeIcon icon={faEdit} /> 修正</Link>{' '}
-								<Link className="btn btn-info btn-sm disabled" onClick={this.employeeDelete} id="delete"><FontAwesomeIcon icon={faTrash} /> 削	除</Link>
+								<Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
+								<Button size="sm" variant="info" onClick={this.employeeDelete} name="clickButton" id="delete" variant="info"><FontAwesomeIcon icon={faTrash} /> 削	除</Button>
 							</div>
 						</Col>
 					</Row>
