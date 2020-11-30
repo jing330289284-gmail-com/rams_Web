@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -50,10 +50,6 @@ class siteInfo extends Component {
 		levelMaster: store.getState().dropDown[18],//　レベル
 		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		backPage: "",
-		searchFlag: true,
-		sendValue: [],
-
 	};
 
 	onchange = event => {
@@ -131,11 +127,6 @@ class siteInfo extends Component {
 	componentDidMount() {
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			let employeeNo = this.props.location.state.employeeNo
-			this.setState({
-				backPage: this.props.location.state.backPage,
-				sendValue: this.props.location.state.sendValue,
-				searchFlag: this.props.location.state.searchFlag,
-			})
 			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: employeeNo })
 				.then(response => {
 					if (response.data != null) {
@@ -445,6 +436,62 @@ class siteInfo extends Component {
 	}
 
 	/**
+	 * 社員名連想
+	 * @param {} event 
+	 */
+	getRelated1Employees = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let related1Employees = null;
+			if (values !== null) {
+				related1Employees = values.text;
+			}
+			this.setState({
+				related1Employees: related1Employees,
+			})
+		})
+	}
+	getRelated2Employees = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let related2Employees = null;
+			if (values !== null) {
+				related2Employees = values.text;
+			}
+			this.setState({
+				related2Employees: related2Employees,
+			})
+		})
+	}
+	getRelated3Employees = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let related3Employees = null;
+			if (values !== null) {
+				related3Employees = values.text;
+			}
+			this.setState({
+				related3Employees: related3Employees,
+			})
+		})
+	}
+	getRelated4Employees = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let related4Employees = null;
+			if (values !== null) {
+				related4Employees = values.text;
+			}
+			this.setState({
+				related4Employees: related4Employees,
+			})
+		})
+	}
+	/**
 	 * 戻るボタン
 	 */
 	back = () => {
@@ -455,7 +502,6 @@ class siteInfo extends Component {
 		}
 		this.props.history.push(path);
 	}
-
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
@@ -474,8 +520,7 @@ class siteInfo extends Component {
 
 		};
 		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees,
-			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage } = this.state;
-		//テーブルの列の選択
+			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage } = this.state;		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -781,10 +826,99 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="related1Employees" name="related1Employees" type="text" onChange={this.onchange} value={related1Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
-										<FormControl id="related2Employees" name="related2Employees" type="text" onChange={this.onchange} value={related2Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
-										<FormControl id="related3Employees" name="related3Employees" type="text" onChange={this.onchange} value={related3Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
-										<FormControl id="related4Employees" name="related4Employees" type="text" onChange={this.onchange} value={related4Employees} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={this.state.relatedEmployeesFlag ? false : true} />
+
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											value={this.state.employeeInfo.find(v => v.text === this.state.related1Employees) || ""}
+											options={this.state.employeeInfo}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											disabled={this.state.relatedEmployeesFlag ? false : true}
+											onChange={(event, values) => this.getRelated1Employees(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-relatedEmployees"
+													/>
+												</div>
+											)}
+										/>
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											value={this.state.employeeInfo.find(v => v.text === this.state.related2Employees) || ""}
+											options={this.state.employeeInfo}
+											disabled={this.state.relatedEmployeesFlag ? false : true}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											onChange={(event, values) => this.getRelated2Employees(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-relatedEmployees"
+													/>
+												</div>
+											)}
+										/>
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											value={this.state.employeeInfo.find(v => v.text === this.state.related3Employees) || ""}
+											options={this.state.employeeInfo}
+											disabled={this.state.relatedEmployeesFlag ? false : true}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											onChange={(event, values) => this.getRelated3Employees(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-relatedEmployees"
+													/>
+												</div>
+											)}
+										/>
+
+										<Autocomplete
+											id="employeeName"
+											name="employeeName"
+											value={this.state.employeeInfo.find(v => v.text === this.state.related4Employees) || ""}
+											options={this.state.employeeInfo}
+											disabled={this.state.relatedEmployeesFlag ? false : true}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											onChange={(event, values) => this.getRelated4Employees(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-relatedEmployees"
+													/>
+												</div>
+											)}
+										/>
+
+
+
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
