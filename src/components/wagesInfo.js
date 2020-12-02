@@ -122,11 +122,6 @@ class WagesInfo extends Component {
     componentDidMount() {
         this.getDropDowns();
         console.log(this.props.history);
-        this.setState({
-            backPage: this.props.location.state.backPage,
-            sendValue: this.props.location.state.sendValue,
-            searchFlag: this.props.location.state.searchFlag,
-        })
         $("#shusei").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
         if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
@@ -134,6 +129,8 @@ class WagesInfo extends Component {
             var wagesInfo = {};
             wagesInfo["employeeNo"] = employeeNo;
             this.setState({
+                sendValue: this.props.location.state.sendValue,
+                searchFlag: this.props.location.state.searchFlag,
                 employeeName: employeeNo,
                 employeeNo: employeeNo,
                 backPage: this.props.location.state.backPage,
@@ -506,9 +503,6 @@ class WagesInfo extends Component {
         let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
         return scheduleOfBonusAmount;
     }
-    /**
-     * 戻るボタン
-     */
     /**
      * 戻るボタン
      */

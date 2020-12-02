@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -48,7 +48,10 @@ class siteInfo extends Component {
 		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),//業種
 		getstations: store.getState().dropDown[14].slice(1),//　場所 
 		levelMaster: store.getState().dropDown[18],//　レベル
-		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態
+		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態\
+		backPage: "",
+		searchFlag: false,
+		sendValue: [],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
@@ -125,8 +128,14 @@ class siteInfo extends Component {
 
 	// 页面加载
 	componentDidMount() {
+		console.log(this.props.location);
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			let employeeNo = this.props.location.state.employeeNo
+			this.setState({
+				backPage: this.props.location.state.backPage,
+				sendValue: this.props.location.state.sendValue,
+				searchFlag: this.props.location.state.searchFlag,
+			})
 			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: employeeNo })
 				.then(response => {
 					if (response.data != null) {
@@ -964,7 +973,7 @@ class siteInfo extends Component {
 									size="sm"
 									hidden={backPage === "" ? true : false}
 									variant="info"
-									onClick={this.back}
+									onClick={this.back.bind(this)}
 								>
 									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
