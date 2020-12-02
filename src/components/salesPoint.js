@@ -7,6 +7,8 @@ import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faSave, faDownload } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import DatePicker, { registerLocale } from "react-datepicker"
 axios.defaults.withCredentials = true;
 
 
@@ -18,6 +20,7 @@ class salesPoint extends React.Component {
 		this.state = this.initialState;//初期化
 		this.onchange = this.onchange.bind(this);
 		this.checkRows = this.checkRows.bind(this);
+		this.getAdmissionDate = this.getAdmissionDate.bind(this);
 	}
 
 	initialState = {
@@ -37,6 +40,7 @@ class salesPoint extends React.Component {
 		salesPutternStatus: store.getState().dropDown[25],
 		specialPointStatus: store.getState().dropDown[26],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		customerDrop: store.getState().dropDown[56].slice(1),
 	};
 
 	// 页面加载
@@ -46,6 +50,53 @@ class salesPoint extends React.Component {
 		})
 		//this.select();
 	}
+
+	//时间入力框初始值
+	state = {
+		admissionStartDate: new Date(),
+		admissionEndDate: new Date(),
+		no: 0,
+		siteRoleNameAll: 0,
+		profitAll: 0,
+	}
+
+	//　入場年月
+	admissionStartDate = (date) => {
+		this.setState(
+			{
+				admissionStartDate: date,
+			}
+		);
+		this.getAdmissionDate("start", date);
+	};
+	//　退場年月
+	admissionEndDate = (date) => {
+		this.setState(
+			{
+				admissionEndDate: date,
+			}
+		);
+		this.getAdmissionDate("end", date);
+	};
+
+	//	年月を取得する
+	getAdmissionDate = (str, date) => {
+		switch (str) {
+			case "start":
+				if (typeof this.state.admissionEndDate !== "undefined") {
+					//this.getSalesInfo(date, this.state.admissionEndDate);
+				}
+				break;
+			case "end":
+				if (typeof this.state.admissionStartDate !== "undefined") {
+					//this.getSalesInfo(this.state.admissionStartDate, date);
+				}
+				break;
+			default:
+				break;
+		}
+	};
+
 	//明细查询
 	onchange = (event) => {
 		this.refs.table.setState({
@@ -55,6 +106,26 @@ class salesPoint extends React.Component {
 			[event.target.name]: event.target.value
 		}, () => {
 			this.select();
+		})
+	}
+
+	/**
+ * 社員名連想
+ * @param {} event 
+ */
+	getCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let customerNo = null;
+			if (values !== null) {
+				customerNo = values.code;
+			}
+			this.setState({
+				customerNo: customerNo,
+			}, () => {
+				this.select();
+			})
 		})
 	}
 
@@ -120,7 +191,8 @@ class salesPoint extends React.Component {
 		salesPointSetModel["employee"] = this.state.employeeSearch
 		salesPointSetModel["newMember"] = this.state.newMemberSearch
 		salesPointSetModel["customerContract"] = this.state.customerContractSearch
-		axios.post(this.state.serverIP + "getSalesPointInfo", salesPointSetModel)
+		salesPointSetModel["employeeName"] = this.state.customerNo
+		axios.post(this.state.serverIP + "getPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					this.setState({
@@ -130,6 +202,16 @@ class salesPoint extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+		/* 		axios.post(this.state.serverIP + "getSalesPointInfo", salesPointSetModel)
+					.then(response => {
+						if (response.data != null) {
+							this.setState({
+								salesPointData: response.data,
+							});
+						}
+					}).catch((error) => {
+						console.error("Error - " + error);
+					}); */
 	}
 	/**
 	* 行Selectファンクション
@@ -217,12 +299,76 @@ class salesPoint extends React.Component {
 						<Form.Group>
 							<Row>
 								<Col sm={3}>
-									<font style={{ whiteSpace: 'nowrap' }}>営業担当：{this.state.startTime}</font>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">営業担当</InputGroup.Text>
+										</InputGroup.Prepend>
+										{/* <FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} name="employeeName" value={this.state.employeeName} /> */}
+										<Autocomplete
+											id="customerNo"
+											name="customerNo"
+											value={this.state.employeeName}
+											options={this.state.customerDrop}
+											getOptionLabel={(option) => option.text ? option.text : ""}
+											onChange={(event, values) => this.getCustomer(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														<p >{option.name}</p>
+													</React.Fragment>
+												)
+											}}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+													/>
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
 								</Col>
 								<Col sm={5}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
+										</InputGroup.Prepend>
+										<InputGroup.Prepend>
+											<DatePicker
+												selected={this.state.admissionStartDate}
+												onChange={this.admissionStartDate}
+												dateFormat="yyyy/MM"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												name="admissionStartDate"
+												className="form-control form-control-sm"
+												id="admissionStartDate"
+												locale="ja"
+												autoComplete="off"
+											/>〜
+										<DatePicker
+												selected={this.state.admissionEndDate}
+												onChange={this.admissionEndDate}
+												dateFormat="yyyy/MM"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												name="admissionEndDate"
+												className="form-control form-control-sm"
+												id="admissionEndDate"
+												locale="ja"
+												autoComplete="off"
+											/>
+										</InputGroup.Prepend>
+									</InputGroup>
 								</Col>
-								<Col sm={2}>
+							</Row>
+							<br />
+							<Row>
+								<Col sm={3}>
 									<font style={{ whiteSpace: 'nowrap' }}>ポイント合計：{this.state.siteRoleNameAll}</font>
+								</Col>
+								<Col sm={7}>
 								</Col>
 								<Col sm={2}>
 									<div style={{ "float": "right" }}>
