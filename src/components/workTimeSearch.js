@@ -37,13 +37,12 @@ class workTimeSearch extends React.Component {
 		super(props);
 		this.state = this.initialState;//初期化
 		this.valueChange = this.valueChange.bind(this);
-		this.handleShowModal = this.handleShowModal.bind(this);
 		this.searchWorkTime = this.searchWorkTime.bind(this);
 
 	};
 
 	componentDidMount() {
-		this.searchWorkTime();
+		this.searchWorkTime("", "");
 	}
 	//onchange
 	valueChange = event => {
@@ -58,11 +57,26 @@ class workTimeSearch extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	//　検索
-	searchWorkTime = () => {
+	searchWorkTime = (yearAndMonth1, yearAndMonth2) => {
 		let emp = {
-			yearAndMonth1: this.state.yearAndMonth1,
-			yearAndMonth2: this.state.yearAndMonth2,
+
 		}
+		if (yearAndMonth1 != "") {
+			let emp = {
+				yearAndMonth1: publicUtils.formateDate(yearAndMonth1, true),
+				yearAndMonth2: publicUtils.formateDate(this.state.yearAndMonth2, true),
+			}
+		} else if (yearAndMonth2 != "") {
+			let emp = {
+				yearAndMonth1: publicUtils.formateDate(this.state.yearAndMonth1, true),
+				yearAndMonth2: publicUtils.formateDate(yearAndMonth2, true),
+			}
+		} else {
+			let emp = {
+				yearAndMonth1: publicUtils.formateDate(this.state.yearAndMonth1, true),
+				yearAndMonth2: publicUtils.formateDate(this.state.yearAndMonth2, true),
+			}
+        }
 		axios.post(this.state.serverIP + "workTimeSearch/selectWorkTime",emp)
 			.then(response => response.data)
 			.then((data) => {
@@ -72,8 +86,6 @@ class workTimeSearch extends React.Component {
 				})
 			});
 	};
-
-
 		//　年月1
 	inactiveYearAndMonth1 = (date) => {
 		this.setState(
@@ -82,8 +94,7 @@ class workTimeSearch extends React.Component {
 				changeFile: true,
 			}
 		);
-		this.searchWorkTime();
-
+		this.searchWorkTime(date, "");
 	};
 			//　年月2
 	inactiveYearAndMonth2 = (date) => {
@@ -92,12 +103,8 @@ class workTimeSearch extends React.Component {
 				yearAndMonth2: date,
 			}
 		);
-		this.searchWorkTime();
+		this.searchWorkTime("", date);
 	};
-	state = {
-		yearAndMonth: new Date()
-	};
- 
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -168,6 +175,7 @@ class workTimeSearch extends React.Component {
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM"
+										showMonthYearPicker
 										id="datePicker"
 										className="form-control form-control-sm"
 										
@@ -178,6 +186,7 @@ class workTimeSearch extends React.Component {
 										autoComplete="off"
 										locale="ja"
 										dateFormat="yyyy/MM"
+										showMonthYearPicker
 										id="datePicker"
 										className="form-control form-control-sm"
 									/>
@@ -205,4 +214,4 @@ class workTimeSearch extends React.Component {
 		);
 	}
 }
-export default costRegistration;
+export default workTimeSearch;

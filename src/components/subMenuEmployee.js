@@ -4,6 +4,7 @@ import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import PasswordSetEmployee from './passwordSetEmployee';
 import WorkRepot from './workRepot';
+import WorkTimeSearch from './workTimeSearch';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHistory, faFile, faUser, faFileExcel, faFileWord, faSearch, faSave, faThList , faCaretSquareLeft} from '@fortawesome/free-solid-svg-icons';
@@ -117,6 +118,9 @@ class SubMenu extends Component {
                                                     <ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
                                                         <Link className="linkFont" to="/subMenuEmployee/resume/">
                                                             <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileWord} />履歴書</Link></ListGroup.Item>
+                                                    <ListGroup.Item style={{ "backgroundColor": "#17a2b8" }}>
+                                                        <Link className="linkFont" to="/subMenuEmployee/workTimeSearch/">
+                                                            <FontAwesomeIcon className="fa-fw" size="lg" icon={faFileWord} />作業時間検索</Link></ListGroup.Item>
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                         </ListGroup.Item>
@@ -136,6 +140,8 @@ class SubMenu extends Component {
                                 <Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
                                 <Route exact path={`${this.props.match.url}/workRepot`} component={WorkRepot} />
                                 <Route exact path={`${this.props.match.url}/resume`} component={Resume} />
+                                <Route exact path={`${this.props.match.url}/workTimeSearch`} component={WorkTimeSearch} />
+                                
                             </Router>
                         </div>
                     </Col>
