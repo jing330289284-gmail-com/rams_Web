@@ -67,7 +67,7 @@ class WagesInfo extends Component {
         kadouCheck: true,//稼働フラグ
         backPage: "",
         searchFlag: true,
-        sendValue: [],
+        sendValue: {},
         relatedEmployees: '',//要員
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }

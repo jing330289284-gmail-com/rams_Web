@@ -41,6 +41,9 @@ class employeeUpdate extends React.Component {
 		developLanguage5: '',
 		stationCode: '',
 		employeeStatusFlag: true,
+		backPage:"",
+		sendValue:{},
+		searchFlag:false,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -71,6 +74,8 @@ class employeeUpdate extends React.Component {
 			{
 				actionType: location.state.actionType,
 				backPage: location.state.backPage,
+				sendValue:location.state.sendValue,
+				searchFlag:location.state.searchFlag,
 
 			}
 		);
@@ -319,13 +324,13 @@ class employeeUpdate extends React.Component {
 		}
 	}
 	back = () => {
-		let backPage = this.state.backPage
-		if (backPage !== null && backPage !== undefined && backPage !== '') {
-			return this.props.history.push("/subMenuManager/" + backPage);
-		} else {
-			return this.props.history.push("/subMenuManager/employeeInsert");
-		}
-	};
+        var path = {};
+        path = {
+            pathname: this.state.backPage,
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue ,employeeNo:this.state.employeeNo},
+        }
+        this.props.history.push(path);
+    }
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1001,7 +1006,7 @@ class employeeUpdate extends React.Component {
 							</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
-							<Button size="sm" variant="info" type="button" onClick={this.back}>
+							<Button size="sm" variant="info" type="button" onClick={this.back} hidden={this.state.backPage === "" ? true : false}>
 								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
