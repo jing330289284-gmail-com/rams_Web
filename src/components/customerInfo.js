@@ -41,6 +41,7 @@ class CustomerInfo extends Component {
         customerNoForPageChange: "",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
+        stationCodeDrop2: store.getState().dropDown[14],//本社場所
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
@@ -448,7 +449,7 @@ class CustomerInfo extends Component {
     }
     // レコードおきゃく表示
     formatStation = (cell) => {
-        var stationCodeDrop = this.state.stationCodeDrop;
+        var stationCodeDrop = this.state.stationCodeDrop2;
         if (cell === '') {
             return '';
         } else {
@@ -529,7 +530,7 @@ class CustomerInfo extends Component {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
-            .catch(function (error) {
+            .catch(error=> {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
     }
