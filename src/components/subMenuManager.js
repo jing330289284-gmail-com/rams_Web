@@ -31,6 +31,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
 import EmployeeDetail from './employeeDetail';
+import ProjectInfoSearch from './projectInfoSearch';
+// import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
@@ -97,6 +99,9 @@ class SubMenu extends Component {
 		var customerInfoPath = {
 			pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
 		}
+		var projectInfoPath = {
+			pathname: '/subMenuManager/projectInfo', state: { actionType: 'insert' },
+		}
 		const { authorityCode } = this.state;
 		const styleLow = {
 			backgroundColor: "#17a2b8"
@@ -162,6 +167,8 @@ class SubMenu extends Component {
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />お客様情報登録</Link></ListGroup.Item>
 													<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/customerInfoSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様情報検索</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/individualCustomerSales">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様個別売上</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -197,9 +204,9 @@ class SubMenu extends Component {
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faNewspaper} />営業状況一覧</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/selectCustomers">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />お客様選択</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/projectInfo">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to={projectInfoPath}>
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/projectInfoSearch">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />案件一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -324,6 +331,8 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
+								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
+								{/* <Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} /> */}
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />

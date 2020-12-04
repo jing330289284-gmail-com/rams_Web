@@ -1,6 +1,6 @@
 // 営業送信画面
 import React from 'react';
-import { Form, Button, Col, Row, InputGroup, Modal,FormControl,ListGroup } from 'react-bootstrap';
+import { Form, Button, Col, Row, InputGroup, Modal, FormControl, ListGroup } from 'react-bootstrap';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
@@ -10,7 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import { Link } from "react-router-dom";
 import store from './redux/store';
-import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faBookmark} from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl, faEdit, faPencilAlt, faBookmark, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
 
@@ -53,9 +53,33 @@ class salesSendLetter extends React.Component {
 		selectedCtmNoStrs2: "",
 		selectedCtmNoStrs3: "",
 		selectedlistName: "",
+		backPage: "manageSituation",
+		searchFlag: true,
+		sendValue: {},
 	};
 
 	componentDidMount() {
+		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+			this.setState({
+				sendValue: this.props.location.state.sendValue,
+			})
+			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
+				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
+					this.setState({
+						backPage: this.props.location.state.backPage,
+					})
+			}
+			if(this.props.location.state.salesPersons !== null && this.props.location.state.salesPersons !== undefined && this.props.location.state.salesPersons !== ''){
+				this.setState({
+					selectedEmpNos: this.props.location.state.salesPersons,
+				})
+			}
+			if(this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== ''){
+				this.setState({
+					selectedCusInfos: this.props.location.state.targetCusInfos,
+				})
+			}
+		}
 		this.getCustomers();
 		this.getLists();
 	}
@@ -77,11 +101,11 @@ class salesSendLetter extends React.Component {
 					selectedCtmNoStrs3: result.data.length >= 3 ? result.data[2].customerNo : '',
 				});
 			})
-			.catch(function(err) {
+			.catch(function (err) {
 				alert(err)
 			})
 	}
-	
+
 	//　初期化お客様取る
 	getCustomers = () => {
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
@@ -94,9 +118,15 @@ class salesSendLetter extends React.Component {
 					allCustomer: result.data,
 					customerTemp: [...result.data],
 					allCustomerNo: customerNoArray,
+				},()=>{
+					if (this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== '') {
+						this.refs.customersTable.setState({
+							selectedRowKeys: this.props.location.state.targetCusInfos,
+						});
+					}
 				});
 			})
-			.catch(function(err) {
+			.catch(function (err) {
 				alert(err)
 			})
 	}
@@ -213,7 +243,7 @@ class salesSendLetter extends React.Component {
 				this.getLists();
 			})
 	}
-	
+
 	// deleteボタン事件
 	deleteLists = () => {
 		let selectedIndex = this.state.selectetRowIds;
@@ -280,7 +310,7 @@ class salesSendLetter extends React.Component {
 					if (customerNo === customerInfo[k].customerNo &&
 						customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
 						this.setState({
-							allCustomer: this.state.allCustomer.concat(customerInfo[k]).sort(function(a, b) {
+							allCustomer: this.state.allCustomer.concat(customerInfo[k]).sort(function (a, b) {
 								return a.rowId - b.rowId
 							}),
 						})
@@ -388,7 +418,7 @@ class salesSendLetter extends React.Component {
 						listShowFlag: true,
 					})
 				})
-				.catch(function(err) {
+				.catch(function (err) {
 					alert(err)
 				})
 		}
@@ -421,7 +451,7 @@ class salesSendLetter extends React.Component {
 					allCustomer: result.data,
 				});
 			})
-			.catch(function(err) {
+			.catch(function (err) {
 				alert(err)
 			})
 	}
@@ -432,7 +462,40 @@ class salesSendLetter extends React.Component {
 		})
 	}
 
+	/**
+	 * 戻るボタン
+	 */
+	back = () => {
+		var path = {};
+		path = {
+			pathname: this.state.backPage,
+			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue },
+		}
+		this.props.history.push(path);
+	}
+
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = this.state.sendValue;
+		switch (actionType) {
+			case "sendLettersConfirm":
+				path = {
+					pathname: '/subMenuManager/sendLettersConfirm',
+					state: {
+						salesPersons: this.state.selectedEmpNos,
+						targetCusInfos: this.state.selectedCusInfos,
+						backPage: 'salesSendLetter',
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
 	render() {
+		const { backPage } = this.state;
+
 		const selectRow = {
 			mode: 'checkbox',
 			bgColor: 'pink',
@@ -573,9 +636,19 @@ class salesSendLetter extends React.Component {
 						<Col sm={2}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
-							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
+							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
+							<Button
+								size="sm"
+								hidden={backPage === "" ? true : false}
+								variant="info"
+								onClick={this.back}
+							>
+								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            </Button>
 						</Col>
-						<Col sm={4}></Col>
+						<Col sm={4}>
+
+						</Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton"
@@ -584,12 +657,8 @@ class salesSendLetter extends React.Component {
 									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
-								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
-									><FontAwesomeIcon icon={faEnvelope} />要員送信</Button></Link>{' '}
-								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
-									<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
-									><FontAwesomeIcon icon={faEnvelope} />案件送信</Button></Link>
+								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>
 							</div>
 						</Col>
 					</Row>

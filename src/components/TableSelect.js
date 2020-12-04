@@ -64,7 +64,7 @@ class TableSelect extends React.Component {
 		}
 		else if (this.props.flag === 8) {
 			this.setState({
-				allOption: this.props.dropdowns.state.stationCodeDrop,
+				allOption: this.props.dropdowns.state.stationCodeDrop2,
 				selectedValue: this.props.dropdowns.state.stationCode,	
 				everyWidth: 110,
 			})
@@ -92,24 +92,54 @@ class TableSelect extends React.Component {
 	onchange = (event, values) => {
 		if (this.props.flag === 1) {
 			this.props.dropdowns.getCustomerNo(values === null ? this.props.dropdowns.state.customerNo : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.customerNo : values.code,
+			})
 		} else if (this.props.flag === 2) {
 			this.props.dropdowns.getSalesProgressCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.salesProgressCode : values.code,
+			})
 		} else if (this.props.flag === 3) {
 			this.props.dropdowns.getSalesStaff(values === null ? this.props.dropdowns.state.salesStaff : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.salesStaff : values.code,
+			})
 		} else if (this.props.flag === 4) {
 			this.props.dropdowns.getCustomerContract(values === null ? this.props.dropdowns.state.customerContractStatus : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.customerContractStatus : values.code,
+			})
 		} else if (this.props.flag === 5) {
-			this.props.dropdowns.getCustomerDepartment(values === null ? this.props.dropdowns.state.customerDepartmentNameDrop : values.code);
+			this.props.dropdowns.getCustomerDepartment(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		} else if (this.props.flag === 6) {
-			this.props.dropdowns.getPosition(values === null ? this.props.dropdowns.state.positionDrop : values.code);
+			this.props.dropdowns.getPosition(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		} else if (this.props.flag === 7) {
-			this.props.dropdowns.getIndustry(values === null ? this.props.dropdowns.state.typeOfIndustryDrop : values.code);
+			this.props.dropdowns.getIndustry(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		} else if (this.props.flag === 8) {
-			this.props.dropdowns.getStation(values === null ? this.props.dropdowns.state.stationCodeDrop : values.code);
+			this.props.dropdowns.getStation(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		} else if (this.props.flag === 9) {
-			this.props.dropdowns.getLanguage1(values === null ? this.props.dropdowns.state.developLanguageDrop : values.code);
+			this.props.dropdowns.getLanguage1(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		} else if (this.props.flag === 10) {
-			this.props.dropdowns.getLanguage2(values === null ? this.props.dropdowns.state.developLanguageDrop : values.code);
+			this.props.dropdowns.getLanguage2(values === null ? "" : values.code);
+			this.setState({
+				selectedValue:values === null ? "" : values.code,
+			})
 		}
 	}
 

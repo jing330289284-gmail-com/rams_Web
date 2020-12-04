@@ -625,8 +625,6 @@ class manageSituation extends React.Component {
 				path = {
 					pathname: '/subMenuManager/salesSendLetter',
 					state: {
-						actionType: 'detail',
-						id: this.state.employeeNo,
 						backPage: "manageSituation",
 						sendValue: sendValue,
 						selectetRowIds: this.state.selectetRowIds,
