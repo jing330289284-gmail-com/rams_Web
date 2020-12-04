@@ -2,7 +2,7 @@ import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Button, Col, Row,InputGroup, Modal} from 'react-bootstrap';
-import { faGlasses, faEnvelope, faUserPlus} from '@fortawesome/free-solid-svg-icons';
+import { faGlasses, faEnvelope, faUserPlus , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -106,8 +106,18 @@ class sendLettersConfirm extends React.Component {
 		disbleState: false,
 		selectedMailCC: [],
 		popupFlag: true,
+		backPage: "",
+		searchFlag: true,
+		sendValue: {},
 	})
 	componentDidMount() {
+		console.log(this.props.location);
+		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+			this.setState({
+				sendValue: this.props.location.state.sendValue,
+				backPage: this.props.location.state.backPage,
+			})
+		}
 		this.searchEmpDetail();
 		this.getMail();
 		this.getLoginUserInfo();
@@ -473,7 +483,24 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		}
 	};
 	
+	/**
+	 * 戻るボタン
+	 */
+	back = () => {
+		var path = {};
+		path = {
+			pathname: this.state.backPage,
+			state: { 
+				searchFlag: this.state.searchFlag, 
+				sendValue: this.state.sendValue ,
+				salesPersons: this.state.selectedEmpNos,
+				targetCusInfos: this.state.selectedCusInfos,
+			},
+		}
+		this.props.history.push(path);
+	}
 	render() {
+		const {backPage} = this.state;
 		const options = {
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
 			defaultSortOrder: 'dsc',
@@ -618,7 +645,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='employeeName' autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
-							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus} editable={false} >所属</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editable={false}>単価</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
@@ -639,6 +666,14 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					<Col sm={7}></Col>
 					<Col sm={3}>
 						<div style={{ "float": "right" }}>
+							<Button
+								size="sm"
+								hidden={backPage === "" ? true : false}
+								variant="info"
+								onClick={this.back.bind(this)}
+							>
+								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            </Button>{" "}
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.sendMailWithFile} size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>

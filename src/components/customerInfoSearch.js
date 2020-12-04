@@ -349,7 +349,7 @@ class CustomerInfoSearch extends Component {
     reset = () => {
         $("#traderPersonFront").val("");
         $("#traderPersonBack").val("");
-        $("#transactionStatus").val("");
+        $("#transactionStatus").val("0");
         $("#paymentsiteCode").val("");
         $("#levelCode").val("");
         $("#companyNatureCode").val("");
@@ -357,6 +357,7 @@ class CustomerInfoSearch extends Component {
             customerNo:'',
             topCustomerCode:"",
             stationCode:'',
+            traderPersonBack:"",
             businessStartDate:'',
         })
     }
