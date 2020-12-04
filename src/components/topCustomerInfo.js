@@ -104,7 +104,7 @@ class TopCustomerInfo extends Component {
                             setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         }
                     })
-                    .catch(function () {
+                    .catch(()=> {
                         this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
                     })
             } else if (actionType === "insert") {

@@ -87,8 +87,9 @@ class WagesInfo extends Component {
                 this.setState({
                     scheduleOfBonusAmount: '',
                     bonusStartDate: '',
+                },()=>{
+                    this.totalKeisan();
                 })
-                this.totalKeisan();
             }
         })
     }

@@ -360,6 +360,8 @@ class CustomerInfoSearch extends Component {
             traderPersonFront:"",
             traderPersonBack:"",
             businessStartDate:'',
+            capitalStockFront:'',
+            capitalStockBack:'',
         })
     }
     render() {

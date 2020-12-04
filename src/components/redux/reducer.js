@@ -56,13 +56,14 @@ export function fetchDropDown() {
 		"getSuccessRate",//48確率取得
 		"getAgeClassification",//49年齢制限取得
 		"getNoOfInterview",//50面談回数取得
-		"getAdmissionPeriod",//51入場期限取得
+		"getProjectNo",//51入場期限取得
 		"getProjectType",//52案件タイプ取得
 		"getCustomerName",//53お客様名
 		"getQualification",//54資格
         "getDepartmentMasterDrop",//55お客様部門
         "getEmployeeNameByOccupationName",//56社員名(営業、管理者)
-        "getBankInfo",//57銀行名
+		"getBankInfo",//57銀行名
+		"getTheSelectProjectperiodStatus",//58案件期間選択ステータス
 		"getServerIP",//最後
 	]
 	var outArray = [];
