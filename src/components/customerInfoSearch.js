@@ -357,6 +357,7 @@ class CustomerInfoSearch extends Component {
             customerNo:'',
             topCustomerCode:"",
             stationCode:'',
+            traderPersonFront:"",
             traderPersonBack:"",
             businessStartDate:'',
         })
