@@ -252,15 +252,6 @@ class CustomerInfoSearch extends Component {
             });
         }
     }
-    reset = () => {
-        $("#topCustomer").val("");
-        $("#stationCode").val("");
-        $("#customerNo").val("");
-        $("#customerName").val("");
-        $("#paymentsiteCode").val("");
-        $("#levelCode").val("");
-        $("#companyNatureCode").val("");
-    }
     /**
      * 社員名連想
      * @param {} event 
@@ -354,6 +345,20 @@ class CustomerInfoSearch extends Component {
                 topCustomerCode: "",
             })
         }
+    }
+    reset = () => {
+        $("#traderPersonFront").val("");
+        $("#traderPersonBack").val("");
+        $("#transactionStatus").val("");
+        $("#paymentsiteCode").val("");
+        $("#levelCode").val("");
+        $("#companyNatureCode").val("");
+        this.setState({
+            customerNo:'',
+            topCustomerCode:"",
+            stationCode:'',
+            businessStartDate:'',
+        })
     }
     render() {
         const { customerInfoData, stationCode, topCustomerCode, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
