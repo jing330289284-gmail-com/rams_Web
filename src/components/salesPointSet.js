@@ -190,6 +190,7 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo
 				salesPointSetModel["point"] = this.state.salesPointData[i].point
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
@@ -234,6 +235,7 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo
 				salesPointSetModel["point"] = this.state.salesPointData[i].point
 				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
 			}
@@ -424,11 +426,14 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
 											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
 
+										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
+
 										<TableHeaderColumn dataField='specialPoint' editable={{ type: 'select', options: { values: this.state.specialPointStatus } }}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.specialPointStatusFormat.bind(this)}
-											tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
+											width='220' tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialPointNo' width='160' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">特別ポイント</TableHeaderColumn>
+
 										<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell"
 											dataFormat={this.remarkFormat.bind(this)}>備考</TableHeaderColumn>
 									</BootstrapTable>

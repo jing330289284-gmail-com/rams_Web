@@ -188,9 +188,6 @@ class salesPoint extends React.Component {
 	}
 	select = () => {
 		var salesPointSetModel = {};
-		salesPointSetModel["employee"] = this.state.employeeSearch
-		salesPointSetModel["newMember"] = this.state.newMemberSearch
-		salesPointSetModel["customerContract"] = this.state.customerContractSearch
 		salesPointSetModel["employeeName"] = this.state.customerNo
 		axios.post(this.state.serverIP + "getPointInfo", salesPointSetModel)
 			.then(response => {
@@ -327,8 +324,8 @@ class salesPoint extends React.Component {
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-								</Col>
+								{/* 								<Col sm={3}>
+								</Col> */}
 								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -385,8 +382,8 @@ class salesPoint extends React.Component {
 										<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} width='120'>所属会社</TableHeaderColumn>
 										<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width='120'>お客様</TableHeaderColumn>
-										<TableHeaderColumn dataField='workDate' tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
-										<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
+										<TableHeaderColumn dataField='customerContractStatus' tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
 										<TableHeaderColumn dataField='profit' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
 										<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='150' >特別ポイント</TableHeaderColumn>
 										<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='170' >特別ポイント理由</TableHeaderColumn>
