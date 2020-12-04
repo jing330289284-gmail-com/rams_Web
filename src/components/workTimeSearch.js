@@ -31,7 +31,10 @@ class workTimeSearch extends React.Component {
 	};
 
 	componentDidMount() {
-		this.searchWorkTime("", "");
+		let ThisYear = new Date();
+		ThisYear = ThisYear.getFullYear();
+		this.setYearAndMonth();
+		this.searchWorkTime(publicUtils.converToLocalTime(ThisYear + "01", false), publicUtils.converToLocalTime(ThisYear + "12", false));
 	}
 	//onchange
 	valueChange = event => {
@@ -47,13 +50,13 @@ class workTimeSearch extends React.Component {
 	//日付設定
 	setYearAndMonth = () => {
 		let ThisYear = new Date();
-		ThisYear = ThisYear.getFullYear;
+		ThisYear = ThisYear.getFullYear();
 		this.setState({
-			yearAndMonth1: publicUtils.converToLocalTime(ThisYear+"01", false),
+			yearAndMonth1: publicUtils.converToLocalTime(ThisYear + "01", false),
+			yearAndMonth2: publicUtils.converToLocalTime(ThisYear + "12", false),
 		})
 		
 	};
-	
 	//　検索
 	searchWorkTime = (yearAndMonth1, yearAndMonth2) => {
 			let workTimeModel = {
