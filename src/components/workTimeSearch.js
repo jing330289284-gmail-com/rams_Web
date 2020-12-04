@@ -207,8 +207,8 @@ class workTimeSearch extends React.Component {
 							<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }} dataField='sumWorkTime' >出勤時間</TableHeaderColumn>
 							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='averageSumWorkTime' >平均稼働</TableHeaderColumn>
 							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='workTimeRank' >稼動ランキング</TableHeaderColumn>
-							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='carCost' >交通費用</TableHeaderColumn>
-							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='otherCost' >他の費用</TableHeaderColumn>
+						<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='carCost' dataFormat={publicUtils.addComma.bind(this)}>交通費用</TableHeaderColumn>
+						<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='otherCost' dataFormat={publicUtils.addComma.bind(this)}>他の費用</TableHeaderColumn>
 						</BootstrapTable>
 					</Col></div>
 			</div >
