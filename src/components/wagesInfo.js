@@ -755,7 +755,6 @@ class WagesInfo extends Component {
                                             <DatePicker
                                                 selected={raiseStartDate}
                                                 onChange={this.raiseChange}
-                                                dateFormat={"yyyy MM"}
                                                 autoComplete="off"
                                                 locale="pt-BR"
                                                 showMonthYearPicker

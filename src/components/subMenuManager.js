@@ -100,7 +100,7 @@ class SubMenu extends Component {
 			pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
 		}
 		var projectInfoPath = {
-			pathname: '/subMenuManager/projectInfo', state: { actionType: 'insert' },
+			pathname: '/subMenuManager/projectInfo', state: { actionType: 'insert' , backPage:'' },
 		}
 		const { authorityCode } = this.state;
 		const styleLow = {
