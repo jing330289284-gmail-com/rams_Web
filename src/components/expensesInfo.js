@@ -45,6 +45,8 @@ class ExpensesInfo extends Component {
         btnText: '登録',//ボタン文字
         kadouCheck: true,//稼働フラグ
         relatedEmployees: '',//要員
+        leaderCheck:false,//リーダーフラグ
+        siteRoleCode:'',//役割
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
@@ -53,7 +55,8 @@ class ExpensesInfo extends Component {
             employeeNo: this.props.employeeNo,
             expensesInfoModels: this.props.expensesInfoModels,
             kadouCheck: this.props.kadouCheck,
-            relatedEmployees: this.props.relatedEmployees,
+            relatedEmployees: this.props.relatedEmployees.relatedEmployees,
+            leaderCheck:this.props.leaderCheck,
         })
         if (this.props.expensesInfoModel !== null) {
             this.giveValue(this.props.expensesInfoModel);
@@ -184,6 +187,7 @@ class ExpensesInfo extends Component {
             expensesInfoModels,
             btnText,
             kadouCheck,
+            leaderCheck,
             relatedEmployees } = this.state;
         //テーブルの列の選択
         const selectRow = {
@@ -247,14 +251,14 @@ class ExpensesInfo extends Component {
                             <Col sm={6}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>リーダー手当</InputGroup.Text>
+                                        <InputGroup.Text id="sixKanji">リーダー手当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
                                         maxLength="6"
                                         value={leaderAllowanceAmount}
                                         name="leaderAllowanceAmount"
                                         onChange={this.valueChange}
-                                        readOnly={kadouCheck}
+                                        readOnly={kadouCheck && !leaderCheck}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：112000" />
                                     <OverlayTrigger
@@ -304,7 +308,7 @@ class ExpensesInfo extends Component {
                             <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>住宅ステータス</InputGroup.Text>
+                                        <InputGroup.Text id="sevenKanji">住宅ステータス</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
                                         maxLength="5"
@@ -329,6 +333,7 @@ class ExpensesInfo extends Component {
                                     <FormControl
                                         maxLength="5"
                                         value={housingAllowance}
+                                        readOnly={housingStatus === "2" ? false : true}
                                         name="housingAllowance"
                                         onChange={this.valueChange}
                                         disabled={actionType === "detail" ? true : false}

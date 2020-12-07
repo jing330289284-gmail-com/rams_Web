@@ -65,6 +65,7 @@ class WagesInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         expensesInfoModels: [],//諸費用履歴
         kadouCheck: true,//稼働フラグ
+        leaderCheck:false,//リーダーフラグ
         backPage: "",
         searchFlag: true,
         sendValue: {},
@@ -292,7 +293,8 @@ class WagesInfo extends Component {
                         lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
                         lastTimeBonusAmountForInsert: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
                         kadouCheck: result.data.kadouCheck,
-                        relatedEmployees: result.data.relatedEmployees,
+                        leaderCheck:result.data.leaderCheck,
+                        relatedEmployees: result.data.kadouList,
                         "errorsMessageShow": false,
                     })
                 } else {
@@ -300,7 +302,9 @@ class WagesInfo extends Component {
                     this.setState({
                         wagesInfoList: [],
                         kadouCheck: result.data.kadouCheck,
-                        relatedEmployees: result.data.relatedEmployees,
+                        relatedEmployees: result.data.kadouList,
+                        leaderCheck:result.data.leaderCheck,
+                        employeeFormCode: result.data.employeeFormCode,
                     })
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -344,11 +348,16 @@ class WagesInfo extends Component {
      */
     shuseiBtn = () => {
         var selectedWagesInfo = this.state.selectedWagesInfo;
+        if(this.state.kadouCheck){
+            selectedWagesInfo["waitingCost"] = selectedWagesInfo.salary;
+            selectedWagesInfo["salary"] = "";
+        }
         this.setState({
             actionType: "update",
             torokuText: '更新',
         })
         this.giveValue(selectedWagesInfo);
+        selectedWagesInfo["salary"] = selectedWagesInfo.waitingCost;
     }
     /**
      * https://asia-northeast1-tsunagi-all.cloudfunctions.net/
@@ -515,6 +524,24 @@ class WagesInfo extends Component {
         }
         this.props.history.push(path);
     }
+    employeeFormChange= event =>{
+        this.setState({
+            [event.target.name]: event.target.value,
+        },()=>{
+            if(this.state.employeeFormCode === "2"){
+                this.setState({
+                    socialInsuranceFlag:"0",
+                    welfarePensionAmount:"",
+                    healthInsuranceAmount:"",
+                    insuranceFeeAmount:"",
+                    bonusFlag:"0",
+                    scheduleOfBonusAmount:"",
+                },()=>{
+                    this.totalKeisan();
+                })
+            }
+        })
+    }
     render() {
         const {
             employeeNo,
@@ -545,6 +572,7 @@ class WagesInfo extends Component {
             torokuText,
             expensesInfoModels,
             kadouCheck,
+            leaderCheck,
             relatedEmployees,
             backPage } = this.state;
         //テーブルの列の選択
@@ -595,6 +623,7 @@ class WagesInfo extends Component {
                         <Modal.Body >
                             <ExpensesInfo
                                 kadouCheck={kadouCheck}
+                                leaderCheck={leaderCheck}
                                 relatedEmployees={relatedEmployees}
                                 expensesInfoModels={expensesInfoModels}
                                 employeeNo={employeeNo}
@@ -898,7 +927,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            onChange={this.valueChange}
+                                            onChange={this.employeeFormChange}
                                             disabled={actionType === "detail" ? true : false}
                                             name="employeeFormCode"
                                             value={employeeFormCode}>

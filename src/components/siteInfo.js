@@ -272,13 +272,14 @@ class siteInfo extends Component {
 					siteManager: row.siteManager === null ? '' : row.siteManager,
 					typeOfIndustryCode: row.typeOfIndustryName === null ? '' : row.typeOfIndustryName,
 					remark: row.remark === null ? '' : row.remark,
-					related1Employees: row.related1Employees === null ? '' : row.related1Employees,
-					related2Employees: row.related2Employees === null ? '' : row.related2Employees,
-					related3Employees: row.related3Employees === null ? '' : row.related3Employees,
-					related4Employees: row.related4Employees === null ? '' : row.related4Employees,
+					related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0],this.state.employeeInfo)),
+					related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1],this.state.employeeInfo)),
+					related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2],this.state.employeeInfo)),
+					related4Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[3] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[3],this.state.employeeInfo)),
 					updateFlag: false,
 					disabledFlag: false,
 					deleteFlag: false,
+					relatedEmployeesFlag:row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
 				});
 				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
 					this.setState({
@@ -298,7 +299,8 @@ class siteInfo extends Component {
 			this.setState({
 				updateFlag: true,
 				disabledFlag: false,
-				deleteFlag: true
+				deleteFlag: true,
+				relatedEmployeesFlag:false,
 			})
 		}
 	}
@@ -309,6 +311,10 @@ class siteInfo extends Component {
 		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
+		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfo);
+		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfo);
+		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfo);
+		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfo);
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
@@ -354,6 +360,10 @@ class siteInfo extends Component {
 		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
+		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfo);
+		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfo);
+		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfo);
+		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfo);
 		siteModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
 		siteModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
 		siteModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
@@ -454,7 +464,7 @@ class siteInfo extends Component {
 		}, () => {
 			let related1Employees = null;
 			if (values !== null) {
-				related1Employees = values.text;
+				related1Employees = values.code;
 			}
 			this.setState({
 				related1Employees: related1Employees,
@@ -467,7 +477,7 @@ class siteInfo extends Component {
 		}, () => {
 			let related2Employees = null;
 			if (values !== null) {
-				related2Employees = values.text;
+				related2Employees = values.code;
 			}
 			this.setState({
 				related2Employees: related2Employees,
@@ -480,7 +490,7 @@ class siteInfo extends Component {
 		}, () => {
 			let related3Employees = null;
 			if (values !== null) {
-				related3Employees = values.text;
+				related3Employees = values.code;
 			}
 			this.setState({
 				related3Employees: related3Employees,
@@ -493,7 +503,7 @@ class siteInfo extends Component {
 		}, () => {
 			let related4Employees = null;
 			if (values !== null) {
-				related4Employees = values.text;
+				related4Employees = values.code;
 			}
 			this.setState({
 				related4Employees: related4Employees,
@@ -839,7 +849,7 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.related1Employees) || ""}
+											value={this.state.employeeInfo.find(v => v.code === this.state.related1Employees) || ""}
 											options={this.state.employeeInfo}
 											getOptionLabel={(option) => option.text ? option.text : ""}
 											disabled={this.state.relatedEmployeesFlag ? false : true}
@@ -861,7 +871,7 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.related2Employees) || ""}
+											value={this.state.employeeInfo.find(v => v.code === this.state.related2Employees) || ""}
 											options={this.state.employeeInfo}
 											disabled={this.state.relatedEmployeesFlag ? false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
@@ -883,7 +893,7 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.related3Employees) || ""}
+											value={this.state.employeeInfo.find(v => v.code === this.state.related3Employees) || ""}
 											options={this.state.employeeInfo}
 											disabled={this.state.relatedEmployeesFlag ? false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
@@ -906,7 +916,7 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.related4Employees) || ""}
+											value={this.state.employeeInfo.find(v => v.code === this.state.related4Employees) || ""}
 											options={this.state.employeeInfo}
 											disabled={this.state.relatedEmployeesFlag ? false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
