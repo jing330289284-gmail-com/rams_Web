@@ -64,6 +64,7 @@ export function fetchDropDown() {
         "getEmployeeNameByOccupationName",//56社員名(営業、管理者)
 		"getBankInfo",//57銀行名
 		"getTheSelectProjectperiodStatus",//58案件期間選択ステータス
+		"getProjectPeriod",//59案件期限取得
 		"getServerIP",//最後
 	]
 	var outArray = [];

@@ -32,7 +32,6 @@ class projectInfo extends Component {
         keyWordOfLanagurue1: '',
         keyWordOfLanagurue2: '',
         keyWordOfLanagurue3: '',
-        typeOfIndustry: '',
         projectInfoDetail: '',
         japaneaseConversationLevel: '',
         unitPriceRangeLowest: '',
@@ -46,6 +45,9 @@ class projectInfo extends Component {
         requiredItem1: '',
         requiredItem2: '',
         noOfInterviewCode: '',
+        recruitmentNumbers:'',
+        remark:'',
+        workStartPeriodForDate:'',
         //パラメータ
         actionType: this.props.location.state.actionType,
         backPage: "",//遷移元
@@ -57,6 +59,7 @@ class projectInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//バックエンドのリンク
         //Drop 
+        recruitmentNumbersDrop:[{"code":"1","name":"1"},{"code":"2","name":"2"},{"code":"3","name":"3"},{"code":"4","name":"4"},{"code":"5","name":"5"}],
         projectTypeDrop: store.getState().dropDown[52],
         payOffRangeDrop: store.getState().dropDown[33].slice(1),
         nationalityDrop: store.getState().dropDown[7],
@@ -69,7 +72,7 @@ class projectInfo extends Component {
         successRateDrop: store.getState().dropDown[48],
         developLanguageDrop: store.getState().dropDown[8].slice(1),
         ageClassificationDrop: store.getState().dropDown[49],
-        typeOfIndustryDrop: store.getState().dropDown[36],
+        workStartPeriodDrop:store.getState().dropDown[59],
     }
     //onchange
     valueChange = event => {
@@ -92,7 +95,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1: '',
             keyWordOfLanagurue2: '',
             keyWordOfLanagurue3: '',
-            typeOfIndustry: '',
             projectInfoDetail: '',
             japaneaseConversationLevel: '',
             unitPriceRangeLowest: '',
@@ -105,10 +107,12 @@ class projectInfo extends Component {
             workStartPeriod: '',
             requiredItem1: '',
             requiredItem2: '',
+            remark:'',
             noOfInterviewCode: '',
             personInChargeDrop: [],
             experienceYear: '',
             siteLoaction: '',
+            recruitmentNumbers:'',
         })
     }
     /**
@@ -129,7 +133,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1: projectInfoMod.keyWordOfLanagurue1,
             keyWordOfLanagurue2: projectInfoMod.keyWordOfLanagurue2,
             keyWordOfLanagurue3: projectInfoMod.keyWordOfLanagurue3,
-            typeOfIndustry: projectInfoMod.typeOfIndustry,
             projectInfoDetail: projectInfoMod.projectInfoDetail,
             japaneaseConversationLevel: projectInfoMod.japaneaseConversationLevel,
             unitPriceRangeLowest: projectInfoMod.unitPriceRangeLowest,
@@ -139,13 +142,23 @@ class projectInfo extends Component {
             projectPhaseEnd: projectInfoMod.projectPhaseEnd,
             payOffRangeLowest: projectInfoMod.payOffRangeLowest,
             payOffRangeHighest: projectInfoMod.payOffRangeHighest,
-            workStartPeriod: projectInfoMod.workStartPeriod,
             requiredItem1: projectInfoMod.requiredItem1,
             requiredItem2: projectInfoMod.requiredItem2,
             experienceYear: projectInfoMod.experienceYear,
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
             siteLoaction: projectInfoMod.siteLoaction,
+            recruitmentNumbers:projectInfoMod.recruitmentNumbers,
+            remark:projectInfoMod.remark,
         })
+        if(projectInfoMod.workStartPeriod.length > 2){
+            this.setState({
+                workStartPeriodForDate:utils.converToLocalTime(projectInfoMod.workStartPeriod,false),
+            })
+        }else{
+            this.setState({
+                workStartPeriod:projectInfoMod.workStartPeriod,
+            })
+        }
     }
     /**
      * お客様の自動提示
@@ -353,6 +366,18 @@ class projectInfo extends Component {
             });
         }
     }
+    workStartPeriodChange= date =>{
+        if (date !== null) {
+            this.setState({
+                workStartPeriodForDate: date,
+                workStartPeriod:'',
+            });
+        } else {
+            this.setState({
+                workStartPeriodForDate: '',
+            });
+        }
+    }
     /**
  * 戻るボタン
  */
@@ -378,7 +403,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1,
             keyWordOfLanagurue2,
             keyWordOfLanagurue3,
-            typeOfIndustry,
             projectInfoDetail,
             japaneaseConversationLevel,
             unitPriceRangeLowest,
@@ -394,6 +418,9 @@ class projectInfo extends Component {
             siteLoaction,
             noOfInterviewCode,
             experienceYear,
+            recruitmentNumbers,
+            workStartPeriodForDate,
+            remark,
             actionType,
             backPage,
             message,//toastのメッセージ
@@ -403,6 +430,7 @@ class projectInfo extends Component {
             errorsMessageValue,//エラーのメッセージ
             torokuText,//登録ボタンの文字
             //Drop 
+            recruitmentNumbersDrop,
             projectTypeDrop,
             payOffRangeDrop,
             nationalityDrop,
@@ -415,7 +443,7 @@ class projectInfo extends Component {
             successRateDrop,
             developLanguageDrop,
             ageClassificationDrop,
-            typeOfIndustryDrop,
+            workStartPeriodDrop,
         } = this.state;
         return (
             <div>
@@ -490,8 +518,6 @@ class projectInfo extends Component {
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={1}>
-                                </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
@@ -518,8 +544,6 @@ class projectInfo extends Component {
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={1}>
-                                </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
@@ -539,6 +563,25 @@ class projectInfo extends Component {
                                             name="unitPriceRangeHighest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeHighest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>
+                                    </InputGroup>
+                                </Col>
+                                <Col sm={3}>
+                                    <InputGroup size="sm" className="mb-3">
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>募集人数</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl
+                                            as="select"
+                                            value={recruitmentNumbers}
+                                            name="recruitmentNumbers"
+                                            onChange={this.valueChange}
+                                            disabled={actionType === "detail" ? true : false}>
+                                            {recruitmentNumbersDrop.map(date =>
+                                                <option key={date.code} value={date.code}>
+                                                    {date.name}
+                                                </option>
+                                            )}
+                                        </FormControl>
                                     </InputGroup>
                                 </Col>
                             </Row>
@@ -732,23 +775,43 @@ class projectInfo extends Component {
                                             value={workStartPeriod}
                                             name="workStartPeriod"
                                             onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}>
+                                            disabled={actionType === "detail" ? true : workStartPeriodForDate === '' ? false : workStartPeriodForDate === null ? false : true}>
+                                            {workStartPeriodDrop.map(date =>
+                                                <option key={date.code} value={date.code}>
+                                                    {date.name}
+                                                </option>
+                                            )}
                                         </FormControl>
+                                        <DatePicker
+                                            selected={workStartPeriodForDate}
+                                            onChange={this.workStartPeriodChange}
+                                            autoComplete="off"
+                                            locale="pt-BR"
+                                            showMonthYearPicker
+                                            showFullMonthYearPicker
+                                            minDate={new Date()}
+                                            showDisabledMonthNavigation
+                                            className="form-control form-control-sm"
+                                            id="workStartPeriodDatePicker"
+                                            dateFormat={"yyyy/MM"}
+                                            name="workStartPeriodForDate"
+                                            locale="ja"
+                                            disabled={actionType === "detail" ? true : false}
+                                        />
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>業種制限</InputGroup.Text>
+                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            maxLength="2"
-                                            value={typeOfIndustry}
-                                            name="typeOfIndustry"
+                                            value={successRate}
+                                            name="successRate"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
-                                            {typeOfIndustryDrop.map(date =>
+                                            {successRateDrop.map(date =>
                                                 <option key={date.code} value={date.code}>
                                                     {date.name}
                                                 </option>
@@ -901,21 +964,16 @@ class projectInfo extends Component {
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
+                                            <InputGroup.Text id="fiveKanji">備考</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            as="select"
-                                            value={successRate}
-                                            name="successRate"
+                                            value={remark}
+                                            name="remark"
+                                            placeholder="例：XXXXX"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
-                                            {successRateDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
