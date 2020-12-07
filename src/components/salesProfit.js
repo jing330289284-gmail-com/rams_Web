@@ -389,5 +389,4 @@ class salesProfit extends React.Component {
 	}
 }
 
-
 export default (salesProfit);

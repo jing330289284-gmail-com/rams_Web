@@ -28,6 +28,7 @@ class salesPoint extends React.Component {
 		employee: '',
 		startTime: '',
 		newMember: '',
+		pointAll: '',
 		customerContract: '',
 		updateFlag: true,
 		insertFlag: false,
@@ -192,9 +193,17 @@ class salesPoint extends React.Component {
 		axios.post(this.state.serverIP + "getPointInfo", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
-					this.setState({
-						salesPointData: response.data,
-					});
+					if (response.data.length > 0) {
+						this.setState({
+							salesPointData: response.data,
+							pointAll: response.data[0].pointAll,
+						});
+					} else {
+						this.setState({
+							salesPointData: response.data,
+							pointAll: "",
+						});
+					}
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -363,7 +372,7 @@ class salesPoint extends React.Component {
 							<br />
 							<Row>
 								<Col sm={3}>
-									<font style={{ whiteSpace: 'nowrap' }}>ポイント合計：{this.state.siteRoleNameAll}</font>
+									<font style={{ whiteSpace: 'nowrap' }}>ポイント合計：{this.state.pointAll}</font>
 								</Col>
 								<Col sm={7}>
 								</Col>
@@ -378,15 +387,15 @@ class salesPoint extends React.Component {
 									<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 										<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 										<TableHeaderColumn dataField='yearAndMonth' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
-										<TableHeaderColumn dataField='employeeStatus' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='employeeStatusName' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
 										<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} width='120'>所属会社</TableHeaderColumn>
 										<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width='120'>お客様</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerContractStatus' tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
 										<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
-										<TableHeaderColumn dataField='profit' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
-										<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='150' >特別ポイント</TableHeaderColumn>
-										<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='170' >特別ポイント理由</TableHeaderColumn>
+										<TableHeaderColumn dataField='point' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialsalesPointCondition' tdStyle={{ padding: '.45em' }} width='170' >特別ポイント理由</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialsalesPoint' tdStyle={{ padding: '.45em' }} width='150' >特別ポイント</TableHeaderColumn>
 									</BootstrapTable>
 								</Col>
 							</Row>
