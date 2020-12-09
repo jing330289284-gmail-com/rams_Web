@@ -32,7 +32,7 @@ class ExpensesInfo extends Component {
         otherAllowanceName: '',//他の手当名称
         otherAllowanceAmount: '',//他の手当
         leaderAllowanceAmount: '',//リーダー手当
-        housingStatus: '',//住宅ステータス
+        totalExpenses: '',//住宅ステータス
         housingAllowance: '',//住宅手当
         message: '',//toastのメッセージ
         type: '',//成功や失敗
@@ -40,24 +40,26 @@ class ExpensesInfo extends Component {
         errorsMessageShow: false,///エラーのメッセージのフラグ
         errorsMessageValue: '',//エラーのメッセージ
         actionType: 'insert',//処理区分
-        housingStatusDrop: [],//住宅ステータスselect
         expensesInfoModels: [],//諸費用履歴
         btnText: '登録',//ボタン文字
         kadouCheck: true,//稼働フラグ
         relatedEmployees: '',//要員
-        leaderCheck:false,//リーダーフラグ
-        siteRoleCode:'',//役割
+        leaderCheck: false,//リーダーフラグ
+        siteRoleCode: '',//役割
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
         this.setState({
-            housingStatusDrop: utils.getdropDown("getHousing", this.state.serverIP),
             employeeNo: this.props.employeeNo,
             expensesInfoModels: this.props.expensesInfoModels,
             kadouCheck: this.props.kadouCheck,
-            relatedEmployees: this.props.relatedEmployees.relatedEmployees,
-            leaderCheck:this.props.leaderCheck,
+            leaderCheck: this.props.leaderCheck,
         })
+        if(this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
+            this.setState({
+                relatedEmployees: this.props.relatedEmployees.relatedEmployees,
+            })
+        }
         if (this.props.expensesInfoModel !== null) {
             this.giveValue(this.props.expensesInfoModel);
             this.setState({
@@ -89,7 +91,7 @@ class ExpensesInfo extends Component {
             otherAllowanceName: expensesInfoMod.otherAllowanceName,
             otherAllowanceAmount: expensesInfoMod.otherAllowanceAmount,
             leaderAllowanceAmount: expensesInfoMod.leaderAllowanceAmount,
-            housingStatus: expensesInfoMod.housingStatus,
+            totalExpenses: expensesInfoMod.totalExpenses,
             housingAllowance: expensesInfoMod.housingAllowance,
         })
     }
@@ -103,7 +105,7 @@ class ExpensesInfo extends Component {
             otherAllowanceName: '',
             otherAllowanceAmount: '',
             leaderAllowanceAmount: '',
-            housingStatus: '',
+            totalExpenses: '',
             housingAllowance: '',
         })
     }
@@ -177,13 +179,12 @@ class ExpensesInfo extends Component {
             otherAllowanceName,
             otherAllowanceAmount,
             leaderAllowanceAmount,
-            housingStatus,
             housingAllowance,
             message,
             type,
+            totalExpenses,
             errorsMessageValue,
             actionType,
-            housingStatusDrop,
             expensesInfoModels,
             btnText,
             kadouCheck,
@@ -308,33 +309,26 @@ class ExpensesInfo extends Component {
                             <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="sevenKanji">住宅ステータス</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl
-                                        maxLength="5"
-                                        as="select"
-                                        value={housingStatus}
-                                        name="housingStatus"
-                                        onChange={this.valueChange}
-                                        disabled={actionType === "detail" ? true : false}>
-                                        {housingStatusDrop.map(date =>
-                                            <option key={date.code} value={date.code}>
-                                                {date.name}
-                                            </option>
-                                        )}
-                                    </FormControl>
-                                </InputGroup>
-                            </Col>
-                            <Col sm={4}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
                                         <InputGroup.Text> 住宅手当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
                                         maxLength="5"
                                         value={housingAllowance}
-                                        readOnly={housingStatus === "2" ? false : true}
                                         name="housingAllowance"
+                                        onChange={this.valueChange}
+                                        disabled={actionType === "detail" ? true : false}
+                                        placeholder="例：10000" />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={4}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text> 総額</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl
+                                        maxLength="5"
+                                        value={totalExpenses}
+                                        name="totalExpenses"
                                         onChange={this.valueChange}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：10000" />
