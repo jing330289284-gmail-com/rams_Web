@@ -27,7 +27,7 @@ class salesProfit extends React.Component {
 		no: '',
 		employee: '',
 		newMember: '',
-		customerNo: '',//選択した列のお客様番号
+		customerNo: null,//選択した列のお客様番号
 		customerContract: '',
 		siteRoleNameAll: '',
 		profitAll: '',
@@ -165,10 +165,13 @@ class salesProfit extends React.Component {
 	//页面跳转
 	shuseiTo = () => {
 		var path = {};
-		var sendValue = {};
 		path = {
 			pathname: '/subMenuManager/salesPoint',
-			state: { pointData: this.state.salesPointData },
+			state: {
+				customerNo: this.state.customerNo,
+				startTime: this.state.admissionStartDate,
+				endTime: this.state.admissionEndDate,
+			},
 		}
 		this.props.history.push(path);
 	}
@@ -273,7 +276,6 @@ class salesProfit extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">営業担当</InputGroup.Text>
 										</InputGroup.Prepend>
-										{/* <FormControl placeholder="例：田中" id="data" name="data" onChange={this.onchange} name="employeeName" value={this.state.employeeName} /> */}
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
@@ -357,7 +359,7 @@ class salesProfit extends React.Component {
 									</Col>
 									<Col sm={4}>
 										<div style={{ "float": "right" }}>
-											<Button size="sm" id="syounin" onClick={this.shuseiTo.bind(this)} disabled={this.state.no === "" ? true : false} className="btn btn-primary btn-sm">
+											<Button size="sm" id="syounin" onClick={this.shuseiTo.bind(this)} disabled={this.state.customerNo === null ? true : false} className="btn btn-primary btn-sm">
 												営業ポイント明細
 								        </Button>
 										</div>
