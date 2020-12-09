@@ -23,15 +23,15 @@ class sendRepot extends React.Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
-		positions: store.getState().dropDown[20],//
+		positions: store.getState().dropDown[20],//職位
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
 		approval: store.getState().dropDown[27],//承認ステータス
-		workReportStatus: store.getState().dropDown[59],//作業報告書送信ステータス
+		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendDay: '',
 		sendTime: '',
+		workReportStatusCode: '',
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		workReportStatusCode: '0',
 		customerDepartmentName: '',
 		allCustomerNo: [],
 		currentPage: 1,//　該当page番号
@@ -63,28 +63,28 @@ class sendRepot extends React.Component {
 		this.getCustomers();
 		this.getLists();
 	}
-
-getLists = () => {
-	axios.post(this.state.serverIP + "sendRepot/getLists")
-			.then(result => {
-				this.setState({
-					salesLists: result.data,
-					listName:1+result.data.length,
-					listName1:result.data.length>=1?result.data[0].name:'',
-					listName2:result.data.length>=2?result.data[1].name:'',
-					listName3:result.data.length>=3?result.data[2].name:'',
-					oldListName1:result.data.length>=1?result.data[0].name:'',
-					oldListName2:result.data.length>=2?result.data[1].name:'',
-					oldListName3:result.data.length>=3?result.data[2].name:'',
-					selectedCtmNoStrs1:result.data.length>=1?result.data[0].customerNo:'',
-					selectedCtmNoStrs2:result.data.length>=2?result.data[1].customerNo:'',
-					selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
-				});
-			})
-			.catch(function(err) {
-				alert(err)
-			})
-}
+	//リスト取得
+	getLists = () => {
+		axios.post(this.state.serverIP + "sendRepot/getLists")
+				.then(result => {
+					this.setState({
+						salesLists: result.data,
+						listName:1+result.data.length,
+						listName1:result.data.length>=1?result.data[0].name:'',
+						listName2:result.data.length>=2?result.data[1].name:'',
+						listName3:result.data.length>=3?result.data[2].name:'',
+						oldListName1:result.data.length>=1?result.data[0].name:'',
+						oldListName2:result.data.length>=2?result.data[1].name:'',
+						oldListName3:result.data.length>=3?result.data[2].name:'',
+						selectedCtmNoStrs1:result.data.length>=1?result.data[0].customerNo:'',
+						selectedCtmNoStrs2:result.data.length>=2?result.data[1].customerNo:'',
+						selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
+					});
+				})
+				.catch(function(err) {
+					alert(err)
+				})
+	}
 	//初期化お客様取る
 	getCustomers = () => {
 		axios.post(this.state.serverIP + "sendRepot/getCustomers")
@@ -104,12 +104,7 @@ getLists = () => {
 			})
 	}
 
-	// 行番号
-	indexN = (cell, row, enumObject, index) => {
-		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
-		return (<div>{rowNumber}</div>);
-	}
-
+	// 行番号？
 	onTagsChange = (event, values, fieldName) => {
 		if (values === null) {
 			switch (fieldName) {
@@ -144,7 +139,7 @@ getLists = () => {
 		}
 	}
 
-	// customerDepartmentNameFormat
+	//職位
 	positionNameFormat = (cell) => {
 		let positionsTem = this.state.positions;
 		for (var i in positionsTem) {
@@ -153,7 +148,7 @@ getLists = () => {
 			}
 		}
 	}
-	
+	//所属
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.state.customerDepartmentNameDrop;
 		for (var i in customerDepartmentNameDropTem) {
@@ -162,8 +157,7 @@ getLists = () => {
 			}
 		}
 	}
-
-	// clearボタン事件 
+	// clearボタン事件 未使用
 	clearLists = () => {
 		if(this.state.selectedlistName!==''){
 			axios.post(this.state.serverIP + "sendRepot/deleteList",{storageListName:this.state.selectedlistName})
@@ -190,7 +184,7 @@ getLists = () => {
 			selectedRowKeys: [],
 		})}
 	}
-
+	// ？
 	createList = () => {
 		let {selectetRowIds,customerTemp,listName}=this.state;
 		let selectedArray=new Array();
@@ -205,18 +199,17 @@ getLists = () => {
 		let code=selectedNoArray.join(',');
 		axios.post(this.state.serverIP + "sendRepot/creatList",{name,code})
 		.then(result => {
-					this.refs.customersTable.store.selected = [];
-		this.refs.customersTable.setState({
+			this.refs.customersTable.store.selected = [];
+			this.refs.customersTable.setState({
 			selectedRowKeys: [],
 		})
-			/*listName=listName+1;*/
-			this.setState({
-				selectetRowIds:[],
-			});
-			this.getLists();
-			})
+		this.setState({
+			selectetRowIds:[],
+		});
+		this.getLists();
+		})
 	}
-	// deleteボタン事件
+	// deleteボタン事件？
 	deleteLists = () => {
 		let selectedIndex = this.state.selectetRowIds;
 		let newCustomer = this.state.allCustomer;
@@ -246,14 +239,14 @@ getLists = () => {
 			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
 		})
 		let customerRowIdArray = new Array();
-				for (let i in this.state.allCustomer) {
-					customerRowIdArray.push(this.state.allCustomer[i].rowId);
-				};
-				let targetCustomer = new Array();
-				for (let i in customerRowIdArray) {
-					let rowNo=customerRowIdArray[i];
-					targetCustomer.push(this.state.customerTemp[rowNo]);
-				};
+		for (let i in this.state.allCustomer) {
+			customerRowIdArray.push(this.state.allCustomer[i].rowId);
+		};
+		let targetCustomer = new Array();
+		for (let i in customerRowIdArray) {
+			let rowNo = customerRowIdArray[i];
+			targetCustomer.push(this.state.customerTemp[rowNo]);
+		};
 		this.setState({
 			selectedCusInfos: targetCustomer,
 			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
@@ -317,7 +310,6 @@ getLists = () => {
 		}
 		let rowNo=row.rowId;
 		if (isSelected) {
-			//alert(this.refs.customersTable.state.selectedRowKeys); selectedCusInfos
 			this.setState({
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
@@ -394,6 +386,17 @@ getLists = () => {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
+	}
+	workReportStatusChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		if (event.target.value == 1) {
+			this.setState({
+				sendTime: "",
+				sendDay: "",
+			})
+        }
 	}
 	inactiveSendTime = (date) => {
 		this.setState(
@@ -498,24 +501,24 @@ getLists = () => {
 									<Form.Control as="select"
 										size="sm"
 										name="workReportStatusCode"
-										autoComplete="off">
+										autoComplete="off"
 										value={this.state.workReportStatusCode}
-										onChange={this.valueChange.bind(this)}
+										onChange={this.workReportStatusChange}>
 										{this.state.workReportStatus.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
 											</option>
 										)}
-								</Form.Control>
+									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">送信日付設定</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
-										<Form.Control id="sendDay" as="select" size="sm" onChange={this.valueChange} name="sendDay" value={this.sendDay} autoComplete="off" >
+										<Form.Control id="sendDay" as="select" size="sm" onChange={this.valueChange} name="sendDay" value={this.state.sendDay} disabled={this.state.workReportStatusCode == 1 ? true : false} autoComplete="off" >
 											<option value=""></option>
 											<option value="0">今月最終日</option>
 											<option value="1">来月初日</option>
@@ -523,10 +526,13 @@ getLists = () => {
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
 										<DatePicker
+											disabled={this.state.workReportStatusCode==1 ? true : false}
 											selected={this.state.sendTime}
+											value={this.state.sendTime}
 											onChange={this.inactiveSendTime}
 											autoComplete="off"
 											locale="ja"
+											dateFormat="HH:mm"
 											showTimeSelect
 											showTimeSelectOnly
 											id="datePicker"
@@ -535,14 +541,14 @@ getLists = () => {
 									</InputGroup.Prepend>
 								</InputGroup>
 							</Col>
-						</Row><Row>
+						</Row>
+						<Row>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
 										options={this.state.customers}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
@@ -563,7 +569,6 @@ getLists = () => {
 										<InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
 										options={this.state.customerDepartmentNameDrop}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
@@ -583,20 +588,7 @@ getLists = () => {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
-										options={this.state.customerDepartmentNameDrop}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerDepartmentCode')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="customerDepartmentName" className="auto form-control Autocompletestyle-salesSend"
-												/>
-											</div>
-										)}
-									/>
+									<Form.Control type="text" value={this.state.purchasingManagers} name="purchasingManagers" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="担当者" />
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
@@ -659,16 +651,16 @@ getLists = () => {
 							selectRow={selectRow}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN}  autoValue dataSort={true}  editable={false}>番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='rowId' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='customerNo' >お客様番号</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール(To)</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='levelCode' >対象社員</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='monthCount' >承認済み</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='salesPersonsAppend'>送信済み</TableHeaderColumn>
+							<TableHeaderColumn width='15%' dataField='customerDepartmentMail' >メール(To)</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='a' >対象社員</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='b' >承認済み</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='c'>送信済み</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>
