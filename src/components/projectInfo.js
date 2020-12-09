@@ -275,10 +275,13 @@ class projectInfo extends Component {
         var projectNo = "";
         if (this.props.location.state !== null && this.props.location.state !== undefined) {
             this.setState({
-                projectNo: this.props.location.state.selectedProjectNo,
+                projectNo: this.props.location.state.projectNo,
                 backPage: this.props.location.state.backPage,
+                actionType:this.props.location.state.actionType,
+                sendValue:this.props.location.state.sendValue,
+                searchFlag:this.props.location.state.searchFlag,
             })
-            projectNo = this.props.location.state.selectedProjectNo;
+            projectNo = this.props.location.state.projectNo;
         }
         var projectInfoModel = {
             actionType: this.state.actionType,

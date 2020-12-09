@@ -57,7 +57,7 @@ class ExpensesInfo extends Component {
         })
         if(this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
             this.setState({
-                relatedEmployees: this.props.relatedEmployees.relatedEmployees,
+                relatedEmployees: this.props.relatedEmployees[0].relatedEmployees,
             })
         }
         if (this.props.expensesInfoModel !== null) {
@@ -114,6 +114,20 @@ class ExpensesInfo extends Component {
         this.setState({
             [event.target.name]: event.target.value,
         })
+    }
+    //onchange(金額)
+    valueChangeMoney = event => {
+        var name = event.target.name;
+        var value = event.target.value;
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            this.totalKeisan();
+            this.setState({
+                [name]: utils.addComma(value)
+            });
+        }
+        )
     }
     expensesInfoToroku() {
         var expensesInfoModel = {};
@@ -172,6 +186,20 @@ class ExpensesInfo extends Component {
                 {start}から  {to}まで , 総計{total}
             </p>
         );
+    }
+    totalKeisan=()=>{
+        var sum = 0;
+        var transportationExpenses = utils.deleteComma(this.state.transportationExpenses);
+        var leaderAllowanceAmount = utils.deleteComma(this.state.leaderAllowanceAmount);
+        var otherAllowanceAmount = utils.deleteComma(this.state.otherAllowanceAmount);
+        var housingAllowance = utils.deleteComma(this.state.housingAllowance);
+
+        sum = sum + parseInt((transportationExpenses === '' ? 0 : transportationExpenses))+ parseInt((leaderAllowanceAmount === '' ? 0 : leaderAllowanceAmount))
+        + parseInt((otherAllowanceAmount === '' ? 0 : otherAllowanceAmount))+ parseInt((housingAllowance === '' ? 0 : housingAllowance));
+        var totalExpenses = (isNaN(sum) ? '' : (sum === 0 ? '' : sum));
+        this.setState({
+            totalExpenses: utils.addComma(totalExpenses),
+        })
     }
     render() {
         const {
@@ -241,10 +269,10 @@ class ExpensesInfo extends Component {
                                         <InputGroup.Text>交通費</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
-                                        maxLength="5"
+                                        maxLength="6"
                                         value={transportationExpenses}
                                         name="transportationExpenses"
-                                        onChange={this.valueChange}
+                                        onChange={this.valueChangeMoney}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：12000" />
                                 </InputGroup>
@@ -255,10 +283,10 @@ class ExpensesInfo extends Component {
                                         <InputGroup.Text id="sixKanji">リーダー手当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
-                                        maxLength="6"
+                                        maxLength="7"
                                         value={leaderAllowanceAmount}
                                         name="leaderAllowanceAmount"
-                                        onChange={this.valueChange}
+                                        onChange={this.valueChangeMoney}
                                         readOnly={kadouCheck && !leaderCheck}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：112000" />
@@ -287,7 +315,7 @@ class ExpensesInfo extends Component {
                                         name="otherAllowanceName"
                                         onChange={this.valueChange}
                                         disabled={actionType === "detail" ? true : false}
-                                        placeholder="例：12000" />
+                                        placeholder="例：家族手当" />
                                 </InputGroup>
                             </Col>
                             <Col sm={6}>
@@ -296,10 +324,10 @@ class ExpensesInfo extends Component {
                                         <InputGroup.Text>費用</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
-                                        maxLength="6"
+                                        maxLength="7"
                                         value={otherAllowanceAmount}
                                         name="otherAllowanceAmount"
-                                        onChange={this.valueChange}
+                                        onChange={this.valueChangeMoney}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：112000" />
                                 </InputGroup>
@@ -312,10 +340,10 @@ class ExpensesInfo extends Component {
                                         <InputGroup.Text> 住宅手当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl
-                                        maxLength="5"
+                                        maxLength="6"
                                         value={housingAllowance}
                                         name="housingAllowance"
-                                        onChange={this.valueChange}
+                                        onChange={this.valueChangeMoney}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：10000" />
                                 </InputGroup>
@@ -328,6 +356,7 @@ class ExpensesInfo extends Component {
                                     <FormControl
                                         maxLength="5"
                                         value={totalExpenses}
+                                        readOnly
                                         name="totalExpenses"
                                         onChange={this.valueChange}
                                         disabled={actionType === "detail" ? true : false}

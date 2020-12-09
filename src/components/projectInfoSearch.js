@@ -9,6 +9,8 @@ import { faSave, faUndo, faLevelUpAlt, faSearch, faList, faEdit, faTrash } from 
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker, { registerLocale } from "react-datepicker"
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 
@@ -28,10 +30,10 @@ class ProjectInfoSearch extends Component {
         errorsMessageValue: '',//エラーのメッセージ
         torokuText: '登録',//登録ボタンの文字
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//バックエンドのリンク
-        selectedProjectNo:'',//選択した案件番号
-        searchFlag:false,//検索フラグ
+        selectedProjectNo: '',//選択した案件番号
+        searchFlag: false,//検索フラグ
         //項目
-        theSelectProjectperiodStatus: '',
+        theSelectProjectperiodStatus: '0',
         projectNo: '',
         keyWordOfLanagurue1: '',
         keyWordOfLanagurue2: '',
@@ -98,9 +100,10 @@ class ProjectInfoSearch extends Component {
  */
     giveValue = (projectInfoMod) => {
         this.setState({
+            theSelectProjectperiodStatus: projectInfoMod.theSelectProjectperiodStatus,
             projectNo: projectInfoMod.projectNo,
             nationalityCode: projectInfoMod.nationalityCode,
-            admissionPeriod: projectInfoMod.admissionPeriod,
+            admissionPeriod: utils.converToLocalTime(projectInfoMod.admissionPeriod, false),
             projectType: projectInfoMod.projectType,
             successRate: projectInfoMod.successRate,
             keyWordOfLanagurue1: projectInfoMod.keyWordOfLanagurue1,
@@ -181,10 +184,24 @@ class ProjectInfoSearch extends Component {
             })
         }
     }
+    componentDidMount() {
+        $('button[name="clickButton"]').attr('disabled', true);
+        if(this.props.location.state !== undefined){
+            var sendValue = this.props.location.state.sendValue;
+            var searchFlag = this.props.location.state.searchFlag;
+            this.giveValue(sendValue);
+            this.setState({
+                selectedProjectNo:this.props.location.state.selectedProjectNo,
+            })
+            if(searchFlag){
+                this.search(sendValue);
+            }
+        }
+    }
     shuseiTo = (actionType) => {
         var path = {};
         const sendValue = {
-            theSelectProjectperiodStatus:this.state.theSelectProjectperiodStatus,
+            theSelectProjectperiodStatus: this.state.theSelectProjectperiodStatus,
             projectNo: this.state.projectNo,
             nationalityCode: this.state.nationalityCode,
             admissionPeriod: this.state.admissionPeriod,
@@ -208,7 +225,7 @@ class ProjectInfoSearch extends Component {
                     state: {
                         actionType: 'update',
                         projectNo: this.state.selectedProjectNo,
-                        backPage: "projectInfoSearch", 
+                        backPage: "projectInfoSearch",
                         sendValue: sendValue,
                         searchFlag: this.state.searchFlag
                     },
@@ -220,7 +237,7 @@ class ProjectInfoSearch extends Component {
                     state: {
                         actionType: 'detail',
                         projectNo: this.state.selectedProjectNo,
-                        backPage: "projectInfoSearch", 
+                        backPage: "projectInfoSearch",
                         sendValue: sendValue,
                         searchFlag: this.state.searchFlag
                     },
@@ -232,7 +249,7 @@ class ProjectInfoSearch extends Component {
                     state: {
                         actionType: 'insert',
                         projectNo: this.state.selectedProjectNo,
-                        backPage: "projectInfoSearch", 
+                        backPage: "projectInfoSearch",
                         sendValue: sendValue,
                         searchFlag: this.state.searchFlag
                     },
@@ -245,7 +262,15 @@ class ProjectInfoSearch extends Component {
     //行Selectファンクション
     handleRowSelect = (row, isSelected, e) => {
         if (isSelected) {
+            this.setState({
+                selectedProjectNo: row.projectNo,
+            })
+            $('button[name="clickButton"]').attr('disabled', false);
         } else {
+            this.setState({
+                selectedProjectNo: "",
+            })
+            $('button[name="clickButton"]').attr('disabled', true);
         }
     }
     renderShowsTotal(start, to, total) {
@@ -263,29 +288,42 @@ class ProjectInfoSearch extends Component {
     }
     //隠した削除ボタンの実装
     onDeleteRow = (rows) => {
-        const emp = {
-            employeeNo: this.state.rowSelectEmployeeNo,
-            resumeInfo1: this.state.resumeInfo1,
-            resumeInfo2: this.state.resumeInfo2,
-            residentCardInfo: this.state.residentCardInfo,
+        const projectInfoModel = {
+            projectNo: this.state.selectedProjectNo,
+
         };
-        axios.post(this.state.serverIP + "employee/deleteEmployeeInfo", emp)
+        var id = this.state.selectedProjectNo;
+        var projectInfoList = this.state.projectInfoList;
+        for (let i = projectInfoList.length - 1; i >= 0; i--) {
+            if (projectInfoList[i].projectNo === id) {
+                projectInfoList.splice(i, 1);
+            }
+        }
+        if (projectInfoList.length !== 0) {
+            for (let i = projectInfoList.length - 1; i >= 0; i--) {
+                projectInfoList[i].rowNo = (i + 1);
+            }
+        }
+        this.setState({
+            projectInfoList: projectInfoList,
+        })
+        axios.post(this.state.serverIP + "projectInfoSearch/delete", projectInfoModel)
             .then(result => {
-                if (result.data) {
-                    this.searchEmployee();
+                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                    this.search(null);
                     //削除の後で、rowSelectEmployeeNoの値に空白をセットする
                     this.setState(
                         {
                             rowSelectEmployeeNo: ''
                         }
                     );
-                    this.setState({ "myToastShow": true });
+                    this.setState({ "myToastShow": true, "type": "success",message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 } else {
-                    this.setState({ "myToastShow": false });
+                    this.setState({ "myToastShow": false, "errorsMessageShow": true, errorsMessage: result.data.errorsMessage });
                 }
             })
-            .catch(error=> {
+            .catch(error => {
                 alert("删除错误，请检查程序");
             });
     }
@@ -294,12 +332,12 @@ class ProjectInfoSearch extends Component {
         const dropRowKeysStr = dropRowKeys.join(',');
         next();
     }
-    search=(sendValues)=>{
-        var projectInfoMod = {
-            theSelectProjectperiodStatus:this.state.theSelectProjectperiodStatus,
+    search = (sendValues) => {
+        var projectInfoModel = {
+            theSelectProjectperiodStatus: this.state.theSelectProjectperiodStatus,
             projectNo: this.state.projectNo,
             nationalityCode: this.state.nationalityCode,
-            admissionPeriod: this.state.admissionPeriod,
+            admissionPeriod: utils.formateDate(this.state.admissionPeriod, false),
             projectType: this.state.projectType,
             successRate: this.state.successRate,
             keyWordOfLanagurue1: this.state.keyWordOfLanagurue1,
@@ -313,16 +351,60 @@ class ProjectInfoSearch extends Component {
             experienceYear: this.state.experienceYear,
             noOfInterviewCode: this.state.noOfInterviewCode,
         };
-        if(sendValues !== null && sendValues !== undefined){
-            projectInfoMod = sendValues;
+        if (sendValues !== null && sendValues !== undefined) {
+            projectInfoModel = sendValues;
         }
-        axios.post(this.state.serverIP + "projectInfoSearch/search", projectInfoMod)
-        .then(result => {
-
-        })
-        .catch(error=> {
-            alert("删除错误，请检查程序");
-        });
+        axios.post(this.state.serverIP + "projectInfoSearch/search", projectInfoModel)
+            .then(result => {
+                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                    this.setState({
+                        projectInfoList: result.data.projectInfoList,
+                        "errorsMessageShow": false,
+                        searchFlag: true,
+                    },()=>{
+                        if(this.props.location.state !== undefined && sendValues !== null && sendValues !== undefined){
+                            this.refs.projectInfoSearchTable.setState({
+                                selectedRowKeys:this.props.location.state.selectedProjectNo,
+                            })
+                            $('button[name="clickButton"]').attr('disabled', false);
+                        }else{
+                            $('button[name="clickButton"]').attr('disabled', true);
+                            this.refs.projectInfoSearchTable.setState({
+                                selectedRowKeys:[],
+                            })
+                        }
+                    })
+                } else {
+                    this.setState({
+                        projectInfoList: [],
+                        searchFlag: true,
+                    })
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+                }
+            })
+            .catch(error => {
+                alert("检索错误，请检查程序");
+            });
+    }
+    admissionPeriodChange = date => {
+        if (date !== null) {
+            this.setState({
+                admissionPeriod: date,
+            });
+        } else {
+            this.setState({
+                admissionPeriod: '',
+            });
+        }
+    }
+    /**
+     * 削除ボタン
+     */
+    delete = () => {
+        var a = window.confirm("削除していただきますか？");
+        if (a) {
+            $("#deleteBtn").click();
+        }
     }
     render() {
         const {
@@ -521,9 +603,6 @@ class ProjectInfoSearch extends Component {
                                                     {date.name}
                                                 </option>
                                             )}
-                                            <font
-                                                id="mark" color="red"
-                                                style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
@@ -532,21 +611,22 @@ class ProjectInfoSearch extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>入場時期</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <FormControl
-                                            as="select"
-                                            value={admissionPeriod}
+                                        <DatePicker
+                                            selected={admissionPeriod}
+                                            onChange={this.admissionPeriodChange}
+                                            autoComplete="off"
+                                            locale="pt-BR"
+                                            showMonthYearPicker
+                                            showFullMonthYearPicker
+                                            minDate={new Date()}
+                                            showDisabledMonthNavigation
+                                            className="form-control form-control-sm"
+                                            id="wagesInfoDatePicker"
+                                            dateFormat={"yyyy/MM"}
                                             name="admissionPeriod"
-                                            onChange={this.valueChange}
-                                        >
-                                            {admissionPeriodDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
-                                            <font
-                                                id="mark" color="red"
-                                                style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
-                                        </FormControl>
+                                            locale="ja"
+                                            disabled={actionType === "detail" ? true : false}
+                                        />
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
@@ -622,7 +702,8 @@ class ProjectInfoSearch extends Component {
                                             name="experienceYear"
                                             onChange={(e) => this.vNumberChange(e, 'experienceYear')}
                                         >
-                                        </FormControl>{"年以上"}
+                                        </FormControl>
+                                        <font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>年以上</font>
                                     </InputGroup>
                                 </Col>
                                 <Col sm={2}>
@@ -641,7 +722,7 @@ class ProjectInfoSearch extends Component {
                                                     {date.name}
                                                 </option>
                                             )}
-                                        </FormControl>{"から"}
+                                        </FormControl><font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>から</font>
                                     </InputGroup>
                                 </Col>
                                 <Col sm={2}>
@@ -686,7 +767,7 @@ class ProjectInfoSearch extends Component {
                         </Form.Group>
                     </Form>
                     <div style={{ "textAlign": "center" }}>
-                        <Button size="sm" variant="info">
+                        <Button size="sm" variant="info" onClick={this.search.bind(this, null)}>
                             <FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
                         <Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">
@@ -705,7 +786,7 @@ class ProjectInfoSearch extends Component {
                                 <div style={{ "float": "right" }}>
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-                                    <Button size="sm" variant="info" name="clickButton" id="delete" variant="info"><FontAwesomeIcon icon={faTrash} /> 削	除</Button>
+                                    <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>
                                 </div>
                             </Col>
                         </Row>
@@ -713,17 +794,20 @@ class ProjectInfoSearch extends Component {
                     <div >
                         <Row >
                             <Col sm={12}>
-                                <BootstrapTable data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-                                    <TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey>番号</TableHeaderColumn>
-                                    <TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo'>案件番号</TableHeaderColumn>
-                                    <TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>確率</TableHeaderColumn>
-                                    <TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>入場時期</TableHeaderColumn>
-                                    <TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>日本語</TableHeaderColumn>
-                                    <TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday'>経験年数</TableHeaderColumn>
-                                    <TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>単価上限</TableHeaderColumn>
-                                    <TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>作業工程</TableHeaderColumn>
-                                    <TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>お客様</TableHeaderColumn>
-                                    <TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod'>開発言語</TableHeaderColumn>
+                                <BootstrapTable ref="projectInfoSearchTable" data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+                                    <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataField='successRateName'>確率</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriod'>入場時期</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }}>開発言語</TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName1'></TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName2'></TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName3'></TableHeaderColumn>
                                 </BootstrapTable>
                             </Col>
                         </Row>
