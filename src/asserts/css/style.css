@@ -752,6 +752,10 @@ padding: 1rem;
   font-size: ".875rem";
   color: "#495057"
 }
+.popoverC{
+  max-width:450px !important;
+}
+
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {
@@ -979,4 +983,8 @@ padding: 1rem;
     font-size: ".875rem";
     color: "#495057"
   }
+  .popoverC{
+    max-width:450px !important;
+  }
+ 
 }
