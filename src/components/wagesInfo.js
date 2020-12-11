@@ -730,7 +730,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : kadouCheck === true ? true : false}
+                                            disabled={actionType === "detail" ? true : kadouCheck === true ? true : employeeFormCode === "2" ? true : false}
                                             name="socialInsuranceFlag"
                                             onChange={this.valueChangeInsurance}
                                             value={socialInsuranceFlag}>
@@ -807,7 +807,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : false}
+                                            disabled={actionType === "detail" ? true : employeeFormCode === "2" ? true : false}
                                             name="bonusFlag"
                                             onChange={this.valueChangeBonus}
                                             value={bonusFlag}>

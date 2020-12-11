@@ -325,8 +325,6 @@ export function handleDownload(path, serverIP) {
 
 }
 
-
-
 export function postcodeApi(postcode) {
 	if (postcode !== undefined && postcode !== null && postcode !== "") {
 		var outArray = [];

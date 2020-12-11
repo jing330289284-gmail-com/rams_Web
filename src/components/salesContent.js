@@ -127,10 +127,13 @@ class salesContent extends React.Component {
 
 	//　更新ボタン
 	updateSalesSentence = () => {
+		this.state.beginMonth = publicUtils.formateDate(this.state.beginMonth, false);
 		axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
 				this.init();
-				this.setState({ myToastShow: true });
+				this.setState({ 
+					beginMonth: new Date(this.state.beginMonth).getTime(),
+					myToastShow: true });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
 			})
 			.catch(function(error) {
@@ -249,8 +252,8 @@ class salesContent extends React.Component {
 						yearsOfExperience: result.data[0].yearsOfExperience,
 						japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 						englishConversationLevel: result.data[0].englishConversationLevel,
-						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: '1',
+						beginMonth: new Date(result.data[0].theMonthOfStartWork).getTime(),
+						salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
 						employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
@@ -329,7 +332,7 @@ class salesContent extends React.Component {
 					歳</ListGroup.Item></span>
 					<ListGroup.Item>
 						<span style={{ flexFlow: "nowrap" }}>【最寄り駅】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.updateAddress}
+					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.updateAddress}
 								name="nearestStation" value={this.state.nearestStation}>
 								{this.state.stations.map(date =>
 									<option key={date.code} value={date.code}>
@@ -340,7 +343,7 @@ class salesContent extends React.Component {
 					</ListGroup.Item>
 					<ListGroup.Item>
 						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
+					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
 								name="japaneaseConversationLevel" value={this.state.japaneaseConversationLevel}>
 								{this.state.japaneaseConversationLevels.map(date =>
 									<option key={date.code} value={date.code}>
@@ -348,10 +351,10 @@ class salesContent extends React.Component {
 									</option>
 								)}
 							</Form.Control></span>
-						{this.state.japaneseLevelCode}</ListGroup.Item>
+							&nbsp;&nbsp;{this.state.japaneseLevelCode}</ListGroup.Item>
 					<ListGroup.Item>
 						<span style={{ flexFlow: "nowrap" }}>【英　　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
+					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
 								name="englishConversationLevel" value={this.state.englishConversationLevel}
 							>
 								{this.state.englishConversationLevels.map(date =>
@@ -360,7 +363,7 @@ class salesContent extends React.Component {
 									</option>
 								)}
 							</Form.Control></span>
-						{this.state.englishLevelCode}</ListGroup.Item>
+						&nbsp;&nbsp;{this.state.englishLevelCode}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
@@ -402,7 +405,7 @@ class salesContent extends React.Component {
 						/>
 					</ListGroup.Item></span>
 					<ListGroup.Item><span style={{ flexFlow: "nowrap" }}>【営業状況】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "145px", height: "30px" }} onChange={this.valueChange}
+					    <Form.Control as="select" disabled style={{ display: "inherit", width: "145px", height: "35px" }} onChange={this.valueChange}
 							name="salesProgressCode" value={this.state.salesProgressCode}
 						>
 							{this.state.salesProgresss.map(date =>
