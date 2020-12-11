@@ -165,12 +165,18 @@ class salesProfit extends React.Component {
 	//页面跳转
 	shuseiTo = () => {
 		var path = {};
+		var startTime = null;
+		var endTime = null;
+		if (this.state.admissionStartDate != null && this.state.admissionEndDate != null) {
+			startTime = this.state.admissionStartDate;
+			endTime = this.state.admissionEndDate;
+		}
 		path = {
 			pathname: '/subMenuManager/salesPoint',
 			state: {
 				customerNo: this.state.customerNo,
-				startTime: this.state.admissionStartDate,
-				endTime: this.state.admissionEndDate,
+				startTime: startTime,
+				endTime: endTime,
 			},
 		}
 		this.props.history.push(path);
