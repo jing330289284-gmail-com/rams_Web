@@ -66,7 +66,7 @@ class sendRepot extends React.Component {
 	//リスト取得
 	getLists = () => {
 		axios.post(this.state.serverIP + "sendRepot/getLists")
-				.then(result => {
+			.then(result => {
 					this.setState({
 						salesLists: result.data,
 						listName:1+result.data.length,
@@ -92,6 +92,13 @@ class sendRepot extends React.Component {
 				let customerNoArray = new Array();
 				for (let i in result.data) {
 					customerNoArray.push(result.data[i].customerNo);
+				}
+				//theKey
+				if (result.data.length > 0) {
+					for (var i = 0; i < result.data.length; i++) {
+						result.data[i].rowId = i + 1;
+						result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].purchasingManagers;
+					}
 				}
 				this.setState({
 					allCustomer: result.data,
@@ -255,27 +262,30 @@ class sendRepot extends React.Component {
 		})
 	}
 
-	// plusClick
+	// 追加
 	plusClick = () => {
-		let customerNo = this.state.customerCode;
-		let customerDepartmentCode = this.state.customerDepartmentCode;
+		let customerNo = this.state.customerCode;//お客様名
+		let customerDepartmentCode = this.state.customerDepartmentCode;//部門
+		let purchasingManagers = this.state.purchasingManagers;//担当者
+
 		let customers = this.state.allCustomer;
 		let customerInfo = this.state.customerTemp;
 		var sameFlag = false;
 		if (customers.length !== 0) {
-			for (let k in customers) {
-				if (customerNo === customers[k].customerNo &&
-					customerDepartmentCode === customers[k].customerDepartmentCode) {
+			for (let i in customers) {
+				if (customerNo === customers[i].customerNo &&
+					customerDepartmentCode === customers[i].customerDepartmentCode &&
+					purchasingManagers === customers[i].purchasingManagers) {
 					alert("err---the same record");
 					sameFlag = true;
 				}
 			}
 			if (!sameFlag) {
-				for (let k in customerInfo) {
-					if (customerNo === customerInfo[k].customerNo &&
-						customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
+				for (let i in customerInfo) {
+					if (customerNo === customerInfo[i].customerNo &&
+						customerDepartmentCode === customerInfo[i].customerDepartmentCode) {
 						this.setState({
-							allCustomer: this.state.allCustomer.concat(customerInfo[k]).sort(function(a, b) {
+							allCustomer: this.state.allCustomer.concat(customerInfo[i]).sort(function(a, b) {
 								return a.rowId - b.rowId
 							}),
 						})
@@ -283,17 +293,17 @@ class sendRepot extends React.Component {
 				}
 			}
 		} else {
-			for (let k in customerInfo) {
-				if (customerNo === customerInfo[k].customerNo &&
-					customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
+			for (let i in customerInfo) {
+				if (customerNo === customerInfo[i].customerNo &&
+					customerDepartmentCode === customerInfo[i].customerDepartmentCode) {
 					this.setState({
-						allCustomer: this.state.allCustomer.concat(customerInfo[k]),
+						allCustomer: this.state.allCustomer.concat(customerInfo[i]),
 					})
 				}
 			}
 		}
 	}
-
+	//
 	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -371,13 +381,11 @@ class sendRepot extends React.Component {
 				this.setState({
 					listShowFlag:true,
 				})
-				
 			})
 			.catch(function(err) {
 				alert(err)
 			})
 		}
-
 	}
 	openFolder = () => {
 				axios.post(this.state.serverIP + "sendRepot/openFolder")
@@ -592,7 +600,7 @@ class sendRepot extends React.Component {
 								</InputGroup>
 							</Col>
 							<Col sm={1}>
-								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
+								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.customerCode == "" || this.state.customerDepartmentCode == "" || this.state.purchasingManagers == ""? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 							</Col>
 							<Col sm={5} style={{ "display": this.state.salesLists.length>=1 ? "block" : "none" }}>
@@ -651,10 +659,10 @@ class sendRepot extends React.Component {
 							selectRow={selectRow}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='rowId' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerNo' >お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='theKey' isKey></TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='rowId' >番号</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='7%' dataField='responsiblePerson'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='15%' dataField='customerDepartmentMail' >メール(To)</TableHeaderColumn>
