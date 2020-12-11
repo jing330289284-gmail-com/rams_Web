@@ -237,6 +237,8 @@ class sendRepot extends React.Component {
 		this.refs.customersTable.store.selected = [];
 		this.refs.customersTable.setState({
 			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
+		},()=>{
+			console.log(this.refs.customersTable.state.selectedRowKeys);
 		})
 		let customerRowIdArray = new Array();
 		for (let i in this.state.allCustomer) {
@@ -622,7 +624,7 @@ class sendRepot extends React.Component {
 					</Form.Group>
 					<Row>
 						<Col sm={2}>
-							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
+							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists.bind(this)}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
@@ -651,8 +653,8 @@ class sendRepot extends React.Component {
 							selectRow={selectRow}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='rowId' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerNo' >お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='rowId' >番号</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='customerNo' isKey >お客様番号</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>

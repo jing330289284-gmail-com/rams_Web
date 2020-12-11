@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import { Row, Form, Col, InputGroup, Button, FormControl, Modal, } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl, Modal } from 'react-bootstrap';
 import MyToast from './myToast';
 import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faLevelUpAlt, faSearch, faList, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faLevelUpAlt, faSearch, faList, faEdit, faTrash , faEnvelope , faBook} from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import store from './redux/store';
+import ProjectContent from './projectContent';
 axios.defaults.withCredentials = true;
 
 class ProjectInfoSearch extends Component {
@@ -32,6 +33,7 @@ class ProjectInfoSearch extends Component {
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//バックエンドのリンク
         selectedProjectNo: '',//選択した案件番号
         searchFlag: false,//検索フラグ
+        showProjectContentModal:false,//案件文章表示フラグ
         //項目
         theSelectProjectperiodStatus: '0',
         projectNo: '',
@@ -186,14 +188,14 @@ class ProjectInfoSearch extends Component {
     }
     componentDidMount() {
         $('button[name="clickButton"]').attr('disabled', true);
-        if(this.props.location.state !== undefined){
+        if (this.props.location.state !== undefined) {
             var sendValue = this.props.location.state.sendValue;
             var searchFlag = this.props.location.state.searchFlag;
             this.giveValue(sendValue);
             this.setState({
-                selectedProjectNo:this.props.location.state.selectedProjectNo,
+                selectedProjectNo: this.props.location.state.selectedProjectNo,
             })
-            if(searchFlag){
+            if (searchFlag) {
                 this.search(sendValue);
             }
         }
@@ -317,7 +319,7 @@ class ProjectInfoSearch extends Component {
                             rowSelectEmployeeNo: ''
                         }
                     );
-                    this.setState({ "myToastShow": true, "type": "success",message: result.data.message });
+                    this.setState({ "myToastShow": true, "type": "success", message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                 } else {
                     this.setState({ "myToastShow": false, "errorsMessageShow": true, errorsMessage: result.data.errorsMessage });
@@ -361,16 +363,16 @@ class ProjectInfoSearch extends Component {
                         projectInfoList: result.data.projectInfoList,
                         "errorsMessageShow": false,
                         searchFlag: true,
-                    },()=>{
-                        if(this.props.location.state !== undefined && sendValues !== null && sendValues !== undefined){
+                    }, () => {
+                        if (this.props.location.state !== undefined && sendValues !== null && sendValues !== undefined) {
                             this.refs.projectInfoSearchTable.setState({
-                                selectedRowKeys:this.props.location.state.selectedProjectNo,
+                                selectedRowKeys: this.props.location.state.selectedProjectNo,
                             })
                             $('button[name="clickButton"]').attr('disabled', false);
-                        }else{
+                        } else {
                             $('button[name="clickButton"]').attr('disabled', true);
                             this.refs.projectInfoSearchTable.setState({
-                                selectedRowKeys:[],
+                                selectedRowKeys: [],
                             })
                         }
                     })
@@ -406,6 +408,18 @@ class ProjectInfoSearch extends Component {
             $("#deleteBtn").click();
         }
     }
+        /**
+    * 小さい画面の閉め 
+    */
+   handleHideModal = (Kbn) => {
+    this.setState({ showProjectContentModal: false })
+    }
+    /**
+    *  小さい画面の開き
+    */
+    handleShowModal = (Kbn) => {
+        this.setState({ showProjectContentModal: true })
+    }
     render() {
         const {
             actionType,
@@ -434,6 +448,7 @@ class ProjectInfoSearch extends Component {
             projectPhaseEnd,
             noOfInterviewCode,
             projectInfoList,
+            selectedProjectNo,
             //Drop 
             projectNoDrop,
             projectTypeDrop,
@@ -487,6 +502,15 @@ class ProjectInfoSearch extends Component {
                     <ErrorsMessageToast errorsMessageShow={errorsMessageShow} message={errorsMessageValue} type={"danger"} />
                 </div>
                 <div id="Home">
+                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-projectContent"
+                        onHide={this.handleHideModal.bind(this)} show={this.state.showProjectContentModal}>
+                        <Modal.Header closeButton>
+                        <h2>営業文章</h2>
+                        </Modal.Header>
+                        <Modal.Body >
+                            <ProjectContent projectNo={selectedProjectNo}/>
+                        </Modal.Body>
+                    </Modal>
                     <Row inline="true">
                         <Col className="text-center">
                             <h2>案件検索</h2>
@@ -780,13 +804,15 @@ class ProjectInfoSearch extends Component {
                     <br />
                     <div>
                         <Row >
-                            <Col sm={9}>
+                            <Col sm={7}>
                             </Col>
-                            <Col sm={3}>
+                            <Col sm={5}>
                                 <div style={{ "float": "right" }}>
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-                                    <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>
+                                    <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>{' '}
+                                    <Button size="sm" variant="info" name="clickButton" id="selectCustomer" variant="info"><FontAwesomeIcon icon={faEnvelope} /> お客様選択</Button>{' '}
+                                    <Button size="sm" variant="info" name="clickButton" id="projectContent" variant="info" onClick={this.handleShowModal.bind(this)}><FontAwesomeIcon icon={faBook} /> 案件文章</Button>
                                 </div>
                             </Col>
                         </Row>
