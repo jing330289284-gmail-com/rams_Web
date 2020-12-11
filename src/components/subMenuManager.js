@@ -11,6 +11,7 @@ import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
 import SelectCustomers from './selectCustomers';
+import SendRepot from './sendRepot';
 import siteSearch from './siteSearch';
 import salesPointSet from './salesPointSet';
 import salesProfit from './salesProfit';
@@ -100,7 +101,7 @@ class SubMenu extends Component {
 			pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
 		}
 		var projectInfoPath = {
-			pathname: '/subMenuManager/projectInfo', state: { actionType: 'insert' },
+			pathname: '/subMenuManager/projectInfo', state: { actionType: 'insert' , backPage:'' },
 		}
 		const { authorityCode } = this.state;
 		const styleLow = {
@@ -208,6 +209,8 @@ class SubMenu extends Component {
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/projectInfoSearch">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />案件一覧</Link></ListGroup.Item>
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/sendRepot">
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />報告書送信</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
@@ -314,6 +317,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/customerInfoSearch`} component={CustomerInfoSearch} />
 								<Route exact path={`${this.props.match.url}/manageSituation`} component={ManageSituation} />
 								<Route exact path={`${this.props.match.url}/selectCustomers`} component={SelectCustomers} />
+								<Route exact path={`${this.props.match.url}/sendRepot`} component={SendRepot} />
 								<Route exact path={`${this.props.match.url}/dutyRegistration`} component={DutyRegistration} />
 								<Route exact path={`${this.props.match.url}/breakTime`} component={BreakTime} />
 								<Route exact path={`${this.props.match.url}/salesSendLetter`} component={salesSendLetter} />

@@ -5,10 +5,12 @@ import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave , faUndo , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker, { registerLocale } from "react-datepicker"
 axios.defaults.withCredentials = true;
 
 class projectInfo extends Component {
@@ -30,7 +32,6 @@ class projectInfo extends Component {
         keyWordOfLanagurue1: '',
         keyWordOfLanagurue2: '',
         keyWordOfLanagurue3: '',
-        typeOfIndustry: '',
         projectInfoDetail: '',
         japaneaseConversationLevel: '',
         unitPriceRangeLowest: '',
@@ -44,9 +45,12 @@ class projectInfo extends Component {
         requiredItem1: '',
         requiredItem2: '',
         noOfInterviewCode: '',
+        recruitmentNumbers:'',
+        remark:'',
+        workStartPeriodForDate:'',
         //パラメータ
-        actionType: "insert",
-        backPage:"",//遷移元
+        actionType: this.props.location.state.actionType,
+        backPage: "",//遷移元
         message: '',//toastのメッセージ
         type: '',//成功や失敗
         myToastShow: false,//toastのフラグ
@@ -55,6 +59,7 @@ class projectInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//バックエンドのリンク
         //Drop 
+        recruitmentNumbersDrop:[{"code":"1","name":"1"},{"code":"2","name":"2"},{"code":"3","name":"3"},{"code":"4","name":"4"},{"code":"5","name":"5"}],
         projectTypeDrop: store.getState().dropDown[52],
         payOffRangeDrop: store.getState().dropDown[33].slice(1),
         nationalityDrop: store.getState().dropDown[7],
@@ -67,8 +72,7 @@ class projectInfo extends Component {
         successRateDrop: store.getState().dropDown[48],
         developLanguageDrop: store.getState().dropDown[8].slice(1),
         ageClassificationDrop: store.getState().dropDown[49],
-        admissionPeriodDrop: store.getState().dropDown[51],
-        typeOfIndustryDrop: store.getState().dropDown[36],
+        workStartPeriodDrop:store.getState().dropDown[59],
     }
     //onchange
     valueChange = event => {
@@ -91,7 +95,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1: '',
             keyWordOfLanagurue2: '',
             keyWordOfLanagurue3: '',
-            typeOfIndustry: '',
             projectInfoDetail: '',
             japaneaseConversationLevel: '',
             unitPriceRangeLowest: '',
@@ -104,10 +107,12 @@ class projectInfo extends Component {
             workStartPeriod: '',
             requiredItem1: '',
             requiredItem2: '',
+            remark:'',
             noOfInterviewCode: '',
             personInChargeDrop: [],
             experienceYear: '',
             siteLoaction: '',
+            recruitmentNumbers:'',
         })
     }
     /**
@@ -118,7 +123,7 @@ class projectInfo extends Component {
             projectNo: projectInfoMod.projectNo,
             projectName: projectInfoMod.projectName,
             nationalityCode: projectInfoMod.nationalityCode,
-            admissionPeriod: projectInfoMod.admissionPeriod,
+            admissionPeriod:utils.converToLocalTime(projectInfoMod.admissionPeriod,false),
             projectType: projectInfoMod.projectType,
             successRate: projectInfoMod.successRate,
             customerNo: projectInfoMod.customerNo,
@@ -128,7 +133,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1: projectInfoMod.keyWordOfLanagurue1,
             keyWordOfLanagurue2: projectInfoMod.keyWordOfLanagurue2,
             keyWordOfLanagurue3: projectInfoMod.keyWordOfLanagurue3,
-            typeOfIndustry: projectInfoMod.typeOfIndustry,
             projectInfoDetail: projectInfoMod.projectInfoDetail,
             japaneaseConversationLevel: projectInfoMod.japaneaseConversationLevel,
             unitPriceRangeLowest: projectInfoMod.unitPriceRangeLowest,
@@ -138,13 +142,23 @@ class projectInfo extends Component {
             projectPhaseEnd: projectInfoMod.projectPhaseEnd,
             payOffRangeLowest: projectInfoMod.payOffRangeLowest,
             payOffRangeHighest: projectInfoMod.payOffRangeHighest,
-            workStartPeriod: projectInfoMod.workStartPeriod,
             requiredItem1: projectInfoMod.requiredItem1,
             requiredItem2: projectInfoMod.requiredItem2,
             experienceYear: projectInfoMod.experienceYear,
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
             siteLoaction: projectInfoMod.siteLoaction,
+            recruitmentNumbers:projectInfoMod.recruitmentNumbers,
+            remark:projectInfoMod.remark,
         })
+        if(projectInfoMod.workStartPeriod.length > 2){
+            this.setState({
+                workStartPeriodForDate:utils.converToLocalTime(projectInfoMod.workStartPeriod,false),
+            })
+        }else{
+            this.setState({
+                workStartPeriod:projectInfoMod.workStartPeriod,
+            })
+        }
     }
     /**
      * お客様の自動提示
@@ -259,11 +273,15 @@ class projectInfo extends Component {
     }
     componentDidMount() {
         var projectNo = "";
-        if (this.props.state !== null && this.props.state !== undefined) {
+        if (this.props.location.state !== null && this.props.location.state !== undefined) {
             this.setState({
-                projectNo: this.props.state.projectNo,
+                projectNo: this.props.location.state.projectNo,
+                backPage: this.props.location.state.backPage,
+                actionType:this.props.location.state.actionType,
+                sendValue:this.props.location.state.sendValue,
+                searchFlag:this.props.location.state.searchFlag,
             })
-            projectNo = this.props.state.projectNo;
+            projectNo = this.props.location.state.projectNo;
         }
         var projectInfoModel = {
             actionType: this.state.actionType,
@@ -308,12 +326,13 @@ class projectInfo extends Component {
      * 登録ボタン
      */
     toroku = () => {
-        $("#toroku").attr("disabled",true);
+        $("#toroku").attr("disabled", true);
         var projectInfoModel = {};
         var formArray = $("#projectInfoForm").serializeArray();
         $.each(formArray, function (i, item) {
             projectInfoModel[item.name] = item.value;
         });
+        projectInfoModel["admissionPeriod"] = utils.formateDate(this.state.admissionPeriod,false);
         projectInfoModel["personInCharge"] = utils.valueGetLabel(this.state.personInCharge, this.state.personInChargeDrop);
         projectInfoModel["siteLoaction"] = this.state.siteLoaction;
         projectInfoModel["keyWordOfLanagurue1"] = this.state.keyWordOfLanagurue1;
@@ -326,24 +345,52 @@ class projectInfo extends Component {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                    if(this.state.actionType === "insert"){
+                    if (this.state.actionType === "insert") {
                         window.location.reload();
                     }
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-                    $("#toroku").attr("disabled",false);
+                    $("#toroku").attr("disabled", false);
                 }
             })
             .catch(error => {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
-                $("#toroku").attr("disabled",false);
+                $("#toroku").attr("disabled", false);
             });
     }
-     /**
-     * 戻るボタン
-     */
-    back=()=>{
-        this.props.history.push(this.state.backPage);
+    admissionPeriodChange= date =>{
+        if (date !== null) {
+            this.setState({
+                admissionPeriod: date,
+            });
+        } else {
+            this.setState({
+                admissionPeriod: '',
+            });
+        }
+    }
+    workStartPeriodChange= date =>{
+        if (date !== null) {
+            this.setState({
+                workStartPeriodForDate: date,
+                workStartPeriod:'',
+            });
+        } else {
+            this.setState({
+                workStartPeriodForDate: '',
+            });
+        }
+    }
+    /**
+ * 戻るボタン
+ */
+    back = () => {
+        var path = {};
+        path = {
+            pathname: this.state.backPage,
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, selectedProjectNo: this.state.projectNo },
+        }
+        this.props.history.push(path);
     }
     render() {
         const {
@@ -359,7 +406,6 @@ class projectInfo extends Component {
             keyWordOfLanagurue1,
             keyWordOfLanagurue2,
             keyWordOfLanagurue3,
-            typeOfIndustry,
             projectInfoDetail,
             japaneaseConversationLevel,
             unitPriceRangeLowest,
@@ -375,6 +421,9 @@ class projectInfo extends Component {
             siteLoaction,
             noOfInterviewCode,
             experienceYear,
+            recruitmentNumbers,
+            workStartPeriodForDate,
+            remark,
             actionType,
             backPage,
             message,//toastのメッセージ
@@ -384,6 +433,7 @@ class projectInfo extends Component {
             errorsMessageValue,//エラーのメッセージ
             torokuText,//登録ボタンの文字
             //Drop 
+            recruitmentNumbersDrop,
             projectTypeDrop,
             payOffRangeDrop,
             nationalityDrop,
@@ -396,8 +446,7 @@ class projectInfo extends Component {
             successRateDrop,
             developLanguageDrop,
             ageClassificationDrop,
-            admissionPeriodDrop,
-            typeOfIndustryDrop,
+            workStartPeriodDrop,
         } = this.state;
         return (
             <div>
@@ -466,37 +515,37 @@ class projectInfo extends Component {
                                                     {date.name}
                                                 </option>
                                             )}
-                                            <font
-                                                id="mark" color="red"
-                                                style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                         </FormControl>
+                                        <font
+                                            id="mark" color="red"
+                                            style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
-                                </Col>
-                                <Col sm={1}>
                                 </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>入場時期</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <FormControl
-                                            as="select"
-                                            value={admissionPeriod}
+                                        <DatePicker
+                                            selected={admissionPeriod}
+                                            onChange={this.admissionPeriodChange}
+                                            autoComplete="off"
+                                            locale="pt-BR"
+                                            showMonthYearPicker
+                                            showFullMonthYearPicker
+                                            minDate={new Date()}
+                                            showDisabledMonthNavigation
+                                            className="form-control form-control-sm"
+                                            id="wagesInfoDatePicker"
+                                            dateFormat={"yyyy/MM"}
                                             name="admissionPeriod"
-                                            onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}>
-                                            {admissionPeriodDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
-                                            <font
-                                                id="mark" color="red"
-                                                style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
-                                        </FormControl>
+                                            locale="ja"
+                                            disabled={actionType === "detail" ? true : false}
+                                        />
+                                        <font
+                                            id="mark" color="red"
+                                            style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
-                                </Col>
-                                <Col sm={1}>
                                 </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
@@ -517,6 +566,25 @@ class projectInfo extends Component {
                                             name="unitPriceRangeHighest"
                                             onChange={(e) => this.vNumberChange(e, 'unitPriceRangeHighest')}
                                             disabled={actionType === "detail" ? true : false}></FormControl>
+                                    </InputGroup>
+                                </Col>
+                                <Col sm={3}>
+                                    <InputGroup size="sm" className="mb-3">
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>募集人数</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl
+                                            as="select"
+                                            value={recruitmentNumbers}
+                                            name="recruitmentNumbers"
+                                            onChange={this.valueChange}
+                                            disabled={actionType === "detail" ? true : false}>
+                                            {recruitmentNumbersDrop.map(date =>
+                                                <option key={date.code} value={date.code}>
+                                                    {date.name}
+                                                </option>
+                                            )}
+                                        </FormControl>
                                     </InputGroup>
                                 </Col>
                             </Row>
@@ -710,28 +778,43 @@ class projectInfo extends Component {
                                             value={workStartPeriod}
                                             name="workStartPeriod"
                                             onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}>
-                                            {admissionPeriodDrop.map(date =>
+                                            disabled={actionType === "detail" ? true : workStartPeriodForDate === '' ? false : workStartPeriodForDate === null ? false : true}>
+                                            {workStartPeriodDrop.map(date =>
                                                 <option key={date.code} value={date.code}>
                                                     {date.name}
                                                 </option>
                                             )}
                                         </FormControl>
+                                        <DatePicker
+                                            selected={workStartPeriodForDate}
+                                            onChange={this.workStartPeriodChange}
+                                            autoComplete="off"
+                                            locale="pt-BR"
+                                            showMonthYearPicker
+                                            showFullMonthYearPicker
+                                            minDate={new Date()}
+                                            showDisabledMonthNavigation
+                                            className="form-control form-control-sm"
+                                            id="workStartPeriodDatePicker"
+                                            dateFormat={"yyyy/MM"}
+                                            name="workStartPeriodForDate"
+                                            locale="ja"
+                                            disabled={actionType === "detail" ? true : false}
+                                        />
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>業種制限</InputGroup.Text>
+                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            maxLength="2"
-                                            value={typeOfIndustry}
-                                            name="typeOfIndustry"
+                                            value={successRate}
+                                            name="successRate"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
-                                            {typeOfIndustryDrop.map(date =>
+                                            {successRateDrop.map(date =>
                                                 <option key={date.code} value={date.code}>
                                                     {date.name}
                                                 </option>
@@ -884,21 +967,16 @@ class projectInfo extends Component {
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
+                                            <InputGroup.Text id="fiveKanji">備考</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            as="select"
-                                            value={successRate}
-                                            name="successRate"
+                                            value={remark}
+                                            name="remark"
+                                            placeholder="例：XXXXX"
                                             onChange={this.valueChange}
                                             disabled={actionType === "detail" ? true : false}>
-                                            {successRateDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
@@ -940,10 +1018,10 @@ class projectInfo extends Component {
                             </Button>{" "}
                                 <Button
                                     size="sm"
-                                    hidden={backPage !== "projectInfoSearch" ? true : false}
+                                    hidden={backPage === "" ? true : false}
                                     variant="info"
                                     onClick={this.back}
-                                    >
+                                >
                                     <FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
                             </div>

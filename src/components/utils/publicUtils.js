@@ -249,6 +249,19 @@ export function labelGetValue(name, list) {
 }
 
 /**
+ * 联想框label的value取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function textGetValue(text, list) {
+	for (var i in list) {
+		if (text === list[i].text) {
+			return list[i].code;
+		}
+	}
+}
+/**
  * 联想框value的label取得
  * @param {*} name name的值
  * @param {*} list 后台传来的下拉框数组
@@ -262,6 +275,19 @@ export function valueGetLabel(code, list) {
 	}
 }
 
+/**
+ * 联想框value的text取得
+ * @param {*} name name的值
+ * @param {*} list 后台传来的下拉框数组
+ * @return name对应的code值
+ */
+export function valueGetText(code, list) {
+	for (var i in list) {
+		if (code === list[i].code) {
+			return list[i].text;
+		}
+	}
+}
 //Download 方法
 // param path  備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
@@ -298,8 +324,6 @@ export function handleDownload(path, serverIP) {
 	}
 
 }
-
-
 
 export function postcodeApi(postcode) {
 	if (postcode !== undefined && postcode !== null && postcode !== "") {

@@ -21,17 +21,6 @@ axios.defaults.withCredentials = true;
 /**
  * 費用登録画面
  */
-
-
-function transportationCode(code, roundCode) {
-	for (var i in roundCode) {
-		if (roundCode[i].code != "") {
-			if (code == roundCode[i].code) {
-				return roundCode[i].name;
-			}
-		}
-	}
-};
 class workTimeSearch extends React.Component {
 	constructor(props) {
 		super(props);
@@ -42,7 +31,10 @@ class workTimeSearch extends React.Component {
 	};
 
 	componentDidMount() {
-		this.searchWorkTime("", "");
+		let ThisYear = new Date();
+		ThisYear = ThisYear.getFullYear();
+		this.setYearAndMonth();
+		this.searchWorkTime(publicUtils.converToLocalTime(ThisYear + "01", false), publicUtils.converToLocalTime(ThisYear + "12", false));
 	}
 	//onchange
 	valueChange = event => {
@@ -52,35 +44,34 @@ class workTimeSearch extends React.Component {
 	}
 	//　初期化データ
 	initialState = {
-		employeeList: [],
-		approvalStatuslist: [],
+		station: store.getState().dropDown[14],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+	};
+	//日付設定
+	setYearAndMonth = () => {
+		let ThisYear = new Date();
+		ThisYear = ThisYear.getFullYear();
+		this.setState({
+			yearAndMonth1: publicUtils.converToLocalTime(ThisYear + "01", false),
+			yearAndMonth2: publicUtils.converToLocalTime(ThisYear + "12", false),
+		})
+		
 	};
 	//　検索
 	searchWorkTime = (yearAndMonth1, yearAndMonth2) => {
-		let emp = {
-
-		}
-		if (yearAndMonth1 != "") {
-			let emp = {
-				yearAndMonth1: publicUtils.formateDate(yearAndMonth1, true),
-				yearAndMonth2: publicUtils.formateDate(this.state.yearAndMonth2, true),
+			let workTimeModel = {
+				yearAndMonth1: yearAndMonth1 == "" ? publicUtils.formateDate(this.state.yearAndMonth1, false) : publicUtils.formateDate(yearAndMonth1, false),
+				yearAndMonth2: yearAndMonth2 == "" ? publicUtils.formateDate(this.state.yearAndMonth2, false) : publicUtils.formateDate(yearAndMonth2, false),
 			}
-		} else if (yearAndMonth2 != "") {
-			let emp = {
-				yearAndMonth1: publicUtils.formateDate(this.state.yearAndMonth1, true),
-				yearAndMonth2: publicUtils.formateDate(yearAndMonth2, true),
-			}
-		} else {
-			let emp = {
-				yearAndMonth1: publicUtils.formateDate(this.state.yearAndMonth1, true),
-				yearAndMonth2: publicUtils.formateDate(this.state.yearAndMonth2, true),
-			}
-        }
-		axios.post(this.state.serverIP + "workTimeSearch/selectWorkTime",emp)
+		axios.post(this.state.serverIP + "workTimeSearch/selectWorkTime", workTimeModel)
 			.then(response => response.data)
 			.then((data) => {
-			
+				var sumCost = 0;
+				if (data.length > 0) {
+					for (var i = 0; i < data.length; i++) {
+						data[i].rowNo = i+1;
+					} 
+				}
 				this.setState({
 					employeeList: data,
 				})
@@ -112,6 +103,16 @@ class workTimeSearch extends React.Component {
 			</p>
 		);
 	}
+	stationCode(code) {
+		let station = this.state.station;
+		for (var i in station) {
+			if (station[i].code != "") {
+				if (code == station[i].code) {
+					return station[i].name;
+				}
+			}
+		}
+	};
 	render() {
 		const {employeeList} = this.state;
 		const station = this.state.station;
@@ -199,15 +200,15 @@ class workTimeSearch extends React.Component {
 						<BootstrapTable data={employeeList} ref='table' id="table" pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='5%'　tdStyle={{ padding: '.45em' }} dataField='rowNo'  isKey>番号</TableHeaderColumn>
 							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='attendanceYearAndMonth' >年月</TableHeaderColumn>
-							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='systemName' >システム名</TableHeaderColumn>
-							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='stationName' >場所</TableHeaderColumn>
-							<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='payOffRange' >精算時間</TableHeaderColumn>
-							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='attendanceDays' >出勤日数</TableHeaderColumn>
-							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='sumWorkTime' >出勤時間</TableHeaderColumn>
-							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='averageSumWorkTime' >会社平均稼働</TableHeaderColumn>
-							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='workTimeRank' >社内稼動ランキング</TableHeaderColumn>
-							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='carCost' >交通費用</TableHeaderColumn>
-							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='otherCost' >他の費用</TableHeaderColumn>
+							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='systemName' >システム名</TableHeaderColumn>
+							<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='stationName' dataFormat={this.stationCode.bind(this)}>場所</TableHeaderColumn>
+							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='payOffRange' >精算時間</TableHeaderColumn>
+							<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }} dataField='attendanceDays' >出勤日数</TableHeaderColumn>
+							<TableHeaderColumn width='5%' tdStyle={{ padding: '.45em' }} dataField='sumWorkTime' >出勤時間</TableHeaderColumn>
+							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='averageSumWorkTime' >平均稼働</TableHeaderColumn>
+							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='workTimeRank' >稼動ランキング</TableHeaderColumn>
+							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='carCost' dataFormat={publicUtils.addComma.bind(this)}>交通費用</TableHeaderColumn>
+							<TableHeaderColumn width='10%' tdStyle={{ padding: '.45em' }} dataField='otherCost' dataFormat={publicUtils.addComma.bind(this)}>他の費用</TableHeaderColumn>
 						</BootstrapTable>
 					</Col></div>
 			</div >

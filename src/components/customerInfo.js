@@ -41,7 +41,7 @@ class CustomerInfo extends Component {
         customerNoForPageChange: "",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
-        stationCodeDrop2: store.getState().dropDown[14],//本社場所
+        stationCodeDrop2: utils.getdropDown("getStation"),
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
