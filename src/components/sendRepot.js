@@ -244,6 +244,8 @@ class sendRepot extends React.Component {
 		this.refs.customersTable.store.selected = [];
 		this.refs.customersTable.setState({
 			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
+		},()=>{
+			console.log(this.refs.customersTable.state.selectedRowKeys);
 		})
 		let customerRowIdArray = new Array();
 		for (let i in this.state.allCustomer) {
@@ -630,7 +632,7 @@ class sendRepot extends React.Component {
 					</Form.Group>
 					<Row>
 						<Col sm={2}>
-							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
+							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists.bind(this)}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
