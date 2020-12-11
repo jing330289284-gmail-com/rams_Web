@@ -251,6 +251,9 @@ class individualSales extends React.Component {//個人売上検索
         }else{
          let mGrosProfits = row. grosProfits.split('.')[0];
          let formatmGrosProfits = publicUtils.addComma(mGrosProfits,false)
+         if(mGrosProfits<0){
+            return (<div style={{color:'red'}}>{formatmGrosProfits}</div>);
+         }       
          return formatmGrosProfits;
         }
     }
