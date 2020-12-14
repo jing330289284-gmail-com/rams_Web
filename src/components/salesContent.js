@@ -11,6 +11,7 @@ import Clipboard from 'clipboard';
 import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
 import store from './redux/store';
+import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials = true;
 
 /** 
@@ -83,6 +84,12 @@ class salesContent extends React.Component {
 		disableFlag: true,
 		initWellUseLanguagss: [],
 		projectPhase: '',
+        myToastShow: false,
+        errorsMessageShow: false,
+        errorsMessageValue: '',
+        message: '',
+        type: '',
+        tempDate:'',
 	})
 	
 	componentDidMount() {
@@ -127,18 +134,23 @@ class salesContent extends React.Component {
 
 	//　更新ボタン
 	updateSalesSentence = () => {
-		this.state.beginMonth = publicUtils.formateDate(this.state.beginMonth, false);
-		axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
+		this.setState({tempDate:publicUtils.formateDate(this.state.beginMonth, false)},()=>{
+			axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
 				this.init();
 				this.setState({ 
 					beginMonth: new Date(this.state.beginMonth).getTime(),
-					myToastShow: true });
+					myToastShow: true ,
+					"type": "success", 
+					"errorsMessageShow": false, 
+					message: "処理成功"
+					});
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
 			})
 			.catch(function(error) {
 				alert(error);
 			});
+		});
 	}
 
 	//　駅LOST FOCUS
@@ -319,11 +331,16 @@ class salesContent extends React.Component {
 	}
 
 	render() {
+		const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
+            , actionType, topCustomer, errorsMessageValue, message, type, positionDrop, customerNo, backPage } = this.state;
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
 				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+	                 <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+	            </div>
 				<ListGroup>
 					<ListGroup.Item width="200px">【名　　前】：{this.state.employeeName}{'　　　'}{this.state.nationalityName}{'　　　'}{this.state.genderStatus}</ListGroup.Item>
 					<ListGroup.Item>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
@@ -437,7 +454,7 @@ class salesContent extends React.Component {
 					/></div>
 				<div>
 					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" variant="info" onClick={this.updateSalesSentence} disabled={this.state.age !== this.state.initAge ||
+						<Button size="sm" variant="info" onClick={this.updateSalesSentence.bind(this)} disabled={this.state.age !== this.state.initAge ||
 							this.state.nearestStation !== this.state.initNearestStation ||
 							this.state.japaneaseConversationLevel !== this.state.initJapaneaseConversationLevel ||
 							this.state.englishConversationLevel !== this.state.initEnglishConversationLevel ||

@@ -83,13 +83,11 @@ class salesPoint extends React.Component {
 		switch (str) {
 			case "start":
 				if (typeof this.state.admissionEndDate !== "undefined" && typeof this.state.customerNo !== "undefined") {
-					//this.getSalesInfo(date, this.state.admissionEndDate);
 					this.select(date, "start");
 				}
 				break;
 			case "end":
 				if (typeof this.state.admissionStartDate !== "undefined" && typeof this.state.customerNo !== "undefined") {
-					//this.getSalesInfo(this.state.admissionStartDate, date);
 					this.select(date, "end");
 				}
 				break;
@@ -245,7 +243,6 @@ class salesPoint extends React.Component {
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
-											//value={this.state.customerNo}
 											value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || {}}
 											options={this.state.customerDrop}
 											getOptionLabel={(option) => option.text ? option.text : ""}
