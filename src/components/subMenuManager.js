@@ -33,7 +33,7 @@ import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
 import EmployeeDetail from './employeeDetail';
 import ProjectInfoSearch from './projectInfoSearch';
-// import IndividualCustomerSales from './individualCustomerSales';
+import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
@@ -336,7 +336,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
-								{/* <Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} /> */}
+								<Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
