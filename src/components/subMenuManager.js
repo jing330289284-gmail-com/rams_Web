@@ -182,7 +182,7 @@ class SubMenu extends Component {
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />売上検索一覧</Link></ListGroup.Item>
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />全員売上一覧</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualCustomerSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様個別売上</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/">
