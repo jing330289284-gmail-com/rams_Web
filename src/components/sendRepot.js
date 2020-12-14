@@ -27,6 +27,7 @@ class sendRepot extends React.Component {
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
 		approval: store.getState().dropDown[27],//承認ステータス
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
+		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
 		sendDay: '',
 		sendTime: '',
 		workReportStatusCode: '',
@@ -401,7 +402,7 @@ class sendRepot extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
-		if (event.target.value == 1) {
+		if (event.target.value == 0) {
 			this.setState({
 				sendTime: "",
 				sendDay: "",
@@ -528,15 +529,17 @@ class sendRepot extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">送信日付設定</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
-										<Form.Control id="sendDay" as="select" size="sm" onChange={this.valueChange} name="sendDay" value={this.state.sendDay} disabled={this.state.workReportStatusCode == 1 ? true : false} autoComplete="off" >
-											<option value=""></option>
-											<option value="0">今月最終日</option>
-											<option value="1">来月初日</option>
+										<Form.Control id="sendDay" as="select" size="sm" onChange={this.valueChange} name="sendDay" value={this.state.sendDay} disabled={this.state.workReportStatusCode == 0 ? true : false} autoComplete="off" >
+											{this.state.workReportStatus.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
 										</Form.Control>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
 										<DatePicker
-											disabled={this.state.workReportStatusCode==1 ? true : false}
+											disabled={this.state.workReportStatusCode==0 ? true : false}
 											selected={this.state.sendTime}
 											value={this.state.sendTime}
 											onChange={this.inactiveSendTime}
@@ -641,9 +644,13 @@ class sendRepot extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton" onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除
 								</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" onClick={this.clear} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />クリア
+								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書
 								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存
+								</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" onClick={this.mailCheck} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />メール確認
 								</Button>{' '}
 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos }}}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
@@ -665,9 +672,10 @@ class sendRepot extends React.Component {
 							<TableHeaderColumn width='8%' dataField='rowId' >番号</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='responsiblePerson'>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
+							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='15%' dataField='customerDepartmentMail' >メール(To)</TableHeaderColumn>
+							<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール(To)</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='d' >担当追加</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='a' >対象社員</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='b' >承認済み</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='c'>送信済み</TableHeaderColumn>
