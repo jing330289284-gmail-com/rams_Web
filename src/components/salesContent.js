@@ -215,9 +215,9 @@ class salesContent extends React.Component {
 						salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
-						employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
+						employeeStatus: result.data[0].employeeStatus === ""? "":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
+						japaneseLevelCode: result.data[0].japaneseLevelCode === "" ?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
+						englishLevelCode: result.data[0].englishLevelCode === ""? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
 						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
@@ -441,9 +441,9 @@ class salesContent extends React.Component {
 【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + `
 【年　　齢】：`+ this.state.age + `歳
-【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
-【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
-【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
+【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
+【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
+【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
 【業務年数】：`+ this.state.yearsOfExperience + `年
 【対応工程】：`+ this.state.projectPhase + `
 【得意言語】：`+ this.state.developLanguage + `
