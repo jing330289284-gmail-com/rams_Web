@@ -12,18 +12,19 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import * as publicUtils from './utils/publicUtils.js';
 axios.defaults.withCredentials = true;
 
-//営業ポイント設定
+// 営業ポイント設定
 class salesPoint extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
 		this.getAdmissionDate = this.getAdmissionDate.bind(this);
 	}
 
 	initialState = {
 		no: '',
+		rows: 0,
 		employee: '',
 		startTime: '',
 		newMember: '',
@@ -31,7 +32,7 @@ class salesPoint extends React.Component {
 		customerContract: '',
 		updateFlag: true,
 		insertFlag: false,
-		currentPage: 1,//今のページ
+		currentPage: 1,// 今のページ
 		insertNo: '',
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerDrop: store.getState().dropDown[56].slice(1),
@@ -50,16 +51,17 @@ class salesPoint extends React.Component {
 		}
 	}
 
-	//时间入力框初始值
+	// 时间入力框初始值
 	state = {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date(),
 		no: 0,
 		siteRoleNameAll: 0,
 		profitAll: 0,
+		rows: 0,
 	}
 
-	//　入場年月
+	// 入場年月
 	admissionStartDate = (date) => {
 		this.setState(
 			{
@@ -68,7 +70,7 @@ class salesPoint extends React.Component {
 		);
 		this.getAdmissionDate("start", date);
 	};
-	//　退場年月
+	// 退場年月
 	admissionEndDate = (date) => {
 		this.setState(
 			{
@@ -78,7 +80,7 @@ class salesPoint extends React.Component {
 		this.getAdmissionDate("end", date);
 	};
 
-	//	年月を取得する
+	// 年月を取得する
 	getAdmissionDate = (str, date) => {
 		switch (str) {
 			case "start":
@@ -96,7 +98,7 @@ class salesPoint extends React.Component {
 		}
 	};
 
-	//明细查询
+	// 明细查询
 	onchange = (event) => {
 		this.refs.table.setState({
 			selectedRowKeys: []
@@ -107,11 +109,18 @@ class salesPoint extends React.Component {
 			this.select();
 		})
 	}
+	
+	// 鼠标悬停显示全文
+	specialPointStatusFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
 
 	/**
- * 社員名連想
- * @param {} event 
- */
+	 * 社員名連想
+	 * 
+	 * @param {}
+	 *            event
+	 */
 	getCustomer = (event, values) => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -129,7 +138,19 @@ class salesPoint extends React.Component {
 	}
 
 	downloadPDF = () => {
-
+		var dataInfo = this.state.customerNo;
+		axios.post(this.state.serverIP + "SalesPointController/downloadPDF", dataInfo)
+			.then(resultMap => {
+				if (resultMap.data) {
+					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
+					// alert(resultMap.data);
+				} else {
+					alert("更新失败");
+				}
+			})
+			.catch(function () {
+				alert("更新错误，请检查程序");
+			});
 	}
 
 	select = (date, str) => {
@@ -160,11 +181,13 @@ class salesPoint extends React.Component {
 						this.setState({
 							salesPointData: response.data,
 							pointAll: response.data[0].pointAll,
+							rows: response.data.length,
 						});
 					} else {
 						this.setState({
 							salesPointData: response.data,
 							pointAll: "",
+							rows: 0,
 						});
 					}
 				}
@@ -173,8 +196,8 @@ class salesPoint extends React.Component {
 			});
 	}
 	/**
-	* 行Selectファンクション
-	*/
+	 * 行Selectファンクション
+	 */
 	handleRowSelect = (row, isSelected) => {
 
 		if (isSelected) {
@@ -190,24 +213,27 @@ class salesPoint extends React.Component {
 	}
 
 	render() {
-		//表格样式设定
+		// 表格样式设定
 		this.options = {
 			onPageChange: page => {
 				this.setState({ currentPage: page });
 			},
 			page: this.state.currentPage,
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 5,  // which size per page you want to locate as
+								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
 			lastPage: '>>', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or
+															// function
+			hideSizePerPage: true, // > You can hide the dropdown for
+									// sizePerPage
 		};
 		const { errorsMessageValue } = this.state;
-		//	テーブルの列の選択
+		// テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -306,7 +332,7 @@ class salesPoint extends React.Component {
 								</Col>
 								<Col sm={2}>
 									<div style={{ "float": "right" }}>
-										<Button variant="info" size="sm" id="downloadPDF" onClick={this.downloadPDF.bind(this)} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faDownload} /> PDF出力</Button>{' '}
+										<Button variant="info" size="sm" id="downloadPDF" onClick={this.downloadPDF.bind(this)} disabled={this.state.rows > 0 ? false : true}><FontAwesomeIcon icon={faDownload} /> PDF出力</Button>{' '}
 									</div>
 								</Col>
 							</Row>
@@ -322,8 +348,8 @@ class salesPoint extends React.Component {
 										<TableHeaderColumn dataField='customerContractStatus' tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
 										<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
 										<TableHeaderColumn dataField='point' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
-										<TableHeaderColumn dataField='specialsalesPointCondition' tdStyle={{ padding: '.45em' }} width='170' >特別ポイント理由</TableHeaderColumn>
-										<TableHeaderColumn dataField='specialsalesPoint' tdStyle={{ padding: '.45em' }} width='150' >特別ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialsalesPointCondition' tdStyle={{ padding: '.45em' }} width='200' dataFormat={this.specialPointStatusFormat.bind(this)}>特別ポイント理由</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialsalesPoint' tdStyle={{ padding: '.45em' }} width='130' >特別ポイント</TableHeaderColumn>
 									</BootstrapTable>
 								</Col>
 							</Row>
