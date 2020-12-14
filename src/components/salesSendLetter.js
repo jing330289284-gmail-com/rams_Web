@@ -56,12 +56,14 @@ class salesSendLetter extends React.Component {
 		backPage: "manageSituation",
 		searchFlag: true,
 		sendValue: {},
+		projectNo:'',
 	};
 
 	componentDidMount() {
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
+				projectNo: this.props.location.state.projectNo,
 			})
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
 				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
@@ -469,7 +471,7 @@ class salesSendLetter extends React.Component {
 		var path = {};
 		path = {
 			pathname: this.state.backPage,
-			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue },
+			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue , selectedProjectNo:this.state.projectNo},
 		}
 		this.props.history.push(path);
 	}
@@ -641,7 +643,7 @@ class salesSendLetter extends React.Component {
 								size="sm"
 								hidden={backPage === "" ? true : false}
 								variant="info"
-								onClick={this.back}
+								onClick={this.back.bind(this)}
 							>
 								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>

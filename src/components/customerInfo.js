@@ -33,15 +33,18 @@ class CustomerInfo extends Component {
         topCustomerDrop: store.getState().dropDown[35].slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
+        customerDepartmentCode2:'',
+        positionCode2:'',
         customerDepartmentName: '',//部門コード
         customerDepartmentNameDrop: store.getState().dropDown[55].slice(1),//部門の連想数列
+        customerDepartmentNameDrop2: utils.getdropDown("getDepartmentMasterDrop",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
         customerNoForPageChange: "",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
-        stationCodeDrop2: utils.getdropDown("getStation"),
+        stationCodeDrop2: utils.getdropDown("getStation",store.getState().dropDown[store.getState().dropDown.length - 1]),
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
@@ -59,6 +62,7 @@ class CustomerInfo extends Component {
         topCustomer: '',
         insertFlag: false,
         positionDrop: store.getState().dropDown[20],
+        positionDrop2: utils.getdropDown("getPosition",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),
         typeOfIndustryDrop: store.getState().dropDown[36],
         developLanguageDrop: store.getState().dropDown[8],
         currentPage: 1,//今のページ
@@ -174,6 +178,8 @@ class CustomerInfo extends Component {
                         businessStartDate: utils.converToLocalTime(customerInfoMod.businessStartDate, false),
                         establishmentDate: utils.converToLocalTime(customerInfoMod.establishmentDate, false),
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
+                        customerDepartmentCode2:customerInfoMod.customerDepartmentCode,
+                        positionCode2:customerInfoMod.positionCode,
                     })
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
@@ -204,6 +210,8 @@ class CustomerInfo extends Component {
         customerInfoMod["actionType"] = this.state.actionType;
         // customerInfoMod["customerDepartmentList"] = this.state.customerDepartmentList;
         customerInfoMod["accountInfo"] = this.state.accountInfo;
+        customerInfoMod["customerDepartmentCode"] = this.state.customerDepartmentCode2;
+        customerInfoMod["positionCode"] = this.state.positionCode2;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
         customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
@@ -219,6 +227,7 @@ class CustomerInfo extends Component {
                 }
             })
             .catch(error => {
+                console.log(error)
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
     }
@@ -389,6 +398,28 @@ class CustomerInfo extends Component {
         } else {
             this.setState({
                 topCustomer: "",
+            })
+        }
+    }
+    getPosition2 = (event, values) => {
+        if (values != null) {
+            this.setState({
+                positionCode2: values.code,
+            })
+        } else {
+            this.setState({
+                positionCode2: "",
+            })
+        }
+    }
+    getCustomerDepartment2 = (event, values) => {
+        if (values != null) {
+            this.setState({
+                customerDepartmentCode2: values.code,
+            })
+        } else {
+            this.setState({
+                customerDepartmentCode2: "",
             })
         }
     }
@@ -607,7 +638,7 @@ class CustomerInfo extends Component {
                 this.setState({ currentPage: page });
             },
             page: this.state.currentPage,
-            noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
+            noDataText: (<i>データなし</i>),
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
@@ -881,9 +912,53 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>購買担当</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">購買・営業</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="20" placeholder="例：田中" id="purchasingManagers" name="purchasingManagers" />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>部門</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Autocomplete
+                                        disabled={this.state.actionType === "detail" ? true : false}
+                                        id="customerDepartmentCode"
+                                        name="customerDepartmentCode"
+                                        value={this.state.customerDepartmentNameDrop2.find(v => v.code === this.state.customerDepartmentCode2) || {}}
+                                        onChange={(event, values) => this.getCustomerDepartment2(event, values)}
+                                        options={this.state.customerDepartmentNameDrop2}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                <input placeholder=" 例：第一営業部" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                />
+                                            </div>
+                                        )}
+                                    />
+                                </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>職位</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <Autocomplete
+                                        disabled={this.state.actionType === "detail" ? true : false}
+                                        id="positionCode"
+                                        name="positionCode"
+                                        value={this.state.positionDrop2.find(v => v.code === this.state.positionCode2) || {}}
+                                        onChange={(event, values) => this.getPosition2(event, values)}
+                                        options={this.state.positionDrop2}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
+                                            <div ref={params.InputProps.ref}>
+                                                <input placeholder=" 例：部長" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                />
+                                            </div>
+                                        )}
+                                    />
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -892,14 +967,6 @@ class CustomerInfo extends Component {
                                         <InputGroup.Text>メール</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="purchasingManagersMail" name="purchasingManagersMail" />
-                                </InputGroup>
-                            </Col>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text>備考</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control maxLength="50" placeholder="例：備考" id="remark" name="remark" />
                                 </InputGroup>
                             </Col>
                         </Row>

@@ -256,6 +256,16 @@ class ProjectInfoSearch extends Component {
                         searchFlag: this.state.searchFlag
                     },
                 }
+            case "customer":
+                path = {
+                    pathname: '/subMenuManager/salesSendLetter',
+                    state: {
+                        projectNo: this.state.selectedProjectNo,
+                        backPage: "projectInfoSearch",
+                        sendValue: sendValue,
+                        searchFlag: this.state.searchFlag
+                    },
+                }
                 break;
             default:
         }
@@ -811,7 +821,7 @@ class ProjectInfoSearch extends Component {
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
                                     <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>{' '}
-                                    <Button size="sm" variant="info" name="clickButton" id="selectCustomer" variant="info"><FontAwesomeIcon icon={faEnvelope} /> お客様選択</Button>{' '}
+                                    <Button size="sm" variant="info" name="clickButton" id="selectCustomer" variant="info" onClick={this.shuseiTo.bind(this, "customer")}><FontAwesomeIcon icon={faEnvelope} /> お客様選択</Button>{' '}
                                     <Button size="sm" variant="info" name="clickButton" id="projectContent" variant="info" onClick={this.handleShowModal.bind(this)}><FontAwesomeIcon icon={faBook} /> 案件文章</Button>
                                 </div>
                             </Col>
