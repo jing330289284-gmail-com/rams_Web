@@ -18,6 +18,9 @@ class IndividualCustomerSales extends React.Component {
         fiscalYear: '',
         customerName: '',
         totalworkPeoSum:'',
+        totaluPrice:'',
+        overTimeOrExpectFee:'',
+        totalgrossProfit:'',
     }
     constructor(props) {
         super(props);
@@ -79,7 +82,7 @@ class IndividualCustomerSales extends React.Component {
 
     }
     individualCustomerSalesStartYearAndMonthChange = date => {
-        if(this.state.customerName!==''&&this.state.individualCustomerSales_endYearAndMonth!==''){
+        if(this.state.customerName!==''){
         if (date !== null) {
             this.setState({
                 individualCustomerSales_startYearAndMonth: date,
@@ -108,7 +111,7 @@ class IndividualCustomerSales extends React.Component {
     };
 
     individualCustomerSalesEndYearAndMonthChange = date => {
-        if(this.state.customerName!==''&&this.state.individualCustomerSales_startYearAndMonth!==''){
+        if(this.state.customerName!==''){
             if (date !== null) {
                 this.setState({
                     individualCustomerSales_endYearAndMonth: date,
@@ -164,6 +167,7 @@ class IndividualCustomerSales extends React.Component {
     }
 
     searchCustomer = () => {
+
         const customerInfo = {
             customerName: this.state.customerName,
             fiscalYear: this.state.fiscalYear,
@@ -171,6 +175,7 @@ class IndividualCustomerSales extends React.Component {
             endYear: publicUtils.formateDate(this.state.individualCustomerSales_endYearAndMonth, false),
 
         };
+        
         axios.post(this.state.serverIP + "customerSales/searchCustomerSales", customerInfo)
             .then(response => {
                 if (response.data.errorsMessage != null) {
@@ -178,17 +183,22 @@ class IndividualCustomerSales extends React.Component {
                 } else if (response.data.noData != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
                     this.setState({ CustomerSaleslListInfoList:[]});
-                    // this.setState({workMonthCount:''})
-                    // this.setState({unitPriceTotal:''})
-                    // this.setState({paymentTotal:''})
-                    // this.setState({totalgrosProfits:''})
+                    this.setState({totalworkPeoSum:''})
+                    this.setState({totaluPrice:''})
+                    this.setState({overTimeOrExpectFee:''})
+                    this.setState({totalgrossProfit:''})
                 }
                 else {
                      this.setState({ "errorsMessageShow": false })
                      this.setState({ CustomerSaleslListInfoList: response.data.data })
                      this.setState({ totalworkPeoSum: this.state.CustomerSaleslListInfoList[0].totalworkPeoSum })
-                    // this.feeTotal();
-                    // this.unitPriceTotalCal(response.data.data);
+                     this.setState({totaluPrice:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totaluPrice,false)})
+                     this.setState({overTimeOrExpectFee:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].overTimeOrExpectFee,false)})
+                     this.setState({totalgrossProfit:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totalgrossProfit,false)})
+                     if(this.state.CustomerSaleslListInfoList[0].totalgrossProfit<0){
+                        $('#totalGp').css("color","red");
+                     }
+                    
                 }
             }).catch((error) => {
                 console.error("Error - " + error);
@@ -200,6 +210,9 @@ class IndividualCustomerSales extends React.Component {
             return 
         }else{
          let formatmGrosProfits = publicUtils.addComma(row. grossProfit,false)
+         if (row. grossProfit < 0) {
+            return (<div style={{ color: 'red' }}>{formatmGrosProfits}</div>);
+        }
          return formatmGrosProfits;
         }
     }
@@ -217,8 +230,8 @@ class IndividualCustomerSales extends React.Component {
         if(row. totalUnitPrice===null||row. totalUnitPrice==="0"){
             return 
         }else{
-            let formatTotalUnitPrice = row.totalUnitPrice+"万円"
-         return formatTotalUnitPrice;
+            let formatTotalUnitPrice = row.totalUnitPrice*10000
+         return publicUtils.addComma( formatTotalUnitPrice,false);
         }
     }
 
@@ -226,9 +239,9 @@ class IndividualCustomerSales extends React.Component {
         if(row. maxUnitPrice===null||row. maxUnitPrice==="0"){
             return 
         }else{
-            let formatTotalUnitPrice = row. maxUnitPrice.split('.')[0];
-            formatTotalUnitPrice = formatTotalUnitPrice+"万円"
-         return formatTotalUnitPrice;
+            let formatMaxlUnitPrice = row. maxUnitPrice.split('.')[0];
+            formatMaxlUnitPrice = formatMaxlUnitPrice*10000
+         return publicUtils.addComma( formatMaxlUnitPrice,false);
         } 
     }
 
@@ -236,9 +249,11 @@ class IndividualCustomerSales extends React.Component {
         if(row. minUnitPrice===null||row. minUnitPrice==="0"){
             return 
         }else{
-            let formatTotalUnitPrice = row. minUnitPrice.split('.')[0];
-            formatTotalUnitPrice = formatTotalUnitPrice+"万円"
-         return formatTotalUnitPrice;
+            let formatMinUnitPrice = row. minUnitPrice.split('.')[0];
+            formatMinUnitPrice = formatMinUnitPrice*10000
+
+         return publicUtils.addComma( formatMinUnitPrice,false);
+
         }  
     }
 
@@ -249,12 +264,12 @@ class IndividualCustomerSales extends React.Component {
             let averageUnitP ;
             let formatTotalUnitPrice = row. averUnitPrice.split('.')[1];
             if(formatTotalUnitPrice!=="0"){
-                averageUnitP= row. averUnitPrice+"万円"
+                averageUnitP= row. averUnitPrice*10000
             }
             else{
-                averageUnitP= row. averUnitPrice.split('.')[0]+"万円"
+                averageUnitP= row. averUnitPrice.split('.')[0]*10000
             }
-         return averageUnitP;
+         return publicUtils.addComma( averageUnitP,false);
         } 
     }
 
@@ -285,7 +300,6 @@ class IndividualCustomerSales extends React.Component {
             return formatexpectFee;
         }
     }
-
     empDetailCheck=(cell,row)=>{
 
         let returnItem = cell;
@@ -332,7 +346,14 @@ class IndividualCustomerSales extends React.Component {
    
 
     render() {
-        const { errorsMessageValue, customerInfo,totalworkPeoSum } = this.state;
+        const { errorsMessageValue, customerInfo,totalworkPeoSum,totaluPrice,overTimeOrExpectFee,totalgrossProfit } = this.state;
+        const selectRow = {
+            mode: 'radio',
+            bgColor: 'pink',
+            hideSelectColumn: true,
+            clickToSelect: true,
+            clickToExpand: true,
+        };
         return (
 
             <div>
@@ -417,25 +438,25 @@ class IndividualCustomerSales extends React.Component {
 
                     <Col sm={3}>
                         <label>単価合計：</label>
-                        <label> </label>
+                                <label>{totaluPrice}</label>
                     </Col>
                     <Col sm={3}>
                         <label>売上合計：</label>
-                        <label> </label>
+                                <label> {overTimeOrExpectFee}</label>
                     </Col>
                     <Col sm={3}>
                         <label>粗利合計：</label>
-                        <label> </label>
+                                <label id="totalGp">{totalgrossProfit}</label>
                     </Col>
                 </Row>
                 <div >
-                    <BootstrapTable data={this.state.CustomerSaleslListInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
+                    <BootstrapTable data={this.state.CustomerSaleslListInfoList} pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' isKey>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat}>単価合計</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='maxUnitPrice'　dataFormat={this.maxUnitPriceFormat}>最高単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='minUnitPrice' dataFormat={this.minUnitPriceFormat}>最低単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice'dataFormat={this.averUnitPriceFormat} >平均単価</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='workPeoSum'dataFormat={this.workPeoSumFormat}>稼働人数</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='workPeoSum'dataFormat={this.workPeoSumFormat} width='90'>稼働人数</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck'  dataFormat={this.empDetailCheck.bind(this)}>要員確認</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma}>残業代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='expectFee' dataFormat={this.expectFeeAddComma}>控除</TableHeaderColumn>

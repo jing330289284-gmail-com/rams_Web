@@ -111,7 +111,7 @@ class projectInfo extends Component {
             noOfInterviewCode: '',
             personInChargeDrop: [],
             experienceYear: '',
-            siteLoaction: '',
+            siteLocation: '',
             recruitmentNumbers:'',
         })
     }
@@ -146,7 +146,7 @@ class projectInfo extends Component {
             requiredItem2: projectInfoMod.requiredItem2,
             experienceYear: projectInfoMod.experienceYear,
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
-            siteLoaction: projectInfoMod.siteLoaction,
+            siteLocation: projectInfoMod.siteLocation,
             recruitmentNumbers:projectInfoMod.recruitmentNumbers,
             remark:projectInfoMod.remark,
         })
@@ -233,11 +233,11 @@ class projectInfo extends Component {
     getStation = (event, values) => {
         if (values != null) {
             this.setState({
-                siteLoaction: values.code,
+                siteLocation: values.code,
             })
         } else {
             this.setState({
-                siteLoaction: "",
+                siteLocation: "",
             })
         }
     }
@@ -332,9 +332,10 @@ class projectInfo extends Component {
         $.each(formArray, function (i, item) {
             projectInfoModel[item.name] = item.value;
         });
+        projectInfoModel["workStartPeriod"] = this.state.workStartPeriod === '' ? utils.formateDate(this.state.workStartPeriodForDate,false) : this.state.workStartPeriod;
         projectInfoModel["admissionPeriod"] = utils.formateDate(this.state.admissionPeriod,false);
         projectInfoModel["personInCharge"] = utils.valueGetLabel(this.state.personInCharge, this.state.personInChargeDrop);
-        projectInfoModel["siteLoaction"] = this.state.siteLoaction;
+        projectInfoModel["siteLocation"] = this.state.siteLocation;
         projectInfoModel["keyWordOfLanagurue1"] = this.state.keyWordOfLanagurue1;
         projectInfoModel["keyWordOfLanagurue2"] = this.state.keyWordOfLanagurue2;
         projectInfoModel["keyWordOfLanagurue3"] = this.state.keyWordOfLanagurue3;
@@ -347,6 +348,8 @@ class projectInfo extends Component {
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     if (this.state.actionType === "insert") {
                         window.location.reload();
+                    }else{
+                        $("#toroku").attr("disabled", false);
                     }
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -418,7 +421,7 @@ class projectInfo extends Component {
             workStartPeriod,
             requiredItem1,
             requiredItem2,
-            siteLoaction,
+            siteLocation,
             noOfInterviewCode,
             experienceYear,
             recruitmentNumbers,
@@ -716,9 +719,9 @@ class projectInfo extends Component {
                                             <InputGroup.Text>現場場所</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <Autocomplete
-                                            id="siteLoaction"
-                                            name="siteLoaction"
-                                            value={stationDrop.find(v => v.code === siteLoaction) || {}}
+                                            id="siteLocation"
+                                            name="siteLocation"
+                                            value={stationDrop.find(v => v.code === siteLocation) || {}}
                                             options={stationDrop}
                                             getOptionLabel={(option) => option.name}
                                             disabled={actionType === "detail" ? true : false}

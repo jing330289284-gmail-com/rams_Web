@@ -55,7 +55,8 @@ class ExpensesInfo extends Component {
             kadouCheck: this.props.kadouCheck,
             leaderCheck: this.props.leaderCheck,
         })
-        if(this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
+        if(this.props.relatedEmployees[0] !== null && this.props.relatedEmployees[0] !== undefined &&
+            this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
             this.setState({
                 relatedEmployees: this.props.relatedEmployees[0].relatedEmployees,
             })
@@ -232,7 +233,7 @@ class ExpensesInfo extends Component {
         };
         //テーブルの定義
         const options = {
-            noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
+            noDataText: (<i>データなし</i>),
             page: 1,  // which page you want to show as default
             sizePerPage: 5,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
@@ -287,7 +288,7 @@ class ExpensesInfo extends Component {
                                         value={leaderAllowanceAmount}
                                         name="leaderAllowanceAmount"
                                         onChange={this.valueChangeMoney}
-                                        readOnly={kadouCheck && !leaderCheck}
+                                        readOnly={!leaderCheck}
                                         disabled={actionType === "detail" ? true : false}
                                         placeholder="例：112000" />
                                     <OverlayTrigger
@@ -402,9 +403,8 @@ class ExpensesInfo extends Component {
                             <Button
                                 size="sm"
                                 disabled={actionType === "detail" ? true : false}
-                                type="reset"
-                                variant="info"
-                                value="Reset" >
+                                onClick={this.resetValue}
+                                variant="info" >
                                 <FontAwesomeIcon icon={faUndo} />リセット
                             </Button>
                         </div>

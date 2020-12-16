@@ -10,6 +10,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import { Link } from "react-router-dom";
 import store from './redux/store';
+import MyToast from './myToast';
+import ErrorsMessageToast from './errorsMessageToast';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faBookmark} from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
@@ -52,6 +54,11 @@ selectedCtmNoStrs1:"",
 selectedCtmNoStrs2:"",
 selectedCtmNoStrs3:"",
 selectedlistName:"",
+myToastShow: false,
+errorsMessageShow: false,
+errorsMessageValue: '',
+message: '',
+type: '',
 	};
 
 	// 
@@ -269,7 +276,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 			for (let k in customers) {
 				if (customerNo === customers[k].customerNo &&
 					customerDepartmentCode === customers[k].customerDepartmentCode) {
-					alert("err---the same record");
+					this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "同じお客様名を検索できません、新しいお客様名を入力してください。" });
+	                setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					sameFlag = true;
 				}
 			}
@@ -282,17 +290,26 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 								return a.rowId - b.rowId
 							}),
 						})
+					} else {
+						this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "正しいお客様名を入力してください。" });
+		                setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					}
 				}
 			}
 		} else {
+			var customerInfoFlg = false;
 			for (let k in customerInfo) {
 				if (customerNo === customerInfo[k].customerNo &&
 					customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
+					customerInfoFlg = true;
 					this.setState({
 						allCustomer: this.state.allCustomer.concat(customerInfo[k]),
 					})
-				}
+				}　
+			}
+			if (!customerInfoFlg) {
+				this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "正しいお客様名を入力してください。" });
+	            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 			}
 		}
 	}
@@ -434,6 +451,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 	}
 
 	render() {
+		const {errorsMessageValue, message, type}= this.state;
 		const selectRow = {
 			mode: 'checkbox',
 			bgColor: 'pink',
@@ -488,6 +506,12 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 
 		return (
 			<div>
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton></Modal.Header>
