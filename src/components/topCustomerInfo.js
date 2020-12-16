@@ -95,7 +95,7 @@ class TopCustomerInfo extends Component {
                         if (resultMap.data) {
                             this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "更新成功" });
                             setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                            var methodArray = ["getTopCustomerDrop"]
+                            var methodArray = ["getTopCustomer"]
                             var selectDataList = utils.getPublicDropDown(methodArray, this.state.serverIP);
                             var topCustomerDrop = selectDataList[0];
                             this.props.topCustomerToroku(topCustomerDrop);

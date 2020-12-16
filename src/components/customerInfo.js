@@ -30,7 +30,7 @@ class CustomerInfo extends Component {
         showCustomerInfoModal: false,//上位お客様情報画面フラグ
         establishmentDate: '',//設立の期日
         businessStartDate: '',//取引開始の期日
-        topCustomerDrop: store.getState().dropDown[35].slice(1),
+        topCustomerDrop: utils.getdropDown("getTopCustomer",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
         customerDepartmentCode2:'',
@@ -284,21 +284,14 @@ class CustomerInfo extends Component {
         if (this.state.topCustomer !== null && this.state.topCustomer !== '' && this.state.topCustomer !== undefined) {
             console.log(topCustomerToroku);//上位お客様更新の場合
             var topCustomerDrop = this.state.topCustomerDrop;
-            for (let i = topCustomerDrop.length - 1; i >= 0; i--) {
-                if (topCustomerDrop[i].code === topCustomerToroku.topCustomerNo) {
-                    var top = {};
-                    top["code"] = topCustomerToroku.topCustomerNo;
-                    top["name"] = topCustomerToroku.topCustomerName;
-                    topCustomerDrop[i] = top;
-                    this.setState({
-                        topCustomer: topCustomerToroku.topCustomerNo,
-                    })
-                }
-            }
             this.setState({
-                topCustomerDrop: topCustomerDrop,
-                topCustomerInfo: topCustomerToroku,
+                topCustomerDrop: topCustomerToroku.slice(1),
+                topCustomerInfo: null,
                 showCustomerInfoModal: false,
+            },()=>{
+                this.setState({
+                    topCustomer: this.state.topCustomer,
+                })
             })
         } else {//上位お客様追加の場合
             var ModelClass = {};
@@ -392,12 +385,24 @@ class CustomerInfo extends Component {
     }
     getTopCustomer = (event, values) => {
         if (values != null) {
+            if(this.state.topCustomerInfo !== null){
+                this.setState({
+                    topCustomerDrop:this.state.topCustomerDrop.slice(0,this.state.topCustomerDrop.length-2)
+                })
+            }
             this.setState({
                 topCustomer: values.code,
+                topCustomerInfo:null,
             })
         } else {
+            if(this.state.topCustomerInfo !== null){
+                this.setState({
+                    topCustomerDrop:this.state.topCustomerDrop.slice(0,this.state.topCustomerDrop.length-2)
+                })
+            }
             this.setState({
                 topCustomer: "",
+                topCustomerInfo:null,
             })
         }
     }
@@ -681,7 +686,7 @@ class CustomerInfo extends Component {
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body>
-                            <TopCustomerInfo topCustomer={topCustomer} topCustomerInfo={topCustomerInfo} actionType={actionType} topCustomerToroku={this.topCustomerInfoGet} />
+                            <TopCustomerInfo topCustomer={topCustomer} topCustomerInfo={topCustomerInfo} actionType={actionType} topCustomerToroku={this.topCustomerInfoGet.bind(this)} />
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">
@@ -997,7 +1002,7 @@ class CustomerInfo extends Component {
                                     <FontAwesomeIcon icon={faSave} />追加
                         </Button>{" "}
                                 <Button size="sm" onClick={this.meisaiToroku} variant="info" id="meisaiToroku" type="button" disabled={this.state.actionType === "update" ? false : true}>
-                                    <FontAwesomeIcon icon={faArrowCircleUp} />明細修正
+                                    <FontAwesomeIcon icon={faArrowCircleUp} />明細更新
                         </Button>{" "}
                                 <Button size="sm" onClick={this.listDelete} variant="info" id="sakujo" type="button">
                                     <FontAwesomeIcon icon={faTrash} />删除

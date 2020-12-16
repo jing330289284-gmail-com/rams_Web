@@ -539,7 +539,7 @@ class projectInfo extends Component {
                                             minDate={new Date()}
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
-                                            id="wagesInfoDatePicker"
+                                            id={actionType === "detail" ? "wagesInfoDatePickerReadOnly" : "wagesInfoDatePicker"}
                                             dateFormat={"yyyy/MM"}
                                             name="admissionPeriod"
                                             locale="ja"
@@ -798,7 +798,7 @@ class projectInfo extends Component {
                                             minDate={new Date()}
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
-                                            id="workStartPeriodDatePicker"
+                                            id={actionType === "detail" ? "workStartPeriodDatePickerReadOnly" : "workStartPeriodDatePicker"}
                                             dateFormat={"yyyy/MM"}
                                             name="workStartPeriodForDate"
                                             locale="ja"
