@@ -764,7 +764,12 @@ padding: 1rem;
 .popoverC{
   max-width:450px !important;
 }
-
+.projectContentDetail{
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background-color: white;
+}
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {

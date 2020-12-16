@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Button, ListGroup } from 'react-bootstrap';
-import { faSave, faCopy } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as publicUtils from './utils/publicUtils.js';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
+import { Form, Button, ListGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
-import Clipboard from 'clipboard';
-import TextField from '@material-ui/core/TextField';
 import MyToast from './myToast';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
@@ -21,17 +13,23 @@ class ProjectContent extends Component {
     initState = {
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         projectNo: '',
+        projectType: '',
         projectName: '',
         admissionPeriod: '',
+        projectPeriodName:'',
         keyWordOfLanagurue1: '',
         keyWordOfLanagurue2: '',
         keyWordOfLanagurue3: '',
         projectInfoDetail: '',
         japaneaseConversationLevel: '',
+        japaneaseConversationName:'',
         unitPriceRangeLowest: '',
         unitPriceRangeHighest: '',
         projectPhaseStart: '',
         projectPhaseEnd: '',
+        projectPhase:'',
+        projectPhaseNameStart:'',
+        projectPhaseNameEnd:'',
         payOffRangeLowest: '',
         payOffRangeHighest: '',
         workStartPeriod: '',
@@ -39,38 +37,79 @@ class ProjectContent extends Component {
         requiredItem2: '',
         noOfInterviewName: '',
         recruitmentNumbers: '',
+        siteLocation:'',
+        siteLocationName:'',
         remark: '',
         nationalityName: '',
+        payOffRange:'',
+        unitPriceRange:'',
+        keyWordOfLanagurueName1:'',
+        keyWordOfLanagurueName2:'',
+        keyWordOfLanagurueName3:'',
     }
-    giveValue =(projectInfo)=> {
+    giveValue = (projectInfo) => {
         this.setState({
-            projectNo: projectInfo.projectNo ,
-            projectName: projectInfo.projectName ,
-            admissionPeriod: projectInfo.admissionPeriod ,
-            keyWordOfLanagurue1: projectInfo.keyWordOfLanagurue1 ,
-            keyWordOfLanagurue2: projectInfo.keyWordOfLanagurue2 ,
-            keyWordOfLanagurue3: projectInfo.keyWordOfLanagurue3 ,
-            projectInfoDetail: projectInfo.projectInfoDetail ,
-            japaneaseConversationLevel: projectInfo.japaneaseConversationLevel ,
-            unitPriceRangeLowest: projectInfo.unitPriceRangeLowest ,
-            unitPriceRangeHighest: projectInfo.unitPriceRangeHighest ,
-            projectPhaseStart: projectInfo.projectPhaseStart ,
-            projectPhaseEnd: projectInfo.projectPhaseEnd ,
-            payOffRangeLowest: projectInfo.payOffRangeLowest ,
-            payOffRangeHighest: projectInfo.payOffRangeHighest ,
-            workStartPeriod: projectInfo.workStartPeriod ,
-            requiredItem1: projectInfo.requiredItem1 ,
-            requiredItem2: projectInfo.requiredItem2 ,
-            noOfInterviewName: projectInfo.noOfInterviewName ,
-            recruitmentNumbers: projectInfo.recruitmentNumbers ,
-            remark: projectInfo.remark ,
-            nationalityName: projectInfo.nationalityName ,
+            projectNo: projectInfo.projectNo,
+            projectType: projectInfo.projectType,
+            projectName: projectInfo.projectName,
+            siteLocation:projectInfo.siteLocation,
+            siteLocationName:projectInfo.siteLocationName,
+            admissionPeriod: projectInfo.admissionPeriod,
+            projectPeriodName:projectInfo.projectPeriodName,
+            keyWordOfLanagurue1: projectInfo.keyWordOfLanagurue1,
+            keyWordOfLanagurue2: projectInfo.keyWordOfLanagurue2,
+            keyWordOfLanagurue3: projectInfo.keyWordOfLanagurue3,
+            projectInfoDetail: projectInfo.projectInfoDetail,
+            japaneaseConversationLevel: projectInfo.japaneaseConversationLevel,
+            japaneaseConversationName:projectInfo.japaneaseConversationName,
+            unitPriceRangeLowest: projectInfo.unitPriceRangeLowest,
+            unitPriceRangeHighest: projectInfo.unitPriceRangeHighest,
+            projectPhaseStart: projectInfo.projectPhaseStart,
+            projectPhaseEnd: projectInfo.projectPhaseEnd,
+            projectPhaseNameStart:projectInfo.projectPhaseNameStart,
+            projectPhaseNameEnd:projectInfo.projectPhaseNameEnd,
+            payOffRangeLowest: projectInfo.payOffRangeLowest,
+            payOffRangeHighest: projectInfo.payOffRangeHighest,
+            workStartPeriod: projectInfo.workStartPeriod,
+            requiredItem1: projectInfo.requiredItem1,
+            requiredItem2: projectInfo.requiredItem2,
+            noOfInterviewName: projectInfo.noOfInterviewName,
+            recruitmentNumbers: projectInfo.recruitmentNumbers,
+            remark: projectInfo.remark,
+            nationalityName: projectInfo.nationalityName,
+            keyWordOfLanagurueName1:projectInfo.keyWordOfLanagurueName1,
+            keyWordOfLanagurueName2:projectInfo.keyWordOfLanagurueName2,
+            keyWordOfLanagurueName3:projectInfo.keyWordOfLanagurueName3,
         })
+        if(projectInfo.payOffRangeLowest !== undefined && projectInfo.payOffRangeLowest !== null && 
+            projectInfo.payOffRangeHighest !== undefined && projectInfo.payOffRangeHighest !== null){
+            var payOffRange = '';
+            payOffRange = (projectInfo.payOffRangeLowest === "0" ? "固定" : projectInfo.payOffRangeLowest) 
+                                + "-" + (projectInfo.payOffRangeHighest === "0" ? "固定" : projectInfo.payOffRangeHighest) 
+            this.setState({
+                payOffRange:payOffRange,
+            })
+        }
+        if(projectInfo.unitPriceRangeLowest !== undefined && projectInfo.unitPriceRangeLowest !== null && projectInfo.unitPriceRangeLowest !== ''|| 
+            projectInfo.unitPriceRangeHighest !== undefined && projectInfo.unitPriceRangeHighest !== null  && projectInfo.unitPriceRangeHighest !== ''){
+                var unitPriceRange = '';
+                unitPriceRange = projectInfo.unitPriceRangeLowest + "~" + projectInfo.unitPriceRangeHighest;
+                this.setState({
+                    unitPriceRange:unitPriceRange,
+                })
+        }
+        if(projectInfo.projectPhaseStart !== undefined && projectInfo.projectPhaseStart !== null && projectInfo.projectPhaseStart !== ''){
+                var projectPhase = '';
+                projectPhase = projectInfo.projectPhaseNameStart + "~" + projectInfo.projectPhaseNameEnd;
+                this.setState({
+                    projectPhase:projectPhase,
+                })
+        }
     }
-    search =(projectNo)=>{
+    search = (projectNo) => {
         var projectInfoModel = {
-            projectNo:projectNo,
-            theSelectProjectperiodStatus:'0',
+            projectNo: projectNo,
+            theSelectProjectperiodStatus: '0',
         }
         axios.post(this.state.serverIP + "projectInfoSearch/search", projectInfoModel)
             .then(result => {
@@ -84,37 +123,49 @@ class ProjectContent extends Component {
                 alert("检索错误，请检查程序");
             });
     }
-    componentDidMount(){
+    componentDidMount() {
         this.setState({
-            projectNo:this.props.projectNo
-        },()=>{
+            projectNo: this.props.projectNo
+        }, () => {
             this.search(this.state.projectNo);
         })
     }
     render() {
         const {
             projectNo,
+            projectType,
             projectName,
             admissionPeriod,
+            projectPeriodName,
+            siteLocationName,
+            siteLocation,
             requiredItem1,
             requiredItem2,
             keyWordOfLanagurue1,
             keyWordOfLanagurue2,
             keyWordOfLanagurue3,
+            keyWordOfLanagurueName1,
+            keyWordOfLanagurueName2,
+            keyWordOfLanagurueName3,
             projectInfoDetail,
             japaneaseConversationLevel,
+            japaneaseConversationName,
             unitPriceRangeLowest,
             unitPriceRangeHighest,
             projectPhaseStart,
             projectPhaseEnd,
+            projectPhase,
+            projectPhaseNameStart,
+            projectPhaseNameEnd,
             payOffRangeLowest,
             payOffRangeHighest,
             workStartPeriod,
-            siteLoaction,
             noOfInterviewName,
             recruitmentNumbers,
             nationalityName,
             remark,
+            payOffRange,
+            unitPriceRange,
         } = this.state;
         return (
             <div>
@@ -122,17 +173,31 @@ class ProjectContent extends Component {
                     <MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
                 </div>
                 <ListGroup>
-                    <ListGroup.Item>■NO_種別：{projectNo}</ListGroup.Item>
+                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectType}</ListGroup.Item>
                     <ListGroup.Item>■案件名：{projectName}</ListGroup.Item>
-                    <ListGroup.Item>■業務内容：{projectInfoDetail}</ListGroup.Item>
-                    <ListGroup.Item>■スキル要件：{keyWordOfLanagurue1}{keyWordOfLanagurue2}{keyWordOfLanagurue3}{requiredItem1}{requiredItem2}</ListGroup.Item>
-                    <ListGroup.Item>■月額単金：{unitPriceRangeLowest}~{unitPriceRangeHighest}</ListGroup.Item>
-                    <ListGroup.Item>■清算範囲：{payOffRangeLowest}~{payOffRangeHighest}</ListGroup.Item>
+                    <ListGroup.Item>■業務内容：<br />                              
+                    <FormControl
+                        maxLength="500"
+                        cols="10"
+                        rows="8"
+                        value={projectInfoDetail}
+                        as="textarea"
+                        disabled
+                        className="projectContentDetail">
+                    </FormControl></ListGroup.Item>
+                    <ListGroup.Item>■スキル要件：
+                    <br/>·{keyWordOfLanagurueName1}，{keyWordOfLanagurueName2}，{keyWordOfLanagurueName3}
+                    <br/>
+                    ·{requiredItem1}
+                    <br/>
+                    ·{requiredItem2}</ListGroup.Item>
+                    <ListGroup.Item>■月額単金：{unitPriceRange}</ListGroup.Item>
+                    <ListGroup.Item>■清算範囲：{payOffRange}</ListGroup.Item>
                     <ListGroup.Item>■募集人数：{recruitmentNumbers}</ListGroup.Item>
-                    <ListGroup.Item>■稼動時期：{admissionPeriod}~{workStartPeriod}</ListGroup.Item>
-                    <ListGroup.Item>■勤務地：{siteLoaction}</ListGroup.Item>
-                    <ListGroup.Item>■作業工程：{projectPhaseStart}~{projectPhaseEnd}</ListGroup.Item>
-                    <ListGroup.Item>■国籍：{nationalityName}、{japaneaseConversationLevel}</ListGroup.Item>
+                    <ListGroup.Item>■稼動時期：{admissionPeriod}~{projectPeriodName}</ListGroup.Item>
+                    <ListGroup.Item>■勤務地：{siteLocationName}</ListGroup.Item>
+                    <ListGroup.Item>■作業工程：{projectPhase}</ListGroup.Item>
+                    <ListGroup.Item>■国籍：{nationalityName === null ? "" : nationalityName + "、" + japaneaseConversationName}</ListGroup.Item>
                     <ListGroup.Item>■面談回数：{noOfInterviewName}</ListGroup.Item>
                     <ListGroup.Item>■備考：{remark}</ListGroup.Item>
                 </ListGroup>

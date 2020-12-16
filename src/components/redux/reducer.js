@@ -66,6 +66,7 @@ export function fetchDropDown() {
 		"getTheSelectProjectperiodStatus",//58案件期間選択ステータス
 		"getProjectPeriod",//59案件期限取得
 		"getSendWorkReportStatus",//60作業報告書送信ステータス
+		"getSendReportOfDateSeting",//61送信日付設定ステータス
 		"getServerIP",//最後
 	]
 	var outArray = [];
