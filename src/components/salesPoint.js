@@ -138,8 +138,12 @@ class salesPoint extends React.Component {
 	}
 
 	downloadPDF = () => {
-		var dataInfo = this.state.customerNo;
-		axios.post(this.state.serverIP + "SalesPointController/downloadPDF", dataInfo)
+		var salesPointSetModel = {};
+		salesPointSetModel["employeeName"] = this.state.customerNo
+		salesPointSetModel["startDate"] = this.state.admissionStartDate
+		salesPointSetModel["endDate"] = this.state.admissionEndDate
+		salesPointSetModel["pdf"] = "true"
+		axios.post(this.state.serverIP + "SalesPointController/downloadPDF", salesPointSetModel)
 			.then(resultMap => {
 				if (resultMap.data) {
 					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
@@ -158,6 +162,7 @@ class salesPoint extends React.Component {
 		salesPointSetModel["employeeName"] = this.state.customerNo
 		salesPointSetModel["startDate"] = this.state.admissionStartDate
 		salesPointSetModel["endDate"] = this.state.admissionEndDate
+		salesPointSetModel["pdf"] = "false"
 		switch (str) {
 			case "start":
 				salesPointSetModel["startDate"] = date
