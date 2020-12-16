@@ -24,7 +24,8 @@ class individualSales extends React.Component {//個人売上検索
         calStatus: '',
         dailyCalculationStatus: '',
         dailySalary: '',
-
+        paymentTotalnoComma:'',
+        unitPriceTotalnoComma:'',
     }
 
     constructor(props) {
@@ -76,6 +77,8 @@ class individualSales extends React.Component {//個人売上検索
                     this.setState({ workMonthCount: this.state.employeeInfoList[0].workMonthCount })
                     this.feeTotal();
                     this.unitPriceTotalCal(response.data.data);
+                    
+
                 }
             }).catch((error) => {
                 console.error("Error - " + error);
@@ -97,25 +100,18 @@ class individualSales extends React.Component {//個人売上検索
 
     }
     feeTotal = () => {
-        var totalutilPrice = 0;
         var totalgrosProfits = 0;
         var paymentTotal = 0;
+        var paymentCal =0;
         for (var i = 0; i < this.state.employeeInfoList.length; i++) {
-            if (this.state.employeeInfoList[i].paymentTotal == null) {
-                paymentTotal = paymentTotal + 0;
-            } else {
-                paymentTotal = parseInt(paymentTotal) + parseInt(this.state.employeeInfoList[i].paymentTotal)
-            }
-            if (this.state.employeeInfoList[i].grosProfits == null) {
-                totalgrosProfits = parseInt(totalgrosProfits) + 0;
-            } else {
-                totalgrosProfits = parseInt(totalgrosProfits) + parseInt(this.state.employeeInfoList[i].grosProfits)
-            }
-        }
-
-        this.setState({ totalgrosProfits: publicUtils.addComma(totalgrosProfits.toString(), false) })
-        this.setState({ paymentTotal: publicUtils.addComma(paymentTotal.toString(), false) })
+            paymentCal=parseInt(this.state.employeeInfoList[i].salary) +parseInt(this.state.employeeInfoList[i].transportationExpenses)  +parseInt(this.state.employeeInfoList[i].insuranceFeeAmount) +parseInt(this.state.employeeInfoList[i].bonusFee) + parseInt(this.state.employeeInfoList[i].deductionsAndOvertimePay) + parseInt(this.state.employeeInfoList[i].leaderAllowanceAmount) + parseInt(this.state.employeeInfoList[i].otherAllowanceAmount) + parseInt(this.state.employeeInfoList[i].housingAllowance)
+            paymentTotal =parseInt(paymentTotal) + paymentCal     
     }
+    //this.setState({ totalgrosProfits: publicUtils.addComma(unitPriceTotal-paymentTotal, false) })
+        this.setState({ paymentTotal: publicUtils.addComma(paymentTotal, false) })
+        this.setState({ paymentTotalnoComma:paymentTotal })
+}
+
     componentDidMount() {
         var date = new Date();
         var year = date.getFullYear();
@@ -216,10 +212,10 @@ class individualSales extends React.Component {//個人売上検索
     }
 
     scheduleOfBonusAmountAddComma(cell, row) {
-        if (row.scheduleOfBonusAmount === null || row.scheduleOfBonusAmount === "0") {
+        if (row.bonusFee === null || row.bonusFee === "0") {
             return
         } else {
-            let formatScheduleOfBonusAmount = publicUtils.addComma(row.scheduleOfBonusAmount, false);
+            let formatScheduleOfBonusAmount = publicUtils.addComma(row.bonusFee, false);
             return formatScheduleOfBonusAmount;
         }
     }
@@ -250,12 +246,148 @@ class individualSales extends React.Component {//個人売上検索
         if (row.grosProfits === null || row.grosProfits === "0") {
             return
         } else {
-            let mGrosProfits = row.grosProfits.split('.')[0];
-            let formatmGrosProfits = publicUtils.addComma(mGrosProfits, false)
-            if (mGrosProfits < 0) {
-                return (<div style={{ color: 'red' }}>{formatmGrosProfits}</div>);
+            var holidayCount = 0;
+            var workdayCount = 0;
+            var totalholidayCount = 0;
+            var totalworkdayCount = 0;
+            if (row.dailyCalculationStatus == "0") {
+                if (row.admissionStartDate.substring(0, 6) == row.onlyYandM) {
+                    if (row.admissionStartDate.substring(6, 8) == "01") {
+                        let returnItem = cell;
+                        returnItem = publicUtils.addComma(row.grosProfits, false);
+                        if (row.grosProfits < 0) {
+                            return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                        }
+                        if (returnItem == 0) {
+                            returnItem = '';
+                        }
+                        return returnItem;
+
+                    }
+                    var monthDayCount = new Date(row.admissionStartDate.substring(0, 4), row.admissionStartDate.substring(4, 6), 0).getDate();
+                    var a = row.admissionStartDate.substring(0, 4);
+                    var b = row.admissionStartDate.substring(4, 6);
+                    for (var i = row.admissionStartDate.substring(6, 8); i <= monthDayCount; i++) {
+                        if (i < 10) {
+                            i = "0" + i
+                        }
+                        if (publicUtils.isHoliday(row.admissionStartDate.substring(0, 4), row.admissionStartDate.substring(4, 6), i)) {
+                            holidayCount++;
+                        }
+                        else {
+                            workdayCount++;
+                        }
+                    }
+                    for (var j = 1; j <= monthDayCount; j++) {
+                        if (j < 10) {
+                            j = "0" + j
+                        }
+                        if (publicUtils.isHoliday(row.admissionStartDate.substring(0, 4), row.admissionStartDate.substring(4, 6), j)) {
+                            totalholidayCount++;
+                        }
+                        else {
+                            totalworkdayCount++;
+                        }
+                    }
+                    var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
+                    if (row.deductionsAndOvertimePay != null) {
+                        var dailySalayCal = dailySalary + parseInt(row.deductionsAndOvertimePay);
+                    } else {
+                        var dailySalayCal = dailySalary
+                    }
+                    var calgrosProfits = dailySalayCal - row.salary - row.transportationExpenses - row.insuranceFeeAmount - row.bonusFee - row.allowanceAmount - row.deductionsAndOvertimePay
+                    let returnItem = cell;
+                    returnItem = publicUtils.addComma(calgrosProfits, false);
+                    if (calgrosProfits < 0) {
+                        return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                    }
+                    if (returnItem == 0) {
+                        returnItem = '';
+                    }
+                    return returnItem;
+                }
+                if (row.admissionEndDate !== null && row.admissionEndDate.substring(0, 6) === row.onlyYandM) {
+                    var monthDayCount = new Date(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), 0).getDate();
+                    if (row.admissionEndDate.substring(6, 8) === monthDayCount) {
+                        let returnItem = cell;
+                        returnItem = publicUtils.addComma(row.grosProfits, false);
+                        if (row.grosProfits < 0) {
+                            return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                        }
+                        if (returnItem == 0) {
+                            returnItem = '';
+                        }
+                        return returnItem;
+
+                    }
+                    else {
+                        var a = row.admissionEndDate.substring(0, 4);
+                        var b = row.admissionEndDate.substring(4, 6);
+                        for (var i = 0; i <= row.admissionEndDate.substring(6, 8); i++) {
+                            if (i < 10) {
+                                i = "0" + i
+                            }
+                            if (publicUtils.isHoliday(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), i)) {
+                                holidayCount++;
+                            }
+                            else {
+                                workdayCount++;
+                            }
+                        }
+                        for (var j = 1; j <= monthDayCount; j++) {
+                            if (j < 10) {
+                                j = "0" + j
+                            }
+                            if (publicUtils.isHoliday(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), j)) {
+                                totalholidayCount++;
+                            }
+                            else {
+                                totalworkdayCount++;
+                            }
+                        }
+                        var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
+                        if (row.deductionsAndOvertimePay != null) {
+                            var dailySalary = dailySalary + parseInt(row.deductionsAndOvertimePay);
+                        }
+                        var calgrosProfits = dailySalary - row.salary - row.transportationExpenses - row.insuranceFeeAmount - row.bonusFee - row.allowanceAmount - row.deductionsAndOvertimePay
+                        let returnItem = cell;
+                        returnItem = publicUtils.addComma(calgrosProfits, false);
+                        if (calgrosProfits < 0) {
+                            return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                        }
+                        if (returnItem == 0) {
+                            returnItem = '';
+                        }
+                        return returnItem;
+                    }
+                }
+                else {
+                    var dailySalary = row.grosProfits
+                    let returnItem = cell;
+                    returnItem = publicUtils.addComma(dailySalary, false);
+                    if (dailySalary < 0) {
+                        return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                    }
+                    if (returnItem == 0) {
+                        returnItem = '';
+                    }
+                    return returnItem;
+                }
+
             }
-            return formatmGrosProfits;
+
+            else {
+                var dailySalary = row.grosProfits
+                let returnItem = cell;
+                returnItem = publicUtils.addComma(dailySalary, false);
+                if (dailySalary < 0) {
+                    return (<div style={{ color: 'red' }}>{returnItem}</div>);
+                }
+                if (returnItem == 0) {
+                    returnItem = '';
+                }
+                return returnItem;
+            }
         }
     }
 
@@ -334,7 +466,7 @@ class individualSales extends React.Component {//個人売上検索
                 }
                 return returnItem;
             }
-            if (row.admissionEndDate!==null &&row.admissionEndDate.substring(0, 6) === row.onlyYandM) {
+            if (row.admissionEndDate !== null && row.admissionEndDate.substring(0, 6) === row.onlyYandM) {
                 var monthDayCount = new Date(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), 0).getDate();
                 if (row.admissionEndDate.substring(6, 8) === monthDayCount) {
                     var salary = publicUtils.addComma(row.unitPrice, false)
@@ -552,6 +684,7 @@ class individualSales extends React.Component {//個人売上検索
 
         }
         this.setState({ unitPriceTotal: publicUtils.addComma(unitPriceTotal, false) })
+        this.setState({ unitPriceTotalnoComma: unitPriceTotal})
 
     }
 
@@ -708,7 +841,7 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                     <Col sm={3}>
                         <label>粗利合計：</label>
-                        <label>{this.state.totalgrosProfits} </label>
+                        <label>{this.state.unitPriceTotalnoComma-this.state.paymentTotalnoComma?publicUtils.addComma(this.state.unitPriceTotalnoComma-this.state.paymentTotalnoComma, false):''}</label>
                     </Col>
                 </Row>
                 <div >
@@ -720,7 +853,7 @@ class individualSales extends React.Component {//個人売上検索
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控除/残業</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>手当合計</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
