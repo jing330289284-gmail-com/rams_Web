@@ -25,9 +25,14 @@ class sendRepot extends React.Component {
 		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
 		positions: store.getState().dropDown[20],//職位
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
+		purchasingManagers: [],
 		approval: store.getState().dropDown[27],//承認ステータス
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
+		linkDetail: '担当追加',
+		customerCode: '',//お客様コード
+		customerDepartmentCode: '',//部門コード
+		selectedCustomer: {},//担当追加リスト
 		sendDay: '',
 		sendTime: '',
 		workReportStatusCode: '',
@@ -91,14 +96,12 @@ class sendRepot extends React.Component {
 		axios.post(this.state.serverIP + "sendRepot/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
-				for (let i in result.data) {
-					customerNoArray.push(result.data[i].customerNo);
-				}
-				//theKey
+				//theKey設定
 				if (result.data.length > 0) {
 					for (var i = 0; i < result.data.length; i++) {
 						result.data[i].rowId = i + 1;
 						result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].purchasingManagers;
+						customerNoArray.push(result.data[i].theKey);
 					}
 				}
 				this.setState({
@@ -112,19 +115,26 @@ class sendRepot extends React.Component {
 			})
 	}
 
-	// 行番号？
+	// セレクトボックス変更
 	onTagsChange = (event, values, fieldName) => {
 		if (values === null) {
 			switch (fieldName) {
-				case 'workReportStatusCode':
-				case 'customerName':
+				case 'customerCode':
 					this.setState({
 						workReportStatusCode: '',
+						customerDepartmentCode: '',
+						purchasingManagersCode: '',
 					})
 					break;
 				case 'customerDepartmentCode':
 					this.setState({
 						customerDepartmentCode: '',
+						purchasingManagersCode: '',
+					})
+					break;
+				case 'purchasingManagersCode':
+					this.setState({
+						purchasingManagersCode: '',
 					})
 					break;
 				default:
@@ -132,12 +142,37 @@ class sendRepot extends React.Component {
 		} else {
 			switch (fieldName) {
 				case 'customerCode':
-				case 'customerName':
 					this.setState({
 						customerCode: values.code,
+						customerDepartmentCode: '',
 					})
+					axios.post(this.state.serverIP + "sendRepot/getCustomerDepartmentCode")
+						.then(result => {
+							this.setState({
+								customerDepartmentNameDrop: result.data,
+							});
+						})
+						.catch(function (err) {
+							alert(err)
+						})
 					break;
 				case 'customerDepartmentCode':
+					this.setState({
+						customerDepartmentCode:values.code,
+						purchasingManagersCode: '',
+						purchasingManagersCode: '',
+					})
+					axios.post(this.state.serverIP + "sendRepot/getPurchasingManagersCode")
+						.then(result => {
+							this.setState({
+								customerDepartmentNameDrop: result.data,
+							});
+						})
+						.catch(function (err) {
+							alert(err)
+						})
+					break;
+				case 'purchasingManagersCode':
 					this.setState({
 						customerDepartmentCode: values.code,
 					})
@@ -164,6 +199,32 @@ class sendRepot extends React.Component {
 				return customerDepartmentNameDropTem[i].name;
 			}
 		}
+	}
+	//担当追加
+	CellFormatter(cell, row) {
+		if (cell !== "" && cell !== null) {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{cell}</a>);
+		} else {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{this.state.linkDetail}</a>);
+		}
+	}
+	//担当追加名前取得
+	getSalesPersons = (selectedCustomer) => {
+		console.log(selectedCustomer.salesPersonsAppend !== null);
+		this.setState({
+			selectedCustomer: selectedCustomer,
+			daiologShowFlag: true,
+		})
+	}
+	//担当追加保存
+	saveSalesPersons = (row, appendPersonMsg) => {
+		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
+		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
+		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
+		this.setState({
+			daiologShowFlag: false,
+		});
+		this.CellFormatter(row.salesPersonsAppend, row);
 	}
 	// clearボタン事件 未使用
 	clearLists = () => {
@@ -355,15 +416,7 @@ class sendRepot extends React.Component {
 		})
 	}
 
-	saveSalesPersons = (row,appendPersonMsg) => {
-		this.state.customerTemp[row.rowId].purchasingManagers2=appendPersonMsg.purchasingManagers2;
-		this.state.customerTemp[row.rowId].positionCode2=appendPersonMsg.positionCode2;
-		this.state.customerTemp[row.rowId].purchasingManagersMail2=appendPersonMsg.purchasingManagersMail2;
-		this.setState({
-			daiologShowFlag: false,
-		});
-		this.CellFormatter(row.salesPersonsAppend, row);
-	}
+
 	changeName=()=>{
 		if(this.state.listShowFlag){
 					this.setState({
@@ -565,7 +618,7 @@ class sendRepot extends React.Component {
 										options={this.state.customers}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
+										onChange={(event, values) => this.onTagsChange(event, values, 'customerCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
@@ -582,6 +635,7 @@ class sendRepot extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
+										disabled={this.state.customerCode == "" ? true: false}
 										options={this.state.customerDepartmentNameDrop}
 										getOptionLabel={(option) => option.name ? option.name : ""}
 										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
@@ -601,8 +655,21 @@ class sendRepot extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">担当者</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Form.Control type="text" value={this.state.purchasingManagers} name="purchasingManagers" autoComplete="off" size="sm" onChange={this.valueChange} placeholder="担当者" />
-								</InputGroup>
+									<Autocomplete
+										disabled={this.state.customerDepartmentCode == "" ? true : false}
+										options={this.state.purchasingManagers}
+										getOptionLabel={(option) => option.name ? option.name : ""}
+										value={this.state.purchasingManagers.find(v => v.code === this.state.purchasingManagersCode) || ""}
+										onChange={(event, values) => this.onTagsChange(event, values, 'purchasingManagersCode')}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps}
+													id="customerDepartmentName" className="auto form-control Autocompletestyle-salesSend"
+												/>
+											</div>
+										)}
+									/>
+									</InputGroup>
 							</Col>
 							<Col sm={1}>
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.customerCode == "" || this.state.customerDepartmentCode == "" || this.state.purchasingManagers == ""? true : false}>
@@ -675,10 +742,10 @@ class sendRepot extends React.Component {
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール(To)</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='d' >担当追加</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='a' >対象社員</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='b' >承認済み</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='c'>送信済み</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='targetEmployee' >対象社員</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='approvalStatus' >承認済み</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='sentReportStatus'>送信済み</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>

@@ -103,10 +103,12 @@ class dutyManagement extends React.Component {
 	  * 行の承認
 	  */
 	listApproval = () => {
+		alert(this.state.deductionsAndOvertimePay)
 		const emp = {
 			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
 			employeeNo: this.state.rowSelectEmployeeNo,
 			checkSection: this.state.rowSelectCheckSection,
+			deductionsAndOvertimePay: publicUtils.deleteComma((this.state.rowSelectDeductionsAndOvertimePay).replace(/￥/, "")),
 		}
 		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
@@ -116,7 +118,8 @@ class dutyManagement extends React.Component {
 					this.setState(
 						{
 							rowSelectEmployeeNo: '',
-							rowSelectCheckSection: ''
+							rowSelectCheckSection: '',
+							rowSelectDeductionsAndOvertimePay: ''
 						}
 					);
 					this.setState({ "myToastShow": true });
@@ -157,6 +160,7 @@ class dutyManagement extends React.Component {
 					rowNo:row.rowNo,
 					rowSelectEmployeeNo: row.employeeNo,
 					rowSelectCheckSection: row.checkSection,
+					rowSelectDeductionsAndOvertimePay: row.deductionsAndOvertimePay
 				}
 			);
 			$("#syounin").attr("disabled",false);
@@ -169,6 +173,7 @@ class dutyManagement extends React.Component {
 					rowNo: '',
 					rowSelectEmployeeNo: '',
 					rowSelectCheckSection: '',
+					rowSelectDeductionsAndOvertimePay: '',
 				}
 			);
 			$("#syounin").attr("disabled",true);
@@ -298,7 +303,7 @@ class dutyManagement extends React.Component {
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
 						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
 						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={ { padding: '.45em' } }  dataField='overTimePay'>残業代/控除</TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePay'>残業代/控除</TableHeaderColumn>
 						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
 						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
