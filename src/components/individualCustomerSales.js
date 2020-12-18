@@ -339,7 +339,7 @@ class IndividualCustomerSales extends React.Component {
             </Popover>
             }
         >
-        <Button variant="warning" size="sm" className="empCheck">要員確認</Button>
+        <Button variant="warning" size="sm" >要員確認</Button>
       </OverlayTrigger>
         return returnItem;
     }

@@ -14,6 +14,7 @@ class ProjectContent extends Component {
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         projectNo: '',
         projectType: '',
+        projectTypeName:'',
         projectName: '',
         admissionPeriod: '',
         projectPeriodName:'',
@@ -51,6 +52,7 @@ class ProjectContent extends Component {
         this.setState({
             projectNo: projectInfo.projectNo,
             projectType: projectInfo.projectType,
+            projectTypeName:projectInfo.projectTypeName,
             projectName: projectInfo.projectName,
             siteLocation:projectInfo.siteLocation,
             siteLocationName:projectInfo.siteLocationName,
@@ -93,7 +95,7 @@ class ProjectContent extends Component {
         if(projectInfo.unitPriceRangeLowest !== undefined && projectInfo.unitPriceRangeLowest !== null && projectInfo.unitPriceRangeLowest !== ''|| 
             projectInfo.unitPriceRangeHighest !== undefined && projectInfo.unitPriceRangeHighest !== null  && projectInfo.unitPriceRangeHighest !== ''){
                 var unitPriceRange = '';
-                unitPriceRange = projectInfo.unitPriceRangeLowest + "~" + projectInfo.unitPriceRangeHighest;
+                unitPriceRange = projectInfo.unitPriceRangeLowest + "万円~" + projectInfo.unitPriceRangeHighest + "万円";
                 this.setState({
                     unitPriceRange:unitPriceRange,
                 })
@@ -134,6 +136,7 @@ class ProjectContent extends Component {
         const {
             projectNo,
             projectType,
+            projectTypeName,
             projectName,
             admissionPeriod,
             projectPeriodName,
@@ -173,7 +176,7 @@ class ProjectContent extends Component {
                     <MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
                 </div>
                 <ListGroup>
-                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectType}</ListGroup.Item>
+                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectTypeName}</ListGroup.Item>
                     <ListGroup.Item>■案件名：{projectName}</ListGroup.Item>
                     <ListGroup.Item>■業務内容：<br />                              
                     <FormControl

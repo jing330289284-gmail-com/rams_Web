@@ -256,6 +256,7 @@ class ProjectInfoSearch extends Component {
                         searchFlag: this.state.searchFlag
                     },
                 }
+                break;
             case "customer":
                 path = {
                     pathname: '/subMenuManager/salesSendLetter',
@@ -375,8 +376,11 @@ class ProjectInfoSearch extends Component {
                         searchFlag: true,
                     }, () => {
                         if (this.props.location.state !== undefined && sendValues !== null && sendValues !== undefined) {
+                            let index = this.state.projectInfoList.findIndex(projectInfo => projectInfo.projectNo === this.props.location.state.selectedProjectNo);
+                            var currentPage = Math.ceil((index+1) / 5);
                             this.refs.projectInfoSearchTable.setState({
                                 selectedRowKeys: this.props.location.state.selectedProjectNo,
+                                currPage:currentPage,
                             })
                             $('button[name="clickButton"]').attr('disabled', false);
                         } else {
@@ -430,6 +434,14 @@ class ProjectInfoSearch extends Component {
     handleShowModal = (Kbn) => {
         this.setState({ showProjectContentModal: true })
     }
+    successRateNameData=(cell,row)=>{
+        var successRate = row.successRate;
+        if(successRate === "0" || successRate === "1"){
+            return <i style={{color:"red"}}>{row.successRateName}</i>
+        }else{
+            return row.successRateName;
+        }
+    }
     render() {
         const {
             actionType,
@@ -479,6 +491,7 @@ class ProjectInfoSearch extends Component {
         } = this.state;
         //テーブルの定義
         const options = {
+            noDataText: (<i>データなし</i>),
             page: 1,
             sizePerPage: 5,
             pageStartIndex: 1,
@@ -489,7 +502,6 @@ class ProjectInfoSearch extends Component {
             lastPage: '>>',
             paginationShowsTotal: this.renderShowsTotal,
             hideSizePerPage: true,
-            expandRowBgColor: 'rgb(165, 165, 165)',
             deleteBtn: this.createCustomDeleteButton,
             onDeleteRow: this.onDeleteRow,
             handleConfirmDeleteRow: this.customConfirm,
@@ -833,7 +845,7 @@ class ProjectInfoSearch extends Component {
                                 <BootstrapTable ref="projectInfoSearchTable" data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataField='successRateName'>確率</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriod'>入場時期</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>

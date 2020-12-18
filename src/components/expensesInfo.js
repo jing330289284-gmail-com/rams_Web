@@ -136,6 +136,11 @@ class ExpensesInfo extends Component {
         $.each(formArray, function (i, item) {
             expensesInfoModel[item.name] = item.value;
         });
+        expensesInfoModel["transportationExpenses"] = utils.deleteComma(this.state.transportationExpenses);
+        expensesInfoModel["leaderAllowanceAmount"] = utils.deleteComma(this.state.leaderAllowanceAmount);
+        expensesInfoModel["otherAllowanceAmount"] = utils.deleteComma(this.state.otherAllowanceAmount);
+        expensesInfoModel["housingAllowance"] = utils.deleteComma(this.state.housingAllowance);
+        expensesInfoModel["totalExpenses"] = utils.deleteComma(this.state.totalExpenses);
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);

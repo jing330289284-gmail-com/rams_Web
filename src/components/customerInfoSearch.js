@@ -132,8 +132,11 @@ class CustomerInfoSearch extends Component {
                         "errorsMessageShow": false,
                     }, () => {
                         if (this.state.customerNoForPageChange !== "" && this.state.customerNoForPageChange !== undefined) {
+                            let index = this.state.customerInfoData.findIndex(customerInfo => customerInfo.customerNo === this.state.customerNoForPageChange);
+                            var currentPage = Math.ceil((index+1) / 5);
                             this.refs.customerInfoSearchTable.setState({
                                 selectedRowKeys: this.state.customerNoForPageChange,
+                                currPage:currentPage,
                             })
                             $("#shusei").attr("disabled", false);
                             $("#shosai").attr("disabled", false);
