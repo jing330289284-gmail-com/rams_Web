@@ -8,7 +8,8 @@ import DatePicker, { } from "react-datepicker";
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import SalesAppend from './salesAppend';
+import SendRepotAppend from './sendRepotAppend';
+import SendRepotAppend2 from './sendRepotAppend2';
 import { Link } from "react-router-dom";
 import store from './redux/store';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faBookmark} from '@fortawesome/free-solid-svg-icons';
@@ -25,11 +26,13 @@ class sendRepot extends React.Component {
 		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
 		positions: store.getState().dropDown[20],//職位
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
+		customerDepartments: [],
 		purchasingManagers: [],
 		approval: store.getState().dropDown[27],//承認ステータス
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
 		linkDetail: '担当追加',
+		linkDetail2: '対象社員',
 		customerCode: '',//お客様コード
 		customerDepartmentCode: '',//部門コード
 		selectedCustomer: {},//担当追加リスト
@@ -43,10 +46,8 @@ class sendRepot extends React.Component {
 		currentPage: 1,//　該当page番号
 		selectetRowIds: [],
 		customerTemp: [],
-		sendLetterBtnFlag: true,
+		sendLetterBtnFlag: false,
 		tableClickColumn: '0',
-		linkDetail: '担当追加',
-		selectedCustomer: {},
 		daiologShowFlag: false,
 		selectedCusInfos: [],
 		listName:1,
@@ -100,7 +101,7 @@ class sendRepot extends React.Component {
 				if (result.data.length > 0) {
 					for (var i = 0; i < result.data.length; i++) {
 						result.data[i].rowId = i + 1;
-						result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].purchasingManagers;
+						result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].responsiblePerson;
 						customerNoArray.push(result.data[i].theKey);
 					}
 				}
@@ -146,10 +147,13 @@ class sendRepot extends React.Component {
 						customerCode: values.code,
 						customerDepartmentCode: '',
 					})
-					axios.post(this.state.serverIP + "sendRepot/getCustomerDepartmentCode")
+					const model = {
+						customerNo: values.code,
+					};
+					axios.post(this.state.serverIP + "sendRepot/getCustomerDepartmentCode", model)
 						.then(result => {
 							this.setState({
-								customerDepartmentNameDrop: result.data,
+								customerDepartments: result.data,
 							});
 						})
 						.catch(function (err) {
@@ -162,10 +166,14 @@ class sendRepot extends React.Component {
 						purchasingManagersCode: '',
 						purchasingManagersCode: '',
 					})
-					axios.post(this.state.serverIP + "sendRepot/getPurchasingManagersCode")
+					const model2 = {
+						customerNo: this.state.customerCode,
+						customerDepartmentCode: values.code,
+					};
+					axios.post(this.state.serverIP + "sendRepot/getPurchasingManagersCode", model2)
 						.then(result => {
 							this.setState({
-								customerDepartmentNameDrop: result.data,
+								purchasingManagers: result.data,
 							});
 						})
 						.catch(function (err) {
@@ -174,7 +182,7 @@ class sendRepot extends React.Component {
 					break;
 				case 'purchasingManagersCode':
 					this.setState({
-						customerDepartmentCode: values.code,
+						purchasingManagersCode: values.code,
 					})
 					break;
 				default:
@@ -210,7 +218,6 @@ class sendRepot extends React.Component {
 	}
 	//担当追加名前取得
 	getSalesPersons = (selectedCustomer) => {
-		console.log(selectedCustomer.salesPersonsAppend !== null);
 		this.setState({
 			selectedCustomer: selectedCustomer,
 			daiologShowFlag: true,
@@ -226,7 +233,15 @@ class sendRepot extends React.Component {
 		});
 		this.CellFormatter(row.salesPersonsAppend, row);
 	}
-	// clearボタン事件 未使用
+	//対象社員
+	CellFormatter2(cell, row) {
+		if (cell !== "" && cell !== null) {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{cell}</a>);
+		} else {
+			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{this.state.linkDetail2}</a>);
+		}
+	}
+	// clearボタン事件
 	clearLists = () => {
 		if(this.state.selectedlistName!==''){
 			axios.post(this.state.serverIP + "sendRepot/deleteList",{storageListName:this.state.selectedlistName})
@@ -331,7 +346,6 @@ class sendRepot extends React.Component {
 		let customerNo = this.state.customerCode;//お客様名
 		let customerDepartmentCode = this.state.customerDepartmentCode;//部門
 		let purchasingManagers = this.state.purchasingManagers;//担当者
-
 		let customers = this.state.allCustomer;
 		let customerInfo = this.state.customerTemp;
 		var sameFlag = false;
@@ -402,20 +416,17 @@ class sendRepot extends React.Component {
 		}
 	}
 
-	getSalesPersons = (selectedCustomer) => {
-		console.log(selectedCustomer.salesPersonsAppend !== null);
-		this.setState({
-			selectedCustomer: selectedCustomer,
-			daiologShowFlag: true,
-		})
-	}
-
+	//サブ画面
 	closeDaiolog = () => {
 		this.setState({
 			daiologShowFlag: false,
 		})
 	}
-
+	closeDaiolog2 = () => {
+		this.setState({
+			daiologShowFlag2: false,
+		})
+	}
 
 	changeName=()=>{
 		if(this.state.listShowFlag){
@@ -544,7 +555,15 @@ class sendRepot extends React.Component {
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
-						<SalesAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
+						<SendRepotAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
+							allState={this} positions={this.state.positions} />
+					</Modal.Body>
+				</Modal>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeDaiolog2} show={this.state.daiologShowFlag2} dialogClassName="modal-pbinfoSet">
+					<Modal.Header closeButton></Modal.Header>
+					<Modal.Body >
+						<SendRepotAppend2 customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
 							allState={this} positions={this.state.positions} />
 					</Modal.Body>
 				</Modal>
@@ -672,7 +691,7 @@ class sendRepot extends React.Component {
 									</InputGroup>
 							</Col>
 							<Col sm={1}>
-								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.customerCode == "" || this.state.customerDepartmentCode == "" || this.state.purchasingManagers == ""? true : false}>
+								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.customerCode == ""? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 							</Col>
 							<Col sm={5} style={{ "display": this.state.salesLists.length>=1 ? "block" : "none" }}>
@@ -687,8 +706,8 @@ class sendRepot extends React.Component {
 									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=3?' '+this.state.listName3:''}</Button>
 									</div>
 										<span style={{ "display": !this.state.listShowFlag ? "contents" : "none" }}>格納リスト： <FormControl   autoComplete="off" value={this.state.listName1}
-										disabled={this.state.salesLists.length>=1?false:true}
-										size="sm" name="listName1" style={{width:"85px"}} onChange={this.changeListName}/>
+										disabled={this.state.salesLists.length>=1?false:true} 
+										size="sm" name="listName1" style={{ width: "85px" }} onChange={this.changeListName}/>
 										<FormControl   autoComplete="off" value={this.state.listName2}
 										size="sm" name="listName2" style={{width:"85px","display": this.state.salesLists.length>=2? "block" : "none" }} onChange={this.changeListName}/>
 										<FormControl   autoComplete="off" value={this.state.listName3}
@@ -711,7 +730,7 @@ class sendRepot extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton" onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除
 								</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={this.clear} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />クリア
+								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists} disabled={0 !== this.state.allCustomer.length ? false : true}><FontAwesomeIcon icon={faMinusCircle} />クリア
 								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書
 								</Button>{' '}
@@ -720,7 +739,7 @@ class sendRepot extends React.Component {
 								<Button size="sm" variant="info" name="clickButton" onClick={this.mailCheck} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />メール確認
 								</Button>{' '}
 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos }}}>
-								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
+								<Button size="sm" variant="info" name="clickButton" disabled={this.state.sendLetterBtnFlag}><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
 							</div>
 						</Col>
 					</Row>
@@ -743,7 +762,7 @@ class sendRepot extends React.Component {
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール(To)</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='targetEmployee' >対象社員</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='targetEmployee' dataFormat={this.CellFormatter2.bind(this)}>対象社員</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='approvalStatus' >承認済み</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='sentReportStatus'>送信済み</TableHeaderColumn>
 						</BootstrapTable>

@@ -9,7 +9,8 @@ axios.defaults.withCredentials = true;
 /** 
 *営業送信画面お客営業追加
  */
-class sendRepotAppend extends Component {
+class sendRepotAppend2 extends Component {
+
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
@@ -24,10 +25,13 @@ class sendRepotAppend extends Component {
 			purchasingManagersMail2: '',
 		}
 	}
+
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
+		//this.props.customer.salesPersonsAppend!=="" && this.props.customer.salesPersonsAppend!==null?this.props.customer.salesPersonsAppend.split(','):[],
 	}
+
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
 		this.refs.salesPersonTable.setState({
@@ -35,6 +39,7 @@ class sendRepotAppend extends Component {
 		});
 		this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
 	}
+
 	getSalesPersons = (customerNo) => {
 		axios.post(this.state.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
@@ -165,7 +170,7 @@ class sendRepotAppend extends Component {
 			<div >
 				<Row inline="true">
 					<Col className="text-center">
-						<h2>部門担当者選択</h2>
+						<h2>部門担当者選択(要員送信)</h2>
 					</Col>
 				</Row>
 				<Form >
@@ -209,4 +214,4 @@ class sendRepotAppend extends Component {
 		);
 	}
 }
-export default sendRepotAppend;
+export default sendRepotAppend2;
