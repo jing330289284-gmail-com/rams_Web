@@ -55,11 +55,12 @@ class ExpensesInfo extends Component {
             kadouCheck: this.props.kadouCheck,
             leaderCheck: this.props.leaderCheck,
         })
-        if(this.props.relatedEmployees[0] !== null && this.props.relatedEmployees[0] !== undefined &&
-            this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
-            this.setState({
-                relatedEmployees: this.props.relatedEmployees[0].relatedEmployees,
-            })
+        if(this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
+            if(this.props.relatedEmployees[0] !== null && this.props.relatedEmployees[0] !== undefined){
+                this.setState({
+                    relatedEmployees: this.props.relatedEmployees[0].relatedEmployees,
+                })
+            }
         }
         if (this.props.expensesInfoModel !== null) {
             this.giveValue(this.props.expensesInfoModel);

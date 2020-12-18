@@ -24,6 +24,7 @@ class projectInfo extends Component {
         projectName: '',
         nationalityCode: '',
         admissionPeriod: '',
+        admissionMonthCode:'',
         projectType: '',
         successRate: '',
         customerNo: '',
@@ -45,9 +46,9 @@ class projectInfo extends Component {
         requiredItem1: '',
         requiredItem2: '',
         noOfInterviewCode: '',
-        recruitmentNumbers:'',
-        remark:'',
-        workStartPeriodForDate:'',
+        recruitmentNumbers: '',
+        remark: '',
+        workStartPeriodForDate: '',
         //パラメータ
         actionType: this.props.location.state.actionType,
         backPage: "",//遷移元
@@ -59,7 +60,7 @@ class projectInfo extends Component {
         torokuText: '登録',//登録ボタンの文字
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//バックエンドのリンク
         //Drop 
-        recruitmentNumbersDrop:[{"code":"1","name":"1"},{"code":"2","name":"2"},{"code":"3","name":"3"},{"code":"4","name":"4"},{"code":"5","name":"5"}],
+        recruitmentNumbersDrop: [{ "code": "1", "name": "1" }, { "code": "2", "name": "2" }, { "code": "3", "name": "3" }, { "code": "4", "name": "4" }, { "code": "5", "name": "5" }],
         projectTypeDrop: store.getState().dropDown[52],
         payOffRangeDrop: store.getState().dropDown[33].slice(1),
         nationalityDrop: store.getState().dropDown[7],
@@ -72,7 +73,8 @@ class projectInfo extends Component {
         successRateDrop: store.getState().dropDown[48],
         developLanguageDrop: store.getState().dropDown[8].slice(1),
         ageClassificationDrop: store.getState().dropDown[49],
-        workStartPeriodDrop:store.getState().dropDown[59],
+        workStartPeriodDrop: store.getState().dropDown[59],
+        admissionMonthDrop: store.getState().dropDown[62],
     }
     //onchange
     valueChange = event => {
@@ -86,6 +88,7 @@ class projectInfo extends Component {
             projectName: '',
             nationalityCode: '',
             admissionPeriod: '',
+            admissionMonthCode:'',
             projectType: '',
             successRate: '',
             customerNo: '',
@@ -107,12 +110,12 @@ class projectInfo extends Component {
             workStartPeriod: '',
             requiredItem1: '',
             requiredItem2: '',
-            remark:'',
+            remark: '',
             noOfInterviewCode: '',
             personInChargeDrop: [],
             experienceYear: '',
             siteLocation: '',
-            recruitmentNumbers:'',
+            recruitmentNumbers: '',
         })
     }
     /**
@@ -123,7 +126,8 @@ class projectInfo extends Component {
             projectNo: projectInfoMod.projectNo,
             projectName: projectInfoMod.projectName,
             nationalityCode: projectInfoMod.nationalityCode,
-            admissionPeriod:utils.converToLocalTime(projectInfoMod.admissionPeriod,false),
+            admissionPeriod: utils.converToLocalTime(projectInfoMod.admissionPeriod, false),
+            admissionMonthCode:projectInfoMod.admissionMonthCode,
             projectType: projectInfoMod.projectType,
             successRate: projectInfoMod.successRate,
             customerNo: projectInfoMod.customerNo,
@@ -147,16 +151,16 @@ class projectInfo extends Component {
             experienceYear: projectInfoMod.experienceYear,
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
             siteLocation: projectInfoMod.siteLocation,
-            recruitmentNumbers:projectInfoMod.recruitmentNumbers,
-            remark:projectInfoMod.remark,
+            recruitmentNumbers: projectInfoMod.recruitmentNumbers,
+            remark: projectInfoMod.remark,
         })
-        if(projectInfoMod.workStartPeriod.length > 2){
+        if (projectInfoMod.workStartPeriod.length > 2) {
             this.setState({
-                workStartPeriodForDate:utils.converToLocalTime(projectInfoMod.workStartPeriod,false),
+                workStartPeriodForDate: utils.converToLocalTime(projectInfoMod.workStartPeriod, false),
             })
-        }else{
+        } else {
             this.setState({
-                workStartPeriod:projectInfoMod.workStartPeriod,
+                workStartPeriod: projectInfoMod.workStartPeriod,
             })
         }
     }
@@ -277,9 +281,9 @@ class projectInfo extends Component {
             this.setState({
                 projectNo: this.props.location.state.projectNo,
                 backPage: this.props.location.state.backPage,
-                actionType:this.props.location.state.actionType,
-                sendValue:this.props.location.state.sendValue,
-                searchFlag:this.props.location.state.searchFlag,
+                actionType: this.props.location.state.actionType,
+                sendValue: this.props.location.state.sendValue,
+                searchFlag: this.props.location.state.searchFlag,
             })
             projectNo = this.props.location.state.projectNo;
         }
@@ -332,8 +336,8 @@ class projectInfo extends Component {
         $.each(formArray, function (i, item) {
             projectInfoModel[item.name] = item.value;
         });
-        projectInfoModel["workStartPeriod"] = this.state.workStartPeriod === '' ? utils.formateDate(this.state.workStartPeriodForDate,false) : this.state.workStartPeriod;
-        projectInfoModel["admissionPeriod"] = utils.formateDate(this.state.admissionPeriod,false);
+        projectInfoModel["workStartPeriod"] = this.state.workStartPeriod === '' ? utils.formateDate(this.state.workStartPeriodForDate, false) : this.state.workStartPeriod;
+        projectInfoModel["admissionPeriod"] = utils.formateDate(this.state.admissionPeriod, false);
         projectInfoModel["personInCharge"] = utils.valueGetLabel(this.state.personInCharge, this.state.personInChargeDrop);
         projectInfoModel["siteLocation"] = this.state.siteLocation;
         projectInfoModel["keyWordOfLanagurue1"] = this.state.keyWordOfLanagurue1;
@@ -348,7 +352,7 @@ class projectInfo extends Component {
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     if (this.state.actionType === "insert") {
                         window.location.reload();
-                    }else{
+                    } else {
                         $("#toroku").attr("disabled", false);
                     }
                 } else {
@@ -361,7 +365,7 @@ class projectInfo extends Component {
                 $("#toroku").attr("disabled", false);
             });
     }
-    admissionPeriodChange= date =>{
+    admissionPeriodChange = date => {
         if (date !== null) {
             this.setState({
                 admissionPeriod: date,
@@ -372,11 +376,11 @@ class projectInfo extends Component {
             });
         }
     }
-    workStartPeriodChange= date =>{
+    workStartPeriodChange = date => {
         if (date !== null) {
             this.setState({
                 workStartPeriodForDate: date,
-                workStartPeriod:'',
+                workStartPeriod: '',
             });
         } else {
             this.setState({
@@ -426,6 +430,7 @@ class projectInfo extends Component {
             experienceYear,
             recruitmentNumbers,
             workStartPeriodForDate,
+            admissionMonthCode,
             remark,
             actionType,
             backPage,
@@ -450,6 +455,7 @@ class projectInfo extends Component {
             developLanguageDrop,
             ageClassificationDrop,
             workStartPeriodDrop,
+            admissionMonthDrop,
         } = this.state;
         return (
             <div>
@@ -536,10 +542,11 @@ class projectInfo extends Component {
                                             locale="pt-BR"
                                             showMonthYearPicker
                                             showFullMonthYearPicker
-                                            minDate={new Date()}
+                                            minDate={new Date('' + (new Date().getMonth() === 0 ? (new Date().getFullYear() - 1) : new Date().getFullYear()) + ' ' + 
+                                            (new Date().getMonth() === 0 ? 11 : new Date().getMonth() + 1) + '')}
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
-                                            id={actionType === "detail" ? "wagesInfoDatePickerReadOnly" : "wagesInfoDatePicker"}
+                                            id={actionType === "detail" ? "workStartPeriodDatePickerReadOnly" : "workStartPeriodDatePicker"}
                                             dateFormat={"yyyy/MM"}
                                             name="admissionPeriod"
                                             locale="ja"
@@ -548,6 +555,18 @@ class projectInfo extends Component {
                                         <font
                                             id="mark" color="red"
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                        <FormControl
+                                            as="select"
+                                            value={admissionMonthCode}
+                                            name="admissionMonthCode"
+                                            onChange={this.valueChange}
+                                            disabled={actionType === "detail" ? true : false}>
+                                            {admissionMonthDrop.map(date =>
+                                                <option key={date.code} value={date.code}>
+                                                    {date.name}
+                                                </option>
+                                            )}
+                                        </FormControl>
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
@@ -807,7 +826,7 @@ class projectInfo extends Component {
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -970,7 +989,7 @@ class projectInfo extends Component {
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="fiveKanji">備考</InputGroup.Text>
                                         </InputGroup.Prepend>
