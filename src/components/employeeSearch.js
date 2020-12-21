@@ -25,25 +25,25 @@ registerLocale("ja", ja);
 class employeeSearch extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
 	};
-	//onchange
+	// onchange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
 		})
 	}
 
-	//reset
+	// reset
 	resetBook = () => {
 		this.setState(() => this.resetStates);
 	};
 
-	//初期化データ
+	// 初期化データ
 	initialState = {
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '',
+		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '',passportInfo: '',
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -58,7 +58,7 @@ class employeeSearch extends React.Component {
 		customerMaster: store.getState().dropDown[15].slice(1),
 		searchFlag: false,
 	};
-	//リセット　reset
+	// リセット reset
 	resetStates = {
 		employeeName: '',
 		employeeFormCode: '', employeeStatus: '', genderStatus: '',
@@ -67,17 +67,17 @@ class employeeSearch extends React.Component {
 		kadou: '', developLanguage1: '', developLanguage2: ''
 	};
 
-	//初期化メソッド
+	// 初期化メソッド
 	componentDidMount() {
 		this.clickButtonDisabled();
 	}
 
-	//初期化の時、disabledをセットします
+	// 初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
 		$('button[name="clickButton"]').attr('disabled', true);
 	};
 
-	//検索s
+	// 検索s
 	searchEmployee = () => {
 		const emp = {
 			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
@@ -117,7 +117,7 @@ class employeeSearch extends React.Component {
 		intoCompanyYearAndMonthTo: new Date()
 	};
 
-	//　入社年月form
+	// 入社年月form
 	inactiveintoCompanyYearAndMonthFrom = (date) => {
 		this.setState(
 			{
@@ -125,7 +125,7 @@ class employeeSearch extends React.Component {
 			}
 		);
 	};
-	//　入社年月To
+	// 入社年月To
 	inactiveintoCompanyYearAndMonthTo = (date) => {
 		this.setState(
 			{
@@ -134,31 +134,32 @@ class employeeSearch extends React.Component {
 		);
 	};
 	employeeDelete = () => {
-		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+		// 将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
 			$("#deleteBtn").click();
 		}
 	}
-	//隠した削除ボタン
+	// 隠した削除ボタン
 	createCustomDeleteButton = (onClick) => {
 		return (
 			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
 		);
 	}
-	//隠した削除ボタンの実装
+	// 隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
 		const emp = {
 			employeeNo: this.state.rowSelectEmployeeNo,
 			resumeInfo1: this.state.resumeInfo1,
 			resumeInfo2: this.state.resumeInfo2,
 			residentCardInfo: this.state.residentCardInfo,
+			passportInfo: this.state.passportInfo,
 		};
 		axios.post(this.state.serverIP + "employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
 					this.searchEmployee();
-					//削除の後で、rowSelectEmployeeNoの値に空白をセットする
+					// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
 					this.setState(
 						{
 							rowSelectEmployeeNo: ''
@@ -174,19 +175,20 @@ class employeeSearch extends React.Component {
 				alert("删除错误，请检查程序");
 			});
 	}
-	//　　削除前のデフォルトお知らせの削除
+	// 削除前のデフォルトお知らせの削除
 	customConfirm(next, dropRowKeys) {
 		const dropRowKeysStr = dropRowKeys.join(',');
 		next();
 	}
 
-	//行Selectファンクション
+	// 行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
 			this.setState(
 				{
 					rowSelectEmployeeNo: row.employeeNo,
 					residentCardInfo: row.residentCardInfo,
+					passportInfo:row.passportInfo,
 					resumeInfo1: row.resumeInfo1,
 					resumeInfo2: row.resumeInfo2,
 				}
@@ -194,6 +196,7 @@ class employeeSearch extends React.Component {
 			$('#resumeInfo1').prop('disabled', false);
 			$('#resumeInfo2').prop('disabled', false);
 			$('#residentCardInfo').prop('disabled', false);
+			$('#passportInfo').prop('disabled', false);
 			$('#delete').attr('disabled', false);
 			$('#update').attr('disabled', false);
 			$('#detail').attr('disabled', false);
@@ -208,6 +211,7 @@ class employeeSearch extends React.Component {
 			$('#resumeInfo1').prop('disabled', true);
 			$('#resumeInfo2').prop('disabled', true);
 			$('#residentCardInfo').prop('disabled', true);
+			$('#passportInfo').prop('disabled', true);
 			$('#delete').attr('disabled', true);
 			$('#update').attr('disabled', true);
 			$('#detail').attr('disabled', true);
@@ -225,9 +229,11 @@ class employeeSearch extends React.Component {
 	}
 
 	formatBrthday(birthday) {
+		let date = birthday;
+		birthday = birthday.replace(/[/]/g,"");
 		let value = publicUtils.converToLocalTime(birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(birthday, true).getTime()) / 31536000000);
-		value = publicUtils.converToLocalTime(birthday, true) === "" ? "" : birthday + "(" + value + ")"
-		return value;
+		date = publicUtils.converToLocalTime(birthday, true) === "" ? "" : date + "(" + value + ")"
+		return date;
 	}
 
 	formatStayPeriod(stayPeriod) {
@@ -238,7 +244,9 @@ class employeeSearch extends React.Component {
 
 	/**
 	 * 社員名連想
-	 * @param {} event 
+	 * 
+	 * @param {}
+	 *            event
 	 */
 	getEmployeeName = (event, values) => {
 		this.setState({
@@ -256,8 +264,8 @@ class employeeSearch extends React.Component {
 
 
 	/**
-* タイプが違う時に、色々な操作をします。
-*/
+	 * タイプが違う時に、色々な操作をします。
+	 */
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
@@ -391,7 +399,7 @@ class employeeSearch extends React.Component {
 		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
 			residenceCode, nationalityCode, customer, japaneseLevelCode, siteRoleCode, kadou, intoCompanyCode,
 			employeeList, errorsMessageValue } = this.state;
-		//テーブルの行の選択
+		// テーブルの行の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -400,7 +408,7 @@ class employeeSearch extends React.Component {
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
 		};
-		//テーブルの定義
+		// テーブルの定義
 		const options = {
 			page: 1,
 			sizePerPage: 5,
@@ -731,6 +739,7 @@ class employeeSearch extends React.Component {
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="passportInfo" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> パスポート</Button>{' '}
 							</div>
 						</Col>
 						<Col sm={3}>
@@ -751,14 +760,15 @@ class employeeSearch extends React.Component {
 								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
 								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-								<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='birthday' dataFormat={this.formatBrthday.bind(this)}>年齢</TableHeaderColumn>
+								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' /* dataFormat={this.formatBrthday.bind(this)} */>年齢</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
-								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 								<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
+								<TableHeaderColumn dataField='passportInfo' hidden={true}>パスポート</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

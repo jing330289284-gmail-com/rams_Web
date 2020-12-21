@@ -44,7 +44,7 @@ class sendRepot extends React.Component {
 		customerDepartmentName: '',
 		allCustomerNo: [],
 		currentPage: 1,//　該当page番号
-		selectetRowIds: [],
+		selectetRowKeys: [],
 		customerTemp: [],
 		sendLetterBtnFlag: false,
 		tableClickColumn: '0',
@@ -146,6 +146,7 @@ class sendRepot extends React.Component {
 					this.setState({
 						customerCode: values.code,
 						customerDepartmentCode: '',
+						purchasingManagersCode: '',
 					})
 					const model = {
 						customerNo: values.code,
@@ -163,7 +164,6 @@ class sendRepot extends React.Component {
 				case 'customerDepartmentCode':
 					this.setState({
 						customerDepartmentCode:values.code,
-						purchasingManagersCode: '',
 						purchasingManagersCode: '',
 					})
 					const model2 = {
@@ -268,38 +268,48 @@ class sendRepot extends React.Component {
 			selectedRowKeys: [],
 		})}
 	}
-	// ？
+	//リスト保存ボタン
 	createList = () => {
-		let {selectetRowIds,customerTemp,listName}=this.state;
-		let selectedArray=new Array();
-		for(let i in selectetRowIds){
-			selectedArray.push(customerTemp.find(v => v.rowId === selectetRowIds[i]));
+		let {selectetRowKeys,customerTemp,listName}=this.state;
+		let selectedArray = new Array();
+		let name= `送信対象${listName}`
+		for(let i in selectetRowKeys){
+			selectedArray.push(customerTemp.find(v => v.theKey === selectetRowKeys[i]));
 		}
-		let name=`送信対象${listName}`;
-		let selectedNoArray=new Array();
+		let customerListArray = new Array();
+		let mainChargeListArray = new Array();
+		let departmentCodeListArray = new Array();
+		let positionCodeListArray = new Array();
+		let mainChargeMailListArray = new Array();
+		let subChargeMailArray = new Array();
+		let CandidateInChargeListArray = new Array();
 		for(let i in selectedArray){
-			selectedNoArray.push(selectedArray[i].customerNo);
+			customerListArray.push(selectedArray[i].customerNo);
 		}
-		let code=selectedNoArray.join(',');
-		axios.post(this.state.serverIP + "sendRepot/creatList",{name,code})
+		let customerList = customerListArray.join(',');
+		let Model = {
+			name: name,
+			customerList: customerList,
+		}
+		axios.post(this.state.serverIP + "sendRepot/creatList", Model)
 		.then(result => {
 			this.refs.customersTable.store.selected = [];
 			this.refs.customersTable.setState({
 			selectedRowKeys: [],
 		})
 		this.setState({
-			selectetRowIds:[],
+			selectetRowKeys:[],
 		});
 		this.getLists();
 		})
 	}
-	// deleteボタン事件？
+	// 削除ボタン
 	deleteLists = () => {
-		let selectedIndex = this.state.selectetRowIds;
+		let selectetRowKeys = this.state.selectetRowKeys;
 		let newCustomer = this.state.allCustomer;
-		for (let i in selectedIndex) {
+		for (let i in selectetRowKeys) {
 			for (let k in newCustomer) {
-				if (selectedIndex[i] === newCustomer[k].rowId) {
+				if (selectetRowKeys[i] === newCustomer[k].theKey) {
 					newCustomer.splice(k, 1);
 					break;
 				}
@@ -309,7 +319,7 @@ class sendRepot extends React.Component {
 		this.setState({
 			selectedCusInfos: [],
 			allCustomer: newCustomer,
-			selectetRowIds: [],
+			selectetRowKeys: [],
 		});
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
@@ -326,17 +336,17 @@ class sendRepot extends React.Component {
 		})
 		let customerRowIdArray = new Array();
 		for (let i in this.state.allCustomer) {
-			customerRowIdArray.push(this.state.allCustomer[i].rowId);
+			customerRowIdArray.push(this.state.allCustomer[i].theKey);
 		};
 		let targetCustomer = new Array();
 		for (let i in customerRowIdArray) {
-			let rowNo = customerRowIdArray[i];
-			targetCustomer.push(this.state.customerTemp[rowNo]);
+			let theKey = customerRowIdArray[i];
+			targetCustomer.push(this.state.customerTemp[theKey]);
 		};
 		this.setState({
 			selectedCusInfos: targetCustomer,
 			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
-			selectetRowIds: [],
+			selectetRowKeys: [],
 			currentPage: 1,//　該当page番号
 		})
 	}
@@ -396,22 +406,22 @@ class sendRepot extends React.Component {
 				selectedRowKeys: [],
 			})
 		}
-		let rowNo=row.rowId;
+		let theKey = row.theKey;
 		if (isSelected) {
 			this.setState({
 				sendLetterBtnFlag: true,
-				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
-				selectedCusInfos: this.state.selectedCusInfos.concat(this.state.customerTemp[rowNo]),
+				selectetRowKeys: this.state.selectetRowKeys.concat([theKey]),
+				selectedCusInfos: this.state.selectedCusInfos.concat(this.state.customerTemp[theKey]),
 			})
 		} else {
-			let index = this.state.selectetRowIds.findIndex(item => item === rowNo);
-			this.state.selectetRowIds.splice(index, 1);
-			let index2 = this.state.selectedCusInfos.findIndex(item => item.rowId === rowNo);
+			let index = this.state.selectetRowKeys.findIndex(item => item === theKey);
+			this.state.selectetRowKeys.splice(index, 1);
+			let index2 = this.state.selectedCusInfos.findIndex(item => item === theKey);
 			this.state.selectedCusInfos.splice(index2, 1);
 			this.setState({
 				selectedCusInfos: this.state.selectedCusInfos,
 				sendLetterBtnFlag: true,
-				selectetRowIds: this.state.selectetRowIds,
+				selectetRowKeys: this.state.selectetRowKeys,
 			})
 		}
 	}
@@ -454,6 +464,7 @@ class sendRepot extends React.Component {
 			})
 		}
 	}
+	//作業報告書ボタン
 	openFolder = () => {
 				axios.post(this.state.serverIP + "sendRepot/openFolder")
 	}
@@ -484,7 +495,7 @@ class sendRepot extends React.Component {
 		
 		this.refs.customersTable.store.selected = [];
 		this.setState({
-			selectetRowIds: [],
+			selectetRowKeys: [],
 		});
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
@@ -506,10 +517,21 @@ class sendRepot extends React.Component {
 		
 		}
 			axios.post(this.state.serverIP + "sendRepot/getCustomersByNos",{ctmNos:selectedNos.split(',')})
-			.then(result => {
-				this.setState({
-					allCustomer:result.data,
-				});
+				.then(result => {
+					let customerNoArray = new Array();
+					//theKey設定
+					if (result.data.length > 0) {
+						for (var i = 0; i < result.data.length; i++) {
+							result.data[i].rowId = i + 1;
+							result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].responsiblePerson;
+							customerNoArray.push(result.data[i].theKey);
+						}
+					}
+					this.setState({
+						allCustomer: result.data,
+						customerTemp: [...result.data],
+						allCustomerNo: customerNoArray,
+					});
 			})
 			.catch(function(err) {
 				alert(err)
@@ -655,9 +677,9 @@ class sendRepot extends React.Component {
 									</InputGroup.Prepend>
 									<Autocomplete
 										disabled={this.state.customerCode == "" ? true: false}
-										options={this.state.customerDepartmentNameDrop}
+										options={this.state.customerDepartments}
 										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
+										value={this.state.customerDepartments.find(v => v.code === this.state.customerDepartmentCode) || ""}
 										onChange={(event, values) => this.onTagsChange(event, values, 'customerDepartmentCode')}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
@@ -728,13 +750,13 @@ class sendRepot extends React.Component {
 						<Col sm={4}></Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
-								<Button size="sm" variant="info" name="clickButton" onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除
+								<Button size="sm" variant="info" name="clickButton" onClick={this.deleteLists} disabled={this.state.selectetRowKeys.length === this.state.customerTemp.length || this.state.selectetRowKeys.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除
 								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists} disabled={0 !== this.state.allCustomer.length ? false : true}><FontAwesomeIcon icon={faMinusCircle} />クリア
 								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書
 								</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存
+								<Button size="sm" variant="info" name="clickButton" onClick={this.createList} disabled={this.state.selectetRowKeys.length === this.state.customerTemp.length || this.state.selectetRowKeys.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存
 								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.mailCheck} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />メール確認
 								</Button>{' '}
