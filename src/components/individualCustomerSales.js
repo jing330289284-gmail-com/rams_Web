@@ -297,7 +297,8 @@ class IndividualCustomerSales extends React.Component {
         }
         else{
             let formatexpectFee = publicUtils.addComma(row. expectFee,false)
-            return formatexpectFee;
+            return (<div style={{ color: 'red' }}>{formatexpectFee}</div>);
+            
         }
     }
     empDetailCheck=(cell,row)=>{
