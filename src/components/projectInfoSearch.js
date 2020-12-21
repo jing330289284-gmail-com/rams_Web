@@ -846,7 +846,7 @@ class ProjectInfoSearch extends Component {
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriod'>入場時期</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
