@@ -49,6 +49,7 @@ class WagesInfo extends Component {
         reflectStartDate: '',//反映年月
         lastTimeBonusAmountForInsert: "",//前回のボーナス額（）
         employeeFormCodeStart:"",
+        bonus:null,//ボーナス
         costInfoShow: false,//諸費用画面フラグ
         message: '',//toastのメッセージ
         type: '',//成功や失敗
@@ -226,15 +227,15 @@ class WagesInfo extends Component {
     giveValue = (wagesInfoMod) => {
         this.setState({
             socialInsuranceFlag: wagesInfoMod.socialInsuranceFlag,
-            salary: wagesInfoMod.salary,
-            waitingCost: wagesInfoMod.waitingCost,
-            welfarePensionAmount: wagesInfoMod.welfarePensionAmount,
-            healthInsuranceAmount: wagesInfoMod.healthInsuranceAmount,
-            insuranceFeeAmount: wagesInfoMod.insuranceFeeAmount,
+            salary: utils.addComma(wagesInfoMod.salary),
+            waitingCost: utils.addComma(wagesInfoMod.waitingCost),
+            welfarePensionAmount: utils.addComma(wagesInfoMod.welfarePensionAmount),
+            healthInsuranceAmount: utils.addComma(wagesInfoMod.healthInsuranceAmount),
+            insuranceFeeAmount:  utils.addComma(wagesInfoMod.insuranceFeeAmount),
             lastTimeBonusAmount: utils.addComma(wagesInfoMod.lastTimeBonusAmount),
-            scheduleOfBonusAmount: wagesInfoMod.scheduleOfBonusAmount,
+            scheduleOfBonusAmount: utils.addComma(wagesInfoMod.scheduleOfBonusAmount),
             bonusFlag: wagesInfoMod.bonusFlag,
-            totalAmount: wagesInfoMod.totalAmount,
+            totalAmount: utils.addComma(wagesInfoMod.totalAmount),
             employeeFormCode: wagesInfoMod.employeeFormCode,
             remark: wagesInfoMod.remark,
             bonusStartDate: utils.converToLocalTime(wagesInfoMod.nextBonusMonth, false),
@@ -254,15 +255,25 @@ class WagesInfo extends Component {
             healthInsuranceAmount: '',
             insuranceFeeAmount: '',
             lastTimeBonusAmount: '',
-            scheduleOfBonusAmount: '',
-            bonusFlag: '',
             totalAmount: '',
             employeeFormCode: this.state.employeeFormCodeStart,
             remark: '',
-            bonusStartDate: '',
             raiseStartDate: '',
             reflectStartDate: '',
         })
+        if(this.state.bonus !== null){
+            this.setState({
+                bonusFlag:this.state.bonus.bonusFlag,
+                scheduleOfBonusAmount:utils.addComma(this.state.bonus.scheduleOfBonusAmount),
+                bonusStartDate:utils.converToLocalTime(this.state.bonus.nextBonusMonth,false),
+            })
+        }else{
+            this.setState({
+                bonusFlag: '',
+                scheduleOfBonusAmount:'',
+                bonusStartDate:'',
+            })
+        }
     }
     getWagesInfo = (event, values) => {
         this.setState({
@@ -291,15 +302,25 @@ class WagesInfo extends Component {
                     $("#expensesInfoBtn").attr("disabled", false);
                     this.setState({
                         wagesInfoList: result.data.wagesInfoList,
-                        lastTimeBonusAmount: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
-                        lastTimeBonusAmountForInsert: result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount,
+                        lastTimeBonusAmount:utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
+                        lastTimeBonusAmountForInsert:utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
                         kadouCheck: result.data.kadouCheck,
                         leaderCheck:result.data.leaderCheck,
                         relatedEmployees: result.data.kadouList,
                         employeeFormCode: result.data.employeeFormCode,
                         employeeFormCodeStart:result.data.employeeFormCode,
+                        bonus:result.data.bonus,
                         "errorsMessageShow": false,
                     })
+                    if(result.data.bonus !== null){
+                        this.setState({
+                            bonusFlag:result.data.bonus.bonusFlag,
+                            scheduleOfBonusAmount:utils.addComma(result.data.bonus.scheduleOfBonusAmount),
+                            bonusStartDate:utils.converToLocalTime(result.data.bonus.nextBonusMonth,false),
+                        },()=>{
+                            this.totalKeisan();
+                        })
+                    }
                 } else {
                     $("#expensesInfoBtn").attr("disabled", true);
                     this.setState({
@@ -309,6 +330,14 @@ class WagesInfo extends Component {
                         leaderCheck:result.data.leaderCheck,
                         employeeFormCode: result.data.employeeFormCode,
                         employeeFormCodeStart:result.data.employeeFormCode,
+                        lastTimeBonusAmount:'',
+                        lastTimeBonusAmountForInsert:'',
+                        bonus:result.data.bonus,
+                        bonusFlag:'',
+                        scheduleOfBonusAmount:'',
+                        bonusStartDate:'',
+                    },()=>{
+                        this.totalKeisan();
                     })
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -352,7 +381,7 @@ class WagesInfo extends Component {
      */
     shuseiBtn = () => {
         var selectedWagesInfo = this.state.selectedWagesInfo;
-        if(this.state.kadouCheck){
+        if(selectedWagesInfo.waitingCost !== '' && selectedWagesInfo.waitingCost !== null && selectedWagesInfo.waitingCost !== undefined){
             selectedWagesInfo["waitingCost"] = selectedWagesInfo.salary;
             selectedWagesInfo["salary"] = "";
         }
@@ -361,7 +390,9 @@ class WagesInfo extends Component {
             torokuText: '更新',
         })
         this.giveValue(selectedWagesInfo);
-        selectedWagesInfo["salary"] = selectedWagesInfo.waitingCost;
+        if(selectedWagesInfo.waitingCost !== '' && selectedWagesInfo.waitingCost !== null && selectedWagesInfo.waitingCost !== undefined){
+            selectedWagesInfo["salary"] = selectedWagesInfo.waitingCost;
+        }
     }
     /**
      * https://asia-northeast1-tsunagi-all.cloudfunctions.net/
@@ -430,8 +461,10 @@ class WagesInfo extends Component {
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
         });
-        $("#socialInsuranceFlag").attr("disabled",true);
-        $("#bonusFlag").attr("disabled",true);
+        if(this.state.employeeFormCode === "2"){
+            $("#socialInsuranceFlag").attr("disabled",true);
+            $("#bonusFlag").attr("disabled",true);
+        }
         wagesInfoModel["salary"] = utils.deleteComma(this.state.salary);
         wagesInfoModel["waitingCost"] = utils.deleteComma(this.state.waitingCost);
         wagesInfoModel["welfarePensionAmount"] = utils.deleteComma(this.state.welfarePensionAmount);
@@ -544,6 +577,15 @@ class WagesInfo extends Component {
                     insuranceFeeAmount:"",
                     bonusFlag:"0",
                     scheduleOfBonusAmount:"",
+                    bonusStartDate:'',
+                },()=>{
+                    this.totalKeisan();
+                })
+            }else{
+                this.setState({
+                    bonusStartDate:utils.converToLocalTime(this.state.bonus.nextBonusMonth,false),
+                    bonusFlag:this.state.bonus.bonusFlag,
+                    scheduleOfBonusAmount:utils.addComma(this.state.bonus.scheduleOfBonusAmount),
                 },()=>{
                     this.totalKeisan();
                 })
@@ -563,6 +605,7 @@ class WagesInfo extends Component {
             lastTimeBonusAmount,
             scheduleOfBonusAmount,
             bonusFlag,
+            bonus,
             totalAmount,
             employeeFormCode,
             remark,
@@ -816,7 +859,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : kadouCheck ? true : employeeFormCode === "2" ? true : false}
+                                            disabled={actionType === "detail" ? true : employeeFormCode === "2" ? true : false}
                                             name="bonusFlag"
                                             id="bonusFlag"
                                             onChange={this.valueChangeBonus}
@@ -869,7 +912,7 @@ class WagesInfo extends Component {
                                                     locale="pt-BR"
                                                     showMonthYearPicker
                                                     showFullMonthYearPicker
-                                                    minDate={new Date()}
+                                                    // minDate={new Date()}
                                                     showDisabledMonthNavigation
                                                     className="form-control form-control-sm"
                                                     id={bonusFlag !== "1" ? "wagesInfoDatePickerReadOnly":"wagesInfoDatePicker"}
