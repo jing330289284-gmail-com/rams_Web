@@ -271,7 +271,8 @@ class sendRepot extends React.Component {
 	//リスト保存ボタン
 	createList = () => {
 		let {selectetRowKeys,customerTemp,listName}=this.state;
-		let selectedArray=new Array();
+		let selectedArray = new Array();
+		let name= `送信対象${listName}`
 		for(let i in selectetRowKeys){
 			selectedArray.push(customerTemp.find(v => v.theKey === selectetRowKeys[i]));
 		}
@@ -285,12 +286,12 @@ class sendRepot extends React.Component {
 		for(let i in selectedArray){
 			customerListArray.push(selectedArray[i].customerNo);
 		}
-		let customerList = selectedNoArray.join(',');
-		let workTimeModel = {
-			name: `送信対象${listName}` ,
+		let customerList = customerListArray.join(',');
+		let Model = {
+			name: name,
 			customerList: customerList,
 		}
-		axios.post(this.state.serverIP + "sendRepot/creatList",{name,code})
+		axios.post(this.state.serverIP + "sendRepot/creatList", Model)
 		.then(result => {
 			this.refs.customersTable.store.selected = [];
 			this.refs.customersTable.setState({
