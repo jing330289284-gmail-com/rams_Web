@@ -48,6 +48,7 @@ class WagesInfo extends Component {
         raiseStartDate: '',//昇給の期日
         reflectStartDate: '',//反映年月
         lastTimeBonusAmountForInsert: "",//前回のボーナス額（）
+        employeeFormCodeStart:"",
         costInfoShow: false,//諸費用画面フラグ
         message: '',//toastのメッセージ
         type: '',//成功や失敗
@@ -256,7 +257,7 @@ class WagesInfo extends Component {
             scheduleOfBonusAmount: '',
             bonusFlag: '',
             totalAmount: '',
-            employeeFormCode: '',
+            employeeFormCode: this.state.employeeFormCodeStart,
             remark: '',
             bonusStartDate: '',
             raiseStartDate: '',
@@ -295,6 +296,8 @@ class WagesInfo extends Component {
                         kadouCheck: result.data.kadouCheck,
                         leaderCheck:result.data.leaderCheck,
                         relatedEmployees: result.data.kadouList,
+                        employeeFormCode: result.data.employeeFormCode,
+                        employeeFormCodeStart:result.data.employeeFormCode,
                         "errorsMessageShow": false,
                     })
                 } else {
@@ -305,6 +308,7 @@ class WagesInfo extends Component {
                         relatedEmployees: result.data.kadouList,
                         leaderCheck:result.data.leaderCheck,
                         employeeFormCode: result.data.employeeFormCode,
+                        employeeFormCodeStart:result.data.employeeFormCode,
                     })
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -420,10 +424,14 @@ class WagesInfo extends Component {
      */
     toroku = () => {
         var wagesInfoModel = {};
+        $("#socialInsuranceFlag").attr("disabled",false);
+        $("#bonusFlag").attr("disabled",false);
         var formArray = $("#wagesInfoForm").serializeArray();
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
         });
+        $("#socialInsuranceFlag").attr("disabled",true);
+        $("#bonusFlag").attr("disabled",true);
         wagesInfoModel["salary"] = utils.deleteComma(this.state.salary);
         wagesInfoModel["waitingCost"] = utils.deleteComma(this.state.waitingCost);
         wagesInfoModel["welfarePensionAmount"] = utils.deleteComma(this.state.welfarePensionAmount);
@@ -732,6 +740,7 @@ class WagesInfo extends Component {
                                             as="select"
                                             disabled={actionType === "detail" ? true : kadouCheck === true ? true : employeeFormCode === "2" ? true : false}
                                             name="socialInsuranceFlag"
+                                            id="socialInsuranceFlag"
                                             onChange={this.valueChangeInsurance}
                                             value={socialInsuranceFlag}>
                                             {socialInsuranceFlagDrop.map(date =>
@@ -807,8 +816,9 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : employeeFormCode === "2" ? true : false}
+                                            disabled={actionType === "detail" ? true : kadouCheck ? true : employeeFormCode === "2" ? true : false}
                                             name="bonusFlag"
+                                            id="bonusFlag"
                                             onChange={this.valueChangeBonus}
                                             value={bonusFlag}>
                                             {bonusFlagDrop.map(date =>
@@ -862,11 +872,11 @@ class WagesInfo extends Component {
                                                     minDate={new Date()}
                                                     showDisabledMonthNavigation
                                                     className="form-control form-control-sm"
-                                                    id={bonusFlag === "1" ? "wagesInfoDatePicker" : "wagesInfoDatePickerReadOnly"}
+                                                    id={bonusFlag !== "1" ? "wagesInfoDatePickerReadOnly":"wagesInfoDatePicker"}
                                                     name="nextBonusMonth"
                                                     dateFormat={"yyyy/MM"}
                                                     locale="ja"
-                                                    readOnly={bonusFlag === "1" ? false : true}
+                                                    readOnly={bonusFlag !== "1" ? true : false}
                                                     disabled={actionType === "detail" ? true : false}
                                                 />
                                             </InputGroup.Prepend>
