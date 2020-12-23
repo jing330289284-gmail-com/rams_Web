@@ -2,7 +2,7 @@ import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Button, Col, Row,InputGroup, Modal} from 'react-bootstrap';
-import { faGlasses, faEnvelope, faUserPlus , faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
+import { faGlasses, faEnvelope, faUserPlus , faLevelUpAlt, faTrash, faFile} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -32,6 +32,7 @@ class sendLettersConfirm extends React.Component {
 		selectedEmpNos: this.props.location.state.salesPersons,
 		selectedCusInfos: this.props.location.state.targetCusInfos,
 		employeeInfo: [],
+		employeeInfoAdd: [],
 		employeeName: '',
 		hopeHighestPrice: '',
 		nationalityName: '',
@@ -47,8 +48,6 @@ class sendLettersConfirm extends React.Component {
 		employeeNo: this.props.empNo,
 		genderStatus: '',
 		age: '',
-		hopeHighestPrice: '',
-		beginMonth: '',
 		nearestStation: '',
 		employeeStatus: '',
 		japaneseLevelCode: '',
@@ -104,19 +103,22 @@ class sendLettersConfirm extends React.Component {
 		mails: [],
 		loginUserInfo: [],
 		appendEmps: [],
-		disbleState: false,
 		selectedMailCC: [],
 		popupFlag: true,
 		backPage: "",
 		searchFlag: true,
 		sendValue: {},
 		/*　要員追加機能の新規　20201216 　張棟　START*/
-		// 全部要員集合
+		// 全部要員名前集合
 		allEmployeeName: [],
+		// 全部要員集合
 		allEmployeeNameInfo: [],
+		// 画面遷移初期化:true,要員追加ボタンを押下した:false
 		initFlg: true,
-//		// 全部所属
-//		allEmployeeStatus: [],
+		// 要員一覧テーブルのindex
+		EmployeeNameIndex: 0,
+		// ページ数
+		currentPage: 1,
 		/*　要員追加機能の新規　20201216 　張棟　END*/
 	})
 	
@@ -128,16 +130,21 @@ class sendLettersConfirm extends React.Component {
 				backPage: this.props.location.state.backPage,
 			})
 		}
-		// 選択された要員がある
+		/* 要員追加機能の新規　20201216 　張棟　START*/
+		// 営業状況確認一覧画面から選択された送信要員がある
 		if (this.state.selectedEmpNos !== "" && this.state.selectedEmpNos !== null && this.state.selectedEmpNos !== undefined) {
-			// 選択された要員の詳細データを取る
+			// 選択された送信要員の詳細データを取る
 			this.searchEmpDetail();			
 		}
+		/* 要員追加機能の新規　20201216 　張棟　END*/
 		// メールデータが取る
 		this.getMail();
 		this.getLoginUserInfo();
 		this.getAllEmpsWithResume();
+		/* 要員追加機能の新規　20201216 　張棟　START*/
+		//　画面初期化する時、全部要員のデータを取る
 		this.getAllEmployInfoName();
+		/* 要員追加機能の新規　20201216 　張棟　END*/
 		
 	}
 	/* 要員追加機能の新規　20201216 　張棟　START*/
@@ -163,6 +170,7 @@ class sendLettersConfirm extends React.Component {
 	}
 	/* 要員追加機能の新規　20201216 　張棟　END*/
 	
+	// 共用CCメールを操作
 	onTagsChange = (event, values, fieldName) => {
 		if (values.length === 2) {
 			this.setState({
@@ -202,6 +210,7 @@ class sendLettersConfirm extends React.Component {
 
 	}
 
+	// 送信処理
 	sendMailWithFile = () => {
 		const mailConfirmContont = `<br/>
 
@@ -431,6 +440,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			.then(result => {
 				this.setState({
 					employeeInfo: result.data,
+					/* 要員追加機能の新規　20201216 　張棟　START*/
+					// 営業状況確認一覧画面から遷移した後で、要員画面初期化して要員一覧のindex初期化
+					EmployeeNameIndex : result.data.length,
+					/* 要員追加機能の新規　20201216 　張棟　END*/
 				})
 			})
 			.catch(function(error) {
@@ -488,11 +501,11 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 
 		this.searchPersonnalDetail(row.employeeNo);
 	}
-	
+	/* 要員追加機能の新規　20201216 　張棟　START*/
 	formatEmpStatus = (cell, row, enumObject, index) => {
 		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
-	
+	/* 要員追加機能の新規　20201216 　張棟　END*/
 	formatResume(cell, row, enumObject, index) {
 		return (<div>
 			<Form.Control as="select" size="sm"
@@ -508,14 +521,25 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	}
 	
 	/*　要員追加機能の新規　20201216 　張棟　START*/
+	// 要員名前処理
 	formatEmployeeName(cell, row, enumObject, index) {
-		return (<div>
+		var flg = true;
+		var name = cell;
+		for (var v=0 ; v< this.state.employeeInfo.length; v++) {
+			if (this.state.employeeInfo[v].employeeName === cell) {
+				flg = this.state.employeeInfo[v].initFlg === undefined ? true : this.state.employeeInfo[v].initFlg;
+				name = this.state.employeeInfo[v].employeeName;
+			}
+		}
+		
+		return flg? name : (<div>
 		<Form.Control as="select" size="sm"
 			onChange={this.employeeNameChange.bind(this, row)}
 			name="employeeName"
 			autoComplete="off">
-			
+			<option></option>
 			{this.state.allEmployeeName.map(data =>
+				
 				<option value={data}>
 					{data}
 				</option>
@@ -524,30 +548,35 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	</div>);
 	}
 	
-	temp(cell, row, enumObject, index) {
-		return cell !== null && cell!== ""?this.state.employeeName:""; 
-	}
-	
-	// 
+	// 要員名前触発されるイベント
 	employeeNameChange = (row, event) => {
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
+		var employeeInfo = this.state.employeeInfo;
+		var employeeNoTemp;
+		employeeInfo[row.index-1].employeeName  = event.target.value;
+//		this.setState({
+//			[event.target.name]: event.target.value,
+//			employeeInfo: employeeInfo,
+//		})
 		for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
 			if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
-				var employeeNo = this.state.allEmployeeNameInfo[i].employeeNo;
-				if (employeeNo.match("LYC")) {
+				var employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
+				if (employeeNoTemp.match("LYC")) {
+					// 社員
+					employeeInfo[row.index-1].employeeStatus = "0";
 					this.setState({
-						employeeStatus : "社員",
+						employeeInfo : employeeInfo,
 					});
-				} else if (employeeNo.match("BP")){
+				} else if (employeeNoTemp.match("BP")){
+					// 協力
+					employeeInfo[row.index-1].employeeStatus = "1";
 					this.setState({
-						employeeStatus : "協力",
+						employeeInfo : employeeInfo,
 					});
 				}
 				break;
 			}
 		}
+		this.searchPersonnalDetail(employeeNoTemp);
 	};
 	/*　要員追加機能の新規　20201216 　張棟　END*/
 	
@@ -568,27 +597,31 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	
 	//　要員追加機能の新規　20201216 　張棟　START
 	/**
-	 * 行追加
+	 * 行追加処理
 	 */
 	insertRow = () => {
-		var employeeInfo = this.state.employeeInfo;
+		var employeeInfo= this.state.employeeInfo;
 		var employeeInfoModel = {};
 		employeeInfoModel["employeeName"] = "";
 		employeeInfoModel["employeeStatus"] = "";
 		employeeInfoModel["hopeHighestPrice"] = "";
+		employeeInfoModel["initFlg"] = false;
+		employeeInfoModel["index"] = ++this.state.EmployeeNameIndex;
 		employeeInfo.push(employeeInfoModel);
+		var currentPage = Math.ceil(employeeInfo.length / 5);
 		this.setState({
 			employeeInfo: employeeInfo,
-			initFlg : false,
+			currentPage: currentPage, 
 		})
-//		this.refs.table.setState({
-//			selectedRowKeys: []
-//		});
-		/* 要員追加機能の新規　20201216 　張棟　START*/
-		// ★★★★注意★★★这里要移动到画面初始化的地方进行调
+		this.refs.table.setState({
+			selectedRowKeys: []
+		});
+	}
+	/**
+	 * 行削除処理
+	 * */
+	deleteRow　= () => {
 		
-		
-		/* 要員追加機能の新規　20201216 　張棟　END*/
 	}
 	//　要員追加機能の新規　20201216 　張棟　END
 	/**
@@ -609,10 +642,16 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	}
 	render() {
 		const {backPage} = this.state;
+		
+		// ページネーション
 		const options = {
+			onPageChange : page => {
+				this.setState({ currentPage: page});
+			},
+			page: this.state.currentPage,
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
 			defaultSortOrder: 'dsc',
-			sizePerPage: 10,
+			sizePerPage: 5,
 			pageStartIndex: 1,
 			paginationSize: 2,
 			prePage: '<', // Previous page button text
@@ -623,6 +662,12 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 		};
+		
+		// 要員一覧表の入力框
+		const cellEdit = {
+				mode: 'click',
+				blurToSave: true
+			};
 
 		const selectRow = {
 			mode: "radio",
@@ -740,10 +785,12 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						</InputGroup>
 					</Col>
 				</Row>
-				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={2}>要員一覧</Col>
-					<Col sm={2}>
+				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
+					<Col sm={3}>
 						<div style={{ "float": "right" }}>
+							<Button size="sm" variant="info" name="clickButton" onClick={this.chooseFile}><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
 							<Button size="sm" variant="info" name="clickButton" onClick={this.insertRow}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
+							<Button size="sm" variant="info" name="clickButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
 						</div>
 					</Col>
 					<Col sm={1}></Col><Col sm={2}>{'　'}営業文章</Col></Row>
@@ -755,13 +802,15 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							insertRow={true}
 							//selectRow={selectRow}
 							ref='table'
+							pagination={true}
+							cellEdit={cellEdit}
 							data={this.state.employeeInfo}
 							className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='15%' dataField='employeeName' dataFormat={this.state.initFlg?this.temp.bind(this):this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
+							<TableHeaderColumn width='15%' dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
-							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editable={true}>単価</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>

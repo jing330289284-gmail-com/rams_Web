@@ -10,12 +10,12 @@ import store from './redux/store';
 axios.defaults.withCredentials = true;
 
 
-//営業ポイント設定
+// 営業ポイント設定
 class salesPointSet extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
 		this.checkRows = this.checkRows.bind(this);
 	}
@@ -27,7 +27,7 @@ class salesPointSet extends React.Component {
 		customerContract: '',
 		updateFlag: true,
 		insertFlag: false,
-		currentPage: 1,//今のページ
+		currentPage: 1,// 今のページ
 		insertNo: '',
 		employeeStatus: store.getState().dropDown[4],
 		newMemberStatus: store.getState().dropDown[23],
@@ -42,7 +42,7 @@ class salesPointSet extends React.Component {
 	componentDidMount() {
 		this.select();
 	}
-	//明细查询
+	// 明细查询
 	onchange = (event) => {
 		this.refs.table.setState({
 			selectedRowKeys: []
@@ -128,8 +128,8 @@ class salesPointSet extends React.Component {
 			});
 	}
 	/**
-	* 行Selectファンクション
-	*/
+	 * 行Selectファンクション
+	 */
 	handleRowSelect = (row, isSelected) => {
 
 		if (isSelected) {
@@ -150,7 +150,11 @@ class salesPointSet extends React.Component {
 	insertRow = () => {
 		var salesPointData = this.state.salesPointData;
 		var salesPointSetModel = {};
-		salesPointSetModel["no"] = parseInt(salesPointData[salesPointData.length - 1].no) + 1;
+		if(salesPointData.length > 0){
+			salesPointSetModel["no"] = parseInt(salesPointData[salesPointData.length - 1].no) + 1;
+		}else{
+			salesPointSetModel["no"] = 1;
+		}
 		salesPointSetModel["employee"] = "";
 		salesPointSetModel["newMember"] = "";
 		salesPointSetModel["customerContract"] = "";
@@ -173,8 +177,8 @@ class salesPointSet extends React.Component {
 		});
 	}
 	/**
-	  * 登録ボタン
-	  */
+	 * 登録ボタン
+	 */
 	insert = () => {
 		var salesPointSetModel = {};
 		if (this.checkRows()) {
@@ -299,24 +303,27 @@ class salesPointSet extends React.Component {
 	}
 
 	render() {
-		//表格样式设定
+		// 表格样式设定
 		this.options = {
 			onPageChange: page => {
 				this.setState({ currentPage: page });
 			},
 			page: this.state.currentPage,
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 5,  // which size per page you want to locate as
+								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
 			lastPage: '>>', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or
+															// function
+			hideSizePerPage: true, // > You can hide the dropdown for
+									// sizePerPage
 		};
 		const { employeeSearch, newMemberSearch, customerContractSearch, errorsMessageValue } = this.state;
-		//	テーブルの列の選択
+		// テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -340,10 +347,11 @@ class salesPointSet extends React.Component {
 				<div >
 					<Form id="siteForm">
 						<Form.Group>
-							{/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
-                    </Row> */}
+							{/*
+								 * <Row> <Col sm={3}></Col> <Col sm={7}> <img
+								 * className="mb-4" alt="title" src={title}/>
+								 * </Col> </Row>
+								 */}
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>営業ポイント設定</h2>
