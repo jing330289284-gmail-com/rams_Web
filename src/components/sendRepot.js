@@ -189,7 +189,15 @@ class sendRepot extends React.Component {
 			}
 		}
 	}
-
+	//お客様
+	customerNameFormat = (cell) => {
+		let customers = this.state.customers;
+		for (var i in customers) {
+			if (cell === customers[i].code) {
+				return customers[i].name;
+			}
+		}
+	}
 	//職位
 	positionNameFormat = (cell) => {
 		let positionsTem = this.state.positions;
@@ -282,14 +290,28 @@ class sendRepot extends React.Component {
 		let positionCodeListArray = new Array();
 		let mainChargeMailListArray = new Array();
 		let subChargeMailArray = new Array();
-		let CandidateInChargeListArray = new Array();
 		for(let i in selectedArray){
-			customerListArray.push(selectedArray[i].customerNo);
+			customerListArray.push(selectedArray[i].customerNo);//お客様番号リスト
+			mainChargeListArray.push(selectedArray[i].responsiblePerson);//メイン担当者リスト
+			departmentCodeListArray.push(selectedArray[i].customerDepartmentCode);//部門リスト
+			positionCodeListArray.push(selectedArray[i].positionCode);//職位リスト
+			mainChargeMailListArray.push(selectedArray[i].purchasingManagersMail);//メール(To)リスト
+			subChargeMailArray.push(selectedArray[i].salesPersonsAppend);//候補担当メールリスト
 		}
 		let customerList = customerListArray.join(',');
+		let mainChargeList = mainChargeListArray.join(',');
+		let departmentCodeList = departmentCodeListArray.join(',');
+		let positionCodeList = positionCodeListArray.join(',');
+		let mainChargeMailList = mainChargeMailListArray.join(',');
+		let subChargeMailList = subChargeMailArray.join(',');
 		let Model = {
 			name: name,
 			customerList: customerList,
+			mainChargeList: mainChargeList,
+			departmentCodeList: departmentCodeList,
+			positionCodeList: positionCodeList,
+			mainChargeMailList: mainChargeMailList,
+			subChargeMailList: subChargeMailList,
 		}
 		axios.post(this.state.serverIP + "sendRepot/creatList", Model)
 		.then(result => {
@@ -491,8 +513,7 @@ class sendRepot extends React.Component {
 			}
 		);
 	};
-	showSelectedCtms=(selectedNos,flag)=>{
-		
+	showSelectedCtms = (selectedNos, name)=>{
 		this.refs.customersTable.store.selected = [];
 		this.setState({
 			selectetRowKeys: [],
@@ -500,38 +521,47 @@ class sendRepot extends React.Component {
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
 		})
-		if(flag==='1'){
-			this.setState({
-					selectedlistName:this.state.listName1,
-			})
-		
-		}else if(flag==='2'){
-			this.setState({
-					selectedlistName:this.state.listName2,
-			})
-		
-		}else if(flag==='3'){
-			this.setState({
-					selectedlistName:this.state.listName3,
-			})
-		
+		this.setState({
+			name: name,
+		})
+		let Model = {
+			name:name,
 		}
-			axios.post(this.state.serverIP + "sendRepot/getCustomersByNos",{ctmNos:selectedNos.split(',')})
-				.then(result => {
-					let customerNoArray = new Array();
-					//theKey設定
-					if (result.data.length > 0) {
-						for (var i = 0; i < result.data.length; i++) {
-							result.data[i].rowId = i + 1;
-							result.data[i].theKey = result.data[i].customerNo + result.data[i].customerDepartmentCode + result.data[i].responsiblePerson;
-							customerNoArray.push(result.data[i].theKey);
-						}
-					}
-					this.setState({
-						allCustomer: result.data,
-						customerTemp: [...result.data],
-						allCustomerNo: customerNoArray,
-					});
+		axios.post(this.state.serverIP + "sendRepot/getListByName",Model)
+			.then(result => {
+				let TheList = result.data;
+				let allCustomer = new Array();
+				let customerList = new Array();
+				let mainChargeList = new Array();
+				let departmentCodeList = new Array();
+				let positionCodeList = new Array();
+				let mainChargeMailList = new Array();
+				let subChargeMailList = new Array();
+				customerList = TheList.customerList.split(',')
+				mainChargeList = TheList.mainChargeList.split(',')
+				departmentCodeList = TheList.departmentCodeList.split(',')
+				positionCodeList = TheList.positionCodeList.split(',')
+				mainChargeMailList = TheList.mainChargeMailList.split(',')
+				subChargeMailList = TheList.subChargeMailList.split(',')
+				//theKey設定
+				for (var i = 0; i < customerList.length; i++) {
+					allCustomer[i] = {
+						"theKey": customerList[i] + departmentCodeList[i] + mainChargeList[i],
+						"rowId": i + 1,
+						"customerNo": customerList[i],
+						"responsiblePerson": mainChargeList[i],
+						"customerDepartmentCode": mainChargeList[i],
+						"positionCode": mainChargeList[i],
+						"purchasingManagersMail": mainChargeList[i],
+						"salesPersonsAppend": mainChargeList[i],
+						"targetEmployee": mainChargeList[i]
+					};
+				}
+				this.setState({
+					allCustomer: allCustomer,
+					customerTemp: [...allCustomer],
+					//allCustomerNo: customerNoArray,
+				});
 			})
 			.catch(function(err) {
 				alert(err)
@@ -719,12 +749,12 @@ class sendRepot extends React.Component {
 							<Col sm={5} style={{ "display": this.state.salesLists.length>=1 ? "block" : "none" }}>
 								<InputGroup size="sm" className="mb-3" style={{position: 'relative'}}>
 									<div style={{  "display": this.state.listShowFlag ? "contents" : "none" }}>
-									格納リスト：
-									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs1,'1')} style={{"display": this.state.salesLists.length>=1? "block" : "none" }}>
+										格納リスト：
+									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs1, this.state.listName1)} style={{"display": this.state.salesLists.length>=1? "block" : "none" }}>
 									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=1?' '+this.state.listName1:''}</Button>{'　'}
-									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs2,'2')} style={{"display": this.state.salesLists.length>=2? "block" : "none" }}>
+										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs2, this.state.listName2)} style={{"display": this.state.salesLists.length>=2? "block" : "none" }}>
 									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=2?' '+this.state.listName2:''}</Button>{'　'}
-									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this,this.state.selectedCtmNoStrs3,'3')} style={{"display": this.state.salesLists.length>=3? "block" : "none" }}>
+										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs3, this.state.listName3)} style={{"display": this.state.salesLists.length>=3? "block" : "none" }}>
 									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=3?' '+this.state.listName3:''}</Button>
 									</div>
 										<span style={{ "display": !this.state.listShowFlag ? "contents" : "none" }}>格納リスト： <FormControl   autoComplete="off" value={this.state.listName1}
@@ -778,7 +808,7 @@ class sendRepot extends React.Component {
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='10%' dataField='theKey' isKey></TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='rowId' >番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='customerNo' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='responsiblePerson'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
