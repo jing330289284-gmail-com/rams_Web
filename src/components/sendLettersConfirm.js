@@ -10,6 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import MailConfirm from './mailConfirm';
 import store from './redux/store';
 import SalesEmpAddPopup from './salesEmpAddPopup';
+import $ from "jquery";
+import MyToast from "./myToast";
+import ErrorsMessageToast from "./errorsMessageToast";
 axios.defaults.withCredentials = true;
 
 /** 
@@ -18,6 +21,7 @@ axios.defaults.withCredentials = true;
 class sendLettersConfirm extends React.Component {
 	constructor(props) {
 		super(props);
+		this.valueChange = this.valueChange.bind(this);
 		this.state = this.initialState;//初期化
 	}
 
@@ -119,6 +123,16 @@ class sendLettersConfirm extends React.Component {
 		EmployeeNameIndex: 0,
 		// ページ数
 		currentPage: 1,
+        //
+        selectedColumnId: 0,
+		//
+		errorsMessageShow: false,
+		//
+		errorsMessageValue: '',
+		//
+		message: '',
+		//
+		type: '',
 		/*　要員追加機能の新規　20201216 　張棟　END*/
 	})
 	
@@ -145,6 +159,8 @@ class sendLettersConfirm extends React.Component {
 		//　画面初期化する時、全部要員のデータを取る
 		this.getAllEmployInfoName();
 		/* 要員追加機能の新規　20201216 　張棟　END*/
+		$("#deleteButton").attr("disabled",true);
+		$("#bookButton").attr("disabled",true);
 		
 	}
 	/* 要員追加機能の新規　20201216 　張棟　START*/
@@ -502,23 +518,38 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.searchPersonnalDetail(row.employeeNo);
 	}
 	/* 要員追加機能の新規　20201216 　張棟　START*/
+	handleRowSelect = (row, isSelected, e) => {
+		if (isSelected) {
+			this.setState({
+           	 	selectedColumnId: row.index,
+			})
+			$("#bookButton").attr("disabled",false);
+			$("#deleteButton").attr("disabled",false);
+		} else {
+			$("#deleteButton").attr("disabled",true);
+			$("#bookButton").attr("disabled",true);
+		}
+		if (row.employeeNo !== "" && row.employeeNo !== null) {
+			this.searchPersonnalDetail(row.employeeNo);
+		}
+	};
 	formatEmpStatus = (cell, row, enumObject, index) => {
 		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
 	/* 要員追加機能の新規　20201216 　張棟　END*/
-	formatResume(cell, row, enumObject, index) {
-		return (<div>
-			<Form.Control as="select" size="sm"
-				onChange={this.resumeValueChange.bind(this, row)}
-				name="resumeName"
-				autoComplete="off">
-				<option ></option>
-
-				<option >{row.resumeInfo1 == null ? "" : row.resumeInfo1.split('/')[4]}</option>
-				<option >{row.resumeInfo2 == null ? "" : row.resumeInfo2.split('/')[4]}</option>
-			</Form.Control>
-		</div>);
-	}
+	// formatResume(cell, row, enumObject, index) {
+	// 	return (<div>
+	// 		<Form.Control as="select" size="sm"
+	// 			onChange={this.resumeValueChange.bind(this, row)}
+	// 			name="resumeName"
+	// 			autoComplete="off">
+	// 			<option ></option>
+	//
+	// 			<option >{row.resumeInfo1 == null ? "" : row.resumeInfo1.split('/')[4]}</option>
+	// 			<option >{row.resumeInfo2 == null ? "" : row.resumeInfo2.split('/')[4]}</option>
+	// 		</Form.Control>
+	// 	</div>);
+	// }
 	
 	/*　要員追加機能の新規　20201216 　張棟　START*/
 	// 要員名前処理
@@ -531,21 +562,43 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				name = this.state.employeeInfo[v].employeeName;
 			}
 		}
-		
-		return flg? name : (<div>
-		<Form.Control as="select" size="sm"
-			onChange={this.employeeNameChange.bind(this, row)}
-			name="employeeName"
-			autoComplete="off">
-			<option></option>
-			{this.state.allEmployeeName.map(data =>
-				
-				<option value={data}>
-					{data}
-				</option>
-			)}
-		</Form.Control>
-	</div>);
+
+		if (flg) {
+			return name;
+		} else {
+			if (cell === "" || cell === null) {
+				return (<div>
+					<Form.Control as="select" size="sm"
+								  onChange={this.employeeNameChange.bind(this, row)}
+								  name="employeeName"
+								  autoComplete="off">
+						<option></option>
+						{this.state.allEmployeeName.map(data =>
+
+							<option value={data}>
+								{data}
+							</option>
+						)}
+					</Form.Control>
+				</div>);
+			} else {
+				return (<div>
+					<Form.Control as="select" size="sm"
+								  onChange={this.employeeNameChange.bind(this, row)}
+								  name="employeeName"
+								  value={cell}
+								  autoComplete="off">
+						<option></option>
+						{this.state.allEmployeeName.map(data =>
+
+							<option value={data}>
+								{data}
+							</option>
+						)}
+					</Form.Control>
+				</div>);
+			}
+		}
 	}
 	
 	// 要員名前触発されるイベント
@@ -560,6 +613,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
 			if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
 				var employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
+				employeeInfo[row.index-1].employeeNo = employeeNoTemp;
 				if (employeeNoTemp.match("LYC")) {
 					// 社員
 					employeeInfo[row.index-1].employeeStatus = "0";
@@ -602,6 +656,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	insertRow = () => {
 		var employeeInfo= this.state.employeeInfo;
 		var employeeInfoModel = {};
+		employeeInfoModel["employeeNo"] = "";
 		employeeInfoModel["employeeName"] = "";
 		employeeInfoModel["employeeStatus"] = "";
 		employeeInfoModel["hopeHighestPrice"] = "";
@@ -621,8 +676,47 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	 * 行削除処理
 	 * */
 	deleteRow　= () => {
-		
+		var deleteFlg = window.confirm("削除していただきますか？");
+		if (deleteFlg) {
+			$("#delectBtn").click();
+		}
 	}
+
+	//隠した削除ボタン
+	createCustomDeleteButton = (onClick) => {
+		return (
+			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
+		);
+	}
+
+	//隠した削除ボタンの実装
+	onDeleteRow = (row) => {
+		var id = this.state.selectedColumnId;
+		var employeeInfoList = this.state.employeeInfo;
+		for (let i = employeeInfoList.length -1; i>=0; i--) {
+			if (employeeInfoList[i].index === id) {
+				employeeInfoList.splice(i,1);
+			}
+		}
+		if (employeeInfoList.length !== 0) {
+			for (let i = employeeInfoList.length - 1; i >= 0; i--) {
+				employeeInfoList[i].index = (i + 1);
+			}
+		}
+		var currentPage = Math.ceil(employeeInfoList.length / 5);
+		this.setState({
+			currentPage: currentPage,
+			employeeInfo: employeeInfoList,
+			//rowNo: '',
+			// customerDepartmentNameValue: '',
+			// customerDepartmentName: '',
+		})
+		$("#deleteButton").attr("disabled",true);
+		$("#bookButton").attr("disabled",true);
+		this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
+		setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+	};
+
 	//　要員追加機能の新規　20201216 　張棟　END
 	/**
 	 * 戻るボタン
@@ -641,7 +735,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.props.history.push(path);
 	}
 	render() {
-		const {backPage} = this.state;
+		const {backPage, errorsMessageValue, message, type} = this.state;
 		
 		// ページネーション
 		const options = {
@@ -649,7 +743,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				this.setState({ currentPage: page});
 			},
 			page: this.state.currentPage,
-			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
+			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
 			defaultSortOrder: 'dsc',
 			sizePerPage: 5,
 			pageStartIndex: 1,
@@ -661,6 +755,12 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			hideSizePerPage: true,
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
+			//
+			expandRowBgColor: 'rgb(165, 165, 165)',
+			deleteBtn: this.createCustomDeleteButton,
+			onDeleteRow: this.onDeleteRow,
+			handleConfirmDeleteRow: this.customConfirm
+			//
 		};
 		
 		// 要員一覧表の入力框
@@ -669,12 +769,16 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				blurToSave: true
 			};
 
+
 		const selectRow = {
 			mode: "radio",
 			bgColor: 'pink',
 			hideSelectColumn: true,
 			clickToSelect: true,
-			onSelect: this.handleEmpSelect,
+			// clickToExpand: true,
+			//onSelect: this.handleEmpSelect,
+			onSelect: this.handleRowSelect,
+			clickToSelectAndEditCell: true,
 		};
 
 		const selectRow1 = {
@@ -706,6 +810,12 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 【備　　考】：`:"")+ this.state.remark;
 		return (
 			<div>
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton><Col className="text-center">
@@ -718,9 +828,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeEmpAddDaiolog} show={this.state.empAdddaiologShowFlag} dialogClassName="modal-bankInfo">
 					<Modal.Header closeButton><Col className="text-center">
-						<h2>要員追加</h2>
+						<h2>履歴書選択</h2>
 					</Col></Modal.Header>
-					<Modal.Body >
+					<Modal.Body>
 						<SalesEmpAddPopup personalInfo={this} />
 					</Modal.Body>
 				</Modal>
@@ -788,9 +898,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
 					<Col sm={3}>
 						<div style={{ "float": "right" }}>
-							<Button size="sm" variant="info" name="clickButton" onClick={this.chooseFile}><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
-							<Button size="sm" variant="info" name="clickButton" onClick={this.insertRow}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
-							<Button size="sm" variant="info" name="clickButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
+							<Button size="sm" variant="info" id="bookButton" name="bookButton"><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
+							<Button size="sm" variant="info" id="addButton" name="addButton" onClick={this.insertRow}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
+							<Button size="sm" variant="info" id="deleteButton" name="deleteButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
 						</div>
 					</Col>
 					<Col sm={1}></Col><Col sm={2}>{'　'}営業文章</Col></Row>
@@ -800,7 +910,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						<BootstrapTable
 							options={options}
 							insertRow={true}
-							//selectRow={selectRow}
+							deleteRow data={this.state.employeeInfo}
+							selectRow={selectRow}
 							ref='table'
 							pagination={true}
 							cellEdit={cellEdit}
@@ -811,10 +922,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							<TableHeaderColumn width='15%' dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
-							<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
+							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn width='20%' dataField='resume' dataFormat={this.formatResume.bind(this)} editable={false}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn width='20%' dataField='resume' editable={false}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 					<Col sm={1}></Col>
