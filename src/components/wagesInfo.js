@@ -320,6 +320,14 @@ class WagesInfo extends Component {
                         },()=>{
                             this.totalKeisan();
                         })
+                    }else{
+                        this.setState({
+                            bonusFlag:'',
+                            scheduleOfBonusAmount:'',
+                            bonusStartDate:'',
+                        },()=>{
+                            this.totalKeisan();
+                        })
                     }
                 } else {
                     $("#expensesInfoBtn").attr("disabled", true);
@@ -582,13 +590,15 @@ class WagesInfo extends Component {
                     this.totalKeisan();
                 })
             }else{
-                this.setState({
-                    bonusStartDate:utils.converToLocalTime(this.state.bonus.nextBonusMonth,false),
-                    bonusFlag:this.state.bonus.bonusFlag,
-                    scheduleOfBonusAmount:utils.addComma(this.state.bonus.scheduleOfBonusAmount),
-                },()=>{
-                    this.totalKeisan();
-                })
+                if(this.state.bonus !== null){
+                    this.setState({
+                        bonusStartDate:utils.converToLocalTime(this.state.bonus.nextBonusMonth,false),
+                        bonusFlag:this.state.bonus.bonusFlag,
+                        scheduleOfBonusAmount:utils.addComma(this.state.bonus.scheduleOfBonusAmount),
+                    },()=>{
+                        this.totalKeisan();
+                    })
+                }
             }
         })
     }
