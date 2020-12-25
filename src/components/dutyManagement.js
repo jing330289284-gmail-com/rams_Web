@@ -310,7 +310,7 @@ class dutyManagement extends React.Component {
 						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
 						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
-						<TableHeaderColumn hidden={true} dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
+						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
