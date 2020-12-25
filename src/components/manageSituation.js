@@ -16,16 +16,16 @@ import ErrorsMessageToast from './errorsMessageToast';
 import SalesContent from './salesContent';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
-/** 
-*営業状況画面
+/**
+ * 営業状況画面
  */
 class manageSituation extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 	}
 
-	//初期化
+	// 初期化
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		rowNo: '',// 明細番号
@@ -51,14 +51,14 @@ class manageSituation extends React.Component {
 		allCustomer: store.getState().dropDown[15],// お客様レコード用
 		editFlag: false,// 確定客様編集flag
 		priceEditFlag: false,// 確定単価編集flag
-		updateBtnflag: false,//　レコード選択flag
+		updateBtnflag: false,// レコード選択flag
 		salesYearAndMonth: '',
 		salesPriorityStatus: '',// 優先度
 		regexp: /^[0-9\b]+$/,// 数字正則式
 		salesStaff: '',// 営業担当
 		salesPriorityStatuss: store.getState().dropDown[41],// 全部ステータス
-		salesPersons: store.getState().dropDown[42],// 全部営業
-		customers: store.getState().dropDown[15],// 全部お客様　画面入力用
+		salesPersons: store.getState().dropDown[56],// 全部営業
+		customers: store.getState().dropDown[15],// 全部お客様 画面入力用
 		getstations: store.getState().dropDown[14], // 全部場所
 		totalPersons: '',// 合計人数
 		decidedPersons: '',// 確定人数
@@ -84,8 +84,10 @@ class manageSituation extends React.Component {
 
 	// 初期表示のレコードを取る
 	componentDidMount() {
-		//let sysYearMonth = new Date();
-		//　let searchYearMonth = sysYearMonth.getFullYear() + (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() + 2) : (sysYearMonth.getMonth() + 2));
+		// let sysYearMonth = new Date();
+		// let searchYearMonth = sysYearMonth.getFullYear() +
+		// (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() +
+		// 2) : (sysYearMonth.getMonth() + 2));
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			this.getSalesSituation(this.props.location.state.sendValue.salesYearAndMonth);
 			this.setState({
@@ -102,7 +104,7 @@ class manageSituation extends React.Component {
 
 
 	getNextMonth = (date, addMonths) => {
-		//var dd = new Date();
+		// var dd = new Date();
 		var m = date.getMonth() + 1;
 		var y = date.getMonth() + 1 + addMonths > 12 ? (date.getFullYear() + 1) : date.getFullYear();
 		if (m + addMonths == 0) {
@@ -159,7 +161,7 @@ class manageSituation extends React.Component {
 						interviewCustomer2: '',　// 面接2客様
 						hopeLowestPrice: '',　// 希望単価min
 						hopeHighestPrice: '',　// 希望単価max
-						remark: '',　// 備考 
+						remark: '',　// 備考
 						salesPriorityStatus: '',
 						style: {
 							"backgroundColor": ""
@@ -190,7 +192,7 @@ class manageSituation extends React.Component {
 			});
 	}
 
-	//　レコードのステータス
+	// レコードのステータス
 	formatType = (cell) => {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
@@ -200,7 +202,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　契約区分
+	// 契約区分
 	formatcustomerContract = (cell) => {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
@@ -210,7 +212,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　レコードおきゃく表示
+	// レコードおきゃく表示
 	formatCustome = (cell) => {
 		var allCustomers = this.state.allCustomer;
 		if (cell === '') {
@@ -224,14 +226,14 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　明細選択したCustomerNoを設定する
+	// 明細選択したCustomerNoを設定する
 	getCustomerNo = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].customer = no;
 		this.formatCustome(no);
 		this.afterSaveCell(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
-	//　明細選択したSalesProgressCodeを設定する
+	// 明細選択したSalesProgressCodeを設定する
 	getSalesProgressCode = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesProgressCode = no;
 		if (!(no === '4' || no === '5')) {
@@ -245,7 +247,7 @@ class manageSituation extends React.Component {
 		this.formatType(no);
 	}
 
-	//　明細選択したSalesStaffを設定する
+	// 明細選択したSalesStaffを設定する
 	getSalesStaff = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
 		this.formatStaff(no);
@@ -254,7 +256,7 @@ class manageSituation extends React.Component {
 		});
 	}
 
-	//　明細選択したCustomerContractを設定する
+	// 明細選択したCustomerContractを設定する
 	getCustomerContract = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].customerContractStatus = no;
 		this.formatcustomerContract(no);
@@ -263,7 +265,7 @@ class manageSituation extends React.Component {
 		});
 	}
 
-	//　レコードおきゃく表示
+	// レコードおきゃく表示
 	formatStaff(cell) {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
@@ -273,7 +275,7 @@ class manageSituation extends React.Component {
 		}
 	}
 	
-	//　明細単選と明細多選変更
+	// 明細単選と明細多選変更
 	changeMode = () => {
 		this.setState({
 			checkFlag: !this.state.checkFlag,
@@ -309,7 +311,7 @@ class manageSituation extends React.Component {
 				customerNo: row.customer,
 				unitPrice: row.price
 			})
-			//　ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
+			// ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
 			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
 				row.customerNo = row.customer;
 				row.unitPrice = row.price;
@@ -334,12 +336,12 @@ class manageSituation extends React.Component {
 		}
 	};
 
-	//　メモ　INDEX取る方法
-	/*	indexN(cell, row, enumObject, index) {
-			return (<div>{index + 1}</div>);
-		}*/
+	// メモ INDEX取る方法
+	/*
+	 * indexN(cell, row, enumObject, index) { return (<div>{index + 1}</div>); }
+	 */
 
-	//　優先度表示
+	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
 		if (row.salesPriorityStatus === '1') {
 			return (<div>{row.employeeNo}<font color="red">★</font></div>);
@@ -348,7 +350,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　 更新ボタン
+	// 更新ボタン
 	changeState = () => {
 		if (this.state.readFlag) {
 			if (!this.state.updateBtnflag) {
@@ -385,7 +387,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//onchange
+	// onchange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -443,13 +445,14 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　 年月変更後、レコ＾ド再取る
+	// 年月変更後、レコ＾ド再取る
 	setEndDate = (date) => {
 		this.setState({
 			yearMonth: date,
 			salesYearAndMonth: publicUtils.formateDate(date, false),
 		});
-		//let searchYearMonth = date.getFullYear() + '' + (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
+		// let searchYearMonth = date.getFullYear() + '' + (date.getMonth() + 1
+		// < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1));
 		this.getSalesSituation(this.getNextMonth(date, 0))
 	}
 
@@ -469,7 +472,7 @@ class manageSituation extends React.Component {
 		});
 	}
 
-	//　 レコードselect事件
+	// レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
 		console.log(this.refs.table);
 		this.refs.table.setState({
@@ -530,7 +533,7 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　明細多選処理
+	// 明細多選処理
 	handleCheckModeSelect = (row, isSelected, e) => {
 		if (isSelected) {
 			let tempSelectetRowIds = this.state.selectetRowIds.concat([row.employeeNo]);
@@ -548,21 +551,21 @@ class manageSituation extends React.Component {
 		}
 	}
 
-	//　サブ画面消す
+	// サブ画面消す
 	closeDaiolog = () => {
 		this.setState({
 			daiologShowFlag: false,
 		})
 	}
 
-	//　//　サブ画面表示
+	// // サブ画面表示
 	openDaiolog = () => {
 		this.setState({
 			daiologShowFlag: true,
 		});
 	}
 
-	//　TABLE共通
+	// TABLE共通
 	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -572,36 +575,24 @@ class manageSituation extends React.Component {
 	}
 
 	// react download Excel-----------メモ
-	/* 	handleDownload = (resumeInfo) => {
-			var resumeInfos= new Array();
-			console.log(resumeInfo);
-			resumeInfos=resumeInfo.split("/"); 
-			console.log(resumeInfos);
-			axios({
-				method: "POST", //请求方式
-				url: "http://IP/download", //下载地址
-				data: { name: resumeInfos[6] }, //请求内容
-				responseType: 'arraybuffer'
-			})
-				.then((response) => {
-					console.log(response); if (response.data.byteLength === 0) {
-						alert('no resume');
-					} else {
-						let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-						let downloadElement = document.createElement('a');
-						let href = window.URL.createObjectURL(blob); // 创建下载的链接
-						downloadElement.href = href;
-						downloadElement.download = resumeInfos[6]; // 下载后文件名
-						document.body.appendChild(downloadElement);
-						downloadElement.click(); // 点击下载
-						document.body.removeChild(downloadElement); // 下载完成移除元素
-						window.URL.revokeObjectURL(href); // 释放掉blob对象
-					}
-				}).catch((error) => {
-					alert('文件下载失败', error);
-				});
-		
-		} */
+	/*
+	 * handleDownload = (resumeInfo) => { var resumeInfos= new Array();
+	 * console.log(resumeInfo); resumeInfos=resumeInfo.split("/");
+	 * console.log(resumeInfos); axios({ method: "POST", //请求方式 url:
+	 * "http://IP/download", //下载地址 data: { name: resumeInfos[6] }, //请求内容
+	 * responseType: 'arraybuffer' }) .then((response) => {
+	 * console.log(response); if (response.data.byteLength === 0) { alert('no
+	 * resume'); } else { let blob = new Blob([response.data], { type:
+	 * 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+	 * let downloadElement = document.createElement('a'); let href =
+	 * window.URL.createObjectURL(blob); // 创建下载的链接 downloadElement.href = href;
+	 * downloadElement.download = resumeInfos[6]; // 下载后文件名
+	 * document.body.appendChild(downloadElement); downloadElement.click(); //
+	 * 点击下载 document.body.removeChild(downloadElement); // 下载完成移除元素
+	 * window.URL.revokeObjectURL(href); // 释放掉blob对象 } }).catch((error) => {
+	 * alert('文件下载失败', error); });
+	 *  }
+	 */
 
 	shuseiTo = (actionType) => {
 		var path = {};
