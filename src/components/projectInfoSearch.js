@@ -5,7 +5,7 @@ import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faLevelUpAlt, faSearch, faList, faEdit, faTrash , faEnvelope , faBook} from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo , faSearch , faList, faEdit, faTrash , faEnvelope , faBook} from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
@@ -445,13 +445,11 @@ class ProjectInfoSearch extends Component {
     render() {
         const {
             actionType,
-            backPage,
             message,//toastのメッセージ
             type,//成功や失敗
             myToastShow,//toastのフラグ
             errorsMessageShow,///エラーのメッセージのフラグ
             errorsMessageValue,//エラーのメッセージ
-            torokuText,//登録ボタンの文字
             //項目
             theSelectProjectperiodStatus,
             projectNo,
@@ -467,26 +465,18 @@ class ProjectInfoSearch extends Component {
             japaneaseConversationLevel,
             experienceYear,
             projectPhaseStart,
-            projectPhaseEnd,
             noOfInterviewCode,
             projectInfoList,
             selectedProjectNo,
             //Drop 
             projectNoDrop,
             projectTypeDrop,
-            payOffRangeDrop,
             nationalityDrop,
             japaneaseConversationLevelDrop,
             projectPhaseDrop,
             noOfInterviewDrop,
-            customerDrop,
-            personInChargeDrop,
-            stationDrop,
             successRateDrop,
             developLanguageDrop,
-            ageClassificationDrop,
-            admissionPeriodDrop,
-            typeOfIndustryDrop,
             theSelectProjectperiodStatusDrop,
         } = this.state;
         //テーブルの定義
