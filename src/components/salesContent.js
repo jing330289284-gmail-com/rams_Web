@@ -84,7 +84,6 @@ class salesContent extends React.Component {
 		disableFlag: true,
 		initWellUseLanguagss: [],
 		projectPhase: '',
-        myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
         message: '',
