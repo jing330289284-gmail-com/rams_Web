@@ -35,6 +35,7 @@ import EmployeeDetail from './employeeDetail';
 import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
+import customerSalesList from './customerSalesList';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -185,7 +186,7 @@ class SubMenu extends Component {
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />全員売上一覧</Link></ListGroup.Item>
 															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualCustomerSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様個別売上</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/">
+															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/customerSalesList">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />お客様売上一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -335,6 +336,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
 								<Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} />
+								<Route exact path={`${this.props.match.url}/customerSalesList`} component={customerSalesList} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />
