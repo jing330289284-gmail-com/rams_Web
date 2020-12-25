@@ -1,7 +1,7 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Button, Col, Row,InputGroup, Modal} from 'react-bootstrap';
+import {Form, Button, Col, Row, InputGroup, Modal, FormControl} from 'react-bootstrap';
 import { faGlasses, faEnvelope, faUserPlus , faLevelUpAlt, faTrash, faFile} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
@@ -123,16 +123,17 @@ class sendLettersConfirm extends React.Component {
 		EmployeeNameIndex: 0,
 		// ページ数
 		currentPage: 1,
-        //
+        // 選択されたのindex
         selectedColumnId: 0,
-		//
+		// 提示情報
 		errorsMessageShow: false,
-		//
 		errorsMessageValue: '',
-		//
 		message: '',
-		//
 		type: '',
+		// 履歴書のパス
+		resumeInfo1: '',
+		// 履歴書のテキスト名
+		resumeInfo1Name: '',
 		/*　要員追加機能の新規　20201216 　張棟　END*/
 	})
 	
@@ -572,11 +573,11 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 								  onChange={this.employeeNameChange.bind(this, row)}
 								  name="employeeName"
 								  autoComplete="off">
-						<option></option>
+							<option></option>
 						{this.state.allEmployeeName.map(data =>
 
 							<option value={data}>
-								{data}
+							{data}
 							</option>
 						)}
 					</Form.Control>
@@ -631,6 +632,17 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			}
 		}
 		this.searchPersonnalDetail(employeeNoTemp);
+		var disabledFlg = true;
+		for (var j=0; j<this.state.employeeInfo.length; j++) {
+			if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
+				disabledFlg = false;
+				break;
+			}
+		}
+		if (disabledFlg) {
+			// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
+			$("#addButton").attr("disabled",false);
+		}
 	};
 	/*　要員追加機能の新規　20201216 　張棟　END*/
 	
@@ -660,6 +672,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		employeeInfoModel["employeeName"] = "";
 		employeeInfoModel["employeeStatus"] = "";
 		employeeInfoModel["hopeHighestPrice"] = "";
+		employeeInfoModel["resumeInfo1"] = "";
+		employeeInfoModel["resumeInfo1Name"] = "";
+		employeeInfoModel["resumeInfo2"] = "";
+		employeeInfoModel["resumeInfo2Name"] = "";
 		employeeInfoModel["initFlg"] = false;
 		employeeInfoModel["index"] = ++this.state.EmployeeNameIndex;
 		employeeInfo.push(employeeInfoModel);
@@ -671,10 +687,27 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
+		// 追加した後で、追加ボタンが非活性になる
+		$("#addButton").attr("disabled",true);
+
+		// for (let m = 0; m < this.state.employeeInfo.length; m++) {
+		// 	for (let i = 0; i< this.state.allEmployeeName.length; i++) {
+		// 		if (this.state.allEmployeeName[i] === this.state.employeeInfo[m].employeeName) {
+		// 			this.state.allEmployeeName.splice(i,1);
+		// 			break;
+		// 		}
+		// 	}
+		// }
 	}
 	/**
 	 * 行削除処理
 	 * */
+
+	//削除前のデフォルトお知らせの削除
+	customConfirm(next, dropRowKeys) {
+		const dropRowKeysStr = dropRowKeys.join(',');
+		next();
+	}
 	deleteRow　= () => {
 		var deleteFlg = window.confirm("削除していただきますか？");
 		if (deleteFlg) {
@@ -711,11 +744,72 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			// customerDepartmentNameValue: '',
 			// customerDepartmentName: '',
 		})
+		// TODO 要員を削除した後で、営業文章の表示について
+		// this.searchPersonnalDetail("");
 		$("#deleteButton").attr("disabled",true);
 		$("#bookButton").attr("disabled",true);
 		this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
 		setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+
+		var disabledFlg = true;
+		for (var j=0; j<this.state.employeeInfo.length; j++) {
+			if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
+				disabledFlg = false;
+				break;
+			}
+		}
+		if (this.state.employeeInfo.length === 0||disabledFlg) {
+			// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
+			$("#addButton").attr("disabled",false);
+		}
+
+		if (this.state.employeeInfo.length === 0) {
+			this.setState({
+				EmployeeNameIndex: 0,
+			});
+		}
 	};
+
+	/**
+	 * ファイルを処理
+	 * @param {*} event
+	 * @param {*} name
+	 */
+	addFile = (event, name) => {
+		$("#" + name).click();
+	}
+
+	changeFile = (event, name) => {
+		var filePath = event.target.value;
+		var arr = filePath.split('\\');
+		var fileName = arr[arr.length - 1];
+		if (name === "resumeInfo1") {
+			var employeeInfo1 = this.state.employeeInfo;
+			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1 = filePath;
+			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1Name = fileName;
+
+			this.setState({
+				employeeInfo: employeeInfo1,
+				resumeInfo1: filePath,
+				resumeInfo1Name: fileName,
+			})
+		} else if (name === "image") {
+			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
+				return
+			};
+			var reader = new FileReader();
+			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
+			reader.onload = function() {
+				document.getElementById("imageId").src = reader.result;
+			};
+		}
+	}
+
+	valueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+	}
 
 	//　要員追加機能の新規　20201216 　張棟　END
 	/**
@@ -735,7 +829,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.props.history.push(path);
 	}
 	render() {
-		const {backPage, errorsMessageValue, message, type} = this.state;
+		const {backPage, errorsMessageValue, message, type, resumeInfo1, resumeInfo1Name} = this.state;
 		
 		// ページネーション
 		const options = {
@@ -898,7 +992,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
 					<Col sm={3}>
 						<div style={{ "float": "right" }}>
-							<Button size="sm" variant="info" id="bookButton" name="bookButton"><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
+							<Button size="sm" variant="info" id="bookButton" name="bookButton" onClick={(event) => this.addFile(event, 'resumeInfo1')}><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
 							<Button size="sm" variant="info" id="addButton" name="addButton" onClick={this.insertRow}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
 							<Button size="sm" variant="info" id="deleteButton" name="deleteButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
 						</div>
@@ -925,8 +1019,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
 							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn width='20%' dataField='resume' editable={false}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn placeholder="履歴書名"  width='20%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
+							<Form.File id="resumeInfo1" hidden={true} data-browse="添付" value={resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 					</Col>
 					<Col sm={1}></Col>
 					<Col sm={4}>
