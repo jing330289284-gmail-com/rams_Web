@@ -24,8 +24,8 @@ class individualSales extends React.Component {//個人売上検索
         calStatus: '',
         dailyCalculationStatus: '',
         dailySalary: '',
-        paymentTotalnoComma:'',
-        unitPriceTotalnoComma:'',
+        paymentTotalnoComma: '',
+        unitPriceTotalnoComma: '',
     }
 
     constructor(props) {
@@ -77,7 +77,7 @@ class individualSales extends React.Component {//個人売上検索
                     this.setState({ workMonthCount: this.state.employeeInfoList[0].workMonthCount })
                     this.feeTotal();
                     this.unitPriceTotalCal(response.data.data);
-                    
+
 
                 }
             }).catch((error) => {
@@ -102,15 +102,15 @@ class individualSales extends React.Component {//個人売上検索
     feeTotal = () => {
         var totalgrosProfits = 0;
         var paymentTotal = 0;
-        var paymentCal =0;
+        var paymentCal = 0;
         for (var i = 0; i < this.state.employeeInfoList.length; i++) {
-            paymentCal=parseInt(this.state.employeeInfoList[i].salary) +parseInt(this.state.employeeInfoList[i].transportationExpenses)  +parseInt(this.state.employeeInfoList[i].insuranceFeeAmount) +parseInt(this.state.employeeInfoList[i].bonusFee) + parseInt(this.state.employeeInfoList[i].deductionsAndOvertimePay) + parseInt(this.state.employeeInfoList[i].leaderAllowanceAmount) + parseInt(this.state.employeeInfoList[i].otherAllowanceAmount) + parseInt(this.state.employeeInfoList[i].housingAllowance)
-            paymentTotal =parseInt(paymentTotal) + paymentCal     
-    }
-    //this.setState({ totalgrosProfits: publicUtils.addComma(unitPriceTotal-paymentTotal, false) })
+            paymentCal = parseInt(this.state.employeeInfoList[i].salary) + parseInt(this.state.employeeInfoList[i].transportationExpenses) + parseInt(this.state.employeeInfoList[i].insuranceFeeAmount) + parseInt(this.state.employeeInfoList[i].bonusFee) + parseInt(this.state.employeeInfoList[i].deductionsAndOvertimePay) + parseInt(this.state.employeeInfoList[i].leaderAllowanceAmount) + parseInt(this.state.employeeInfoList[i].otherAllowanceAmount) + parseInt(this.state.employeeInfoList[i].housingAllowance)
+            paymentTotal = parseInt(paymentTotal) + paymentCal
+        }
+        //this.setState({ totalgrosProfits: publicUtils.addComma(unitPriceTotal-paymentTotal, false) })
         this.setState({ paymentTotal: publicUtils.addComma(paymentTotal, false) })
-        this.setState({ paymentTotalnoComma:paymentTotal })
-}
+        this.setState({ paymentTotalnoComma: paymentTotal })
+    }
 
     componentDidMount() {
         var date = new Date();
@@ -193,12 +193,12 @@ class individualSales extends React.Component {//個人売上検索
         }
 
     }
-    transportationExpensesAddComma(cell, row) {
-        if (row.transportationExpenses === null || row.transportationExpenses === "0") {
+    deductionsAndOvertimePayOfUnitPriceAddComma(cell, row) {
+        if (row.deductionsAndOvertimePayOfUnitPrice === null || row.deductionsAndOvertimePayOfUnitPrice === "0") {
             return
         } else {
-            let formatTransportationExpenses = publicUtils.addComma(row.transportationExpenses, false);
-            return formatTransportationExpenses;
+            let formatDeductionsAndOvertimePayOfUnitPrice = publicUtils.addComma(row.deductionsAndOvertimePayOfUnitPrice, false);
+            return formatDeductionsAndOvertimePayOfUnitPrice;
         }
     }
 
@@ -290,12 +290,10 @@ class individualSales extends React.Component {//個人売上検索
                         }
                     }
                     var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                    if (row.deductionsAndOvertimePay != null) {
-                        var dailySalayCal = dailySalary + parseInt(row.deductionsAndOvertimePay);
-                    } else {
+                    
                         var dailySalayCal = dailySalary
-                    }
-                    var calgrosProfits = dailySalayCal - row.salary - row.transportationExpenses - row.insuranceFeeAmount - row.bonusFee - row.allowanceAmount - row.deductionsAndOvertimePay
+                    
+                    var calgrosProfits = parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary)  + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee )+ parseInt(row.allowanceAmount) +parseInt(row.deductionsAndOvertimePay)  )
                     let returnItem = cell;
                     returnItem = publicUtils.addComma(calgrosProfits, false);
                     if (calgrosProfits < 0) {
@@ -346,10 +344,8 @@ class individualSales extends React.Component {//個人売上検索
                             }
                         }
                         var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                        if (row.deductionsAndOvertimePay != null) {
-                            var dailySalary = dailySalary + parseInt(row.deductionsAndOvertimePay);
-                        }
-                        var calgrosProfits = dailySalary - row.salary - row.transportationExpenses - row.insuranceFeeAmount - row.bonusFee - row.allowanceAmount - row.deductionsAndOvertimePay
+                        var dailySalayCal =dailySalary
+                        var calgrosProfits =parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary)  + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee )+ parseInt(row.allowanceAmount) +parseInt(row.deductionsAndOvertimePay)  )
                         let returnItem = cell;
                         returnItem = publicUtils.addComma(calgrosProfits, false);
                         if (calgrosProfits < 0) {
@@ -412,11 +408,7 @@ class individualSales extends React.Component {//個人売上検索
         if (row.dailyCalculationStatus == "0") {
             if (row.admissionStartDate.substring(0, 6) == row.onlyYandM) {
                 if (row.admissionStartDate.substring(6, 8) == "01") {
-                    if (row.deductionsAndOvertimePay != null) {
-                        var dailySalayCal = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
-                    } else {
-                        var dailySalayCal = parseInt(row.unitPrice)
-                    }
+                    var dailySalayCal = parseInt(row.unitPrice)
                     var addComma = publicUtils.addComma(dailySalayCal, false);
                     let returnItem = cell;
                     returnItem = addComma;
@@ -452,11 +444,9 @@ class individualSales extends React.Component {//個人売上検索
                     }
                 }
                 var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                if (row.deductionsAndOvertimePay != null) {
-                    var dailySalayCal = dailySalary + parseInt(row.deductionsAndOvertimePay);
-                } else {
-                    var dailySalayCal = dailySalary
-                }
+
+                var dailySalayCal = dailySalary
+
                 var addC = publicUtils.addComma(dailySalayCal, false)
                 var addComma = <div>{addC}<font color="red">(日割)</font></div>
                 let returnItem = cell;
@@ -481,7 +471,7 @@ class individualSales extends React.Component {//個人売上検索
                 else {
                     var a = row.admissionEndDate.substring(0, 4);
                     var b = row.admissionEndDate.substring(4, 6);
-                    for (var i = 0; i <= row.admissionEndDate.substring(6, 8); i++) {
+                    for (var i = 1; i <= row.admissionEndDate.substring(6, 8); i++) {
                         if (i < 10) {
                             i = "0" + i
                         }
@@ -504,9 +494,7 @@ class individualSales extends React.Component {//個人売上検索
                         }
                     }
                     var dailySalay = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                    if (row.deductionsAndOvertimePay != null) {
-                        var dailySalay = dailySalay + parseInt(row.deductionsAndOvertimePay);
-                    }
+
                     var addC = publicUtils.addComma(dailySalay, false);
                     var addComma = <div>{addC}<font color="red">(日割)</font></div>
                     let returnItem = cell;
@@ -518,11 +506,9 @@ class individualSales extends React.Component {//個人売上検索
                 }
             }
             else {
-                if (row.deductionsAndOvertimePay != null) {
-                    var dailySalay = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
-                } else {
-                    var dailySalay = row.unitPrice
-                }
+
+                var dailySalay = row.unitPrice
+
                 var dailySalay = publicUtils.addComma(dailySalay, false)
                 let returnItem = cell;
                 returnItem = dailySalay;
@@ -535,11 +521,9 @@ class individualSales extends React.Component {//個人売上検索
         }
 
         else {
-            if (row.deductionsAndOvertimePay != null) {
-                var dailySalay = parseInt(row.unitPrice) + parseInt(row.deductionsAndOvertimePay);
-            } else {
-                var dailySalay = row.unitPrice
-            }
+
+            var dailySalay = row.unitPrice
+
             var dailySalay = publicUtils.addComma(dailySalay, false)
             let returnItem = cell;
             returnItem = dailySalay;
@@ -570,7 +554,7 @@ class individualSales extends React.Component {//個人売上検索
             if (empList[m].unitPrice == "") {
                 unPrice = 0;
             }
-            var deductionsAndOver = empList[m].deductionsAndOvertimePay;
+            var deductionsAndOver = empList[m].deductionsAndOvertimePayOfUnitPrice;
 
             if (empList[m].dailyCalculationStatus == "0") {
                 if (startDate.substring(0, 6) == empList[m].onlyYandM) {
@@ -684,7 +668,7 @@ class individualSales extends React.Component {//個人売上検索
 
         }
         this.setState({ unitPriceTotal: publicUtils.addComma(unitPriceTotal, false) })
-        this.setState({ unitPriceTotalnoComma: unitPriceTotal})
+        this.setState({ unitPriceTotalnoComma: unitPriceTotal })
 
     }
 
@@ -703,7 +687,7 @@ class individualSales extends React.Component {//個人売上検索
                     trigger={"focus"}
                     placement={"left"}
                     overlay={
-                        <Popover>
+                        <Popover >
                             <Popover.Content>
                                 <strong>
                                     <Table id="detailTable" striped bordered hover
@@ -713,9 +697,14 @@ class individualSales extends React.Component {//個人売上検索
                                             <td >費用</td>
                                         </tr>
                                         <tr>
+                                            <td>交通費</td>
+                                            <td>{publicUtils.addComma(row.transportationExpenses, false)}</td>
+                                        </tr>
+                                        <tr>
                                             <td >{row.otherAllowanceName}</td>
                                             <td >{publicUtils.addComma(row.otherAllowanceAmount, false)}</td>
                                         </tr>
+
                                         <tr>
                                             <td >住宅</td>
                                             <td >{publicUtils.addComma(row.housingAllowance, false)}</td>
@@ -735,15 +724,13 @@ class individualSales extends React.Component {//個人売上検索
                         </Popover>
                     }
                 >
-                    <button style={{ outline: 'none', border: 'none', background: 'none', width: "110px", textAlign: "left" }} onClick={this.changeRowcolor.bind(this)}>{formatAllowanceAmount}</button>
+                    <button style={{ outline: 'none', border: 'none', background: 'none', width: "110px", textAlign: "left" }}>{formatAllowanceAmount}</button>
                 </OverlayTrigger>
             return returnItem;
         }
     }
 
-    changeRowcolor = () => {
-        return (<row style={{ bgcolor: 'red' }}></row>)
-    }
+
     render() {
         const { errorsMessageValue, employeeInfo } = this.state;
         return (
@@ -841,22 +828,22 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                     <Col sm={3}>
                         <label>粗利合計：</label>
-                        <label>{this.state.unitPriceTotalnoComma-this.state.paymentTotalnoComma?publicUtils.addComma(this.state.unitPriceTotalnoComma-this.state.paymentTotalnoComma, false):''}</label>
+                        <label>{this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}</label>
                     </Col>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey>年月</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='80'>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控除/残業(単価)</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='transportationExpenses' dataFormat={this.transportationExpensesAddComma}>交通代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控除/残業</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>手当合計</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>諸費用合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='120' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </div>

@@ -375,9 +375,6 @@ class IndividualCustomerSales extends React.Component {
                             <FormControl id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange.bind(this)} />
                         </InputGroup>
                     </Col>
-                    <Col sm={3}>
-                        <p id="individualCustomerSalesErrmsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger"></p>
-                    </Col>
                 </Row>
                 <Row>
                     <Col >
