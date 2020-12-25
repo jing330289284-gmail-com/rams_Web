@@ -25,6 +25,7 @@ class CustomerInfoSearch extends Component {
     state = {
         customerInfoData: [],//テーブルのデータ
         currentPage: 1,//テーブルの第一ページ
+        currPage:'',//今のページ
         emploryeesPerPage: 5,//毎ページの項目数
         customerNo: '',//選択した列のお客様番号
         rowNo: '',//選択した行番号
@@ -72,6 +73,7 @@ class CustomerInfoSearch extends Component {
             this.setState({
                 customerNo: sendValue.customerNo,
                 customerNoForPageChange: this.props.location.state.customerNo,
+                currPage: this.props.location.state.currPage,
                 topCustomerCode: sendValue.topCustomerNo,
                 stationCode: sendValue.stationCode,
                 businessStartDate: utils.converToLocalTime(sendValue.businessStartDate, false),
@@ -132,11 +134,9 @@ class CustomerInfoSearch extends Component {
                         "errorsMessageShow": false,
                     }, () => {
                         if (this.state.customerNoForPageChange !== "" && this.state.customerNoForPageChange !== undefined) {
-                            let index = this.state.customerInfoData.findIndex(customerInfo => customerInfo.customerNo === this.state.customerNoForPageChange);
-                            var currentPage = Math.ceil((index+1) / 5);
                             this.refs.customerInfoSearchTable.setState({
                                 selectedRowKeys: this.state.customerNoForPageChange,
-                                currPage:currentPage,
+                                currPage:this.state.currPage,
                             })
                             $("#shusei").attr("disabled", false);
                             $("#shosai").attr("disabled", false);
@@ -169,6 +169,7 @@ class CustomerInfoSearch extends Component {
             this.setState({
                 customerNoForPageChange: row.customerNo,
                 rowNo: row.rowNo,
+                currPage:this.refs.customerInfoSearchTable.state.currPage,
             })
         } else {
             $("#shusei").attr("disabled", true);
@@ -177,6 +178,7 @@ class CustomerInfoSearch extends Component {
             this.setState({
                 customerNoForPageChange: '',
                 rowNo: row.rowNo,
+                currPage:'',
             })
         }
     }
@@ -297,7 +299,8 @@ class CustomerInfoSearch extends Component {
                         actionType: 'update',
                         customerNo: this.state.customerNoForPageChange,
                         backPage: "customerInfoSearch", sendValue: sendValue,
-                        searchFlag: this.state.searchFlag
+                        searchFlag: this.state.searchFlag,
+                        currPage:this.state.currPage,
                     },
                 }
                 break;
@@ -308,7 +311,8 @@ class CustomerInfoSearch extends Component {
                         actionType: 'detail',
                         customerNo: this.state.customerNoForPageChange,
                         backPage: "customerInfoSearch", sendValue: sendValue,
-                        searchFlag: this.state.searchFlag
+                        searchFlag: this.state.searchFlag,
+                        currPage:this.state.currPage,
                     },
                 }
                 break;
@@ -319,7 +323,8 @@ class CustomerInfoSearch extends Component {
                         actionType: 'insert',
                         customerNo: this.state.customerNoForPageChange,
                         backPage: "customerInfoSearch", sendValue: sendValue,
-                        searchFlag: this.state.searchFlag
+                        searchFlag: this.state.searchFlag,
+                        currPage:this.state.currPage,
                     },
                 }
                 break;
