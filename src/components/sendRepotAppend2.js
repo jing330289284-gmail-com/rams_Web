@@ -41,7 +41,7 @@ class sendRepotAppend2 extends Component {
 	}
 
 	getSalesPersons = (customerNo) => {
-		axios.post(this.state.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
+		axios.post(this.state.serverIP + "sendRepot/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
 				for (let i in result.data) {
@@ -202,8 +202,8 @@ class sendRepotAppend2 extends Component {
 						<TableHeaderColumn width='7%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='11%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 						<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='responsiblePerson' isKey >名前</TableHeaderColumn>
-						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' >メール</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='responsiblePerson'>名前</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' isKey>メール</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 				<div>

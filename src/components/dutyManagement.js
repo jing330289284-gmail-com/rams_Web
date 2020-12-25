@@ -103,12 +103,12 @@ class dutyManagement extends React.Component {
 	  * 行の承認
 	  */
 	listApproval = () => {
-		alert(this.state.deductionsAndOvertimePay)
 		const emp = {
 			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
 			employeeNo: this.state.rowSelectEmployeeNo,
 			checkSection: this.state.rowSelectCheckSection,
 			deductionsAndOvertimePay: publicUtils.deleteComma((this.state.rowSelectDeductionsAndOvertimePay).replace(/￥/, "")),
+			deductionsAndOvertimePayOfUnitPrice: publicUtils.deleteComma(this.state.rowSelectDeductionsAndOvertimePayOfUnitPrice),
 		}
 		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
@@ -119,7 +119,8 @@ class dutyManagement extends React.Component {
 						{
 							rowSelectEmployeeNo: '',
 							rowSelectCheckSection: '',
-							rowSelectDeductionsAndOvertimePay: ''
+							rowSelectDeductionsAndOvertimePay: '',
+							rowSelectDdeductionsAndOvertimePayOfUnitPrice: '',
 						}
 					);
 					this.setState({ "myToastShow": true });
@@ -160,7 +161,8 @@ class dutyManagement extends React.Component {
 					rowNo:row.rowNo,
 					rowSelectEmployeeNo: row.employeeNo,
 					rowSelectCheckSection: row.checkSection,
-					rowSelectDeductionsAndOvertimePay: row.deductionsAndOvertimePay
+					rowSelectDeductionsAndOvertimePay: row.deductionsAndOvertimePay,
+					rowSelectDeductionsAndOvertimePayOfUnitPrice: row.deductionsAndOvertimePayOfUnitPrice
 				}
 			);
 			$("#syounin").attr("disabled",false);
@@ -174,6 +176,7 @@ class dutyManagement extends React.Component {
 					rowSelectEmployeeNo: '',
 					rowSelectCheckSection: '',
 					rowSelectDeductionsAndOvertimePay: '',
+					rowSelectDdeductionsAndOvertimePayOfUnitPrice: '',
 				}
 			);
 			$("#syounin").attr("disabled",true);
@@ -307,6 +310,7 @@ class dutyManagement extends React.Component {
 						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
 						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
 						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
+						<TableHeaderColumn hidden={true} dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 			</div >
