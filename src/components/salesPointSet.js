@@ -29,6 +29,7 @@ class salesPointSet extends React.Component {
 		insertFlag: false,
 		currentPage: 1,// 今のページ
 		insertNo: '',
+		employeefrom:'',
 		employeeStatus: store.getState().dropDown[4],
 		newMemberStatus: store.getState().dropDown[23],
 		customerContractStatus: store.getState().dropDown[24],
@@ -64,12 +65,16 @@ class salesPointSet extends React.Component {
 		}
 	}
 
-	newMemberStatusFormat = (cell) => {
-		var statuss = this.state.newMemberStatus;
-		for (var i in statuss) {
-			if (cell === statuss[i].value) {
-				return statuss[i].text;
+	newMemberStatusFormat = (cell,row) => {
+		if(row.employee=="0"){
+			var statuss = this.state.newMemberStatus;
+			for (var i in statuss) {
+				if (cell === statuss[i].value) {
+					return statuss[i].text;
+				}
 			}
+		}else{
+			return "";
 		}
 	}
 
@@ -109,17 +114,19 @@ class salesPointSet extends React.Component {
 		}
 	}
 	pointFormat = (cell) => {
-		if(cell.length > 3){
+		if(cell!=null && cell.length > 3){
 			cell = cell.substring(0, 3);
 		}
 		return cell;
 	}
+	
 	remarkFormat = (cell) => {
 		if(cell!=null && cell.length > 50){
 			cell = cell.substring(0, 50);
 		}
 		return <span title={cell}>{cell}</span>;
 	}
+	
 	select = () => {
 		var salesPointSetModel = {};
 		salesPointSetModel["employee"] = this.state.employeeSearch
@@ -144,6 +151,7 @@ class salesPointSet extends React.Component {
 		if (isSelected) {
 			this.setState({
 				no: row.no,
+				employeefrom: row.employee === null ? '' : row.employee,
 				updateFlag: false
 			});
 		} else {
@@ -198,14 +206,14 @@ class salesPointSet extends React.Component {
 			if (this.state.salesPointData[i].no === this.state.no) {
 				salesPointSetModel["no"] = this.state.no
 				salesPointSetModel["employee"] = this.state.salesPointData[i].employee
-				salesPointSetModel["newMember"] = this.state.salesPointData[i].newMember
+				salesPointSetModel["newMember"] = this.state.salesPointData[i].employee=="0"?this.state.salesPointData[i].newMember:null;
 				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
-				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo
-				salesPointSetModel["point"] = this.state.salesPointData[i].point
-				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
+				salesPointSetModel["point"] = this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
 			}
 		}
 		axios.post(this.state.serverIP + "salesPointInsert", salesPointSetModel)
@@ -243,14 +251,14 @@ class salesPointSet extends React.Component {
 			if (this.state.salesPointData[i].no === this.state.no) {
 				salesPointSetModel["no"] = this.state.no
 				salesPointSetModel["employee"] = this.state.salesPointData[i].employee
-				salesPointSetModel["newMember"] = this.state.salesPointData[i].newMember
+				salesPointSetModel["newMember"] = this.state.salesPointData[i].employee=="0"?this.state.salesPointData[i].newMember:null;
 				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
-				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo
-				salesPointSetModel["point"] = this.state.salesPointData[i].point
-				salesPointSetModel["remark"] = this.state.salesPointData[i].remark
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
+				salesPointSetModel["point"] = this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
 			}
 		}
 		axios.post(this.state.serverIP + "salesPointUpdate", salesPointSetModel)
@@ -423,11 +431,11 @@ class salesPointSet extends React.Component {
 										insertRow cellEdit={cellEdit} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 										<TableHeaderColumn dataField='no' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.state.employeeStatus } }}
+										<TableHeaderColumn dataField='employee' editable={{ type: 'select', options: { values: this.state.employeeStatus }}}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='newMember' editable={{ type: 'select', options: { values: this.state.newMemberStatus } }}
+										<TableHeaderColumn dataField='newMember' editable={this.state.employeefrom=="0"?{ type: 'select', options: { values: this.state.newMemberStatus }}:false} 
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
 
