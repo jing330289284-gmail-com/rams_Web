@@ -166,16 +166,25 @@ class monthlySalesSearch extends Component {//月次売上検索
         let grossProfitTotal= 0;
         let workcount = 0;
         for(let i=0;i<this.state.monthlySalesInfoList.length;i++){
+            workcount++;
             if(this.state.monthlySalesInfoList[i].unitPrice==null||this.state.monthlySalesInfoList[i].unitPrice==""){
                 unitPirceTotal = parseInt(unitPirceTotal) + 0;
             }else{
-                unitPirceTotal = parseInt(unitPirceTotal)+parseInt(this.state.monthlySalesInfoList[i].unitPrice)
-                workcount++;
+                if(this.state.monthlySalesInfoList[i].deductionsAndOvertimePayOfUnitPrice===null){
+                    unitPirceTotal = parseInt(unitPirceTotal)+parseInt(this.state.monthlySalesInfoList[i].unitPrice) 
+                }else{
+                    unitPirceTotal = parseInt(unitPirceTotal)+parseInt(this.state.monthlySalesInfoList[i].unitPrice) +parseInt(this.state.monthlySalesInfoList[i].deductionsAndOvertimePayOfUnitPrice)
+                }               
             }
             if(this.state.monthlySalesInfoList[i].salary == null||this.state.monthlySalesInfoList[i].salary == ""){
                 salaryTotal = salaryTotal + 0;
             }else{
-                salaryTotal = salaryTotal + parseInt(this.state.monthlySalesInfoList[i].salary)
+                if(this.state.monthlySalesInfoList[i].deductionsAndOvertimePay===null){
+                    salaryTotal = salaryTotal + parseInt(this.state.monthlySalesInfoList[i].salary)
+                }
+                else{
+                    salaryTotal = salaryTotal + parseInt(this.state.monthlySalesInfoList[i].salary)+parseInt(this.state.monthlySalesInfoList[i].deductionsAndOvertimePay)
+                }              
             }
             if(this.state.monthlySalesInfoList[i].waitingCost==null||this.state.monthlySalesInfoList[i].waitingCost==""){
                 TotalNonOperation = parseInt(TotalNonOperation) + 0;
@@ -210,25 +219,42 @@ class monthlySalesSearch extends Component {//月次売上検索
     }
     
     unitPriceAddComma(cell,row){
-        if(row.unitPrice ===null){
+        if(row.unitPrice ===null||row.unitPrice===0){
             return 
         }else{
-            let formatUprice = publicUtils.addComma(row.unitPrice , false);
+            let formatUprice
+            if(row.deductionsAndOvertimePayOfUnitPrice !=null){
+                if(row.deductionsAndOvertimePayOfUnitPrice<0){
+                  return (<div><div style={{ float:'left' }}>{publicUtils.addComma(row.unitPrice , false)}</div><div style={{ color: 'red',float:'left' }}>({publicUtils.addComma(row.deductionsAndOvertimePayOfUnitPrice , false)})</div></div>);
+                }                                 
+            }else{
+                formatUprice = publicUtils.addComma(row.unitPrice , false);
+            }
+                          
             return formatUprice;
         }   
     }
 
     salaryAddComma(cell,row){
-        if(row.salary ===null){
+        if(row.salary ===null||row.salary ===0){
             return 
         }else{
-            let formatSalary = publicUtils.addComma(row.salary , false);
+            let formatSalary
+            if(row.deductionsAndOvertimePay!= null){
+                if(row.deductionsAndOvertimePay <0){
+                    return (<div><div style={{ float:'left' }}>{publicUtils.addComma(row.salary , false)}</div><div style={{ color: 'red',float:'left' }}>({publicUtils.addComma(row.deductionsAndOvertimePay , false)})</div></div>);  
+                }
+               
+            }else{
+                formatSalary = publicUtils.addComma(row.salary , false);
+            }
+            
             return formatSalary;
         }   
     }
 
     otherFeeAddComma(cell,row){
-        if(row.otherFee ===null){
+        if(row.otherFee ===null||row.otherFee===0){
             return 
         }else{
             let formatOtherFee = publicUtils.addComma(row.otherFee , false);
@@ -237,7 +263,7 @@ class monthlySalesSearch extends Component {//月次売上検索
     }
 
     waitingCostAddComma(cell, row){
-        if(row.waitingCost ===null){
+        if(row.waitingCost ===null||row.waitingCost ===0){
             return
         }else{
             let formatwaitingCost = publicUtils.addComma(row.waitingCost , false)
@@ -251,20 +277,27 @@ class monthlySalesSearch extends Component {//月次売上検索
     }
 
     monthlyGrosProfitsAddComma(cell ,row){
-       if(row.monthlyGrosProfits===null){
+       if(row.monthlyGrosProfits===null||row.monthlyGrosProfits===0){
            return 
        }else{
         let mGrosProfits = row.monthlyGrosProfits.split('.')[0];
         let formatmGrosProfits = publicUtils.addComma(mGrosProfits,false)
         if(row.monthlyGrosProfits<0){
-            return(<div style={{color:'red'}}>{formatmGrosProfits}</div>);
+            return(<div style={{color:'red'}} >{formatmGrosProfits}</div>);
         }
         return formatmGrosProfits;
-       }
-        
-
+       } 
     }
 
+
+    rowNoFormat(cell,row){
+        var len = row.rowNo.toString().length;  
+        while(len < 3) {  
+            row.rowNo = "0" + row.rowNo;  
+            len++;  
+        }  
+        return row.rowNo;  
+    }
     handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
             this.setState({rowSelectemployeeNo:row.employeeNo});
@@ -390,7 +423,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                             <InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
                             </InputGroup.Prepend>
                             <Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" id="kadou" value={kadou} autoComplete="off" >
-											<option value=""　>選択ください</option>
+											<option value=""　></option>
 											<option value="0">はい</option>
 											<option value="1">いいえ</option>
 										</Form.Control>
@@ -471,17 +504,17 @@ class monthlySalesSearch extends Component {//月次売上検索
 				</Row>
                 <div>
                     <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeNo'>社員番号</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'>氏名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeStatus'　dataFormat={this.formatStayPeriod.bind(this)}>社員区分</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName'>職種</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'dataFormat={this.unitPriceAddComma}>単価</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本給</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee' dataFormat={this.otherFeeAddComma}>他の負担</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost' dataFormat={this.waitingCostAddComma}>非稼動費用</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma}>粗利(税抜き)</TableHeaderColumn>         
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true}   width='100' isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='100'>年月</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='120'>氏名</TableHeaderColumn>
+							{/*<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeStatus'　dataFormat={this.formatStayPeriod.bind(this)}>社員区分</TableHeaderColumn>*/}
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='120'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='120'>職種</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee' dataFormat={this.otherFeeAddComma} width='150'>他の費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost' dataFormat={this.waitingCostAddComma} width='150'>非稼動費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma} width='150'>粗利(税抜き)</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
                 
