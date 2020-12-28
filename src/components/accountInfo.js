@@ -183,6 +183,7 @@ class BankInfo extends Component {
             $.each(formArray, function (i, item) {
                 accountInfo[item.name] = item.value;
             });
+            accountInfo["accountBelongsStatus"] = this.state.accountBelongsStatus;
             this.props.accountTokuro(accountInfo);
         } else if (!result) {
             this.setState({ "errorsMessageShow": true, errorsMessageValue: '口座名義人をカタカナで入力してください' });
@@ -220,6 +221,16 @@ canSelect=event=>{
     this.setState({
         [event.target.name]: event.target.value,
     })
+}
+resetValue=()=>{
+    this.setState({
+        bankCode:'',
+        bankBranchName:'',
+        bankBranchCode:'',
+        accountNo:'',
+        accountName:'',
+    })
+    bankInfoJs.setDisabled();
 }
     render() {
         const { actionType, errorsMessageValue, accountInfoName, bankCode, bankBranchName, bankBranchCode, accountNo, accountName } = this.state;
@@ -325,7 +336,7 @@ canSelect=event=>{
                                         <FontAwesomeIcon icon={faSave} />登録
                         </Button>
                                 }
-                                {" "}<Button onClick={bankInfoJs.setDisabled} variant="info" size="sm" type="reset" id="accountReset" value="Reset" >
+                                {" "}<Button onClick={this.resetValue} variant="info" size="sm" id="accountReset" value="Reset" >
                                     <FontAwesomeIcon icon={faUndo} />リセット
                                 </Button>
                             </Col>

@@ -108,7 +108,16 @@ class salesPointSet extends React.Component {
 			}
 		}
 	}
+	pointFormat = (cell) => {
+		if(cell.length > 3){
+			cell = cell.substring(0, 3);
+		}
+		return cell;
+	}
 	remarkFormat = (cell) => {
+		if(cell!=null && cell.length > 50){
+			cell = cell.substring(0, 50);
+		}
 		return <span title={cell}>{cell}</span>;
 	}
 	select = () => {
@@ -434,13 +443,13 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
 											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.pointFormat.bind(this)}>ポイント</TableHeaderColumn>
 
 										<TableHeaderColumn dataField='specialPoint' editable={{ type: 'select', options: { values: this.state.specialPointStatus } }}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.specialPointStatusFormat.bind(this)}
 											width='220' tdStyle={{ padding: '.45em' }}>特別ポイント条件</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='specialPointNo' width='160' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell">特別ポイント</TableHeaderColumn>
+										<TableHeaderColumn dataField='specialPointNo' width='160' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.pointFormat.bind(this)}>特別ポイント</TableHeaderColumn>
 
 										<TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell"
 											dataFormat={this.remarkFormat.bind(this)}>備考</TableHeaderColumn>
