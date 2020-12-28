@@ -280,7 +280,16 @@ class sendRepot extends React.Component {
 	createList = () => {
 		let {selectetRowKeys,customerTemp,listName}=this.state;
 		let selectedArray = new Array();
-		let name= `送信対象${listName}`
+		let name = `送信対象`
+		let i=1
+		while (true) {
+			if (name + i ==  this.state.listName1  || name + i ==  this.state.listName2 || name + i == this.state.listName3) {
+				i =  i+1
+			} else {
+				name = name + i
+				break;
+			}
+		}
 		for(let i in selectetRowKeys){
 			selectedArray.push(customerTemp.find(v => v.theKey === selectetRowKeys[i]));
 		}
@@ -550,10 +559,10 @@ class sendRepot extends React.Component {
 						"rowId": i + 1,
 						"customerNo": customerList[i],
 						"responsiblePerson": mainChargeList[i],
-						"customerDepartmentCode": mainChargeList[i],
-						"positionCode": mainChargeList[i],
-						"purchasingManagersMail": mainChargeList[i],
-						"salesPersonsAppend": mainChargeList[i],
+						"customerDepartmentCode": departmentCodeList[i],
+						"positionCode": positionCodeList[i],
+						"purchasingManagersMail": mainChargeMailList[i],
+						"salesPersonsAppend": subChargeMailList[i],
 						"targetEmployee": mainChargeList[i]
 					};
 				}
@@ -755,7 +764,7 @@ class sendRepot extends React.Component {
 										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs2, this.state.listName2)} style={{"display": this.state.salesLists.length>=2? "block" : "none" }}>
 									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=2?' '+this.state.listName2:''}</Button>{'　'}
 										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs3, this.state.listName3)} style={{"display": this.state.salesLists.length>=3? "block" : "none" }}>
-									<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length>=3?' '+this.state.listName3:''}</Button>
+										<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length >= 3 ? ' ' + this.state.listName3 : ''}</Button>{'　'}
 									</div>
 										<span style={{ "display": !this.state.listShowFlag ? "contents" : "none" }}>格納リスト： <FormControl   autoComplete="off" value={this.state.listName1}
 										disabled={this.state.salesLists.length>=1?false:true} 

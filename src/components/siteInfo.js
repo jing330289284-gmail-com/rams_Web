@@ -33,6 +33,8 @@ class siteInfo extends Component {
 		workState: '0',
 		employeeName: '',
 		myToastShow: false,
+		message:'',
+		workDate:'',
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
@@ -116,6 +118,11 @@ class siteInfo extends Component {
 				admissionEndDate: date,
 			}
 		);
+		if (new Date(date.getFullYear(),date.getMonth(),0).getDate() - date.getDate() > 4) {
+			this.setState({
+				dailyCalculationStatusFlag: false
+			});
+		}
 	};
 
 	dailyCalculationStatusChange = () => {
@@ -258,7 +265,7 @@ class siteInfo extends Component {
 					time: publicUtils.getFullYearMonth(new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)), new Date()),
 					admissionEndDate: row.admissionEndDate === null ? '' : new Date(publicUtils.converToLocalTime(row.admissionEndDate, true)),
 					workState: row.workState === null ? '' : row.workState,
-					dailyCalculationStatus: row.dailyCalculationStatus === '1' ? true : false,
+					dailyCalculationStatus: row.dailyCalculationStatus === '0' ? true : false,
 					systemName: row.systemName === null ? '' : row.systemName,
 					location: row.location === null ? '' : row.location,
 					customerNo: row.customerName === null ? '' : row.customerName,
@@ -280,8 +287,10 @@ class siteInfo extends Component {
 					disabledFlag: false,
 					deleteFlag: false,
 					relatedEmployeesFlag:row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
+					workDate:row.workDate,
 				});
-				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2) {
+				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2 || 
+						new Date(publicUtils.converToLocalTime(row.admissionStartDate, true).getFullYear(),publicUtils.converToLocalTime(row.admissionStartDate, true).getMonth(),0).getDate() - publicUtils.converToLocalTime(row.admissionStartDate, true).getDate() > 3) {
 					this.setState({
 						dailyCalculationStatusFlag: false,
 						deleteFlag: false,
@@ -301,6 +310,7 @@ class siteInfo extends Component {
 				disabledFlag: false,
 				deleteFlag: true,
 				relatedEmployeesFlag:false,
+				workDate:'',
 			})
 		}
 	}
@@ -331,7 +341,7 @@ class siteInfo extends Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "post",message:"登録成功", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					this.refs.table.setState({
 						selectedRowKeys: []
@@ -381,7 +391,7 @@ class siteInfo extends Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "put",message:"修正成功", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					this.refs.table.setState({
 						selectedRowKeys: []
@@ -433,15 +443,32 @@ class siteInfo extends Component {
 	}
 	//隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
+		var workDate = this.state.workDate;
+        var siteData = this.state.siteData;
+        for (let i = siteData.length - 1; i >= 0; i--) {
+            if (siteData[i].workDate === workDate) {
+                siteData.splice(i, 1);
+            }
+        }
+        this.setState({
+            siteData: siteData,
+            rowNo: '',
+        })
 		axios.post(this.state.serverIP + "deleteSiteInfo", {
 			employeeNo: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo),
 			admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
 		})
 			.then(result => {
 				if (result.data) {
-
+					this.setState({ "myToastShow": true, message:"削除成功", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.refs.table.setState({
+						selectedRowKeys: []
+					});
+					this.reset();
 				} else {
-
+					this.setState({ "myToastShow": true, "method": "success",message:"削除失敗", "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
 			})
 			.catch(function (error) {
@@ -551,7 +578,7 @@ class siteInfo extends Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={this.state.method === "put" ? "修正成功！" : "登録成功！"} type={"success"} />
+					<MyToast myToastShow={this.state.myToastShow} message={this.state.message} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />

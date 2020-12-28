@@ -23,18 +23,18 @@ axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 	}
-	//初期化
+	// 初期化
 	initialState = {
-		showBankInfoModalFlag: false,//口座情報画面フラグ
-		showpasswordSetModalFlag: false,//PW設定
-		showBpInfoModalFlag: false,//bp情報
-		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
-		accountInfo: null,//口座情報のデータ
-		bpInfoModel: null,//pb情報
+		showBankInfoModalFlag: false,// 口座情報画面フラグ
+		showpasswordSetModalFlag: false,// PW設定
+		showBpInfoModalFlag: false,// bp情報
+		retirementYearAndMonthDisabled: false,// 退職年月の活性フラグ
+		accountInfo: null,// 口座情報のデータ
+		bpInfoModel: null,// pb情報
 		myToastShow: false,
 		errorsMessageShow: false,
 		developLanguage1: '',
@@ -60,52 +60,52 @@ class employeeUpdate extends React.Component {
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
 		qualification: store.getState().dropDown[54],
-		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛テスト
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],// 劉林涛テスト
 	};
-	//リセット
+	// リセット
 	resetBook = () => {
 		window.location.href = window.location.href
 	};
 
-	//更新ボタン
+	// 更新ボタン
 	updateEmployee = () => {
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
 		const emp = {
-			employeeStatus: this.state.employeeStatus,//社員区分
-			employeeNo: this.state.employeeNo,//社員番号
-			bpEmployeeNo: this.state.employeeNo,//社員番号
-			employeeFristName: this.state.employeeFristName,//社員氏
-			employeeLastName: this.state.employeeLastName,//社員名
-			furigana1: publicUtils.nullToEmpty(this.state.furigana1),//カタカナ
-			furigana2: publicUtils.nullToEmpty(this.state.furigana2),//カタカナ
-			alphabetName1: publicUtils.nullToEmpty(this.state.alphabetName1),//ローマ字
-			alphabetName2: publicUtils.nullToEmpty(this.state.alphabetName2),//ローマ字
-			birthday: publicUtils.formateDate(this.state.birthday, true),//年齢
-			japaneseCalendar: publicUtils.nullToEmpty(this.state.japaneseCalendar),//和暦
-			genderStatus: publicUtils.nullToEmpty(this.state.genderStatus),//性別
-			intoCompanyCode: publicUtils.nullToEmpty(this.state.intoCompanyCode),//入社区分
-			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),//社員形式
-			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),//職種
-			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),//部署
-			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",//社内メール
-			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),//卒業学校
-			major: publicUtils.nullToEmpty(this.state.major),//専門
-			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),//卒業年月
-			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),//入社年月
-			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),//退職年月
-			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),//来日年月
-			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),//出身地
-			birthplace: publicUtils.nullToEmpty(this.state.birthplace),//出身県
-			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo1) + publicUtils.nullToEmpty(this.state.phoneNo2) + publicUtils.nullToEmpty(this.state.phoneNo3),//携帯電話
-			authorityCode: this.state.authorityCode,//権限
-			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),//日本語
-			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),//英語
-			certification1: publicUtils.nullToEmpty(this.state.certification1),//資格1
-			certification2: publicUtils.nullToEmpty(this.state.certification2),//資格2
-			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),//役割
-			postcode: publicUtils.nullToEmpty(this.state.postcode),//郵便番号
+			employeeStatus: this.state.employeeStatus,// 社員区分
+			employeeNo: this.state.employeeNo,// 社員番号
+			bpEmployeeNo: this.state.employeeNo,// 社員番号
+			employeeFristName: this.state.employeeFristName,// 社員氏
+			employeeLastName: this.state.employeeLastName,// 社員名
+			furigana1: publicUtils.nullToEmpty(this.state.furigana1),// カタカナ
+			furigana2: publicUtils.nullToEmpty(this.state.furigana2),// カタカナ
+			alphabetName1: publicUtils.nullToEmpty(this.state.alphabetName1),// ローマ字
+			alphabetName2: publicUtils.nullToEmpty(this.state.alphabetName2),// ローマ字
+			birthday: publicUtils.formateDate(this.state.birthday, true),// 年齢
+			japaneseCalendar: publicUtils.nullToEmpty(this.state.japaneseCalendar),// 和暦
+			genderStatus: publicUtils.nullToEmpty(this.state.genderStatus),// 性別
+			intoCompanyCode: publicUtils.nullToEmpty(this.state.intoCompanyCode),// 入社区分
+			employeeFormCode: publicUtils.nullToEmpty(this.state.employeeFormCode),// 社員形式
+			occupationCode: publicUtils.nullToEmpty(this.state.occupationCode),// 職種
+			departmentCode: publicUtils.nullToEmpty(this.state.departmentCode),// 部署
+			companyMail: publicUtils.nullToEmpty(this.state.companyMail) === "" ? "" : this.state.companyMail + "@lyc.co.jp",// 社内メール
+			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
+			major: publicUtils.nullToEmpty(this.state.major),// 専門
+			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
+			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),// 入社年月
+			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),// 退職年月
+			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
+			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),// 出身地
+			birthplace: publicUtils.nullToEmpty(this.state.birthplace),// 出身県
+			phoneNo: publicUtils.nullToEmpty(this.state.phoneNo1) + publicUtils.nullToEmpty(this.state.phoneNo2) + publicUtils.nullToEmpty(this.state.phoneNo3),// 携帯電話
+			authorityCode: this.state.authorityCode,// 権限
+			japaneseLevelCode: publicUtils.nullToEmpty(this.state.japaneseLevelCode),// 日本語
+			englishLevelCode: publicUtils.nullToEmpty(this.state.englishLevelCode),// 英語
+			certification1: publicUtils.nullToEmpty(this.state.certification1),// 資格1
+			certification2: publicUtils.nullToEmpty(this.state.certification2),// 資格2
+			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),// 役割
+			postcode: publicUtils.nullToEmpty(this.state.postcode),// 郵便番号
 			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
 			stationCode: publicUtils.labelGetValue($("#stationCode").val(), this.state.station),
@@ -114,18 +114,18 @@ class employeeUpdate extends React.Component {
 			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
 			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
 			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
-			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),//在留資格
-			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),//在留カード
-			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),//在留期間
-			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),//雇用保険番号
-			myNumber: publicUtils.nullToEmpty(this.state.myNumber),//マイナンバー
-			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),//履歴書備考1
-			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),//履歴書備考1
-			accountInfo: this.state.accountInfo,//口座情報
-			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),//pw設定
-			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),//経験年数
-			bpInfoModel: this.state.bpInfoModel,//pb情報
-			picInfo: imgSrc,//pb情報
+			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),// 在留資格
+			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),// 在留カード
+			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),// 在留期間
+			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),// 雇用保険番号
+			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
+			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
+			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),// 履歴書備考1
+			accountInfo: this.state.accountInfo,// 口座情報
+			password: publicUtils.nullToEmpty(this.state.passwordSetInfo),// pw設定
+			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),// 経験年数
+			bpInfoModel: this.state.bpInfoModel,// pb情報
+			picInfo: imgSrc,// pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
@@ -145,7 +145,7 @@ class employeeUpdate extends React.Component {
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
-					this.getNO("LYC");//採番番号
+					this.getNO("LYC");// 採番番号
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -153,7 +153,7 @@ class employeeUpdate extends React.Component {
 	};
 
 
-	//onchange
+	// onchange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -178,8 +178,8 @@ class employeeUpdate extends React.Component {
 		}
 	}
 	/**
-	  * 初期化メソッド
-	  */
+	 * 初期化メソッド
+	 */
 	componentDidMount() {
 		const { location } = this.props
 		this.setState(
@@ -199,67 +199,68 @@ class employeeUpdate extends React.Component {
 			.then((data) => {
 				$("#firstHalfAddress").val(data.firstHalfAddress);
 				this.setState({
-					employeeStatus: data.employeeStatus,//社員区分
-					employeeNo: data.employeeNo,//社員番号
-					bpEmployeeNo: data.employeeNo,//社員番号
-					employeeFristName: data.employeeFristName,//社員氏
-					employeeLastName: data.employeeLastName,//社員名
-					furigana1: data.furigana1,//カタカナ
-					furigana2: data.furigana2,//カタカナ
-					alphabetName1: data.alphabetName1,//ローマ字
-					alphabetName2: data.alphabetName2,//ローマ字
-					birthday: publicUtils.converToLocalTime(data.birthday, true),//年齢
+					employeeStatus: data.employeeStatus,// 社員区分
+					employeeNo: data.employeeNo,// 社員番号
+					bpEmployeeNo: data.employeeNo,// 社員番号
+					employeeFristName: data.employeeFristName,// 社員氏
+					employeeLastName: data.employeeLastName,// 社員名
+					furigana1: data.furigana1,// カタカナ
+					furigana2: data.furigana2,// カタカナ
+					alphabetName1: data.alphabetName1,// ローマ字
+					alphabetName2: data.alphabetName2,// ローマ字
+					birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
 					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
-					japaneseCalendar: data.japaneseCalendar,//和暦
-					genderStatus: data.genderStatus,//性別
-					intoCompanyCode: data.intoCompanyCode,//入社区分
-					employeeFormCode: data.employeeFormCode,//社員形式
+					japaneseCalendar: data.japaneseCalendar,// 和暦
+					genderStatus: data.genderStatus,// 性別
+					intoCompanyCode: data.intoCompanyCode,// 入社区分
+					employeeFormCode: data.employeeFormCode,// 社員形式
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
-					occupationCode: data.occupationCode,//職種
-					departmentCode: data.departmentCode,//部署
-					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
-					graduationUniversity: data.graduationUniversity,//卒業学校
-					major: data.major,//専門
-					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
+					occupationCode: data.occupationCode,// 職種
+					departmentCode: data.departmentCode,// 部署
+					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",// 社内メール
+																																	// data.companyMail.match(/(\S*)@/)[1]
+					graduationUniversity: data.graduationUniversity,// 卒業学校
+					major: data.major,// 専門
+					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),// 卒業年月
 					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
-					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),//入社年月
+					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),// 入社年月
 					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
-					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),//退職年月
+					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
-					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),//来日年月
+					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),// 来日年月
 					temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
-					nationalityCode: data.nationalityCode,//出身地
-					birthplace: data.birthplace,//出身県
-					phoneNo1: publicUtils.nullToEmpty(data.phoneNo).slice(0, 3),//携帯電話
-					phoneNo2: publicUtils.nullToEmpty(data.phoneNo).slice(3, 7),//携帯電話
-					phoneNo3: publicUtils.nullToEmpty(data.phoneNo).slice(7, 11),//携帯電話					
-					authorityCode: data.authorityCode,//権限
-					japaneseLevelCode: data.japaneseLevelCode,//日本語
-					englishLevelCode: data.englishLevelCode,//英語
-					certification1: data.certification1,//資格1
-					certification2: data.certification2,//資格2
-					siteRoleCode: data.siteRoleCode,//役割
-					postcode: data.postcode,//郵便番号
+					nationalityCode: data.nationalityCode,// 出身地
+					birthplace: data.birthplace,// 出身県
+					phoneNo1: publicUtils.nullToEmpty(data.phoneNo).slice(0, 3),// 携帯電話
+					phoneNo2: publicUtils.nullToEmpty(data.phoneNo).slice(3, 7),// 携帯電話
+					phoneNo3: publicUtils.nullToEmpty(data.phoneNo).slice(7, 11),// 携帯電話
+					authorityCode: data.authorityCode,// 権限
+					japaneseLevelCode: data.japaneseLevelCode,// 日本語
+					englishLevelCode: data.englishLevelCode,// 英語
+					certification1: data.certification1,// 資格1
+					certification2: data.certification2,// 資格2
+					siteRoleCode: data.siteRoleCode,// 役割
+					postcode: data.postcode,// 郵便番号
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
-					developLanguage1: data.developLanguage1,//スキール1
-					developLanguage2: data.developLanguage2,//スキール2
-					developLanguage3: data.developLanguage3,//スキール3
-					developLanguage4: data.developLanguage4,//スキール4
-					developLanguage5: data.developLanguage5,//スキール5
-					residenceCode: data.residenceCode,//在留資格
-					residenceCardNo: data.residenceCardNo,//在留カード
-					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),//在留期間
+					developLanguage1: data.developLanguage1,// スキール1
+					developLanguage2: data.developLanguage2,// スキール2
+					developLanguage3: data.developLanguage3,// スキール3
+					developLanguage4: data.developLanguage4,// スキール4
+					developLanguage5: data.developLanguage5,// スキール5
+					residenceCode: data.residenceCode,// 在留資格
+					residenceCardNo: data.residenceCardNo,// 在留カード
+					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),// 在留期間
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
-					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
-					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),//在留カード
-					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),//履歴書
-					resumeName1: data.resumeName1,//履歴書備考1
-					resumeInfo2URL: publicUtils.nullToEmpty(data.resumeInfo2),//履歴書2
-					resumeName2: data.resumeName2,//履歴書備考1
-					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
-					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
+					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
+					myNumber: data.myNumber,// マイナンバー
+					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
+					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
+					resumeName1: data.resumeName1,// 履歴書備考1
+					resumeInfo2URL: publicUtils.nullToEmpty(data.resumeInfo2),// 履歴書2
+					resumeName2: data.resumeName2,// 履歴書備考1
+					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),// パスポート
+					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),// 経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
 					image: data.picInfo
 				});
@@ -268,8 +269,8 @@ class employeeUpdate extends React.Component {
 	};
 
 	/**
-	* 漢字をカタカナに変更する
-	*/
+	 * 漢字をカタカナに変更する
+	 */
 	katakanaApiChange = event => {
 		let name = event.target.name
 		let value = event.target.value;
@@ -293,7 +294,7 @@ class employeeUpdate extends React.Component {
 		});
 	};
 
-	//卒業年月
+	// 卒業年月
 	state = {
 		birthday: new Date(),
 		intoCompanyYearAndMonth: new Date(),
@@ -304,8 +305,8 @@ class employeeUpdate extends React.Component {
 		graduationYearAndMonth: new Date(),
 	};
 	/**
-	* 年齢と和暦
-	*/
+	 * 年齢と和暦
+	 */
 	inactiveBirthday = date => {
 		if (date !== undefined && date !== null && date !== "") {
 			const promise = Promise.resolve(publicUtils.calApi(date));
@@ -326,7 +327,7 @@ class employeeUpdate extends React.Component {
 			});
 		}
 	};
-	//卒業年月
+	// 卒業年月
 	inactiveGraduationYearAndMonth = date => {
 		this.setState(
 			{
@@ -336,7 +337,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//入社年月
+	// 入社年月
 	inactiveintoCompanyYearAndMonth = (date) => {
 		this.setState(
 			{
@@ -345,7 +346,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//退職年月
+	// 退職年月
 	inactiveRetirementYearAndMonth = (date) => {
 		this.setState(
 			{
@@ -355,7 +356,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//来日年月
+	// 来日年月
 	inactiveComeToJapanYearAndMonth = date => {
 		this.setState(
 			{
@@ -365,7 +366,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//経験年数
+	// 経験年数
 	inactiveyearsOfExperience = date => {
 		this.setState(
 			{
@@ -374,7 +375,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//在留期間
+	// 在留期間
 	inactiveStayPeriod = date => {
 		this.setState(
 			{
@@ -383,11 +384,11 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//年月終了
+	// 年月終了
 
 
-	/* 
-		ポップアップ口座情報の取得
+	/*
+	 * ポップアップ口座情報の取得
 	 */
 	accountInfoGet = (accountTokuro) => {
 		this.setState({
@@ -396,18 +397,18 @@ class employeeUpdate extends React.Component {
 		})
 	}
 
-	/* 
-	ポップアップPW設定の取得
- */
+	/*
+	 * ポップアップPW設定の取得
+	 */
 	passwordSetInfoGet = (passwordSetTokuro) => {
 		this.setState({
 			passwordSetInfo: passwordSetTokuro,
 			showpasswordSetModalFlag: false,
 		})
 	}
-	/* 
-	ポップアップpb情報の取得
- */
+	/*
+	 * ポップアップpb情報の取得
+	 */
 	pbInfoGet = (pbInfoGetTokuro) => {
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
@@ -415,27 +416,27 @@ class employeeUpdate extends React.Component {
 		})
 	}
 	/**
-	* 小さい画面の閉め 
-	*/
+	 * 小さい画面の閉め
+	 */
 	handleHideModal = (kbn) => {
-		if (kbn === "bankInfo") {//口座情報
+		if (kbn === "bankInfo") {// 口座情報
 			this.setState({ showBankInfoModalFlag: false })
-		} else if (kbn === "passwordSet") {//PW設定
+		} else if (kbn === "passwordSet") {// PW設定
 			this.setState({ showpasswordSetModalFlag: false })
-		} else if (kbn === "bpInfoModel") {//pb情報
+		} else if (kbn === "bpInfoModel") {// pb情報
 			this.setState({ showBpInfoModalFlag: false })
 		}
 	}
 
 	/**
- * 小さい画面の開き
-    */
+	 * 小さい画面の開き
+	 */
 	handleShowModal = (kbn) => {
-		if (kbn === "bankInfo") {//口座情報
+		if (kbn === "bankInfo") {// 口座情報
 			this.setState({ showBankInfoModalFlag: true })
-		} else if (kbn === "passwordSet") {//PW設定
+		} else if (kbn === "passwordSet") {// PW設定
 			this.setState({ showpasswordSetModalFlag: true })
-		} else if (kbn === "bpInfoModel") {//pb情報
+		} else if (kbn === "bpInfoModel") {// pb情報
 			this.setState({ showBpInfoModalFlag: true })
 		}
 	}
@@ -489,8 +490,11 @@ class employeeUpdate extends React.Component {
 
 	/**
 	 * ファイルを処理
-	 * @param {*} event 
-	 * @param {*} name 
+	 * 
+	 * @param {*}
+	 *            event
+	 * @param {*}
+	 *            name
 	 */
 	addFile = (event, name) => {
 		$("#" + name).click();
@@ -573,8 +577,8 @@ class employeeUpdate extends React.Component {
 	}
 
 	/**
-	* 郵便番号API
-	*/
+	 * 郵便番号API
+	 */
 	postApi = event => {
 		let value = event.target.value;
 		const promise = Promise.resolve(publicUtils.postcodeApi(value));
@@ -626,7 +630,7 @@ class employeeUpdate extends React.Component {
 					<Modal.Body >
 						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
-				{/* pb情報*/}
+				{/* pb情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModalFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
@@ -765,7 +769,10 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="occupationCode" value={occupationCode}
-										disabled={occupationCode === "3" ? true : false}>
+										/*
+										 * disabled={occupationCode === "3" ?
+										 * true : false}
+										 */>
 										autoComplete="off" >
 										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>

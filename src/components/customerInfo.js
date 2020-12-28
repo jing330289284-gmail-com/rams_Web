@@ -33,6 +33,7 @@ class CustomerInfo extends Component {
         topCustomerDrop: utils.getdropDown("getTopCustomer",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
+        currPage:'',
         customerDepartmentCode2:'',
         positionCode2:'',
         customerDepartmentName: '',//部門コード
@@ -132,6 +133,7 @@ class CustomerInfo extends Component {
             sendValue: this.props.location.state.sendValue,
             searchFlag: this.props.location.state.searchFlag,
             customerNoForPageChange: this.props.location.state.customerNo,
+            currPage:this.props.location.state.currPage,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
@@ -608,7 +610,8 @@ class CustomerInfo extends Component {
         var path = {};
         path = {
             pathname: this.state.backPage,
-            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange },
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange,
+                currPage:this.state.currPage,},
         }
         this.props.history.push(path);
     }
