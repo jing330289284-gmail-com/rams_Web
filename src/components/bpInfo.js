@@ -176,7 +176,7 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='5' disabled={this.props.actionType === "detail" ? true : false} />
+										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='3' disabled={this.props.actionType === "detail" ? true : false} />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
 									</InputGroup.Prepend>
