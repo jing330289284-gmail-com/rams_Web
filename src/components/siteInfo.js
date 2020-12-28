@@ -33,8 +33,10 @@ class siteInfo extends Component {
 		workState: '0',
 		employeeName: '',
 		myToastShow: false,
-		message:'',
-		workDate:'',
+		message: '',
+		workDate: '',
+		employeeNo: '',
+		currPage: '',
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
@@ -103,12 +105,41 @@ class siteInfo extends Component {
 		this.setState({
 			admissionStartDate: date,
 			time: publicUtils.getFullYearMonth(date, new Date()),
-			dailyCalculationStatusFlag: true
 		});
-		if (date.getDate() > 2) {
-			this.setState({
-				dailyCalculationStatusFlag: false
-			});
+		if (date !== null) {
+			if (date.getDate() > 2) {
+				this.setState({
+					dailyCalculationStatusFlag: false
+				});
+			} else {
+				if (this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
+					if (new Date(this.state.admissionEndDate.getFullYear(), this.state.admissionEndDate.getMonth() + 1, 0).getDate() - this.state.admissionEndDate.getDate() > 2) {
+						this.setState({
+							dailyCalculationStatusFlag: false
+						});
+					} else {
+						this.setState({
+							dailyCalculationStatusFlag: true
+						});
+					}
+				}
+			}
+		} else {
+			if (this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
+				if (new Date(this.state.admissionEndDate.getFullYear(), this.state.admissionEndDate.getMonth() + 1, 0).getDate() - this.state.admissionEndDate.getDate() > 2) {
+					this.setState({
+						dailyCalculationStatusFlag: false
+					});
+				} else {
+					this.setState({
+						dailyCalculationStatusFlag: true
+					});
+				}
+			} else {
+				this.setState({
+					dailyCalculationStatusFlag: true
+				});
+			}
 		}
 	};
 	//　退場年月
@@ -118,10 +149,40 @@ class siteInfo extends Component {
 				admissionEndDate: date,
 			}
 		);
-		if (new Date(date.getFullYear(),date.getMonth(),0).getDate() - date.getDate() > 4) {
-			this.setState({
-				dailyCalculationStatusFlag: false
-			});
+		if (date !== null) {
+			if (new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate() - date.getDate() > 2) {
+				this.setState({
+					dailyCalculationStatusFlag: false
+				});
+			} else {
+				if (this.state.admissionStartDate !== '' && this.state.admissionStartDate !== undefined) {
+					if (this.state.admissionStartDate.getDate() > 2) {
+						this.setState({
+							dailyCalculationStatusFlag: false
+						});
+					} else {
+						this.setState({
+							dailyCalculationStatusFlag: true
+						});
+					}
+				}
+			}
+		} else {
+			if (this.state.admissionStartDate !== '' && this.state.admissionStartDate !== undefined) {
+				if (this.state.admissionStartDate.getDate() > 2) {
+					this.setState({
+						dailyCalculationStatusFlag: false
+					});
+				} else {
+					this.setState({
+						dailyCalculationStatusFlag: true
+					});
+				}
+			} else {
+				this.setState({
+					dailyCalculationStatusFlag: true
+				});
+			}
 		}
 	};
 
@@ -143,14 +204,28 @@ class siteInfo extends Component {
 				sendValue: this.props.location.state.sendValue,
 				searchFlag: this.props.location.state.searchFlag,
 			})
+			if (this.props.location.state.currPage !== null && this.props.location.state.currPage !== undefined && this.props.location.state.currPage !== '') {
+				this.setState({
+					currPage: this.props.location.state.currPage,
+					employeeNo: this.props.location.state.employeeNo,
+				})
+			}
 			axios.post(this.state.serverIP + "getSiteInfo", { employeeName: employeeNo })
 				.then(response => {
-					if (response.data != null) {
+					if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 						this.setState({
-							siteData: response.data,
+							siteData: response.data.siteList,
 							employeeName: publicUtils.valueGetLabel(employeeNo, this.state.employeeInfo),
 							disabledFlag: false,
 						});
+					}else{
+						this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+						this.setState({
+							employeeName: publicUtils.valueGetLabel(employeeNo, this.state.employeeInfo),
+							siteData:[],
+							disabledFlag: false,
+						});
+						setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 					}
 				}).catch((error) => {
 					console.error("Error - " + error);
@@ -210,17 +285,22 @@ class siteInfo extends Component {
 				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
 				switch (fieldName) {
 					case 'employeeName':
-						this.refs.table.setState({
-							selectedRowKeys: []
-						});
 						axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 							.then(response => {
-								if (response.data != null) {
+								if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 									this.setState({
-										siteData: response.data,
+										siteData: response.data.siteList,
 										employeeName: value,
 										disabledFlag: false,
 									});
+								}else{
+									this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+									this.setState({
+										employeeName: value,
+										siteData:[],
+										disabledFlag: false,
+									});
+									setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 								}
 							}).catch((error) => {
 								console.error("Error - " + error);
@@ -279,22 +359,28 @@ class siteInfo extends Component {
 					siteManager: row.siteManager === null ? '' : row.siteManager,
 					typeOfIndustryCode: row.typeOfIndustryName === null ? '' : row.typeOfIndustryName,
 					remark: row.remark === null ? '' : row.remark,
-					related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0],this.state.employeeInfo)),
-					related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1],this.state.employeeInfo)),
-					related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2],this.state.employeeInfo)),
-					related4Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[3] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[3],this.state.employeeInfo)),
+					related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0], this.state.employeeInfo)),
+					related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1], this.state.employeeInfo)),
+					related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2], this.state.employeeInfo)),
+					related4Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[3] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[3], this.state.employeeInfo)),
 					updateFlag: false,
 					disabledFlag: false,
 					deleteFlag: false,
-					relatedEmployeesFlag:row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
-					workDate:row.workDate,
+					relatedEmployeesFlag: row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
+					workDate: row.workDate,
 				});
-				if (new Date(publicUtils.converToLocalTime(row.admissionStartDate, true)).getDate() > 2 || 
-						new Date(publicUtils.converToLocalTime(row.admissionStartDate, true).getFullYear(),publicUtils.converToLocalTime(row.admissionStartDate, true).getMonth(),0).getDate() - publicUtils.converToLocalTime(row.admissionStartDate, true).getDate() > 3) {
+				if (publicUtils.converToLocalTime(row.admissionStartDate, true).getDate() > 2 ) {
 					this.setState({
 						dailyCalculationStatusFlag: false,
 						deleteFlag: false,
 					});
+				}else if(row.admissionEndDate !== null && row.admissionEndDate !== undefined){
+					if(new Date(publicUtils.converToLocalTime(row.admissionEndDate, true).getFullYear(), publicUtils.converToLocalTime(row.admissionEndDate, true).getMonth() + 1, 0).getDate() - publicUtils.converToLocalTime(row.admissionEndDate, true).getDate() > 2){
+						this.setState({
+							dailyCalculationStatusFlag: false,
+							deleteFlag: false,
+						});
+					}
 				}
 			} else {
 				this.setState(() => this.resetStates);
@@ -309,8 +395,8 @@ class siteInfo extends Component {
 				updateFlag: true,
 				disabledFlag: false,
 				deleteFlag: true,
-				relatedEmployeesFlag:false,
-				workDate:'',
+				relatedEmployeesFlag: false,
+				workDate: '',
 			})
 		}
 	}
@@ -341,19 +427,22 @@ class siteInfo extends Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": true, "method": "post",message:"登録成功", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "post", message: "登録成功", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
 					axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 						.then(response => {
-							if (response.data != null) {
+							if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 								this.setState({
-									siteData: response.data,
+									siteData: response.data.siteList,
 								});
-								this.handleRowSelect();
-
+								// this.handleRowSelect();
+								this.reset();
+							}else{
+								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+								setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 							}
 						}).catch((error) => {
 							console.error("Error - " + error);
@@ -391,26 +480,25 @@ class siteInfo extends Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ "myToastShow": true, "method": "put",message:"修正成功", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "put", message: "修正成功", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
 					axios.post(this.state.serverIP + "getSiteInfo", { employeeName: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo) })
 						.then(response => {
-							if (response.data != null) {
+							if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 								this.setState({
-									siteData: response.data,
+									siteData: response.data.siteList,
 								});
 								this.setState({
 									updateFlag: true,
 									disabledFlag: false
 								})
-								if (siteModel["workState"] === '2') {
-
-								} else {
-									this.setState(() => this.resetStates);
-								}
+								this.setState(() => this.resetStates);
+							}else{
+								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+								setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 							}
 						}).catch((error) => {
 							console.error("Error - " + error);
@@ -444,30 +532,31 @@ class siteInfo extends Component {
 	//隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
 		var workDate = this.state.workDate;
-        var siteData = this.state.siteData;
-        for (let i = siteData.length - 1; i >= 0; i--) {
-            if (siteData[i].workDate === workDate) {
-                siteData.splice(i, 1);
-            }
-        }
-        this.setState({
-            siteData: siteData,
-            rowNo: '',
-        })
+		var siteData = this.state.siteData;
+		for (let i = siteData.length - 1; i >= 0; i--) {
+			if (siteData[i].workDate === workDate) {
+				siteData.splice(i, 1);
+			}
+		}
+		this.setState({
+			siteData: siteData,
+			rowNo: '',
+			updateFlag:true,
+		})
 		axios.post(this.state.serverIP + "deleteSiteInfo", {
 			employeeNo: publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo),
 			admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
 		})
 			.then(result => {
 				if (result.data) {
-					this.setState({ "myToastShow": true, message:"削除成功", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, message: "削除成功", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
 					this.reset();
 				} else {
-					this.setState({ "myToastShow": true, "method": "success",message:"削除失敗", "errorsMessageShow": false });
+					this.setState({ "myToastShow": true, "method": "success", message: "削除失敗", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
 			})
@@ -544,7 +633,12 @@ class siteInfo extends Component {
 		var path = {};
 		path = {
 			pathname: this.state.backPage,
-			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue },
+			state: {
+				searchFlag: this.state.searchFlag,
+				sendValue: this.state.sendValue,
+				currPage: this.state.currPage,
+				employeeNo: this.state.employeeNo,
+			},
 		}
 		this.props.history.push(path);
 	}
@@ -630,7 +724,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<DatePicker
 												selected={this.state.admissionStartDate}
-												onChange={this.admissionStartDate}
+												onChange={this.admissionStartDate.bind(this)}
 												dateFormat="yyyy/MM/dd"
 												name="admissionStartDate"
 												className="form-control form-control-sm"
@@ -668,7 +762,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<DatePicker
 												selected={this.state.admissionEndDate}
-												onChange={this.admissionEndDate}
+												onChange={this.admissionEndDate.bind(this)}
 												dateFormat="yyyy/MM/dd"
 												name="admissionEndDate"
 												className="form-control form-control-sm"
@@ -676,7 +770,7 @@ class siteInfo extends Component {
 												locale="ja"
 												autoComplete="off"
 												id={this.state.workState !== "0" ? "admissionEndDate" : "siteDatePickerReadonlyDefault"}
-												disabled={this.state.workState === "0" ? true : false}
+												disabled={this.state.employeeName === '' ?  true : this.state.workState === "0" ? true : false}
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>
