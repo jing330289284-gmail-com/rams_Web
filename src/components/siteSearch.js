@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faUndo, faSave } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -29,6 +29,11 @@ class siteSearch extends Component {
 		customerNo: '',
 		topCustomerNo: '',
 		employeeName: '',
+		selectedEmployeeNo: '',
+		searchFlag: false,
+		sendValue: null,
+		currPage: '',
+		dataAcquisitionPeriod:'0',
 		payOffRangeStatus: store.getState().dropDown[33],//　精算時間
 		siteMaster: store.getState().dropDown[34],//　役割
 		customerMaster: store.getState().dropDown[15].slice(1),//お客様
@@ -45,11 +50,57 @@ class siteSearch extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
-
+	onchangeDataAcquisitionPeriod = event => {
+		this.setState({
+			[event.target.name]: event.target.value
+		},()=>{
+			if(this.state.dataAcquisitionPeriod === "1"){
+				this.setState({
+					admissionEndDate:'',
+					admissionStartDate:'',
+				})
+			}
+		})
+	}
 	//时间入力框初始值
 	state = {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date()
+	}
+	componentDidMount() {
+		$("#siteInfo").attr('disabled', true);
+		if (this.props.location.state !== undefined) {
+			var sendValue = this.props.location.state.sendValue;
+			var searchFlag = this.props.location.state.searchFlag;
+			this.giveValue(sendValue);
+			this.setState({
+				selectedEmployeeNo: this.props.location.state.employeeNo,
+			}, () => {
+				if (searchFlag) {
+					this.siteSearch(sendValue);
+				}
+			})
+		}
+	}
+	giveValue = (sendValue) => {
+		this.setState({
+			customerNo: sendValue.customerNo,
+			topCustomerNo: sendValue.topCustomerNo,
+			bpCustomerNo: sendValue.bpCustomerNo,
+			typeOfIndustryCode: sendValue.typeOfIndustryCode,
+			admissionStartDate: sendValue.admissionStartDate,
+			admissionEndDate: sendValue.admissionEndDate,
+			siteRoleCode: sendValue.siteRoleCode,
+			employeeForm: sendValue.employeeForm,
+			developLanguageCode: sendValue.developLanguageCode,
+			stationCode: sendValue.stationCode,
+			employeeName: sendValue.employeeName,
+			payOffRange1: sendValue.payOffRange1,
+			payOffRange2: sendValue.payOffRange2,
+			employeeStatus: sendValue.employeeStatus,
+			dataAcquisitionPeriod: sendValue.dataAcquisitionPeriod,
+
+		})
 	}
 	//　入場年月
 	admissionStartDate = (date) => {
@@ -76,92 +127,52 @@ class siteSearch extends Component {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '', siteRoleCode: '', employeeForm: '',
 		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '', employeeStatus: '', dataAcquisitionPeriod: ''
 	};
-
-	// AUTOSELECT select事件
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (this.state.customerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.topCustomerMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.getstations.find((v) => (v.name === value)) !== undefined ||
-				this.state.typeOfIndustryMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.developLanguageMaster.find((v) => (v.name === value)) !== undefined ||
-				this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
-				switch (fieldName) {
-					case 'employeeName':
-						this.setState({
-							employeeName: value,
-						})
-						break;
-					case 'customerNo':
-						this.setState({
-							customerNo: value,
-						})
-						break;
-					case 'topCustomerNo':
-						this.setState({
-							topCustomerNo: value,
-						})
-						break;
-					case 'bpCustomerNo':
-						this.setState({
-							bpCustomerNo: value,
-						})
-						break;
-					case 'stationCode':
-						this.setState({
-							stationCode: value,
-						})
-						break;
-					case 'typeOfIndustryCode':
-						this.setState({
-							typeOfIndustryCode: value,
-						})
-						break;
-					case 'developLanguageCode':
-						this.setState({
-							developLanguageCode: value,
-						})
-						break;
-					default:
-				}
-			}
-		}
-
-	};
 	//検索処理
-	siteSearch = () => {
+	siteSearch = (sendValue) => {
 		var SiteSearchModel = {};
 		var formArray = $("#siteForm").serializeArray();
 		$.each(formArray, function (i, item) {
 			SiteSearchModel[item.name] = item.value;
 		});
-		SiteSearchModel["customerNo"] = publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster)
-		SiteSearchModel["topCustomerNo"] = publicUtils.labelGetValue($("#topCustomerNo").val(), this.state.topCustomerMaster)
-		SiteSearchModel["developLanguageCode"] = publicUtils.labelGetValue($("#developLanguageCode").val(), this.state.developLanguageMaster)
-		SiteSearchModel["employeeName"] = publicUtils.labelGetValue($("#employeeName").val(), this.state.employeeInfo)
-		SiteSearchModel["bpCustomerNo"] = publicUtils.labelGetValue($("#bpCustomerNo").val(), this.state.customerMaster)
-		SiteSearchModel["stationCode"] = publicUtils.labelGetValue($("#stationCode").val(), this.state.getstations)
-		SiteSearchModel["typeOfIndustryCode"] = publicUtils.labelGetValue($("#typeOfIndustryCode").val(), this.state.typeOfIndustryMaster)
-		if ($("#dataAcquisitionPeriod").val() === '1') {
-			SiteSearchModel["dataAcquisitionPeriod"] = publicUtils.setFullYearMonth(new Date());
+		SiteSearchModel["customerNo"] = this.state.customerNo;
+		SiteSearchModel["topCustomerNo"] = this.state.topCustomerNo;
+		SiteSearchModel["developLanguageCode"] = this.state.developLanguageCode;
+		SiteSearchModel["employeeNo"] = this.state.employeeName;
+		SiteSearchModel["bpCustomerNo"] = this.state.bpCustomerNo;
+		SiteSearchModel["stationCode"] = this.state.stationCode;
+		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
+		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
+		if (!$.isEmptyObject(sendValue)) {
+			SiteSearchModel = sendValue;
 		}
-
 		axios.post(this.state.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
-				if (response.data.errorsMessage != null) {
+				this.setState({
+					searchFlag: true,
+				})
+				if (response.data.errorsMessage != null || response.data.errorsMessage != undefined ) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
-				}
-				if (response.data.data != null) {
 					this.setState({
-						siteData: response.data.data, "errorsMessageShow": false
-					});
+						siteData: [],
+					})
+				}else{
+					if (response.data.data != null) {
+						this.setState({
+							siteData: response.data.data, "errorsMessageShow": false
+						}, () => {
+							if (this.state.selectedEmployeeNo !== "" && this.state.selectedEmployeeNo !== undefined) {
+								this.refs.siteSearchTable.setState({
+									selectedRowKeys: this.state.selectedEmployeeNo,
+									currPage: this.props.location.state.currPage,
+								})
+							}
+						});
+					}else{
+						this.setState({
+							siteData: [],
+						})
+					}
 				}
-
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -172,6 +183,146 @@ class siteSearch extends Component {
 				{start}から  {to}まで , 総計{total}
 			</p>
 		);
+	}
+	shuseiTo = (actionType) => {
+		var path = {};
+		var SiteSearchModel = {};
+		var formArray = $("#siteForm").serializeArray();
+		$.each(formArray, function (i, item) {
+			SiteSearchModel[item.name] = item.value;
+		});
+		SiteSearchModel["customerNo"] = this.state.customerNo;
+		SiteSearchModel["topCustomerNo"] = this.state.topCustomerNo;
+		SiteSearchModel["developLanguageCode"] = this.state.developLanguageCode;
+		SiteSearchModel["employeeName"] = this.state.employeeName;
+		SiteSearchModel["bpCustomerNo"] = this.state.bpCustomerNo;
+		SiteSearchModel["stationCode"] = this.state.stationCode;
+		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
+		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
+		const sendValue = SiteSearchModel;
+		switch (actionType) {
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.selectedEmployeeNo,
+						backPage: "siteSearch",
+						sendValue: sendValue,
+						currPage: this.state.currPage,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
+	//行Selectファンクション
+	handleRowSelect = (row, isSelected, e) => {
+		$("#siteInfo").attr('disabled', false);
+		if (isSelected) {
+			this.setState({
+				selectedEmployeeNo: row.employeeNo,
+				currPage: this.refs.siteSearchTable.state.currPage,
+			})
+		} else {
+			$("#siteInfo").attr('disabled', true);
+			this.setState({
+				selectedEmployeeNo: "",
+				currPage: '',
+			})
+		}
+	}
+	getEmployeeNo = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let employeeName = null;
+			if (values !== null) {
+				employeeName = values.code;
+			}
+			this.setState({
+				employeeName: employeeName,
+			})
+		})
+	}
+	getCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let customerNo = null;
+			if (values !== null) {
+				customerNo = values.code;
+			}
+			this.setState({
+				customerNo: customerNo,
+			})
+		})
+	}
+	getTopCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let topCustomerNo = null;
+			if (values !== null) {
+				topCustomerNo = values.code;
+			}
+			this.setState({
+				topCustomerNo: topCustomerNo,
+			})
+		})
+	}
+	getBpCustomer = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let bpCustomerNo = null;
+			if (values !== null) {
+				bpCustomerNo = values.code;
+			}
+			this.setState({
+				bpCustomerNo: bpCustomerNo,
+			})
+		})
+	}
+	getStation = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let stationCode = null;
+			if (values !== null) {
+				stationCode = values.code;
+			}
+			this.setState({
+				stationCode: stationCode,
+			})
+		})
+	}
+	getIndustry = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let typeOfIndustryCode = null;
+			if (values !== null) {
+				typeOfIndustryCode = values.code;
+			}
+			this.setState({
+				typeOfIndustryCode: typeOfIndustryCode,
+			})
+		})
+	}
+	getDevelopLanguage = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let developLanguageCode = null;
+			if (values !== null) {
+				developLanguageCode = values.code;
+			}
+			this.setState({
+				developLanguageCode: developLanguageCode,
+			})
+		})
 	}
 	render() {
 		this.options = {
@@ -193,7 +344,6 @@ class siteSearch extends Component {
 			bgColor: 'pink',
 			hideSelectColumn: true,
 			clickToSelect: true,  // click to select, default is false
-			clickToExpand: true,// click to expand row, default is false
 			onSelect: this.handleRowSelect,
 		};
 		return (
@@ -221,13 +371,20 @@ class siteSearch extends Component {
 											id="employeeName"
 											name="employeeName"
 											options={this.state.employeeInfo}
-											getOptionLabel={(option) => option.name}
-											value={this.state.employeeInfo.find(v => v.name === this.state.employeeName) || {}}
-											onSelect={(event) => this.handleTag(event, 'employeeName')}
+											getOptionLabel={(option) => option.text}
+											value={this.state.employeeInfo.find(v => v.code === this.state.employeeName) || {}}
+											onChange={(event, values) => this.getEmployeeNo(event, values)}
+											renderOption={(option) => {
+												return (
+													<React.Fragment>
+														{option.name}
+													</React.Fragment>
+												)
+											}}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 										/>
@@ -287,8 +444,8 @@ class siteSearch extends Component {
 											name="customerNo"
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
-											value={this.state.customerMaster.find(v => v.name === this.state.customerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'customerNo')}
+											value={this.state.customerMaster.find(v => v.code === this.state.customerNo) || {}}
+											onChange={(event, values) => this.getCustomer(event, values)}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
@@ -306,8 +463,8 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="topCustomerNo"
 											name="topCustomerNo"
-											value={this.state.topCustomerMaster.find(v => v.name === this.state.topCustomerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'topCustomerNo')}
+											value={this.state.topCustomerMaster.find(v => v.code === this.state.topCustomerNo) || {}}
+											onChange={(event, values) => this.getTopCustomer(event, values)}
 											options={this.state.topCustomerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -327,8 +484,8 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="bpCustomerNo"
 											name="bpCustomerNo"
-											value={this.state.customerMaster.find(v => v.name === this.state.bpCustomerNo) || {}}
-											onSelect={(event) => this.handleTag(event, 'bpCustomerNo')}
+											value={this.state.customerMaster.find(v => v.code === this.state.bpCustomerNo) || {}}
+											onChange={(event, values) => this.getBpCustomer(event, values)}
 											options={this.state.customerMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -348,8 +505,8 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="stationCode"
 											name="stationCode"
-											value={this.state.getstations.find(v => v.name === this.state.stationCode) || {}}
-											onSelect={(event) => this.handleTag(event, 'stationCode')}
+											value={this.state.getstations.find(v => v.code === this.state.stationCode) || {}}
+											onChange={(event, values) => this.getStation(event, values)}
 											options={this.state.getstations}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -372,8 +529,8 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="typeOfIndustryCode"
 											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.name === this.state.typeOfIndustryCode) || {}}
-											onSelect={(event) => this.handleTag(event, 'typeOfIndustryCode')}
+											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
+											onChange={(event, values) => this.getIndustry(event, values)}
 											options={this.state.typeOfIndustryMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
@@ -431,14 +588,14 @@ class siteSearch extends Component {
 										<Autocomplete
 											id="developLanguageCode"
 											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.name === this.state.developLanguageCode) || {}}
-											onSelect={(event) => this.handleTag(event, 'developLanguageCode')}
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
+											onChange={(event, values) => this.getDevelopLanguage(event, values)}
 											options={this.state.developLanguageMaster}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto"
-														style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
 												</div>
 											)}
 										/>
@@ -459,10 +616,10 @@ class siteSearch extends Component {
 												dateFormat="yyyy/MM/dd"
 												name="admissionStartDate"
 												className="form-control form-control-sm"
-												id="admissionStartDate"
+												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
 												locale="ja"
 												autoComplete="off"
-												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
+												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>〜
 										<DatePicker
 												selected={this.state.admissionEndDate}
@@ -470,10 +627,10 @@ class siteSearch extends Component {
 												dateFormat="yyyy/MM/dd"
 												name="admissionEndDate"
 												className="form-control form-control-sm"
-												id="admissionEndDate"
+												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
 												locale="ja"
 												autoComplete="off"
-												disabled={this.state.dataAcquisitionPeriod === "1" ? true : false}
+												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>
@@ -484,8 +641,8 @@ class siteSearch extends Component {
 											<InputGroup.Text id="fiveKanji">データ期間</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" id="dataAcquisitionPeriod" name="dataAcquisitionPeriod" value={dataAcquisitionPeriod}
-											onChange={this.onchange}>
-											<option value="">すべて</option>
+											onChange={this.onchangeDataAcquisitionPeriod}>
+											<option value="0">すべて</option>
 											<option value="1">最新(システム年月)</option>
 										</Form.Control>
 									</InputGroup>
@@ -493,7 +650,7 @@ class siteSearch extends Component {
 							</Row>
 
 							<div style={{ "textAlign": "center" }}>
-								<Button size="sm" onClick={this.siteSearch} variant="info" id="toroku" type="button" color={{ background: '#5599FF' }}>
+								<Button size="sm" onClick={this.siteSearch.bind(this, null)} variant="info" id="toroku" type="button" color={{ background: '#5599FF' }}>
 									<FontAwesomeIcon icon={faSearch} /> 検索
 									</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset}>
@@ -504,19 +661,32 @@ class siteSearch extends Component {
 						</Form.Group>
 					</Form>
 					<div>
-						<BootstrapTable selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
-							<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
-							<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
-							<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム名</TableHeaderColumn>
-							<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-							<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
-							<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
-							<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-							<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
-							<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
-						</BootstrapTable>
+						<Row >
+							<Col sm={12}>
+								<div style={{ "float": "right" }}>
+									<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" id="siteInfo" variant="info"><FontAwesomeIcon icon={faSave} />現場情報登録</Button>
+								</div>
+							</Col>
+						</Row>
+					</div>
+					<div>
+						<Col sm={12}>
+							<BootstrapTable ref="siteSearchTable"
+								selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden isKey>社員番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} >番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
+								<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
+								<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム名</TableHeaderColumn>
+								<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+								<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
+								<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
+							</BootstrapTable>
+						</Col>
 					</div>
 				</div>
 			</div >
