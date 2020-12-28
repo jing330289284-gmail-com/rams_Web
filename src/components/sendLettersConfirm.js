@@ -134,6 +134,10 @@ class sendLettersConfirm extends React.Component {
 		resumeInfo1: '',
 		// 履歴書のテキスト名
 		resumeInfo1Name: '',
+		//
+		employeeFlag: true,
+		// 送信ボタン活性
+		sendLetterButtonDisFlag: false,
 		/*　要員追加機能の新規　20201216 　張棟　END*/
 	})
 	
@@ -162,6 +166,12 @@ class sendLettersConfirm extends React.Component {
 		/* 要員追加機能の新規　20201216 　張棟　END*/
 		$("#deleteButton").attr("disabled",true);
 		$("#bookButton").attr("disabled",true);
+
+		if (this.state.employeeInfo.length === 0) {
+			this.setState({
+				employeeFlag : false,
+			})
+		}
 		
 	}
 	/* 要員追加機能の新規　20201216 　張棟　START*/
@@ -451,6 +461,38 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				alert(error);
 			});
 	}
+
+	initPersonnalDetail = () => {
+		this.setState({
+			employeeName: "empty",
+			genderStatus: "",
+			nationalityName: "",
+			age: "",
+			developLanguage: "",
+			yearsOfExperience: "",
+			beginMonth: "",
+			salesProgressCode: "",
+			nearestStation: "",
+			stationCode: "",
+			employeeStatus: "",
+			japaneseLevelCode: "",
+			englishLevelCode: "",
+			siteRoleCode: "",
+			initAge: "",
+			initNearestStation: "",
+			initJapaneaseConversationLevel: '',
+			initEnglishConversationLevel: '',
+			initYearsOfExperience: "",
+			initDevelopLanguageCode6: null,
+			initDevelopLanguageCode7: null,
+			initDevelopLanguageCode8: null,
+			initDevelopLanguageCode9: null,
+			initDevelopLanguageCode10: null,
+			initUnitPrice: '',
+			initRemark: '',
+			initWellUseLanguagss: [],
+		});
+	}
 	
 	searchEmpDetail = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
@@ -557,6 +599,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	formatEmployeeName(cell, row, enumObject, index) {
 		var flg = true;
 		var name = cell;
+
 		for (var v=0 ; v< this.state.employeeInfo.length; v++) {
 			if (this.state.employeeInfo[v].employeeName === cell) {
 				flg = this.state.employeeInfo[v].initFlg === undefined ? true : this.state.employeeInfo[v].initFlg;
@@ -606,6 +649,20 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	employeeNameChange = (row, event) => {
 		var employeeInfo = this.state.employeeInfo;
 		var employeeNoTemp;
+
+		for (let i=0; i < this.state.employeeInfo.length; i++) {
+			if (row.index !== this.state.employeeInfo[i].index
+			&& event.target.value === this.state.employeeInfo[i].employeeName) {
+				this.setState({"myToastShow": true,
+					type: false,
+					errorsMessageShow: false,
+					message: "同じ名前は選択されている。",
+					sendLetterButtonDisFlag:true});
+				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				// window.location.reload();
+				return;
+			}
+		}
 		employeeInfo[row.index-1].employeeName  = event.target.value;
 //		this.setState({
 //			[event.target.name]: event.target.value,
@@ -620,12 +677,14 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					employeeInfo[row.index-1].employeeStatus = "0";
 					this.setState({
 						employeeInfo : employeeInfo,
+						employeeFlag: true,
 					});
 				} else if (employeeNoTemp.match("BP")){
 					// 協力
 					employeeInfo[row.index-1].employeeStatus = "1";
 					this.setState({
 						employeeInfo : employeeInfo,
+						employeeFlag: true,
 					});
 				}
 				break;
@@ -643,6 +702,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
 			$("#addButton").attr("disabled",false);
 		}
+		this.setState({
+			sendLetterButtonDisFlag: false,
+		})
 	};
 	/*　要員追加機能の新規　20201216 　張棟　END*/
 	
@@ -682,14 +744,13 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		var currentPage = Math.ceil(employeeInfo.length / 5);
 		this.setState({
 			employeeInfo: employeeInfo,
-			currentPage: currentPage, 
+			currentPage: currentPage,
 		})
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
 		// 追加した後で、追加ボタンが非活性になる
 		$("#addButton").attr("disabled",true);
-
 		// for (let m = 0; m < this.state.employeeInfo.length; m++) {
 		// 	for (let i = 0; i< this.state.allEmployeeName.length; i++) {
 		// 		if (this.state.allEmployeeName[i] === this.state.employeeInfo[m].employeeName) {
@@ -766,8 +827,14 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		if (this.state.employeeInfo.length === 0) {
 			this.setState({
 				EmployeeNameIndex: 0,
+				employeeFlag: false,
 			});
+			this.initPersonnalDetail();
+		} else {
+			this.searchPersonnalDetail(this.state.employeeInfo[0].employeeNo);
 		}
+
+		--this.state.EmployeeNameIndex;
 	};
 
 	/**
@@ -892,14 +959,18 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
 【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')
 +(this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null?`
-【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + 
+【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
-【業務年数】：`:"")+ this.state.yearsOfExperience + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+`
-【対応工程】：`+ this.state.siteRoleCode + `
-【得意言語】：`+ this.state.developLanguage + `
-【単　　価】：`+ this.state.unitPrice + `万円
-【稼働開始】：2020/09
-【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + 
+【業務年数】：`:"")+ this.state.yearsOfExperience + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
+			+(this.state.siteRoleCode !=="" && this.state.siteRoleCode !==null?`
+【対応工程】：`:"")+ (this.state.siteRoleCode !=="" && this.state.siteRoleCode !==null?this.state.siteRoleCode:"") +
+			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
+【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
+			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
+【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?this.state.unitPrice:"") +
+			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"")+`
+【稼働開始】：2020/09`+`
+【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
 (this.state.remark !== "" && this.state.remark !== null?`
 【備　　考】：`:"")+ this.state.remark;
 		return (
@@ -1010,16 +1081,16 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							pagination={true}
 							cellEdit={cellEdit}
 							data={this.state.employeeInfo}
-							className={"bg-white text-dark"}
+							// className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='15%' dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
+							<TableHeaderColumn width='13%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
-							<TableHeaderColumn width='6%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
 							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn placeholder="履歴書名"  width='20%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn placeholder="履歴書名"  width='18%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 							<Form.File id="resumeInfo1" hidden={true} data-browse="添付" value={resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 					</Col>
@@ -1027,7 +1098,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					<Col sm={4}>
 						<textarea ref={(textarea) => this.textArea = textarea} disabled
 							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
-							value={mailContent}
+							// value={mailContent}
+							value={this.state.employeeName === "empty" || this.state.employeeName === ""? "要員追加してください。":(this.state.employeeFlag? mailContent:"要員追加してください。") }
 						/>
 					</Col>
 				</Row>
@@ -1045,7 +1117,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>{" "}
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.sendMailWithFile} size="sm" variant="info" ><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.sendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>
