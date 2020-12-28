@@ -10,7 +10,6 @@ axios.defaults.withCredentials = true;
 *営業送信画面お客営業追加
  */
 class sendRepotAppend2 extends Component {
-
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
@@ -25,13 +24,10 @@ class sendRepotAppend2 extends Component {
 			purchasingManagersMail2: '',
 		}
 	}
-
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
-		//this.props.customer.salesPersonsAppend!=="" && this.props.customer.salesPersonsAppend!==null?this.props.customer.salesPersonsAppend.split(','):[],
 	}
-
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
 		this.refs.salesPersonTable.setState({
@@ -62,25 +58,7 @@ class sendRepotAppend2 extends Component {
 		return (<div>{rowNumber}</div>);
 	}
 
-	// customerDepartmentNameFormat
-	customerDepartmentNameFormat = (cell) => {
-		let customerDepartmentNameDropTem = this.props.depart;
-		for (var i in customerDepartmentNameDropTem) {
-			if (cell === customerDepartmentNameDropTem[i].code) {
-				return customerDepartmentNameDropTem[i].name;
-			}
-		}
-	}
 
-	// customerDepartmentNameFormat
-	positionNameFormat = (cell) => {
-		let positionsTem = this.props.positions;
-		for (var i in positionsTem) {
-			if (cell === positionsTem[i].code) {
-				return positionsTem[i].name;
-			}
-		}
-	}
 
 	handleRowSelect = (row, isSelected, e) => {
 		if (this.state.allSelectedFlag) {
@@ -199,11 +177,11 @@ class sendRepotAppend2 extends Component {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='7%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='responsiblePerson'>名前</TableHeaderColumn>
-						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' isKey>メール</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='employeeName'  isKey>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='11%' dataField='bpOrLyc'>所属</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='positionCode' >現場</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='approvalStatus'>承認済み</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='sentReportStatus'>送信済み</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 				<div>
