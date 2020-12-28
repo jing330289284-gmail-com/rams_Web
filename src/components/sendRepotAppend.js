@@ -15,8 +15,10 @@ class sendRepotAppend extends Component {
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
 		selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+		selectetRowMails: [],
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
+		allMailsName: [],
 		parentSelectedInfo: this.props.customer,
 		appendPersonMsg: {
 			purchasingManagers2: '',
@@ -36,15 +38,18 @@ class sendRepotAppend extends Component {
 		this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
 	}
 	getSalesPersons = (customerNo) => {
-		axios.post(this.state.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
+		axios.post(this.state.serverIP + "sendRepot/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
+				let mailsNameArray = new Array();
 				for (let i in result.data) {
 					salesPersonsNameArray.push(result.data[i].responsiblePerson);
+					mailsNameArray.push(result.data[i].customerDepartmentMail);
 				}
 				this.setState({
 					allSalesPersons: result.data,
 					allSalesPersonsName: salesPersonsNameArray,
+					allMailsName:mailsNameArray,
 				});
 			})
 			.catch(function (err) {
@@ -85,11 +90,13 @@ class sendRepotAppend extends Component {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
+				selectetRowMails: [],
 			});
 		}
 		if (isSelected) {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
+				selectetRowMails: this.state.selectetRowMails.concat([row.customerDepartmentMail]),
 				appendPersonMsg: {
 					purchasingManagers2: row.responsiblePerson,
 					positionCode2: row.positionCode,
@@ -98,9 +105,12 @@ class sendRepotAppend extends Component {
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
+			let index2 = this.state.selectetRowMails.findIndex(item => item === row.customerDepartmentMail);
 			this.state.selectetRowIds.splice(index, 1);
+			this.state.selectetRowMails.splice(index2, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
+				selectetRowMails: this.state.selectetRowMails,
 			})
 		}
 	}
@@ -111,10 +121,12 @@ class sendRepotAppend extends Component {
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
 				selectedRowKeys: this.state.allSalesPersonsName,
+				selectetRowMails: this.state.allMailsName,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: this.state.allSalesPersonsName,
+				selectetRowMails: this.state.allMailsName,
 			})
 		} else {
 			this.refs.salesPersonTable.setState({
@@ -123,14 +135,26 @@ class sendRepotAppend extends Component {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
+				selectetRowMails: [],
 			})
 		}
 	}
 
 	salesSelected = () => {
 		let salesPersons = this.state.selectetRowIds.join(",");
+		let mails = this.state.selectetRowMails.join(",");
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
 		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo, this.state.appendPersonMsg);
+		const model = {
+			subChargeMailList: mails,
+			//storageListName: storageListName,
+		};
+		axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", model)
+			.then(result => {
+			})
+			.catch(function (err) {
+				alert(err)
+			})
 	}
 	render() {
 

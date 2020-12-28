@@ -69,6 +69,7 @@ class sendRepot extends React.Component {
 	componentDidMount() {
 		this.getCustomers();
 		this.getLists();
+		this.getSalesPersonsLists();
 	}
 	//リスト取得
 	getLists = () => {
@@ -91,6 +92,18 @@ class sendRepot extends React.Component {
 				.catch(function(err) {
 					alert(err)
 				})
+	}
+	//担当メールをキーにした担当リスト
+	getSalesPersonsLists = () => {
+		axios.post(this.state.serverIP + "sendRepot/getSalesPersonsLists")
+			.then(result => {
+		this.setState({
+			salesPersonsLists: result.data,
+		});
+	})
+	.catch(function (err) {
+		alert(err)
+	})
 	}
 	//初期化お客様取る
 	getCustomers = () => {
@@ -244,37 +257,54 @@ class sendRepot extends React.Component {
 	//対象社員
 	CellFormatter2(cell, row) {
 		if (cell !== "" && cell !== null) {
-			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{cell}</a>);
+			return (<a href="javascript:void(0);" onClick={this.getTargetEmployees.bind(this, row)}>{cell}</a>);
 		} else {
-			return (<a href="javascript:void(0);" onClick={this.getSalesPersons.bind(this, row)}>{this.state.linkDetail2}</a>);
+			return (<a href="javascript:void(0);" onClick={this.getTargetEmployees.bind(this, row)}>{this.state.linkDetail2}</a>);
 		}
 	}
+	//対象社員名前取得
+	getTargetEmployees = (selectedTargetEmployees) => {
+		this.setState({
+			selectedTargetEmployees: selectedTargetEmployees,
+			daiologShowFlag: true,
+		})
+	}
+	//対象社員追加保存
+	saveTargetEmployees = (row, targetEmployeesMsg) => {
+		this.state.targetEmployeesTemp[row.rowId].purchasingManagers2 = targetEmployeesMsg.purchasingManagers2;
+		this.state.targetEmployeesTemp[row.rowId].positionCode2 = targetEmployeesMsg.positionCode2;
+		this.state.targetEmployeesTemp[row.rowId].purchasingManagersMail2 = targetEmployeesMsg.purchasingManagersMail2;
+		this.setState({
+			daiologShowFlag: false,
+		});
+		this.CellFormatter(row.salesPersonsAppend, row);
+	}
+
 	// clearボタン事件
 	clearLists = () => {
 		if(this.state.selectedlistName!==''){
 			axios.post(this.state.serverIP + "sendRepot/deleteList",{storageListName:this.state.selectedlistName})
-		.then(result => {
-		this.setState({
-			allCustomer: this.state.customerTemp,
-			sendLetterBtnFlag: true,
-		})	
-		this.refs.customersTable.store.selected = [];
-		this.refs.customersTable.setState({
-			selectedRowKeys: [],
-		})
-			this.getLists();
-			
+			.then(result => {
+				this.setState({
+					allCustomer: this.state.customerTemp,
+					sendLetterBtnFlag: true,
+				})	
+				this.refs.customersTable.store.selected = [];
+				this.refs.customersTable.setState({
+					selectedRowKeys: [],
+				})
+				this.getCustomers();
+				this.getLists();
 			})
-				
 		}else{
-		this.setState({
-			allCustomer: [],
-			sendLetterBtnFlag: true,
-		})
-		this.refs.customersTable.store.selected = [];
-		this.refs.customersTable.setState({
-			selectedRowKeys: [],
-		})}
+			this.setState({
+				allCustomer: [],
+				sendLetterBtnFlag: true,
+			})
+			this.refs.customersTable.store.selected = [];
+			this.refs.customersTable.setState({
+				selectedRowKeys: [],
+			})}
 	}
 	//リスト保存ボタン
 	createList = () => {
@@ -546,12 +576,14 @@ class sendRepot extends React.Component {
 				let positionCodeList = new Array();
 				let mainChargeMailList = new Array();
 				let subChargeMailList = new Array();
+			//	let targetEmployeeList = new Array();
 				customerList = TheList.customerList.split(',')
 				mainChargeList = TheList.mainChargeList.split(',')
 				departmentCodeList = TheList.departmentCodeList.split(',')
 				positionCodeList = TheList.positionCodeList.split(',')
 				mainChargeMailList = TheList.mainChargeMailList.split(',')
 				subChargeMailList = TheList.subChargeMailList.split(',')
+				//targetEmployeeList = TheList.targetEmployeeList.split(',')
 				//theKey設定
 				for (var i = 0; i < customerList.length; i++) {
 					allCustomer[i] = {
@@ -563,13 +595,13 @@ class sendRepot extends React.Component {
 						"positionCode": positionCodeList[i],
 						"purchasingManagersMail": mainChargeMailList[i],
 						"salesPersonsAppend": subChargeMailList[i],
-						"targetEmployee": mainChargeList[i]
+					//	"targetEmployee": targetEmployeeList[i]
 					};
 				}
 				this.setState({
 					allCustomer: allCustomer,
 					customerTemp: [...allCustomer],
-					//allCustomerNo: customerNoArray,
+					selectedlistName: name,
 				});
 			})
 			.catch(function(err) {
@@ -663,7 +695,7 @@ class sendRepot extends React.Component {
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
 										<Form.Control id="sendDay" as="select" size="sm" onChange={this.valueChange} name="sendDay" value={this.state.sendDay} disabled={this.state.workReportStatusCode == 0 ? true : false} autoComplete="off" >
-											{this.state.workReportStatus.map(data =>
+											{this.state.sendReportOfDateSeting.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
