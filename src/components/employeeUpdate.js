@@ -33,6 +33,7 @@ class employeeUpdate extends React.Component {
 		showpasswordSetModalFlag: false,// PW設定
 		showBpInfoModalFlag: false,// bp情報
 		retirementYearAndMonthDisabled: false,// 退職年月の活性フラグ
+		residenceTimeDisabled: false,// 在留期間の活性フラグ
 		accountInfo: null,// 口座情報のデータ
 		bpInfoModel: null,// pb情報
 		myToastShow: false,
@@ -215,6 +216,7 @@ class employeeUpdate extends React.Component {
 					intoCompanyCode: data.intoCompanyCode,// 入社区分
 					employeeFormCode: data.employeeFormCode,// 社員形式
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
+					residenceTimeDisabled: data.residenceCode === "5" ? true : false,
 					occupationCode: data.occupationCode,// 職種
 					departmentCode: data.departmentCode,// 部署
 					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",// 社内メール
@@ -450,7 +452,14 @@ class employeeUpdate extends React.Component {
 		}
 	}
 
-
+	valueChangeResidenceCodeFormCode = (event) => {
+		const value = event.target.value;
+		if (value === "5") {
+			this.setState({ residenceTimeDisabled: true, stayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
+		} else {
+			this.setState({ residenceTimeDisabled: false , residenceCode: event.target.value})
+		}
+	}
 
 	changeFile = (event, name) => {
 		var filePath = event.target.value;
@@ -594,7 +603,7 @@ class employeeUpdate extends React.Component {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress
+			retirementYearAndMonthDisabled,residenceTimeDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
@@ -721,9 +730,9 @@ class employeeUpdate extends React.Component {
 								<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="カタカナ" value={alphabetName1} autoComplete="off"
+									<FormControl value={alphabetName1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="alphabetName1" />{' '}
-									<FormControl placeholder="カタカナ" value={alphabetName2} autoComplete="off"
+									<FormControl value={alphabetName2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="alphabetName2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -1205,7 +1214,7 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">在留資格 </InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
+										onChange={this.valueChangeResidenceCodeFormCode}
 										name="residenceCode" value={residenceCode}
 										autoComplete="off" >
 										{this.state.residenceCodes.map(data =>
@@ -1238,10 +1247,11 @@ class employeeUpdate extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
 											minDate={new Date()}
+											disabled={residenceTimeDisabled ? true : false}
+											id={residenceTimeDisabled ? "datePickerReadonlyDefault" : "datePicker"}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />

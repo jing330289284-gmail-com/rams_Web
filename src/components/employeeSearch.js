@@ -84,8 +84,8 @@ class employeeSearch extends React.Component {
 			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus === "" ? undefined : this.state.employeeStatus,
 			genderStatus: this.state.genderStatus === "" ? undefined : this.state.genderStatus,
-			ageFrom: this.state.ageFrom === "" ? undefined : publicUtils.birthday_age(this.state.ageFrom),
-			ageTo: this.state.ageTo === "" ? undefined : publicUtils.birthday_age(this.state.ageTo),
+			ageFrom: this.state.ageFrom === "" || this.state.ageFrom === undefined  ? undefined : publicUtils.birthday_age(this.state.ageFrom),
+			ageTo: this.state.ageTo === "" || this.state.ageTo === undefined ? undefined : publicUtils.birthday_age(this.state.ageTo + 1),
 			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
 			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
@@ -94,20 +94,33 @@ class employeeSearch extends React.Component {
 			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
 			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
 			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
-			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
-			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
+			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === null || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
+			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
-				} else {
+				} 	else if (response.data.isNullMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.isNullMessage,employeeList: response.data.data });
+				} 
+				else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
 				this.setState({
 					searchFlag: true,
+					rowSelectEmployeeNo: ''
 				})
+					$('#resumeInfo1').prop('disabled', true);
+					$('#resumeInfo2').prop('disabled', true);
+					$('#residentCardInfo').prop('disabled', true);
+					$('#passportInfo').prop('disabled', true);
+					$('#delete').attr('disabled', true);
+					$('#update').attr('disabled', true);
+					$('#detail').attr('disabled', true);
+					$('#wagesInfo').attr('disabled', true);
+					$('#siteInfo').attr('disabled', true);
 			}
 			);
 	}
@@ -240,7 +253,26 @@ class employeeSearch extends React.Component {
 		let value = publicUtils.converToLocalTime(stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(stayPeriod, false));
 		return value;
 	}
-
+	
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
+				}
+			}
+		}
+	};
 
 	/**
 	 * 社員名連想
@@ -411,7 +443,7 @@ class employeeSearch extends React.Component {
 		// テーブルの定義
 		const options = {
 			page: 1,
-			sizePerPage: 5,
+			sizePerPage: 8,
 			pageStartIndex: 1,
 			paginationSize: 3,
 			prePage: '<',
@@ -459,7 +491,7 @@ class employeeSearch extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
+								<Col sm={5}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">社員名(BP)</InputGroup.Text>
@@ -467,9 +499,10 @@ class employeeSearch extends React.Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName) || ""}
+											value={this.state.employeeInfo.find(v => v.text === this.state.employeeName) || {}}
 											options={this.state.employeeInfo}
 											getOptionLabel={(option) => option.text ? option.text : ""}
+											onSelect={(event) => this.handleTag(event, 'employeeName')}
 											onChange={(event, values) => this.getEmployeeName(event, values)}
 											renderOption={(option) => {
 												return (
@@ -481,7 +514,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }}
+														style={{ width: 235, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }}
 													/>
 												</div>
 											)}
@@ -511,8 +544,10 @@ class employeeSearch extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">年齢</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control type="text" name="ageFrom" value={ageFrom} autoComplete="off" onChange={this.valueChange} size="sm"
-										/> ～ <Form.Control type="text" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
+										<Form.Control type="number" name="ageFrom"
+										value={ageFrom}
+										autoComplete="off" onChange={this.valueChange} size="sm"
+										/> ～ <Form.Control type="number" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
 
 									</InputGroup>
 								</Col>
@@ -561,7 +596,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 130, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
@@ -632,7 +667,9 @@ class employeeSearch extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={4}>
+								<Col sm={1}>
+								</Col>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm" >開発言語</InputGroup.Text>
@@ -647,7 +684,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
@@ -662,7 +699,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
-														style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>

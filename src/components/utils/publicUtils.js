@@ -1,6 +1,6 @@
 import JapaneseHolidays from 'japanese-holidays';
 const $ = require('jquery');
-//　 時間段を取得
+// 時間段を取得
 export function getFullYearMonth(date, now) {
 	if (date !== undefined && date !== null && date !== "" && now !== undefined && now !== null && now !== "") {
 		var returnYears = 0;
@@ -52,7 +52,7 @@ export function getFullYearMonth(date, now) {
 }
 
 
-//　ド時間プラグインの値をセット
+// ド時間プラグインの値をセット
 export function setFullYearMonth(date) {
 	var month = date.getMonth() + 1;
 	var value = date.getFullYear() + '' + (month < 10 ? '0' + month : month);
@@ -60,7 +60,7 @@ export function setFullYearMonth(date) {
 }
 
 
-//　ドロップダウン
+// ドロップダウン
 export function getdropDown(method, serverIP) {
 	var array = [{ code: '', name: '' }];
 	$.ajax({
@@ -75,7 +75,7 @@ export function getdropDown(method, serverIP) {
 	});
 	return array;
 }
-//　ドロップダウン  多くメソッド
+// ドロップダウン 多くメソッド
 export function getPublicDropDown(methodNameList, serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
@@ -99,7 +99,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 	return outArray;
 }
 
-//　ドロップダウン  多くメソッド react-bootstrap-table---->select専用
+// ドロップダウン 多くメソッド react-bootstrap-table---->select専用
 export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 	var outArray = [];
 	var par = JSON.stringify(methodNameList);
@@ -129,7 +129,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 	return outArray;
 }
 
-//　採番番号
+// 採番番号
 export async function getNO(columnName, typeName, table, serverIP) {
 	var no;
 	var mo = {
@@ -154,8 +154,11 @@ export async function getNO(columnName, typeName, table, serverIP) {
 
 /**
  * 前到后时间格式
- * @param {*} datetime 日本时间时间戳
- * @param {*} flag 判断是年月(false)还是年月日(true)
+ * 
+ * @param {*}
+ *            datetime 日本时间时间戳
+ * @param {*}
+ *            flag 判断是年月(false)还是年月日(true)
  * @return 年月或年月日（没有/）或空
  */
 export function formateDate(datetime, flag) {
@@ -177,8 +180,11 @@ export function formateDate(datetime, flag) {
 }
 /**
  * 后到前时间格式
- * @param {*} serverDate 数据库的时间
- * @param {*} flag 判断是年月(false)还是年月日(true)
+ * 
+ * @param {*}
+ *            serverDate 数据库的时间
+ * @param {*}
+ *            flag 判断是年月(false)还是年月日(true)
  * @retur 日本时间戳
  */
 export function converToLocalTime(serverDate, flag) {
@@ -220,7 +226,7 @@ export function strToTime(datetime) {
 	}
 };
 
-//誕生日ー年齢計算
+// 誕生日ー年齢計算
 export function birthday_age(age) {
 	if (age !== undefined && age !== null && age !== "") {
 		var date = new Date();
@@ -236,8 +242,11 @@ export function birthday_age(age) {
 }
 /**
  * 联想框label的value取得
- * @param {*} name name的值
- * @param {*} list 后台传来的下拉框数组
+ * 
+ * @param {*}
+ *            name name的值
+ * @param {*}
+ *            list 后台传来的下拉框数组
  * @return name对应的code值
  */
 export function labelGetValue(name, list) {
@@ -250,8 +259,11 @@ export function labelGetValue(name, list) {
 
 /**
  * 联想框label的value取得
- * @param {*} name name的值
- * @param {*} list 后台传来的下拉框数组
+ * 
+ * @param {*}
+ *            name name的值
+ * @param {*}
+ *            list 后台传来的下拉框数组
  * @return name对应的code值
  */
 export function textGetValue(text, list) {
@@ -263,8 +275,11 @@ export function textGetValue(text, list) {
 }
 /**
  * 联想框value的label取得
- * @param {*} name name的值
- * @param {*} list 后台传来的下拉框数组
+ * 
+ * @param {*}
+ *            name name的值
+ * @param {*}
+ *            list 后台传来的下拉框数组
  * @return name对应的code值
  */
 export function valueGetLabel(code, list) {
@@ -277,8 +292,11 @@ export function valueGetLabel(code, list) {
 
 /**
  * 联想框value的text取得
- * @param {*} name name的值
- * @param {*} list 后台传来的下拉框数组
+ * 
+ * @param {*}
+ *            name name的值
+ * @param {*}
+ *            list 后台传来的下拉框数组
  * @return name对应的code值
  */
 export function valueGetText(code, list) {
@@ -288,8 +306,8 @@ export function valueGetText(code, list) {
 		}
 	}
 }
-//Download 方法
-// param path  備考：ファイルのフォーマットは下記です
+// Download 方法
+// param path 備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
 export function handleDownload(path, serverIP) {
 	if (path !== undefined && path !== null && path !== "") {
@@ -311,7 +329,7 @@ export function handleDownload(path, serverIP) {
 					var a = document.createElement('a');
 					var url = window.URL.createObjectURL(blob);
 					a.href = url;
-					//设置文件名称
+					// 设置文件名称
 					a.download = NewPath[NewPath.length - 1];
 					a.click();
 					a.remove();
@@ -340,10 +358,10 @@ export function postcodeApi(postcode) {
 					if (result.results != null) {
 						outArray.push(result.results[0].address1 + result.results[0].address2 + result.results[0].address3)
 					} else {
-						//alert("郵便番号がわからない場合もこちら")
+						// alert("郵便番号がわからない場合もこちら")
 					}
 				} else {
-					//alert(result.message)
+					// alert(result.message)
 				}
 			}
 		});
@@ -351,12 +369,12 @@ export function postcodeApi(postcode) {
 	return outArray;
 };
 
-//　　年齢と和暦
+// 年齢と和暦
 export function calApi(date) {
 	var outArray = [];
-	var birthDayTime = date.getTime();
+	var birthDayTime = new Date(date).getTime();
 	var nowTime = new Date().getTime();
-	//http://ap.hutime.org/cal/ 西暦と和暦の変換
+	// http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 	$.ajax({
 		type: "get",
@@ -366,16 +384,16 @@ export function calApi(date) {
 		success: function(result) {
 			if (result != null) {
 				outArray.push(result)
-				outArray.push(Math.ceil((nowTime - birthDayTime) / 31536000000))
+				outArray.push(Math.ceil((nowTime - birthDayTime) / 31536000000)-1)
 			}
 		}
 	});
 	return outArray;
 };
 
-//diff time, 11:30 - 09:00 = 2.5(H)
-//input startTime(string), endTime(string)
-//output double
+// diff time, 11:30 - 09:00 = 2.5(H)
+// input startTime(string), endTime(string)
+// output double
 export function timeDiff(startTime, endTime) {
 	let result = 0;
 	let startMinute = 0;
@@ -395,35 +413,37 @@ export function timeDiff(startTime, endTime) {
 	return result;
 }
 // 0130 -> 01:30
-//input time(string), char(string default->:)
-//output string
+// input time(string), char(string default->:)
+// output string
 export function timeInsertChar(time, inputChar) {
 	if (isNull(inputChar)) {
 		inputChar = ":";
 	}
 	return isEmpty(time) ? "" : time.substring(0, 2) + inputChar + time.substring(2, 4);
 }
-//is Null?
-//input Object
-//output boolean
+// is Null?
+// input Object
+// output boolean
 export function isNull(obj) {
 	return (obj === undefined || obj === null);
 }
-//is empty?
-//input Object
-//output boolean
+// is empty?
+// input Object
+// output boolean
 export function isEmpty(obj) {
 	return (isNull(obj) || obj === "");
 }
-//Null to empty
-//input Object
-//output Object or ""
+// Null to empty
+// input Object
+// output Object or ""
 export function nullToEmpty(obj) {
 	return (isNull(obj)) ? "" : obj;
 }
 /**
  * お金の三枠でカンマ区切り
- * @param {*} num strの数字
+ * 
+ * @param {*}
+ *            num strの数字
  */
 export function addComma(num) {
 	if (num !== null && num !== "" && num !== undefined) {
@@ -472,8 +492,11 @@ export function addComma(num) {
 
 /**
  * お金の三枠でカンマ削除
- * @param {*} money strの数字
- * @param {*} decimalPointFlag 小数点保留フラグ
+ * 
+ * @param {*}
+ *            money strの数字
+ * @param {*}
+ *            decimalPointFlag 小数点保留フラグ
  */
 export function deleteComma(money) {
 	if (money === null || money === undefined || money === '') {
@@ -484,7 +507,9 @@ export function deleteComma(money) {
 }
 /**
  * YYYYMMDD→YYYY/MM/DDまたYYYYMM→YYYY/MM
- * @param {*} datestrの数字
+ * 
+ * @param {*}
+ *            datestrの数字
  * @return {*} YYYY/MM/DDまたYYYY/MM
  */
 export function dateFormate(dateStr) {
@@ -500,12 +525,12 @@ export function dateFormate(dateStr) {
 	}
 }
 
-//isHoliday?
-//input Object or year, month, day
-//output boolean
+// isHoliday?
+// input Object or year, month, day
+// output boolean
 export function isHoliday() {
 	switch (arguments.length) {
-		case 1:	//main
+		case 1:	// main
 			let date = arguments[0];
 			return JapaneseHolidays.isHoliday(date) || (date.getDay() === 0) || (date.getDay() === 6);
 		case 3:
