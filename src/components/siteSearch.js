@@ -160,7 +160,7 @@ class siteSearch extends Component {
 						this.setState({
 							siteData: response.data.data, "errorsMessageShow": false
 						}, () => {
-							if (this.state.selectedEmployeeNo !== "" && this.state.selectedEmployeeNo !== undefined) {
+							if (this.props.location.state.employeeNo !== "" && this.props.location.state.employeeNo !== undefined) {
 								this.refs.siteSearchTable.setState({
 									selectedRowKeys: this.state.selectedEmployeeNo,
 									currPage: this.props.location.state.currPage,
@@ -673,8 +673,8 @@ class siteSearch extends Component {
 						<Col sm={12}>
 							<BootstrapTable ref="siteSearchTable"
 								selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} >番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden >社員番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
 								<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>

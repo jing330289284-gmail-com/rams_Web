@@ -799,6 +799,9 @@ padding: 1rem;
   box-shadow: none;
   background-color: white;
 }
+.hiwari{
+  width: 3rem;
+}
 @media screen and (max-width: 1550px) {
 
   #customerInfoDatePicker {
@@ -847,7 +850,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
-    width: 11rem;
+    width: 10rem;
   }
   #admissionStartDateReadOnly {
     background-repeat: no-repeat;
@@ -869,7 +872,7 @@ padding: 1rem;
   }
 
   .Autocompletestyle-siteInfo {
-    width: 11rem;
+    width: 9rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;
@@ -1063,5 +1066,19 @@ padding: 1rem;
   .popoverC{
     max-width:450px !important;
   }
- 
+  .Autocompletestyle-siteInfo-relatedEmployees {
+    width: 6.5rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .hiwari{
+    width: 3rem;
+  }
+  .unitPrice{
+    width: 1rem;
+  }
 }
