@@ -160,11 +160,12 @@ class siteSearch extends Component {
 						this.setState({
 							siteData: response.data.data, "errorsMessageShow": false
 						}, () => {
-							if (this.props.location.state.employeeNo !== "" && this.props.location.state.employeeNo !== undefined) {
+							if (this.props.location.state !== "" && this.props.location.state !== undefined) {
 								this.refs.siteSearchTable.setState({
 									selectedRowKeys: this.state.selectedEmployeeNo,
 									currPage: this.props.location.state.currPage,
 								})
+								$('button[name="clickButton"]').attr('disabled', false);
 							}
 						});
 					}else{

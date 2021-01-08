@@ -261,7 +261,7 @@ class WagesInfo extends Component {
             raiseStartDate: '',
             reflectStartDate: '',
         })
-        if(this.state.bonus !== null){
+        if(this.state.bonus !== null && this.state.bonus !== undefined){
             this.setState({
                 bonusFlag:this.state.bonus.bonusFlag,
                 scheduleOfBonusAmount:utils.addComma(this.state.bonus.scheduleOfBonusAmount),
