@@ -640,7 +640,7 @@ class siteSearch extends Component {
 										<Form.Control as="select" id="dataAcquisitionPeriod" name="dataAcquisitionPeriod" value={dataAcquisitionPeriod}
 											onChange={this.onchangeDataAcquisitionPeriod}>
 											<option value="0">すべて</option>
-											<option value="1">最新(システム年月)</option>
+											<option value="1">最新</option>
 										</Form.Control>
 									</InputGroup>
 								</Col>
