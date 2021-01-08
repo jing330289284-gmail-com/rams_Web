@@ -778,10 +778,6 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="occupationCode" value={occupationCode}
-										/*
-										 * disabled={occupationCode === "3" ?
-										 * true : false}
-										 */>
 										autoComplete="off" >
 										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
