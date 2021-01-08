@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUndo, faSearch, faEdit, faTrash, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import { Link } from "react-router-dom";
+import * as utils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -70,6 +71,45 @@ class employeeSearch extends React.Component {
 	// 初期化メソッド
 	componentDidMount() {
 		this.clickButtonDisabled();
+		if (this.props.location.state !== undefined) {
+            var sendValue = this.props.location.state.sendValue;
+            $("#employeeStatus").val(sendValue.employeeStatus);
+            $("#genderStatus").val(sendValue.genderStatus);
+            $("#customerNo").val(sendValue.customerNo);
+            $("#employeeFormCode").val(sendValue.employeeFormCode);
+            $("#employeeName").val(sendValue.employeeName);
+            $("#ageFrom").val(sendValue.ageFromValue);
+            $("#ageTo").val(sendValue.ageToValue);
+            $("#intoCompanyCode").val(sendValue.intoCompanyCode);
+            $("#developLanguage1").val(sendValue.developLanguage1);
+            $("#developLanguage2").val(sendValue.developLanguage2);
+            $("#residenceCode").val(sendValue.residenceCode);
+            $("#japaneseLevelCode").val(sendValue.japaneseLevelCode);
+            $("#nationalityCode").val(sendValue.nationalityCode);
+            $("#siteRoleCode").val(sendValue.siteRoleCode);
+            $("#kadou").val(sendValue.kadou);
+            this.setState({
+            	employeeStatus: sendValue.employeeStatus,
+            	genderStatus: sendValue.genderStatus,
+            	customerNo: sendValue.customerNo,
+            	employeeFormCode: sendValue.employeeFormCode,
+            	employeeName: sendValue.employeeName,
+            	ageFrom: sendValue.ageFromValue,
+            	ageTo: sendValue.ageToValue,
+            	intoCompanyCode: sendValue.intoCompanyCode,
+            	developLanguage1: sendValue.developLanguage1,
+            	developLanguage2: sendValue.developLanguage2,
+            	residenceCode: sendValue.residenceCode,
+            	japaneseLevelCode: sendValue.japaneseLevelCode,
+            	nationalityCode: sendValue.nationalityCode,
+            	siteRoleCode: sendValue.siteRoleCode,
+            	kadou: sendValue.kadou,
+            	intoCompanyYearAndMonthFrom: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthFrom, false),
+            	intoCompanyYearAndMonthTo: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthTo, false),
+            }, () => {
+                    this.searchEmployee();
+            })
+        }
 	}
 
 	// 初期化の時、disabledをセットします
@@ -79,13 +119,14 @@ class employeeSearch extends React.Component {
 
 	// 検索s
 	searchEmployee = () => {
+		var age = parseInt(this.state.ageTo) + 1;
 		const emp = {
 			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
 			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus === "" ? undefined : this.state.employeeStatus,
 			genderStatus: this.state.genderStatus === "" ? undefined : this.state.genderStatus,
 			ageFrom: this.state.ageFrom === "" || this.state.ageFrom === undefined  ? undefined : publicUtils.birthday_age(this.state.ageFrom),
-			ageTo: this.state.ageTo === "" || this.state.ageTo === undefined ? undefined : publicUtils.birthday_age(this.state.ageTo + 1),
+			ageTo: this.state.ageTo === "" || this.state.ageTo === undefined ? undefined : publicUtils.birthday_age(age),
 			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
 			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
@@ -350,11 +391,14 @@ class employeeSearch extends React.Component {
 			employeeFormCode: this.state.employeeFormCode === "" ? undefined : this.state.employeeFormCode,
 			employeeStatus: this.state.employeeStatus === "" ? undefined : this.state.employeeStatus,
 			genderStatus: this.state.genderStatus === "" ? undefined : this.state.genderStatus,
+			ageFromValue: this.state.ageFrom === "" ? undefined :this.state.ageFrom,
 			ageFrom: this.state.ageFrom === "" ? undefined : publicUtils.birthday_age(this.state.ageFrom),
+			ageToValue: this.state.ageFrom === "" ? undefined :this.state.ageTo,
 			ageTo: this.state.ageTo === "" ? undefined : publicUtils.birthday_age(this.state.ageTo),
 			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
 			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
+			customerNo: this.state.customerMaster === "" ? undefined : this.state.customerNo,
 			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
@@ -596,7 +640,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 130, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+														style={{ width: 246, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
 												</div>
 											)}
 										/>
@@ -649,7 +693,7 @@ class employeeSearch extends React.Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
@@ -666,8 +710,6 @@ class employeeSearch extends React.Component {
 											)}
 										</Form.Control>
 									</InputGroup>
-								</Col>
-								<Col sm={1}>
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -729,7 +771,8 @@ class employeeSearch extends React.Component {
 												showMonthYearPicker
 												showFullMonthYearPicker
 												disabled={employeeStatus === "1" ? true : false}
-												id={employeeStatus === "1" ? "datePickerReadonlyDefault" : "datePicker"} className="form-control form-control-sm"
+												id={employeeStatus === "1" ? "datePickerReadonlyDefault" : "datePicker"}
+												className="form-control form-control-sm"
 												autoComplete="off"
 											/>
 										</InputGroup.Prepend>
@@ -792,11 +835,11 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={12}>
 							<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-								<TableHeaderColumn width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
+								<TableHeaderColumn width='50' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
 								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
+								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
 								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' /* dataFormat={this.formatBrthday.bind(this)} */>年齢</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
