@@ -142,6 +142,8 @@ class siteSearch extends Component {
 		SiteSearchModel["stationCode"] = this.state.stationCode;
 		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
+		SiteSearchModel["admissionStartDate"] = publicUtils.formateDate(this.state.admissionStartDate,true);
+		SiteSearchModel["admissionEndDate"] = publicUtils.formateDate(this.state.admissionEndDate,true);
 		if (!$.isEmptyObject(sendValue)) {
 			SiteSearchModel = sendValue;
 		}
@@ -200,6 +202,8 @@ class siteSearch extends Component {
 		SiteSearchModel["stationCode"] = this.state.stationCode;
 		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
+		SiteSearchModel["admissionStartDate"] = this.state.admissionStartDate;
+		SiteSearchModel["admissionEndDate"] = this.state.admissionEndDate;
 		const sendValue = SiteSearchModel;
 		switch (actionType) {
 			case "siteInfo":
