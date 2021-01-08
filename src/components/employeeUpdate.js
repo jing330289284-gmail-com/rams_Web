@@ -44,6 +44,7 @@ class employeeUpdate extends React.Component {
 		developLanguage4: '',
 		developLanguage5: '',
 		stationCode: '',
+		sendValue:{},
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -168,11 +169,11 @@ class employeeUpdate extends React.Component {
 		this.setState({
 			nationalityCode: value,
 		})
-		if (value === '3') {
+		if (value === '2') {
 			this.setState({
 				japaneseLevelCode: '5',
 			})
-		} else if (value === '4' || value === '5' || value === '6') {
+		} else if (value === '3' || value === '4' || value === '5') {
 			this.setState({
 				englishLevelCode: '8',
 			})
@@ -187,6 +188,7 @@ class employeeUpdate extends React.Component {
 			{
 				actionType: location.state.actionType,
 				backPage: location.state.backPage,
+				sendValue: this.props.location.state.sendValue,
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -512,7 +514,12 @@ class employeeUpdate extends React.Component {
 	back = () => {
 		let backPage = this.state.backPage
 		if (backPage !== null && backPage !== undefined && backPage !== '') {
-			return this.props.history.push("/subMenuManager/" + backPage);
+	        var path = {};
+	        path = {
+	            pathname: "/subMenuManager/" + backPage,
+	            state: { sendValue: this.state.sendValue},
+	        }
+			return this.props.history.push(path);
 		} else {
 			return this.props.history.push("/subMenuManager/employeeInsert");
 		}
@@ -730,9 +737,9 @@ class employeeUpdate extends React.Component {
 								<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={alphabetName1} autoComplete="off"
+									<FormControl value={alphabetName1} autoComplete="off" placeholder=" ローマ字" 
 										onChange={this.valueChange} size="sm" name="alphabetName1" />{' '}
-									<FormControl value={alphabetName2} autoComplete="off"
+									<FormControl value={alphabetName2} autoComplete="off" placeholder=" ローマ字" 
 										onChange={this.valueChange} size="sm" name="alphabetName2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">

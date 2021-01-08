@@ -7,7 +7,7 @@ export function getFullYearMonth(date, now) {
 		var returnMonths = 0;
 		var yearmonth = -1;
 		var keyYear = date.getFullYear();
-		var keyMonth = date.getMonth();
+		var keyMonth = date.getMonth() + 1;
 		var keyDay = date.getDate();
 		var nowYear = now.getFullYear();
 		var nowMonth = now.getMonth() + 1;
@@ -35,9 +35,9 @@ export function getFullYearMonth(date, now) {
 		}
 
 		returnMonths = monthDiff
-		if (dayDiff < 0) {
+/*		if (dayDiff < 0) {
 			returnMonths = returnMonths - 1;
-		}
+		}*/
 		if (returnYears === 0) {
 			yearmonth = returnMonths + "ヶ月";
 		} else {
@@ -372,8 +372,6 @@ export function postcodeApi(postcode) {
 // 年齢と和暦
 export function calApi(date) {
 	var outArray = [];
-	var birthDayTime = new Date(date).getTime();
-	var nowTime = new Date().getTime();
 	// http://ap.hutime.org/cal/ 西暦と和暦の変換
 	const ival = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 	$.ajax({
@@ -384,7 +382,7 @@ export function calApi(date) {
 		success: function(result) {
 			if (result != null) {
 				outArray.push(result)
-				outArray.push(Math.ceil((nowTime - birthDayTime) / 31536000000)-1)
+				outArray.push(GetAgeByBrithday(date))
 			}
 		}
 	});
@@ -541,6 +539,35 @@ export function isHoliday() {
 		default:
 			return isHoliday(new Date());
 	}
+}
+
+export function GetAgeByBrithday(birthday){
+	var age=0;
+	var today=new Date();
+	var todayYear=today.getFullYear();
+	var todayMonth=today.getMonth()+1;
+	var todayDay=today.getDate();
+		
+	var birthdayYear=new Date(birthday).getFullYear();
+	var birthdayMonth=new Date(birthday).getMonth()+1;
+	var birthdayDay=new Date(birthday).getDate();
+		
+	if(todayMonth*1-birthdayMonth*1<0)
+	{
+		age = (todayYear*1-birthdayYear*1)-1;
+	}
+	else
+	{
+		if(todayDay*1-birthdayDay*1>=0)
+		{
+			age = (todayYear*1-birthdayYear*1);
+		}
+		else
+		{
+			age = (todayYear*1-birthdayYear*1)-1;
+		}
+	}
+	return age;
 }
 
 export async function katakanaApi(value) {
