@@ -173,11 +173,11 @@ class employeeInsert extends React.Component {
 		this.setState({
 			nationalityCode: value,
 		})
-		if (value === '3') {
+		if (value === '2') {
 			this.setState({
 				japaneseLevelCode: '5',
 			})
-		} else if (value === '4' || value === '5' || value === '6') {
+		} else if (value === '3' || value === '4' || value === '5') {
 			this.setState({
 				englishLevelCode: '8',
 			})
@@ -636,9 +636,9 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">ローマ字</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={alphabetName1} autoComplete="off"
+									<FormControl value={alphabetName1} autoComplete="off"  placeholder=" ローマ字" 
 										onChange={this.valueChange} size="sm" name="alphabetName1" />{' '}
-									<FormControl value={alphabetName2} autoComplete="off"
+									<FormControl value={alphabetName2} autoComplete="off" placeholder=" ローマ字" 
 										onChange={this.valueChange} size="sm" name="alphabetName2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -710,9 +710,9 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">カタカナ</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={furigana1} autoComplete="off"
+									<FormControl placeholder="カタカナ" value={furigana1} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="furigana1" />{' '}
-									<FormControl value={furigana2} autoComplete="off"
+									<FormControl placeholder="カタカナ" value={furigana2} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="furigana2" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
