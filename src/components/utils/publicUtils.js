@@ -35,9 +35,9 @@ export function getFullYearMonth(date, now) {
 		}
 
 		returnMonths = monthDiff
-/*		if (dayDiff < 0) {
-			returnMonths = returnMonths - 1;
-		}*/
+/*
+ * if (dayDiff < 0) { returnMonths = returnMonths - 1; }
+ */
 		if (returnYears === 0) {
 			yearmonth = returnMonths + "ヶ月";
 		} else {
@@ -68,7 +68,7 @@ export function getdropDown(method, serverIP) {
 		url: serverIP + method,
 		async: false,
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		success: function(msg) {
@@ -89,7 +89,7 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		data: par,
 		async: false,
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		contentType: "application/json",
@@ -118,7 +118,7 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		contentType: "application/json",
 		async: false,
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		success: function(resultList) {
@@ -156,7 +156,7 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		contentType: "application/json",
 		async: false,
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		success: function(data) {
@@ -336,6 +336,7 @@ export function handleDownload(path, serverIP) {
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+		xhr.withCredentials=true;
 		xhr.onload = function() {
 			if (this.status === 200) {
 				var blob = this.response;
@@ -368,7 +369,7 @@ export function postcodeApi(postcode) {
 			async: false,
 			contentType: "application/json",
 			xhrFields: {
-				//允许带上凭据
+				// 允许带上凭据
 				withCredentials: true
 			},
 			dataType: "json",
@@ -399,7 +400,7 @@ export function calApi(date) {
 		url: "/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1",
 		async: false,
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		contentType: "application/json",
@@ -605,7 +606,7 @@ export async function katakanaApi(value) {
 			"output_type": "katakana"
 		},
 		xhrFields: {
-			//允许带上凭据
+			// 允许带上凭据
 	        withCredentials: true
 		},
 		dataType: "json",

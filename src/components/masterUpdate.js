@@ -88,7 +88,7 @@ class masterUpdate extends Component {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		masterModel["code"] = this.state.code;
+		masterModel["code"] = this.state.code - 1;
 		axios.post(this.state.serverIP + "masterUpdate/update", masterModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -129,7 +129,7 @@ class masterUpdate extends Component {
 		if (a) {
 			var masterModel = {};
 			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-			masterModel["code"] = this.state.code;
+			masterModel["code"] = this.state.code - 1;
 			axios.post(this.state.serverIP + "masterUpdate/delete", masterModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });

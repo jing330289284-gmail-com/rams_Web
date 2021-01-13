@@ -499,7 +499,7 @@ class employeeInsert extends React.Component {
 			if (data !== undefined && data !== null && data !== ""){
 				this.setState({ firstHalfAddress: data })
 			}else{
-				this.setState({ firstHalfAddress: null })
+				this.setState({ firstHalfAddress: "" ,lastHalfAddress:  "" })
 			}
 		});
 	};
@@ -843,7 +843,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.changeNationalityCodes}
@@ -865,9 +865,9 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={phoneNo1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo1" maxlength="3" />～
+										onChange={this.valueChange} size="sm" name="phoneNo1" maxlength="3" />—
 											<FormControl value={phoneNo2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo2" maxlength="4" />～
+										onChange={this.valueChange} size="sm" name="phoneNo2" maxlength="4" />—
 											<FormControl value={phoneNo3} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="phoneNo3" maxlength="4" />
 								</InputGroup>
@@ -1079,7 +1079,8 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={lastHalfAddress} autoComplete="off" onChange={this.valueChange} size="sm" name="lastHalfAddress" id="lastHalfAddress" />
+									<FormControl placeholder="以降住所" value={lastHalfAddress} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="lastHalfAddress" maxlength="12" />
 								</InputGroup>
 							</Col>
 							<Col sm={3}>

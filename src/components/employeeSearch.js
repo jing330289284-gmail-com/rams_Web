@@ -129,12 +129,12 @@ class employeeSearch extends React.Component {
 			ageTo: this.state.ageTo === "" || this.state.ageTo === undefined ? undefined : publicUtils.birthday_age(age),
 			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
-			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
+			customer: this.props.location.state !== undefined?this.state.customerNo:publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
 			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
+			developLanguage1: this.props.location.state !== undefined?this.state.developLanguage1:publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: this.props.location.state !== undefined?this.state.developLanguage2:publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === null || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
@@ -209,18 +209,33 @@ class employeeSearch extends React.Component {
 			residentCardInfo: this.state.residentCardInfo,
 			passportInfo: this.state.passportInfo,
 		};
+		const tableSize = this.state.employeeList.length;
 		axios.post(this.state.serverIP + "employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
-					this.searchEmployee();
-					// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					if(tableSize>1){
+						this.searchEmployee();
+						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
+						this.setState(
+							{
+								rowSelectEmployeeNo: '',
+							}
+						);
+						this.setState({ "myToastShow": true });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					}
+					else{
+						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
+						this.setState(
+							{
+								rowSelectEmployeeNo: '',
+								employeeList: []
+							}
+						);
+						this.setState({ "myToastShow": true });
+						setTimeout(() => this.setState({ "myToastShow": false }), 300);
+						window.location.reload();// 刷新当前页面.
+					}
 				} else {
 					this.setState({ "myToastShow": false });
 				}
@@ -238,6 +253,7 @@ class employeeSearch extends React.Component {
 	// 行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
+/* alert(this.state.employeeList.length); */
 			this.setState(
 				{
 					rowSelectEmployeeNo: row.employeeNo,
@@ -841,9 +857,10 @@ class employeeSearch extends React.Component {
 								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
 								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
 								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' /* dataFormat={this.formatBrthday.bind(this)} */>年齢</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
 								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='admissionStartDate'>入場年月</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>

@@ -652,7 +652,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="nationalityCode" value={nationalityCode}
@@ -673,9 +673,9 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={phoneNo1}
-										size="sm" name="phoneNo" disabled />～
+										size="sm" name="phoneNo" disabled />—
 											<FormControl value={phoneNo2}
-										size="sm" name="phoneNo" disabled />～
+										size="sm" name="phoneNo" disabled />—
 											<FormControl value={phoneNo3}
 										size="sm" name="phoneNo" disabled />
 								</InputGroup>

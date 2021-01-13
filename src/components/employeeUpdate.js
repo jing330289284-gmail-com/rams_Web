@@ -600,9 +600,9 @@ class employeeUpdate extends React.Component {
 		const promise = Promise.resolve(publicUtils.postcodeApi(value));
 		promise.then((data) => {
 			if (data !== undefined && data !== null && data !== ""){
-				this.setState({ firstHalfAddress: data })
+				this.setState({ firstHalfAddress: data})
 			}else{
-				this.setState({ firstHalfAddress: "" })
+				this.setState({ firstHalfAddress: "" ,lastHalfAddress:  ""  })
 			}
 		});
 	};
@@ -937,7 +937,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.changeNationalityCodes}
@@ -949,7 +949,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
-									<FormControl placeholder="出身地" value={birthplace} autoComplete="off"
+									<FormControl placeholder="県" value={birthplace} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="birthplace" />
 								</InputGroup>
 							</Col>
@@ -959,9 +959,9 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={phoneNo1} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo1" maxlength="3" />～
+										onChange={this.valueChange} size="sm" name="phoneNo1" maxlength="3" />—
 											<FormControl value={phoneNo2} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="phoneNo2" maxlength="4" />～
+										onChange={this.valueChange} size="sm" name="phoneNo2" maxlength="4" />—
 											<FormControl value={phoneNo3} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="phoneNo3" maxlength="4" />
 								</InputGroup>
