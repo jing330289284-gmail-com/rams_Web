@@ -28,8 +28,8 @@ class ErrorPage extends Component {
 	  if (this.state.error) {
 		return (
 		  <div  className="mainBody">
-			<h1>错误是：{this.state.error.toString()}</h1>
-			<h2>错误出现的位置是：{this.state.text}</h2>
+			<h1>エラーは：{this.state.error.toString()}</h1>
+			<h2>エラーが発生したところ：{this.state.text}</h2>
 		  </div>
 		)
 	  }

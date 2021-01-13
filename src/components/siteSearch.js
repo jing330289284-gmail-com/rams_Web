@@ -33,7 +33,8 @@ class siteSearch extends Component {
 		searchFlag: false,
 		sendValue: null,
 		currPage: '',
-		dataAcquisitionPeriod:'0',
+		scheduledEndDate: '',
+		dataAcquisitionPeriod: '0',
 		payOffRangeStatus: store.getState().dropDown[33],//　精算時間
 		siteMaster: store.getState().dropDown[34],//　役割
 		customerMaster: store.getState().dropDown[15].slice(1),//お客様
@@ -53,11 +54,11 @@ class siteSearch extends Component {
 	onchangeDataAcquisitionPeriod = event => {
 		this.setState({
 			[event.target.name]: event.target.value
-		},()=>{
-			if(this.state.dataAcquisitionPeriod === "1"){
+		}, () => {
+			if (this.state.dataAcquisitionPeriod === "1") {
 				this.setState({
-					admissionEndDate:'',
-					admissionStartDate:'',
+					admissionEndDate: '',
+					admissionStartDate: '',
 				})
 			}
 		})
@@ -75,6 +76,7 @@ class siteSearch extends Component {
 			this.giveValue(sendValue);
 			this.setState({
 				selectedEmployeeNo: this.props.location.state.employeeNo,
+				currPage:this.props.location.state.currPage,
 			}, () => {
 				if (searchFlag) {
 					this.siteSearch(sendValue);
@@ -94,29 +96,49 @@ class siteSearch extends Component {
 			employeeForm: sendValue.employeeForm,
 			developLanguageCode: sendValue.developLanguageCode,
 			stationCode: sendValue.stationCode,
-			employeeName: sendValue.employeeName,
+			employeeName: sendValue.employeeNo,
 			payOffRange1: sendValue.payOffRange1,
 			payOffRange2: sendValue.payOffRange2,
 			employeeStatus: sendValue.employeeStatus,
 			dataAcquisitionPeriod: sendValue.dataAcquisitionPeriod,
-
+			scheduledEndDate: sendValue.scheduledEndDate,
 		})
 	}
 	//　入場年月
 	admissionStartDate = (date) => {
-		this.setState(
-			{
+		if (date !== null) {
+			this.setState({
 				admissionStartDate: date,
-			}
-		);
+			});
+		} else {
+			this.setState({
+				admissionStartDate: '',
+			});
+		}
+	};
+	//　入場年月
+	scheduledEndDate = (date) => {
+		if (date !== null) {
+			this.setState({
+				scheduledEndDate: date,
+			});
+		} else {
+			this.setState({
+				scheduledEndDate: '',
+			});
+		}
 	};
 	//　退場年月
 	admissionEndDate = (date) => {
-		this.setState(
-			{
+		if (date !== null) {
+			this.setState({
 				admissionEndDate: date,
-			}
-		);
+			});
+		} else {
+			this.setState({
+				admissionEndDate: '',
+			});
+		}
 	};
 	//reset
 	reset = () => {
@@ -125,7 +147,7 @@ class siteSearch extends Component {
 	//リセット　reset
 	resetStates = {
 		customerNo: '', topCustomerNo: '', bpCustomerNo: '', typeOfIndustryCode: '', admissionStartDate: '', admissionEndDate: '', siteRoleCode: '', employeeForm: '',
-		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '', employeeStatus: '', dataAcquisitionPeriod: ''
+		developLanguageCode: '', stationCode: '', employeeName: '', payOffRange1: '', payOffRange2: '', employeeStatus: '', dataAcquisitionPeriod: '', scheduledEndDate: '',
 	};
 	//検索処理
 	siteSearch = (sendValue) => {
@@ -142,8 +164,9 @@ class siteSearch extends Component {
 		SiteSearchModel["stationCode"] = this.state.stationCode;
 		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
-		SiteSearchModel["admissionStartDate"] = publicUtils.formateDate(this.state.admissionStartDate,true);
-		SiteSearchModel["admissionEndDate"] = publicUtils.formateDate(this.state.admissionEndDate,true);
+		SiteSearchModel["admissionStartDate"] = publicUtils.formateDate(this.state.admissionStartDate, true);
+		SiteSearchModel["admissionEndDate"] = publicUtils.formateDate(this.state.admissionEndDate, true);
+		SiteSearchModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate, false);
 		if (!$.isEmptyObject(sendValue)) {
 			SiteSearchModel = sendValue;
 		}
@@ -152,17 +175,25 @@ class siteSearch extends Component {
 				this.setState({
 					searchFlag: true,
 				})
-				if (response.data.errorsMessage != null || response.data.errorsMessage != undefined ) {
+				if (response.data.errorsMessage != null || response.data.errorsMessage != undefined) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					this.setState({
 						siteData: [],
 					})
-				}else{
+				} else {
 					if (response.data.data != null) {
 						this.setState({
 							siteData: response.data.data, "errorsMessageShow": false
+						}, () => {
+							if (this.props.location.state !== "" && this.props.location.state !== undefined) {
+								this.refs.siteSearchTable.setState({
+									selectedRowKeys: this.state.selectedEmployeeNo,
+									currPage: this.state.currPage,
+								})
+								$('button[name="clickButton"]').attr('disabled', false);
+							}
 						});
-					}else{
+					} else {
 						this.setState({
 							siteData: [],
 						})
@@ -189,13 +220,14 @@ class siteSearch extends Component {
 		SiteSearchModel["customerNo"] = this.state.customerNo;
 		SiteSearchModel["topCustomerNo"] = this.state.topCustomerNo;
 		SiteSearchModel["developLanguageCode"] = this.state.developLanguageCode;
-		SiteSearchModel["employeeName"] = this.state.employeeName;
+		SiteSearchModel["employeeNo"] = this.state.employeeName;
 		SiteSearchModel["bpCustomerNo"] = this.state.bpCustomerNo;
 		SiteSearchModel["stationCode"] = this.state.stationCode;
 		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
 		SiteSearchModel["admissionStartDate"] = this.state.admissionStartDate;
 		SiteSearchModel["admissionEndDate"] = this.state.admissionEndDate;
+		SiteSearchModel["scheduledEndDate"] = this.state.scheduledEndDate;
 		const sendValue = SiteSearchModel;
 		switch (actionType) {
 			case "siteInfo":
@@ -387,7 +419,7 @@ class siteSearch extends Component {
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
+								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
@@ -401,6 +433,9 @@ class siteSearch extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
+							</Row>
+
+							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -414,23 +449,6 @@ class siteSearch extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
-											{this.state.siteMaster.map(date =>
-												<option key={date.code} value={date.code}>
-													{date.name}
-												</option>
-											)}
-										</Form.Control>
-									</InputGroup>
-								</Col>
-							</Row>
-
-							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -484,10 +502,68 @@ class siteSearch extends Component {
 											value={this.state.customerMaster.find(v => v.code === this.state.bpCustomerNo) || {}}
 											onChange={(event, values) => this.getBpCustomer(event, values)}
 											options={this.state.customerMaster}
+											disabled={employeeStatus === "0" ? true : false}
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+							</Row>
+							<Row>
+								<Col sm={4}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+											{this.state.siteMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
+												</option>
+											)}
+										</Form.Control>
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="developLanguageCode"
+											name="developLanguageCode"
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
+											onChange={(event, values) => this.getDevelopLanguage(event, values)}
+											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+								{/* <Col sm={3}>
+
+								</Col> */}
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="typeOfIndustryCode"
+											name="typeOfIndustryCode"
+											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
+											onChange={(event, values) => this.getIndustry(event, values)}
+											options={this.state.typeOfIndustryMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
 												</div>
 											)}
@@ -515,28 +591,59 @@ class siteSearch extends Component {
 										/>
 									</InputGroup>
 								</Col>
-							</Row>
-
-							<Row>
-								<Col sm={3}>
+								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">予定終了月</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Autocomplete
-											id="typeOfIndustryCode"
-											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
-											onChange={(event, values) => this.getIndustry(event, values)}
-											options={this.state.typeOfIndustryMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-										/>
+										<InputGroup.Prepend>
+											<DatePicker
+												selected={this.state.scheduledEndDate}
+												onChange={this.scheduledEndDate}
+												dateFormat="yyyy/MM"
+												name="scheduledEndDate"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												className="form-control form-control-sm"
+												id="scheduledEndDate"
+												locale="ja"
+												autoComplete="off"
+											/>
+										</InputGroup.Prepend>
+									</InputGroup>
+								</Col>
+							</Row>
+							<Row>
+								<Col sm={4}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
+										</InputGroup.Prepend>
+										<InputGroup.Prepend>
+											<DatePicker
+												selected={this.state.admissionStartDate}
+												onChange={this.admissionStartDate}
+												dateFormat="yyyy/MM/dd"
+												name="admissionStartDate"
+												className="form-control form-control-sm"
+												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
+												locale="ja"
+												autoComplete="off"
+												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
+											/>〜
+										<DatePicker
+												selected={this.state.admissionEndDate}
+												onChange={this.admissionEndDate}
+												dateFormat="yyyy/MM/dd"
+												name="admissionEndDate"
+												className="form-control form-control-sm"
+												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
+												locale="ja"
+												autoComplete="off"
+												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
+											/>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -577,62 +684,7 @@ class siteSearch extends Component {
 										<FormControl id="unitPrice2" name="unitPrice2" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="developLanguageCode"
-											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
-											onChange={(event, values) => this.getDevelopLanguage(event, values)}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-										/>
-									</InputGroup>
-								</Col>
-							</Row>
-
-							<Row>
-								<Col sm={5}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
-										</InputGroup.Prepend>
-										<InputGroup.Prepend>
-											<DatePicker
-												selected={this.state.admissionStartDate}
-												onChange={this.admissionStartDate}
-												dateFormat="yyyy/MM/dd"
-												name="admissionStartDate"
-												className="form-control form-control-sm"
-												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
-												locale="ja"
-												autoComplete="off"
-												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
-											/>〜
-										<DatePicker
-												selected={this.state.admissionEndDate}
-												onChange={this.admissionEndDate}
-												dateFormat="yyyy/MM/dd"
-												name="admissionEndDate"
-												className="form-control form-control-sm"
-												id={this.state.dataAcquisitionPeriod === "1" ? "admissionStartDateReadOnly" : "admissionStartDate"}
-												locale="ja"
-												autoComplete="off"
-												readOnly={this.state.dataAcquisitionPeriod === "1" ? true : false}
-											/>
-										</InputGroup.Prepend>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
+								<Col sm={2}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">データ期間</InputGroup.Text>
@@ -670,17 +722,17 @@ class siteSearch extends Component {
 						<Col sm={12}>
 							<BootstrapTable ref="siteSearchTable"
 								selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden >社員番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeFrom' width='80' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
-								<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden isKey>社員番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }}>番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeFrom' width='120' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
+								<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
 								<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム名</TableHeaderColumn>
 								<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
 								<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
 								<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-								<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務時間</TableHeaderColumn>
+								<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務月数</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>

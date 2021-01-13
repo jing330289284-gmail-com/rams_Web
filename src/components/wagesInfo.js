@@ -973,7 +973,6 @@ class WagesInfo extends Component {
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
                                                 id="wagesInfoDatePicker"
-
                                                 dateFormat={"yyyy/MM"}
                                                 name="reflectYearAndMonth"
                                                 locale="ja"
