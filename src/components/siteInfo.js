@@ -67,18 +67,25 @@ class siteInfo extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
-
 	onchangeworkState = event => {
 		if (event.target.value === '0') {
 			this.setState({
 				workStateFlag: true,
 				levelCode: '',
-				[event.target.name]: event.target.value
+				[event.target.name]: event.target.value,
+				remark:'',
+			})
+		}else if(event.target.value === '2'){
+			this.setState({
+				[event.target.name]: event.target.value,
+				workStateFlag: false,
+				remark:"単金調整"
 			})
 		} else {
 			this.setState({
 				workStateFlag: false,
-				[event.target.name]: event.target.value
+				[event.target.name]: event.target.value,
+				remark:'',
 			})
 		}
 	}
@@ -803,19 +810,20 @@ class siteInfo extends Component {
 											}}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
+													<input type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo-employeeNo form-control"
 													/>
 												</div>
 											)}
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={2} lg={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="workState" name="workState" value={workState}
+										<Form.Control className="auto form-control siteInfo-workState"
+										as="select" id="workState" name="workState" value={workState}
 											onChange={this.onchangeworkState} disabled={pageDisabledFlag}>
 											{this.state.siteStateStatus.map(data =>
 												<option key={data.code} value={data.code}>
@@ -828,7 +836,7 @@ class siteInfo extends Component {
 							</Row>
 							<Row>
 								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
+									<InputGroup size="sm">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -845,8 +853,8 @@ class siteInfo extends Component {
 												disabled={pageDisabledFlag}
 											/>
 										</InputGroup.Prepend>
-										<FormControl id="time" name="time" value={time} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-										<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										<FormControl className="auto form-control siteTime" id="time" name="time" value={time} disabled />
+										<font color="red" className="site-mark">★</font>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -854,14 +862,15 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="cssNikanji">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} disabled={pageDisabledFlag} />
+										<FormControl maxLength="3"
+										id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} disabled={pageDisabledFlag} />
 										<InputGroup.Prepend id="checkBox">
 											<InputGroup.Text className="hiwari">日割</InputGroup.Text>
 											<InputGroup.Checkbox className="hiwari" name="dailyCalculationStatus"
 												checked={this.state.dailyCalculationStatus}
 												onChange={this.dailyCalculationStatusChange}
 												disabled={this.state.dailyCalculationStatusFlag === true ? true : pageDisabledFlag ? true : false} />
-											<font color="red">★</font>
+											<font className="site-mark" color="red">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -890,7 +899,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl  maxLength="20" id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -935,7 +944,7 @@ class siteInfo extends Component {
 													</div>
 												)}
 												disabled={pageDisabledFlag}
-											/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+											/><font color="red" className="site-mark">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -952,7 +961,7 @@ class siteInfo extends Component {
 												getOptionLabel={(option) => option.name}
 												renderInput={(params) => (
 													<div ref={params.InputProps.ref}>
-														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-topCustomer"
 														/>
 													</div>
 												)}
@@ -975,7 +984,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-developLanguageCode"
 														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
@@ -1035,12 +1044,13 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={4}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+											<InputGroup.Text id="siteInfo-siteRoleCode">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off"
+										<Form.Control className="auto form-control siteInfo-siteRoleCode" 
+										as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off"
 											disabled={pageDisabledFlag}>
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
@@ -1049,9 +1059,10 @@ class siteInfo extends Component {
 											)}
 										</Form.Control>
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
+											<InputGroup.Text id="siteInfo-siteRoleCode">評価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off"
+										<Form.Control className="auto form-control siteInfo-siteRoleCode" 
+										as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off"
 											disabled={pageDisabledFlag ? true : workStateFlag ? true : false}>
 											{this.state.levelMaster.map(date =>
 												<option key={date.code} value={date.code}>
@@ -1061,12 +1072,12 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl maxLength="20" id="siteManager" name="siteManager" type="text" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>
@@ -1196,7 +1207,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl maxLength="50" id="remark" name="remark" type="text" onChange={this.onchange} value={remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>

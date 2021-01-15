@@ -141,7 +141,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
-  width: 12rem;
+  width: 14.5rem;
 }
 
 #datePickerReadonly {
@@ -173,7 +173,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width: 13rem;
+  width: 14.5rem;
 }
 #scheduledEndDate-siteInfoReadOnly{
   background-repeat: no-repeat;
@@ -182,7 +182,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
-  width: 13rem;
+  width: 14.5rem;
 }
 #scheduledEndDate{
   background-repeat: no-repeat;
@@ -191,7 +191,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width: 7rem;
+  width: 14.5rem;
 }
 #admissionStartDate {
   background-repeat: no-repeat;
@@ -200,7 +200,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width: 10rem;
+  width: 6.7rem;
 }
 #admissionStartDateReadOnly {
   background-repeat: no-repeat;
@@ -209,7 +209,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: #e9ecef;
-  width: 10rem;
+  width: 6.7rem;
 }
 #admissionEndDate {
   background-repeat: no-repeat;
@@ -218,7 +218,7 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-  width: 159px;
+  width: 14.5rem;
 }
 
 #wagesInfoDatePicker {
@@ -704,7 +704,52 @@ body {
 }
 
 .Autocompletestyle-siteInfo {
-  width: 11rem;
+  width: 15.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfo-developLanguageCode {
+  width: 15.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfo-topCustomer{
+  width: 13.5rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch{
+  width: 12rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch-station {
+  width: 15.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch-employeeNo{
+  width: 14.5rem;
   height: 31px;
   border-color: "#ced4da";
   border-width: 1;
@@ -714,7 +759,7 @@ body {
 }
 
 .Autocompletestyle-siteInfo-relatedEmployees {
-  width: 140px;
+  width: 9.2rem;
   height: 31px;
   border-color: "#ced4da";
   border-width: 1;
@@ -850,8 +895,102 @@ padding: 1rem;
   background-color: white;
   width: 7rem;
 }
+.Autocompletestyle-siteInfo-employeeNo{
+  width: 13rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.site-mark{
+  width: 0.001rem;
+  margin-left: 0.15rem;
+}
+.Autocompletestyle-siteInfoSearch-customerNo{
+  width: 15.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch-topCustomer{
+  width: 13.5rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch-developLanguageCode{
+  width: 6rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-siteInfoSearch-bpCustomerNo{
+  width:15rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
 @media screen and (max-width: 1550px) {
 
+  .Autocompletestyle-siteInfoSearch-bpCustomerNo{
+    width: 10.3rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfoSearch-topCustomer{
+    width: 9rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfoSearch-station {
+    width: 10.4rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfoSearch-employeeNo{
+    width: 10rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfoSearch-developLanguageCode{
+    width: 5rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
   #customerInfoDatePicker {
     background-repeat: no-repeat;
     width: 10rem;
@@ -868,7 +1007,16 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: #e9ecef;
-    width: 9rem;
+    width: 10rem;
+  }
+  #admissionEndDate {
+    background-repeat: no-repeat;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+    width: 10rem;
   }
   #siteAdmissionStartReadonlyDefault {
     background-repeat: no-repeat;
@@ -877,7 +1025,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: #e9ecef;
-    width: 5rem;
+    width: 6.5rem;
   }
   #siteAdmissionStart {
     background-repeat: no-repeat;
@@ -886,7 +1034,14 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
-    width: 5rem;
+    width: 6.5rem;
+  }
+  .siteTime{
+    width: 4rem;
+  }
+  .site-mark{
+    width: 0.001rem;
+    margin-left: 0.15rem;
   }
   #customerInfoDatePickerReadOnly {
     background-repeat: no-repeat;
@@ -942,7 +1097,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
-    width: 4rem;
+    width: 10rem;
   }
   #admissionStartDate {
     background-repeat: no-repeat;
@@ -951,7 +1106,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
-    width: 7rem;
+    width: 4.5rem;
   }
   #admissionStartDateReadOnly {
     background-repeat: no-repeat;
@@ -960,7 +1115,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: #e9ecef;
-    width: 7rem;
+    width: 4.5rem;
   }
   .Autocompletestyle {
     width: 8rem;
@@ -973,6 +1128,24 @@ padding: 1rem;
   }
 
   .Autocompletestyle-siteInfo {
+    width: 10.4rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfo-developLanguageCode {
+    width: 10.4rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfo-topCustomer{
     width: 9rem;
     height: 31px;
     border-color: "#ced4da";
@@ -981,7 +1154,36 @@ padding: 1rem;
     font-size: ".875rem";
     color: "#495057"
   }
-
+  .Autocompletestyle-siteInfoSearch-customerNo{
+    width: 10.4rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-siteInfoSearch {
+    width: 9rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+ .Autocompletestyle-siteInfo-employeeNo{
+    width: 9rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+#siteInfo-siteRoleCode{
+  width: 3rem;
+}
   .Autocompletestyle-customerInfo {
     width: 10rem;
     height: 31px;
@@ -1168,7 +1370,7 @@ padding: 1rem;
     max-width:450px !important;
   }
   .Autocompletestyle-siteInfo-relatedEmployees {
-    width: 6.5rem;
+    width: 6.95rem;
     height: 31px;
     border-color: "#ced4da";
     border-width: 1;
