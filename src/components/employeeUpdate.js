@@ -34,6 +34,9 @@ class employeeUpdate extends React.Component {
 		showBpInfoModalFlag: false,// bp情報
 		retirementYearAndMonthDisabled: false,// 退職年月の活性フラグ
 		residenceTimeDisabled: false,// 在留期間の活性フラグ
+		isBp:false,
+		bpNo:'',
+		bpDisabled:false,
 		accountInfo: null,// 口座情報のデータ
 		bpInfoModel: null,// pb情報
 		myToastShow: false,
@@ -119,6 +122,7 @@ class employeeUpdate extends React.Component {
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),// 在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),// 在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),// 在留期間
+			contractDeadline: publicUtils.formateDate(this.state.contractDeadline, false),// 契約期間
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),// 雇用保険番号
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
@@ -139,7 +143,29 @@ class employeeUpdate extends React.Component {
 		formData.append('resumeInfo2URL', this.state.resumeInfo2URL)
 		formData.append('residentCardInfoURL', this.state.residentCardInfoURL)
 		formData.append('passportInfoURL', this.state.passportInfoURL)
-		axios.post(this.state.serverIP + "employee/updateEmployee", formData)
+		if(this.state.isBp&&this.state.employeeNo.substring(0,2)!=="BP"){
+			axios.post(this.state.serverIP + "employee/insertEmployee", formData)
+			.then(result => {
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+				} else {
+					const emp = {
+							employeeNo: this.state.bpNo,
+						};
+					axios.post(this.state.serverIP + "employee/deleteEmployeeInfo", emp)
+					.then(result => {
+						this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false,isBp:false });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					})
+					.catch(function (error) {
+						alert("删除错误，请检查程序");
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+		}else{
+			axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
@@ -152,6 +178,7 @@ class employeeUpdate extends React.Component {
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
+		}	
 	};
 
 
@@ -203,6 +230,8 @@ class employeeUpdate extends React.Component {
 				$("#firstHalfAddress").val(data.firstHalfAddress);
 				this.setState({
 					employeeStatus: data.employeeStatus,// 社員区分
+					isBp:employeeNo.substring(0,2)==="BP"?true:false,
+					bpNo:employeeNo.substring(0,2)==="BP"?employeeNo:'',
 					employeeNo: data.employeeNo,// 社員番号
 					bpEmployeeNo: data.employeeNo,// 社員番号
 					employeeFristName: data.employeeFristName,// 社員氏
@@ -218,7 +247,8 @@ class employeeUpdate extends React.Component {
 					intoCompanyCode: data.intoCompanyCode,// 入社区分
 					employeeFormCode: data.employeeFormCode,// 社員形式
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
-					residenceTimeDisabled: data.residenceCode === "5" ? true : false,
+					residenceTimeDisabled: data.residenceCode === "5" || data.employeeStatus !== "0" ? true : false,
+					bpDisabled:data.employeeStatus === "0" ? false : true,
 					occupationCode: data.occupationCode,// 職種
 					departmentCode: data.departmentCode,// 部署
 					companyMail: data.companyMail !== null && data.companyMail !== "" ? data.companyMail.match(/(\S*)@/)[1] : "",// 社内メール
@@ -255,7 +285,9 @@ class employeeUpdate extends React.Component {
 					residenceCode: data.residenceCode,// 在留資格
 					residenceCardNo: data.residenceCardNo,// 在留カード
 					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),// 在留期間
+					contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false),// 契約期間
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
+					temporary_contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.contractDeadline, false)),
 					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
 					myNumber: data.myNumber,// マイナンバー
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
@@ -297,6 +329,20 @@ class employeeUpdate extends React.Component {
 			}
 		});
 	};
+	
+	/**
+	 * 採番番号
+	 */
+	getNO = (NO) => {
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", NO, "T001Employee", this.state.serverIP));
+		promise.then((value) => {
+			this.setState(
+				{
+					employeeNo: value
+				}
+			);
+		});
+	};
 
 	// 卒業年月
 	state = {
@@ -306,6 +352,7 @@ class employeeUpdate extends React.Component {
 		comeToJapanYearAndMonth: new Date(),
 		yearsOfExperience: new Date(),
 		stayPeriod: new Date(),
+		contractDeadline: new Date(),
 		graduationYearAndMonth: new Date(),
 	};
 	/**
@@ -388,8 +435,31 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
+	
+	// 契約期間
+	inactiveContractDeadline = date => {
+		this.setState(
+			{
+				contractDeadline: date,
+				temporary_contractDeadline: publicUtils.getFullYearMonth(new Date(), date)
+			}
+		);
+	};
 	// 年月終了
 
+	
+	/**
+	 * タイプが違う時に、色々な操作をします。
+	 */
+	employeeStatusChange = event => {
+		const value = event.target.value;
+		if (value === '1') {
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3',employeeNo: this.state.bpNo,bpDisabled:true,residenceTimeDisabled:true });
+		} else {
+			this.getNO("LYC");
+			this.setState({ employeeStatus: "0",bpDisabled:false,residenceTimeDisabled:this.state.residenceCode === "5"?true:false });
+		}
+	}
 
 	/*
 	 * ポップアップ口座情報の取得
@@ -609,8 +679,8 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
-			retirementYearAndMonthDisabled,residenceTimeDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			retirementYearAndMonthDisabled,residenceTimeDisabled,bpDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
 		return (
@@ -670,8 +740,9 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
+										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
-										autoComplete="off" disabled="true">
+										autoComplete="off" disabled={this.state.isBp?false:true}>
 										{this.state.employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1219,7 +1290,7 @@ class employeeUpdate extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChangeResidenceCodeFormCode}
 										name="residenceCode" value={residenceCode}
-										autoComplete="off" >
+										autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
 										{this.state.residenceCodes.map(data =>
 											<option key={data.code} value={data.code}>
 												{data.name}
@@ -1233,7 +1304,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji">在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="在留カード" value={residenceCardNo} autoComplete="off"
+									<FormControl placeholder="在留カード" value={residenceCardNo} autoComplete="off"  disabled={employeeStatus === "0" ? false : true}
 										onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12" />
 								</InputGroup>
 							</Col>
@@ -1265,7 +1336,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
+									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
 										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12" />
 								</InputGroup>
 							</Col>
@@ -1274,7 +1345,7 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
+									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
 										onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 								</InputGroup>
 							</Col>
@@ -1285,11 +1356,11 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji" >在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</Button>
+									<Button size="sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</Button>
 									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
@@ -1298,30 +1369,50 @@ class employeeUpdate extends React.Component {
 									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
-								</InputGroup>
-							</Col>
 
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"
+									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</Button>
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 								</InputGroup>
 							</Col>
 
-							<Col sm={3}>
+							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji">パスポート</InputGroup.Text>
 										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'passportInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "添付済み" : "添付"}</Button>
+									<Button size="sm" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "添付済み" : "添付"}</Button>
 								</InputGroup>
 							</Col>
+							
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">契約期限</InputGroup.Text>
+							</InputGroup.Prepend>
+							<InputGroup.Append>
+								<DatePicker
+									selected={this.state.contractDeadline}
+									onChange={this.inactiveContractDeadline}
+									locale="ja"
+									dateFormat="yyyy/MM"
+									showMonthYearPicker
+									showFullMonthYearPicker
+									className="form-control form-control-sm"
+									autoComplete="off"
+									minDate={new Date()}
+									disabled={employeeStatus === "0" ? false : true}
+									id={bpDisabled ? "datePickerReadonlyDefault" : "datePicker"}
+								/>
+							</InputGroup.Append>
+							<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+						</InputGroup>
+						</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" onClick={this.updateEmployee} type="button" on>

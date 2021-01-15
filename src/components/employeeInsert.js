@@ -129,6 +129,7 @@ class employeeInsert extends React.Component {
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),// 在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),// 在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),// 在留期間
+			contractDeadline: publicUtils.formateDate(this.state.contractDeadline, false),// 契約期限
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),// 雇用保険番号
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
@@ -222,6 +223,7 @@ class employeeInsert extends React.Component {
 		comeToJapanYearAndMonth: new Date(),
 		yearsOfExperience: new Date(),
 		stayPeriod: new Date(),
+		contractDeadline: new Date(),
 		graduationYearAndMonth: new Date(),
 	};
 	/**
@@ -339,6 +341,18 @@ class employeeInsert extends React.Component {
 			{
 				stayPeriod: date,
 				temporary_stayPeriod: publicUtils.getFullYearMonth(new Date(), date)
+			}
+		);
+	};
+	
+	/**
+	 * 契約期限
+	 */
+	inactiveContractDeadline = date => {
+		this.setState(
+			{
+				contractDeadline: date,
+				temporary_contractDeadline: publicUtils.getFullYearMonth(new Date(), date)
 			}
 		);
 	};
@@ -506,7 +520,7 @@ class employeeInsert extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1, alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled,residenceTimeDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus, stationCodeValue, developLanguage1Value, developLanguage2Value, developLanguage3Value, developLanguage4Value, developLanguage5Value,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel } = this.state;
@@ -1185,7 +1199,7 @@ class employeeInsert extends React.Component {
 									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書1</InputGroup.Text>
@@ -1194,20 +1208,17 @@ class employeeInsert extends React.Component {
 									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
+
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"  maxlength="30"
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji">パスポート</InputGroup.Text>
@@ -1216,6 +1227,28 @@ class employeeInsert extends React.Component {
 									<Button size="sm" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</Button>
 								</InputGroup>
 							</Col>
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">契約期限</InputGroup.Text>
+							</InputGroup.Prepend>
+							<InputGroup.Append>
+								<DatePicker
+									selected={this.state.contractDeadline}
+									onChange={this.inactiveContractDeadline}
+									locale="ja"
+									dateFormat="yyyy/MM"
+									showMonthYearPicker
+									showFullMonthYearPicker
+									className="form-control form-control-sm"
+									autoComplete="off"
+									minDate={new Date()}
+									id="datePicker"
+								/>
+							</InputGroup.Append>
+							<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+						</InputGroup>
+						</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" onClick={this.insertEmployee} type="button" on>

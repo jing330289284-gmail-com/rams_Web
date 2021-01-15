@@ -860,7 +860,7 @@ class employeeSearch extends React.Component {
 								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
 								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='admissionStartDate'>入場年月</TableHeaderColumn>
+								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='admissionTime'>入場年月</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
