@@ -412,14 +412,14 @@ class siteSearch extends Component {
 											}}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-employeeNo"
 													/>
 												</div>
 											)}
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
@@ -463,7 +463,7 @@ class siteSearch extends Component {
 											onChange={(event, values) => this.getCustomer(event, values)}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"
 													/>
 												</div>
 											)}
@@ -484,7 +484,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input placeholder="  例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-topCustomer"
 													/>
 												</div>
 											)}
@@ -506,7 +506,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input placeholder="  例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-bpCustomerNo"
 													/>
 												</div>
 											)}
@@ -515,61 +515,6 @@ class siteSearch extends Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={4}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
-											{this.state.siteMaster.map(date =>
-												<option key={date.code} value={date.code}>
-													{date.name}
-												</option>
-											)}
-										</Form.Control>
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">言語</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="developLanguageCode"
-											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
-											onChange={(event, values) => this.getDevelopLanguage(event, values)}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-										/>
-									</InputGroup>
-								</Col>
-								{/* <Col sm={3}>
-
-								</Col> */}
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="typeOfIndustryCode"
-											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
-											onChange={(event, values) => this.getIndustry(event, values)}
-											options={this.state.typeOfIndustryMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-										/>
-									</InputGroup>
-								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -584,14 +529,66 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input placeholder="  例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-station"
 													/>
 												</div>
 											)}
 										/>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="typeOfIndustryCode"
+											name="typeOfIndustryCode"
+											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
+											onChange={(event, values) => this.getIndustry(event, values)}
+											options={this.state.typeOfIndustryMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"
+													/>
+												</div>
+											)}
+										/>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm">
+									<InputGroup.Prepend>
+											<InputGroup.Text id="siteInfo-siteRoleCode">言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="developLanguageCode"
+											name="developLanguageCode"
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
+											onChange={(event, values) => this.getDevelopLanguage(event, values)}
+											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-developLanguageCode"
+													/>
+												</div>
+											)}
+										/>
+										<InputGroup.Prepend>
+											<InputGroup.Text id="siteInfo-siteRoleCode">役割</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchange} value={siteRoleCode} autoComplete="off">
+											{this.state.siteMaster.map(date =>
+												<option key={date.code} value={date.code}>
+													{date.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">予定終了月</InputGroup.Text>
@@ -615,8 +612,8 @@ class siteSearch extends Component {
 								</Col>
 							</Row>
 							<Row>
-								<Col sm={4}>
-									<InputGroup size="sm" className="mb-3">
+								<Col sm={3}>
+									<InputGroup size="sm">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -679,12 +676,14 @@ class siteSearch extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice1" name="unitPrice1" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl  maxLength="3"
+										id="unitPrice1" name="unitPrice1" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 										〜
-										<FormControl id="unitPrice2" name="unitPrice2" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
+										<FormControl  maxLength="3"
+										id="unitPrice2" name="unitPrice2" type="text" placeholder="万円" onChange={this.onchange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" />
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">データ期間</InputGroup.Text>
