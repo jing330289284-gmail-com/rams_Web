@@ -1147,47 +1147,47 @@ class employeeInsert extends React.Component {
 										onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12" />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Append>
-										<DatePicker
-											selected={this.state.stayPeriod}
-											onChange={this.inactiveStayPeriod}
-											locale="ja"
-											dateFormat="yyyy/MM"
-											showMonthYearPicker
-											showFullMonthYearPicker
-											className="form-control form-control-sm"
-											autoComplete="off"
-											minDate={new Date()}
-											disabled={residenceTimeDisabled ? true : false}
-											id={residenceTimeDisabled ? "datePickerReadonlyDefault" : "datePicker"}
-										/>
-									</InputGroup.Append>
-									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
-										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12" />
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
+									
 									<InputGroup.Prepend>
 										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
+										<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
+									<font style={{ marginLeft: "10px", marginRight: "15px" }}></font>
+									<InputGroup.Prepend>
+										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
+									</InputGroup.Prepend>
+										<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
+										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12"/>
+									<font style={{ marginLeft: "25px", marginRight: "0px" }}></font>
 								</InputGroup>
 							</Col>
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
+								</InputGroup.Prepend>
+								<InputGroup.Append>
+									<DatePicker
+										selected={this.state.stayPeriod}
+										onChange={this.inactiveStayPeriod}
+										locale="ja"
+										dateFormat="yyyy/MM"
+										showMonthYearPicker
+										showFullMonthYearPicker
+										className="form-control form-control-sm"
+										autoComplete="off"
+										minDate={new Date()}
+										disabled={residenceTimeDisabled ? true : false}
+										id={residenceTimeDisabled ? "datePickerReadonlyDefault" : "datePicker"}
+									/>
+								</InputGroup.Append>
+								<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+							</InputGroup>
+						</Col>
 						</Row>
 						<Row>
 							<Col sm={2}>
@@ -1195,36 +1195,37 @@ class employeeInsert extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji" >在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "添付済み" : "添付"}</Button>
+									<Button size="sm" style={{ width: 117}} onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
 									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
+							<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="fiveKanji">パスポート</InputGroup.Text>
+									<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
+								</InputGroup.Prepend>
+								<Button size="sm" style={{ width: 117}} onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
+							</InputGroup>
+						</Col>
+						
 							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "添付済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
+									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"style={{ width: 100}}
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "添付済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"  maxlength="30"
+									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>
+									<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"  maxlength="30" style={{ width: 100}}
 										onChange={this.valueChange} size="sm" name="resumeName2" />
 									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="fiveKanji">パスポート</InputGroup.Text>
-										<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
-									</InputGroup.Prepend>
-									<Button size="sm" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "添付済み" : "添付"}</Button>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
