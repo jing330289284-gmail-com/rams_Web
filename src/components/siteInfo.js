@@ -39,6 +39,7 @@ class siteInfo extends Component {
 		currPage: '',
 		siteData:[],
 		scheduledEndDate:'',
+		scheduledEndDateForSave:'',
 		pageDisabledFlag: true,//画面非活性フラグ
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
@@ -74,18 +75,21 @@ class siteInfo extends Component {
 				levelCode: '',
 				[event.target.name]: event.target.value,
 				remark:'',
+				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
 		}else if(event.target.value === '2'){
 			this.setState({
 				[event.target.name]: event.target.value,
 				workStateFlag: false,
-				remark:"単金調整"
+				remark:"単金調整",
+				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
 		} else {
 			this.setState({
 				workStateFlag: false,
 				[event.target.name]: event.target.value,
 				remark:'',
+				scheduledEndDate:'',
 			})
 		}
 	}
@@ -291,6 +295,7 @@ class siteInfo extends Component {
 		related4Employees: '',
 		workState: '0',
 		scheduledEndDate:'',
+		scheduledEndDateForSave:'',
 		dailyCalculationStatus: false,
 		dailyCalculationStatusFlag: true
 	};
@@ -324,12 +329,14 @@ class siteInfo extends Component {
 							this.setState({
 								siteData: response.data.siteList,
 								disabledFlag: false,
+								deleteFlag:true,
 							});
 						} else {
 							this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
 							this.setState({
 								siteData: [],
 								disabledFlag: false,
+								deleteFlag:true,
 							});
 							setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 						}
@@ -427,6 +434,7 @@ class siteInfo extends Component {
 				typeOfIndustryCode: row.typeOfIndustryCode === null ? '' : row.typeOfIndustryCode,
 				remark: row.remark === null ? '' : row.remark,
 				scheduledEndDate:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
+				scheduledEndDateForSave:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
 				related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0], this.state.employeeInfo)),
 				related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1], this.state.employeeInfo)),
 				related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2], this.state.employeeInfo)),
@@ -457,7 +465,7 @@ class siteInfo extends Component {
 					workStateFlag: true,
 				})
 			}
-			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate && row.admissionEndDate === null) {
+			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate) {
 				this.setState({
 					pageDisabledFlag: false,
 					disabledFlag: false,
@@ -1197,8 +1205,8 @@ class siteInfo extends Component {
 												locale="ja"
 												autoComplete="off"
 												disabled={pageDisabledFlag}
-												id={pageDisabledFlag ? "scheduledEndDate-siteInfoReadOnly" : "scheduledEndDate-siteInfo"}
-												disabled={pageDisabledFlag ? true : false}
+												id={pageDisabledFlag ? "scheduledEndDate-siteInfoReadOnly" : this.state.workState === "1" ?  "scheduledEndDate-siteInfoReadOnly" : "scheduledEndDate-siteInfo"}
+												disabled={pageDisabledFlag ? true : this.state.workState === "1" ? true : false}
 											/>
 										</InputGroup.Prepend>
 									</InputGroup>
@@ -1241,15 +1249,15 @@ class siteInfo extends Component {
 					<Row>
 						<Col sm={12}>
 							<BootstrapTable selectRow={selectRow} data={siteData} ref='table' deleteRow pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
-								<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
-								<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-								<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='workDate' width='150' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='systemName' width='220' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
+								<TableHeaderColumn dataField='location' width='90' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='customerName' width='150' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
-								<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
-								<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-								<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
-								<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' width='60' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='developLanguageName' width='110' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+								<TableHeaderColumn dataField='siteRoleName' width='50' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
+								<TableHeaderColumn dataField='levelName' width='50' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
 								<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
@@ -1262,7 +1270,7 @@ class siteInfo extends Component {
 								<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='workState' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='dailyCalculationStatus' hidden={true} ></TableHeaderColumn>
-								<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark' width='90' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

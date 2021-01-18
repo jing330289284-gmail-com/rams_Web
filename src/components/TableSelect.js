@@ -64,7 +64,7 @@ class TableSelect extends React.Component {
 		}
 		else if (this.props.flag === 8) {
 			this.setState({
-				allOption: this.props.dropdowns.state.stationCodeDrop2,
+				allOption: this.props.dropdowns.state.stationCodeDrop,
 				selectedValue: this.props.dropdowns.state.stationCode,	
 				everyWidth: 110,
 			})

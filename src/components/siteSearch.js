@@ -172,9 +172,6 @@ class siteSearch extends Component {
 		}
 		axios.post(this.state.serverIP + "getSiteSearchInfo", SiteSearchModel)
 			.then(response => {
-				this.setState({
-					searchFlag: true,
-				})
 				if (response.data.errorsMessage != null || response.data.errorsMessage != undefined) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					this.setState({
@@ -185,7 +182,15 @@ class siteSearch extends Component {
 						this.setState({
 							siteData: response.data.data, "errorsMessageShow": false
 						}, () => {
-							if (this.props.location.state !== "" && this.props.location.state !== undefined) {
+							this.refs.siteSearchTable.setState({
+								selectedRowKeys: [],
+								currPage: 1,
+							})
+							$('button[name="clickButton"]').attr('disabled', true);
+							if (this.props.location.state !== "" && this.props.location.state !== undefined && !$.isEmptyObject(sendValue)) {
+								// if(sendValue.dataAcquisitionPeriod === "1"){
+
+								// }
 								this.refs.siteSearchTable.setState({
 									selectedRowKeys: this.state.selectedEmployeeNo,
 									currPage: this.state.currPage,
@@ -199,6 +204,9 @@ class siteSearch extends Component {
 						})
 					}
 				}
+				this.setState({
+					searchFlag: true,
+				})
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
@@ -356,7 +364,7 @@ class siteSearch extends Component {
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 8,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
@@ -571,7 +579,7 @@ class siteSearch extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input placeholder="  例：Java" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-developLanguageCode"
+													<input placeholder="  例：vb" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-developLanguageCode"
 													/>
 												</div>
 											)}
@@ -723,15 +731,15 @@ class siteSearch extends Component {
 								selectRow={selectRow} data={siteData} pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 								<TableHeaderColumn dataField='employeeNo' width='58' tdStyle={{ padding: '.45em' }} hidden isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='rowNo' width='58' tdStyle={{ padding: '.45em' }}>番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeName' width="100" tdStyle={{ padding: '.45em' }} >氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeFrom' width='120' tdStyle={{ padding: '.45em' }}>所属</TableHeaderColumn>
-								<TableHeaderColumn dataField='workDate' width='203' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
-								<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='120'>システム名</TableHeaderColumn>
-								<TableHeaderColumn dataField='station' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-								<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='workDate' width='195' tdStyle={{ padding: '.45em' }} >期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='220'>システム名</TableHeaderColumn>
+								<TableHeaderColumn dataField='station' width="90" tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='customerName' width="150" tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
-								<TableHeaderColumn dataField='developLanguageName' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-								<TableHeaderColumn dataField='workTime' tdStyle={{ padding: '.45em' }} >勤務月数</TableHeaderColumn>
+								<TableHeaderColumn dataField='developLanguageName' width="110" tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+								<TableHeaderColumn dataField='workTime' width="100" tdStyle={{ padding: '.45em' }} >勤務月数</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
