@@ -711,6 +711,7 @@ class WagesInfo extends Component {
                                             name="employeeName"
                                             value={this.state.employeeNameDrop.find(v => v.code === this.state.employeeName) || {}}
                                             options={this.state.employeeNameDrop}
+                                            getOptionDisabled={(option) => option.name}
                                             getOptionLabel={(option) => option.text}
                                             onChange={(event, values) => this.getWagesInfo(event, values)}
                                             renderOption={(option) => {

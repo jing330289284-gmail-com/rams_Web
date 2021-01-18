@@ -373,7 +373,6 @@ class ProjectInfoSearch extends Component {
                     this.setState({
                         projectInfoList: result.data.projectInfoList,
                         "errorsMessageShow": false,
-                        searchFlag: true,
                     }, () => {
                         if (this.props.location.state !== undefined && sendValues !== null && sendValues !== undefined) {
                             let index = this.state.projectInfoList.findIndex(projectInfo => projectInfo.projectNo === this.props.location.state.selectedProjectNo);
@@ -393,10 +392,12 @@ class ProjectInfoSearch extends Component {
                 } else {
                     this.setState({
                         projectInfoList: [],
-                        searchFlag: true,
                     })
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
+                this.setState({
+                    searchFlag: true,
+                })
             })
             .catch(error => {
                 alert("检索错误，请检查程序");

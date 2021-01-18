@@ -30,7 +30,7 @@ class CustomerInfo extends Component {
         showCustomerInfoModal: false,//上位お客様情報画面フラグ
         establishmentDate: '',//設立の期日
         businessStartDate: '',//取引開始の期日
-        topCustomerDrop: utils.getdropDown("getTopCustomer",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),
+        topCustomerDrop: store.getState().dropDown[35].slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
         currPage:'',
@@ -38,14 +38,12 @@ class CustomerInfo extends Component {
         positionCode2:'',
         customerDepartmentName: '',//部門コード
         customerDepartmentNameDrop: store.getState().dropDown[55].slice(1),//部門の連想数列
-        customerDepartmentNameDrop2: utils.getdropDown("getDepartmentMasterDrop",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
         customerNoForPageChange: "",
         topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
-        stationCodeDrop2: utils.getdropDown("getStation",store.getState().dropDown[store.getState().dropDown.length - 1]),
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
         companyNatureDrop: store.getState().dropDown[19],
@@ -58,12 +56,12 @@ class CustomerInfo extends Component {
         errorsMessageShow: false,
         errorsMessageValue: '',
         stationCode: '',
+        stationCode2: '',
         message: '',
         type: '',
         topCustomer: '',
         insertFlag: false,
         positionDrop: store.getState().dropDown[20],
-        positionDrop2: utils.getdropDown("getPosition",store.getState().dropDown[store.getState().dropDown.length - 1]).slice(1),
         typeOfIndustryDrop: store.getState().dropDown[36],
         developLanguageDrop: store.getState().dropDown[8],
         currentPage: 1,//今のページ
@@ -163,7 +161,7 @@ class CustomerInfo extends Component {
                     $("#customerName").val(customerInfoMod.customerName);
                     $("#customerAbbreviation").val(customerInfoMod.customerAbbreviation);
                     this.setState({
-                        stationCode: customerInfoMod.stationCode,
+                        stationCode2: customerInfoMod.stationCode,
                         topCustomer: customerInfoMod.topCustomerNo,
                     })
                     $("#levelCode").val(customerInfoMod.levelCode);
@@ -377,11 +375,11 @@ class CustomerInfo extends Component {
     getStationCode = (event, values) => {
         if (values != null) {
             this.setState({
-                stationCode: values.code,
+                stationCode2: values.code,
             })
         } else {
             this.setState({
-                stationCode: "",
+                stationCode2: "",
             })
         }
     }
@@ -487,7 +485,7 @@ class CustomerInfo extends Component {
     }
     // レコードおきゃく表示
     formatStation = (cell) => {
-        var stationCodeDrop = this.state.stationCodeDrop2;
+        var stationCodeDrop = this.state.stationCodeDrop;
         if (cell === '') {
             return '';
         } else {
@@ -577,7 +575,7 @@ class CustomerInfo extends Component {
      */
     reset = () => {
         this.setState({
-            stationCode: '',
+            stationCode2: '',
             topCustomer: '',
             establishmentDate: '',
             businessStartDate: '',
@@ -586,7 +584,7 @@ class CustomerInfo extends Component {
         $("#stationCode").val("");
         $("#establishmentDate").val("");
         $("#levelCode").val("");
-        $("#listedCompanyFlag").val("0");
+        $("#listedCompanyFlag").val("");
         $("#companyNatureCode").val("");
         $("#paymentsiteCode").val("");
         $("#purchasingManagersMail").val("");
@@ -790,7 +788,7 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="stationCode"
                                         name="stationCode"
-                                        value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode) || {}}
+                                        value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode2) || {}}
                                         onChange={(event, values) => this.getStationCode(event, values)}
                                         options={this.state.stationCodeDrop}
                                         getOptionLabel={(option) => option.name}
@@ -934,9 +932,9 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="customerDepartmentCode"
                                         name="customerDepartmentCode"
-                                        value={this.state.customerDepartmentNameDrop2.find(v => v.code === this.state.customerDepartmentCode2) || {}}
+                                        value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode2) || {}}
                                         onChange={(event, values) => this.getCustomerDepartment2(event, values)}
-                                        options={this.state.customerDepartmentNameDrop2}
+                                        options={this.state.customerDepartmentNameDrop}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
@@ -956,9 +954,9 @@ class CustomerInfo extends Component {
                                         disabled={this.state.actionType === "detail" ? true : false}
                                         id="positionCode"
                                         name="positionCode"
-                                        value={this.state.positionDrop2.find(v => v.code === this.state.positionCode2) || {}}
+                                        value={this.state.positionDrop.find(v => v.code === this.state.positionCode2) || {}}
                                         onChange={(event, values) => this.getPosition2(event, values)}
-                                        options={this.state.positionDrop2}
+                                        options={this.state.positionDrop}
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
