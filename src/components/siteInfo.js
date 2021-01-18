@@ -231,6 +231,7 @@ class siteInfo extends Component {
 			this.setState({
 				backPage: this.props.location.state.backPage,
 				sendValue: this.props.location.state.sendValue,
+				pageDisabledFlag:false,
 				searchFlag: this.props.location.state.searchFlag,
 			})
 			if (this.props.location.state.currPage !== null && this.props.location.state.currPage !== undefined && this.props.location.state.currPage !== '') {
@@ -525,7 +526,6 @@ class siteInfo extends Component {
 									siteData: response.data.siteList,
 									workStateFlag: true,
 								});
-								// this.handleRowSelect();
 								this.reset();
 							} else {
 								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
@@ -583,6 +583,7 @@ class siteInfo extends Component {
 									updateFlag: true,
 									disabledFlag: false,
 									workStateFlag: true,
+									deleteFlag:true,
 								})
 								this.setState(() => this.resetStates);
 							} else {
