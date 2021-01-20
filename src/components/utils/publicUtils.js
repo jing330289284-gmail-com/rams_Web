@@ -356,6 +356,8 @@ export function handleDownload(path, serverIP) {
 		xhr.send(JSON.stringify({
 			"name": path,
 		}));
+	}else{
+		alert('ファイルが存在しません。');
 	}
 
 }

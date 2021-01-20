@@ -149,6 +149,9 @@ class employeeSearch extends React.Component {
 				else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
+				this.refs.siteSearchTable.setState({
+					selectedRowKeys: [],
+				})
 				this.setState({
 					searchFlag: true,
 					rowSelectEmployeeNo: ''
@@ -655,8 +658,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 246, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customer"	/>
 												</div>
 											)}
 										/>
@@ -741,8 +743,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
-														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-developLanguage" id="developLanguage1" />
 												</div>
 											)}
 										/>
@@ -756,8 +757,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
-														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-developLanguage" id="developLanguage2" />
 												</div>
 											)}
 										/>
@@ -850,7 +850,8 @@ class employeeSearch extends React.Component {
 				<div >
 					<Row >
 						<Col sm={12}>
-							<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+							<BootstrapTable ref="siteSearchTable"
+								data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 								<TableHeaderColumn width='50' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
 								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
