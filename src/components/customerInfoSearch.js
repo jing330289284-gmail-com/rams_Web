@@ -438,7 +438,7 @@ class CustomerInfoSearch extends Component {
                                     }}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}
@@ -465,14 +465,14 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text>資本金</InputGroup.Text>
+                                    <InputGroup.Text id="sanKanji">資本金</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control placeholder="例：100" id="capitalStockFront" name="capitalStockFront" value={capitalStockFront}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockFront')} />{"~"}
                                 <Form.Control placeholder="例：100" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockBack')} />
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text>百万円</InputGroup.Text>
+                                    <InputGroup.Text id="sanKanji">百万円</InputGroup.Text>
                                 </InputGroup.Prepend>
                             </InputGroup>
                         </Col>
@@ -491,7 +491,7 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}
@@ -513,7 +513,7 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}

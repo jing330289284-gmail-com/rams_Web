@@ -33,9 +33,9 @@ class CustomerInfo extends Component {
         topCustomerDrop: store.getState().dropDown[35].slice(1),
         topCustomerName: '',//上位お客様のname
         rowNo: '',//行のコード
-        currPage:'',
-        customerDepartmentCode2:'',
-        positionCode2:'',
+        currPage: '',
+        customerDepartmentCode2: '',
+        positionCode2: '',
         customerDepartmentName: '',//部門コード
         customerDepartmentNameDrop: store.getState().dropDown[55].slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
@@ -131,7 +131,7 @@ class CustomerInfo extends Component {
             sendValue: this.props.location.state.sendValue,
             searchFlag: this.props.location.state.searchFlag,
             customerNoForPageChange: this.props.location.state.customerNo,
-            currPage:this.props.location.state.currPage,
+            currPage: this.props.location.state.currPage,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
@@ -178,8 +178,8 @@ class CustomerInfo extends Component {
                         businessStartDate: utils.converToLocalTime(customerInfoMod.businessStartDate, false),
                         establishmentDate: utils.converToLocalTime(customerInfoMod.establishmentDate, false),
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
-                        customerDepartmentCode2:customerInfoMod.customerDepartmentCode,
-                        positionCode2:customerInfoMod.positionCode,
+                        customerDepartmentCode2: customerInfoMod.customerDepartmentCode,
+                        positionCode2: customerInfoMod.positionCode,
                     })
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
@@ -253,6 +253,12 @@ class CustomerInfo extends Component {
             this.setState({
                 rowNo: row.rowNo,
                 customerDepartmentName: row.customerDepartmentCode,
+                customerDepartmentCode:row.customerDepartmentCode,
+                positionCode:row.positionCode,
+                typeOfIndustryCode:row.typeOfIndustryCode,
+                stationCode:row.stationCode,
+                developLanguageCode1:row.developLanguageCode1,
+                developLanguageCode2:row.developLanguageCode2,
             })
             $("#sakujo").attr("disabled", false);
         } else {
@@ -288,7 +294,7 @@ class CustomerInfo extends Component {
                 topCustomerDrop: topCustomerToroku.slice(1),
                 topCustomerInfo: null,
                 showCustomerInfoModal: false,
-            },()=>{
+            }, () => {
                 this.setState({
                     topCustomer: this.state.topCustomer,
                 })
@@ -385,24 +391,24 @@ class CustomerInfo extends Component {
     }
     getTopCustomer = (event, values) => {
         if (values != null) {
-            if(this.state.topCustomerInfo !== null){
+            if (this.state.topCustomerInfo !== null) {
                 this.setState({
-                    topCustomerDrop:this.state.topCustomerDrop.slice(0,this.state.topCustomerDrop.length-2)
+                    topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
                 })
             }
             this.setState({
                 topCustomer: values.code,
-                topCustomerInfo:null,
+                topCustomerInfo: null,
             })
         } else {
-            if(this.state.topCustomerInfo !== null){
+            if (this.state.topCustomerInfo !== null) {
                 this.setState({
-                    topCustomerDrop:this.state.topCustomerDrop.slice(0,this.state.topCustomerDrop.length-2)
+                    topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
                 })
             }
             this.setState({
                 topCustomer: "",
-                topCustomerInfo:null,
+                topCustomerInfo: null,
             })
         }
     }
@@ -500,6 +506,9 @@ class CustomerInfo extends Component {
     getStation = (no) => {
         this.state.customerDepartmentList[this.state.rowNo - 1].stationCode = no;
         this.formatStation(no);
+        this.setState({
+            stationCode:no,
+        })
     }
     // レコードおきゃく表示
     formatLanguage = (cell) => {
@@ -566,7 +575,7 @@ class CustomerInfo extends Component {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
-            .catch(error=> {
+            .catch(error => {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
     }
@@ -608,8 +617,10 @@ class CustomerInfo extends Component {
         var path = {};
         path = {
             pathname: this.state.backPage,
-            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange,
-                currPage:this.state.currPage,},
+            state: {
+                searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange,
+                currPage: this.state.currPage,
+            },
         }
         this.props.history.push(path);
     }
@@ -710,18 +721,18 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
+                                        <InputGroup.Text >お客様名</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="6" id="customerNo" name="customerNo" readOnly />
+                                    <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font color="red"
+                                        style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text >お客様名</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font color="red"
-                                        style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                    <Form.Control maxLength="6" id="customerNo" name="customerNo" readOnly />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -764,7 +775,7 @@ class CustomerInfo extends Component {
                                         dateFormat="yyyy/MM"
                                         autoComplete="off"
                                         locale="pt-BR"
-                                        id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
+                                        id={actionType === "detail" ? "customerInfoDatePickerReadOnly-establishmentDate" : "customerInfoDatePicker-establishmentDate"}
                                         yearDropdownItemNumber={15}
                                         scrollableYearDropdown
                                         showMonthYearPicker
@@ -854,7 +865,7 @@ class CustomerInfo extends Component {
                                         getOptionLabel={(option) => option.name}
                                         renderInput={(params) => (
                                             <div ref={params.InputProps.ref}>
-                                                <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                                <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo-topCustomer"
                                                 />
                                             </div>
                                         )}
@@ -994,7 +1005,7 @@ class CustomerInfo extends Component {
                         </div>
                     </Form>
                     <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
-                    <Form.Text style={{ "color": "#FFD700" }}>部門情報</Form.Text>
+                    <Form.Label style={{ "color": "#000000" }}>部門情報</Form.Label>
                     <Row>
                         <Col sm={8}></Col>
                         <Col sm={4}>
@@ -1032,11 +1043,11 @@ class CustomerInfo extends Component {
                                     dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }}>業種</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
                                     dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField='' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'>メイン言語</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField='' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="180">メイン言語</TableHeaderColumn>
                                 <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode1' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }}></TableHeaderColumn>
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} width="90"></TableHeaderColumn>
                                 <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode2' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }}></TableHeaderColumn>
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} width="90"></TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
                     </div>

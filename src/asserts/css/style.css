@@ -292,7 +292,25 @@ body {
 
 #customerInfoDatePicker {
   background-repeat: no-repeat;
-  width: 130%;
+  width:14.5rem;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+#customerInfoDatePicker-establishmentDate{
+  background-repeat: no-repeat;
+  width:15rem;
+  background-position: 10px 7px;
+  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+  padding-right: 0px;
+  height: calc(1.5em + .5rem + 2px);
+  background-color: white;
+}
+#customerInfoDatePickerReadOnly-establishmentDate{
+  background-repeat: no-repeat;
+  width:15rem;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -300,10 +318,9 @@ body {
   background-color: white;
 }
 
-
 #customerInfoDatePickerReadOnly {
   background-repeat: no-repeat;
-  width: 130%;
+  width: 13rem;
   background-position: 10px 7px;
   background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
   padding-right: 0px;
@@ -769,7 +786,25 @@ body {
 }
 
 .Autocompletestyle-customerInfo {
-  width: 14rem;
+  width: 15.2rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-customerInfoSearch{
+  width: 14.5rem;
+  height: 31px;
+  border-color: "#ced4da";
+  border-width: 1;
+  border-style: "solid";
+  font-size: ".875rem";
+  color: "#495057"
+}
+.Autocompletestyle-customerInfo-topCustomer {
+  width: 14.5rem;
   height: 31px;
   border-color: "#ced4da";
   border-width: 1;
@@ -946,6 +981,9 @@ padding: 1rem;
 }
 @media screen and (max-width: 1550px) {
 
+  #sanKanji{
+    width: 3.5rem;
+  }
   .Autocompletestyle-siteInfoSearch-bpCustomerNo{
     width: 10.3rem;
     height: 31px;
@@ -994,6 +1032,24 @@ padding: 1rem;
   #customerInfoDatePicker {
     background-repeat: no-repeat;
     width: 10rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+  }
+  #customerInfoDatePicker-establishmentDate{
+    background-repeat: no-repeat;
+    width:10.3rem;
+    background-position: 10px 7px;
+    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+    padding-right: 0px;
+    height: calc(1.5em + .5rem + 2px);
+    background-color: white;
+  }
+  #customerInfoDatePickerReadOnly-establishmentDate{
+    background-repeat: no-repeat;
+    width:10.3rem;
     background-position: 10px 7px;
     background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
     padding-right: 0px;
@@ -1185,6 +1241,15 @@ padding: 1rem;
   width: 3rem;
 }
   .Autocompletestyle-customerInfo {
+    width: 10.4rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
+  .Autocompletestyle-customerInfoSearch{
     width: 10rem;
     height: 31px;
     border-color: "#ced4da";
@@ -1193,7 +1258,15 @@ padding: 1rem;
     font-size: ".875rem";
     color: "#495057"
   }
-
+  .Autocompletestyle-customerInfo-topCustomer {
+    width: 10rem;
+    height: 31px;
+    border-color: "#ced4da";
+    border-width: 1;
+    border-style: "solid";
+    font-size: ".875rem";
+    color: "#495057"
+  }
   .Autocompletestyle-situation {
     width: 4.5rem;
     height: 31px;
