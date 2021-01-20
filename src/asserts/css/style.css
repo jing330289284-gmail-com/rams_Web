@@ -1084,7 +1084,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: #e9ecef;
-    width: 10rem;
+    width: 9.95rem;
   }
   #admissionEndDate {
     background-repeat: no-repeat;
@@ -1093,7 +1093,7 @@ padding: 1rem;
     padding-right: 0px;
     height: calc(1.5em + .5rem + 2px);
     background-color: white;
-    width: 10rem;
+    width: 9.95rem;
   }
   #siteAdmissionStartReadonlyDefault {
     background-repeat: no-repeat;

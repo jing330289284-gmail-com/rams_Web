@@ -900,6 +900,7 @@ class siteInfo extends Component {
 												id={this.state.workState !== "0" ? pageDisabledFlag ? "siteDatePickerReadonlyDefault" : "admissionEndDate" : "siteDatePickerReadonlyDefault"}
 												disabled={this.state.employeeName === '' ? true : this.state.workState === "0" ? true : pageDisabledFlag ? true : false}
 											/>
+											<font color="red" hidden={this.state.workState === "0" ? true : false} className="site-mark">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
