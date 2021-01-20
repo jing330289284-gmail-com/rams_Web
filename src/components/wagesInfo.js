@@ -785,7 +785,7 @@ class WagesInfo extends Component {
                                             style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={2}>
+                                <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>社会保険</InputGroup.Text>
@@ -805,10 +805,10 @@ class WagesInfo extends Component {
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={5}>
+                                <Col sm={4}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>厚生</InputGroup.Text>
+                                            <InputGroup.Text id="niKanji">厚生</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             readOnly
@@ -817,7 +817,7 @@ class WagesInfo extends Component {
                                             name="welfarePensionAmount"
                                             value={welfarePensionAmount} />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>健康</InputGroup.Text>
+                                            <InputGroup.Text id="niKanji">健康</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             readOnly
@@ -826,7 +826,7 @@ class WagesInfo extends Component {
                                             onChange={this.valueChange}
                                             value={healthInsuranceAmount} />
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>総額</InputGroup.Text>
+                                            <InputGroup.Text id="niKanji">総額</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             readOnly
@@ -838,8 +838,8 @@ class WagesInfo extends Component {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <Col sm={5}>
+                                    <InputGroup size="sm">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="sixKanji">次回に昇給月</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -854,17 +854,13 @@ class WagesInfo extends Component {
                                                 minDate={new Date()}
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
-                                                id="wagesInfoDatePicker"
+                                                id="wagesInfoDatePicker-nextRaiseMonth"
                                                 dateFormat={"yyyy/MM"}
                                                 name="nextRaiseMonth"
                                                 locale="ja"
                                                 disabled={actionType === "detail" ? true : false}
                                             />
                                         </InputGroup.Append>
-                                    </InputGroup>
-                                </Col>
-                                <Col sm={2}>
-                                    <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>ボーナス</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -881,32 +877,6 @@ class WagesInfo extends Component {
                                                 </option>
                                             )}
                                         </FormControl>
-                                    </InputGroup>
-                                </Col>
-                                <Col sm={4}>
-                                    <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>前回額</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl
-                                            onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}
-                                            name="lastTimeBonusAmount"
-                                            maxLength="7"
-                                            readOnly
-                                            placeholder="例：400000"
-                                            value={lastTimeBonusAmount === "" ? this.state.lastTimeBonusAmountForInsert : lastTimeBonusAmount} />
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>予定額</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl
-                                            readOnly={bonusFlag === "1" ? false : true}
-                                            onChange={this.valueChangeMoney}
-                                            disabled={actionType === "detail" ? true : false}
-                                            name="scheduleOfBonusAmount"
-                                            maxLength="8"
-                                            placeholder="例：400000"
-                                            value={scheduleOfBonusAmount} />
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
@@ -937,10 +907,36 @@ class WagesInfo extends Component {
                                         </InputGroup.Append>
                                     </InputGroup>
                                 </Col>
+                                <Col sm={4}>
+                                    <InputGroup size="sm" className="mb-3">
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>前回額</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl
+                                            onChange={this.valueChange}
+                                            disabled={actionType === "detail" ? true : false}
+                                            name="lastTimeBonusAmount"
+                                            maxLength="7"
+                                            readOnly
+                                            placeholder="例：400000"
+                                            value={lastTimeBonusAmount === "" ? this.state.lastTimeBonusAmountForInsert : lastTimeBonusAmount} />
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>予定額</InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl
+                                            readOnly={bonusFlag === "1" ? false : true}
+                                            onChange={this.valueChangeMoney}
+                                            disabled={actionType === "detail" ? true : false}
+                                            name="scheduleOfBonusAmount"
+                                            maxLength="8"
+                                            placeholder="例：400000"
+                                            value={scheduleOfBonusAmount} />
+                                    </InputGroup>
+                                </Col>
                             </Row>
                             <Row>
-                                <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
+                                <Col sm={5}>
+                                    <InputGroup size="sm">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>総額</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -954,10 +950,6 @@ class WagesInfo extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                    </InputGroup>
-                                </Col>
-                                <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>反映年月</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -973,7 +965,7 @@ class WagesInfo extends Component {
                                                 // minDate={new Date()}
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
-                                                id="wagesInfoDatePicker"
+                                                id="wagesInfoDatePicker-reflectYearAndMonth"
                                                 dateFormat={"yyyy/MM"}
                                                 name="reflectYearAndMonth"
                                                 locale="ja"
@@ -1002,7 +994,7 @@ class WagesInfo extends Component {
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={3}>
+                                <Col sm={4}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>備考</InputGroup.Text>
