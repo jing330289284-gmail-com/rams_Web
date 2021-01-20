@@ -37,8 +37,10 @@ class employeeInsert extends React.Component {
 		showBankInfoModalFlag: false,// 口座情報画面フラグ
 		showpasswordSetModalFlag: false,// PW設定
 		showBpInfoModalFlag: false,// bp情報
+		intoCompanyYearAndMonthDisabled: false,// 入社年月の活性フラグ
 		retirementYearAndMonthDisabled: false,// 退職年月の活性フラグ
 		residenceTimeDisabled: false,// 在留期間の活性フラグ
+		image:"https://images.669pic.com/element_pic/54/25/82/94/d2825498dd97a2594c35d633e8454d19.jpg_w700wb",
 		myToastShow: false,
 		errorsMessageShow: false,
 		accountInfo: null,// 口座情報のデータ
@@ -105,7 +107,7 @@ class employeeInsert extends React.Component {
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),// 専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
-			intoCompanyYearAndMonth: publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false),// 入社年月
+			intoCompanyYearAndMonth: this.state.employeeStatus==='0' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),// 退職年月
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),// 出身地
@@ -363,7 +365,7 @@ class employeeInsert extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3', });
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3',intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
 			this.getNO("BP");
 		} else {
 			this.getNO("LYC");
@@ -583,7 +585,7 @@ class employeeInsert extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.employeeStatusChange.bind(this)}
 										name="employeeStatus" value={employeeStatus}
-										autoComplete="off" >
+										autoComplete="off">
 										{this.state.employeeStatusS.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -598,8 +600,21 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 
 								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+							</InputGroup.Prepend>
+							<Form.Control as="select" size="sm"
+								onChange={this.valueChangeEmployeeFormCode}
+								name="employeeFormCode" value={employeeFormCode}
+								autoComplete="off" style={{width:75}} disabled={employeeStatus === "0" ? false : true}>
+								{this.state.employeeFormCodes.map(date =>
+									<option key={date.code} value={date.code}>
+										{date.name}
+									</option>
+								)}
+							</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+										<InputGroup.Text  id="twoKanji">性別</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -626,19 +641,7 @@ class employeeInsert extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChangeEmployeeFormCode}
-										name="employeeFormCode" value={employeeFormCode}
-										autoComplete="off" disabled={employeeStatus === "0" ? false : true}>
-										{this.state.employeeFormCodes.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
+									
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -800,9 +803,10 @@ class employeeInsert extends React.Component {
 											dateFormat="yyyy/MM"
 											showMonthYearPicker
 											showFullMonthYearPicker
-											id="datePicker"
 											className="form-control form-control-sm"
 											autoComplete="off"
+											disabled={employeeStatus === "0" ? false : true}
+											id={employeeStatus === "0" ? "datePicker" : "datePickerReadonlyDefault"}
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1162,7 +1166,7 @@ class employeeInsert extends React.Component {
 									</InputGroup.Prepend>
 										<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12"/>
-									<font style={{ marginLeft: "25px", marginRight: "0px" }}></font>
+									<font style={{ marginLeft: "23px", marginRight: "0px" }}></font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -1215,7 +1219,7 @@ class employeeInsert extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
-									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"style={{ width: 100}}
+									<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30" style={{ width: 100}}
 										onChange={this.valueChange} size="sm" name="resumeName1" />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 
