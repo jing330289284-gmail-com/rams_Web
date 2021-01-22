@@ -144,7 +144,7 @@ class bpInfo extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={6}>
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
@@ -159,23 +159,19 @@ class bpInfo extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input placeholder="  BP所属" type="text" {...params.inputProps} className="auto" id="bpBelongCustomerCode"
-													style={{ height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": this.props.actionType === "detail" ? "#e9ecef" : "" }} />
+												<input placeholder="  BP所属" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-bpInfo-bpBelongCustomerCode" id="bpBelongCustomerCode"
+													style={{"backgroundColor": this.props.actionType === "detail" ? "#e9ecef" : "" }} />
 											</div>
 										)}
 									/>
-
-
-
-
 								</InputGroup>
 							</Col>
-							<Col sm={6}>
+							<Col sm={7}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off"
+									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off" 
 										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='3' disabled={this.props.actionType === "detail" ? true : false} />
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
@@ -184,7 +180,7 @@ class bpInfo extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={6}>
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">営業状況</InputGroup.Text>
@@ -201,7 +197,7 @@ class bpInfo extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={6}>
+							<Col sm={7}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="sevenKanji">所属現場終年月</InputGroup.Text>
@@ -214,7 +210,7 @@ class bpInfo extends React.Component {
 										showFullMonthYearPicker
 										showDisabledMonthNavigation
 										className="form-control form-control-sm"
-										id={this.props.actionType === "detail" ? "datePickerReadonlyDefault" : "datePicker"}
+										id={this.props.actionType === "detail" ? "datePickerReadonlyDefault-bpInfo" : "datePicker-bpInfo"}
 										dateFormat={"yyyy/MM"}
 										locale="ja"
 										disabled={this.props.actionType === "detail" ? true : false}

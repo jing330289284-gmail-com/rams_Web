@@ -5,7 +5,7 @@ import $ from 'jquery';
 import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo,faEdit } from '@fortawesome/free-solid-svg-icons';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 
@@ -248,13 +248,9 @@ resetValue=()=>{
                     <Form id="bankForm">
                         <Row>
                             <Col>
-                                <Navbar>
-                                    <Navbar.Collapse>
-                                        <Navbar.Text>
-                                            <a>{accountInfoName}</a>
-                                        </Navbar.Text>
-                                    </Navbar.Collapse>
-                                </Navbar>
+                            <InputGroup size="sm" className="mb-3">
+                            <a>{accountInfoName}</a>
+                        </InputGroup>
                             </Col>
                         </Row>
                         <Row>
@@ -329,15 +325,15 @@ resetValue=()=>{
                             <Col className="text-center">
                                 {actionType === "update" ?
                                     <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="toroku" type="button">
-                                        <FontAwesomeIcon icon={faSave} />更新
+                                        <FontAwesomeIcon icon={faEdit} /> 更新
                         </Button>
                                     :
                                     <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="accountToroku" type="button">
-                                        <FontAwesomeIcon icon={faSave} />登録
+                                        <FontAwesomeIcon icon={faSave} /> 登録
                         </Button>
                                 }
                                 {" "}<Button onClick={this.resetValue} variant="info" size="sm" id="accountReset" value="Reset" >
-                                    <FontAwesomeIcon icon={faUndo} />リセット
+                                    <FontAwesomeIcon icon={faUndo} /> リセット
                                 </Button>
                             </Col>
                         </Row>

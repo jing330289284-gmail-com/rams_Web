@@ -1,50 +1,48 @@
 .styletest {
 	margin: 0px;
 	padding: 0px;
-  
-  }
-  
-  .inputWithoutBorder {
+}
+
+.inputWithoutBorder {
 	border-left-width: 0px;
 	border-top-width: 0px;
 	border-right-width: 0px;
 	border-bottom: 1px solid #000;
 	background-color: transparent;
-  }
-  
-  .inputWithoutBorder:focus {
+}
+
+.inputWithoutBorder:focus {
 	outline: none;
 	border-bottom: 1px solid #000;
 	background-color: transparent;
-  }
-  
-  .pageNumCss {
+}
+
+.pageNumCss {
 	width: 45px !important;
 	border: 1px solid #17A2B8;
 	color: #17A2B8;
 	text-align: center;
 	font-weight: bold;
-  }
-  
-  .changeColor {
+}
+
+.changeColor {
 	color: black;
 	background-color: #F8F8F8 !important;
-  }
-  
-  .optionCss {
+}
+
+.optionCss {
 	width: 130px !important;
-  }
-  
-  
-  .detailForm {
+}
+
+.detailForm {
 	width: 1100px !important;
-  }
-  
-  .font20 {
+}
+
+.font20 {
 	font-size: 10px
-  }
-  
-  .dateInput {
+}
+
+.dateInput {
 	border: 0px;
 	background-position: 3px;
 	width: 27px;
@@ -52,102 +50,105 @@
 	line-height: 40px;
 	font-size: 0px;
 	overflow: hidden;
-  }
-  
-  
-  body {
+}
+
+body {
 	font-family: Helvetica, sans-serif;
-  }
-  
-  .modal-passwordSet {
+}
+
+.modal-passwordSet {
 	width: 25%;
 	max-width: none !important;
-  }
-  
-  .modal-bankInfo {
+}
+
+.modal-bankInfo {
 	width: 30%;
 	max-width: none !important;
-  }
-  
-  .modal-subCost {
+}
+
+.modal-subCost {
 	width: 90%;
 	max-width: none !important;
-  }
-  
-  .modal-siteInfo {
+}
+
+.modal-siteInfo {
 	width: 80%;
 	max-width: none !important;
-  }
-  
-  .modal-customerInfo {
+}
+
+.modal-customerInfo {
 	width: 80%;
 	max-width: none !important;
-  }
-  
-  .modal-kengen {
+}
+
+.modal-kengen {
 	width: 40%;
 	max-width: none !important;
-  }
-  
-  .modal-breakTime {
+}
+
+.modal-breakTime {
 	width: 50%;
 	max-width: none !important;
-  }
-  
-  .modal-expensesInfo {
+}
+
+.modal-expensesInfo {
 	width: 50%;
 	max-width: none !important;
-  }
-  
-  .modal-accountInfo {
+}
+
+.modal-accountInfo {
 	width: 30%;
 	max-width: none !important;
-  }
-  
-  .modal-topCustomerInfo {
+}
+
+.modal-topCustomerInfo {
 	width: 28%;
 	max-width: none !important;
-  }
-  
-  .modal-otherCost {
+}
+
+.modal-otherCost {
 	width: 70%;
 	max-width: none !important;
-  }
-  
-  #datePicker {
+}
+
+#datePicker {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 8rem !important;
-  }
-  
-  #datePickerReadonlyDefault {
+}
+
+#datePickerReadonlyDefault {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 8rem !important;
-  }
-  
-  #siteDatePickerReadonlyDefault {
+}
+
+#siteDatePickerReadonlyDefault {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 14.5rem;
-  }
-  
-  #datePickerReadonly {
+}
+
+#datePickerReadonly {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
@@ -155,333 +156,365 @@
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 125px;
-  }
-  
-  #datePicker2 {
+}
+
+#datePicker2 {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 125px;
-  }
-  #scheduledEndDate-siteInfo{
+}
+
+#scheduledEndDate-siteInfo {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 14.5rem;
-  }
-  #scheduledEndDate-siteInfoReadOnly{
+}
+
+#scheduledEndDate-siteInfoReadOnly {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 14.5rem;
-  }
-  #scheduledEndDate{
+}
+
+#scheduledEndDate {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 14.5rem;
-  }
-  #admissionStartDate {
+}
+
+#admissionStartDate {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 6.7rem;
-  }
-  #admissionStartDateReadOnly {
+}
+
+#admissionStartDateReadOnly {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 6.7rem;
-  }
-  #admissionEndDate {
+}
+
+#admissionEndDate {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 14.5rem;
-  }
-  
-  #wagesInfoDatePicker {
+}
+
+#wagesInfoDatePicker {
 	background-repeat: no-repeat;
 	width: 12.6rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #wagesInfoDatePicker-nextRaiseMonth{
+}
+
+#wagesInfoDatePicker-nextRaiseMonth {
 	background-repeat: no-repeat;
 	width: 9.5rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #wagesInfoDatePicker-reflectYearAndMonth{
+}
+
+#wagesInfoDatePicker-reflectYearAndMonth {
 	background-repeat: no-repeat;
 	width: 12rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #wagesInfoDatePickerReadOnly {
+}
+
+#wagesInfoDatePickerReadOnly {
 	background-repeat: no-repeat;
 	width: 12.6rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-  }
-  
-  #expensesInfoDatePicker {
+}
+
+#expensesInfoDatePicker {
 	background-repeat: no-repeat;
 	width: 10rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #nextRaiseMonthDatePicker {
+}
+
+#nextRaiseMonthDatePicker {
 	background-repeat: no-repeat;
 	width: 240px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #customerInfoSearchDatePicker {
+}
+
+#customerInfoSearchDatePicker {
 	background-repeat: no-repeat;
 	width: 230px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #personalsalesSearchDatePicker {
+}
+
+#personalsalesSearchDatePicker {
 	background-repeat: no-repeat;
 	width: 225px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #personalsalesSearchBackDatePicker {
+}
+
+#personalsalesSearchBackDatePicker {
 	background-repeat: no-repeat;
 	width: 225px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #customerInfoDatePicker {
+}
+
+#customerInfoDatePicker {
 	background-repeat: no-repeat;
-	width:14.5rem;
+	width: 14.5rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #customerInfoDatePicker-establishmentDate{
+}
+
+#customerInfoDatePicker-establishmentDate {
 	background-repeat: no-repeat;
-	width:15rem;
+	width: 15rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #customerInfoDatePickerReadOnly-establishmentDate{
+}
+
+#customerInfoDatePickerReadOnly-establishmentDate {
 	background-repeat: no-repeat;
-	width:15rem;
+	width: 15rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #customerInfoDatePickerReadOnly {
+}
+
+#customerInfoDatePickerReadOnly {
 	background-repeat: no-repeat;
 	width: 13rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-  }
-  
-  
-  #monthlysalesSearchDatePicker {
+}
+
+#monthlysalesSearchDatePicker {
 	background-repeat: no-repeat;
 	width: 215px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #customerSalesListDatePicker {
+}
+
+#customerSalesListDatePicker {
 	background-repeat: no-repeat;
 	width: 160px;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  .modal-pbinfoSet {
-	width: 40%;
+}
+
+.modal-pbinfoSet {
+	width: 30.5%;
 	max-width: none !important;
-  }
-  
-  .customClass {
+}
+
+.customClass {
 	line-height: 20px;
 	padding: 0px;
-  }
-  
-  .react-bs-table-tool-bar {
+}
+
+.react-bs-table-tool-bar {
 	display: none;
-  }
-  
-  .dutyRegistration-DataTable .table td {
+}
+
+.dutyRegistration-DataTable .table td {
 	padding: 5px 5px 5px 5px;
-  }
-  
-  .dutyRegistration-DataTableTh {
+}
+
+.dutyRegistration-DataTableTh {
 	background-color: #4eacfe;
-  }
-  
-  .dutyRegistration-DataTableRow {
+}
+
+.dutyRegistration-DataTableRow {
 	line-height: 20px;
-  }
-  
-  .dutyRegistration-DataTableSleep {
+}
+
+.dutyRegistration-DataTableSleep {
 	background-color: #b6b2b2;
 	color: black;
-  }
-  
-  .dutyRegistration-DataTableEditingCell input {
+}
+
+.dutyRegistration-DataTableEditingCell input {
 	height: 20px;
 	padding: 1px 1px 1px 4px;
-  }
-  
-  .dutyRegistration-DataTableEditingCell select {
+}
+
+.dutyRegistration-DataTableEditingCell select {
 	height: 20px;
 	padding: 0px 0px 0px 0px;
 	font-size: 14px;
-  }
-  
-  .dutyRegistration-DataTableEditingCell {
+}
+
+.dutyRegistration-DataTableEditingCell {
 	height: 20px;
 	padding: 0px 0px 0px 0px;
 	font-size: 14px;
-  }
-  
-  .auto:focus {
+}
+
+.auto:focus {
 	background: #FFFFFF;
 	outline: 3px solid #B8D7F8;
-  }
-  
-  .dutyRegistration-Error {
+}
+
+.dutyRegistration-Error {
 	background-color: #eb5959;
-  }
-  
-  .dutyRegistration-IsChanged {
+}
+
+.dutyRegistration-IsChanged {
 	background-color: #eb5959;
-  }
-  
-  .dutyRegistration-Work2Work {
+}
+
+.dutyRegistration-Work2Work {
 	background-color: #f5f5f5;
 	color: black;
-  }
-  
-  .dutyRegistration-Work2Sleep {
+}
+
+.dutyRegistration-Work2Sleep {
 	background-color: yellow;
 	color: black;
-  }
-  
-  .dutyRegistration-Sleep2Sleep {
+}
+
+.dutyRegistration-Sleep2Sleep {
 	background-color: #b6b2b2;
 	color: black;
-  }
-  
-  .dutyRegistration-Sleep2Work {
+}
+
+.dutyRegistration-Sleep2Work {
 	background-color: #b6b2b2;
 	color: #ffc107;
-  }
-  
-  .custom-file {
+}
+
+.custom-file {
 	height: 31px;
-  }
-  
-  .custom-file {
+}
+
+.custom-file {
 	height: 31px;
-  }
-  
-  #custom-file {
+}
+
+#custom-file {
 	height: 31px;
-  }
-  
-  .custom-file-input {
+}
+
+.custom-file-input {
 	height: 31px;
-  }
-  
-  .custom-file-label {
+}
+
+.custom-file-label {
 	height: 31px;
-  }
-  
-  .col-hidden {
+}
+
+.col-hidden {
 	display: none
-  }
-  
-  .custom-file-input {
+}
+
+.custom-file-input {
 	width: 4px !important;
-  }
-  
-  .hikadoButton {
+}
+
+.hikadoButton {
 	font-size: 8px;
 	height: 24px;
-  }
-  
-  .Autocomplete-style {
+}
+
+.Autocomplete-style {
 	width: 10rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -489,52 +522,54 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  #enterPeriodSearchDatePicker {
+}
+
+#enterPeriodSearchDatePicker {
 	background-repeat: no-repeat;
 	width: 10rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #datePicker {
+}
+
+#datePicker {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
 	width: 10rem;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  #datePickerReadonlyDefault {
+}
+
+#datePickerReadonlyDefault {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
 	width: 10rem;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-  }
-  
-  .input-group-text {
+}
+
+.input-group-text {
 	background-color: #76a8af;
 	font-family: "幼�?";
 	color: rgb(255, 255, 255);
 	width: 4.8rem;
 	/* width:4.5rem; */
-  }
-  
-  
-  .fileUploader {
+}
+
+.fileUploader {
 	width: 50% !important;
-  }
-  
-  .fileContainer {
+}
+
+.fileContainer {
 	background: #fff;
 	box-shadow: none;
 	position: relative;
@@ -546,14 +581,14 @@
 	flex-direction: column;
 	transition: all 0.3s ease-in;
 	height: 160px;
-  }
-  
-  .fileContainer p:empty {
+}
+
+.fileContainer p:empty {
 	font-size: 12px;
 	margin: 0;
-  }
-  
-  .fileContainer .uploadPicturesWrapper {
+}
+
+.fileContainer .uploadPicturesWrapper {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -561,13 +596,13 @@
 	/* top: -51px; */
 	width: 160px;
 	height: auto;
-  }
-  
-  .uploadPicturesWrapper>div:empty {
+}
+
+.uploadPicturesWrapper>div:empty {
 	height: 0px;
-  }
-  
-  .fileContainer .uploadPictureContainer {
+}
+
+.fileContainer .uploadPictureContainer {
 	width: 160px !important;
 	/*  height: 160px !important; */
 	/* margin: 5%; */
@@ -580,9 +615,9 @@
 	/*  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.1); */
 	/* border: 1px solid #d0dbe4; */
 	position: relative;
-  }
-  
-  .fileContainer .deleteImage {
+}
+
+.fileContainer .deleteImage {
 	position: absolute;
 	right: unset;
 	top: unset;
@@ -604,21 +639,21 @@
 	color: black;
 	overflow: hidden;
 	text-indent: -156px;
-  }
-  
-  .fileContainer .deleteImage:after {
+}
+
+.fileContainer .deleteImage:after {
 	content: "Delete image";
 	position: absolute;
 	right: -45px;
 	font-size: 16px;
-  }
-  
-  .fileContainer .uploadPictureContainer img.uploadPicture {
+}
+
+.fileContainer .uploadPictureContainer img.uploadPicture {
 	/* width: 160px; */
 	height: 90px !important;
-  }
-  
-  .fileContainer .errorsContainer {
+}
+
+.fileContainer .errorsContainer {
 	max-width: 160px;
 	font-size: 12px;
 	position: absolute;
@@ -631,13 +666,13 @@
 	margin: 0 auto;
 	width: 79%;
 	border-radius: 6px;
-  }
-  
-  .fileContainer .errorsContainer:empty {
+}
+
+.fileContainer .errorsContainer:empty {
 	opacity: 0;
-  }
-  
-  .fileContainer .chooseFileButton {
+}
+
+.fileContainer .chooseFileButton {
 	/*  padding: 6px 23px; */
 	/*   background-image: url(./icon_upload.svg); */
 	background-color: #c1c1c1;
@@ -655,60 +690,62 @@
 	border: none;
 	width: 95%;
 	height: 100%;
-  }
-  
-  .fileContainer .chooseFileButton:hover {
+}
+
+.fileContainer .chooseFileButton:hover {
 	/*  background-image: url(./icon_upload.svg); */
 	background-color: #c1c1c1;
 	background-repeat: no-repeat;
 	background-position: 50% 23%;
 	background-size: 25%;
-  }
-  
-  #twoKanji {
+}
+
+#twoKanji {
 	width: 3rem;
-  }
-  
-  #fiveKanji {
+}
+
+#fiveKanji {
 	width: 5.5rem;
-  }
-  
-  #sixKanji {
+}
+
+#sixKanji {
 	width: 6.5rem;
-  }
-  #sevenKanji {
+}
+
+#sevenKanji {
 	width: 7.5rem;
-  }
-  
-  .eightKanji {
+}
+
+.eightKanji {
 	width: 8.5rem;
-  }
-  
-  .fileUploader .fileContainer {
+}
+
+.fileUploader .fileContainer {
 	display: flex;
 	flex-direction: row-reverse;
 	padding: 10px 10px;
 	box-shadow: none;
 	margin: 0 0 0 0;
-  }
-  
-  .fileUploader .fileContainer .uploadPicturesWrapper {
+}
+
+.fileUploader .fileContainer .uploadPicturesWrapper {
 	border: 1px solid #e1e1e1;
 	order: 1;
 	min-height: 200px;
 	margin-right: 15px;
-  }
-  
-  .ageCss {
+}
+
+.ageCss {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  
-  .Autocompletestyle {
+}
+
+.Autocompletestyle {
 	width: 10rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -716,9 +753,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-master {
+}
+
+.Autocompletestyle-master {
 	width: 17.8rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -726,9 +763,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-costRe {
+}
+
+.Autocompletestyle-costRe {
 	width: 7.9rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -736,9 +773,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-siteInfo {
+}
+
+.Autocompletestyle-siteInfo {
 	width: 15.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -746,8 +783,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfo-developLanguageCode {
+}
+
+.Autocompletestyle-siteInfo-developLanguageCode {
 	width: 15.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -755,8 +793,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfo-topCustomer{
+}
+
+.Autocompletestyle-siteInfo-topCustomer {
 	width: 13.5rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -764,8 +803,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch{
+}
+
+.Autocompletestyle-siteInfoSearch {
 	width: 12rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -773,8 +813,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch-station {
+}
+
+.Autocompletestyle-siteInfoSearch-station {
 	width: 15.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -782,8 +823,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch-employeeNo{
+}
+
+.Autocompletestyle-siteInfoSearch-employeeNo {
 	width: 14.5rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -791,9 +833,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-siteInfo-relatedEmployees {
+}
+
+.Autocompletestyle-siteInfo-relatedEmployees {
 	width: 9.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -801,18 +843,19 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-customerInfo {
-	width: 15.2rem;
+}
+
+.Autocompletestyle-customerInfo {
+	width: 15.1rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-customerInfoSearch{
+}
+
+.Autocompletestyle-customerInfoSearch {
 	width: 14.5rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -820,8 +863,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-customer {
+}
+
+.Autocompletestyle-customer {
 	width: 15.3rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -830,6 +874,7 @@
 	font-size: ".875rem";
 	color: "#495057"
 }
+
 .Autocompletestyle-developLanguage {
 	width: 7.68rem;
 	height: 31px;
@@ -839,7 +884,8 @@
 	font-size: ".875rem";
 	color: "#495057"
 }
-  .Autocompletestyle-customerInfo-topCustomer {
+
+.Autocompletestyle-customerInfo-topCustomer {
 	width: 14.5rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -847,9 +893,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-situation {
+}
+
+.Autocompletestyle-situation {
 	width: 7.8rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -857,9 +903,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-salesSend {
+}
+
+.Autocompletestyle-salesSend {
 	width: 7.8rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -867,9 +913,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  
-  .Autocompletestyle-projectInfo {
+}
+
+.Autocompletestyle-projectInfo {
 	width: 12.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -877,51 +923,61 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  #workStartPeriodDatePicker{
+}
+
+#workStartPeriodDatePicker {
 	background-repeat: no-repeat;
 	width: 8rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  #workStartPeriodDatePickerReadOnly{
+}
+
+#workStartPeriodDatePickerReadOnly {
 	background-repeat: no-repeat;
 	width: 8rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-  }
-  #projectInfoDatepicker{
+}
+
+#projectInfoDatepicker {
 	background-repeat: no-repeat;
 	width: 8rem;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-  }
-  .projectInfoDetailTitle{
-  padding: 1rem;
-  }
-  .projectInfoDetail{
+}
+
+.projectInfoDetailTitle {
+	padding: 1rem;
+}
+
+.projectInfoDetail {
 	height: 10rem;
-	  border-bottom-color: #ffffff;
+	border-bottom-color: #ffffff;
 	margin-bottom: -0.3rem;
-	resize:none
-  }
-  .textNum{
+	resize: none
+}
+
+.textNum {
 	padding: 1rem;
 	margin-top: -1rem;
 	font-size: 14px;
 	margin-bottom: -0.3rem;
 	color: rgb(179, 179, 179);
-  }
-  .Autocompletestyle-branchInsertInfo {
+}
+
+.Autocompletestyle-branchInsertInfo {
 	width: 17.8rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -929,44 +985,51 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .popoverC{
-	max-width:450px !important;
-  }
-  
-  
-  .projectContentDetail{
+}
+
+.popoverC {
+	max-width: 450px !important;
+}
+
+.projectContentDetail {
 	border: none;
 	outline: none;
 	box-shadow: none;
 	background-color: white;
-  }
-  .input-group-text input[type=checkbox]{
+}
+
+.input-group-text input[type=checkbox] {
 	margin-top: 0;
 	width: 1rem;
-  }
-  #checkBox .input-group-text{
+}
+
+#checkBox .input-group-text {
 	width: 3rem;
-  }
-  #siteAdmissionStartReadonlyDefault {
+}
+
+#siteAdmissionStartReadonlyDefault {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 	width: 7rem;
-  }
-  #siteAdmissionStart {
+}
+
+#siteAdmissionStart {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
-	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
 	width: 7rem;
-  }
-  .Autocompletestyle-siteInfo-employeeNo{
+}
+
+.Autocompletestyle-siteInfo-employeeNo {
 	width: 13rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -974,12 +1037,14 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .site-mark{
+}
+
+.site-mark {
 	width: 0.001rem;
 	margin-left: 0.15rem;
-  }
-  .Autocompletestyle-siteInfoSearch-customerNo{
+}
+
+.Autocompletestyle-siteInfoSearch-customerNo {
 	width: 15.2rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -987,8 +1052,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch-topCustomer{
+}
+
+.Autocompletestyle-siteInfoSearch-topCustomer {
 	width: 13.5rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -996,8 +1062,9 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch-developLanguageCode{
+}
+
+.Autocompletestyle-siteInfoSearch-developLanguageCode {
 	width: 6rem;
 	height: 31px;
 	border-color: "#ced4da";
@@ -1005,288 +1072,373 @@
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  .Autocompletestyle-siteInfoSearch-bpCustomerNo{
-	width:15rem;
+}
+
+.Autocompletestyle-siteInfoSearch-bpCustomerNo {
+	width: 15rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
 	border-style: "solid";
 	font-size: ".875rem";
 	color: "#495057"
-  }
-  @media screen and (max-width: 1550px) {
-  
-	#sanKanji{
-	  width: 3.5rem;
+}
+
+.Autocompletestyle-employeeInsert-developLanguage {
+	width: 11.87rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
+.Autocompletestyle-employeeInsert-upload {
+	width: 7.25rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
+#Autocompletestyle-employeeInsert-resumeInfo {
+	width: 7.9rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
+#Autocompletestyle-employeeInsert-employeeFormCode {
+	width: 4.8rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
+.Autocompletestyle-bpInfo-bpBelongCustomerCode {
+	width: 7.5rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: 0.85rem;
+	color: "#495057"
+}
+
+#datePickerReadonlyDefault-bpInfo {
+	background-repeat: no-repeat;
+	background-position: 15px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: #e9ecef;
+	width: 10.6rem !important;
+}
+
+#datePicker-bpInfo {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+	width: 10.6rem !important;
+}
+
+@media screen and (max-width: 1550px) {
+	#sanKanji {
+		width: 3.5rem;
 	}
-	#niKanji{
-	  width: 2.8rem;
+	#niKanji {
+		width: 2.8rem;
 	}
-	.Autocompletestyle-siteInfoSearch-bpCustomerNo{
-	  width: 10.3rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfoSearch-bpCustomerNo {
+		width: 10.3rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.Autocompletestyle-siteInfoSearch-topCustomer{
-	  width: 9rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfoSearch-topCustomer {
+		width: 9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-siteInfoSearch-station {
-	  width: 10.4rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.Autocompletestyle-siteInfoSearch-employeeNo{
-	  width: 10rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfoSearch-employeeNo {
+		width: 10rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.Autocompletestyle-siteInfoSearch-developLanguageCode{
-	  width: 5rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfoSearch-developLanguageCode {
+		width: 5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	#customerInfoDatePicker {
-	  background-repeat: no-repeat;
-	  width: 10rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+		background-repeat: no-repeat;
+		width: 10rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#customerInfoDatePicker-establishmentDate{
-	  background-repeat: no-repeat;
-	  width:10.3rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#customerInfoDatePicker-establishmentDate {
+		background-repeat: no-repeat;
+		width: 10.3rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#customerInfoDatePickerReadOnly-establishmentDate{
-	  background-repeat: no-repeat;
-	  width:10.3rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#customerInfoDatePickerReadOnly-establishmentDate {
+		background-repeat: no-repeat;
+		width: 10.3rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
 	#siteDatePickerReadonlyDefault {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
-	  width: 9.95rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 9.95rem;
 	}
 	#admissionEndDate {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 9.95rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 9.95rem;
 	}
 	#siteAdmissionStartReadonlyDefault {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
-	  width: 6.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 6.5rem;
 	}
 	#siteAdmissionStart {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 6.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.5rem;
 	}
-	.siteTime{
-	  width: 4rem;
+	.siteTime {
+		width: 4rem;
 	}
-	.site-mark{
-	  width: 0.001rem;
-	  margin-left: 0.15rem;
+	.site-mark {
+		width: 0.001rem;
+		margin-left: 0.15rem;
 	}
 	#customerInfoDatePickerReadOnly {
-	  background-repeat: no-repeat;
-	  width: 10rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
+		background-repeat: no-repeat;
+		width: 10rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
 	}
-  
 	.ageccCss {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 7rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 7rem;
 	}
-  
 	.ageCss {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 5.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 5.5rem;
 	}
-	#scheduledEndDate-siteInfo{
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 10rem;
+	#scheduledEndDate-siteInfo {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 10rem;
 	}
-	#scheduledEndDate-siteInfoReadOnly{
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
-	  width: 10rem;
+	#scheduledEndDate-siteInfoReadOnly {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 10rem;
 	}
-	#scheduledEndDate{
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 10rem;
+	#scheduledEndDate {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 10rem;
 	}
 	#admissionStartDate {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 4.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 4.5rem;
 	}
 	#admissionStartDateReadOnly {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
-	  width: 4.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 4.5rem;
 	}
 	.Autocompletestyle {
-	  width: 8rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 8rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-  
 	.Autocompletestyle-siteInfo {
-	  width: 10.4rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-siteInfo-developLanguageCode {
-	  width: 10.4rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.Autocompletestyle-siteInfo-topCustomer{
-	  width: 9rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfo-topCustomer {
+		width: 9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.Autocompletestyle-siteInfoSearch-customerNo{
-	  width: 10.4rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfoSearch-customerNo {
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-siteInfoSearch {
-	  width: 9rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-   .Autocompletestyle-siteInfo-employeeNo{
-	  width: 9rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-siteInfo-employeeNo {
+		width: 9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-  #siteInfo-siteRoleCode{
-	width: 3rem;
-  }
+	#siteInfo-siteRoleCode {
+		width: 3rem;
+	}
 	.Autocompletestyle-customerInfo {
-	  width: 10.4rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-customer {
 		width: 10.4rem;
@@ -1306,230 +1458,303 @@
 		font-size: ".875rem";
 		color: "#495057"
 	}
-	.Autocompletestyle-customerInfoSearch{
-	  width: 10rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+	.Autocompletestyle-customerInfoSearch {
+		width: 10rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-customerInfo-topCustomer {
-	  width: 10rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 10rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-situation {
-	  width: 4.5rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 4.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-  
 	.Autocompletestyle-costRe {
-	  width: 5.6rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 5.6rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-  
 	.Autocompletestyle-master {
-	  width: 11.7rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 11.7rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.Autocompletestyle-projectInfo {
-	  width: 9.2rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 9.2rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
 	.input-group-text {
-	  background-color: #76a8af;
-	  font-family: "幼圆";
-	  font-size: 0.5rem;
-	  color: rgb(255, 255, 255);
-	  width: 4.1rem;
+		background-color: #76a8af;
+		font-family: "幼圆";
+		font-size: 0.5rem;
+		color: rgb(255, 255, 255);
+		width: 4.1rem;
 	}
-  
 	.cssNikanji {
-	  width: 3rem;
+		width: 3rem;
 	}
-  
 	#inputGroup-sizing-sm {
-	  font-size: 0.85rem;
+		font-size: 0.85rem;
 	}
-	#projectInfoDatepicker{
-	  background-repeat: no-repeat;
-	  width: 8rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#inputGroup-test {
+		font-size: 0.85rem;
+	}
+	#projectInfoDatepicker {
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
 	#wagesInfoDatePicker {
-	  background-repeat: no-repeat;
-	  width: 8rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#wagesInfoDatePicker-nextRaiseMonth{
-	  background-repeat: no-repeat;
-	  width: 6rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#wagesInfoDatePicker-nextRaiseMonth {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#wagesInfoDatePicker-reflectYearAndMonth{
-	  background-repeat: no-repeat;
-	  width: 7.5rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#wagesInfoDatePicker-reflectYearAndMonth {
+		background-repeat: no-repeat;
+		width: 7.5rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
 	#wagesInfoDatePickerReadOnly {
-	  background-repeat: no-repeat;
-	  width: 8rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
 	}
 	.Autocompletestyle-salesSend {
-	  width: 4.5rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 4.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-  .Autocompletestyle-salesEmpAdd{
-	width: 3.5rem;
-	height: 31px;
-	border-color: "#ced4da";
-	border-width: 1;
-	border-style: "solid";
-	font-size: ".875rem";
-	color: "#495057"
-  }
+	.Autocompletestyle-salesEmpAdd {
+		width: 3.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
 	#datePickerReadonly {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
-	  width: 6.2rem;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 6.2rem;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
 	}
-  
 	#datePicker2 {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 6.5rem;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.5rem;
 	}
-  
 	#datePicker {
-	  background-repeat: no-repeat;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
-	  width: 5.5rem !important;
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 5.5rem !important;
 	}
 	.input-group-text {
-	  background-color: #76a8af;
-	  font-family: "幼�?";
-	  color: rgb(255, 255, 255);
-	  width: 5.1rem;
-	  /* width:4.5rem; */
+		background-color: #76a8af;
+		font-family: "幼�?";
+		color: rgb(255, 255, 255);
+		width: 5.1rem;
+		/* width:4.5rem; */
 	}
 	#expensesInfoDatePicker {
-	  background-repeat: no-repeat;
-	  width: 6rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#workStartPeriodDatePicker{
-	  background-repeat: no-repeat;
-	  width: 6rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#workStartPeriodDatePicker {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#workStartPeriodDatePickerReadOnly{
-	  background-repeat: no-repeat;
-	  width: 6rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
+	#workStartPeriodDatePickerReadOnly {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
 	}
 	.Autocompletestyle-branchInsertInfo {
-	  width: 11.7rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 11.7rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.popoverC{
-	  max-width:450px !important;
+	.popoverC {
+		max-width: 450px !important;
 	}
 	.Autocompletestyle-siteInfo-relatedEmployees {
-	  width: 6.95rem;
-	  height: 31px;
-	  border-color: "#ced4da";
-	  border-width: 1;
-	  border-style: "solid";
-	  font-size: ".875rem";
-	  color: "#495057"
+		width: 6.95rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
 	}
-	.hiwari{
-	  width: 3rem;
+	.hiwari {
+		width: 3rem;
 	}
-	.unitPrice{
-	  width: 1rem;
+	.unitPrice {
+		width: 1rem;
 	}
-  }
+	.Autocompletestyle-employeeInsert-developLanguage {
+		width: 9.02rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-employeeInsert-upload {
+		width: 4.2rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	#Autocompletestyle-employeeInsert-resumeInfo {
+		width: 3.8rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	#Autocompletestyle-employeeInsert-employeeFormCode {
+		width: 1.3rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-bpInfo-bpBelongCustomerCode {
+		width: 4.15rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: 0.85rem;
+		color: "#495057"
+	}
+	#datePickerReadonlyDefault-bpInfo {
+		background-repeat: no-repeat;
+		background-position: 15px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 6.33rem !important;
+	}
+	#datePicker-bpInfo {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.33rem !important;
+	}
+}

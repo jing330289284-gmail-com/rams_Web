@@ -417,12 +417,25 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名 </InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeFristName} size="sm" name="employeeFristName" maxlength="3" disabled />{' '}
-									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
 								</InputGroup>
 								{/* // line */}
 								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Form.Control as="select" size="sm"
+										onChange={this.valueChangeEmployeeFormCode}
+										name="employeeFormCode" value={employeeFormCode} id="Autocompletestyle-employeeInsert-employeeFormCode"
+										disabled>
+										{this.state.employeeFormCodes.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">性別</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="genderStatus" value={genderStatus}
@@ -433,7 +446,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
 
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -449,19 +462,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChangeEmployeeFormCode}
-										name="employeeFormCode" value={employeeFormCode}
-										disabled>
-										{this.state.employeeFormCodes.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
+									
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -556,7 +557,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Form.Control type="email" value={companyMail} disabled
 										size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -618,7 +619,7 @@ class employeeUpdate extends React.Component {
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>								</InputGroup>
+									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>								</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3" >
@@ -675,7 +676,7 @@ class employeeUpdate extends React.Component {
 												{date.name}
 											</option>
 										)}
-									</Form.Control><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									</Form.Control><font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
 									<FormControl value={birthplace} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="birthplace" disabled />
 								</InputGroup>
@@ -793,8 +794,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage1" />
 											</div>
 										)}
 									/>
@@ -804,8 +804,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage2" />
 											</div>
 										)}
 									/>
@@ -815,8 +814,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage3"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage3" />
 											</div>
 										)}
 									/>
@@ -826,8 +824,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage4"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage4" />
 											</div>
 										)}
 									/>
@@ -837,8 +834,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage5"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage5" />
 											</div>
 										)}
 									/>
@@ -952,7 +948,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<FormControl value={employmentInsuranceNo}
 										size="sm" name="employmentInsuranceNo" disabled />
-									<font style={{ marginLeft: "23px", marginRight: "0px" }}></font>
+									<font style={{ marginLeft: "0px", marginRight: "0px" }}></font>
 								</InputGroup>
 							</Col>	
 							<Col sm={3}>
@@ -982,7 +978,14 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji" >在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" style={{ width: 117}} disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 済み" : " 添付"}</Button>
+									<Autocomplete
+									getOptionLabel={(option) => option.name}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+										<Button size="sm" className="auto form-control Autocompletestyle-employeeInsert-upload" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 済み" : " 添付"}</Button>
+										</div>
+									)}
+								/>
 									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
@@ -991,7 +994,14 @@ class employeeUpdate extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="fiveKanji" >パスポート</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Button size="sm" style={{ width: 117}} disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 済み" : " 添付"}</Button>
+								<Autocomplete
+								getOptionLabel={(option) => option.name}
+								renderInput={(params) => (
+									<div ref={params.InputProps.ref}>
+									<Button size="sm" className="auto form-control Autocompletestyle-employeeInsert-upload" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 済み" : " 添付"}</Button>
+									</div>
+								)}
+							/>
 							</InputGroup>
 						</Col>
 							<Col sm={5}>
@@ -1000,15 +1010,15 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 済み" : " 添付"}</Button>
-									<FormControl value={resumeName1} autoComplete="off" style={{ width: 100}}
+									<FormControl value={resumeName1} autoComplete="off" id="Autocompletestyle-employeeInsert-resumeInfo"
 										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
-
+									<font style={{ marginLeft: "10px", marginRight: "15px" }}></font>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 済み" : " 添付"}</Button>
-									<FormControl value={resumeName2} autoComplete="off" style={{ width: 100}}
+									<FormControl value={resumeName2} autoComplete="off" id="Autocompletestyle-employeeInsert-resumeInfo"
 										onChange={this.valueChange} size="sm" name="resumeName2" disabled />
 									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 								</InputGroup>
