@@ -469,10 +469,6 @@ class WagesInfo extends Component {
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
         });
-        if(this.state.employeeFormCode === "2"){
-            $("#socialInsuranceFlag").attr("disabled",true);
-            $("#bonusFlag").attr("disabled",true);
-        }
         wagesInfoModel["salary"] = utils.deleteComma(this.state.salary);
         wagesInfoModel["waitingCost"] = utils.deleteComma(this.state.waitingCost);
         wagesInfoModel["welfarePensionAmount"] = utils.deleteComma(this.state.welfarePensionAmount);
@@ -487,6 +483,10 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
+        if(this.state.employeeFormCode === "2"){
+            $("#socialInsuranceFlag").attr("disabled",true);
+            $("#bonusFlag").attr("disabled",true);
+        }
         axios.post(this.state.serverIP + "wagesInfo/toroku", wagesInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -652,7 +652,7 @@ class WagesInfo extends Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,  // which page you want to show as default
-            sizePerPage: 5,  // which size per page you want to locate as default
+            sizePerPage: 8,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
             prePage: '<', // Previous page button text

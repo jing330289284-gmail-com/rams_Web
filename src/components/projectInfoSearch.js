@@ -484,7 +484,7 @@ class ProjectInfoSearch extends Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,
-            sizePerPage: 5,
+            sizePerPage: 8,
             pageStartIndex: 1,
             paginationSize: 3,
             prePage: '<',

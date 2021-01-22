@@ -182,66 +182,48 @@ class CustomerInfoSearch extends Component {
             })
         }
     }
-    /**
-     * 行の削除
-     */
-    listDelete = () => {
-        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+    //隠した削除ボタンの実装
+    onDeleteRow = () => {
         var a = window.confirm("削除していただきますか？");
         if (a) {
-            $("#delectBtn").click();
+            var customerInfoMod = {};
+            customerInfoMod["customerNo"] = this.state.customerNoForPageChange;
+            axios.post(this.state.serverIP + "customerInfoSearch/delete", customerInfoMod)
+                .then(result => {
+                    if (result.data === 0) {
+                        var id = this.state.rowNo;
+                        var customerInfoList = this.state.customerInfoData;
+                        for (let i = customerInfoList.length - 1; i >= 0; i--) {
+                            if (customerInfoList[i].rowNo === id) {
+                                customerInfoList.splice(i, 1);
+                            }
+                        }
+                        if (customerInfoList.length !== 0) {
+                            for (let i = customerInfoList.length - 1; i >= 0; i--) {
+                                customerInfoList[i].rowNo = (i + 1);
+                            }
+                        }
+                        this.setState({
+                            customerInfoData: customerInfoList,
+                            rowNo: '',
+                        })
+                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
+                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    } else if (result.data === 1) {
+                        this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "削除失败" });
+                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    } else if (result.data === 2) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様が現場に使われました" });
+                    } else if (result.data === 3) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数ある" });
+                    } else if (result.data === 4) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し" });
+                    }
+                })
+                .catch(error => {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                });
         }
-    }
-    //隠した削除ボタン
-    createCustomDeleteButton = (onClick) => {
-        return (
-            <Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
-        );
-    }
-    //隠した削除ボタンの実装
-    onDeleteRow = (rows) => {
-        var id = this.state.rowNo;
-        var customerInfoList = this.state.customerInfoData;
-        for (let i = customerInfoList.length - 1; i >= 0; i--) {
-            if (customerInfoList[i].rowNo === id) {
-                customerInfoList.splice(i, 1);
-            }
-        }
-        if (customerInfoList.length !== 0) {
-            for (let i = customerInfoList.length - 1; i >= 0; i--) {
-                customerInfoList[i].rowNo = (i + 1);
-            }
-        }
-        this.setState({
-            customerInfoData: customerInfoList,
-            rowNo: '',
-        })
-        var customerInfoMod = {};
-        customerInfoMod["customerNo"] = this.state.customerNo;
-        axios.post(this.state.serverIP + "customerInfoSearch/delete", customerInfoMod)
-            .then(result => {
-                if (result.data === 0) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                } else if (result.data === 1) {
-                    this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "削除失败" });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                } else if (result.data === 2) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様が現場に使っている" });
-                } else if (result.data === 3) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数ある" });
-                } else if (result.data === 4) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し" });
-                }
-            })
-            .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
-            });
-    }
-    //削除前のデフォルトお知らせの削除
-    customConfirm(next, dropRowKeys) {
-        const dropRowKeysStr = dropRowKeys.join(',');
-        next();
     }
     /**
      * 取引開始のonChange 
@@ -388,7 +370,7 @@ class CustomerInfoSearch extends Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,  // which page you want to show as default
-            sizePerPage: 5,  // which size per page you want to locate as default
+            sizePerPage: 8,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
             prePage: '<', // Previous page button text
@@ -397,9 +379,6 @@ class CustomerInfoSearch extends Component {
             lastPage: '>>', // Last page button text
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-            deleteBtn: this.createCustomDeleteButton,
-            onDeleteRow: this.onDeleteRow,
-            handleConfirmDeleteRow: this.customConfirm,
         };
         return (
             <div>
@@ -411,7 +390,7 @@ class CustomerInfoSearch extends Component {
                 </div>
                 <Row inline="true">
                     <Col className="text-center">
-                        <h2>お客様・協力情報検索</h2>
+                        <h2>お客様情報検索</h2>
                     </Col>
                 </Row>
                 <br />
@@ -623,7 +602,7 @@ class CustomerInfoSearch extends Component {
                             <div style={{ "float": "right" }}>
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} id="shosai" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} id="shusei" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-                                <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
+                                <Button variant="info" size="sm" id="sakujo" onClick={this.onDeleteRow} > <FontAwesomeIcon icon={faTrash} />删除</Button>
                             </div>
                         </Col>
                     </Row>
