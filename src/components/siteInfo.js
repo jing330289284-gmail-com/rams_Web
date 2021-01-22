@@ -460,6 +460,10 @@ class siteInfo extends Component {
 				this.setState({
 					workStateFlag: false,
 				})
+			}else if(row.workState === "2"){
+				this.setState({
+					workStateFlag: false,
+				})
 			} else {
 				this.setState({
 					workStateFlag: true,
@@ -751,7 +755,7 @@ class siteInfo extends Component {
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 8,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
@@ -1271,7 +1275,7 @@ class siteInfo extends Component {
 								<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='workState' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='dailyCalculationStatus' hidden={true} ></TableHeaderColumn>
-								<TableHeaderColumn dataField='remark' width='90' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark' width='90' tdStyle={{ padding: '.45em' }}>備考</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

@@ -61,9 +61,9 @@ class CustomerInfo extends Component {
         type: '',
         topCustomer: '',
         insertFlag: false,
-        positionDrop: store.getState().dropDown[20],
-        typeOfIndustryDrop: store.getState().dropDown[36],
-        developLanguageDrop: store.getState().dropDown[8],
+        positionDrop: store.getState().dropDown[20].slice(1),
+        typeOfIndustryDrop: store.getState().dropDown[36].slice(1),
+        developLanguageDrop: store.getState().dropDown[8].slice(1),
         currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -220,7 +220,9 @@ class CustomerInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     if (this.state.actionType === "insert") {
-                        window.location.reload();
+                        this.setState({
+                            actionType:"update",
+                        })
                     }
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -230,15 +232,6 @@ class CustomerInfo extends Component {
                 console.log(error)
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
             });
-    }
-    /**
-     * 行の削除
-     */
-    listDelete = () => {
-        var a = window.confirm("削除していただきますか？");
-        if (a) {
-            $("#delectBtn").click();
-        }
     }
 
     /**
@@ -253,12 +246,12 @@ class CustomerInfo extends Component {
             this.setState({
                 rowNo: row.rowNo,
                 customerDepartmentName: row.customerDepartmentCode,
-                customerDepartmentCode:row.customerDepartmentCode,
-                positionCode:row.positionCode,
-                typeOfIndustryCode:row.typeOfIndustryCode,
-                stationCode:row.stationCode,
-                developLanguageCode1:row.developLanguageCode1,
-                developLanguageCode2:row.developLanguageCode2,
+                customerDepartmentCode: row.customerDepartmentCode,
+                positionCode: row.positionCode,
+                typeOfIndustryCode: row.typeOfIndustryCode,
+                stationCode: row.stationCode,
+                developLanguageCode1: row.developLanguageCode1,
+                developLanguageCode2: row.developLanguageCode2,
             })
             $("#sakujo").attr("disabled", false);
         } else {
@@ -318,65 +311,58 @@ class CustomerInfo extends Component {
             </p>
         );
     }
-    //隠した削除ボタン
-    createCustomDeleteButton = (onClick) => {
-        return (
-            <Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
-        );
-    }
     //隠した削除ボタンの実装
     onDeleteRow = (rows) => {
         // ...
-        var id = this.state.rowNo;
-        var departmentList = this.state.customerDepartmentList;
-        for (let i = departmentList.length - 1; i >= 0; i--) {
-            if (departmentList[i].rowNo === id) {
-                departmentList.splice(i, 1);
-            }
-        }
-        if (departmentList.length !== 0) {
+        var a = window.confirm("削除していただきますか？");
+        if (a) {
+            var id = this.state.rowNo;
+            var departmentList = this.state.customerDepartmentList;
             for (let i = departmentList.length - 1; i >= 0; i--) {
-                departmentList[i].rowNo = (i + 1);
+                if (departmentList[i].rowNo === id) {
+                    departmentList.splice(i, 1);
+                }
+            }
+            if (departmentList.length !== 0) {
+                for (let i = departmentList.length - 1; i >= 0; i--) {
+                    departmentList[i].rowNo = (i + 1);
+                }
+            }
+            var currentPage = Math.ceil(departmentList.length / 5);
+            this.setState({
+                currentPage: currentPage,
+                customerDepartmentList: departmentList,
+                rowNo: '',
+                customerDepartmentNameValue: '',
+                customerDepartmentName: '',
+            })
+            $("#positionCode").val('');
+            $("#responsiblePerson").val('');
+            $("#customerDepartmentMail").val('');
+            var customerDepartmentInfoModel = {};
+            customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
+            customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
+            customerDepartmentInfoModel["positionCode"] = this.state.positionCode;
+            if (this.state.actionType === "update") {
+                axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
+                    .then(result => {
+                        if (result.data === true) {
+                            this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
+                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        } else {
+                            this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: '削除失敗' });
+                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                    });
+            }
+            $("#sakujo").attr("disabled", true);
+            if (this.state.customerDepartmentList.length === 0) {
+                $("#meisaiToroku").attr("disabled", true);
             }
         }
-        var currentPage = Math.ceil(departmentList.length / 5);
-        this.setState({
-            currentPage: currentPage,
-            customerDepartmentList: departmentList,
-            rowNo: '',
-            customerDepartmentNameValue: '',
-            customerDepartmentName: '',
-        })
-        $("#positionCode").val('');
-        $("#responsiblePerson").val('');
-        $("#customerDepartmentMail").val('');
-        var customerDepartmentInfoModel = {};
-        customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
-        customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
-        if (this.state.actionType === "update") {
-            axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
-                .then(result => {
-                    if (result.data === true) {
-                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
-                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                    } else {
-                        this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: '削除失敗' });
-                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                    }
-                })
-                .catch(function (error) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
-                });
-        }
-        $("#sakujo").attr("disabled", true);
-        if (this.state.customerDepartmentList.length === 0) {
-            $("#meisaiToroku").attr("disabled", true);
-        }
-    }
-    //削除前のデフォルトお知らせの削除
-    customConfirm(next, dropRowKeys) {
-        const dropRowKeysStr = dropRowKeys.join(',');
-        next();
     }
     getStationCode = (event, values) => {
         if (values != null) {
@@ -507,7 +493,7 @@ class CustomerInfo extends Component {
         this.state.customerDepartmentList[this.state.rowNo - 1].stationCode = no;
         this.formatStation(no);
         this.setState({
-            stationCode:no,
+            stationCode: no,
         })
     }
     // レコードおきゃく表示
@@ -666,9 +652,6 @@ class CustomerInfo extends Component {
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
-            deleteBtn: this.createCustomDeleteButton,
-            onDeleteRow: this.onDeleteRow,
-            handleConfirmDeleteRow: this.customConfirm,
         };
         const tableSelect1 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={5} onUpdate={onUpdate} {...props} />);
         const tableSelect2 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={6} onUpdate={onUpdate} {...props} />);
@@ -1005,9 +988,10 @@ class CustomerInfo extends Component {
                         </div>
                     </Form>
                     <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
-                    <Form.Label style={{ "color": "#000000" }}>部門情報</Form.Label>
                     <Row>
-                        <Col sm={8}></Col>
+                        <Col sm={8}>
+                            <Form.Label style={{ "color": "#000000" }}>部門情報</Form.Label>
+                        </Col>
                         <Col sm={4}>
                             <div style={{ "float": "right" }}>
                                 <Button size="sm" variant="info" onClick={this.insertRow} id="insertRow" type="button" disabled={this.state.actionType === "update" ? false : true}>
@@ -1016,7 +1000,7 @@ class CustomerInfo extends Component {
                                 <Button size="sm" onClick={this.meisaiToroku} variant="info" id="meisaiToroku" type="button" disabled={this.state.actionType === "update" ? false : true}>
                                     <FontAwesomeIcon icon={faArrowCircleUp} />明細更新
                         </Button>{" "}
-                                <Button size="sm" onClick={this.listDelete} variant="info" id="sakujo" type="button">
+                                <Button size="sm" onClick={this.onDeleteRow} variant="info" id="sakujo" type="button">
                                     <FontAwesomeIcon icon={faTrash} />删除
                         </Button>
                             </div>
@@ -1032,22 +1016,22 @@ class CustomerInfo extends Component {
                                 ref='table'
                                 cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width='90'>番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="130">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="230"
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}>番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} 
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190"
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="190">メール</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} >メール</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }}>業種</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="130"
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField='' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center' width="180">メイン言語</TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode1' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} width="90"></TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' dataField='developLanguageCode2' headerAlign='center' tdStyle={{ padding: '.45em' }} dataAlign='center'
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} width="90"></TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }}  >メイン言語</TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode1'  tdStyle={{ padding: '.45em' }} 
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} ></TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode2'  tdStyle={{ padding: '.45em' }} 
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} ></TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
                     </div>
