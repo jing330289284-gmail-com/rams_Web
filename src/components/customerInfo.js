@@ -4,7 +4,7 @@ import * as customerInfoJs from '../components/customerInfoJs.js';
 import $ from 'jquery';
 import BankInfo from './accountInfo';
 import '../asserts/css/login.css';
-import TopCustomerInfo from './topCustomerInfo';
+// import TopCustomerInfo from './topCustomerInfo';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
@@ -42,7 +42,7 @@ class CustomerInfo extends Component {
         accountInfo: null,//口座情報のデータ
         actionType: '',//処理区分
         customerNoForPageChange: "",
-        topCustomerInfo: null,//上位お客様情報データ
+        // topCustomerInfo: null,//上位お客様情報データ
         stationCodeDrop: store.getState().dropDown[14].slice(1),//本社場所
         listedCompanyFlag: store.getState().dropDown[17],
         levelCodeDrop: store.getState().dropDown[18],
@@ -213,7 +213,7 @@ class CustomerInfo extends Component {
         customerInfoMod["customerDepartmentCode"] = this.state.customerDepartmentCode2;
         customerInfoMod["positionCode"] = this.state.positionCode2;
         customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
-        customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
+        // customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -224,6 +224,7 @@ class CustomerInfo extends Component {
                             actionType:"update",
                         })
                     }
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -276,34 +277,34 @@ class CustomerInfo extends Component {
         })
         console.log(accountTokuro);
     }
-    /**
-     * ポップアップ上位お客様情報の取得
-     */
-    topCustomerInfoGet = (topCustomerToroku) => {
-        if (this.state.topCustomer !== null && this.state.topCustomer !== '' && this.state.topCustomer !== undefined) {
-            console.log(topCustomerToroku);//上位お客様更新の場合
-            var topCustomerDrop = this.state.topCustomerDrop;
-            this.setState({
-                topCustomerDrop: topCustomerToroku.slice(1),
-                topCustomerInfo: null,
-                showCustomerInfoModal: false,
-            }, () => {
-                this.setState({
-                    topCustomer: this.state.topCustomer,
-                })
-            })
-        } else {//上位お客様追加の場合
-            var ModelClass = {};
-            ModelClass["code"] = topCustomerToroku.topCustomerNo;
-            ModelClass["name"] = topCustomerToroku.topCustomerName;
-            this.setState({
-                topCustomer: topCustomerToroku.topCustomerNo,
-                topCustomerDrop: [...this.state.topCustomerDrop, ModelClass],
-                topCustomerInfo: topCustomerToroku,
-                showCustomerInfoModal: false,
-            })
-        }
-    }
+    // /**
+    //  * ポップアップ上位お客様情報の取得
+    //  */
+    // topCustomerInfoGet = (topCustomerToroku) => {
+    //     if (this.state.topCustomer !== null && this.state.topCustomer !== '' && this.state.topCustomer !== undefined) {
+    //         console.log(topCustomerToroku);//上位お客様更新の場合
+    //         var topCustomerDrop = this.state.topCustomerDrop;
+    //         this.setState({
+    //             topCustomerDrop: topCustomerToroku.slice(1),
+    //             topCustomerInfo: null,
+    //             showCustomerInfoModal: false,
+    //         }, () => {
+    //             this.setState({
+    //                 topCustomer: this.state.topCustomer,
+    //             })
+    //         })
+    //     } else {//上位お客様追加の場合
+    //         var ModelClass = {};
+    //         ModelClass["code"] = topCustomerToroku.topCustomerNo;
+    //         ModelClass["name"] = topCustomerToroku.topCustomerName;
+    //         this.setState({
+    //             topCustomer: topCustomerToroku.topCustomerNo,
+    //             topCustomerDrop: [...this.state.topCustomerDrop, ModelClass],
+    //             topCustomerInfo: topCustomerToroku,
+    //             showCustomerInfoModal: false,
+    //         })
+    //     }
+    // }
     renderShowsTotal(start, to, total) {
         return (
             <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -346,7 +347,7 @@ class CustomerInfo extends Component {
             if (this.state.actionType === "update") {
                 axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                     .then(result => {
-                        if (result.data === true) {
+                        if (result.data) {
                             this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
                             setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         } else {
@@ -376,25 +377,34 @@ class CustomerInfo extends Component {
         }
     }
     getTopCustomer = (event, values) => {
+        // if (values != null) {
+        //     if (this.state.topCustomerInfo !== null) {
+        //         this.setState({
+        //             topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
+        //         })
+        //     }
+        //     this.setState({
+        //         topCustomer: values.code,
+        //         topCustomerInfo: null,
+        //     })
+        // } else {
+        //     if (this.state.topCustomerInfo !== null) {
+        //         this.setState({
+        //             topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
+        //         })
+        //     }
+        //     this.setState({
+        //         topCustomer: "",
+        //         topCustomerInfo: null,
+        //     })
+        // }
         if (values != null) {
-            if (this.state.topCustomerInfo !== null) {
-                this.setState({
-                    topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
-                })
-            }
             this.setState({
                 topCustomer: values.code,
-                topCustomerInfo: null,
             })
         } else {
-            if (this.state.topCustomerInfo !== null) {
-                this.setState({
-                    topCustomerDrop: this.state.topCustomerDrop.slice(0, this.state.topCustomerDrop.length - 2)
-                })
-            }
             this.setState({
                 topCustomer: "",
-                topCustomerInfo: null,
             })
         }
     }
@@ -676,14 +686,14 @@ class CustomerInfo extends Component {
                             <BankInfo accountInfo={accountInfo} actionType={actionType} customerNo={customerNo} accountTokuro={this.accountInfoGet} />
                         </Modal.Body>
                     </Modal>
-                    <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-topCustomerInfo"
+                    {/* <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-topCustomerInfo"
                         onHide={this.handleHideModal.bind(this, "customerInfo")} show={this.state.showCustomerInfoModal}>
                         <Modal.Header closeButton>
                         </Modal.Header>
                         <Modal.Body>
                             <TopCustomerInfo topCustomer={topCustomer} topCustomerInfo={topCustomerInfo} actionType={actionType} topCustomerToroku={this.topCustomerInfoGet.bind(this)} />
                         </Modal.Body>
-                    </Modal>
+                    </Modal> */}
                     <Row inline="true">
                         <Col className="text-center">
                             <h2>お客様情報</h2>
@@ -694,9 +704,9 @@ class CustomerInfo extends Component {
                         <Button size="sm" id="toBankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")}>
                             お客様口座情報
                         </Button>{' '}
-                        <Button size="sm" id="toCustomerInfo" onClick={this.handleShowModal.bind(this, "customerInfo")}>
+                        {/* <Button size="sm" id="toCustomerInfo" onClick={this.handleShowModal.bind(this, "customerInfo")}>
                             上位お客様
-                        </Button>
+                        </Button> */}
                     </div>
                     <br />
                     <Form id="customerForm">
@@ -812,7 +822,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">取引開始日</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">取引開始月</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <DatePicker
                                         selected={this.state.businessStartDate}
@@ -1016,21 +1026,21 @@ class CustomerInfo extends Component {
                                 ref='table'
                                 cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }}>番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }}>責任者</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width="4rem">番号</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="9rem">責任者</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} 
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }}>職位</TableHeaderColumn>
+                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="5rem">職位</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} >メール</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }}>業種</TableHeaderColumn>
+                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="8rem">業種</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }}  >メイン言語</TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode1'  tdStyle={{ padding: '.45em' }} 
+                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }}>メイン言語</TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode1' width="9rem" tdStyle={{ padding: '.45em' }} 
                                     dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} ></TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode2'  tdStyle={{ padding: '.45em' }} 
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode2' width="9rem" tdStyle={{ padding: '.45em' }} 
                                     dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} ></TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
