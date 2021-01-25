@@ -1161,7 +1161,7 @@ class employeeInsert extends React.Component {
 									</InputGroup.Prepend>
 										<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12"/>
-									<font style={{ marginLeft: "0px", marginRight: "0px" }}></font>
+									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>

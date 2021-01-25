@@ -12,19 +12,19 @@ import store from './redux/store';
 import { Hidden } from '@material-ui/core';
 axios.defaults.withCredentials = true;
 
-//マスター登録
+// マスター登録
 class masterInsert extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
 	}
-	//初期化
+	// 初期化
 	initialState = {
 		myToastShow: false,
 		errorsMessageShow: false,
-		flag: true,//活性非活性flag
+		flag: true,// 活性非活性flag
 		masterStatus: store.getState().dropDown[32].slice(1),
 		bankInfo: store.getState().dropDown[57].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -62,10 +62,10 @@ class masterInsert extends Component {
 	 */
 	toroku = () => {
 		$("#toroku").attr({"disabled":"disabled"});
-		//setTimeout($("#toroku").removeAttr("disabled"),2000)
-		if (this.state.master != '支店マスター') {
+		// setTimeout($("#toroku").removeAttr("disabled"),2000)
+		if (this.state.master != '支店マスター' || this.state.master != 'TOPお客様' ) {
 			var masterModel = {};
-			//画面输入信息取得
+			// 画面输入信息取得
 			var formArray = $("#masterInsertForm").serializeArray();
 			$.each(formArray, function (i, item) {
 				masterModel[item.name] = item.value;
@@ -84,7 +84,7 @@ class masterInsert extends Component {
 				}).catch((error) => {
 					console.error("Error - " + error);
 				});
-		} else {
+		} else if(this.state.master === '支店マスター') {
 			$("#toroku").attr({"disabled":"disabled"});
 			const branchDetails = {
 				bankBranchCode: this.state.branchCode,
@@ -92,6 +92,28 @@ class masterInsert extends Component {
 				bankCode: this.state.bankName,
 			};
 			axios.post(this.state.serverIP + "branchInsert/toroku", branchDetails)
+				.then(result => {
+					if (result.data.errorsMessage != null) {
+						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+						$("#toroku").removeAttr("disabled");
+					} else {
+						this.setState({ "myToastShow": true, "errorsMessageShow": false });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						this.setState({branchCode:'',
+										branchName:''})
+					$("#toroku").removeAttr("disabled");
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
+		}else if(this.state.master === 'TOPお客様') {
+			$("#toroku").attr({"disabled":"disabled"});
+			const customerDetails = {
+				topCustomerName: this.state.topCustomerName,
+				topCustomerAbbreviation: this.state.topCustomerAbbreviation,
+				url: this.state.url,
+			};
+			axios.post(this.state.serverIP + "customerInsert/toroku", customerDetails)
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -247,7 +269,44 @@ class masterInsert extends Component {
 						</div> :
 						null
 					}
-					{master != "支店マスター" ?
+					{master === "TOPお客様" ?
+							<div>
+								<Row >
+									<Col >
+											<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="topCustomerName" id="topCustomerName" value={this.state.topCustomerName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" お客様名" maxLength={20}/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">お客様略称</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="topCustomerAbbreviation" id="topCustomerAbbreviation" value={this.state.topCustomerAbbreviation} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" お客様略称" maxLength={20}/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="url" id="url" value={this.state.url} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="URL" />
+										</InputGroup>
+									</Col>
+								</Row>
+							</div> :
+							null
+						}
+					{master != "支店マスター" && master != "TOPお客様"  ?
 						<Row>
 							<Col>
 								<InputGroup size="sm" className="mb-3">

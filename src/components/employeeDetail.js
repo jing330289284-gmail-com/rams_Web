@@ -948,7 +948,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<FormControl value={employmentInsuranceNo}
 										size="sm" name="employmentInsuranceNo" disabled />
-									<font style={{ marginLeft: "0px", marginRight: "0px" }}></font>
+									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 								</InputGroup>
 							</Col>	
 							<Col sm={3}>

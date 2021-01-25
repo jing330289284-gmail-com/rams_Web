@@ -12,23 +12,26 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 
-//マスター修正
+// マスター修正
 class masterUpdate extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
 	}
 
 	initialState = {
 		code: '',
-		flag: true,//活性非活性flag
+		flag: true,// 活性非活性flag
 		masterStatus: store.getState().dropDown[32].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		bankInfo: store.getState().dropDown[57].slice(1),
+		bankName: '',
+		branchName: '',
 	};
 
-	//onchange
+	// onchange
 	onchange = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -38,8 +41,25 @@ class masterUpdate extends Component {
 	// 页面加载
 	componentDidMount() {
 	}
-	//明细查询
-	selectMaster = (event) => {
+	// 明细查询
+	selectMaster = (event,values) => {
+		this.setState({ flag: false });
+		this.setState({ [event.target.name]: event.target.value }
+			, () => {
+				if ($("#master").val() === "") {
+					this.setState({ flag: true });
+				}
+			})
+		if (values != null) {
+			this.setState({
+				master: values.name,
+			})
+
+		} else {
+			this.setState({
+				master: '',
+			})
+		}
 		this.setState({
 			data: '',
 		})
@@ -63,8 +83,8 @@ class masterUpdate extends Component {
 	}
 
 	/**
-   * 行Selectファンクション
-   */
+	 * 行Selectファンクション
+	 */
 	handleRowSelect = (row, isSelected) => {
 		this.setState({ flag: true });
 		this.setState({
@@ -79,8 +99,8 @@ class masterUpdate extends Component {
 		}
 	}
     /**
-     * 修正ボタン
-     */
+	 * 修正ボタン
+	 */
 	update = () => {
 		var masterModel = {};
 		var formArray = $("#masterUpdateForm").serializeArray();
@@ -169,22 +189,68 @@ class masterUpdate extends Component {
 		}
 	}
 
+	handleTag = (event, values) => {
+		if (values != null) {
+			this.setState({
+				bankName: values.code,
+				branchName:'',
+				branchCode:'',
+			})
+	
+
+		} else {
+			this.setState({
+				bankName: '',
+			})
+		}
+	}
+	valueChange = event => {
+		if(event.target.value===''){
+			this.setState({
+				[event.target.name]: event.target.value,
+				branchCode:''})
+		}else{
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+	}
+	}
+	vNumberChange = (e, key) => {
+		const { value } = e.target;
+
+		const reg = /^[0-9]*$/;
+		if ((reg.test(value))&&value.length<4) {
+			this.setState({
+				[key]: value,
+			})
+		}
+		if(value===''){
+			this.setState({
+				[key]: value,
+				branchName:''
+			})
+		}
+	}
+	
 	render() {
-		//表格样式设定
+		// 表格样式设定
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 5,  // which size per page you want to locate as
+								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
 			lastPage: '>>', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or
+															// function
+			hideSizePerPage: true, // > You can hide the dropdown for
+									// sizePerPage
 		};
-		const { master, masterData, errorsMessageValue } = this.state;
-		//テーブルの列の選択
+		const { master, masterData, errorsMessageValue, masterStatus, bankName, bankInfo  } = this.state;
+		// テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -222,7 +288,8 @@ class masterUpdate extends Component {
 								<Autocomplete
 									id="master"
 									name="master"
-									value={master}
+									value={masterStatus.find(v => v.name === this.state.master) || {}}
+									onChange={(event, values) => this.selectMaster(event, values)}
 									options={this.state.masterStatus}
 									getOptionLabel={(option) => option.name}
 									clearOnBlur
@@ -232,21 +299,73 @@ class masterUpdate extends Component {
 											 />
 										</div>
 									)}
-									onChange={this.selectMaster}
 								/>
 							</InputGroup>
 						</Col>
 					</Row>
-					<Row>
-						<Col>
-							<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
-								</InputGroup.Prepend>
-								<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} value={this.state.data} disabled={this.state.flag === true ? true : false} />
-							</InputGroup>
-						</Col>
-					</Row>
+					{master === "支店マスター" ?
+							<div>
+								<Row >
+									<Col >
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">銀行名</InputGroup.Text>
+											</InputGroup.Prepend>
+											<Autocomplete
+												id="bankName"
+												name="bankName"
+												options={bankInfo}
+												getOptionLabel={(option) => option.name}
+												value={bankInfo.find(v => v.code === this.state.bankName) || {}}
+												onChange={(event, values) => this.handleTag(event, values)}
+												renderInput={(params) => (
+													<div ref={params.InputProps.ref}>
+														<input placeholder=" 銀行名" type="text" {...params.inputProps} className=" auto form-control Autocompletestyle-branchInsertInfo "/>
+													</div>
+												)}
+											/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="branchName" id="branchName" value={this.state.branchName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店名" disabled={bankName === '' ? true : false} maxLength={20}/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="branchCode" id="branchCode" value={this.state.branchCode} onChange={(e) => this.vNumberChange(e, "branchCode")} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店番号" disabled={bankName === '' ? true : false} />
+										</InputGroup>
+									</Col>
+								</Row>
+							</div> :
+							null
+						}
+					
+					{master != "支店マスター" ?
+						<Row>
+							<Col>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">データ</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl placeholder="データ" id="data" name="data" onChange={this.onchange} value={this.state.data} disabled={this.state.flag === true ? true : false} />
+								</InputGroup>
+							</Col>
+						</Row> :
+						null
+					}
 					<div style={{ "textAlign": "center" }}>
 						<Button size="sm" onClick={this.update} variant="info" id="update" type="button" disabled={this.state.flag === true ? true : false} >
 							<FontAwesomeIcon icon={faEdit} />修正
@@ -256,12 +375,25 @@ class masterUpdate extends Component {
                            </Button>
 					</div>
 					<br />
-					<div>
-						<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
-						</BootstrapTable>
-					</div>
+					{master === "支店マスター" ?
+						<div>
+							<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+								<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店名称</TableHeaderColumn>
+							</BootstrapTable>
+						</div>:
+						null
+					}
+					{master !== "支店マスター" ?
+							<div>
+								<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+									<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
+								</BootstrapTable>
+							</div>:
+							null
+						}
 				</Form>
 			</div>
 		);
