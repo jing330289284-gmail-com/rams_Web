@@ -209,6 +209,7 @@ class CustomerInfoSearch extends Component {
                         })
                         this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
                         setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
                     } else if (result.data === 1) {
                         this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "削除失败" });
                         setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -404,8 +405,8 @@ class CustomerInfoSearch extends Component {
                                 <Autocomplete
                                     id="customerNo"
                                     name="customerNo"
-                                    value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || ""}
-                                    options={this.state.customerDrop}
+                                    value={store.getState().dropDown[53].slice(1).find(v => v.code === this.state.customerNo) || ""}
+                                    options={store.getState().dropDown[53].slice(1)}
                                     getOptionLabel={(option) => option.text ? option.text : ""}
                                     onChange={(event, values) => this.getCustomer(event, values)}
                                     renderOption={(option) => {
@@ -580,7 +581,6 @@ class CustomerInfoSearch extends Component {
                             </InputGroup>
                         </Col>
                     </Row>
-                    <br />
                     <div style={{ "textAlign": "center" }}>
                         <Button onClick={this.search} size="sm" variant="info">
                             <FontAwesomeIcon icon={faSearch} /> 検索
@@ -594,7 +594,6 @@ class CustomerInfoSearch extends Component {
                     </div>
                 </Form>
                 <Form>
-                    <br />
                     <Row>
                         <Col sm={9}>
                         </Col>
@@ -613,13 +612,14 @@ class CustomerInfoSearch extends Component {
                             <TableHeaderColumn dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
                             <TableHeaderColumn isKey dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
                             <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn dataField='establishmentDate' tdStyle={{ padding: '.45em' }} width="80">設立</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
                             <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160" dataFormat={this.addMarkCapitalStock}>資本金(百万円)</TableHeaderColumn>
-                            <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
-                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="120">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='businessStartDate' tdStyle={{ padding: '.45em' }} width="120">取引開始月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="120">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
                     </Col>
                 </Form>
