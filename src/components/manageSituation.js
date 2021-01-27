@@ -245,6 +245,9 @@ class manageSituation extends React.Component {
 				this.state.salesSituationLists[this.state.rowNo - 1].nowCustomer;
 		}
 		this.formatType(no);
+		
+		// データが変更する時、ajaxを呼び出す
+//		this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
 	// 明細選択したSalesStaffを設定する
@@ -254,6 +257,8 @@ class manageSituation extends React.Component {
 		this.setState({
 			salesStaff: no,
 		});
+		// データが変更する時、ajaxを呼び出す
+//		this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
 	// 明細選択したCustomerContractを設定する
@@ -273,6 +278,22 @@ class manageSituation extends React.Component {
 				return salesPersons[i].name;
 			}
 		}
+	}
+	
+	// changeData レコードのステータス
+	changeDataStatus = (salesSituationList, admissionEndDate) => {
+		salesSituationList.admissionEndDate = admissionEndDate
+		axios.post(this.state.serverIP + "salesSituation/changeDataStatus", salesSituationList)
+		.then(response => {
+			if (response.data != null) {
+//				this.setState({
+//					salesSituationLists: response.data.result
+//				})
+				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
+			}
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
 	
 	// 明細単選と明細多選変更
@@ -312,24 +333,25 @@ class manageSituation extends React.Component {
 				unitPrice: row.price
 			})
 			// ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
+			// table表数据更新暂时不用以下写法,注释掉的代码可供参考
 			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
 				row.customerNo = row.customer;
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
-				axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
-					.then(result => {
-						if (result.data != null) {
-							this.getSalesSituation(this.state.salesYearAndMonth)
-							this.setState({ myToastShow: true });
-							setTimeout(() => this.setState({ myToastShow: false }), 3000);
-						} else {
-							alert("FAIL");
-						}
-					})
-					.catch(function (error) {
-						alert("ERR");
-					});
+//				axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
+//					.then(result => {
+//						if (result.data != null) {
+//							this.getSalesSituation(this.state.salesYearAndMonth)
+//							this.setState({ myToastShow: true });
+//							setTimeout(() => this.setState({ myToastShow: false }), 3000);
+//						} else {
+//							alert("FAIL");
+//						}
+//					})
+//					.catch(function (error) {
+//						alert("ERR");
+//					});
 			}
 		} else {
 			row.customer = 'noedit';
@@ -593,7 +615,7 @@ class manageSituation extends React.Component {
 	 * alert('文件下载失败', error); });
 	 *  }
 	 */
-
+ 
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = {
@@ -601,6 +623,9 @@ class manageSituation extends React.Component {
 			selectetRowIds: this.state.selectetRowIds,
 		};
 		switch (actionType) {
+			case "detailUpdate":
+				this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1], this.state.salesYearAndMonth);
+				break;
 			case "detail":
 				path = {
 					pathname: '/subMenuManager/employeeDetail',
@@ -935,6 +960,7 @@ class manageSituation extends React.Component {
 						<Col sm={2}></Col>
 						<Col sm={7}>
 							<div style={{ "float": "right" }}>
+								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> 明細更新</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
