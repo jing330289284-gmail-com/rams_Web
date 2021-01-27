@@ -42,8 +42,7 @@ class masterUpdate extends Component {
 	componentDidMount() {
 	}
 	// 明细查询
-	selectMaster = (event,values) => {
-		this.setState({ flag: false });
+	selectMaster = (event,values) => {	
 		this.setState({ [event.target.name]: event.target.value }
 			, () => {
 				if ($("#master").val() === "") {
@@ -69,11 +68,18 @@ class masterUpdate extends Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		}, () => {
-			axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+			axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)})
 				.then(response => {
 					if (response.data != null) {
 						this.setState({
-							masterData: response.data
+							masterData: response.data,
+							bankName:'',
+							branchName:'',
+							branchCode:'',
+							topCustomerName: '',
+							topCustomerAbbreviation: '',
+							url: '',
+							flag: true
 						});
 					}
 				}).catch((error) => {
@@ -89,12 +95,35 @@ class masterUpdate extends Component {
 		this.setState({ flag: true });
 		this.setState({
 			data: '',
+			branchName:'',
+			branchCode:'',
+			topCustomerName: '',
+			topCustomerAbbreviation: '',
+			url: '',
 		})
 		if (isSelected) {
-			this.setState({
-				code: row.code,
-				data: row.data,
-			})
+			if(publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)==="M002BankBranch"){
+				this.setState({
+					branchCode: row.bankBranchCode,
+					branchName: row.bankBranchName,
+					oldBranchCode: row.bankBranchCode,
+					oldBranchName: row.bankBranchName,
+				})
+			}else if(publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)==="T008TopCustomerInfo"){
+				this.setState({
+					topCustomerNo: row.topCustomerNo,
+					topCustomerName: row.topCustomerName,
+					topCustomerAbbreviation: row.topCustomerAbbreviation,
+					url: row.url,
+				})
+			}
+			else{
+				this.setState({
+					code: row.code,
+					data: row.data,
+				})
+			}
+
 			this.setState({ flag: false });
 		}
 	}
@@ -109,6 +138,16 @@ class masterUpdate extends Component {
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 		masterModel["code"] = this.state.code - 1;
+		masterModel["bankBranchName"] = this.state.oldBranchName;
+		masterModel["bankBranchCode"] = this.state.oldBranchCode;
+		masterModel["newBankBranchName"] = this.state.branchName;
+		masterModel["newBankBranchCode"] = this.state.branchCode;
+		masterModel["bankCode"] = this.state.bankCode;
+		masterModel["topCustomerName"] = this.state.topCustomerName;
+		masterModel["topCustomerAbbreviation"] = this.state.topCustomerAbbreviation;
+		masterModel["url"] = this.state.url;
+		masterModel["topCustomerNo"] = this.state.topCustomerNo;
+		
 		axios.post(this.state.serverIP + "masterUpdate/update", masterModel)
 			.then(result => {
 				if (result.data.errorsMessage != null) {
@@ -116,13 +155,18 @@ class masterUpdate extends Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					axios.post(this.state.serverIP + "/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+					axios.post(this.state.serverIP + "/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus),bankCode: this.state.bankCode  })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
 									masterData: response.data,
 									flag: true,
-									data: ''
+									data: '',
+									branchName:'',
+									branchCode:'',
+									topCustomerName: '',
+									topCustomerAbbreviation: '',
+									url: '',
 								});
 							}
 							this.refs.table.setState({
@@ -150,17 +194,27 @@ class masterUpdate extends Component {
 			var masterModel = {};
 			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
 			masterModel["code"] = this.state.code - 1;
+			masterModel["bankBranchName"] = this.state.oldBranchName;
+			masterModel["bankBranchCode"] = this.state.oldBranchCode;
+			masterModel["bankCode"] = this.state.bankCode;
+			masterModel["topCustomerNo"] = this.state.topCustomerNo;
+			
 			axios.post(this.state.serverIP + "masterUpdate/delete", masterModel)
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus) })
+					axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus),bankCode: this.state.bankCode })
 						.then(response => {
 							if (response.data != null) {
 								this.setState({
 									masterData: response.data,
 									flag: true,
-									data: ''
+									data: '',
+									branchName:'',
+									branchCode:'',
+									topCustomerName: '',
+									topCustomerAbbreviation: '',
+									url: '',
 								});
 							}
 							this.refs.table.setState({
@@ -195,6 +249,10 @@ class masterUpdate extends Component {
 				bankName: values.code,
 				branchName:'',
 				branchCode:'',
+				bankCode: values.code,
+				topCustomerName:'',
+				topCustomerAbbreviation:'',
+				url:'',
 			})
 	
 
@@ -203,6 +261,16 @@ class masterUpdate extends Component {
 				bankName: '',
 			})
 		}
+		axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus),bankCode: values.code })
+		.then(response => {
+			if (response.data != null) {
+				this.setState({
+					masterData: response.data
+				});
+			}
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
 	valueChange = event => {
 		if(event.target.value===''){
@@ -334,7 +402,7 @@ class masterUpdate extends Component {
 											<InputGroup.Prepend>
 												<InputGroup.Text id="inputGroup-sizing-sm">支店名</InputGroup.Text>
 											</InputGroup.Prepend>
-											<FormControl name="branchName" id="branchName" value={this.state.branchName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店名" disabled={bankName === '' ? true : false} maxLength={20}/>
+											<FormControl name="branchName" id="branchName" value={this.state.branchName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店名" disabled={this.state.flag === true ? true : false} maxLength={20}/>
 										</InputGroup>
 									</Col>
 								</Row>
@@ -345,15 +413,51 @@ class masterUpdate extends Component {
 											<InputGroup.Prepend>
 												<InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
 											</InputGroup.Prepend>
-											<FormControl name="branchCode" id="branchCode" value={this.state.branchCode} onChange={(e) => this.vNumberChange(e, "branchCode")} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店番号" disabled={bankName === '' ? true : false} />
+											<FormControl name="branchCode" id="branchCode" value={this.state.branchCode} onChange={(e) => this.vNumberChange(e, "branchCode")} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 支店番号" disabled={this.state.flag === true ? true : false} />
 										</InputGroup>
 									</Col>
 								</Row>
 							</div> :
 							null
 						}
-					
-					{master != "支店マスター" ?
+					{master === "TOPお客様" ?
+							<div>
+								<Row >
+									<Col >
+											<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="topCustomerName" id="topCustomerName" value={this.state.topCustomerName} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" お客様名" maxLength={20} disabled={this.state.flag === true ? true : false}/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">お客様略称</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="topCustomerAbbreviation" id="topCustomerAbbreviation" value={this.state.topCustomerAbbreviation} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" お客様略称" maxLength={20} disabled={this.state.flag === true ? true : false}/>
+										</InputGroup>
+									</Col>
+								</Row>
+
+								<Row>
+									<Col>
+										<InputGroup size="sm" className="mb-3">
+											<InputGroup.Prepend>
+												<InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
+											</InputGroup.Prepend>
+											<FormControl name="url" id="url" value={this.state.url} onChange={this.valueChange} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="URL" disabled={this.state.flag === true ? true : false}/>
+										</InputGroup>
+									</Col>
+								</Row>
+							</div> :
+							null
+						}
+					{master != "支店マスター" && master != "TOPお客様"  ?
 						<Row>
 							<Col>
 								<InputGroup size="sm" className="mb-3">
@@ -379,13 +483,25 @@ class masterUpdate extends Component {
 						<div>
 							<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 								<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店番号</TableHeaderColumn>
-								<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店名称</TableHeaderColumn>
+								<TableHeaderColumn dataField='bankBranchCode' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='bankBranchName' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店名称</TableHeaderColumn>
 							</BootstrapTable>
 						</div>:
 						null
 					}
-					{master !== "支店マスター" ?
+					{master === "TOPお客様" ?
+							<div>
+								<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
+									<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='topCustomerNo' width='120' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様名称</TableHeaderColumn>
+									<TableHeaderColumn dataField='topCustomerAbbreviation' hidden={true} ></TableHeaderColumn>
+									<TableHeaderColumn dataField='url' hidden={true} ></TableHeaderColumn>
+								</BootstrapTable>
+							</div>:
+							null
+						}
+					{master != "支店マスター" && master != "TOPお客様"  ?
 							<div>
 								<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 									<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>

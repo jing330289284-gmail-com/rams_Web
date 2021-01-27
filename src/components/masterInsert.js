@@ -63,7 +63,7 @@ class masterInsert extends Component {
 	toroku = () => {
 		$("#toroku").attr({"disabled":"disabled"});
 		// setTimeout($("#toroku").removeAttr("disabled"),2000)
-		if (this.state.master != '支店マスター' || this.state.master != 'TOPお客様' ) {
+		if (this.state.master != '支店マスター' && this.state.master != 'TOPお客様' ) {
 			var masterModel = {};
 			// 画面输入信息取得
 			var formArray = $("#masterInsertForm").serializeArray();
@@ -121,8 +121,9 @@ class masterInsert extends Component {
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						this.setState({branchCode:'',
-										branchName:''})
+						this.setState({topCustomerName:'',
+							topCustomerAbbreviation:'',
+							url:''})
 					$("#toroku").removeAttr("disabled");
 					}
 				}).catch((error) => {
