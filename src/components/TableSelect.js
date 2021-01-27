@@ -83,6 +83,13 @@ class TableSelect extends React.Component {
 				everyWidth: 140,
 			})
 		}
+		else if (this.props.flag === 11) {
+			this.setState({
+				allOption: this.props.dropdowns.state.topCustomerDrop,
+				selectedValue: this.props.dropdowns.state.topCustomerCode,	
+				everyWidth: 110,
+			})
+		}
 	}
 
 	focus() {
@@ -139,6 +146,11 @@ class TableSelect extends React.Component {
 			this.props.dropdowns.getLanguage2(values === null ? this.props.dropdowns.state.developLanguageCode2 : values.code);
 			this.setState({
 				selectedValue:values === null ? this.props.dropdowns.state.developLanguageCode2 : values.code,
+			})
+		} else if (this.props.flag === 11) {
+			this.props.dropdowns.getTopCustomer1(values === null ? this.props.dropdowns.state.topCustomerCode : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.topCustomerCode : values.code,
 			})
 		}
 	}

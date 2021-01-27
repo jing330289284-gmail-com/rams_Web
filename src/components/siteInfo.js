@@ -751,7 +751,7 @@ class siteInfo extends Component {
 				searchFlag: this.state.searchFlag,
 				sendValue: this.state.sendValue,
 				currPage: this.state.currPage,
-				employeeNo: this.state.employeeNo,
+				employeeNo: this.state.employeeName,
 			},
 		}
 		this.props.history.push(path);
