@@ -250,6 +250,7 @@ class CustomerInfo extends Component {
                 customerDepartmentCode: row.customerDepartmentCode,
                 positionCode: row.positionCode,
                 typeOfIndustryCode: row.typeOfIndustryCode,
+                topCustomerCode:row.topCustomerCode,
                 stationCode: row.stationCode,
                 developLanguageCode1: row.developLanguageCode1,
                 developLanguageCode2: row.developLanguageCode2,
@@ -485,6 +486,22 @@ class CustomerInfo extends Component {
         this.state.customerDepartmentList[this.state.rowNo - 1].typeOfIndustryCode = no;
         this.formatIndustry(no);
     }
+    formatTopCustomer = (cell) => {
+        var topCustomerDrop = this.state.topCustomerDrop;
+        if (cell === '') {
+            return '';
+        } else {
+            for (var i in topCustomerDrop) {
+                if (cell === topCustomerDrop[i].code) {
+                    return topCustomerDrop[i].name;
+                }
+            }
+        }
+    }
+    getTopCustomer1 = (no) => {
+        this.state.customerDepartmentList[this.state.rowNo - 1].topCustomerCode = no;
+        this.formatTopCustomer(no);
+    }
     // レコードおきゃく表示
     formatStation = (cell) => {
         var stationCodeDrop = this.state.stationCodeDrop;
@@ -540,6 +557,7 @@ class CustomerInfo extends Component {
         customerDepartment["positionCode"] = "";
         customerDepartment["customerDepartmentMail"] = "";
         customerDepartment["typeOfIndustryCode"] = "";
+        customerDepartment["topCustomerCode"] = "";
         customerDepartment["stationCode"] = "";
         customerDepartment["developLanguageCode1"] = "";
         customerDepartment["developLanguageCode2"] = "";
@@ -669,6 +687,7 @@ class CustomerInfo extends Component {
         const tableSelect4 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={8} onUpdate={onUpdate} {...props} />);
         const tableSelect5 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={9} onUpdate={onUpdate} {...props} />);
         const tableSelect6 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={10} onUpdate={onUpdate} {...props} />);
+        const tableSelect11 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={11} onUpdate={onUpdate} {...props} />);
         return (
             <div>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1028,20 +1047,22 @@ class CustomerInfo extends Component {
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
                                 <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width="4rem">番号</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="9rem">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} 
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="6rem"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="5rem">職位</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} >メール</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} width="13rem">メール</TableHeaderColumn>
                                 <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="8rem">業種</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>メイン拠点</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }}>メイン言語</TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode1' width="9rem" tdStyle={{ padding: '.45em' }} 
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} ></TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.01em'}} dataField='developLanguageCode2' width="9rem" tdStyle={{ padding: '.45em' }} 
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} ></TableHeaderColumn>
+                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="6rem">業種</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='topCustomerCode'  tdStyle={{ padding: '.45em' }}  
+                                    dataFormat={this.formatTopCustomer.bind(this)} customEditor={{ getElement: tableSelect11 }}>Top客様</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode'  tdStyle={{ padding: '.45em' }} 
+                                    dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>拠点</TableHeaderColumn>
+                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }} thStyle={{padding:'.10em'}} width="10rem">メイン言語</TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.10em'}} dataField='developLanguageCode1' tdStyle={{ padding: '.45em' }} 
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} >A</TableHeaderColumn>
+                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.10em'}} dataField='developLanguageCode2' tdStyle={{ padding: '.45em' }} 
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} >B</TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
                     </div>
