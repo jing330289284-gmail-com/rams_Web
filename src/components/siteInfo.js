@@ -330,6 +330,8 @@ class siteInfo extends Component {
 								siteData: response.data.siteList,
 								disabledFlag: false,
 								deleteFlag:true,
+								workStateFlag: true,
+								updateFlag: true,
 							});
 						} else {
 							this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
@@ -337,6 +339,8 @@ class siteInfo extends Component {
 								siteData: [],
 								disabledFlag: false,
 								deleteFlag:true,
+								workStateFlag: true,
+								updateFlag: true,
 							});
 							setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 						}
