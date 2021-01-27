@@ -343,7 +343,7 @@ class masterUpdate extends Component {
 				<Row>
 					<Col sm={4}></Col>
 					<Col sm={7}>
-						<p id="masterUpdateErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
+						<p id="masterUpdateErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★ </p>
 					</Col>
 				</Row>
 				<Form id="masterUpdateForm">
