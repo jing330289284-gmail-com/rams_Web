@@ -504,6 +504,7 @@ class manageSituation extends React.Component {
 			this.setState({
 				selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
 				rowNo: row.rowNo === null ? '' : row.rowNo,
+				salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
 				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
 				interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
 				interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
@@ -960,7 +961,7 @@ class manageSituation extends React.Component {
 						<Col sm={2}></Col>
 						<Col sm={7}>
 							<div style={{ "float": "right" }}>
-								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> 明細更新</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faSave} /> 明細更新</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
@@ -982,6 +983,7 @@ class manageSituation extends React.Component {
 								cellEdit={cellEdit}
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
+							<TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
