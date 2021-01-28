@@ -184,7 +184,7 @@ class projectInfo extends Component {
                         })
                     })
                     .catch(error => {
-                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                     });
             })
         } else {
@@ -313,7 +313,7 @@ class projectInfo extends Component {
                             })
                         })
                         .catch(error => {
-                            this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                            this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                         });
                     if (this.state.actionType === "update") {
                         this.setState({
@@ -323,7 +323,7 @@ class projectInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
@@ -361,7 +361,7 @@ class projectInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                 $("#toroku").attr("disabled", false);
             });
     }

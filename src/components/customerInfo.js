@@ -191,7 +191,7 @@ class CustomerInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
@@ -231,7 +231,7 @@ class CustomerInfo extends Component {
             })
             .catch(error => {
                 console.log(error)
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
 
@@ -357,7 +357,7 @@ class CustomerInfo extends Component {
                         }
                     })
                     .catch(function (error) {
-                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                     });
             }
             $("#sakujo").attr("disabled", true);
@@ -590,7 +590,7 @@ class CustomerInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
