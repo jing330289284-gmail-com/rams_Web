@@ -615,7 +615,7 @@ class CustomerInfoSearch extends Component {
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
                             <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='establishmentDate' tdStyle={{ padding: '.45em' }} width="80">設立</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} width="160" >本社場所</TableHeaderColumn>
                             <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160" dataFormat={this.addMarkCapitalStock}>資本金(百万円)</TableHeaderColumn>
                             <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="120">支払サイト</TableHeaderColumn>
                             <TableHeaderColumn dataField='businessStartDate' tdStyle={{ padding: '.45em' }} width="120">取引開始月</TableHeaderColumn>
