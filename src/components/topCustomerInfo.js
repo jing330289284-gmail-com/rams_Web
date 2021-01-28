@@ -57,7 +57,7 @@ class TopCustomerInfo extends Component {
                         })
                     })
                     .catch(error => {
-                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                     })
             } else {
                 var topCustomerNo = "";
@@ -105,7 +105,7 @@ class TopCustomerInfo extends Component {
                         }
                     })
                     .catch(()=> {
-                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                     })
             } else if (actionType === "insert") {
                 this.props.topCustomerToroku(topCustomerInfo);

@@ -51,7 +51,7 @@ class Login2 extends Component {
 				}
 			})
 			.catch(function (error) {
-				this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
 			})
 	}
 	render() {

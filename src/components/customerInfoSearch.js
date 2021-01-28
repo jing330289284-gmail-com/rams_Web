@@ -155,7 +155,7 @@ class CustomerInfoSearch extends Component {
                 })
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
@@ -222,7 +222,7 @@ class CustomerInfoSearch extends Component {
                     }
                 })
                 .catch(error => {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                 });
         }
     }
@@ -355,6 +355,10 @@ class CustomerInfoSearch extends Component {
             capitalStockBack:'',
         })
     }
+    // 鼠标悬停显示全文
+    customerNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
     render() {
         const { customerInfoData, stationCode, topCustomerCode, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
             , customerNo } = this.state;
@@ -611,15 +615,15 @@ class CustomerInfoSearch extends Component {
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
                             <TableHeaderColumn dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
                             <TableHeaderColumn isKey dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="240" dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
                             <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='establishmentDate' tdStyle={{ padding: '.45em' }} width="80">設立</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} width="160" >本社場所</TableHeaderColumn>
-                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160" dataFormat={this.addMarkCapitalStock}>資本金(百万円)</TableHeaderColumn>
-                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="120">支払サイト</TableHeaderColumn>
-                            <TableHeaderColumn dataField='businessStartDate' tdStyle={{ padding: '.45em' }} width="120">取引開始月</TableHeaderColumn>
-                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="120">取引総人月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} width="150">本社</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="126" dataFormat={this.addMarkCapitalStock}>資本金(百万)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="110">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='businessStartDate' tdStyle={{ padding: '.45em' }} width="100">取引開始月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="100">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
                     </Col>
                 </Form>

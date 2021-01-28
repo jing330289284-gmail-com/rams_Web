@@ -158,7 +158,7 @@ class ExpensesInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
 
@@ -218,7 +218,7 @@ class ExpensesInfo extends Component {
             axios.post(this.state.serverIP + "expensesInfo/delete", deleteMod)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
+                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功",actionType: 'insert', });
                         setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                         var expensesInfoMod = {};
                         expensesInfoMod["employeeNo"] = this.state.employeeNo;
@@ -230,7 +230,7 @@ class ExpensesInfo extends Component {
                     }
                 })
                 .catch(error => {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                 });
         }
     }
