@@ -317,8 +317,6 @@ class WagesInfo extends Component {
                     $("#expensesInfoBtn").attr("disabled", false);
                     this.setState({
                         wagesInfoList: result.data.wagesInfoList,
-                        lastTimeBonusAmount: utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
-                        lastTimeBonusAmountForInsert: utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
                         kadouCheck: result.data.kadouCheck,
                         leaderCheck: result.data.leaderCheck,
                         relatedEmployees: result.data.kadouList,
@@ -330,6 +328,8 @@ class WagesInfo extends Component {
                     if (result.data.bonus !== null) {
                         this.setState({
                             bonusFlag: result.data.bonus.bonusFlag,
+                            lastTimeBonusAmount: utils.addComma(result.data.bonus.lastTimeBonusAmount),
+                            lastTimeBonusAmountForInsert: utils.addComma(result.data.bonus.lastTimeBonusAmount),
                             scheduleOfBonusAmount: utils.addComma(result.data.bonus.scheduleOfBonusAmount),
                             bonusStartDate: utils.converToLocalTime(result.data.bonus.nextBonusMonth, false),
                         }, () => {
@@ -972,7 +972,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{ width: "7.5rem" }}>次のボーナス月</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "7.5rem" }}>次ボーナス月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
@@ -1135,11 +1135,6 @@ class WagesInfo extends Component {
                             </div>
                         </Form.Group>
                     </Form>
-                    <Row>
-                        <Col sm={11}>
-                            <Form.Text>給料変動一覧</Form.Text>
-                        </Col>
-                    </Row>
                     <Row>
                         <Col sm={4}>
                             <div style={{ "float": "left" }}>
