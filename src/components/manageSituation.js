@@ -362,7 +362,7 @@ class manageSituation extends React.Component {
 	/*
 	 * indexN(cell, row, enumObject, index) { return (<div>{index + 1}</div>); }
 	 */
-
+ 
 	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
 		if (row.salesPriorityStatus === '1') {
