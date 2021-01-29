@@ -417,7 +417,7 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名 </InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeFristName} size="sm" name="employeeFristName" maxlength="3" disabled />{' '}
-									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
+									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" className="site-mark">★</font>
 								</InputGroup>
 								{/* // line */}
 								<InputGroup size="sm" className="mb-3">
@@ -446,7 +446,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
+									<font color="red" className="site-mark">★</font>
 
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -557,7 +557,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Form.Control type="email" value={companyMail} disabled
 										size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
-									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
+									<font color="red" className="site-mark">★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -619,7 +619,8 @@ class employeeUpdate extends React.Component {
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-									<font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>								</InputGroup>
+									<font color="red" className="site-mark">★</font>
+									</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3" >

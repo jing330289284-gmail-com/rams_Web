@@ -76,8 +76,6 @@ class PasswordSetManager extends Component {
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "パスワード再確認と新しいパスワードが間違いため、チェックしてください" });
 			}
 		}
-
-
 	}
 	render() {
 		const { errorsMessageValue } = this.state
@@ -127,6 +125,7 @@ class PasswordSetManager extends Component {
 								<Form.Control type="password" id="passwordCheck" a name="passwordCheck" />
 							</InputGroup>
 						</Col>
+						<font color="white" >★</font>
 					</Row>
 					<Row>
 						<Col className="text-center">
