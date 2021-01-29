@@ -367,6 +367,8 @@ class manageSituation extends React.Component {
 	showPriority(cell, row, enumObject, index) {
 		if (row.salesPriorityStatus === '1') {
 			return (<div>{row.employeeNo}<font color="red">★</font></div>);
+		} else if(row.salesPriorityStatus === '2') {
+			return (<div>{row.employeeNo}<font color="black">★</font></div>);
 		} else {
 			return (<div>{row.employeeNo}</div>);
 		}
@@ -596,7 +598,7 @@ class manageSituation extends React.Component {
 			</p>
 		);
 	}
-
+	
 	// react download Excel-----------メモ
 	/*
 	 * handleDownload = (resumeInfo) => { var resumeInfos= new Array();
@@ -624,6 +626,8 @@ class manageSituation extends React.Component {
 			selectetRowIds: this.state.selectetRowIds,
 		};
 		switch (actionType) {
+			case "selectAll":
+				break;
 			case "detailUpdate":
 				this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1], this.state.salesYearAndMonth);
 				break;
@@ -947,7 +951,7 @@ class manageSituation extends React.Component {
 					</div>
 					<br />
 					<Row>
-						<Col sm={1}>
+						{/*<Col sm={1}>
 							<div >
 								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" checked={this.state.checkFlag} disabled={this.state.checkDisabledFlag} onChange={this.changeMode} /></span>
 							</div>
@@ -958,13 +962,16 @@ class manageSituation extends React.Component {
 						<Col sm={1}>
 							<font style={{ whiteSpace: 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
 						</Col>
-						<Col sm={2}></Col>
-						<Col sm={7}>
-							<div style={{ "float": "right" }}>
-								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faSave} /> 明細更新</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+						<Col sm={2}></Col>*/}
+						<Col sm={12}>
+							<div style={{"float": "left"}}>
+								<Button onClick={this.shuseiTo.bind(this, "selectAll")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 全て選択</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+							</div>
+							<div style={{ "float": "right" }}>
+								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>
@@ -983,7 +990,7 @@ class manageSituation extends React.Component {
 								cellEdit={cellEdit}
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+							    <TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>salesDateUpdateHid</TableHeaderColumn>
 								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
@@ -1010,7 +1017,7 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
 									editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}
-									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag}>確定単価</TableHeaderColumn>
+									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
