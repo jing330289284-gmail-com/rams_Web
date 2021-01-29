@@ -1016,7 +1016,6 @@ class CustomerInfo extends Component {
                             </Button>
                         </div>
                     </Form>
-                    <hr style={{ height: "1px", border: "none", borderTop: "1px solid #555555" }} />
                     <Row>
                         <Col sm={8}>
                             <Form.Label style={{ "color": "#000000" }}>部門情報</Form.Label>

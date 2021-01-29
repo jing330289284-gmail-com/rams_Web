@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrash, faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
@@ -468,7 +468,7 @@ class ExpensesInfo extends Component {
                                     onClick={this.delete}
                                     disabled={actionType === "detail" ? true : false}
                                 >
-                                    <FontAwesomeIcon icon={faEdit} />削除
+                                    <FontAwesomeIcon icon={faTrash} />削除
                                 </Button>
                             </div>
                         </Col>

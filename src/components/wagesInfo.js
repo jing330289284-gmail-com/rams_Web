@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrash, faUndo, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn, BSTable } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
@@ -57,7 +57,7 @@ class WagesInfo extends Component {
         myToastShow: false,//toastのフラグ
         errorsMessageShow: false,///エラーのメッセージのフラグ
         errorsMessageValue: '',//エラーのメッセージ
-        actionType: 'insert',//処理区分
+        actionType: 'detail',//処理区分
         socialInsuranceFlagDrop: [],//社会保険フラグselect
         bonusFlagDrop: [],//ボーナスフラグselect
         EmployeeFormCodeDrop: [],//社員性質select
@@ -74,6 +74,8 @@ class WagesInfo extends Component {
         sendValue: {},
         relatedEmployees: '',//要員
         allExpensesInfoList:[],
+        deleteFlag:true,
+        hatsunyubaFlag:true,
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -128,7 +130,6 @@ class WagesInfo extends Component {
     componentDidMount() {
         this.getDropDowns();
         console.log(this.props.history);
-        $("#delete").attr("disabled", true);
         $("#expensesInfoBtn").attr("disabled", true);
         if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
             var employeeNo = this.props.location.state.employeeNo;
@@ -298,6 +299,14 @@ class WagesInfo extends Component {
             var employeeNo = null;
             if (values !== null) {
                 employeeNo = values.code;
+                this.setState({
+                    actionType:"insert",
+                })
+            }else{
+                this.setState({
+                    actionType:"detail",
+                    employeeFormCodeStart:"",
+                })
             }
             var wagesInfoMod = {
                 "employeeNo": employeeNo,
@@ -307,7 +316,20 @@ class WagesInfo extends Component {
                 employeeName: employeeNo,
             })
             this.search(wagesInfoMod);
-            this.resetValue();
+            if (values !== null) {
+                this.setState({
+                    actionType:"insert",
+                },()=>{
+                    this.resetValue();
+                })
+            }else{
+                this.setState({
+                    actionType:"detail",
+                    employeeFormCodeStart:"",
+                },()=>{
+                    this.resetValue();
+                })
+            }
         }
         )
     }
@@ -324,6 +346,7 @@ class WagesInfo extends Component {
                         employeeFormCode: result.data.employeeFormCode,
                         employeeFormCodeStart: result.data.employeeFormCode,
                         bonus: result.data.bonus,
+                        hatsunyubaFlag:result.data.hatsunyubaFlag,
                         "errorsMessageShow": false,
                         allExpensesInfoList:result.data.allExpensesInfoList,
                         expensesInfoModels: result.data.allExpensesInfoList,
@@ -364,6 +387,7 @@ class WagesInfo extends Component {
                         bonusFlag: '',
                         scheduleOfBonusAmount: '',
                         bonusStartDate: '',
+                        hatsunyubaFlag:true,
                     }, () => {
                         this.totalKeisan();
                     })
@@ -384,16 +408,15 @@ class WagesInfo extends Component {
             if (row.reflectYearAndMonth === this.state.wagesInfoList[this.state.wagesInfoList.length - 1].reflectYearAndMonth) {
                 this.setState({
                     torokuText: '更新',
+                    deleteFlag:false,
                 })
-                $("#delete").attr("disabled", false);
             } else {
                 // this.resetValue();
                 this.setState({
                     actionType: "detail",
                     torokuText: '登録',
-                })
-                $("#delete").attr("disabled", true);
-            }
+                    deleteFlag:true,
+                })            }
             if (row.expensesInfoModels != null) {
                 this.setState({
                     expensesInfoModels: row.expensesInfoModels,
@@ -409,8 +432,8 @@ class WagesInfo extends Component {
                 actionType: 'insert',
                 torokuText: '登録',
                 expensesInfoModels: this.state.allExpensesInfoList,
+                deleteFlag:true,
             })
-            $("#delete").attr("disabled", true);
         }
     }
     /**
@@ -418,8 +441,9 @@ class WagesInfo extends Component {
      */
     shuseiBtn = (selectedWagesInfo) => {
         var selectedWagesInfo = selectedWagesInfo;
+        var salary = "";
         if (selectedWagesInfo.waitingCost !== '' && selectedWagesInfo.waitingCost !== null && selectedWagesInfo.waitingCost !== undefined) {
-            selectedWagesInfo["waitingCost"] = selectedWagesInfo.salary;
+            salary = selectedWagesInfo.salary;
             selectedWagesInfo["salary"] = "";
         }
         this.setState({
@@ -427,7 +451,7 @@ class WagesInfo extends Component {
         })
         this.giveValue(selectedWagesInfo);
         if (selectedWagesInfo.waitingCost !== '' && selectedWagesInfo.waitingCost !== null && selectedWagesInfo.waitingCost !== undefined) {
-            selectedWagesInfo["salary"] = selectedWagesInfo.waitingCost;
+            selectedWagesInfo["salary"] = salary;
         }
     }
     /**
@@ -530,8 +554,8 @@ class WagesInfo extends Component {
                     });
                     this.setState({
                         torokuText: "登録",
+                        deleteFlag:true,
                     })
-                    $("#delete").attr("disabled", true);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -656,8 +680,8 @@ class WagesInfo extends Component {
                             actionType: 'insert',
                             torokuText: '登録',
                             expensesInfoModels: [],
+                            deleteFlag:true,
                         })
-                        $("#delete").attr("disabled", true);
                     } else {
                         this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                         setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -731,7 +755,9 @@ class WagesInfo extends Component {
             kadouCheck,
             leaderCheck,
             relatedEmployees,
-            backPage } = this.state;
+            backPage ,
+            hatsunyubaFlag ,
+            deleteFlag } = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -1148,7 +1174,7 @@ class WagesInfo extends Component {
                         <Col sm={4}>
                             <div style={{ "float": "left" }}>
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "employeeInfo")} disabled={this.state.employeeName === "" ? true : false} variant="info" id="employeeInfo">個人情報</Button>{' '}
-                                <Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeName === "" ? true : kadouCheck} variant="info" id="siteInfo">現場情報</Button>{' '}
+                                <Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={hatsunyubaFlag} variant="info" id="siteInfo">現場情報</Button>{' '}
                             </div>
                         </Col>
                         <Col sm={7}>
@@ -1160,8 +1186,9 @@ class WagesInfo extends Component {
                                     size="sm"
                                     id="delete"
                                     onClick={this.delete}
+                                    disabled={deleteFlag}
                                 >
-                                    <FontAwesomeIcon icon={faEdit} />削除
+                                    <FontAwesomeIcon icon={faTrash} />削除
                                 </Button>
                             </div>
                         </Col>
