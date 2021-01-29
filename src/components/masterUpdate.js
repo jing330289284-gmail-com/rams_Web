@@ -19,6 +19,7 @@ class masterUpdate extends Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
+		this.refreshReducer = this.refreshReducer.bind(this);
 	}
 
 	initialState = {
@@ -155,6 +156,7 @@ class masterUpdate extends Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "put", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.refreshReducer();
 					axios.post(this.state.serverIP + "/masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus),bankCode: this.state.bankCode  })
 						.then(response => {
 							if (response.data != null) {
@@ -203,6 +205,7 @@ class masterUpdate extends Component {
 				.then(result => {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.refreshReducer();
 					axios.post(this.state.serverIP + "masterUpdate/getMasterInfo", { master: publicUtils.labelGetValue($("#master").val(), this.state.masterStatus),bankCode: this.state.bankCode })
 						.then(response => {
 							if (response.data != null) {
@@ -240,6 +243,16 @@ class masterUpdate extends Component {
 				}).catch((error) => {
 					console.error("Error - " + error);
 				});
+		}
+	}
+	
+	refreshReducer = () =>{
+		switch (this.state.master) {
+		case "TOPお客様":
+			store.dispatch({type:"UPDATE_STATE",dropName:"getTopCustomer"});
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -343,7 +356,7 @@ class masterUpdate extends Component {
 				<Row>
 					<Col sm={4}></Col>
 					<Col sm={7}>
-						<p id="masterUpdateErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★</p>
+						<p id="masterUpdateErorMsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger">★ </p>
 					</Col>
 				</Row>
 				<Form id="masterUpdateForm">

@@ -19,6 +19,7 @@ class masterInsert extends Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
+		this.refreshReducer = this.refreshReducer.bind(this);
 	}
 	// 初期化
 	initialState = {
@@ -79,7 +80,7 @@ class masterInsert extends Component {
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						window.location.reload();
+						this.refreshReducer();
 					}
 				}).catch((error) => {
 					console.error("Error - " + error);
@@ -99,6 +100,7 @@ class masterInsert extends Component {
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						this.refreshReducer();
 						this.setState({branchCode:'',
 										branchName:''})
 					$("#toroku").removeAttr("disabled");
@@ -121,6 +123,7 @@ class masterInsert extends Component {
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						this.refreshReducer();
 						this.setState({topCustomerName:'',
 							topCustomerAbbreviation:'',
 							url:''})
@@ -129,6 +132,19 @@ class masterInsert extends Component {
 				}).catch((error) => {
 					console.error("Error - " + error);
 				});
+		}
+	}
+	
+	refreshReducer = () =>{
+		switch (this.state.master) {
+		case "TOPお客様":
+			store.dispatch({type:"UPDATE_STATE",dropName:"getTopCustomer"});
+			break;
+		case "支店マスター":
+			break;
+		default:
+			window.location.reload();
+			break;
 		}
 	}
 

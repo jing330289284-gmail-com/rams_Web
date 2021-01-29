@@ -115,6 +115,17 @@ class employeeSearch extends React.Component {
 	// 初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
 		$('button[name="clickButton"]').attr('disabled', true);
+		/*this.refs.siteSearchTable.handleSort('asc', 'rowNo');
+		this.refs.siteSearchTable.handleSort('asc', 'employeeFristName');
+		this.refs.siteSearchTable.handleSort('asc', 'furigana');
+		this.refs.siteSearchTable.handleSort('asc', 'alphabetName');
+		this.refs.siteSearchTable.handleSort('asc', 'birthday');
+		this.refs.siteSearchTable.handleSort('asc', 'phoneNo');
+		this.refs.siteSearchTable.handleSort('asc', 'stationName');
+		this.refs.siteSearchTable.handleSort('asc', 'intoCompanyYearAndMonth');
+		this.refs.siteSearchTable.handleSort('asc', 'admissionTime');
+		this.refs.siteSearchTable.handleSort('asc', 'stayPeriod');
+		this.refs.siteSearchTable.handleSort('asc', 'employeeNo');*/
 	};
 
 	// 検索s
@@ -168,7 +179,7 @@ class employeeSearch extends React.Component {
 			}
 			);
 	}
-
+	
 	state = {
 		intoCompanyYearAndMonthFrom: new Date(),
 		intoCompanyYearAndMonthTo: new Date()
@@ -519,6 +530,7 @@ class employeeSearch extends React.Component {
 			deleteBtn: this.createCustomDeleteButton,
 			onDeleteRow: this.onDeleteRow,
 			handleConfirmDeleteRow: this.customConfirm,
+			sortIndicator: false, // 隐藏初始排序箭头
 		};
 
 		return (
@@ -811,7 +823,7 @@ class employeeSearch extends React.Component {
 					</div>
 				</Form>
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
+					<Button size="sm" variant="info" type="submit"  onClick={this.searchEmployee} >
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
 					<Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">
@@ -852,17 +864,17 @@ class employeeSearch extends React.Component {
 						<Col sm={12}>
 							<BootstrapTable ref="siteSearchTable"
 								data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-								<TableHeaderColumn width='50' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
-								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
-								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' /* dataFormat={this.formatBrthday.bind(this)} */>年齢</TableHeaderColumn>
-								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
-								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='admissionTime'>入場年月</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期限</TableHeaderColumn>
+								<TableHeaderColumn width='75' tdStyle={{ padding: '.45em' }} dataField='rowNo'dataSort>番号</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey dataSort>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName' dataSort>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='130' tdStyle={{ padding: '.45em' }} dataField='furigana' dataSort>カタカナ</TableHeaderColumn>
+								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName' dataSort>ローマ字</TableHeaderColumn>
+								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort>年齢</TableHeaderColumn>
+								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo' dataSort>電話番号</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName' dataSort>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth' dataSort>入社年月</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='admissionTime' dataSort>入場年月</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)} dataSort>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 								<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>

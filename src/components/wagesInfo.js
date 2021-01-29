@@ -73,6 +73,7 @@ class WagesInfo extends Component {
         searchFlag: true,
         sendValue: {},
         relatedEmployees: '',//要員
+        allExpensesInfoList:[],
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -317,8 +318,6 @@ class WagesInfo extends Component {
                     $("#expensesInfoBtn").attr("disabled", false);
                     this.setState({
                         wagesInfoList: result.data.wagesInfoList,
-                        lastTimeBonusAmount: utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
-                        lastTimeBonusAmountForInsert: utils.addComma(result.data.wagesInfoList[result.data.wagesInfoList.length - 1].scheduleOfBonusAmount),
                         kadouCheck: result.data.kadouCheck,
                         leaderCheck: result.data.leaderCheck,
                         relatedEmployees: result.data.kadouList,
@@ -326,10 +325,14 @@ class WagesInfo extends Component {
                         employeeFormCodeStart: result.data.employeeFormCode,
                         bonus: result.data.bonus,
                         "errorsMessageShow": false,
+                        allExpensesInfoList:result.data.allExpensesInfoList,
+                        expensesInfoModels: result.data.allExpensesInfoList,
                     })
                     if (result.data.bonus !== null) {
                         this.setState({
                             bonusFlag: result.data.bonus.bonusFlag,
+                            lastTimeBonusAmount: utils.addComma(result.data.bonus.lastTimeBonusAmount),
+                            lastTimeBonusAmountForInsert: utils.addComma(result.data.bonus.lastTimeBonusAmount),
                             scheduleOfBonusAmount: utils.addComma(result.data.bonus.scheduleOfBonusAmount),
                             bonusStartDate: utils.converToLocalTime(result.data.bonus.nextBonusMonth, false),
                         }, () => {
@@ -348,6 +351,8 @@ class WagesInfo extends Component {
                     $("#expensesInfoBtn").attr("disabled", true);
                     this.setState({
                         wagesInfoList: [],
+                        allExpensesInfoList:[],
+                        expensesInfoModels: [],
                         kadouCheck: result.data.kadouCheck,
                         relatedEmployees: result.data.kadouList,
                         leaderCheck: result.data.leaderCheck,
@@ -365,6 +370,10 @@ class WagesInfo extends Component {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
             })
+            .catch(error => {
+                console.log(error);
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+            });
     }
     /**
      * 行Selectファンクション
@@ -399,7 +408,7 @@ class WagesInfo extends Component {
             this.setState({
                 actionType: 'insert',
                 torokuText: '登録',
-                expensesInfoModels: [],
+                expensesInfoModels: this.state.allExpensesInfoList,
             })
             $("#delete").attr("disabled", true);
         }
@@ -447,7 +456,7 @@ class WagesInfo extends Component {
                         })
                     })
                     .catch(error => {
-                        this.setState({ errorsMessageShow: true, errorsMessageValue: "程序错误", socialInsuranceFlag: "0", });
+                        this.setState({ errorsMessageShow: true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください", socialInsuranceFlag: "0", });
                         setTimeout(() => this.setState({ "errorsMessageValue": false }), 3000);
                     });
             }
@@ -528,7 +537,7 @@ class WagesInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
@@ -655,7 +664,7 @@ class WagesInfo extends Component {
                     }
                 })
                 .catch(error => {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
                 });
         }
     }
@@ -777,7 +786,7 @@ class WagesInfo extends Component {
                                 employeeNo={employeeNo}
                                 expensesInfoModel={this.state.expensesInfoModel}
                                 expensesInfoToroku={this.getExpensesInfo} 
-                                actionType={this.state.actionType}/>
+                                actionType={expensesInfoModels === this.state.allExpensesInfoList ? "detail" : "insert"}/>
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">
@@ -972,7 +981,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{ width: "7.5rem" }}>次のボーナス月</InputGroup.Text>
+                                            <InputGroup.Text style={{ width: "7.5rem" }}>次ボーナス月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
@@ -1135,11 +1144,6 @@ class WagesInfo extends Component {
                             </div>
                         </Form.Group>
                     </Form>
-                    <Row>
-                        <Col sm={11}>
-                            <Form.Text>給料変動一覧</Form.Text>
-                        </Col>
-                    </Row>
                     <Row>
                         <Col sm={4}>
                             <div style={{ "float": "left" }}>

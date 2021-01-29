@@ -46,27 +46,27 @@ class TableSelect extends React.Component {
 			this.setState({
 				allOption: this.props.dropdowns.state.customerDepartmentNameDrop,
 				selectedValue: this.props.dropdowns.state.customerDepartmentName,	
-				everyWidth: 210,
+				everyWidth: "6rem",
 			})
 		} else if (this.props.flag === 6) {
 			this.setState({
 				allOption: this.props.dropdowns.state.positionDrop,
 				selectedValue: this.props.dropdowns.state.positionCode,	
-				everyWidth: 170,
+				everyWidth: "4rem",
 			})
 		}
 		else if (this.props.flag === 7) {
 			this.setState({
 				allOption: this.props.dropdowns.state.typeOfIndustryDrop,
 				selectedValue: this.props.dropdowns.state.typeOfIndustryCode,	
-				everyWidth: 110,
+				everyWidth: 70,
 			})
 		}
 		else if (this.props.flag === 8) {
 			this.setState({
 				allOption: this.props.dropdowns.state.stationCodeDrop,
 				selectedValue: this.props.dropdowns.state.stationCode,	
-				everyWidth: 110,
+				everyWidth: "6rem",
 			})
 		}
 		else if (this.props.flag === 9) {

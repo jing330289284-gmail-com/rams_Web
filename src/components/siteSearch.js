@@ -719,7 +719,7 @@ class siteSearch extends Component {
 					<div>
 						<Row >
 							<Col sm={12}>
-								<div style={{ "float": "right" }}>
+								<div style={{ "float": "left" }}>
 									<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" id="siteInfo" variant="info"><FontAwesomeIcon icon={faSave} />現場情報登録</Button>
 								</div>
 							</Col>
