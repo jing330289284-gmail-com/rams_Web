@@ -786,7 +786,7 @@ class WagesInfo extends Component {
                                 employeeNo={employeeNo}
                                 expensesInfoModel={this.state.expensesInfoModel}
                                 expensesInfoToroku={this.getExpensesInfo} 
-                                actionType={expensesInfoModels === this.state.allExpensesInfoList ? "detail" : this.state.actionType}/>
+                                actionType={expensesInfoModels === this.state.allExpensesInfoList ? "detail" : "insert"}/>
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">
