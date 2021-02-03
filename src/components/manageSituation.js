@@ -561,7 +561,7 @@ class manageSituation extends React.Component {
 	
 	// 全て選択ボタン事件
 	selectAllLists = () => {
-		alert(this.refs.table)
+		
 	}
 
 
