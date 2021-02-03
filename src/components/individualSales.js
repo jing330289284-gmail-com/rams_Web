@@ -463,7 +463,8 @@ class individualSales extends React.Component {//個人売上検索
             }
             if (row.admissionEndDate !== null && row.admissionEndDate.substring(0, 6) === row.onlyYandM) {
                 var monthDayCount = new Date(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), 0).getDate();
-                if (row.admissionEndDate.substring(6, 8) === monthDayCount) {
+                var endDate= parseInt(row.admissionEndDate.substring(6, 8) )
+                if (endDate=== monthDayCount) {
                     var salary = publicUtils.addComma(row.unitPrice, false)
                     let returnItem = cell;
                     returnItem = salary;
@@ -474,8 +475,7 @@ class individualSales extends React.Component {//個人売上検索
 
                 }
                 else {
-                    var a = row.admissionEndDate.substring(0, 4);
-                    var b = row.admissionEndDate.substring(4, 6);
+
                     for (var i = 1; i <= row.admissionEndDate.substring(6, 8); i++) {
                         if (i < 10) {
                             i = "0" + i
@@ -750,13 +750,13 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={2}>
+                    <Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange} />
-                        </InputGroup>
+                                </InputGroup.Prepend>
+                                <FormControl  id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange} /> 
+                                </InputGroup>
                     </Col>
                     <Col sm={3}>
                         <p id="individualSalesErrmsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger"></p>
