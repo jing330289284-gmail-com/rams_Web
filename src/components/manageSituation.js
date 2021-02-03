@@ -74,7 +74,7 @@ class manageSituation extends React.Component {
 		errorsMessageValue: '',// ERRメッセージ
 		customerContracts: store.getState().dropDown[24],
 		customerContractStatus: '',
-		modeSelect: 'radio',
+		modeSelect: 'checkbox',
 		selectetRowIds: [],
 		onSelectFlag: true,
 		checkFlag: false,
@@ -247,7 +247,7 @@ class manageSituation extends React.Component {
 		this.formatType(no);
 		
 		// データが変更する時、ajaxを呼び出す
-//		this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
+// this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
 	// 明細選択したSalesStaffを設定する
@@ -258,7 +258,7 @@ class manageSituation extends React.Component {
 			salesStaff: no,
 		});
 		// データが変更する時、ajaxを呼び出す
-//		this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
+// this.changeDataStatus(this.state.salesSituationLists[this.state.rowNo - 1]);
 	}
 
 	// 明細選択したCustomerContractを設定する
@@ -286,9 +286,9 @@ class manageSituation extends React.Component {
 		axios.post(this.state.serverIP + "salesSituation/changeDataStatus", salesSituationList)
 		.then(response => {
 			if (response.data != null) {
-//				this.setState({
-//					salesSituationLists: response.data.result
-//				})
+// this.setState({
+// salesSituationLists: response.data.result
+// })
 				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
 			}
 		}).catch((error) => {
@@ -339,19 +339,20 @@ class manageSituation extends React.Component {
 				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
-//				axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo", row)
-//					.then(result => {
-//						if (result.data != null) {
-//							this.getSalesSituation(this.state.salesYearAndMonth)
-//							this.setState({ myToastShow: true });
-//							setTimeout(() => this.setState({ myToastShow: false }), 3000);
-//						} else {
-//							alert("FAIL");
-//						}
-//					})
-//					.catch(function (error) {
-//						alert("ERR");
-//					});
+// axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo",
+// row)
+// .then(result => {
+// if (result.data != null) {
+// this.getSalesSituation(this.state.salesYearAndMonth)
+// this.setState({ myToastShow: true });
+// setTimeout(() => this.setState({ myToastShow: false }), 3000);
+// } else {
+// alert("FAIL");
+// }
+// })
+// .catch(function (error) {
+// alert("ERR");
+// });
 			}
 		} else {
 			row.customer = 'noedit';
@@ -557,6 +558,12 @@ class manageSituation extends React.Component {
 			});
 		}
 	}
+	
+	// 全て選択ボタン事件
+	selectAllLists = () => {
+		alert(this.refs.table)
+	}
+
 
 	// 明細多選処理
 	handleCheckModeSelect = (row, isSelected, e) => {
@@ -615,8 +622,7 @@ class manageSituation extends React.Component {
 	 * document.body.appendChild(downloadElement); downloadElement.click(); //
 	 * 点击下载 document.body.removeChild(downloadElement); // 下载完成移除元素
 	 * window.URL.revokeObjectURL(href); // 释放掉blob对象 } }).catch((error) => {
-	 * alert('文件下载失败', error); });
-	 *  }
+	 * alert('文件下载失败', error); }); }
 	 */
  
 	shuseiTo = (actionType) => {
@@ -666,6 +672,7 @@ class manageSituation extends React.Component {
 		}
 		this.props.history.push(path);
 	}
+	
 	render() {
 		const selectRow = {
 			mode: this.state.modeSelect,
@@ -706,10 +713,10 @@ class manageSituation extends React.Component {
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
+					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"danger"} />
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"success"} />
 				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-bankInfo">
@@ -951,21 +958,21 @@ class manageSituation extends React.Component {
 					</div>
 					<br />
 					<Row>
-						{/*<Col sm={1}>
-							<div >
-								<span style={{ whiteSpace: 'nowrap' }}> 選択 <Form.Check inline type="checkbox" checked={this.state.checkFlag} disabled={this.state.checkDisabledFlag} onChange={this.changeMode} /></span>
-							</div>
-						</Col>
-						<Col sm={1}>
-							<font style={{ whiteSpace: 'nowrap' }}>合計：{this.state.totalPersons}人</font>
-						</Col>
-						<Col sm={1}>
-							<font style={{ whiteSpace: 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
-						</Col>
-						<Col sm={2}></Col>*/}
+						{/*
+							 * <Col sm={1}> <div > <span style={{ whiteSpace:
+							 * 'nowrap' }}> 選択 <Form.Check inline
+							 * type="checkbox" checked={this.state.checkFlag}
+							 * disabled={this.state.checkDisabledFlag}
+							 * onChange={this.changeMode} /></span> </div>
+							 * </Col> <Col sm={1}> <font style={{ whiteSpace:
+							 * 'nowrap' }}>合計：{this.state.totalPersons}人</font>
+							 * </Col> <Col sm={1}> <font style={{ whiteSpace:
+							 * 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
+							 * </Col> <Col sm={2}></Col>
+							 */}
 						<Col sm={12}>
 							<div style={{"float": "left"}}>
-								<Button onClick={this.shuseiTo.bind(this, "selectAll")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 全て選択</Button>{' '}
+								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faIdCard} /> すべて選択</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
