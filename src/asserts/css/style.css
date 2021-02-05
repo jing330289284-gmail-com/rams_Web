@@ -313,28 +313,17 @@ body {
 }
 
 #personalsalesSearchDatePicker {
-<<<<<<< HEAD
-  background-repeat: no-repeat;
-  width: 150px;
-  background-position: 10px 7px;
-  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-  padding-right: 0px;
-  height: calc(1.5em + .5rem + 2px);
-  background-color: white;
-=======
 	background-repeat: no-repeat;
-	width: 225px;
+	width: 150px;
 	background-position: 10px 7px;
 	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
->>>>>>> branch 'teng' of https://github.com/jing330289284-gmail-com/rams_Web.git
 }
 
 #personalsalesSearchBackDatePicker {
-<<<<<<< HEAD
   background-repeat: no-repeat;
   width: 150px;
   background-position: 10px 7px;
@@ -342,16 +331,14 @@ body {
   padding-right: 0px;
   height: calc(1.5em + .5rem + 2px);
   background-color: white;
-=======
 	background-repeat: no-repeat;
-	width: 225px;
+	width: 150px;
 	background-position: 10px 7px;
 	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 		right center transparent;
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
->>>>>>> branch 'teng' of https://github.com/jing330289284-gmail-com/rams_Web.git
 }
 
 #customerInfoDatePicker {
@@ -1006,14 +993,11 @@ body {
 	font-size: ".875rem";
 	color: "#495057"
 }
-<<<<<<< HEAD
 .selectWidth{
   max-width:247px !important;
-=======
-
+}
 .popoverC {
 	max-width: 450px !important;
->>>>>>> branch 'teng' of https://github.com/jing330289284-gmail-com/rams_Web.git
 }
 
 .projectContentDetail {
@@ -1241,7 +1225,6 @@ body {
 }
 
 @media screen and (max-width: 1550px) {
-<<<<<<< HEAD
 
   #customerInfoDatePicker {
     background-repeat: no-repeat;
@@ -1506,7 +1489,7 @@ body {
     max-width:450px !important;
   }
   .selectWidth{
-    max-width:247px !important;
+    max-width:250px !important;
   }
   .Autocompletestyle-siteInfo-relatedEmployees {
     width: 6.5rem;
@@ -1523,7 +1506,6 @@ body {
   .unitPrice{
     width: 1rem;
   }
-=======
 	#sanKanji {
 		width: 3.5rem;
 	}
@@ -2038,9 +2020,6 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
-	.popoverC {
-		max-width: 450px !important;
-	}
 	.Autocompletestyle-siteInfo-relatedEmployees {
 		width: 6.95rem;
 		height: 31px;
@@ -2164,5 +2143,4 @@ body {
 		width: 51%;
 		max-width: none !important;
 	}
->>>>>>> branch 'teng' of https://github.com/jing330289284-gmail-com/rams_Web.git
 }
