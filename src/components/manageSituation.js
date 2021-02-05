@@ -72,6 +72,7 @@ class manageSituation extends React.Component {
 		myToastShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
 		errorsMessageValue: '',// ERRメッセージ
+		clickRows:0,
 		customerContracts: store.getState().dropDown[24],
 		customerContractStatus: '',
 		modeSelect: 'checkbox',
@@ -146,7 +147,8 @@ class manageSituation extends React.Component {
 					});
 					this.setState({
 						selectetRowIds: [],
-						modeSelect: 'radio',
+						clickRows:0,
+						modeSelect: 'checkbox',
 						checkSelect: true,
 						onSelectFlag: true,
 						checkFlag: false,
@@ -300,7 +302,7 @@ class manageSituation extends React.Component {
 	changeMode = () => {
 		this.setState({
 			checkFlag: !this.state.checkFlag,
-			modeSelect: this.state.modeSelect === 'radio' ? 'checkbox' : 'radio',
+			modeSelect: this.state.modeSelect === 'checkbox' ? 'checkbox' : 'checkbox',
 			onSelectFlag: !this.state.onSelectFlag,
 			interviewDate1Show: '',
 			interviewDate2Show: '',
@@ -534,6 +536,7 @@ class manageSituation extends React.Component {
 				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
 				resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
 				customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+				clickRows:this.state.clickRows + 1,
 			});
 		} else {
 			this.setState({
@@ -555,6 +558,7 @@ class manageSituation extends React.Component {
 				updateBtnflag: isSelected,
 				readFlag: true,
 				linkDisableFlag: true,
+				clickRows:this.state.clickRows - 1,
 			});
 		}
 	}
@@ -973,7 +977,7 @@ class manageSituation extends React.Component {
 						<Col sm={12}>
 							<div style={{"float": "left"}}>
 								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faIdCard} /> すべて選択</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" /*disabled={this.state.linkDisableFlag}*/disabled={this.state.clickRows===1?false:true}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 							</div>
