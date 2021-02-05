@@ -115,6 +115,17 @@ class employeeSearch extends React.Component {
 	// 初期化の時、disabledをセットします
 	clickButtonDisabled = () => {
 		$('button[name="clickButton"]').attr('disabled', true);
+		/*this.refs.siteSearchTable.handleSort('asc', 'rowNo');
+		this.refs.siteSearchTable.handleSort('asc', 'employeeFristName');
+		this.refs.siteSearchTable.handleSort('asc', 'furigana');
+		this.refs.siteSearchTable.handleSort('asc', 'alphabetName');
+		this.refs.siteSearchTable.handleSort('asc', 'birthday');
+		this.refs.siteSearchTable.handleSort('asc', 'phoneNo');
+		this.refs.siteSearchTable.handleSort('asc', 'stationName');
+		this.refs.siteSearchTable.handleSort('asc', 'intoCompanyYearAndMonth');
+		this.refs.siteSearchTable.handleSort('asc', 'admissionTime');
+		this.refs.siteSearchTable.handleSort('asc', 'stayPeriod');
+		this.refs.siteSearchTable.handleSort('asc', 'employeeNo');*/
 	};
 
 	// 検索s
@@ -129,12 +140,12 @@ class employeeSearch extends React.Component {
 			ageTo: this.state.ageTo === "" || this.state.ageTo === undefined ? undefined : publicUtils.birthday_age(age),
 			residenceCode: this.state.residenceCode === "" ? undefined : this.state.residenceCode,
 			nationalityCode: this.state.nationalityCode === "" ? undefined : this.state.nationalityCode,
-			customer: publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
+			customer: this.props.location.state !== undefined?this.state.customerNo:publicUtils.labelGetValue($("#customerNo").val(), this.state.customerMaster),
 			intoCompanyCode: this.state.intoCompanyCode === "" ? undefined : this.state.intoCompanyCode,
 			japaneseLevelCode: this.state.japaneseLevelCode === "" ? undefined : this.state.japaneseLevelCode,
 			siteRoleCode: this.state.siteRoleCode === "" ? undefined : this.state.siteRoleCode,
-			developLanguage1: publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
-			developLanguage2: publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
+			developLanguage1: this.props.location.state !== undefined?this.state.developLanguage1:publicUtils.labelGetValue($("#developLanguage1").val(), this.state.developLanguageMaster),
+			developLanguage2: this.props.location.state !== undefined?this.state.developLanguage2:publicUtils.labelGetValue($("#developLanguage2").val(), this.state.developLanguageMaster),
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === null || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
@@ -149,6 +160,9 @@ class employeeSearch extends React.Component {
 				else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
+				this.refs.siteSearchTable.setState({
+					selectedRowKeys: [],
+				})
 				this.setState({
 					searchFlag: true,
 					rowSelectEmployeeNo: ''
@@ -165,7 +179,7 @@ class employeeSearch extends React.Component {
 			}
 			);
 	}
-
+	
 	state = {
 		intoCompanyYearAndMonthFrom: new Date(),
 		intoCompanyYearAndMonthTo: new Date()
@@ -209,18 +223,33 @@ class employeeSearch extends React.Component {
 			residentCardInfo: this.state.residentCardInfo,
 			passportInfo: this.state.passportInfo,
 		};
+		const tableSize = this.state.employeeList.length;
 		axios.post(this.state.serverIP + "employee/deleteEmployeeInfo", emp)
 			.then(result => {
 				if (result.data) {
-					this.searchEmployee();
-					// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: ''
-						}
-					);
-					this.setState({ "myToastShow": true });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					if(tableSize>1){
+						this.searchEmployee();
+						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
+						this.setState(
+							{
+								rowSelectEmployeeNo: '',
+							}
+						);
+						this.setState({ "myToastShow": true });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					}
+					else{
+						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
+						this.setState(
+							{
+								rowSelectEmployeeNo: '',
+								employeeList: []
+							}
+						);
+						this.setState({ "myToastShow": true });
+						setTimeout(() => this.setState({ "myToastShow": false }), 300);
+						window.location.reload();// 刷新当前页面.
+					}
 				} else {
 					this.setState({ "myToastShow": false });
 				}
@@ -238,6 +267,7 @@ class employeeSearch extends React.Component {
 	// 行Selectファンクション
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
+/* alert(this.state.employeeList.length); */
 			this.setState(
 				{
 					rowSelectEmployeeNo: row.employeeNo,
@@ -500,6 +530,7 @@ class employeeSearch extends React.Component {
 			deleteBtn: this.createCustomDeleteButton,
 			onDeleteRow: this.onDeleteRow,
 			handleConfirmDeleteRow: this.customConfirm,
+			sortIndicator: false, // 隐藏初始排序箭头
 		};
 
 		return (
@@ -639,8 +670,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 246, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customer"	/>
 												</div>
 											)}
 										/>
@@ -725,8 +755,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
-														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-developLanguage" id="developLanguage1" />
 												</div>
 											)}
 										/>
@@ -740,8 +769,7 @@ class employeeSearch extends React.Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
-														style={{ width: 123, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-developLanguage" id="developLanguage2" />
 												</div>
 											)}
 										/>
@@ -795,7 +823,7 @@ class employeeSearch extends React.Component {
 					</div>
 				</Form>
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" variant="info" type="submit" onClick={this.searchEmployee}>
+					<Button size="sm" variant="info" type="submit"  onClick={this.searchEmployee} >
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
 					<Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">
@@ -834,17 +862,19 @@ class employeeSearch extends React.Component {
 				<div >
 					<Row >
 						<Col sm={12}>
-							<BootstrapTable data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-								<TableHeaderColumn width='50' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName'>社員名</TableHeaderColumn>
-								<TableHeaderColumn width='150' tdStyle={{ padding: '.45em' }} dataField='furigana'>カタカナ</TableHeaderColumn>
-								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName'>ローマ字</TableHeaderColumn>
-								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' /* dataFormat={this.formatBrthday.bind(this)} */>年齢</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth'>入社年月</TableHeaderColumn>
-								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo'>電話番号</TableHeaderColumn>
-								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName'>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn width='90' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)}>ビザ期限</TableHeaderColumn>
+							<BootstrapTable ref="siteSearchTable"
+								data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+								<TableHeaderColumn width='75' tdStyle={{ padding: '.45em' }} dataField='rowNo'dataSort>番号</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey dataSort>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='120' tdStyle={{ padding: '.45em' }} dataField='employeeFristName' dataSort>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='130' tdStyle={{ padding: '.45em' }} dataField='furigana' dataSort>カタカナ</TableHeaderColumn>
+								<TableHeaderColumn width='135' tdStyle={{ padding: '.45em' }} dataField='alphabetName' dataSort>ローマ字</TableHeaderColumn>
+								<TableHeaderColumn width='110' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort>年齢</TableHeaderColumn>
+								<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='phoneNo' dataSort>電話番号</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stationName' dataSort>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth' dataSort>入社年月</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='admissionTime' dataSort>入場年月</TableHeaderColumn>
+								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)} dataSort>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 								<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>

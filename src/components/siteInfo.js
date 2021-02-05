@@ -37,7 +37,10 @@ class siteInfo extends Component {
 		workDate: '',
 		employeeNo: '',
 		currPage: '',
-		pageDisabledFlag:true,//画面非活性フラグ
+		siteData:[],
+		scheduledEndDate:'',
+		scheduledEndDateForSave:'',
+		pageDisabledFlag: true,//画面非活性フラグ
 		errorsMessageShow: false,
 		updateFlag: true,//修正登録状態フラグ
 		disabledFlag: true,//活性非活性フラグ
@@ -65,18 +68,28 @@ class siteInfo extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
-
 	onchangeworkState = event => {
 		if (event.target.value === '0') {
 			this.setState({
 				workStateFlag: true,
 				levelCode: '',
-				[event.target.name]: event.target.value
+				[event.target.name]: event.target.value,
+				remark:'',
+				scheduledEndDate:this.state.scheduledEndDateForSave
+			})
+		}else if(event.target.value === '2'){
+			this.setState({
+				[event.target.name]: event.target.value,
+				workStateFlag: false,
+				remark:"単金調整",
+				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
 		} else {
 			this.setState({
 				workStateFlag: false,
-				[event.target.name]: event.target.value
+				[event.target.name]: event.target.value,
+				remark:'',
+				scheduledEndDate:'',
 			})
 		}
 	}
@@ -123,7 +136,7 @@ class siteInfo extends Component {
 							dailyCalculationStatusFlag: true
 						});
 					}
-				}else{
+				} else {
 					this.setState({
 						dailyCalculationStatusFlag: true
 					});
@@ -170,7 +183,7 @@ class siteInfo extends Component {
 							dailyCalculationStatusFlag: true
 						});
 					}
-				}else{
+				} else {
 					this.setState({
 						dailyCalculationStatusFlag: true
 					});
@@ -194,7 +207,18 @@ class siteInfo extends Component {
 			}
 		}
 	};
-
+	//　入場年月
+	scheduledEndDate = (date) => {
+		if (date !== null) {
+			this.setState({
+				scheduledEndDate: date,
+			});
+		} else {
+			this.setState({
+				scheduledEndDate: '',
+			});
+		}
+	};
 	dailyCalculationStatusChange = () => {
 		this.setState(
 			{
@@ -211,6 +235,7 @@ class siteInfo extends Component {
 			this.setState({
 				backPage: this.props.location.state.backPage,
 				sendValue: this.props.location.state.sendValue,
+				pageDisabledFlag:false,
 				searchFlag: this.props.location.state.searchFlag,
 			})
 			if (this.props.location.state.currPage !== null && this.props.location.state.currPage !== undefined && this.props.location.state.currPage !== '') {
@@ -227,11 +252,11 @@ class siteInfo extends Component {
 							employeeName: employeeNo,
 							disabledFlag: false,
 						});
-					}else{
-						this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+					} else {
+						this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
 						this.setState({
 							employeeName: employeeNo,
-							siteData:[],
+							siteData: [],
 							disabledFlag: false,
 						});
 						setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -269,6 +294,8 @@ class siteInfo extends Component {
 		related3Employees: '',
 		related4Employees: '',
 		workState: '0',
+		scheduledEndDate:'',
+		scheduledEndDateForSave:'',
 		dailyCalculationStatus: false,
 		dailyCalculationStatusFlag: true
 	};
@@ -282,34 +309,44 @@ class siteInfo extends Component {
 			if (values !== null) {
 				employeeName = values.code;
 				this.setState({
-					pageDisabledFlag:false,
+					pageDisabledFlag: false,
 				})
-			}else{
+			} else {
 				this.setState({
-					pageDisabledFlag:true,
+					pageDisabledFlag: true,
+					updateFlag:true,
 				})
+				this.refs.table.setState({
+					selectedRowKeys: []
+				});
 			}
 			this.setState({
 				employeeName: employeeName,
-			},()=>{
+			}, () => {
 				axios.post(this.state.serverIP + "getSiteInfo", { employeeName: this.state.employeeName })
-							.then(response => {
-								if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
-									this.setState({
-										siteData: response.data.siteList,
-										disabledFlag: false,
-									});
-								}else{
-									this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
-									this.setState({
-										siteData:[],
-										disabledFlag: false,
-									});
-									setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
-								}
-							}).catch((error) => {
-								console.error("Error - " + error);
+					.then(response => {
+						if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
+							this.setState({
+								siteData: response.data.siteList,
+								disabledFlag: false,
+								deleteFlag:true,
+								workStateFlag: true,
+								updateFlag: true,
 							});
+						} else {
+							this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
+							this.setState({
+								siteData: [],
+								disabledFlag: false,
+								deleteFlag:true,
+								workStateFlag: true,
+								updateFlag: true,
+							});
+							setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+						}
+					}).catch((error) => {
+						console.error("Error - " + error);
+					});
 			})
 		})
 	}
@@ -400,6 +437,8 @@ class siteInfo extends Component {
 				siteManager: row.siteManager === null ? '' : row.siteManager,
 				typeOfIndustryCode: row.typeOfIndustryCode === null ? '' : row.typeOfIndustryCode,
 				remark: row.remark === null ? '' : row.remark,
+				scheduledEndDate:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
+				scheduledEndDateForSave:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
 				related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0], this.state.employeeInfo)),
 				related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1], this.state.employeeInfo)),
 				related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2], this.state.employeeInfo)),
@@ -408,31 +447,35 @@ class siteInfo extends Component {
 				relatedEmployeesFlag: row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
 				workDate: row.workDate,
 			});
-			if (publicUtils.converToLocalTime(row.admissionStartDate, true).getDate() > 2 ) {
+			if (publicUtils.converToLocalTime(row.admissionStartDate, true).getDate() > 2) {
 				this.setState({
 					dailyCalculationStatusFlag: false,
 					deleteFlag: false,
 				});
-			}else if(row.admissionEndDate !== null && row.admissionEndDate !== undefined){
-				if(new Date(publicUtils.converToLocalTime(row.admissionEndDate, true).getFullYear(), publicUtils.converToLocalTime(row.admissionEndDate, true).getMonth() + 1, 0).getDate() - publicUtils.converToLocalTime(row.admissionEndDate, true).getDate() > 2){
+			} else if (row.admissionEndDate !== null && row.admissionEndDate !== undefined) {
+				if (new Date(publicUtils.converToLocalTime(row.admissionEndDate, true).getFullYear(), publicUtils.converToLocalTime(row.admissionEndDate, true).getMonth() + 1, 0).getDate() - publicUtils.converToLocalTime(row.admissionEndDate, true).getDate() > 2) {
 					this.setState({
 						dailyCalculationStatusFlag: false,
 						deleteFlag: false,
 					});
 				}
 			}
-			if(row.workState === "1"){
+			if (row.workState === "1") {
 				this.setState({
-					workStateFlag:false,
+					workStateFlag: false,
 				})
-			}else{
+			}else if(row.workState === "2"){
 				this.setState({
-					workStateFlag:true,
+					workStateFlag: false,
+				})
+			} else {
+				this.setState({
+					workStateFlag: true,
 				})
 			}
 			if (row.workDate === this.state.siteData[this.state.siteData.length - 1].workDate) {
 				this.setState({
-					pageDisabledFlag:false,				
+					pageDisabledFlag: false,
 					disabledFlag: false,
 					deleteFlag: false,
 				})
@@ -441,7 +484,7 @@ class siteInfo extends Component {
 				this.setState({
 					updateFlag: true,
 					disabledFlag: false,
-					pageDisabledFlag:true,
+					pageDisabledFlag: true,
 				})
 				$('button[name="button"]').attr('disabled', true);
 			}
@@ -453,8 +496,8 @@ class siteInfo extends Component {
 				deleteFlag: true,
 				relatedEmployeesFlag: false,
 				workDate: '',
-				pageDisabledFlag:false,
-				workStateFlag:true,
+				pageDisabledFlag: false,
+				workStateFlag: true,
 			})
 			$('button[name="button"]').attr('disabled', false);
 		}
@@ -476,6 +519,7 @@ class siteInfo extends Component {
 		siteModel["employeeNo"] = this.state.employeeName;
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
+		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
@@ -496,12 +540,11 @@ class siteInfo extends Component {
 							if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 								this.setState({
 									siteData: response.data.siteList,
-									workStateFlag:true,
+									workStateFlag: true,
 								});
-								// this.handleRowSelect();
 								this.reset();
-							}else{
-								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+							} else {
+								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
 								setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 							}
 						}).catch((error) => {
@@ -529,6 +572,7 @@ class siteInfo extends Component {
 		siteModel["employeeNo"] = this.state.employeeName;
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
+		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {
@@ -545,7 +589,7 @@ class siteInfo extends Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
-					axios.post(this.state.serverIP + "getSiteInfo", {  employeeName: this.state.employeeName  })
+					axios.post(this.state.serverIP + "getSiteInfo", { employeeName: this.state.employeeName })
 						.then(response => {
 							if (response.data.errorsMessage === null || response.data.errorsMessage === undefined) {
 								this.setState({
@@ -554,11 +598,12 @@ class siteInfo extends Component {
 								this.setState({
 									updateFlag: true,
 									disabledFlag: false,
-									workStateFlag:true,
+									workStateFlag: true,
+									deleteFlag:true,
 								})
 								this.setState(() => this.resetStates);
-							}else{
-								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage});
+							} else {
+								this.setState({ errorsMessageShow: true, errorsMessageValue: response.data.errorsMessage });
 								setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 							}
 						}).catch((error) => {
@@ -577,59 +622,67 @@ class siteInfo extends Component {
 		);
 	}
 
-	siteInfoeDelete = () => {
-		//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-		var a = window.confirm("削除していただきますか？");
-		if (a) {
-			$("#deleteBtn").click();
-		}
-	}
-	//隠した削除ボタン
-	createCustomDeleteButton = (onClick) => {
-		return (
-			<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
-		);
-	}
+	// siteInfoeDelete = () => {
+	// 	//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+	// 	var a = window.confirm("削除していただきますか？");
+	// 	if (a) {
+	// 		$("#deleteBtn").click();
+	// 	}
+	// }
+	// //隠した削除ボタン
+	// createCustomDeleteButton = (onClick) => {
+	// 	return (
+	// 		<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
+	// 	);
+	// }
 	//隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
-		var workDate = this.state.workDate;
-		var siteData = this.state.siteData;
-		for (let i = siteData.length - 1; i >= 0; i--) {
-			if (siteData[i].workDate === workDate) {
-				siteData.splice(i, 1);
-			}
-		}
-		this.setState({
-			siteData: siteData,
-			rowNo: '',
-			updateFlag:true,
-		})
-		axios.post(this.state.serverIP + "deleteSiteInfo", {
-			employeeNo: this.state.employeeName,
-			admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
-		})
-			.then(result => {
-				if (result.data) {
-					this.setState({ "myToastShow": true, message: "削除成功", "errorsMessageShow": false });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					this.refs.table.setState({
-						selectedRowKeys: []
-					});
-					this.reset();
-				} else {
-					this.setState({ "myToastShow": true, "method": "success", message: "削除失敗", "errorsMessageShow": false });
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				}
+		var a = window.confirm("削除していただきますか？");
+		if (a) {
+			axios.post(this.state.serverIP + "deleteSiteInfo", {
+				employeeNo: this.state.employeeName,
+				admissionStartDate: publicUtils.formateDate(this.state.admissionStartDate, true),
 			})
-			.catch(function (error) {
-				alert("删除错误，请检查程序");
-			});
+				.then(result => {
+					if (result.data) {
+						var workDate = this.state.workDate;
+						var siteData = this.state.siteData;
+						for (let i = siteData.length - 1; i >= 0; i--) {
+							if (siteData[i].workDate === workDate) {
+								siteData.splice(i, 1);
+							}
+						}
+						this.setState({
+							siteData: siteData,
+							rowNo: '',
+							updateFlag: true,
+							"myToastShow": true, 
+							message: "削除成功", 
+							"errorsMessageShow": false
+						})
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						this.refs.table.setState({
+							selectedRowKeys: []
+						});
+						this.reset();
+					} else if(!result.data){
+						this.setState({ errorsMessageValue: "現場は終了のため、削除できない", "errorsMessageShow": true });
+						setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+					}else{
+						this.setState({ "myToastShow": true, "method": "success", message: "削除失敗", "errorsMessageShow": false });
+						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					}
+				})
+				.catch(function (error) {
+					alert("删除错误，请检查程序");
+				});
+		}
 	}
-	//　　削除前のデフォルトお知らせの削除
-	customConfirm(next, dropRowKeys) {
-		const dropRowKeysStr = dropRowKeys.join(',');
-		next();
-	}
+	// //　　削除前のデフォルトお知らせの削除
+	// customConfirm(next, dropRowKeys) {
+	// 	const dropRowKeysStr = dropRowKeys.join(',');
+	// 	next();
+	// }
 
 	/**
 	 * 社員名連想
@@ -698,7 +751,7 @@ class siteInfo extends Component {
 				searchFlag: this.state.searchFlag,
 				sendValue: this.state.sendValue,
 				currPage: this.state.currPage,
-				employeeNo: this.state.employeeNo,
+				employeeNo: this.state.employeeName,
 			},
 		}
 		this.props.history.push(path);
@@ -706,7 +759,7 @@ class siteInfo extends Component {
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 8,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
@@ -715,13 +768,13 @@ class siteInfo extends Component {
 			lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-			deleteBtn: this.createCustomDeleteButton,
-			onDeleteRow: this.onDeleteRow,
-			handleConfirmDeleteRow: this.customConfirm,
+			// deleteBtn: this.createCustomDeleteButton,
+			// onDeleteRow: this.onDeleteRow,
+			// handleConfirmDeleteRow: this.customConfirm,
 
 		};
 		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees,
-			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage , pageDisabledFlag} = this.state;		//テーブルの列の選択
+			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage, pageDisabledFlag } = this.state;		//テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -756,7 +809,7 @@ class siteInfo extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">社員名(BP名)</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
 											id="employeeName"
@@ -774,18 +827,33 @@ class siteInfo extends Component {
 											}}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo form-control"
+													<input type="text" {...params.inputProps} className="auto Autocompletestyle-siteInfo-employeeNo form-control"
 													/>
 												</div>
 											)}
 										/>
 									</InputGroup>
 								</Col>
-							</Row>
-
-							<Row>
-								<Col sm={4}>
+								<Col sm={2} lg={3}>
 									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control className="auto form-control siteInfo-workState"
+										as="select" id="workState" name="workState" value={workState}
+											onChange={this.onchangeworkState} disabled={pageDisabledFlag}>
+											{this.state.siteStateStatus.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
+							</Row>
+							<Row>
+								<Col sm={3}>
+									<InputGroup size="sm">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">入場年月日</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -796,30 +864,31 @@ class siteInfo extends Component {
 												dateFormat="yyyy/MM/dd"
 												name="admissionStartDate"
 												className="form-control form-control-sm"
-												id="admissionStartDate"
 												autoComplete="off"
 												locale="ja"
-												id={pageDisabledFlag ? "siteDatePickerReadonlyDefault" : "admissionEndDate"}
+												id={pageDisabledFlag ? "siteAdmissionStartReadonlyDefault" : "siteAdmissionStart"}
 												disabled={pageDisabledFlag}
 											/>
 										</InputGroup.Prepend>
-										<FormControl id="time" name="time" value={time} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-										<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+										<FormControl className="auto form-control siteTime" id="time" name="time" value={time} disabled />
+										<font color="red" className="site-mark">★</font>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">現場状態</InputGroup.Text>
+											<InputGroup.Text id="cssNikanji">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="workState" name="workState" value={workState}
-											onChange={this.onchangeworkState} disabled={pageDisabledFlag}>
-											{this.state.siteStateStatus.map(data =>
-												<option key={data.code} value={data.code}>
-													{data.name}
-												</option>
-											)}
-										</Form.Control>
+										<FormControl maxLength="3"
+										id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} disabled={pageDisabledFlag} />
+										<InputGroup.Prepend id="checkBox">
+											<InputGroup.Text className="hiwari">日割</InputGroup.Text>
+											<InputGroup.Checkbox className="hiwari" name="dailyCalculationStatus"
+												checked={this.state.dailyCalculationStatus}
+												onChange={this.dailyCalculationStatusChange}
+												disabled={this.state.dailyCalculationStatusFlag === true ? true : pageDisabledFlag ? true : false} />
+											<font className="site-mark" color="red">★</font>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -834,28 +903,25 @@ class siteInfo extends Component {
 												dateFormat="yyyy/MM/dd"
 												name="admissionEndDate"
 												className="form-control form-control-sm"
-												id="admissionEndDate"
 												locale="ja"
 												autoComplete="off"
-												id={this.state.workState !== "0" ? pageDisabledFlag ? "siteDatePickerReadonlyDefault" :"admissionEndDate" : "siteDatePickerReadonlyDefault"}
-												disabled={this.state.employeeName === '' ?  true : this.state.workState === "0" ? true : pageDisabledFlag ? true : false}
+												id={this.state.workState !== "0" ? pageDisabledFlag ? "siteDatePickerReadonlyDefault" : "admissionEndDate" : "siteDatePickerReadonlyDefault"}
+												disabled={this.state.employeeName === '' ? true : this.state.workState === "0" ? true : pageDisabledFlag ? true : false}
 											/>
+											<font color="red" hidden={this.state.workState === "0" ? true : false} className="site-mark">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
-
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl  maxLength="20" id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>
-
 							<Row>
-
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
@@ -877,7 +943,6 @@ class siteInfo extends Component {
 											disabled={pageDisabledFlag}
 										/>
 									</InputGroup>
-
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
@@ -897,7 +962,7 @@ class siteInfo extends Component {
 													</div>
 												)}
 												disabled={pageDisabledFlag}
-											/><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+											/><font color="red" className="site-mark">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
@@ -914,7 +979,7 @@ class siteInfo extends Component {
 												getOptionLabel={(option) => option.name}
 												renderInput={(params) => (
 													<div ref={params.InputProps.ref}>
-														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-topCustomer"
 														/>
 													</div>
 												)}
@@ -937,7 +1002,7 @@ class siteInfo extends Component {
 											getOptionLabel={(option) => option.name}
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-developLanguageCode"
 														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
@@ -946,22 +1011,27 @@ class siteInfo extends Component {
 									</InputGroup>
 								</Col>
 							</Row>
-
 							<Row>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="cssNikanji">単価</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} disabled={pageDisabledFlag} />
-										<InputGroup.Prepend>
-											<InputGroup.Text className="hiwari">日割</InputGroup.Text>
-											<InputGroup.Checkbox className="hiwari" name="dailyCalculationStatus" 
-											checked={this.state.dailyCalculationStatus} 
-											onChange={this.dailyCalculationStatusChange} 
-											disabled={this.state.dailyCalculationStatusFlag === true ? true : pageDisabledFlag ? true :  false} />
-											<font color="red">★</font>
-										</InputGroup.Prepend>
+										<Autocomplete
+											id="typeOfIndustryCode"
+											name="typeOfIndustryCode"
+											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
+											onChange={(event, values) => this.getIndustry(event, values)}
+											options={this.state.typeOfIndustryMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+													/>
+												</div>
+											)}
+											disabled={pageDisabledFlag}
+										/>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -992,29 +1062,26 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
+											<InputGroup.Text id="siteInfo-siteRoleCode">役割</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off" 
-										disabled={pageDisabledFlag}>
+										<Form.Control className="auto form-control siteInfo-siteRoleCode" 
+										as="select" id="siteRoleCode" name="siteRoleCode" onChange={this.onchangeSiteRoleCode} value={siteRoleCode} autoComplete="off"
+											disabled={pageDisabledFlag}>
 											{this.state.siteMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
 												</option>
 											)}
 										</Form.Control>
-									</InputGroup>
-								</Col>
-								<Col sm={2}>
-									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">評価</InputGroup.Text>
+											<InputGroup.Text id="siteInfo-siteRoleCode">評価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off" 
-										disabled={pageDisabledFlag ? true : workStateFlag ? true : false}>
+										<Form.Control className="auto form-control siteInfo-siteRoleCode" 
+										as="select" id="levelCode" name="levelCode" onChange={this.onchange} value={levelCode} autoComplete="off"
+											disabled={pageDisabledFlag ? true : workStateFlag ? true : false}>
 											{this.state.levelMaster.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -1023,23 +1090,21 @@ class siteInfo extends Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={2}>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">責任者</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="siteManager" name="siteManager" type="text" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl maxLength="20" id="siteManager" name="siteManager" type="text" onChange={this.onchange} value={siteManager} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>
-
 							<Row>
 								<Col sm={6}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">関連社員</InputGroup.Text>
 										</InputGroup.Prepend>
-
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
@@ -1106,7 +1171,6 @@ class siteInfo extends Component {
 												</div>
 											)}
 										/>
-
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
@@ -1129,31 +1193,31 @@ class siteInfo extends Component {
 												</div>
 											)}
 										/>
-
-
-
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
+											<InputGroup.Text id="fiveKanji">予定終了月</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Autocomplete
-											id="typeOfIndustryCode"
-											name="typeOfIndustryCode"
-											value={this.state.typeOfIndustryMaster.find(v => v.code === this.state.typeOfIndustryCode) || {}}
-											onChange={(event, values) => this.getIndustry(event, values)}
-											options={this.state.typeOfIndustryMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-													/>
-												</div>
-											)}
-											disabled={pageDisabledFlag}
-										/>
+										<InputGroup.Prepend>
+											<DatePicker
+												selected={this.state.scheduledEndDate}
+												onChange={this.scheduledEndDate}
+												dateFormat="yyyy/MM"
+												name="scheduledEndDate"
+												showMonthYearPicker
+												showFullMonthYearPicker
+												showDisabledMonthNavigation
+												className="form-control form-control-sm"
+												id="scheduledEndDate-siteInfo"
+												locale="ja"
+												autoComplete="off"
+												disabled={pageDisabledFlag}
+												id={pageDisabledFlag ? "scheduledEndDate-siteInfoReadOnly" : this.state.workState === "1" ?  "scheduledEndDate-siteInfoReadOnly" : "scheduledEndDate-siteInfo"}
+												disabled={pageDisabledFlag ? true : this.state.workState === "1" ? true : false}
+											/>
+										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -1161,13 +1225,12 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl id="remark" name="remark" type="text" onChange={this.onchange} value={this.state.workState === '2' ? "単金調整" : remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl maxLength="50" id="remark" name="remark" type="text" onChange={this.onchange} value={remark} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
 									</InputGroup>
 								</Col>
 							</Row>
-
 							<div style={{ "textAlign": "center" }}>
-								<Button name="button" size="sm" onClick={this.state.updateFlag === true ? this.tokuro : this.update} variant="info" id="toroku" type="button" disabled={this.state.disabledFlag === true ? true : false}>
+								<Button name="button" size="sm" onClick={this.state.updateFlag === true ? this.tokuro : this.update} variant="info" id="toroku" type="button" disabled={pageDisabledFlag === true ? true : false}>
 									<FontAwesomeIcon icon={faSave} /> {this.state.updateFlag === true ? '登録' : '修正'}
 								</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset} name="button">
@@ -1187,7 +1250,7 @@ class siteInfo extends Component {
 					<Row >
 						<Col sm={12}>
 							<div style={{ "float": "right" }}>
-								<Button name="button" size="sm" onClick={this.siteInfoeDelete} variant="info" type="button" disabled={this.state.deleteFlag === true ? true : false}>
+								<Button name="button" size="sm" onClick={this.onDeleteRow} variant="info" type="button" disabled={this.state.deleteFlag === true ? true : false}>
 									<FontAwesomeIcon icon={faTrash} /> 削除</Button>
 							</div>
 						</Col>
@@ -1195,15 +1258,15 @@ class siteInfo extends Component {
 					<Row>
 						<Col sm={12}>
 							<BootstrapTable selectRow={selectRow} data={siteData} ref='table' deleteRow pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='workDate' width='90' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
-								<TableHeaderColumn dataField='systemName' width='58' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
-								<TableHeaderColumn dataField='location' width='45' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
-								<TableHeaderColumn dataField='customerName' width='58' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
+								<TableHeaderColumn dataField='workDate' width='150' tdStyle={{ padding: '.45em' }} isKey>期間</TableHeaderColumn>
+								<TableHeaderColumn dataField='systemName' width='220' tdStyle={{ padding: '.45em' }} >システム</TableHeaderColumn>
+								<TableHeaderColumn dataField='location' width='90' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='customerName' width='150' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
-								<TableHeaderColumn dataField='unitPrice' width='30' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
-								<TableHeaderColumn dataField='developLanguageName' width='50' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
-								<TableHeaderColumn dataField='siteRoleName' width='30' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
-								<TableHeaderColumn dataField='levelName' width='30' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' width='60' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='developLanguageName' width='110' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
+								<TableHeaderColumn dataField='siteRoleName' width='50' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
+								<TableHeaderColumn dataField='levelName' width='50' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
 								<TableHeaderColumn dataField='admissionStartDate' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='admissionEndDate' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='payOffRange1' hidden={true} ></TableHeaderColumn>
@@ -1216,7 +1279,7 @@ class siteInfo extends Component {
 								<TableHeaderColumn dataField='topCustomerName' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='workState' hidden={true} ></TableHeaderColumn>
 								<TableHeaderColumn dataField='dailyCalculationStatus' hidden={true} ></TableHeaderColumn>
-								<TableHeaderColumn dataField='remark' width='70' tdStyle={{ padding: '.45em' }} headerAlign='center'>備考</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark' width='90' tdStyle={{ padding: '.45em' }}>備考</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

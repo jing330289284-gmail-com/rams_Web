@@ -5,7 +5,8 @@ import $ from 'jquery';
 import * as utils from './utils/publicUtils.js';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faEdit } from '@fortawesome/free-solid-svg-icons';
+import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 
@@ -19,15 +20,17 @@ class BankInfo extends Component {
         actionType: '',//処理区分
         message: '',
         type: '',
-        accountInfoName:'', 
-        bankCode:'', 
-        bankBranchName:'', 
-        bankBranchCode:'',  
-        accountNo:'', 
-        employeeOrCustomerNo:'',
-        accountBelongsStatus:"0",
-        accountName:'', 
+        accountInfoName: '',
+        bankCode: '',
+        bankBranchName: '',
+        bankBranchCode: '',
+        accountNo: '',
+        employeeOrCustomerNo: '',
+        accountBelongsStatus: "0",
+        accountName: '',
         myToastShow: false,
+        message:'',
+        type:'',
         errorsMessageShow: false,
         errorsMessageValue: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
@@ -43,20 +46,21 @@ class BankInfo extends Component {
         if (this.props.employeeNo !== null && this.props.employeeNo !== undefined) {//社員の場合
             employeeOrCustomerNo = this.props.employeeNo;
             var employeeName = this.props.employeeFristName + "" + this.props.employeeLastName;
-            if(this.props.employeeFristName === undefined && this.props.employeeLastName === undefined){
+            if (this.props.employeeFristName === undefined && this.props.employeeLastName === undefined) {
                 employeeName = "";
             }
             this.setState({
-                employeeOrCustomerNo:this.props.employeeNo,
-                accountInfoName:"社員：" + employeeName,
+                employeeOrCustomerNo: this.props.employeeNo,
+                accountInfoName: "社員：" + employeeName,
+                accountBelongsStatus:"0",
             })
-        } else{//お客様の場合
+        } else {//お客様の場合
             employeeOrCustomerNo = this.props.customerNo;
             accountBelongsStatus = "1";
             this.setState({
-                employeeOrCustomerNo:this.props.customerNo,
-                accountInfoName:"お客様：" + $("#customerName").val(),
-                accountBelongsStatus:"1",
+                employeeOrCustomerNo: this.props.customerNo,
+                accountInfoName: "お客様：" + $("#customerName").val(),
+                accountBelongsStatus: "1",
             })
         }
         //銀行名
@@ -81,8 +85,8 @@ class BankInfo extends Component {
                 onloadMol["actionType"] = actionType;
                 //画面データの検索
                 axios.post(this.state.serverIP + "bankInfo/init", onloadMol)
-                    .then(resultMap=> {
-                        if(resultMap.data.accountInfoMod !== null){
+                    .then(resultMap => {
+                        if (resultMap.data.accountInfoMod !== null) {
                             this.giveValue(resultMap.data.accountInfoMod);
                             if (resultMap.data.accountInfoMod["accountTypeStatus"] === '0') {
                                 $("#futsu").attr("checked", true);
@@ -117,14 +121,14 @@ class BankInfo extends Component {
             }
         }
     }
-    giveValue=(accountInfoMod)=>{
+    giveValue = (accountInfoMod) => {
         this.setState({
-            bankCode:accountInfoMod.bankCode, 
-            bankBranchName:accountInfoMod.bankBranchName, 
-            bankBranchCode:accountInfoMod.bankBranchCode,  
-            accountNo:accountInfoMod.accountNo, 
-            employeeOrCustomerNo:accountInfoMod.employeeOrCustomerNo,
-            accountName:accountInfoMod.accountName, 
+            bankCode: accountInfoMod.bankCode,
+            bankBranchName: accountInfoMod.bankBranchName,
+            bankBranchCode: accountInfoMod.bankBranchCode,
+            accountNo: accountInfoMod.accountNo,
+            employeeOrCustomerNo: accountInfoMod.employeeOrCustomerNo,
+            accountName: accountInfoMod.accountName,
         })
         if (accountInfoMod.accountTypeStatus === '0') {
             $("#futsu").attr("checked", true);
@@ -144,21 +148,21 @@ class BankInfo extends Component {
         if ($('#' + noORname + '').val() !== "") {
 
             axios.post(this.state.serverIP + "getBankBranchInfo", sendMap)
-                .then(resultMap=>{
+                .then(resultMap => {
                     if (resultMap.data.length !== 0) {
                         this.setState({
-                            bankBranchCode:resultMap.data[0].code,
-                            bankBranchName:resultMap.data[0].name,
+                            bankBranchCode: resultMap.data[0].code,
+                            bankBranchName: resultMap.data[0].name,
                         })
                     } else {
                         this.setState({
-                            bankBranchCode:"",
-                            bankBranchName:"",
+                            bankBranchCode: "",
+                            bankBranchName: "",
                         })
                     }
 
                 })
-                .catch(error=> {
+                .catch(error => {
                     alert("支店信息获取错误，请检查程序");
                 });
         } else {
@@ -184,7 +188,25 @@ class BankInfo extends Component {
                 accountInfo[item.name] = item.value;
             });
             accountInfo["accountBelongsStatus"] = this.state.accountBelongsStatus;
-            this.props.accountTokuro(accountInfo);
+            accountInfo["employeeOrCustomerNo"] = this.state.employeeOrCustomerNo;
+            if (this.state.actionType === "update") {
+                axios.post(this.state.serverIP + "bankInfo/update", accountInfo)
+                    .then(result => {
+                        if (result.data.result) {
+                            this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "更新成功" });
+                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                            this.props.accountTokuro(accountInfo);
+                        } else {
+                            this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: '更新失敗' });
+                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        }
+                    })
+                    .catch(function (error) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+                    });
+            } else {
+                this.props.accountTokuro(accountInfo);
+            }
         } else if (!result) {
             this.setState({ "errorsMessageShow": true, errorsMessageValue: '口座名義人をカタカナで入力してください' });
         } else if (!bankInfoJs.torokuCheck()) {
@@ -194,48 +216,51 @@ class BankInfo extends Component {
     /**
  * 銀行の選択と項目の活性
  */
-canSelect=event=>{
-	var val = $("#bankCode").val();
-	if(val !== ''){
-        $("#bankBranchName").attr("readonly",false);
-        $("#bankBranchCode").attr("readonly",false);
-        $("#accountNo").attr("readonly",false);
-        $("#accountName").attr("readonly",false);
-        $("#futsu").attr("disabled",false);
-        $("#toza").attr("disabled",false);
-        $("#futsu").attr("checked",true);
-    }else{
-        $("#bankBranchName").attr("readonly",true);
-        $("#bankBranchCode").attr("readonly",true);
-        $("#accountNo").attr("readonly",true);
-        $("#accountName").attr("readonly",true);
-        $("#futsu").attr("disabled",true);
-        $("#toza").attr("disabled",true);
-        $("#futsu").attr("checked",true);
+    canSelect = event => {
+        var val = $("#bankCode").val();
+        if (val !== '') {
+            $("#bankBranchName").attr("readonly", false);
+            $("#bankBranchCode").attr("readonly", false);
+            $("#accountNo").attr("readonly", false);
+            $("#accountName").attr("readonly", false);
+            $("#futsu").attr("disabled", false);
+            $("#toza").attr("disabled", false);
+            $("#futsu").attr("checked", true);
+        } else {
+            $("#bankBranchName").attr("readonly", true);
+            $("#bankBranchCode").attr("readonly", true);
+            $("#accountNo").attr("readonly", true);
+            $("#accountName").attr("readonly", true);
+            $("#futsu").attr("disabled", true);
+            $("#toza").attr("disabled", true);
+            $("#futsu").attr("checked", true);
+        }
+        $("#bankBranchName").val("");
+        $("#bankBranchCode").val("");
+        $("#accountNo").val("");
+        $("#accountName").val("");
+        $("#futsu").attr("checked", true);
+        this.setState({
+            [event.target.name]: event.target.value,
+        })
     }
-    $("#bankBranchName").val("");
-    $("#bankBranchCode").val("");
-    $("#accountNo").val("");
-    $("#accountName").val("");
-    $("#futsu").attr("checked",true);
-    this.setState({
-        [event.target.name]: event.target.value,
-    })
-}
-resetValue=()=>{
-    this.setState({
-        bankCode:'',
-        bankBranchName:'',
-        bankBranchCode:'',
-        accountNo:'',
-        accountName:'',
-    })
-    bankInfoJs.setDisabled();
-}
+    resetValue = () => {
+        this.setState({
+            bankCode: '',
+            bankBranchName: '',
+            bankBranchCode: '',
+            accountNo: '',
+            accountName: '',
+        })
+        bankInfoJs.setDisabled();
+    }
     render() {
-        const { actionType, errorsMessageValue, accountInfoName, bankCode, bankBranchName, bankBranchCode, accountNo, accountName } = this.state;
+        const { actionType, errorsMessageValue, accountInfoName, bankCode, bankBranchName, bankBranchCode, accountNo, accountName , message , type} = this.state;
         return (
-            <div  >
+            <div >
+                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+                    <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+                </div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
                     <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
                 </div>
@@ -248,13 +273,9 @@ resetValue=()=>{
                     <Form id="bankForm">
                         <Row>
                             <Col>
-                                <Navbar>
-                                    <Navbar.Collapse>
-                                        <Navbar.Text>
-                                            <a>{accountInfoName}</a>
-                                        </Navbar.Text>
-                                    </Navbar.Collapse>
-                                </Navbar>
+                                <InputGroup size="sm" className="mb-3">
+                                    <a>{accountInfoName}</a>
+                                </InputGroup>
                             </Col>
                         </Row>
                         <Row>
@@ -284,7 +305,7 @@ resetValue=()=>{
                                     <Form.Control readOnly
                                         placeholder="例：浦和支店"
                                         onBlur={this.getBankBranchInfo.bind(this, "bankBranchName")}
-                                        id="bankBranchName" maxLength="20" name="bankBranchName" value={bankBranchName} onChange={this.valueChange}/>
+                                        id="bankBranchName" maxLength="20" name="bankBranchName" value={bankBranchName} onChange={this.valueChange} />
                                 </InputGroup>
                             </Col>
                             <Col>
@@ -293,7 +314,7 @@ resetValue=()=>{
                                         <InputGroup.Text id="inputGroup-sizing-sm">支店番号</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：010" onBlur={this.getBankBranchInfo.bind(this, "bankBranchCode")} readOnly
-                                        id="bankBranchCode" maxLength="3" name="bankBranchCode" value={bankBranchCode} onChange={this.valueChange}/>
+                                        id="bankBranchCode" maxLength="3" name="bankBranchCode" value={bankBranchCode} onChange={this.valueChange} />
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -304,7 +325,7 @@ resetValue=()=>{
                                         <InputGroup.Text id="inputGroup-sizing-sm">口座番号</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：123456" readOnly id="accountNo" maxLength="7" name="accountNo"
-                                        value={accountNo} onChange={this.valueChange}/>
+                                        value={accountNo} onChange={this.valueChange} />
                                 </InputGroup>
                             </Col>
                             <Col>
@@ -320,7 +341,7 @@ resetValue=()=>{
                                         }
                                     >
                                         <Form.Control placeholder="例：カタカナ" onChange={bankInfoJs.checkAccountName} readOnly
-                                            id="accountName" maxLength="20" name="accountName" value={accountName} onChange={this.valueChange}/>
+                                            id="accountName" maxLength="20" name="accountName" value={accountName} onChange={this.valueChange} />
                                     </OverlayTrigger>
                                 </InputGroup>
                             </Col>
@@ -329,15 +350,15 @@ resetValue=()=>{
                             <Col className="text-center">
                                 {actionType === "update" ?
                                     <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="toroku" type="button">
-                                        <FontAwesomeIcon icon={faSave} />更新
+                                        <FontAwesomeIcon icon={faEdit} /> 更新
                         </Button>
                                     :
                                     <Button size="sm" onClick={this.accountTokuro.bind(this)} variant="info" id="accountToroku" type="button">
-                                        <FontAwesomeIcon icon={faSave} />登録
+                                        <FontAwesomeIcon icon={faSave} /> 登録
                         </Button>
                                 }
                                 {" "}<Button onClick={this.resetValue} variant="info" size="sm" id="accountReset" value="Reset" >
-                                    <FontAwesomeIcon icon={faUndo} />リセット
+                                    <FontAwesomeIcon icon={faUndo} /> リセット
                                 </Button>
                             </Col>
                         </Row>

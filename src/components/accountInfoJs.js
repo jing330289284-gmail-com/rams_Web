@@ -42,9 +42,8 @@ export function takeDisabled(){
  * カタカナのチェック
  */
 export function checkAccountName(){
-  var katakana = /^[ァ-ロワヲンー]*$/;//片仮名の正規表現
+  var katakana = /^[ァ-ロワヲンー　 ]*$/;//片仮名とスペースの正規表現
   var accountName = document.getElementById("accountName");
-  
   if(!katakana.test(accountName.value)){
     return false;
   }else{

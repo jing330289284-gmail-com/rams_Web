@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SendRepotAppend from './sendRepotAppend';
 import SendRepotAppend2 from './sendRepotAppend2';
+import SendRepotAppend3 from './sendRepotAppend3';
 import { Link } from "react-router-dom";
 import store from './redux/store';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faBookmark} from '@fortawesome/free-solid-svg-icons';
@@ -49,6 +50,8 @@ class sendRepot extends React.Component {
 		sendLetterBtnFlag: false,
 		tableClickColumn: '0',
 		daiologShowFlag: false,
+		daiologShowFlag2: false,
+		daiologShowFlag3: false,
 		selectedCusInfos: [],
 		listName:1,
 		salesLists: [],
@@ -266,7 +269,7 @@ class sendRepot extends React.Component {
 	getTargetEmployees = (selectedTargetEmployees) => {
 		this.setState({
 			selectedTargetEmployees: selectedTargetEmployees,
-			daiologShowFlag: true,
+			daiologShowFlag3: true,
 		})
 	}
 	//対象社員追加保存
@@ -275,9 +278,9 @@ class sendRepot extends React.Component {
 		this.state.targetEmployeesTemp[row.rowId].positionCode2 = targetEmployeesMsg.positionCode2;
 		this.state.targetEmployeesTemp[row.rowId].purchasingManagersMail2 = targetEmployeesMsg.purchasingManagersMail2;
 		this.setState({
-			daiologShowFlag: false,
+			daiologShowFlag3: false,
 		});
-		this.CellFormatter(row.salesPersonsAppend, row);
+		this.CellFormatter(row.targetEmployee, row);
 	}
 
 	// clearボタン事件
@@ -498,6 +501,11 @@ class sendRepot extends React.Component {
 			daiologShowFlag2: false,
 		})
 	}
+	closeDaiolog3 = () => {
+		this.setState({
+			daiologShowFlag3: false,
+		})
+	}
 
 	changeName=()=>{
 		if(this.state.listShowFlag){
@@ -657,6 +665,14 @@ class sendRepot extends React.Component {
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
 						<SendRepotAppend2 customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
+							allState={this} positions={this.state.positions} />
+					</Modal.Body>
+				</Modal>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeDaiolog3} show={this.state.daiologShowFlag3} dialogClassName="modal-pbinfoSet">
+					<Modal.Header closeButton></Modal.Header>
+					<Modal.Body >
+						<SendRepotAppend3 customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
 							allState={this} positions={this.state.positions} />
 					</Modal.Body>
 				</Modal>

@@ -35,9 +35,9 @@ export function getFullYearMonth(date, now) {
 		}
 
 		returnMonths = monthDiff
-/*		if (dayDiff < 0) {
-			returnMonths = returnMonths - 1;
-		}*/
+/*
+ * if (dayDiff < 0) { returnMonths = returnMonths - 1; }
+ */
 		if (returnYears === 0) {
 			yearmonth = returnMonths + "ヶ月";
 		} else {
@@ -67,6 +67,10 @@ export function getdropDown(method, serverIP) {
 		type: "POST",
 		url: serverIP + method,
 		async: false,
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
+		},
 		success: function(msg) {
 			for (var i in msg) {
 				array.push(msg[i])
@@ -84,6 +88,10 @@ export function getPublicDropDown(methodNameList, serverIP) {
 		url: serverIP + "initializationPage",
 		data: par,
 		async: false,
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
+		},
 		contentType: "application/json",
 		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
@@ -109,6 +117,10 @@ export function getPublicDropDownRtBtSpTleOnly(methodNameList, serverIP) {
 		url: serverIP + "initializationPage",
 		contentType: "application/json",
 		async: false,
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
+		},
 		success: function(resultList) {
 			for (let j = 0; j < resultList.length; j++) {
 				var array = [{ value: '', text: '' }];
@@ -143,6 +155,10 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		data: JSON.stringify(mo),
 		contentType: "application/json",
 		async: false,
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
+		},
 		success: function(data) {
 			if (data != null) {
 				no = data
@@ -320,6 +336,7 @@ export function handleDownload(path, serverIP) {
 		xhr.open('post', serverIP + 'download', true);
 		xhr.responseType = 'blob';
 		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+		xhr.withCredentials=true;
 		xhr.onload = function() {
 			if (this.status === 200) {
 				var blob = this.response;
@@ -339,6 +356,8 @@ export function handleDownload(path, serverIP) {
 		xhr.send(JSON.stringify({
 			"name": path,
 		}));
+	}else{
+		alert('ファイルが存在しません。');
 	}
 
 }
@@ -351,6 +370,10 @@ export function postcodeApi(postcode) {
 			url: "/postcodeApi/search?zipcode=" + postcode,
 			async: false,
 			contentType: "application/json",
+			xhrFields: {
+				// 允许带上凭据
+				withCredentials: true
+			},
 			dataType: "json",
 			success: function(result) {
 				console.log(result)
@@ -378,6 +401,10 @@ export function calApi(date) {
 		type: "get",
 		url: "/cal?method=conv&ical=101.1&itype=date&ival=" + ival + "&ocal=1001.1",
 		async: false,
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
+		},
 		contentType: "application/json",
 		success: function(result) {
 			if (result != null) {
@@ -579,6 +606,10 @@ export async function katakanaApi(value) {
 			"request_id": "record003",
 			"sentence": value,
 			"output_type": "katakana"
+		},
+		xhrFields: {
+			// 允许带上凭据
+	        withCredentials: true
 		},
 		dataType: "json",
 		contentType: "application/x-www-form-urlencoded",

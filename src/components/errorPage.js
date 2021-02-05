@@ -1,4 +1,5 @@
 import React , {Component} from 'react';
+import '../asserts/css/subMenu.css';
 class ErrorPage extends Component {
 	// PointerError是错误捕获组件
 	constructor(props) {
@@ -26,9 +27,9 @@ class ErrorPage extends Component {
 	render() {
 	  if (this.state.error) {
 		return (
-		  <div>
-			<h1>错误是：{this.state.error.toString()}</h1>
-			<h2>错误出现的位置是：{this.state.text}</h2>
+		  <div  className="mainBody">
+			<h1>エラーは：{this.state.error.toString()}</h1>
+			<h2>エラーが発生したところ：{this.state.text}</h2>
 		  </div>
 		)
 	  }

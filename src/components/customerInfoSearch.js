@@ -155,7 +155,7 @@ class CustomerInfoSearch extends Component {
                 })
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
     /**
@@ -182,66 +182,49 @@ class CustomerInfoSearch extends Component {
             })
         }
     }
-    /**
-     * 行の削除
-     */
-    listDelete = () => {
-        //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+    //隠した削除ボタンの実装
+    onDeleteRow = () => {
         var a = window.confirm("削除していただきますか？");
         if (a) {
-            $("#delectBtn").click();
+            var customerInfoMod = {};
+            customerInfoMod["customerNo"] = this.state.customerNoForPageChange;
+            axios.post(this.state.serverIP + "customerInfoSearch/delete", customerInfoMod)
+                .then(result => {
+                    if (result.data === 0) {
+                        var id = this.state.rowNo;
+                        var customerInfoList = this.state.customerInfoData;
+                        for (let i = customerInfoList.length - 1; i >= 0; i--) {
+                            if (customerInfoList[i].rowNo === id) {
+                                customerInfoList.splice(i, 1);
+                            }
+                        }
+                        if (customerInfoList.length !== 0) {
+                            for (let i = customerInfoList.length - 1; i >= 0; i--) {
+                                customerInfoList[i].rowNo = (i + 1);
+                            }
+                        }
+                        this.setState({
+                            customerInfoData: customerInfoList,
+                            rowNo: '',
+                        })
+                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
+                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
+                    } else if (result.data === 1) {
+                        this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "削除失败" });
+                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    } else if (result.data === 2) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様が現場に使われました" });
+                    } else if (result.data === 3) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数ある" });
+                    } else if (result.data === 4) {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し" });
+                    }
+                })
+                .catch(error => {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+                });
         }
-    }
-    //隠した削除ボタン
-    createCustomDeleteButton = (onClick) => {
-        return (
-            <Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
-        );
-    }
-    //隠した削除ボタンの実装
-    onDeleteRow = (rows) => {
-        var id = this.state.rowNo;
-        var customerInfoList = this.state.customerInfoData;
-        for (let i = customerInfoList.length - 1; i >= 0; i--) {
-            if (customerInfoList[i].rowNo === id) {
-                customerInfoList.splice(i, 1);
-            }
-        }
-        if (customerInfoList.length !== 0) {
-            for (let i = customerInfoList.length - 1; i >= 0; i--) {
-                customerInfoList[i].rowNo = (i + 1);
-            }
-        }
-        this.setState({
-            customerInfoData: customerInfoList,
-            rowNo: '',
-        })
-        var customerInfoMod = {};
-        customerInfoMod["customerNo"] = this.state.customerNo;
-        axios.post(this.state.serverIP + "customerInfoSearch/delete", customerInfoMod)
-            .then(result => {
-                if (result.data === 0) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                } else if (result.data === 1) {
-                    this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: "削除失败" });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-                } else if (result.data === 2) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "お客様が現場に使っている" });
-                } else if (result.data === 3) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数ある" });
-                } else if (result.data === 4) {
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "上位お客様の下位お客様が複数あるの場合でも、お客様の削除が失敗し" });
-                }
-            })
-            .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
-            });
-    }
-    //削除前のデフォルトお知らせの削除
-    customConfirm(next, dropRowKeys) {
-        const dropRowKeysStr = dropRowKeys.join(',');
-        next();
     }
     /**
      * 取引開始のonChange 
@@ -372,6 +355,10 @@ class CustomerInfoSearch extends Component {
             capitalStockBack:'',
         })
     }
+    // 鼠标悬停显示全文
+    customerNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
     render() {
         const { customerInfoData, stationCode, topCustomerCode, message, type, errorsMessageValue, traderPersonFront, traderPersonBack, capitalStockFront, capitalStockBack
             , customerNo } = this.state;
@@ -388,7 +375,7 @@ class CustomerInfoSearch extends Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,  // which page you want to show as default
-            sizePerPage: 5,  // which size per page you want to locate as default
+            sizePerPage: 8,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
             prePage: '<', // Previous page button text
@@ -397,9 +384,6 @@ class CustomerInfoSearch extends Component {
             lastPage: '>>', // Last page button text
             paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-            deleteBtn: this.createCustomDeleteButton,
-            onDeleteRow: this.onDeleteRow,
-            handleConfirmDeleteRow: this.customConfirm,
         };
         return (
             <div>
@@ -411,7 +395,7 @@ class CustomerInfoSearch extends Component {
                 </div>
                 <Row inline="true">
                     <Col className="text-center">
-                        <h2>お客様・協力情報検索</h2>
+                        <h2>お客様情報検索</h2>
                     </Col>
                 </Row>
                 <br />
@@ -425,8 +409,8 @@ class CustomerInfoSearch extends Component {
                                 <Autocomplete
                                     id="customerNo"
                                     name="customerNo"
-                                    value={this.state.customerDrop.find(v => v.code === this.state.customerNo) || ""}
-                                    options={this.state.customerDrop}
+                                    value={store.getState().dropDown[53].slice(1).find(v => v.code === this.state.customerNo) || ""}
+                                    options={store.getState().dropDown[53].slice(1)}
                                     getOptionLabel={(option) => option.text ? option.text : ""}
                                     onChange={(event, values) => this.getCustomer(event, values)}
                                     renderOption={(option) => {
@@ -438,7 +422,7 @@ class CustomerInfoSearch extends Component {
                                     }}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}
@@ -465,14 +449,14 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text>資本金</InputGroup.Text>
+                                    <InputGroup.Text id="sanKanji">資本金</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control placeholder="例：100" id="capitalStockFront" name="capitalStockFront" value={capitalStockFront}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockFront')} />{"~"}
                                 <Form.Control placeholder="例：100" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockBack')} />
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text>百万円</InputGroup.Text>
+                                    <InputGroup.Text id="sanKanji">百万円</InputGroup.Text>
                                 </InputGroup.Prepend>
                             </InputGroup>
                         </Col>
@@ -491,7 +475,7 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：富士通" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}
@@ -513,7 +497,7 @@ class CustomerInfoSearch extends Component {
                                     getOptionLabel={(option) => option.name}
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
-                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfoSearch"
                                             />
                                         </div>
                                     )}
@@ -601,7 +585,6 @@ class CustomerInfoSearch extends Component {
                             </InputGroup>
                         </Col>
                     </Row>
-                    <br />
                     <div style={{ "textAlign": "center" }}>
                         <Button onClick={this.search} size="sm" variant="info">
                             <FontAwesomeIcon icon={faSearch} /> 検索
@@ -615,7 +598,6 @@ class CustomerInfoSearch extends Component {
                     </div>
                 </Form>
                 <Form>
-                    <br />
                     <Row>
                         <Col sm={9}>
                         </Col>
@@ -623,7 +605,7 @@ class CustomerInfoSearch extends Component {
                             <div style={{ "float": "right" }}>
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} id="shosai" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} id="shusei" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-                                <Button variant="info" size="sm" id="sakujo" onClick={this.listDelete} > <FontAwesomeIcon icon={faTrash} />删除</Button>
+                                <Button variant="info" size="sm" id="sakujo" onClick={this.onDeleteRow} > <FontAwesomeIcon icon={faTrash} />删除</Button>
                             </div>
                         </Col>
                     </Row>
@@ -633,14 +615,15 @@ class CustomerInfoSearch extends Component {
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
                             <TableHeaderColumn dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
                             <TableHeaderColumn isKey dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="160">お客様名</TableHeaderColumn>
-                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
-                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} >本社場所</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="240" dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
-                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="160">支払サイト</TableHeaderColumn>
-                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="160" dataFormat={this.addMarkCapitalStock}>資本金(百万円)</TableHeaderColumn>
-                            <TableHeaderColumn dataField='purchasingManagers' tdStyle={{ padding: '.45em' }} width="160">営業担当者</TableHeaderColumn>
-                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="160">取引総人月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
+                            <TableHeaderColumn dataField='establishmentDate' tdStyle={{ padding: '.45em' }} width="80">設立</TableHeaderColumn>
+                            <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} width="150">本社</TableHeaderColumn>
+                            <TableHeaderColumn dataField='capitalStock' tdStyle={{ padding: '.45em' }} width="126" dataFormat={this.addMarkCapitalStock}>資本金(百万)</TableHeaderColumn>
+                            <TableHeaderColumn dataField='paymentSiteName' tdStyle={{ padding: '.45em' }} width="110">支払サイト</TableHeaderColumn>
+                            <TableHeaderColumn dataField='businessStartDate' tdStyle={{ padding: '.45em' }} width="100">取引開始月</TableHeaderColumn>
+                            <TableHeaderColumn dataField='traderPerson' tdStyle={{ padding: '.45em' }} width="100">取引総人月</TableHeaderColumn>
                         </BootstrapTable>
                     </Col>
                 </Form>

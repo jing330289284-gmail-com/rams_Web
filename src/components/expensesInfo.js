@@ -8,7 +8,7 @@ import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEdit, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrash, faUndo } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
@@ -54,6 +54,7 @@ class ExpensesInfo extends Component {
             expensesInfoModels: this.props.expensesInfoModels,
             kadouCheck: this.props.kadouCheck,
             leaderCheck: this.props.leaderCheck,
+            actionType:this.props.actionType,
         })
         if(this.props.relatedEmployees !== null && this.props.relatedEmployees !== undefined){
             if(this.props.relatedEmployees[0] !== null && this.props.relatedEmployees[0] !== undefined){
@@ -157,7 +158,7 @@ class ExpensesInfo extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "程序错误" });
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
 
@@ -207,6 +208,47 @@ class ExpensesInfo extends Component {
         this.setState({
             totalExpenses: utils.addComma(totalExpenses),
         })
+    }
+    delete=()=>{
+        var a = window.confirm("削除していただきますか？");
+        if (a) {
+            var deleteMod = {};
+            deleteMod["employeeNo"] = this.state.employeeNo;
+            deleteMod["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate);
+            axios.post(this.state.serverIP + "expensesInfo/delete", deleteMod)
+                .then(result => {
+                    if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                        this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功",actionType: 'insert', });
+                        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        var expensesInfoMod = {};
+                        expensesInfoMod["employeeNo"] = this.state.employeeNo;
+                        var seikou = "success";
+                        this.props.expensesInfoToroku(seikou);
+                    } else {
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+                        setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+                    }
+                })
+                .catch(error => {
+                    this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+                });
+        }
+    }
+    addMarkTransportationExpenses = (cell, row) => {
+        let transportationExpenses = utils.addComma(row.transportationExpenses);
+        return transportationExpenses;
+    }
+    addMarkLeaderAllowanceAmount = (cell, row) => {
+        let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
+        return leaderAllowanceAmount;
+    }
+    addMarkHousingAllowance = (cell, row) => {
+        let housingAllowance = utils.addComma(row.housingAllowance);
+        return housingAllowance;
+    }
+    addMarkOtherAllowanceAmount = (cell, row) => {
+        let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
+        return otherAllowanceAmount;
     }
     render() {
         const {
@@ -387,13 +429,13 @@ class ExpensesInfo extends Component {
                                             // minDate={new Date()}
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
-                                            id="expensesInfoDatePicker"
+                                            id={actionType === "detail" ? "expensesInfoDatePicker-readOnly" : "expensesInfoDatePicker"}
                                             dateFormat={"yyyy/MM"}
                                             name="expensesReflectYearAndMonth"
                                             locale="ja"
                                             disabled={actionType === "detail" ? true : false}
                                         /><font id="mark" color="red"
-                                            style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                            className="site-mark">★</font>
                                     </InputGroup.Append>
                                 </InputGroup>
                             </Col>
@@ -414,6 +456,23 @@ class ExpensesInfo extends Component {
                                 <FontAwesomeIcon icon={faUndo} />リセット
                             </Button>
                         </div>
+                        <Row>
+                        <Col sm={10}>
+                        </Col>
+                        <Col sm={2}>
+                            <div style={{ "float": "right" }}>
+                                <Button
+                                    variant="info"
+                                    size="sm"
+                                    id="delete"
+                                    onClick={this.delete}
+                                    disabled={actionType === "detail" ? true : false}
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />削除
+                                </Button>
+                            </div>
+                        </Col>
+                        </Row>
                         <div>
                             <Col sm={12}>
                                 <BootstrapTable
@@ -424,10 +483,10 @@ class ExpensesInfo extends Component {
                                     headerStyle={{ background: '#5599FF' }}
                                     striped>
                                     <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} width="230">諸費用期間</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} >交通代</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} >リーダー</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} >住宅</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} >他</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}>リーダー</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}>住宅</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkOtherAllowanceAmount}>他の手当</TableHeaderColumn>
                                 </BootstrapTable>
                             </Col>
                         </div>

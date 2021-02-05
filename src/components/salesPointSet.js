@@ -198,8 +198,8 @@ class salesPointSet extends React.Component {
 	 */
 	insert = () => {
 		var salesPointSetModel = {};
-		if (this.checkRows()) {
-			this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData.length + " is be not normative" });
+		if (this.checkRows() !== "") {
+			this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData.length + this.checkRows() + "入力してください。" });
 			return;
 		}
 		for (let i = 0; i < this.state.salesPointData.length; i++) {
@@ -211,9 +211,9 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
-				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
-				salesPointSetModel["point"] = this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
-				salesPointSetModel["remark"] = this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo!=null&&this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
+				salesPointSetModel["point"] = this.state.salesPointData[i].point!=null&&this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark!=null&&this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
 			}
 		}
 		axios.post(this.state.serverIP + "salesPointInsert", salesPointSetModel)
@@ -243,10 +243,35 @@ class salesPointSet extends React.Component {
 	 */
 	update = () => {
 		var salesPointSetModel = {};
-		if (this.checkRows()) {
-			this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData.length + " is be not normative" });
-			return;
+
+		for (let i = 0; i < this.state.salesPointData.length; i++) {
+			if (this.state.salesPointData[i].no === this.state.no) {
+				let isNull = "";
+				if (this.state.salesPointData[i].employee === ""　|| this.state.salesPointData[i].employee == null){
+					isNull += " 社員区分 ";
+				}
+				if (this.state.salesPointData[i].employee==="0" && (this.state.salesPointData[i].newMember === ""　|| this.state.salesPointData[i].newMember == null)){
+					isNull += " 新人区分 ";
+				}
+				if (this.state.salesPointData[i].customerContract === ""　|| this.state.salesPointData[i].customerContract == null){
+					isNull += " 契約区分 ";
+				}
+				if (this.state.salesPointData[i].level === ""　|| this.state.salesPointData[i].level == null){
+					isNull += " お客様レベル ";
+				}
+				if (this.state.salesPointData[i].salesPuttern === ""　|| this.state.salesPointData[i].salesPuttern == null){
+					isNull += " 営業結果パタンー ";
+				}
+				if (this.state.salesPointData[i].point === ""　|| this.state.salesPointData[i].point == null){
+					isNull += " ポイント ";
+				}
+				if (isNull !== "") {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: "ROW " + this.state.salesPointData[i].no + isNull + "入力してください。" });
+					return;
+				}
+			}
 		}
+
 		for (let i = 0; i < this.state.salesPointData.length; i++) {
 			if (this.state.salesPointData[i].no === this.state.no) {
 				salesPointSetModel["no"] = this.state.no
@@ -256,9 +281,9 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
 				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
-				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
-				salesPointSetModel["point"] = this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
-				salesPointSetModel["remark"] = this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
+				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo!=null&&this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
+				salesPointSetModel["point"] = this.state.salesPointData[i].point!=null&&this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
+				salesPointSetModel["remark"] = this.state.salesPointData[i].remark!=null&&this.state.salesPointData[i].remark.length>=50?this.state.salesPointData[i].remark.substring(0,50):this.state.salesPointData[i].remark
 			}
 		}
 		axios.post(this.state.serverIP + "salesPointUpdate", salesPointSetModel)
@@ -306,15 +331,24 @@ class salesPointSet extends React.Component {
 	}
 
 	checkRows = () => {
-		let isNull = false;
-		if (this.state.salesPointData[this.state.salesPointData.length - 1].employee === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].newMember === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].customerContract === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].level === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].specialPoint === "" ||
-			this.state.salesPointData[this.state.salesPointData.length - 1].point === "") {
-			isNull = true;
+		let isNull = "";
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].employee === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].employee == null){
+			isNull += " 社員区分 ";
+		}
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].employee==="0" && (this.state.salesPointData[this.state.salesPointData.length - 1].newMember === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].newMember == null)){
+			isNull += " 新人区分 ";
+		}
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].customerContract === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].customerContract == null){
+			isNull += " 契約区分 ";
+		}
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].level === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].level == null){
+			isNull += " お客様レベル ";
+		}
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern == null){
+			isNull += " 営業結果パタンー ";
+		}
+		if (this.state.salesPointData[this.state.salesPointData.length - 1].point === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].point == null){
+			isNull += " ポイント ";
 		}
 		return isNull;
 	}

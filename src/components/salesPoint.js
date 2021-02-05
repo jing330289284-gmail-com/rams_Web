@@ -224,7 +224,7 @@ class salesPoint extends React.Component {
 				this.setState({ currentPage: page });
 			},
 			page: this.state.currentPage,
-			sizePerPage: 5,  // which size per page you want to locate as
+			sizePerPage: 12,  // which size per page you want to locate as
 								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.

@@ -21,17 +21,17 @@ axios.defaults.withCredentials = true;
 class employeeUpdate extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.handleShowModal = this.handleShowModal.bind(this);
 	}
-	//初期化
+	// 初期化
 	initialState = {
-		showBankInfoModalFlag: false,//口座情報画面フラグ
-		showpasswordSetModalFlag: false,//PW設定
-		showBpInfoModalFlag: false,//bp情報
-		retirementYearAndMonthDisabled: false,//退職年月の活性フラグ
-		accountInfo: null,//口座情報のデータ
-		bpInfoModel: null,//pb情報
+		showBankInfoModalFlag: false,// 口座情報画面フラグ
+		showpasswordSetModalFlag: false,// PW設定
+		showBpInfoModalFlag: false,// bp情報
+		retirementYearAndMonthDisabled: false,// 退職年月の活性フラグ
+		accountInfo: null,// 口座情報のデータ
+		bpInfoModel: null,// pb情報
 		myToastShow: false,
 		errorsMessageShow: false,
 		developLanguage1: '',
@@ -61,13 +61,13 @@ class employeeUpdate extends React.Component {
 		station: store.getState().dropDown[14].slice(1),
 		customer: store.getState().dropDown[15].slice(1),
 		qualification: store.getState().dropDown[54],
-		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛テスト
+		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],// 劉林涛テスト
 	};
 
 
 	/**
-	  * 初期化メソッド
-	  */
+	 * 初期化メソッド
+	 */
 	componentDidMount() {
 		const { location } = this.props
 		this.setState(
@@ -89,79 +89,81 @@ class employeeUpdate extends React.Component {
 			.then(response => response.data)
 			.then((data) => {
 				this.setState({
-					employeeStatus: data.employeeStatus,//社員区分
-					employeeNo: data.employeeNo,//社員番号
-					bpEmployeeNo: data.employeeNo,//社員番号
-					employeeFristName: data.employeeFristName,//社員氏
-					employeeLastName: data.employeeLastName,//社員名
-					furigana1: data.furigana1,//カタカナ
-					furigana2: data.furigana2,//カタカナ
-					alphabetName1: data.alphabetName1,//ローマ字
-					alphabetName2: data.alphabetName2,//ローマ字
-					birthday: publicUtils.converToLocalTime(data.birthday, true),//年齢
+					employeeStatus: data.employeeStatus,// 社員区分
+					employeeNo: data.employeeNo,// 社員番号
+					bpEmployeeNo: data.employeeNo,// 社員番号
+					employeeFristName: data.employeeFristName,// 社員氏
+					employeeLastName: data.employeeLastName,// 社員名
+					furigana1: data.furigana1,// カタカナ
+					furigana2: data.furigana2,// カタカナ
+					alphabetName1: data.alphabetName1,// ローマ字
+					alphabetName2: data.alphabetName2,// ローマ字
+					birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
 					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
-					japaneseCalendar: data.japaneseCalendar,//和暦
-					genderStatus: data.genderStatus,//性別
-					intoCompanyCode: data.intoCompanyCode,//入社区分
-					employeeFormCode: data.employeeFormCode,//社員形式
+					japaneseCalendar: data.japaneseCalendar,// 和暦
+					genderStatus: data.genderStatus,// 性別
+					intoCompanyCode: data.intoCompanyCode,// 入社区分
+					employeeFormCode: data.employeeFormCode,// 社員形式
 					retirementYearAndMonthDisabled: data.employeeFormCode === "3" ? true : false,
-					occupationCode: data.occupationCode,//職種
-					departmentCode: data.departmentCode,//部署
-					companyMail: data.companyMail !== null && data.companyMail !== "" && data.companyMail !== undefined ? data.companyMail.match(/(\S*)@/)[1] : "",//社内メール　data.companyMail.match(/(\S*)@/)[1]
-					graduationUniversity: data.graduationUniversity,//卒業学校
-					major: data.major,//専門
-					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),//卒業年月
+					occupationCode: data.occupationCode,// 職種
+					departmentCode: data.departmentCode,// 部署
+					companyMail: data.companyMail !== null && data.companyMail !== "" && data.companyMail !== undefined ? data.companyMail.match(/(\S*)@/)[1] : "",// 社内メール
+																																									// data.companyMail.match(/(\S*)@/)[1]
+					graduationUniversity: data.graduationUniversity,// 卒業学校
+					major: data.major,// 専門
+					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),// 卒業年月
 					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
-					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),//入社年月
+					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),// 入社年月
 					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
-					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),//退職年月
+					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
-					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),//来日年月
+					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),// 来日年月
 					temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
-					nationalityCode: data.nationalityCode,//出身地
-					birthplace: data.birthplace,//出身県
-					phoneNo1: publicUtils.nullToEmpty(data.phoneNo).slice(0, 3),//携帯電話
-					phoneNo2: publicUtils.nullToEmpty(data.phoneNo).slice(3, 7),//携帯電話
-					phoneNo3: publicUtils.nullToEmpty(data.phoneNo).slice(7, 11),//携帯電話							
-					authorityCode: data.authorityCode,//権限
-					japaneseLevelCode: data.japaneseLevelCode,//日本語
-					englishLevelCode: data.englishLevelCode,//英語
-					certification1: data.certification1,//資格1
-					certification2: data.certification2,//資格2
-					siteRoleCode: data.siteRoleCode,//役割
-					postcode: data.postcode,//郵便番号
+					nationalityCode: data.nationalityCode,// 出身地
+					birthplace: data.birthplace,// 出身県
+					phoneNo1: publicUtils.nullToEmpty(data.phoneNo).slice(0, 3),// 携帯電話
+					phoneNo2: publicUtils.nullToEmpty(data.phoneNo).slice(3, 7),// 携帯電話
+					phoneNo3: publicUtils.nullToEmpty(data.phoneNo).slice(7, 11),// 携帯電話
+					authorityCode: data.authorityCode,// 権限
+					japaneseLevelCode: data.japaneseLevelCode,// 日本語
+					englishLevelCode: data.englishLevelCode,// 英語
+					certification1: data.certification1,// 資格1
+					certification2: data.certification2,// 資格2
+					siteRoleCode: data.siteRoleCode,// 役割
+					postcode: data.postcode,// 郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
-					developLanguage1: data.developLanguage1,//スキール1
-					developLanguage2: data.developLanguage2,//スキール2
-					developLanguage3: data.developLanguage3,//スキール3
-					developLanguage4: data.developLanguage4,//スキール4
-					developLanguage5: data.developLanguage5,//スキール5
-					residenceCode: data.residenceCode,//在留資格
-					residenceCardNo: data.residenceCardNo,//在留カード
-					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),//在留期間
+					developLanguage1: data.developLanguage1,// スキール1
+					developLanguage2: data.developLanguage2,// スキール2
+					developLanguage3: data.developLanguage3,// スキール3
+					developLanguage4: data.developLanguage4,// スキール4
+					developLanguage5: data.developLanguage5,// スキール5
+					residenceCode: data.residenceCode,// 在留資格
+					residenceCardNo: data.residenceCardNo,// 在留カード
+					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),// 在留期間
+					contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false),// 契約期限
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
-					employmentInsuranceNo: data.employmentInsuranceNo,//雇用保険番号
-					myNumber: data.myNumber,//マイナンバー
-					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),//在留カード
-					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),//履歴書
-					resumeName1: data.resumeName1,//履歴書備考1
-					resumeInfo2URL: publicUtils.nullToEmpty(data.resumeInfo2),//履歴書2
-					resumeName2: data.resumeName2,//履歴書備考1
-					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),//パスポート
-					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),//経験年数
+					temporary_contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.contractDeadline, false)),
+					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
+					myNumber: data.myNumber,// マイナンバー
+					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
+					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
+					resumeName1: data.resumeName1,// 履歴書備考1
+					resumeInfo2URL: publicUtils.nullToEmpty(data.resumeInfo2),// 履歴書2
+					resumeName2: data.resumeName2,// 履歴書備考1
+					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),// パスポート
+					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),// 経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
 					image: data.picInfo
-
 				});
 			}
 			);
 	};
 
 
-	//年月開始
-	//卒業年月
+	// 年月開始
+	// 卒業年月
 	state = {
 		birthday: new Date(),
 		intoCompanyYearAndMonth: new Date(),
@@ -169,9 +171,10 @@ class employeeUpdate extends React.Component {
 		comeToJapanYearAndMonth: new Date(),
 		yearsOfExperience: new Date(),
 		stayPeriod: new Date(),
+		contractDeadline: new Date(),
 		graduationYearAndMonth: new Date(),
 	};
-	//卒業年月
+	// 卒業年月
 	inactiveGraduationYearAndMonth = date => {
 		this.setState(
 			{
@@ -181,7 +184,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//入社年月
+	// 入社年月
 	inactiveintoCompanyYearAndMonth = (date) => {
 		this.setState(
 			{
@@ -190,7 +193,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//退職年月
+	// 退職年月
 	inactiveRetirementYearAndMonth = (date) => {
 		this.setState(
 			{
@@ -200,7 +203,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//来日年月
+	// 来日年月
 	inactiveComeToJapanYearAndMonth = date => {
 		this.setState(
 			{
@@ -210,7 +213,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//経験年数
+	// 経験年数
 	inactiveyearsOfExperience = date => {
 		this.setState(
 			{
@@ -219,7 +222,7 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//在留期間
+	// 在留期間
 	inactiveStayPeriod = date => {
 		this.setState(
 			{
@@ -228,11 +231,21 @@ class employeeUpdate extends React.Component {
 			}
 		);
 	};
-	//年月終了
+	
+	// 契約期間
+	inactiveContractDeadline = date => {
+		this.setState(
+			{
+				contractDeadline: date,
+				temporary_contractDeadline: publicUtils.getFullYearMonth(new Date(), date)
+			}
+		);
+	};
+	// 年月終了
 
 
-	/* 
-		ポップアップ口座情報の取得
+	/*
+	 * ポップアップ口座情報の取得
 	 */
 	accountInfoGet = (accountTokuro) => {
 		this.setState({
@@ -241,18 +254,18 @@ class employeeUpdate extends React.Component {
 		})
 	}
 
-	/* 
-	ポップアップPW設定の取得
- */
+	/*
+	 * ポップアップPW設定の取得
+	 */
 	passwordSetInfoGet = (passwordSetTokuro) => {
 		this.setState({
 			passwordSetInfo: passwordSetTokuro,
 			showpasswordSetModalFlag: false,
 		})
 	}
-	/* 
-	ポップアップpb情報の取得
- */
+	/*
+	 * ポップアップpb情報の取得
+	 */
 	pbInfoGet = (pbInfoGetTokuro) => {
 		this.setState({
 			bpInfoModel: pbInfoGetTokuro,
@@ -260,27 +273,27 @@ class employeeUpdate extends React.Component {
 		})
 	}
 	/**
-	* 小さい画面の閉め 
-	*/
+	 * 小さい画面の閉め
+	 */
 	handleHideModal = (kbn) => {
-		if (kbn === "bankInfo") {//口座情報
+		if (kbn === "bankInfo") {// 口座情報
 			this.setState({ showBankInfoModalFlag: false })
-		} else if (kbn === "passwordSet") {//PW設定
+		} else if (kbn === "passwordSet") {// PW設定
 			this.setState({ showpasswordSetModalFlag: false })
-		} else if (kbn === "bpInfoModel") {//pb情報
+		} else if (kbn === "bpInfoModel") {// pb情報
 			this.setState({ showBpInfoModalFlag: false })
 		}
 	}
 
 	/**
- * 小さい画面の開き
-    */
+	 * 小さい画面の開き
+	 */
 	handleShowModal = (kbn) => {
-		if (kbn === "bankInfo") {//口座情報
+		if (kbn === "bankInfo") {// 口座情報
 			this.setState({ showBankInfoModalFlag: true })
-		} else if (kbn === "passwordSet") {//PW設定
+		} else if (kbn === "passwordSet") {// PW設定
 			this.setState({ showpasswordSetModalFlag: true })
-		} else if (kbn === "bpInfoModel") {//pb情報
+		} else if (kbn === "bpInfoModel") {// pb情報
 			this.setState({ showBpInfoModalFlag: true })
 		}
 	}
@@ -334,7 +347,7 @@ class employeeUpdate extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -368,7 +381,7 @@ class employeeUpdate extends React.Component {
 					<Modal.Body >
 						<PasswordSet passwordSetInfo={passwordSetInfo} actionType={this.state.actionType} employeeNo={this.state.employeeNo} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} passwordToroku={this.passwordSetInfoGet} /></Modal.Body>
 				</Modal>
-				{/* pb情報*/}
+				{/* pb情報 */}
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModalFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton>
@@ -404,12 +417,25 @@ class employeeUpdate extends React.Component {
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名 </InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeFristName} size="sm" name="employeeFristName" maxlength="3" disabled />{' '}
-									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<FormControl value={employeeLastName} size="sm" name="employeeLastName" maxlength="3" disabled /><font color="red" className="site-mark">★</font>
 								</InputGroup>
-								{/*// line*/}
+								{/* // line */}
 								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Form.Control as="select" size="sm"
+										onChange={this.valueChangeEmployeeFormCode}
+										name="employeeFormCode" value={employeeFormCode} id="Autocompletestyle-employeeInsert-employeeFormCode"
+										disabled>
+										{this.state.employeeFormCodes.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">性別</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">性別</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="genderStatus" value={genderStatus}
@@ -420,7 +446,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<font color="red" className="site-mark">★</font>
 
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
@@ -436,19 +462,7 @@ class employeeUpdate extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChangeEmployeeFormCode}
-										name="employeeFormCode" value={employeeFormCode}
-										disabled>
-										{this.state.employeeFormCodes.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
+									
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -543,7 +557,7 @@ class employeeUpdate extends React.Component {
 									</InputGroup.Prepend>
 									<Form.Control type="email" value={companyMail} disabled
 										size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									<font color="red" className="site-mark">★</font>
 								</InputGroup>
 							</Col>
 							<Col sm={3}>
@@ -605,7 +619,8 @@ class employeeUpdate extends React.Component {
 										/>
 									</InputGroup.Append>
 									<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-									<font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>								</InputGroup>
+									<font color="red" className="site-mark">★</font>
+									</InputGroup>
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3" >
@@ -652,7 +667,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">出身地</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">国籍</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="nationalityCode" value={nationalityCode}
@@ -662,7 +677,7 @@ class employeeUpdate extends React.Component {
 												{date.name}
 											</option>
 										)}
-									</Form.Control><font color="red" style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+									</Form.Control><font color="red" style={{ marginLeft: "0px", marginRight: "0px" }}>★</font>
 									<FormControl value={birthplace} autoComplete="off"
 										onChange={this.valueChange} size="sm" name="birthplace" disabled />
 								</InputGroup>
@@ -673,9 +688,9 @@ class employeeUpdate extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">携帯電話</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={phoneNo1}
-										size="sm" name="phoneNo" disabled />～
+										size="sm" name="phoneNo" disabled />—
 											<FormControl value={phoneNo2}
-										size="sm" name="phoneNo" disabled />～
+										size="sm" name="phoneNo" disabled />—
 											<FormControl value={phoneNo3}
 										size="sm" name="phoneNo" disabled />
 								</InputGroup>
@@ -780,8 +795,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage1"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage1" />
 											</div>
 										)}
 									/>
@@ -791,8 +805,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage2"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage2" />
 											</div>
 										)}
 									/>
@@ -802,8 +815,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage3"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage3" />
 											</div>
 										)}
 									/>
@@ -813,8 +825,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage4"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage4" />
 											</div>
 										)}
 									/>
@@ -824,8 +835,7 @@ class employeeUpdate extends React.Component {
 										getOptionLabel={(option) => option.name}
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto" id="developLanguage5"
-													style={{ width: 172, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057", "backgroundColor": "#e9ecef" }} />
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="developLanguage5" />
 											</div>
 										)}
 									/>
@@ -925,44 +935,43 @@ class employeeUpdate extends React.Component {
 										size="sm" name="residenceCardNo" disabled />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Append>
-										<DatePicker
-											selected={this.state.stayPeriod}
-											onChange={this.inactiveStayPeriod}
-											dateFormat="yyyy/MM"
-											showMonthYearPicker
-											showFullMonthYearPicker
-											id="datePickerReadonlyDefault"
-											className="form-control form-control-sm"
-											disabled
-										/>
-									</InputGroup.Append>
-									<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
+							
+							<Col sm={5}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
+								</InputGroup.Prepend>
+								<FormControl value={myNumber}
+									size="sm" name="myNumber" disabled />
+								<font style={{ marginLeft: "10px", marginRight: "15px" }}></font>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="sixKanji">雇用保険番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={employmentInsuranceNo}
 										size="sm" name="employmentInsuranceNo" disabled />
+									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 								</InputGroup>
-							</Col>
+							</Col>	
 							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="sixKanji">マイナンバー</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={myNumber}
-										size="sm" name="myNumber" disabled />
-								</InputGroup>
-							</Col>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
+								</InputGroup.Prepend>
+								<InputGroup.Append>
+									<DatePicker
+										selected={this.state.stayPeriod}
+										onChange={this.inactiveStayPeriod}
+										dateFormat="yyyy/MM"
+										showMonthYearPicker
+										showFullMonthYearPicker
+										id="datePickerReadonlyDefault"
+										className="form-control form-control-sm"
+										disabled
+									/>
+								</InputGroup.Append>
+								<FormControl name="temporary_stayPeriod" value={temporary_stayPeriod} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+							</InputGroup>
+						</Col>
 						</Row>
 						<Row>
 							<Col sm={2}>
@@ -970,40 +979,75 @@ class employeeUpdate extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="fiveKanji" >在留カード</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 添付済み" : " 添付"}</Button>
+									<Autocomplete
+									getOptionLabel={(option) => option.name}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+										<Button size="sm" className="auto form-control Autocompletestyle-employeeInsert-upload" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 済み" : " 添付"}</Button>
+										</div>
+									)}
+								/>
 									<Form.File id="residentCardInfo" hidden data-browse="添付" value={this.state.residentCardInfo} custom onChange={(event) => this.changeFile(event, 'residentCardInfo')} />
 								</InputGroup>
 							</Col>
-							<Col sm={3}>
+							<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="fiveKanji" >パスポート</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+								getOptionLabel={(option) => option.name}
+								renderInput={(params) => (
+									<div ref={params.InputProps.ref}>
+									<Button size="sm" className="auto form-control Autocompletestyle-employeeInsert-upload" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 済み" : " 添付"}</Button>
+									</div>
+								)}
+							/>
+							</InputGroup>
+						</Col>
+							<Col sm={5}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 添付済み" : " 添付"}</Button>
-									<FormControl value={resumeName1} autoComplete="off"
+									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 済み" : " 添付"}</Button>
+									<FormControl value={resumeName1} autoComplete="off" id="Autocompletestyle-employeeInsert-resumeInfo"
 										onChange={this.valueChange} size="sm" name="resumeName1" disabled />
 									<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
+									<font style={{ marginLeft: "10px", marginRight: "15px" }}></font>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 									</InputGroup.Prepend>
-									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 添付済み" : " 添付"}</Button>
-									<FormControl value={resumeName2} autoComplete="off"
+									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 済み" : " 添付"}</Button>
+									<FormControl value={resumeName2} autoComplete="off" id="Autocompletestyle-employeeInsert-resumeInfo"
 										onChange={this.valueChange} size="sm" name="resumeName2" disabled />
 									<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 								</InputGroup>
 							</Col>
+							
 							<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="fiveKanji" >パスポート</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 添付済み" : " 添付"}</Button>
-								</InputGroup>
-							</Col>
+							<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="inputGroup-sizing-sm">契約期限</InputGroup.Text>
+							</InputGroup.Prepend>
+							<InputGroup.Append>
+								<DatePicker
+									selected={this.state.contractDeadline}
+									onChange={this.inactiveContractDeadline}
+									locale="ja"
+									dateFormat="yyyy/MM"
+									showMonthYearPicker
+									showFullMonthYearPicker
+									className="form-control form-control-sm"
+									autoComplete="off"
+									minDate={new Date()}
+									id="datePickerReadonlyDefault"
+									disabled
+								/>
+							</InputGroup.Append>
+							<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
+						</InputGroup>
+						</Col>
 						</Row>
 						<div style={{ "textAlign": "center" }}>
 							<Button size="sm" variant="info" type="button" onClick={this.back} hidden={this.state.backPage === "" ? true : false}>
