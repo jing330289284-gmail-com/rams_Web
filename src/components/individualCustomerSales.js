@@ -17,10 +17,10 @@ class IndividualCustomerSales extends React.Component {
     state = {
         fiscalYear: '',
         customerName: '',
-        totalworkPeoSum:'',
-        totaluPrice:'',
-        overTimeOrExpectFee:'',
-        totalgrossProfit:'',
+        totalworkPeoSum: '',
+        totaluPrice: '',
+        overTimeOrExpectFee: '',
+        totalgrossProfit: '',
     }
     constructor(props) {
         super(props);
@@ -37,7 +37,7 @@ class IndividualCustomerSales extends React.Component {
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
         }
-        
+
     }
     componentDidMount() {
         var date = new Date();
@@ -50,27 +50,27 @@ class IndividualCustomerSales extends React.Component {
     initialState = {
         customerInfo: store.getState().dropDown[53].slice(1),
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-        customerName:'',
-        individualCustomerSales_startYearAndMonth:'',
-        individualCustomerSales_endYearAndMonth:'',
-        fiscalYear:'',
+        customerName: '',
+        individualCustomerSales_startYearAndMonth: '',
+        individualCustomerSales_endYearAndMonth: '',
+        fiscalYear: '',
     }
     yearAndMonthChange = event => {
-        if(this.state.customerName!==''){          
+        if (this.state.customerName !== '') {
             this.setState({ individualCustomerSales_endYearAndMonth: '' })
             this.setState({ individualCustomerSales_startYearAndMonth: '' })
             this.setState({
                 [event.target.name]: event.target.value
-            },()=>this.searchCustomer())
+            }, () => this.searchCustomer())
         }
-        else{
+        else {
             this.setState({ individualCustomerSales_endYearAndMonth: '' })
             this.setState({ individualCustomerSales_startYearAndMonth: '' })
             this.setState({
                 [event.target.name]: event.target.value
             })
         }
-       
+
 
     }
 
@@ -82,47 +82,63 @@ class IndividualCustomerSales extends React.Component {
 
     }
     individualCustomerSalesStartYearAndMonthChange = date => {
-        if(this.state.customerName!==''){
-        if (date !== null) {
-            this.setState({
-                individualCustomerSales_startYearAndMonth: date,
-                fiscalYear: '',
-            },()=>this.searchCustomer());
+        if (this.state.customerName !== '') {
+            if (date !== null) {
+                if(this.state.individualCustomerSales_endYearAndMonth!==''){
+                    this.setState({
+                        individualCustomerSales_startYearAndMonth: date,
+                        fiscalYear: '',
+                    }, () => this.searchCustomer());
+                }else{
+                    this.setState({
+                        individualCustomerSales_startYearAndMonth: date,
+                        fiscalYear: '',
+                    });  
+                }
+               
+            } else {
+                this.setState({
+                    individualCustomerSales_startYearAndMonth: '',
+                });
+            }
         } else {
-            this.setState({
-                individualCustomerSales_startYearAndMonth: '',
-            });
-        }
-    }else{
-        if (date !== null) {
-            this.setState({
-                individualCustomerSales_startYearAndMonth: date,
-                fiscalYear: '',
-            });
-        } else {
-            this.setState({
-                individualCustomerSales_startYearAndMonth: '',
-            });
-        }
+            if (date !== null) {
+                this.setState({
+                    individualCustomerSales_startYearAndMonth: date,
+                    fiscalYear: '',
+                });
+            } else {
+                this.setState({
+                    individualCustomerSales_startYearAndMonth: '',
+                });
+            }
 
-    }
+        }
 
 
     };
 
     individualCustomerSalesEndYearAndMonthChange = date => {
-        if(this.state.customerName!==''){
+        if (this.state.customerName !== '') {
             if (date !== null) {
-                this.setState({
-                    individualCustomerSales_endYearAndMonth: date,
-                    fiscalYear: '',
-                },()=> this.searchCustomer());
-           
-            }else{
+                if(this.state.individualCustomerSales_startYearAndMonth!==''){
+                    this.setState({
+                        individualCustomerSales_endYearAndMonth: date,
+                        fiscalYear: '',
+                    }, () => this.searchCustomer());
+    
+                }else{
+                    this.setState({
+                        individualCustomerSales_endYearAndMonth: date,
+                        fiscalYear: '',
+                    });
+                }
+                
+            } else {
                 this.setState({
                     individualCustomerSales_endYearAndMonth: '',
                 });
-            }          
+            }
         } else {
             if (date !== null) {
                 this.setState({
@@ -130,40 +146,40 @@ class IndividualCustomerSales extends React.Component {
                     fiscalYear: '',
                 });
             }
-                else{
-                    this.setState({
-                        individualCustomerSales_endYearAndMonth: '',
-                    });
-                }
-            
+            else {
+                this.setState({
+                    individualCustomerSales_endYearAndMonth: '',
+                });
+            }
+
         }
 
     };
 
     handleTag = (event, values) => {
-        if(this.state.fiscalYear!==''||(this.state.individualCustomerSales_startYearAndMonth!==''&&this.state.individualCustomerSales_endYearAndMonth!=='')){
+        if (this.state.fiscalYear !== '' || (this.state.individualCustomerSales_startYearAndMonth !== '' && this.state.individualCustomerSales_endYearAndMonth !== '')) {
             if (values != null) {
                 this.setState({
                     customerName: values.code,
-                },()=>this.searchCustomer())
-    
+                }, () => this.searchCustomer())
+
             } else {
                 this.setState({
                     customerName: '',
                 })
             }
-        }else{
-        if (values != null) {
-            this.setState({
-                customerName: values.code,
-            })
-
         } else {
-            this.setState({
-                customerName: '',
-            })
+            if (values != null) {
+                this.setState({
+                    customerName: values.code,
+                })
+
+            } else {
+                this.setState({
+                    customerName: '',
+                })
+            }
         }
-    }
     }
 
     searchCustomer = () => {
@@ -175,133 +191,133 @@ class IndividualCustomerSales extends React.Component {
             endYear: publicUtils.formateDate(this.state.individualCustomerSales_endYearAndMonth, false),
 
         };
-        
+
         axios.post(this.state.serverIP + "customerSales/searchCustomerSales", customerInfo)
             .then(response => {
                 if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
                 } else if (response.data.noData != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
-                    this.setState({ CustomerSaleslListInfoList:[]});
-                    this.setState({totalworkPeoSum:''})
-                    this.setState({totaluPrice:''})
-                    this.setState({overTimeOrExpectFee:''})
-                    this.setState({totalgrossProfit:''})
+                    this.setState({ CustomerSaleslListInfoList: [] });
+                    this.setState({ totalworkPeoSum: '' })
+                    this.setState({ totaluPrice: '' })
+                    this.setState({ overTimeOrExpectFee: '' })
+                    this.setState({ totalgrossProfit: '' })
                 }
                 else {
-                     this.setState({ "errorsMessageShow": false })
-                     this.setState({ CustomerSaleslListInfoList: response.data.data })
-                     this.setState({ totalworkPeoSum: this.state.CustomerSaleslListInfoList[0].totalworkPeoSum })
-                     this.setState({totaluPrice:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totaluPrice,false)})
-                     this.setState({overTimeOrExpectFee:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].overTimeOrExpectFee,false)})
-                     this.setState({totalgrossProfit:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totalgrossProfit,false)})
-                     if(this.state.CustomerSaleslListInfoList[0].totalgrossProfit<0){
-                        $('#totalGp').css("color","red");
-                     }
-                    
+                    this.setState({ "errorsMessageShow": false })
+                    this.setState({ CustomerSaleslListInfoList: response.data.data })
+                    this.setState({ totalworkPeoSum: this.state.CustomerSaleslListInfoList[0].totalworkPeoSum })
+                    this.setState({ totaluPrice: publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totaluPrice, false) })
+                    this.setState({ overTimeOrExpectFee: publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].overTimeOrExpectFee, false) })
+                    this.setState({ totalgrossProfit: publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totalgrossProfit, false) })
+                    if (this.state.CustomerSaleslListInfoList[0].totalgrossProfit < 0) {
+                        $('#totalGp').css("color", "red");
+                    }
+
                 }
             }).catch((error) => {
                 console.error("Error - " + error);
             });
     }
 
-    grossProfitAddComma(cell ,row){
-        if(row. grossProfit===null||row. grossProfit==="0"){
-            return 
-        }else{
-         let formatmGrosProfits = publicUtils.addComma(row. grossProfit,false)
-         if (row. grossProfit < 0) {
-            return (<div style={{ color: 'red' }}>{formatmGrosProfits}</div>);
-        }
-         return formatmGrosProfits;
-        }
-    }
-
-    totalAmountAddComma(cell ,row){
-        if(row. totalAmount===null||row. totalAmount==="0"){
-            return 
-        }else{
-         let formattotalAmount = publicUtils.addComma(row. totalAmount,false)
-         return formattotalAmount;
-        }
-    }
-
-    totalUnitPriceFormat(cell,row){
-        if(row. totalUnitPrice===null||row. totalUnitPrice==="0"){
-            return 
-        }else{
-            let formatTotalUnitPrice = row.totalUnitPrice*10000
-         return publicUtils.addComma( formatTotalUnitPrice,false);
-        }
-    }
-
-    maxUnitPriceFormat(cell,row){
-        if(row. maxUnitPrice===null||row. maxUnitPrice==="0"){
-            return 
-        }else{
-            let formatMaxlUnitPrice = row. maxUnitPrice.split('.')[0];
-            formatMaxlUnitPrice = formatMaxlUnitPrice*10000
-         return publicUtils.addComma( formatMaxlUnitPrice,false);
-        } 
-    }
-
-    minUnitPriceFormat(cell,row){
-        if(row. minUnitPrice===null||row. minUnitPrice==="0"){
-            return 
-        }else{
-            let formatMinUnitPrice = row. minUnitPrice.split('.')[0];
-            formatMinUnitPrice = formatMinUnitPrice*10000
-
-         return publicUtils.addComma( formatMinUnitPrice,false);
-
-        }  
-    }
-
-    averUnitPriceFormat(cell ,row){
-        if(row. averUnitPrice===null||row. averUnitPrice==="0"||row. averUnitPrice===NaN){
-            return 
-        }else{
-            let averageUnitP ;
-            let formatTotalUnitPrice = row. averUnitPrice.split('.')[1];
-            if(formatTotalUnitPrice!=="0"){
-                averageUnitP= row. averUnitPrice*10000
+    grossProfitAddComma(cell, row) {
+        if (row.grossProfit === null || row.grossProfit === "0") {
+            return
+        } else {
+            let formatmGrosProfits = publicUtils.addComma(row.grossProfit, false)
+            if (row.grossProfit < 0) {
+                return (<div style={{ color: 'red' }}>{formatmGrosProfits}</div>);
             }
-            else{
-                averageUnitP= row. averUnitPrice.split('.')[0]*10000
-            }
-         return publicUtils.addComma( averageUnitP,false);
-        } 
+            return formatmGrosProfits;
+        }
     }
 
-    workPeoSumFormat(cell ,row){
-        if(row.workPeoSum===null||row.workPeoSum==="0"){
+    totalAmountAddComma(cell, row) {
+        if (row.totalAmount === null || row.totalAmount === "0") {
+            return
+        } else {
+            let formattotalAmount = publicUtils.addComma(row.totalAmount, false)
+            return formattotalAmount;
+        }
+    }
+
+    totalUnitPriceFormat(cell, row) {
+        if (row.totalUnitPrice === null || row.totalUnitPrice === "0") {
+            return
+        } else {
+            let formatTotalUnitPrice = row.totalUnitPrice * 10000
+            return publicUtils.addComma(formatTotalUnitPrice, false);
+        }
+    }
+
+    maxUnitPriceFormat(cell, row) {
+        if (row.maxUnitPrice === null || row.maxUnitPrice === "0") {
+            return
+        } else {
+            let formatMaxlUnitPrice = row.maxUnitPrice.split('.')[0];
+            formatMaxlUnitPrice = formatMaxlUnitPrice * 10000
+            return publicUtils.addComma(formatMaxlUnitPrice, false);
+        }
+    }
+
+    minUnitPriceFormat(cell, row) {
+        if (row.minUnitPrice === null || row.minUnitPrice === "0") {
+            return
+        } else {
+            let formatMinUnitPrice = row.minUnitPrice.split('.')[0];
+            formatMinUnitPrice = formatMinUnitPrice * 10000
+
+            return publicUtils.addComma(formatMinUnitPrice, false);
+
+        }
+    }
+
+    averUnitPriceFormat(cell, row) {
+        if (row.averUnitPrice === null || row.averUnitPrice === "0" || row.averUnitPrice === NaN) {
+            return
+        } else {
+            let averageUnitP;
+            let formatTotalUnitPrice = row.averUnitPrice.split('.')[1];
+            if (formatTotalUnitPrice !== "0") {
+                averageUnitP = row.averUnitPrice * 10000
+            }
+            else {
+                averageUnitP = row.averUnitPrice.split('.')[0] * 10000
+            }
+            return publicUtils.addComma(averageUnitP, false);
+        }
+    }
+
+    workPeoSumFormat(cell, row) {
+        if (row.workPeoSum === null || row.workPeoSum === "0") {
             return
         }
-        else{
+        else {
             return row.workPeoSum;
         }
     }
 
-    overTimeFeeAddComma(cell,row){
-        if(row.overTimeFee===null||row.overTimeFee==="0"){
+    overTimeFeeAddComma(cell, row) {
+        if (row.overTimeFee === null || row.overTimeFee === "0") {
             return
         }
-        else{
-            let formatoverTimeFee = publicUtils.addComma(row. overTimeFee,false)
+        else {
+            let formatoverTimeFee = publicUtils.addComma(row.overTimeFee, false)
             return formatoverTimeFee;
         }
     }
-    expectFeeAddComma(cell,row){
-        if(row.expectFee===null||row.expectFee==="0"){
+    expectFeeAddComma(cell, row) {
+        if (row.expectFee === null || row.expectFee === "0") {
             return
         }
-        else{
-            let formatexpectFee = publicUtils.addComma(row. expectFee,false)
+        else {
+            let formatexpectFee = publicUtils.addComma(row.expectFee, false)
             return (<div style={{ color: 'red' }}>{formatexpectFee}</div>);
-            
+
         }
     }
-    empDetailCheck=(cell,row)=>{
+    empDetailCheck = (cell, row) => {
 
         let returnItem = cell;
         const options = {
@@ -310,44 +326,44 @@ class IndividualCustomerSales extends React.Component {
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
         };
-        returnItem = 
-        <OverlayTrigger 
-            trigger="focus"
-            placement={"left"}
-            overlay={
-            <Popover className="popoverC">
-                <Popover.Content >
-                <div >
-                    <BootstrapTable 
-                        pagination={false}
-                        options={options}
-                        data={row.empDetail}
-                        headerStyle={{ background: '#5599FF' }}
-                        striped
-                        hover
-                        condensed>
-                        <TableHeaderColumn isKey={true} dataField='employeeName'tdStyle={{ padding: '.45em' }} width="30%">
-                        氏名</TableHeaderColumn>
-                        <TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }}>
-                        役割</TableHeaderColumn>
-                        <TableHeaderColumn dataField='stationName'tdStyle={{ padding: '.45em' }} width="30%" >
-                        現場先</TableHeaderColumn>
-                        <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
-                        単価(万)</TableHeaderColumn>
-                    </BootstrapTable>
-                </div>
-                </Popover.Content>
-            </Popover>
-            }
-        >
-        <Button variant="warning" size="sm" >要員確認</Button>
-      </OverlayTrigger>
+        returnItem =
+            <OverlayTrigger
+                trigger="focus"
+                placement={"left"}
+                overlay={
+                    <Popover className="popoverC">
+                        <Popover.Content >
+                            <div >
+                                <BootstrapTable
+                                    pagination={false}
+                                    options={options}
+                                    data={row.empDetail}
+                                    headerStyle={{ background: '#5599FF' }}
+                                    striped
+                                    hover
+                                    condensed>
+                                    <TableHeaderColumn isKey={true} dataField='employeeName' tdStyle={{ padding: '.45em' }} width="30%">
+                                        氏名</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }}>
+                                        役割</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='stationName' tdStyle={{ padding: '.45em' }} width="30%" >
+                                        現場先</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
+                                        単価(万)</TableHeaderColumn>
+                                </BootstrapTable>
+                            </div>
+                        </Popover.Content>
+                    </Popover>
+                }
+            >
+                <Button variant="warning" size="sm" >要員確認</Button>
+            </OverlayTrigger>
         return returnItem;
     }
-   
+
 
     render() {
-        const { errorsMessageValue, customerInfo,totalworkPeoSum,totaluPrice,overTimeOrExpectFee,totalgrossProfit } = this.state;
+        const { errorsMessageValue, customerInfo, totalworkPeoSum, totaluPrice, overTimeOrExpectFee, totalgrossProfit } = this.state;
         const selectRow = {
             mode: 'radio',
             bgColor: 'pink',
@@ -367,7 +383,7 @@ class IndividualCustomerSales extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={2}>
+                    <Col className="selectWidth">
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
@@ -431,31 +447,31 @@ class IndividualCustomerSales extends React.Component {
                 <Row style={{ marginTop: "10px" }}>
                     <Col sm={3}>
                         <label>取引人数：</label>
-                                <label>{totalworkPeoSum}</label>
+                        <label>{totalworkPeoSum}</label>
                     </Col>
 
                     <Col sm={3}>
                         <label>単価合計：</label>
-                                <label>{totaluPrice}</label>
+                        <label>{totaluPrice}</label>
                     </Col>
                     <Col sm={3}>
                         <label>売上合計：</label>
-                                <label> {overTimeOrExpectFee}</label>
+                        <label> {overTimeOrExpectFee}</label>
                     </Col>
                     <Col sm={3}>
                         <label>粗利合計：</label>
-                                <label id="totalGp">{totalgrossProfit}</label>
+                        <label id="totalGp">{totalgrossProfit}</label>
                     </Col>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' isKey>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat}>単価合計</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='maxUnitPrice'　dataFormat={this.maxUnitPriceFormat}>最高単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='maxUnitPrice' dataFormat={this.maxUnitPriceFormat}>最高単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='minUnitPrice' dataFormat={this.minUnitPriceFormat}>最低単価</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice'dataFormat={this.averUnitPriceFormat} >平均単価</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='workPeoSum'dataFormat={this.workPeoSumFormat} width='90'>稼働人数</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck'  dataFormat={this.empDetailCheck.bind(this)}>要員確認</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice' dataFormat={this.averUnitPriceFormat} >平均単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='workPeoSum' dataFormat={this.workPeoSumFormat} width='90'>稼働人数</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck' dataFormat={this.empDetailCheck.bind(this)}>要員確認</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma}>残業代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='expectFee' dataFormat={this.expectFeeAddComma}>控除</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma}>コスト合計</TableHeaderColumn>

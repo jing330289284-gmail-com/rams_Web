@@ -48,19 +48,24 @@ class individualSales extends React.Component {//個人売上検索
         employeeInfo: store.getState().dropDown[9].slice(1),
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         textcolorCheck: '',
+        employeeName: '',
+        individualSales_startYearAndMonth: '',
+        individualSales_endYearAndMonth: '',
+        fiscalYear: '',
+
     }
 
 
-    searchEmployee = () => {   
+    searchEmployee = () => {
 
-           const empInfo = {
-                employeeName: this.state.employeeName,
-                fiscalYear: this.state.fiscalYear,
-                startYearAndMonth: publicUtils.formateDate(this.state.individualSales_startYearAndMonth, false),
-                endYearAndMonth: publicUtils.formateDate(this.state.individualSales_endYearAndMonth, false),
-                status: "0",
-            };
-     
+        const empInfo = {
+            employeeName: this.state.employeeName,
+            fiscalYear: this.state.fiscalYear,
+            startYearAndMonth: publicUtils.formateDate(this.state.individualSales_startYearAndMonth, false),
+            endYearAndMonth: publicUtils.formateDate(this.state.individualSales_endYearAndMonth, false),
+            status: "0",
+        };
+
         axios.post(this.state.serverIP + "personalSales/searchEmpDetails", empInfo)
             .then(response => {
                 if (response.data.errorsMessage != null) {
@@ -87,11 +92,21 @@ class individualSales extends React.Component {//個人売上検索
             });
     }
     yearAndMonthChange = event => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-        this.setState({ individualSales_endYearAndMonth: '' })
-        this.setState({ individualSales_startYearAndMonth: '' })
+        if (this.state.employeeName !== '') {
+            this.setState({ individualSales_endYearAndMonth: '' })
+            this.setState({ individualSales_startYearAndMonth: '' })
+            this.setState({
+                [event.target.name]: event.target.value
+            }, () => this.searchEmployee())
+        } else {
+            this.setState({ individualSales_endYearAndMonth: '' })
+            this.setState({ individualSales_startYearAndMonth: '' })
+            this.setState({
+                [event.target.name]: event.target.value
+            })
+        }
+
+
     }
 
     //onchange
@@ -144,28 +159,77 @@ class individualSales extends React.Component {//個人売上検索
         }
     }
     individualSalesStartYearAndMonthChange = date => {
-        if (date !== null) {
-            this.setState({
-                individualSales_startYearAndMonth: date,
-                fiscalYear: '',
-            });
+        if (this.state.employeeName !== '') {
+            if (date !== null) {
+                if(this.state.individualSales_endYearAndMonth!==''){
+                    this.setState({
+                        individualSales_startYearAndMonth: date,
+                        fiscalYear: '',
+                    }, () =>
+                        this.searchEmployee());
+                }
+                else{
+                    this.setState({
+                        individualSales_startYearAndMonth: date,
+                        fiscalYear: '',
+                    });   
+                }
+                
+            } else {
+                this.setState({
+                    individualSales_startYearAndMonth: date,
+                    fiscalYear: '',
+                });
+            }
         } else {
-            this.setState({
-                individualSales_startYearAndMonth: '',
-            });
+            if (date !== null) {
+                this.setState({
+                    individualSales_startYearAndMonth: date,
+                    fiscalYear: '',
+                });
+            } else {
+                this.setState({
+                    individualSales_startYearAndMonth: '',
+
+                });
+            }
         }
     };
 
     individualSalesEndYearAndMonthChange = date => {
-        if (date !== null) {
-            this.setState({
-                individualSales_endYearAndMonth: date,
-                fiscalYear: '',
-            });
+        if (this.state.employeeName !== '') {
+            if (date !== null) {
+                if(this.state.individualSales_startYearAndMonth!==''){
+                    this.setState({
+                        individualSales_endYearAndMonth: date,
+                        fiscalYear: '',
+                    }, () =>
+                        this.searchEmployee());
+                }else{
+                    this.setState({
+                        individualSales_endYearAndMonth: date,
+                        fiscalYear: '',
+                    });
+                }
+                
+            } else {
+                this.setState({
+                    individualSales_endYearAndMonth: date,
+                    fiscalYear: '',
+                });
+            }
+
         } else {
-            this.setState({
-                individualSales_endYearAndMonth: '',
-            });
+            if (date !== null) {
+                this.setState({
+                    individualSales_endYearAndMonth: date,
+                    fiscalYear: '',
+                });
+            } else {
+                this.setState({
+                    individualSales_endYearAndMonth: '',
+                });
+            }
         }
     };
 
@@ -200,9 +264,9 @@ class individualSales extends React.Component {//個人売上検索
             return
         } else {
             let formatDeductionsAndOvertimePayOfUnitPrice = publicUtils.addComma(row.deductionsAndOvertimePayOfUnitPrice, false);
-            if(row.deductionsAndOvertimePayOfUnitPrice<0){
+            if (row.deductionsAndOvertimePayOfUnitPrice < 0) {
                 return (<div style={{ color: 'red' }}>{formatDeductionsAndOvertimePayOfUnitPrice}</div>);
-            }        
+            }
             return formatDeductionsAndOvertimePayOfUnitPrice;
         }
     }
@@ -295,10 +359,10 @@ class individualSales extends React.Component {//個人売上検索
                         }
                     }
                     var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                    
-                        var dailySalayCal = dailySalary
-                    
-                    var calgrosProfits = parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary)  + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee )+ parseInt(row.allowanceAmount) +parseInt(row.deductionsAndOvertimePay)  )
+
+                    var dailySalayCal = dailySalary
+
+                    var calgrosProfits = parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary) + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee) + parseInt(row.allowanceAmount) + parseInt(row.deductionsAndOvertimePay))
                     let returnItem = cell;
                     returnItem = publicUtils.addComma(calgrosProfits, false);
                     if (calgrosProfits < 0) {
@@ -324,8 +388,6 @@ class individualSales extends React.Component {//個人売上検索
 
                     }
                     else {
-                        var a = row.admissionEndDate.substring(0, 4);
-                        var b = row.admissionEndDate.substring(4, 6);
                         for (var i = 0; i <= row.admissionEndDate.substring(6, 8); i++) {
                             if (i < 10) {
                                 i = "0" + i
@@ -349,8 +411,8 @@ class individualSales extends React.Component {//個人売上検索
                             }
                         }
                         var dailySalary = parseInt(workdayCount / totalworkdayCount * row.unitPrice)
-                        var dailySalayCal =dailySalary
-                        var calgrosProfits =parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary)  + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee )+ parseInt(row.allowanceAmount) +parseInt(row.deductionsAndOvertimePay)  )
+                        var dailySalayCal = dailySalary
+                        var calgrosProfits = parseInt(dailySalayCal) + parseInt(row.deductionsAndOvertimePayOfUnitPrice) - (parseInt(row.salary) + parseInt(row.insuranceFeeAmount) + parseInt(row.bonusFee) + parseInt(row.allowanceAmount) + parseInt(row.deductionsAndOvertimePay))
                         let returnItem = cell;
                         returnItem = publicUtils.addComma(calgrosProfits, false);
                         if (calgrosProfits < 0) {
@@ -393,15 +455,30 @@ class individualSales extends React.Component {//個人売上検索
     }
 
     handleTag = (event, values) => {
-        if (values != null) {
-            this.setState({
-                employeeName: values.name,
-            })
+        if (this.state.fiscalYear !== '' || (this.state.individualSales_startYearAndMonth !== '' && this.state.individualSales_endYearAndMonth !== '')) {
+            if (values != null) {
+                this.setState({
+                    employeeName: values.name,
+                }, () =>
+                    this.searchEmployee())
 
+            } else {
+                this.setState({
+                    employeeName: '',
+                })
+            }
         } else {
-            this.setState({
-                employeeName: '',
-            })
+            if (values != null) {
+                this.setState({
+                    employeeName: values.name,
+                })
+
+            } else {
+                this.setState({
+                    employeeName: '',
+                })
+            }
+
         }
     }
 
@@ -463,8 +540,8 @@ class individualSales extends React.Component {//個人売上検索
             }
             if (row.admissionEndDate !== null && row.admissionEndDate.substring(0, 6) === row.onlyYandM) {
                 var monthDayCount = new Date(row.admissionEndDate.substring(0, 4), row.admissionEndDate.substring(4, 6), 0).getDate();
-                var endDate= parseInt(row.admissionEndDate.substring(6, 8) )
-                if (endDate=== monthDayCount) {
+                var endDate = parseInt(row.admissionEndDate.substring(6, 8))
+                if (endDate === monthDayCount) {
                     var salary = publicUtils.addComma(row.unitPrice, false)
                     let returnItem = cell;
                     returnItem = salary;
@@ -750,20 +827,20 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={3}>
+                    <Col className="selectWidth">
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <FormControl  id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange} /> 
-                                </InputGroup>
+                            </InputGroup.Prepend>
+                            <FormControl id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange.bind(this)} />
+                        </InputGroup>
                     </Col>
                     <Col sm={3}>
                         <p id="individualSalesErrmsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger"></p>
                     </Col>
                 </Row>
                 <Row>
-                    <Col >
+                    <Col>
                         <InputGroup size="sm" >
                             <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
                             <Autocomplete
@@ -784,7 +861,7 @@ class individualSales extends React.Component {//個人売上検索
                             <InputGroup.Prepend style={{ marginLeft: "30px" }}>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.individualSales_startYearAndMonth}
-                                    onChange={this.individualSalesStartYearAndMonthChange}
+                                    onChange={this.individualSalesStartYearAndMonthChange.bind(this)}
                                     dateFormat={"yyyy MM"}
                                     autoComplete="off"
                                     locale="pt-BR"
@@ -798,7 +875,7 @@ class individualSales extends React.Component {//個人売上検索
                                     locale="ja" />
                                 <font id="mark">～</font><DatePicker
                                     selected={this.state.individualSales_endYearAndMonth}
-                                    onChange={this.individualSalesEndYearAndMonthChange}
+                                    onChange={this.individualSalesEndYearAndMonthChange.bind(this)}
                                     dateFormat={"yyyy MM"}
                                     autoComplete="off"
                                     locale="pt-BR"
@@ -813,7 +890,7 @@ class individualSales extends React.Component {//個人売上検索
                             </InputGroup.Prepend>
 
 
-                            <Button variant="info" type="submit" size="sm" id="search" style={{ marginLeft: "30px", width: "60px" }} className="text-center" onClick={this.searchEmployee}><FontAwesomeIcon icon={faSearch} />検索</Button>
+
                         </InputGroup>
                     </Col>
                 </Row>
@@ -839,14 +916,14 @@ class individualSales extends React.Component {//個人売上検索
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='80'>年月</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'width='120'>社員形式</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='120'>社員形式</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控除/残業(単価)</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控除/残業</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>                      
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>諸費用合計</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='120' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
