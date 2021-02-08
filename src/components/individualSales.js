@@ -684,7 +684,7 @@ class individualSales extends React.Component {//個人売上検索
 
                     }
                 }
-                if (endDate.substring(0, 6) == empList[m].onlyYandM) {
+                if (endDate!==null&&startDate.substring(0,6)!==endDate.substring(0, 6) &&endDate.substring(0, 6) == empList[m].onlyYandM) {
                     var monthDayCount = new Date(endDate.substring(0, 4), endDate.substring(4, 6), 0).getDate();
                     if (endDate.substring(6, 8) == monthDayCount) {
                         unitPriceTotal = parseInt(unitPriceTotal) + parseInt(unPrice)
@@ -888,13 +888,10 @@ class individualSales extends React.Component {//個人売上検索
                                     name="individualSales_endYearAndMonth"
                                     locale="ja" />
                             </InputGroup.Prepend>
-
-
-
                         </InputGroup>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: "10px" }}>
+                <Row style={{ marginTop: "20px" }}>
                     <Col sm={3}>
                         <label>稼働月数：</label>
                         <label>{this.state.workMonthCount}</label>
@@ -915,17 +912,17 @@ class individualSales extends React.Component {//個人売上検索
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='80'>年月</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='120'>社員形式</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='customerName'>所属客様</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控除/残業(単価)</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控除/残業</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='155' dataField='customerName'>所属客様</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='108' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='100' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'width='90' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' width='90' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>諸費用合計</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='120' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='90' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </div>
