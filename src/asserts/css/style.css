@@ -2143,4 +2143,7 @@ body {
 		width: 51%;
 		max-width: none !important;
 	}
+	.totalAmountWidth{
+		max-width:380px !important;
+	  }
 }

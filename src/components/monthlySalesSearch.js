@@ -11,6 +11,7 @@ import axios from 'axios';
 import ErrorsMessageToast from './errorsMessageToast';
 import { Link } from "react-router-dom";
 import store from './redux/store';
+import { alignPropType } from 'react-bootstrap/esm/DropdownMenu';
 axios.defaults.withCredentials = true;
 
 class monthlySalesSearch extends Component {//月次売上検索
@@ -469,52 +470,49 @@ class monthlySalesSearch extends Component {//月次売上検索
                     <Button size="sm" variant="info"onClick={this.resetForm}><FontAwesomeIcon icon={faUndo} /> Reset</Button>
                     </Col> 
                 </Row>
-                </Form>
-                <Row style = {{marginTop:"10px"}}>
-                    <Col sm={2}>
-                            <label>稼働人数：</label>
-                            <label>{this.state.workcount}</label>
-						</Col>
-                         
-                    <Col sm={2}>
+                </Form>             
+                <Row >
+                    <Col className="totalAmountWidth">
                             <label>単価総額：</label>
                             <label>{this.state.unitPirceTotal}</label>
 					</Col>
                     
-					<Col sm={2}>
+					<Col className="totalAmountWidth">
                             <label>支給総額：</label>
                             <label>{this.state.salaryTotal}</label>
 					</Col>
-					<Col sm={2}>
+					<Col className="totalAmountWidth">
                             <label>非稼働総額：</label>
                             <label>{this.state.TotalNonOperation}</label>
 					</Col>
-					<Col sm={2}>
+					<Col className="totalAmountWidth">
                             <label>粗利総額：</label>
                             <label>{this.state.grossProfitTotal}</label>
 					</Col>
-                    <Col  className="text-right">
+                    <div style={{ "textAlign": "center" }}>
                     <Link to={{ pathname: '/subMenuManager/individualSales', 
                     state: {actionType: 'monthly',
                     monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
                     monthlySales_endYearAndMonth:this.state.monthlySales_endYearAndMonth,
                     rowSelectemployeeNo:this.state.rowSelectemployeeNo,
                     rowSelectemployeeName:this.state.rowSelectemployeeName} }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
-                    </Col>
+                    </div> 
 				</Row>
+                <Row>             
+       
+                </Row>
                 <div>
                     <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true}   width='100' isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='100'>年月</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='120'>氏名</TableHeaderColumn>
-							{/*<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeStatus'　dataFormat={this.formatStayPeriod.bind(this)}>社員区分</TableHeaderColumn>*/}
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='120'>社員形式</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='120'>職種</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='otherFee' dataFormat={this.otherFeeAddComma} width='150'>他の費用</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='waitingCost' dataFormat={this.waitingCostAddComma} width='150'>非稼動費用</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma} width='150'>粗利(税抜き)</TableHeaderColumn>         
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='90'>年月</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='100'>氏名</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='90'>職種</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'  width='150'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='150' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='otherFee' dataFormat={this.otherFeeAddComma} width='100'>他の費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='waitingCost' dataFormat={this.waitingCostAddComma} width='110'>非稼動費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma} width='120'>粗利(税抜き)</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>
                 
