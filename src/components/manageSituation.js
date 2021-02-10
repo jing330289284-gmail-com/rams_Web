@@ -47,6 +47,8 @@ class manageSituation extends React.Component {
 		style: {
 			"backgroundColor": ""
 		},// 単価エラー色
+		allEmpNo:[],
+		sendLetterFalg:true,
 		salesProgressCodes: store.getState().dropDown[16],// ステータス
 		allCustomer: store.getState().dropDown[15],// お客様レコード用
 		editFlag: false,// 確定客様編集flag
@@ -72,7 +74,6 @@ class manageSituation extends React.Component {
 		myToastShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
 		errorsMessageValue: '',// ERRメッセージ
-		clickRows:0,
 		customerContracts: store.getState().dropDown[24],
 		customerContractStatus: '',
 		modeSelect: 'checkbox',
@@ -129,6 +130,10 @@ class manageSituation extends React.Component {
 					this.refs.table.setState({
 						selectedRowKeys: []
 					});
+					let empNoArray = new Array();
+					for (let i in result.data) {
+						empNoArray.push(result.data[i].employeeNo);
+					}
 					var totalPersons = result.data.length;
 					this.setState({
 						checkDisabledFlag: totalPersons === 0 ? true : false,
@@ -147,7 +152,6 @@ class manageSituation extends React.Component {
 					});
 					this.setState({
 						selectetRowIds: [],
-						clickRows:0,
 						modeSelect: 'checkbox',
 						checkSelect: true,
 						onSelectFlag: true,
@@ -171,17 +175,20 @@ class manageSituation extends React.Component {
 						readFlag: true,
 						updateBtnflag: false,
 						linkDisableFlag: true,// linkDisableFlag
+						sendLetterFalg:true,
 						totalPersons: totalPersons,// 合計人数
 						decidedPersons: decidedPersons,// 確定人数
 						errorsMessageShow: false,
 						errorsMessageValue: '',
+						allEmpNo: empNoArray,
 					},()=>{
 						if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 							this.refs.table.setState({
 								selectedRowKeys: this.props.location.state.sendValue.selectetRowIds,
 							});
 							this.setState({
-								linkDisableFlag: false,// linkDisableFlag
+								linkDisableFlag: this.props.location.state.sendValue.linkDisableFlag,// linkDisableFlag
+								sendLetterFalg: this.props.location.state.sendValue.sendLetterFalg,
 							})
 						}
 					});
@@ -295,32 +302,6 @@ class manageSituation extends React.Component {
 			}
 		}).catch((error) => {
 			console.error("Error - " + error);
-		});
-	}
-	
-	// 明細単選と明細多選変更
-	changeMode = () => {
-		this.setState({
-			checkFlag: !this.state.checkFlag,
-			modeSelect: this.state.modeSelect === 'checkbox' ? 'checkbox' : 'checkbox',
-			onSelectFlag: !this.state.onSelectFlag,
-			interviewDate1Show: '',
-			interviewDate2Show: '',
-			stationCode1: '',
-			stationCode2: '',
-			interviewCustomer1: '',
-			interviewCustomer2: '',
-			hopeLowestPrice: '',
-			hopeHighestPrice: '',
-			salesPriorityStatus: '',
-			remark: '',
-			linkDisableFlag: true,
-			checkSelect: true,
-			selectetRowIds: [],
-		});
-		this.refs.table.store.selected = [];
-		this.refs.table.setState({
-			selectedRowKeys: []
 		});
 	}
 	
@@ -529,14 +510,14 @@ class manageSituation extends React.Component {
 				updateBtnflag: isSelected,
 				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
 				readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
-				linkDisableFlag: false,
+				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 0 ? false : true,
+				sendLetterFalg: this.refs.table.state.selectedRowKeys.length >= 0 ? false : true,
 				admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
 				customerNo: row.customer === null ? '' : row.customer,
 				unitPrice: row.price === null ? '' : row.price,
 				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
 				resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
 				customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-				clickRows:this.state.clickRows + 1,
 			});
 		} else {
 			this.setState({
@@ -557,15 +538,23 @@ class manageSituation extends React.Component {
 				editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
 				readFlag: true,
-				linkDisableFlag: true,
-				clickRows:this.state.clickRows - 1,
+				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
+				sendLetterFalg: this.refs.table.state.selectedRowKeys.length > 1 ? false : true,
 			});
 		}
 	}
 	
 	// 全て選択ボタン事件
 	selectAllLists = () => {
-		
+		this.refs.table.store.selected = [];
+		this.refs.table.setState({
+			selectedRowKeys: this.refs.table.state.selectedRowKeys.length !== this.state.allEmpNo.length ? this.state.allEmpNo : [],
+		},()=>{
+			this.setState({
+				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 1 ? false : true,
+				sendLetterFalg: this.refs.table.state.selectedRowKeys.length > 0 ? false : true,
+			});}
+		);
 	}
 
 
@@ -633,7 +622,9 @@ class manageSituation extends React.Component {
 		var path = {};
 		const sendValue = {
 			salesYearAndMonth: this.state.salesYearAndMonth,
-			selectetRowIds: this.state.selectetRowIds,
+			selectetRowIds: this.refs.table.state.selectedRowKeys,
+			linkDisableFlag: this.state.linkDisableFlag,// linkDisableFlag
+			sendLetterFalg: this.state.sendLetterFalg,
 		};
 		switch (actionType) {
 			case "selectAll":
@@ -646,7 +637,7 @@ class manageSituation extends React.Component {
 					pathname: '/subMenuManager/employeeDetail',
 					state: {
 						actionType: 'detail',
-						id: this.state.employeeNo,
+						id: String(this.refs.table.state.selectedRowKeys),
 						backPage: 'manageSituation',
 						sendValue: sendValue,
 					},
@@ -658,7 +649,7 @@ class manageSituation extends React.Component {
 					state: {
 						backPage: "manageSituation",
 						sendValue: sendValue,
-						selectetRowIds: this.state.selectetRowIds,
+						selectetRowIds: this.refs.table.state.selectedRowKeys,
 					},
 				}
 				break;
@@ -666,7 +657,7 @@ class manageSituation extends React.Component {
 				path = {
 					pathname: '/subMenuManager/siteInfo',
 					state: {
-						employeeNo: this.state.employeeNo,
+						employeeNo: String(this.refs.table.state.selectedRowKeys),
 						backPage: "manageSituation",
 						sendValue: sendValue,
 					},
@@ -962,24 +953,12 @@ class manageSituation extends React.Component {
 					</div>
 					<br />
 					<Row>
-						{/*
-							 * <Col sm={1}> <div > <span style={{ whiteSpace:
-							 * 'nowrap' }}> 選択 <Form.Check inline
-							 * type="checkbox" checked={this.state.checkFlag}
-							 * disabled={this.state.checkDisabledFlag}
-							 * onChange={this.changeMode} /></span> </div>
-							 * </Col> <Col sm={1}> <font style={{ whiteSpace:
-							 * 'nowrap' }}>合計：{this.state.totalPersons}人</font>
-							 * </Col> <Col sm={1}> <font style={{ whiteSpace:
-							 * 'nowrap' }}>確定：{this.state.decidedPersons}人</font>
-							 * </Col> <Col sm={2}></Col>
-							 */}
 						<Col sm={12}>
 							<div style={{"float": "left"}}>
 								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faIdCard} /> すべて選択</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" /*disabled={this.state.linkDisableFlag}*/disabled={this.state.clickRows===1?false:true}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" /*disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}*/disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
