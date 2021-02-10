@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
 import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
@@ -52,7 +53,10 @@ class individualSales extends React.Component {//個人売上検索
         individualSales_startYearAndMonth: '',
         individualSales_endYearAndMonth: '',
         fiscalYear: '',
-
+        backPage:'',
+        sendFlag:'',
+        utilPricefront:'',
+        utilPriceback:'',
     }
 
 
@@ -70,6 +74,7 @@ class individualSales extends React.Component {//個人売上検索
             .then(response => {
                 if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+                    this.setState({ employeeInfoList: [] });
                 } else if (response.data.noData != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
                     this.setState({ employeeInfoList: [] });
@@ -116,6 +121,30 @@ class individualSales extends React.Component {//個人売上検索
         })
 
     }
+
+    back = () => {
+		var path = {};
+		path = {
+			pathname: this.state.backPage,
+            state: {
+            sendFlag :true,
+            monthlySales_startYearAndMonth: this.state.individualSales_startYearAndMonth,
+            monthlySales_endYearAndMonth:this.state.individualSales_endYearAndMonth,
+            employeeClassification:this.state.employeeClassification === "" ? undefined :this.state.employeeClassification,
+            employeeFormCodes:this.state.employeeFormCodes === "" ? undefined :this.state.employeeFormCodes,
+            occupationCodes:this.state.occupationCodes === "" ? undefined :this.state.occupationCodes,
+            kadou:this.state.kadou === "" ? undefined :this.state.kadou,
+            utilPricefront:this.state.utilPricefront === "" ? undefined :this.state.utilPricefront,
+            utilPriceback: this.state.utilPriceback === "" ? undefined :this.state.utilPriceback,
+            salaryfront:this.state.salaryfront === "" ? undefined :this.state.salaryfront,
+            salaryback:this.state.salaryback === "" ? undefined :this.state.salaryback,
+            grossProfitFront:this.state.grossProfitFront === "" ? undefined :this.state.grossProfitFront,
+            grossProfitBack:this.state.grossProfitBack === "" ? undefined :this.state.grossProfitBack,
+          
+		}   	
+	}
+    this.props.history.push(path);
+}
     feeTotal = () => {
         var totalgrosProfits = 0;
         var paymentTotal = 0;
@@ -128,8 +157,12 @@ class individualSales extends React.Component {//個人売上検索
         this.setState({ paymentTotal: publicUtils.addComma(paymentTotal, false) })
         this.setState({ paymentTotalnoComma: paymentTotal })
     }
-
+    clickButtonDisabled = () => {
+        $('button[name="backToMonthly"]').prop('disabled', true);
+    };
     componentDidMount() {
+        this.clickButtonDisabled();  
+
         var date = new Date();
         var year = date.getFullYear();
         $('#fiscalYear').append('<option value="">' + "" + '</option>');
@@ -138,24 +171,50 @@ class individualSales extends React.Component {//個人売上検索
         }
         const { location } = this.props
         var actionType = '';
+        var backPage ='';
         var monthlySales_startYearAndMonth = '';
         var monthlySales_endYearAndMonth = '';
         var rowSelectemployeeNo = '';
         var rowSelectemployeeName = '';
+        var utilPricefront ='';
+        var utilPriceback ='';
+        var salaryfront='';
+        var salaryback ='';
+        var grossProfitFront='';
+        var grossProfitBack='';
+        var employeeClassification='';
         if (location.state) {
             actionType = location.state.actionType;
+            backPage= location.state.backPage;
+            this.setState({backPage:backPage});
             sessionStorage.setItem('actionType', actionType);
             monthlySales_startYearAndMonth = location.state.monthlySales_startYearAndMonth;
             monthlySales_endYearAndMonth = location.state.monthlySales_endYearAndMonth;
             rowSelectemployeeNo = location.state.rowSelectemployeeNo;
             rowSelectemployeeName = location.state.rowSelectemployeeName;
+            utilPricefront =location.state.utilPricefront;
+            utilPriceback =location.state.utilPriceback;
+            salaryfront =location.state.salaryfront;
+            salaryback =location.state.salaryback;
+            grossProfitFront =location.state.grossProfitFront;
+            grossProfitBack =location.state.grossProfitBack;
+            $('#backToMonthly').removeClass('disabled');
             this.setState({
                 individualSales_startYearAndMonth: monthlySales_startYearAndMonth,
                 individualSales_endYearAndMonth: monthlySales_endYearAndMonth,
-                employeeName: rowSelectemployeeName + "(" + rowSelectemployeeNo + ")"
+                employeeName: rowSelectemployeeName + "(" + rowSelectemployeeNo + ")",
+                utilPricefront:utilPricefront,
+                utilPriceback:utilPriceback,
+                salaryfront:salaryfront,
+                salaryback:salaryback,
+                grossProfitFront:grossProfitFront,
+                grossProfitBack:grossProfitBack,
+                
             }, () =>
                 this.searchEmployee()
             );
+        }else{
+            $('#backToMonthly').addClass('disabled');
         }
     }
     individualSalesStartYearAndMonthChange = date => {
@@ -815,6 +874,7 @@ class individualSales extends React.Component {//個人売上検索
 
     render() {
         const { errorsMessageValue, employeeInfo } = this.state;
+        const { backPage } = this.state;
         return (
 
             <div>
@@ -892,36 +952,46 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row style={{ marginTop: "20px" }}>
-                    <Col sm={3}>
+                    <Col className="totalAmountWidth">
                         <label>稼働月数：</label>
                         <label>{this.state.workMonthCount}</label>
                     </Col>
 
-                    <Col sm={3}>
+                    <Col className="totalAmountWidth">
                         <label>単価合計：</label>
                         <label>{this.state.unitPriceTotal} </label>
                     </Col>
-                    <Col sm={3}>
+                    <Col className="totalAmountWidth">
                         <label>支払合計：</label>
                         <label>{this.state.paymentTotal} </label>
                     </Col>
-                    <Col sm={3}>
+                    <Col className="totalAmountWidth">
                         <label>粗利合計：</label>
                         <label>{this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}</label>
                     </Col>
+                    <Button
+								size="sm"
+                                id="backToMonthly"
+								variant="info"
+                                className="btn btn-info btn-sm disabled"
+                                // hidden={this.state.backPage === "" ? true : false}
+								onClick={this.back}
+							>
+								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                            </Button>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='155' dataField='customerName'>所属客様</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='170' dataField='customerName'>所属客様</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='108' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='100' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'width='90' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' width='90' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' dataFormat={this.allowanceDetail.bind(this)}>諸費用合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='90' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>

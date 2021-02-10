@@ -29,6 +29,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         kadou:'',
         rowSelectemployeeNo:'',
         rowSelectemployeeName:'',
+        sendFlag:'',
      }
      constructor(props){
         super(props);
@@ -58,7 +59,26 @@ class monthlySalesSearch extends Component {//月次売上検索
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         }
         componentDidMount(){
-           this.clickButtonDisabled();      
+           this.clickButtonDisabled();  
+           const { location } = this.props
+           if (location.state) {
+                this.setState({
+                    monthlySales_startYearAndMonth : location.state.monthlySales_startYearAndMonth,
+                    monthlySales_endYearAndMonth : location.state.monthlySales_endYearAndMonth,
+                    //employeeClassification:this.state.employeeClassification === "" ? "" :location.state.employeeClassification,
+                    // employeeFormCodes:this.state.employeeFormCodes === "" ? "" :location.state.employeeFormCodes,
+                    // occupationCodes:this.state.occupationCodes === "" ? "" :location.state.occupationCodes,
+                    // kadou:this.state.kadou === "" ? "" :location.state.kadou,
+                    utilPricefront:this.state.utilPricefront === "" ? "" :location.state.utilPricefront,
+                    utilPriceback: this.state.utilPriceback === "" ? "" :location.state.utilPriceback,
+                    salaryfront:this.state.salaryfront === "" ? "" :location.state.salaryfront,
+                    salaryback:this.state.salaryback === "" ? "" :location.state.salaryback,
+                    grossProfitFront:this.state.grossProfitFront === "" ? "" :location.state.grossProfitFront,
+                    grossProfitBack:this.state.grossProfitBack === "" ? "" :location.state.grossProfitBack,
+                }, () =>
+                this.searchMonthlySales())
+               
+            }
         }
 
         clickButtonDisabled = () => {
@@ -133,8 +153,10 @@ class monthlySalesSearch extends Component {//月次売上検索
 			.then(response => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+                    this.setState({ monthlySalesInfoList: [] })
                 }else if(response.data.noData != null){
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                    this.setState({ monthlySalesInfoList: [] })
                 }else {
                     this.setState({"errorsMessageShow":false})
                     this.setState({ monthlySalesInfoList: response.data.data })
@@ -352,7 +374,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                                 showFullMonthYearPicker
                                 showDisabledMonthNavigation
                                 className="form-control form-control-sm"
-                                id="personalsalesSearchDatePicker"
+                                id="monthlysalesSearchDatePicker"
                                 dateFormat={"yyyy/MM"}
                                 name="individualSales_startYearAndMonth"
                                 locale="ja">
@@ -366,7 +388,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                                 showFullMonthYearPicker
                                 showDisabledMonthNavigation
                                 className="form-control form-control-sm"
-                                id="personalsalesSearchBackDatePicker"
+                                id="monthlysalesSearchDatePicker"
                                 dateFormat={"yyyy/MM"}
                                 name="individualSales_endYearAndMonth"
                                 locale="ja">
@@ -470,8 +492,29 @@ class monthlySalesSearch extends Component {//月次売上検索
                     <Button size="sm" variant="info"onClick={this.resetForm}><FontAwesomeIcon icon={faUndo} /> Reset</Button>
                     </Col> 
                 </Row>
-                </Form>             
+                </Form>           
                 <Row >
+                <div style={{ "textAlign": "center" }}>
+                    <Link to={{ pathname: '/subMenuManager/individualSales', 
+                    state: {actionType: 'monthly',
+                    backPage: "monthlySalesSearch",
+                    monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
+                    monthlySales_endYearAndMonth:this.state.monthlySales_endYearAndMonth,
+                    rowSelectemployeeNo:this.state.rowSelectemployeeNo,
+                    rowSelectemployeeName:this.state.rowSelectemployeeName,
+                    employeeClassification:this.state.employeeClassification,
+                    employeeFormCodes:this.state.employeeFormCodes,
+                    occupationCodes:this.state.occupationCodes,
+                    kadou:this.state.kadou,
+                    utilPricefront:this.state.utilPricefront,
+                    utilPriceback: this.state.utilPriceback,
+                    salaryfront:this.state.salaryfront,
+                    salaryback:this.state.salaryback,
+                    grossProfitFront:this.state.grossProfitFront,
+                    grossProfitBack:this.state.grossProfitBack,
+                } 
+                    }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
+                    </div> 
                     <Col className="totalAmountWidth">
                             <label>単価総額：</label>
                             <label>{this.state.unitPirceTotal}</label>
@@ -489,18 +532,8 @@ class monthlySalesSearch extends Component {//月次売上検索
                             <label>粗利総額：</label>
                             <label>{this.state.grossProfitTotal}</label>
 					</Col>
-                    <div style={{ "textAlign": "center" }}>
-                    <Link to={{ pathname: '/subMenuManager/individualSales', 
-                    state: {actionType: 'monthly',
-                    monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
-                    monthlySales_endYearAndMonth:this.state.monthlySales_endYearAndMonth,
-                    rowSelectemployeeNo:this.state.rowSelectemployeeNo,
-                    rowSelectemployeeName:this.state.rowSelectemployeeName} }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
-                    </div> 
+                    
 				</Row>
-                <Row>             
-       
-                </Row>
                 <div>
                     <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
