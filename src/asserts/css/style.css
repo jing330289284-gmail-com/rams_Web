@@ -2158,4 +2158,13 @@ body {
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
 	}
+
+	.customerSalesWidth{
+		max-width:380px !important;
+		margin-top: 10px !important;
+	  }
+	  .customerSalesPeoWidth{
+		max-width:200px !important;
+		margin-top: 10px !important;
+	  }
 }

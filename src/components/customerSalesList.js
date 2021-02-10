@@ -300,41 +300,41 @@ class customerSalesList extends React.Component {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: "10px" }}>
-                    <Col sm={2}>
+                    <Col className='customerSalesPeoWidth'>
                         <label>取引人数：</label>
                         <label>{this.state.calPeoCount}</label>
                     </Col>
 
-                    <Col sm={2}>
+                    <Col className='customerSalesWidth'>
                         <label>全体比率：</label>
-        <label>{this.state.totalpercent}</label>
+                         <label>{this.state.totalpercent}</label>
                     </Col>
-                    <Col sm={2}>
+                    <Col className='customerSalesWidth'>
                         <label>単価合計：</label>
                                 <label>{this.state.unitPTotal}</label>
                     </Col>
-                    <Col sm={2}>
+                    <Col className='customerSalesWidth'>
                         <label>売上合計：</label>
                                 <label>{this.state.totalSales}</label>
                     </Col>
-                    <Col sm={2}>
+                    <Col className='customerSalesWidth'>
                         <label>粗利合計：</label>
                         <label>{this.state.totalgrossProfit}</label>
                     </Col>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} ref="CustomerSaleslListInfoListTable" pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey width='80'>番号</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様名</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat}　>単価合計</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice' dataFormat={this.averUnitPriceFormat}>平均単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey width='60'>番号</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='customerName' width='150' >お客様名</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat} width='100' >単価合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice' dataFormat={this.averUnitPriceFormat} width='100'>平均単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='countPeo' width='100'>稼働人数</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='lastMonthCountPeo'>先月稼働人数</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck' dataFormat={this.empDetailCheck.bind(this)}>要員確認</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma}>残業代</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='expectFee' dataFormat={this.expectFeeAddComma}>控除</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma}>コスト合計</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma}>粗利</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='lastMonthCountPeo' width='100'>先月稼働人数</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck' dataFormat={this.empDetailCheck.bind(this)} width='100'>要員確認</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma} width='90'>残業代</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='expectFee' dataFormat={this.expectFeeAddComma} width='100'>控除</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma} width='110'>コスト合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma} width='100'>粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </div>
