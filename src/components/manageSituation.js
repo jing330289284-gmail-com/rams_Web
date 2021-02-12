@@ -294,10 +294,9 @@ class manageSituation extends React.Component {
 		salesSituationList.admissionEndDate = admissionEndDate
 		axios.post(this.state.serverIP + "salesSituation/changeDataStatus", salesSituationList)
 		.then(response => {
-			if (response.data != null) {
-// this.setState({
-// salesSituationLists: response.data.result
-// })
+			if (response.data.errorsMessage != null) {
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+			} else {
 				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
 			}
 		}).catch((error) => {
@@ -313,13 +312,11 @@ class manageSituation extends React.Component {
 			}
 			this.setState({
 				customerNo: row.customer,
-				unitPrice: row.price
 			})
-			// ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
+			// 	ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
 			// table表数据更新暂时不用以下写法,注释掉的代码可供参考
 			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
 				row.customerNo = row.customer;
-				row.unitPrice = row.price;
 				row.salesYearAndMonth = this.state.salesYearAndMonth;
 				row.admissionStartDate = this.state.admissionStartDate;
 // axios.post(this.state.serverIP + "salesSituation/updateEmployeeSiteInfo",
