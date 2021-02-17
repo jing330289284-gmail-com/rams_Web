@@ -183,12 +183,17 @@ class manageSituation extends React.Component {
 						allEmpNo: empNoArray,
 					},()=>{
 						if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
-							this.refs.table.setState({
-								selectedRowKeys: this.props.location.state.sendValue.selectetRowIds,
-							});
+/*
+ * this.refs.table.setState({ selectedRowKeys:
+ * this.props.location.state.sendValue.selectetRowIds, });
+ */
 							this.setState({
-								linkDisableFlag: this.props.location.state.sendValue.linkDisableFlag,// linkDisableFlag
-								sendLetterFalg: this.props.location.state.sendValue.sendLetterFalg,
+/*
+ * linkDisableFlag: this.props.location.state.sendValue.linkDisableFlag,
+ * sendLetterFalg: this.props.location.state.sendValue.sendLetterFalg,
+ */
+								linkDisableFlag: true,
+								sendLetterFalg: true,
 							})
 						}
 					});
@@ -284,7 +289,7 @@ class manageSituation extends React.Component {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
 			if (cell === salesPersons[i].code) {
-				return salesPersons[i].name;
+				return salesPersons[i].name.replace(/\(.*?\)/g, '' );
 			}
 		}
 	}
@@ -313,7 +318,7 @@ class manageSituation extends React.Component {
 			this.setState({
 				customerNo: row.customer,
 			})
-			// 	ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
+			// ステータスは確定の場合、確定お客様入力可能です、フォーカスが外に移動すれば、更新処理されている。現場情報(T006EmployeeSiteInfo)を使われます
 			// table表数据更新暂时不用以下写法,注释掉的代码可供参考
 			if (row.customer !== '' && row.price !== '' && row.customer !== undefined && row.price !== undefined && row.customer !== null && row.price !== null) {
 				row.customerNo = row.customer;
@@ -347,11 +352,11 @@ class manageSituation extends React.Component {
 	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
 		if (row.salesPriorityStatus === '1') {
-			return (<div>{row.employeeNo}<font color="red">★</font></div>);
+			return (<div>{row.employeeName}<font color="red">★</font></div>);
 		} else if(row.salesPriorityStatus === '2') {
-			return (<div>{row.employeeNo}<font color="black">★</font></div>);
+			return (<div>{row.employeeName}<font color="black">★</font></div>);
 		} else {
-			return (<div>{row.employeeNo}</div>);
+			return (<div>{row.employeeName}</div>);
 		}
 	}
 
@@ -583,6 +588,7 @@ class manageSituation extends React.Component {
 	// // サブ画面表示
 	openDaiolog = () => {
 		this.setState({
+			employeeNo:String(this.refs.table.state.selectedRowKeys),
 			daiologShowFlag: true,
 		});
 	}
@@ -955,7 +961,12 @@ class manageSituation extends React.Component {
 								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faIdCard} /> すべて選択</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" /*disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}*/disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" /*
+																																			 * disabled={!this.state.linkDisableFlag ||
+																																			 * !this.state.checkSelect ?
+																																			 * false :
+																																			 * true}
+																																			 */disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
@@ -978,9 +989,9 @@ class manageSituation extends React.Component {
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							    <TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>salesDateUpdateHid</TableHeaderColumn>
-								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='employeeNo' dataFormat={this.showPriority} editable={false} isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
+								<TableHeaderColumn width='7%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeNo' editable={false} hidden={true} isKey>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='11%' dataField='employeeName' dataFormat={this.showPriority} editable={false}>氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
 								<TableHeaderColumn dataField='stationCode1' hidden={true}>面接1場所</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewCustomer1' hidden={true}>面接1客様</TableHeaderColumn>
@@ -995,17 +1006,17 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 								<TableHeaderColumn width='5%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
-								<TableHeaderColumn width='18%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
-								<TableHeaderColumn width='6%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn width='5%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
-								<TableHeaderColumn width='10%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>ステータス</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)} customEditor={{ getElement: tableSelect4 }}
+								<TableHeaderColumn width='17%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='6%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
+								<TableHeaderColumn width='9%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>進捗</TableHeaderColumn>
+								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)} customEditor={{ getElement: tableSelect4 }}
 									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
-								<TableHeaderColumn width='11%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
+								<TableHeaderColumn width='10%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
 									editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}
 									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
-								<TableHeaderColumn width='9%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>
