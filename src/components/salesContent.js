@@ -200,7 +200,6 @@ class salesContent extends React.Component {
 		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
 			.then(result => {
 				console.log(result.data);
-				alert(result.data[1].salesProgressCode);
 				if (result.data[0].age === "") {
 					this.getProjectPhase(result.data[0].siteRoleCode);
 					this.setState({
