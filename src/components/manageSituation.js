@@ -48,6 +48,9 @@ class manageSituation extends React.Component {
 			"backgroundColor": ""
 		},// 単価エラー色
 		allEmpNo:[],
+		allEmpNoName: [],
+		allresumeInfo1: [],
+		allresumeInfo2: [],
 		sendLetterFalg:true,
 		salesProgressCodes: store.getState().dropDown[16],// ステータス
 		allCustomer: store.getState().dropDown[15],// お客様レコード用
@@ -72,6 +75,7 @@ class manageSituation extends React.Component {
 		resumeInfo1: '',　// 履歴情報１
 		resumeInfo2: '',　// 履歴情報２
 		myToastShow: false,// 状態ダイアログ
+		myDirectoryShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
 		errorsMessageValue: '',// ERRメッセージ
 		customerContracts: store.getState().dropDown[24],
@@ -131,8 +135,14 @@ class manageSituation extends React.Component {
 						selectedRowKeys: []
 					});
 					let empNoArray = new Array();
+					let empNoNameArray = new Array();
+					let resumeInfo1Array = new Array();
+					let resumeInfo2Array = new Array();
 					for (let i in result.data) {
 						empNoArray.push(result.data[i].employeeNo);
+						empNoNameArray.push(result.data[i].employeeNo + "_" + result.data[i].employeeName);
+						resumeInfo1Array.push(result.data[i].resumeInfo1);
+						resumeInfo2Array.push(result.data[i].resumeInfo2);
 					}
 					var totalPersons = result.data.length;
 					this.setState({
@@ -181,6 +191,9 @@ class manageSituation extends React.Component {
 						errorsMessageShow: false,
 						errorsMessageValue: '',
 						allEmpNo: empNoArray,
+						allEmpNoName: empNoNameArray,
+						allresumeInfo1: resumeInfo1Array,
+						allresumeInfo2: resumeInfo2Array,
 					},()=>{
 						if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 /*
@@ -592,6 +605,21 @@ class manageSituation extends React.Component {
 			daiologShowFlag: true,
 		});
 	}
+	
+	makeDirectory = () => {
+		axios.post(this.state.serverIP + "salesSituation/makeDirectory",
+		{ salesYearAndMonth: this.state.salesYearAndMonth,employeeNoList:this.state.allEmpNoName,resumeInfo1List:this.state.allresumeInfo1,resumeInfo2List:this.state.allresumeInfo2 })
+		.then(response => {
+			if (response.data.errorsMessage != null) {
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+			} else {
+				this.setState({ myDirectoryShow: true, errorsMessageShow: false, errorsMessageValue: '' });
+				setTimeout(() => this.setState({ myDirectoryShow: false }), 3000);
+			}
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
+	}
 
 	// TABLE共通
 	renderShowsTotal = (start, to, total) => {
@@ -712,6 +740,9 @@ class manageSituation extends React.Component {
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"success"} />
+				</div>
+				<div style={{ "display": this.state.myDirectoryShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myDirectoryShow} message={"作成完了！"} type={"success"} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"success"} />
@@ -970,6 +1001,7 @@ class manageSituation extends React.Component {
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
+								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> 営業フォルダ作成</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>

@@ -326,6 +326,7 @@ export function valueGetText(code, list) {
 // param path 備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
 export function handleDownload(path, serverIP) {
+	alert(path);
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
 		NewPath = path.split("/");
