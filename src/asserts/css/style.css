@@ -324,13 +324,14 @@ body {
 }
 
 #personalsalesSearchBackDatePicker {
-  background-repeat: no-repeat;
-  width: 150px;
-  background-position: 10px 7px;
-  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-  padding-right: 0px;
-  height: calc(1.5em + .5rem + 2px);
-  background-color: white;
+	background-repeat: no-repeat;
+	width: 150px;
+	background-position: 10px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
 	background-repeat: no-repeat;
 	width: 150px;
 	background-position: 10px 7px;
@@ -372,9 +373,9 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-  }
-  
-  #customerInfoDatePickerReadOnly {
+}
+
+#customerInfoDatePickerReadOnly {
 	background-repeat: no-repeat;
 	width: 13rem;
 	background-position: 10px 7px;
@@ -922,6 +923,16 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-salesSend-customers {
+	width: 14.0rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-projectInfo {
 	width: 12.2rem;
 	height: 31px;
@@ -993,9 +1004,11 @@ body {
 	font-size: ".875rem";
 	color: "#495057"
 }
-.selectWidth{
-  max-width:247px !important;
+
+.selectWidth {
+	max-width: 247px !important;
 }
+
 .popoverC {
 	max-width: 450px !important;
 }
@@ -1164,6 +1177,7 @@ body {
 	background-color: white;
 	width: 10.6rem !important;
 }
+
 .Autocompletestyle-wagesInfo-employeeName {
 	width: 15rem;
 	height: 31px;
@@ -1173,6 +1187,7 @@ body {
 	font-size: ".875rem";
 	color: "#495057"
 }
+
 #wagesInfoDatePicker-nextRaiseMonth-readOnly {
 	background-repeat: no-repeat;
 	width: 13.55rem;
@@ -1183,6 +1198,7 @@ body {
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 }
+
 #wagesInfoDatePicker-reflectYearAndMonth-readOnly {
 	background-repeat: no-repeat;
 	width: 15.1rem;
@@ -1193,6 +1209,7 @@ body {
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
 }
+
 #expensesInfoDatePicker-readOnly {
 	background-repeat: no-repeat;
 	width: 8.4rem;
@@ -1205,307 +1222,318 @@ body {
 }
 
 .caret {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 2px;
-  vertical-align: middle;
-  border-top: 4px dashed;
-  border-top: 4px solid \9;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: 2px;
+	vertical-align: middle;
+	border-top: 4px dashed;
+	border-top: 4px solid \9;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
 }
 
-.dropup .caret,
-.navbar-fixed-bottom .dropdown .caret {
-  border-top: 0;
-  border-bottom: 4px dashed;
-  border-bottom: 4px solid \9;
-  content: "";
+.dropup .caret, .navbar-fixed-bottom .dropdown .caret {
+	border-top: 0;
+	border-bottom: 4px dashed;
+	border-bottom: 4px solid \9;
+	content: "";
 }
 
 @media screen and (max-width: 1550px) {
-
-  #customerInfoDatePicker {
-    background-repeat: no-repeat;
-    width: 10rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-  }
-
-  #customerInfoDatePickerReadOnly {
-    background-repeat: no-repeat;
-    width: 10rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-  }
-
-  .ageccCss {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-    width: 7rem;
-  }
-
-  .ageCss {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-    width: 5.5rem;
-  }
-  #admissionStartDate {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-    width: 10rem;
-  }
-  #admissionStartDateReadOnly {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-    width: 10rem;
-  }
-  .Autocompletestyle {
-    width: 8rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-
-  .Autocompletestyle-siteInfo {
-    width: 9rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-
-  .Autocompletestyle-customerInfo {
-    width: 10rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-
-  .Autocompletestyle-situation {
-    width: 4.5rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-
-  .Autocompletestyle-costRe {
-    width: 5.6rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-
-  .Autocompletestyle-master {
-    width: 11.7rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-  .Autocompletestyle-projectInfo {
-    width: 9.2rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-  .input-group-text {
-    background-color: #76a8af;
-    font-family: "幼圆";
-    font-size: 0.5rem;
-    color: rgb(255, 255, 255);
-    width: 4.1rem;
-  }
-
-  .cssNikanji {
-    width: 3rem;
-  }
-
-  #inputGroup-sizing-sm {
-    font-size: 0.85rem;
-  }
-  #projectInfoDatepicker{
-    background-repeat: no-repeat;
-    width: 8rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-  }
-  #wagesInfoDatePicker {
-    background-repeat: no-repeat;
-    width: 8rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;background-color: #e9ecef;
-  }
-  #wagesInfoDatePickerReadOnly {
-    background-repeat: no-repeat;
-    width: 8rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-  }
-  .Autocompletestyle-salesSend {
-    width: 4.5rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-.Autocompletestyle-salesEmpAdd{
-  width: 3.5rem;
-  height: 31px;
-  border-color: "#ced4da";
-  border-width: 1;
-  border-style: "solid";
-  font-size: ".875rem";
-  color: "#495057"
-}
-  #datePickerReadonly {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-    width: 6.2rem;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-  }
-
-  #datePicker2 {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-    width: 6.5rem;
-  }
-
-  #datePicker {
-    background-repeat: no-repeat;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-    width: 5.5rem !important;
-  }
-  .input-group-text {
-    background-color: #76a8af;
-    font-family: "幼�?";
-    color: rgb(255, 255, 255);
-    width: 5.1rem;
-    /* width:4.5rem; */
-  }
-  #expensesInfoDatePicker {
-    background-repeat: no-repeat;
-    width: 6rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-  }
-  #workStartPeriodDatePicker{
-    background-repeat: no-repeat;
-    width: 6rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: white;
-  }
-  #workStartPeriodDatePickerReadOnly{
-    background-repeat: no-repeat;
-    width: 6rem;
-    background-position: 10px 7px;
-    background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-    padding-right: 0px;
-    height: calc(1.5em + .5rem + 2px);
-    background-color: #e9ecef;
-  }
-  .Autocompletestyle-branchInsertInfo {
-    width: 11.7rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-  .popoverC{
-    max-width:450px !important;
-  }
-  .selectWidth{
-    max-width:250px !important;
-  }
-  .Autocompletestyle-siteInfo-relatedEmployees {
-    width: 6.5rem;
-    height: 31px;
-    border-color: "#ced4da";
-    border-width: 1;
-    border-style: "solid";
-    font-size: ".875rem";
-    color: "#495057"
-  }
-  .hiwari{
-    width: 3rem;
-  }
-  .unitPrice{
-    width: 1rem;
-  }
+	#customerInfoDatePicker {
+		background-repeat: no-repeat;
+		width: 10rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+	}
+	#customerInfoDatePickerReadOnly {
+		background-repeat: no-repeat;
+		width: 10rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+	}
+	.ageccCss {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 7rem;
+	}
+	.ageCss {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 5.5rem;
+	}
+	#admissionStartDate {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 10rem;
+	}
+	#admissionStartDateReadOnly {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 10rem;
+	}
+	.Autocompletestyle {
+		width: 8rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-siteInfo {
+		width: 9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-customerInfo {
+		width: 10rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-situation {
+		width: 4.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-costRe {
+		width: 5.6rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-master {
+		width: 11.7rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-projectInfo {
+		width: 9.2rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.input-group-text {
+		background-color: #76a8af;
+		font-family: "幼圆";
+		font-size: 0.5rem;
+		color: rgb(255, 255, 255);
+		width: 4.1rem;
+	}
+	.cssNikanji {
+		width: 3rem;
+	}
+	#inputGroup-sizing-sm {
+		font-size: 0.85rem;
+	}
+	#projectInfoDatepicker {
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+	}
+	#wagesInfoDatePicker {
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		background-color: #e9ecef;
+	}
+	#wagesInfoDatePickerReadOnly {
+		background-repeat: no-repeat;
+		width: 8rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+	}
+	.Autocompletestyle-salesSend {
+		width: 4.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-salesSend-customers {
+		width: 9.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-salesEmpAdd {
+		width: 3.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	#datePickerReadonly {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+		width: 6.2rem;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+	}
+	#datePicker2 {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.5rem;
+	}
+	#datePicker {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 5.5rem !important;
+	}
+	.input-group-text {
+		background-color: #76a8af;
+		font-family: "幼�?";
+		color: rgb(255, 255, 255);
+		width: 5.1rem;
+		/* width:4.5rem; */
+	}
+	#expensesInfoDatePicker {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+	}
+	#workStartPeriodDatePicker {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+	}
+	#workStartPeriodDatePickerReadOnly {
+		background-repeat: no-repeat;
+		width: 6rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
+	}
+	.Autocompletestyle-branchInsertInfo {
+		width: 11.7rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.popoverC {
+		max-width: 450px !important;
+	}
+	.selectWidth {
+		max-width: 250px !important;
+	}
+	.Autocompletestyle-siteInfo-relatedEmployees {
+		width: 6.5rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.hiwari {
+		width: 3rem;
+	}
+	.unitPrice {
+		width: 1rem;
+	}
 	#sanKanji {
 		width: 3.5rem;
 	}
@@ -1558,31 +1586,34 @@ body {
 		color: "#495057"
 	}
 	#customerInfoDatePicker {
-	  background-repeat: no-repeat;
-	  width: 10rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+		background-repeat: no-repeat;
+		width: 10rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#customerInfoDatePicker-establishmentDate{
-	  background-repeat: no-repeat;
-	  width:10.3rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: white;
+	#customerInfoDatePicker-establishmentDate {
+		background-repeat: no-repeat;
+		width: 10.3rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
 	}
-	#customerInfoDatePickerReadOnly-establishmentDate{
-	  background-repeat: no-repeat;
-	  width:10.3rem;
-	  background-position: 10px 7px;
-	  background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll right center transparent;
-	  padding-right: 0px;
-	  height: calc(1.5em + .5rem + 2px);
-	  background-color: #e9ecef;
+	#customerInfoDatePickerReadOnly-establishmentDate {
+		background-repeat: no-repeat;
+		width: 10.3rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: #e9ecef;
 	}
 	#siteDatePickerReadonlyDefault {
 		background-repeat: no-repeat;
@@ -2143,12 +2174,11 @@ body {
 		width: 51%;
 		max-width: none !important;
 	}
-	.totalAmountWidth{
-		max-width:380px !important;
+	.totalAmountWidth {
+		max-width: 380px !important;
 		margin-top: 10px !important;
-	  }
-
-	  #monthlysalesSearchDatePicker {
+	}
+	#monthlysalesSearchDatePicker {
 		background-repeat: no-repeat;
 		width: 166px;
 		background-position: 10px 7px;
@@ -2158,13 +2188,12 @@ body {
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
 	}
-
-	.customerSalesWidth{
-		max-width:380px !important;
+	.customerSalesWidth {
+		max-width: 380px !important;
 		margin-top: 10px !important;
-	  }
-	  .customerSalesPeoWidth{
-		max-width:200px !important;
+	}
+	.customerSalesPeoWidth {
+		max-width: 200px !important;
 		margin-top: 10px !important;
-	  }
+	}
 }

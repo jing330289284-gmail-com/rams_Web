@@ -18,19 +18,20 @@ axios.defaults.withCredentials = true;
 class salesSendLetter extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 	}
-	//初期化
+	// 初期化
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
-		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
+		//customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
+		customers: store.getState().dropDown[53].slice(1),
+		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
 		customerCode: '',
 		customerDepartmentName: '',
 		allCustomerNo: [],
-		currentPage: 1,//　該当page番号
+		currentPage: 1,// 該当page番号
 		selectetRowIds: [],
 		customerTemp: [],
 		sendLetterBtnFlag: true,
@@ -39,7 +40,7 @@ class salesSendLetter extends React.Component {
 		selectedCustomer: {},
 		daiologShowFlag: false,
 		positions: store.getState().dropDown[20],
-		//selectedEmpNos:this.props.location.state.selectetRowIds,
+		// selectedEmpNos:this.props.location.state.selectetRowIds,
 		selectedCusInfos: [],
 		listName:1,
 		salesLists: [],
@@ -88,7 +89,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 				alert(err)
 			})
 }
-	//初期化お客様取る
+	// 初期化お客様取る
 	getCustomers = () => {
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
@@ -166,7 +167,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 		}
 	}
 
-	// clearボタン事件 
+	// clearボタン事件
 	clearLists = () => {
 		if(this.state.selectedlistName!==''){
 			axios.post(this.state.serverIP + "salesSendLetters/deleteList",{storageListName:this.state.selectedlistName})
@@ -212,7 +213,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
 		})
-			/*listName=listName+1;*/
+			/* listName=listName+1; */
 			this.setState({
 				selectetRowIds:[],
 			});
@@ -261,7 +262,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 			selectedCusInfos: targetCustomer,
 			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
 			selectetRowIds: [],
-			currentPage: 1,//　該当page番号
+			currentPage: 1,// 該当page番号
 		})
 	}
 
@@ -330,7 +331,8 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 		}
 		let rowNo=row.rowId;
 		if (isSelected) {
-			//alert(this.refs.customersTable.state.selectedRowKeys); selectedCusInfos
+			// alert(this.refs.customersTable.state.selectedRowKeys);
+			// selectedCusInfos
 			this.setState({
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
@@ -455,35 +457,29 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 		const selectRow = {
 			mode: 'checkbox',
 			bgColor: 'pink',
-			/*bgColor: (row, isSelect) => {
-				if(isSelect){
-					if (this.state.tableClickColumn === 9 || this.state.tableClickColumn === undefined){
-						this.refs.customersTable.store.selected.pop();
-					this.refs.customersTable.state.selectedRowKeys.pop();
-					return 'pink';
-					}
-					
-				}
-				if (this.state.tableClickColumn === 9 || this.state.tableClickColumn === undefined) return '';
-				else return 'pink';
-			},*/
+			/*
+			 * bgColor: (row, isSelect) => { if(isSelect){ if
+			 * (this.state.tableClickColumn === 9 || this.state.tableClickColumn
+			 * === undefined){ this.refs.customersTable.store.selected.pop();
+			 * this.refs.customersTable.state.selectedRowKeys.pop(); return
+			 * 'pink'; }
+			 *  } if (this.state.tableClickColumn === 9 ||
+			 * this.state.tableClickColumn === undefined) return ''; else return
+			 * 'pink'; },
+			 */
 			hideSelectColumn: true,
 			clickToSelect: true,
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
-			/*(row, isSelected, e) => {
-				let getCurrentCellIndex = e.target.cellIndex;
-				this.setState({
-					tableClickColumn: getCurrentCellIndex,
-				});
-				if (getCurrentCellIndex === 9 || getCurrentCellIndex === undefined) {
-					console.log(`----> ${JSON.stringify(row)}`);
-					e.preventDefault();
-					e.stopPropagation();
-				} else {
-					this.handleRowSelect(row, isSelected, e);
-				}
-			},*/
+			/*
+			 * (row, isSelected, e) => { let getCurrentCellIndex =
+			 * e.target.cellIndex; this.setState({ tableClickColumn:
+			 * getCurrentCellIndex, }); if (getCurrentCellIndex === 9 ||
+			 * getCurrentCellIndex === undefined) { console.log(`---->
+			 * ${JSON.stringify(row)}`); e.preventDefault();
+			 * e.stopPropagation(); } else { this.handleRowSelect(row,
+			 * isSelected, e); } },
+			 */
 		};
 
 		const options = {
@@ -529,28 +525,44 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
-										options={this.state.customers}
-										getOptionLabel={(option) => option.code ? option.code : ""}
-										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerCode')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
-													 />
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
+						{/*
+							 * <Col sm={2}> <InputGroup size="sm"
+							 * className="mb-3"> <InputGroup.Prepend>
+							 * <InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
+							 * </InputGroup.Prepend> <Autocomplete
+							 * disabled={this.state.allCustomer.length ===
+							 * this.state.customerTemp.length ? true : false}
+							 * options={this.state.customers}
+							 * getOptionLabel={(option) => option.code ?
+							 * option.code : ""}
+							 * value={this.state.customers.find(v => v.code ===
+							 * this.state.customerCode) || ""} onChange={(event,
+							 * values) => this.onTagsChange(event, values,
+							 * 'customerCode')} renderInput={(params) => ( <div
+							 * ref={params.InputProps.ref}> <input type="text"
+							 * {...params.inputProps} id="customerCode"
+							 * className="auto form-control
+							 * Autocompletestyle-salesSend" /> </div> )} />
+							 * </InputGroup> </Col> <Col sm={2}> <InputGroup
+							 * size="sm" className="mb-3"> <InputGroup.Prepend>
+							 * <InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+							 * </InputGroup.Prepend> <Autocomplete
+							 * disabled={this.state.allCustomer.length ===
+							 * this.state.customerTemp.length ? true : false}
+							 * options={this.state.customers}
+							 * getOptionLabel={(option) => option.name ?
+							 * option.name : ""}
+							 * value={this.state.customers.find(v => v.code ===
+							 * this.state.customerCode) || ""} onChange={(event,
+							 * values) => this.onTagsChange(event, values,
+							 * 'customerName')} renderInput={(params) => ( <div
+							 * ref={params.InputProps.ref}> <input type="text"
+							 * {...params.inputProps} id="customerCode"
+							 * className="auto form-control
+							 * Autocompletestyle-salesSend" /> </div> )} />
+							 * </InputGroup> </Col>
+							 */}
+							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
@@ -564,7 +576,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 										renderInput={(params) => (
 											<div ref={params.InputProps.ref}>
 												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
+													id="customerCode" className="auto form-control Autocompletestyle-salesSend-customers"
 													 />
 											</div>
 										)}
@@ -595,6 +607,9 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 							<Col sm={1}>
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
+							</Col>
+							<Col sm={1}>
+							
 							</Col>
 							<Col sm={5} style={{ "display": this.state.salesLists.length>=1 ? "block" : "none" }}>
 								<InputGroup size="sm" className="mb-3" style={{position: 'relative'}}>
@@ -635,10 +650,10 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 							<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" name="clickButton" 
 									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length===3? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
-									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}
+								{/*<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
+									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}*/}
 								<Button  size="sm" variant="info" name="clickButton"
-									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
+									onClick={this.deleteLists} disabled={/*this.state.selectetRowIds.length === this.state.customerTemp.length || */this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
 								><FontAwesomeIcon icon={faEnvelope} />要員送信</Button></Link>{' '}

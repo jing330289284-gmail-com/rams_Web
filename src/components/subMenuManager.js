@@ -88,6 +88,7 @@ class SubMenu extends Component {
 		let day = dateNow.getDate();
 		this.setState({
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月' + (day < 10 ? '0' + day : day) + "日"),
+			click: "",
 		})
 	}
 	logout = () => {
@@ -95,6 +96,11 @@ class SubMenu extends Component {
 			.then(resultMap => {
 				alert("ログアウトしました");
 			})
+	}
+	click = (name) =>{
+		this.setState({
+			click:name,
+		})
 	}
 	render() {
 		//お客様情報画面の追加パラメータ
@@ -139,35 +145,35 @@ class SubMenu extends Component {
 								<ListGroup >
 									<Accordion className="menuCol">
 										<ListGroup.Item style={styleLow} block>
-											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員管理</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員管理"?"linkFont-click":"linkFont"} onClick={() => this.click('社員管理')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員管理</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={styleLow}>
-														<Link className="linkFont" to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
-															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />社員情報登録</Link></ListGroup.Item>
-													<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/employeeSearch">
+														<Link className={this.state.click==="社員情報登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員情報登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
+															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員情報登録</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員情報検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員情報検索')} to="/subMenuManager/employeeSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員情報検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={styleHigh} block>
-											<Accordion.Toggle as={Button} variant="link" eventKey="1"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faHome} />現場</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="1"><font className={this.state.click==="現場"?"linkFont-click":"linkFont"} onClick={() => this.click('現場')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faHome} />現場</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="1">
 												<ListGroup >
-													<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/siteInfo">
+													<ListGroup.Item style={styleHigh}><Link className={this.state.click==="現場情報登録"?"linkFont-click":"linkFont"} onClick={() => this.click('現場情報登録')} to="/subMenuManager/siteInfo">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />現場情報登録</Link></ListGroup.Item>
-													<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/siteSearch">
+													<ListGroup.Item style={styleHigh}><Link className={this.state.click==="現場情報検索"?"linkFont-click":"linkFont"} onClick={() => this.click('現場情報検索')} to="/subMenuManager/siteSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />現場情報検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
 										<ListGroup.Item style={styleLow}>
-											<Accordion.Toggle as={Button} variant="link" eventKey="2"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faUsers} />お客様</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="2"><font className={this.state.click==="お客様"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faUsers} />お客様</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="2">
 												<ListGroup variant="flush">
-													<ListGroup.Item style={styleLow}><Link className="linkFont" to={customerInfoPath}>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="お客様情報登録"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様情報登録')} to={customerInfoPath}>
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />お客様情報登録</Link></ListGroup.Item>
-													<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/customerInfoSearch">
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="お客様情報検索"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様情報検索')} to="/subMenuManager/customerInfoSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様情報検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
@@ -175,18 +181,18 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ? authorityCode !== "3" ?
 												<ListGroup.Item style={styleHigh}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と売上</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="3"><font className={this.state.click==="給料と売上"?"linkFont-click":"linkFont"} onClick={() => this.click('給料と売上')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faYenSign} />給料と売上</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="3">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/wagesInfo">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="給料情報"?"linkFont-click":"linkFont"} onClick={() => this.click('給料情報')} to="/subMenuManager/wagesInfo">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCommentDollar} />給料情報</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualSales">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="個人売上一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('個人売上一覧')} to="/subMenuManager/individualSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faList} />個人売上一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/monthlySalesSearch">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="全員売上一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('全員売上一覧')} to="/subMenuManager/monthlySalesSearch">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />全員売上一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/individualCustomerSales">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="お客様個別売上"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様個別売上')} to="/subMenuManager/individualCustomerSales">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />お客様個別売上</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/customerSalesList">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="お客様売上一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様売上一覧')} to="/subMenuManager/customerSalesList">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />お客様売上一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -199,16 +205,16 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ?
 												<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="4"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />営業送信</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="4"><font className={this.state.click==="営業送信"?"linkFont-click":"linkFont"} onClick={() => this.click('営業送信')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faPaperPlane} />営業送信</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="4">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/manageSituation">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="営業状況一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('営業状況一覧')} to="/subMenuManager/manageSituation">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faNewspaper} />営業状況一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/selectCustomers">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="お客様選択"?"linkFont-click":"linkFont"} onClick={() => this.click('お客様選択')} to="/subMenuManager/selectCustomers">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />お客様選択</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to={projectInfoPath}>
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="案件登録"?"linkFont-click":"linkFont"} onClick={() => this.click('案件登録')} to={projectInfoPath}>
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/projectInfoSearch">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="案件一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('案件一覧')} to="/subMenuManager/projectInfoSearch">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />案件一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -219,14 +225,14 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ?
 												<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="5"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faBuilding} />営業管理</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="5"><font className={this.state.click==="営業管理"?"linkFont-click":"linkFont"} onClick={() => this.click('営業管理')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faBuilding} />営業管理</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="5">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesPointSet">
+															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業ポイント設定"?"linkFont-click":"linkFont"} onClick={() => this.click('営業ポイント設定')} to="/subMenuManager/salesPointSet">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} />営業ポイント設定</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesProfit">
+															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業個別売上"?"linkFont-click":"linkFont"} onClick={() => this.click('営業個別売上')} to="/subMenuManager/salesProfit">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className="linkFont" to="/subMenuManager/salesPoint">
+															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業ポイント明細"?"linkFont-click":"linkFont"} onClick={() => this.click('営業ポイント明細')} to="/subMenuManager/salesPoint">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faBars} />営業ポイント明細</Link></ListGroup.Item>										</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
@@ -236,12 +242,12 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ?
 												<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="6"><font className={this.state.click==="勤務"?"linkFont-click":"linkFont"} onClick={() => this.click('勤務')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendar} />勤務</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="6">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/dutyManagement/">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="勤務管理"?"linkFont-click":"linkFont"} onClick={() => this.click('勤務管理')} to="/subMenuManager/dutyManagement/">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />勤務管理</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className="linkFont" to="/subMenuManager/sendRepot">
+															<ListGroup.Item style={authorityCode === "3" ? styleHigh : styleLow}><Link className={this.state.click==="報告書送信"?"linkFont-click":"linkFont"} onClick={() => this.click('報告書送信')} to="/subMenuManager/sendRepot">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} />報告書送信</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -252,12 +258,12 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ? authorityCode !== "3" ?
 												<ListGroup.Item style={styleHigh}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />期限確認</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="7"><font className={this.state.click==="期限確認"?"linkFont-click":"linkFont"} onClick={() => this.click('期限確認')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCalendarAlt} />期限確認</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="7">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/situationChange">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="状況変動一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('状況変動一覧')} to="/subMenuManager/situationChange">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to="/subMenuManager/enterPeriodSearch">
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="入社入場期限一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('入社入場期限一覧')} to="/subMenuManager/enterPeriodSearch">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -270,12 +276,12 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ?
 												<ListGroup.Item style={styleLow}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="8"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />マスター</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="8"><font className={this.state.click==="マスター"?"linkFont-click":"linkFont"} onClick={() => this.click('マスター')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faThList} />マスター</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="8">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/masterInsert">
+															<ListGroup.Item style={styleLow}><Link className={this.state.click==="マスター登録"?"linkFont-click":"linkFont"} onClick={() => this.click('マスター登録')} to="/subMenuManager/masterInsert">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />マスター登録</Link></ListGroup.Item>
-															<ListGroup.Item style={styleLow}><Link className="linkFont" to="/subMenuManager/masterUpdate">
+															<ListGroup.Item style={styleLow}><Link className={this.state.click==="マスター修正"?"linkFont-click":"linkFont"} onClick={() => this.click('マスター修正')} to="/subMenuManager/masterUpdate">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />マスター修正</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -286,10 +292,10 @@ class SubMenu extends Component {
 										{
 											authorityCode !== "2" ?
 												<ListGroup.Item style={styleHigh}>
-													<Accordion.Toggle as={Button} variant="link" eventKey="9"><font className="linkFont"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCogs} />他の設定</font></Accordion.Toggle>
+													<Accordion.Toggle as={Button} variant="link" eventKey="9"><font className={this.state.click==="他の設定"?"linkFont-click":"linkFont"} onClick={() => this.click('他の設定')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCogs} />他の設定</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="9">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={styleHigh}><Link className="linkFont" to={{ pathname: '/subMenuManager/cssTest', state: { actionType: 'insert' } }}>
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="システム設定"?"linkFont-click":"linkFont"} onClick={() => this.click('システム設定')} to={{ pathname: '/subMenuManager/cssTest', state: { actionType: 'insert' } }}>
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCog} />システム設定</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
