@@ -24,7 +24,8 @@ class salesSendLetter extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
+		//customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
+		customers: store.getState().dropDown[53].slice(1),
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
 		customerCode: '',
 		customerDepartmentName: '',
@@ -38,7 +39,7 @@ class salesSendLetter extends React.Component {
 		selectedCustomer: {},
 		daiologShowFlag: false,
 		positions: store.getState().dropDown[20],
-		selectedEmpNos: this.props.location.state.selectetRowIds,
+		selectedEmpNos: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.props.location.state.selectetRowIds : [],
 		selectedCusInfos: [],
 		listName: 1,
 		salesLists: [],
@@ -57,6 +58,7 @@ class salesSendLetter extends React.Component {
 		searchFlag: true,
 		sendValue: {},
 		projectNo:'',
+		isHidden:true,
 	};
 
 	componentDidMount() {
@@ -64,6 +66,7 @@ class salesSendLetter extends React.Component {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
 				projectNo: this.props.location.state.projectNo,
+				isHidden:false,
 			})
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
 				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
@@ -121,10 +124,12 @@ class salesSendLetter extends React.Component {
 					customerTemp: [...result.data],
 					allCustomerNo: customerNoArray,
 				},()=>{
+					if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 					if (this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== '') {
 						this.refs.customersTable.setState({
 							selectedRowKeys: this.props.location.state.targetCusInfos,
 						});
+					}
 					}
 				});
 			})
@@ -484,7 +489,7 @@ class salesSendLetter extends React.Component {
 				path = {
 					pathname: '/subMenuManager/sendLettersConfirm',
 					state: {
-						salesPersons: this.state.selectedEmpNos,
+						salesPersons: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.state.selectedEmpNos : null,
 						targetCusInfos: this.state.selectedCusInfos,
 						backPage: 'salesSendLetter',
 						sendValue: sendValue,
@@ -544,7 +549,7 @@ class salesSendLetter extends React.Component {
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row>
-							<Col sm={2}>
+							{/*<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
@@ -585,7 +590,28 @@ class salesSendLetter extends React.Component {
 										)}
 									/>
 								</InputGroup>
-							</Col>
+							</Col>*/}
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+									options={this.state.customers}
+									getOptionLabel={(option) => option.name ? option.name : ""}
+									value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
+									onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="customerCode" className="auto form-control Autocompletestyle-salesSend-customers"
+												 />
+										</div>
+									)}
+								/>
+							</InputGroup>
+						</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -610,6 +636,9 @@ class salesSendLetter extends React.Component {
 							<Col sm={1}>
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
+							</Col>
+							<Col sm={1}>
+							
 							</Col>
 							<Col sm={5} style={{ "display": this.state.salesLists.length >= 1 ? "block" : "none" }}>
 								<InputGroup size="sm" className="mb-3" style={{ position: 'relative' }}>
@@ -641,7 +670,7 @@ class salesSendLetter extends React.Component {
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
 							<Button
 								size="sm"
-								hidden={backPage === "" ? true : false}
+								hidden={this.state.isHidden ? true : false}
 								variant="info"
 								onClick={this.back.bind(this)}
 							>
@@ -655,12 +684,14 @@ class salesSendLetter extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
-									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}
+								{/*<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
+									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}*/}
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>
+
+										<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
+										
+										<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>
 							</div>
 						</Col>
 					</Row>

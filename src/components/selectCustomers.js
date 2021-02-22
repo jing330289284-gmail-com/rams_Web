@@ -25,7 +25,7 @@ class salesSendLetter extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		//customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
+		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		customers: store.getState().dropDown[53].slice(1),
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
 		customerCode: '',
@@ -462,8 +462,7 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 			 * (this.state.tableClickColumn === 9 || this.state.tableClickColumn
 			 * === undefined){ this.refs.customersTable.store.selected.pop();
 			 * this.refs.customersTable.state.selectedRowKeys.pop(); return
-			 * 'pink'; }
-			 *  } if (this.state.tableClickColumn === 9 ||
+			 * 'pink'; } } if (this.state.tableClickColumn === 9 ||
 			 * this.state.tableClickColumn === undefined) return ''; else return
 			 * 'pink'; },
 			 */
@@ -650,10 +649,20 @@ selectedCtmNoStrs3:result.data.length>=3?result.data[2].customerNo:'',
 							<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" name="clickButton" 
 									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length===3? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
-								{/*<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
-									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}*/}
+								{/*
+									 * <Button size="sm" variant="info"
+									 * name="clickButton"
+									 * onClick={this.clearLists}
+									 * disabled={!this.state.sendLetterBtnFlag ?
+									 * false : true}><FontAwesomeIcon
+									 * icon={faBroom} />クリア</Button>{' '}
+									 */}
 								<Button  size="sm" variant="info" name="clickButton"
-									onClick={this.deleteLists} disabled={/*this.state.selectetRowIds.length === this.state.customerTemp.length || */this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
+									onClick={this.deleteLists} disabled={/*
+																			 * this.state.selectetRowIds.length
+																			 * ===
+																			 * this.state.customerTemp.length ||
+																			 */this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos } }}>
 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}
 								><FontAwesomeIcon icon={faEnvelope} />要員送信</Button></Link>{' '}

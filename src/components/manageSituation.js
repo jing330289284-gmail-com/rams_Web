@@ -7,7 +7,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -86,6 +86,7 @@ class manageSituation extends React.Component {
 		checkFlag: false,
 		checkDisabledFlag: false,
 		daiologShowFlag: false,
+		isSelectedAll:false,
 	};
 
 	// 初期表示のレコードを取る
@@ -215,7 +216,7 @@ class manageSituation extends React.Component {
 				}
 			})
 			.catch(function (error) {
-				alert("ERR");
+				//alert("ERR");
 			});
 	}
 
@@ -376,14 +377,16 @@ class manageSituation extends React.Component {
 	// 更新ボタン
 	changeState = () => {
 		if (this.state.readFlag) {
-			if (!this.state.updateBtnflag) {
-				alert("エラーメッセージ");
-			} else {
-				this.setState({
-					readFlag: !this.state.readFlag,
-				})
-			}
+/*
+ * if (!this.state.updateBtnflag) { alert("エラーメッセージ"); } else { this.setState({
+ * readFlag: !this.state.readFlag, }) }
+ */
+			this.setState({
+				readFlag: !this.state.readFlag,
+				updateBtnflag:true,
+			})
 		} else {
+			this.state.employeeNo = String(this.refs.table.state.selectedRowKeys);
 			axios.post(this.state.serverIP + "salesSituation/updateSalesSituation", this.state)
 				.then(result => {
 					if (result.data != null) {
@@ -554,7 +557,8 @@ class manageSituation extends React.Component {
 				updateBtnflag: isSelected,
 				readFlag: true,
 				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
-				sendLetterFalg: this.refs.table.state.selectedRowKeys.length > 1 ? false : true,
+				sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
+				isSelectedAll: false,
 			});
 		}
 	}
@@ -568,6 +572,7 @@ class manageSituation extends React.Component {
 			this.setState({
 				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 1 ? false : true,
 				sendLetterFalg: this.refs.table.state.selectedRowKeys.length > 0 ? false : true,
+				isSelectedAll: !this.state.isSelectedAll,
 			});}
 		);
 	}
@@ -989,15 +994,10 @@ class manageSituation extends React.Component {
 					<Row>
 						<Col sm={12}>
 							<div style={{"float": "left"}}>
-								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faIdCard} /> すべて選択</Button>{' '}
+								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faListOl} /> すべて選択</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
-								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton" /*
-																																			 * disabled={!this.state.linkDisableFlag ||
-																																			 * !this.state.checkSelect ?
-																																			 * false :
-																																			 * true}
-																																			 */disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
+								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton"  disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
