@@ -8,6 +8,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
+import MyToast from './myToast';
 import { Link } from "react-router-dom";
 import store from './redux/store';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl, faEdit, faPencilAlt, faBookmark, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
@@ -18,6 +19,7 @@ class salesSendLetter extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
+		this.valueChange = this.valueChange.bind(this);
 	}
 	//　初期化
 	initialState = {
@@ -26,6 +28,7 @@ class salesSendLetter extends React.Component {
 		customerName: '', // おきゃく名前
 		//customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
 		customers: store.getState().dropDown[53].slice(1),
+		storageList: store.getState().dropDown[63].slice(1),
 		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
 		customerCode: '',
 		customerDepartmentName: '',
@@ -34,7 +37,10 @@ class salesSendLetter extends React.Component {
 		selectetRowIds: [],
 		customerTemp: [],
 		sendLetterBtnFlag: true,
+		myToastShow: false,
 		tableClickColumn: '0',
+		message: '',
+		type: '',
 		linkDetail: '担当追加',
 		selectedCustomer: {},
 		daiologShowFlag: false,
@@ -54,10 +60,13 @@ class salesSendLetter extends React.Component {
 		selectedCtmNoStrs2: "",
 		selectedCtmNoStrs3: "",
 		selectedlistName: "",
+		storageListName:"",
+		storageListNameChange:"",
 		backPage: "manageSituation",
 		searchFlag: true,
 		sendValue: {},
 		projectNo:'',
+		selectedCustomers: '',
 		isHidden:true,
 	};
 
@@ -158,6 +167,13 @@ class salesSendLetter extends React.Component {
 						customerDepartmentCode: '',
 					})
 					break;
+				case 'storageList':
+					this.setState({
+						storageListName: '',
+						storageListNameChange:"",
+						selectedCustomers:"",
+					})
+					break;	
 				default:
 			}
 		} else {
@@ -173,6 +189,22 @@ class salesSendLetter extends React.Component {
 						customerDepartmentCode: values.code,
 					})
 					break;
+				case 'storageList':
+					this.setState({
+						storageListName:  values.name,
+						storageListNameChange: values.name,
+						selectedCustomers: values.code,
+					})
+					axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: values.code.split(',') })
+					.then(result => {
+				this.setState({
+					allCustomer: result.data,
+				});
+			})
+			.catch(function (err) {
+				alert(err)
+			})
+					break;	
 				default:
 			}
 		}
@@ -223,6 +255,12 @@ class salesSendLetter extends React.Component {
 				selectedRowKeys: [],
 			})
 		}
+	}
+	
+	valueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
 	}
 
 	createList = () => {
@@ -402,33 +440,43 @@ class salesSendLetter extends React.Component {
 		this.CellFormatter(row.salesPersonsAppend, row);
 	}
 	changeName = () => {
-		if (this.state.listShowFlag) {
-			this.setState({
-				listShowFlag: !this.state.listShowFlag
-			})
-		} else {
-			var salesSendLettersListNames = {
-				storageListName1: this.state.listName1, oldStorageListName1: this.state.oldListName1,
-				storageListName2: this.state.listName2, oldStorageListName2: this.state.oldListName2,
-				storageListName3: this.state.listName3, oldStorageListName3: this.state.oldListName3
+		var salesSendLettersListNames = {
+				storageListName: this.state.storageListNameChange, oldStorageListName:this.state.storageListName,
 			};
-			if ((this.state.listName1 === '' && this.state.oldListName1 !== "") ||
-				(this.state.listName2 === '' && this.state.oldListName2 !== "") ||
-				(this.state.listName3 === '' && this.state.oldListName3 !== "")) {
-				alert("対象名を入力してください")
-				return;
-			}
 			axios.post(this.state.serverIP + "salesSendLetters/listNameUpdate", salesSendLettersListNames)
 				.then(result => {
-					this.getLists();
-					this.setState({
-						listShowFlag: true,
-					})
+	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+	                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
+	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+						window.location.reload();
+	                } else {
+	                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+	                }
 				})
 				.catch(function (err) {
 					alert(err)
 				})
-		}
+	}
+	
+	deleteList = () => {
+		var salesSendLettersListNames = {
+				storageListName: this.state.storageListNameChange
+			};
+		axios.post(this.state.serverIP + "salesSendLetters/deleteList", salesSendLettersListNames)
+				.then(result => {
+	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+	                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
+	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+						window.location.reload();
+	                } else {
+	                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+	                }
+				})
+				.catch(function (err) {
+					alert(err)
+				})
 	}
 
 	showSelectedCtms = (selectedNos, flag) => {
@@ -501,7 +549,7 @@ class salesSendLetter extends React.Component {
 		this.props.history.push(path);
 	}
 	render() {
-		const { backPage } = this.state;
+		const { backPage,message,type } = this.state;
 
 		const selectRow = {
 			mode: 'checkbox',
@@ -532,6 +580,9 @@ class salesSendLetter extends React.Component {
 
 		return (
 			<div>
+				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton></Modal.Header>
@@ -591,7 +642,7 @@ class salesSendLetter extends React.Component {
 									/>
 								</InputGroup>
 							</Col>*/}
-							<Col sm={3}>
+							<Col sm={4}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
@@ -610,12 +661,8 @@ class salesSendLetter extends React.Component {
 										</div>
 									)}
 								/>
-							</InputGroup>
-						</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">部門</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">部門</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Autocomplete
 										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
@@ -633,14 +680,18 @@ class salesSendLetter extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={1}>
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="sanKanji">担当者</InputGroup.Text>
+								</InputGroup.Prepend>
+							<Form.Control placeholder="担当者" id="personInCharge" name="personInCharge" onChange={this.valueChange} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false} className="auto form-control Autocompletestyle-salesSend-personInCharge" />
 								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
+									</InputGroup>
 							</Col>
-							<Col sm={1}>
-							
-							</Col>
-							<Col sm={5} style={{ "display": this.state.salesLists.length >= 1 ? "block" : "none" }}>
+
+							{/*<Col sm={5} style={{ "display": this.state.salesLists.length >= 1 ? "block" : "none" }}>
 								<InputGroup size="sm" className="mb-3" style={{ position: 'relative' }}>
 									<div style={{ "display": this.state.listShowFlag ? "contents" : "none" }}>
 										格納リスト：
@@ -660,7 +711,31 @@ class salesSendLetter extends React.Component {
 											size="sm" name="listName3" style={{ width: "85px", "display": this.state.salesLists.length >= 3 ? "block" : "none" }} onChange={this.changeListName} />{'　　　'}</span>
 									<Button style={{ position: 'absolute', right: '0px' }} size="sm" variant="info" onClick={this.changeName}><FontAwesomeIcon icon={faPencilAlt} />{this.state.listShowFlag ? '対象名修正' : '対象名更新'}</Button>
 								</InputGroup>
-							</Col>
+							</Col>*/}
+							<Col sm={5}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="fiveKanji">格納リスト</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									options={this.state.storageList}
+									getOptionLabel={(option) => option.name ? option.name : ""}
+									value={this.state.storageList.find(v => v.name === this.state.storageListName) || ""}
+									onChange={(event, values) => this.onTagsChange(event, values, 'storageList')}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="storageList" className="auto form-control Autocompletestyle-salesSend-storageList"
+												 />
+										</div>
+									)}
+								/>
+								<Form.Control placeholder="データ修正" id="storageListNameChange" name="storageListNameChange" value={this.state.storageListNameChange}
+                                onChange={this.valueChange} className="auto form-control Autocompletestyle-salesSend-changeStorageList" />
+								<Button style={{ marginLeft: "5px", marginRight: "5px" }} size="sm" variant="info" onClick={this.changeName}><FontAwesomeIcon icon={faPencilAlt} />更新</Button>
+								<Button size="sm" variant="info" onClick={this.deleteList}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
+							</InputGroup>
+						</Col>
 						</Row>
 					</Form.Group>
 					<Row>
