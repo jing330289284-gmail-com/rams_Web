@@ -68,6 +68,7 @@ export function fetchDropDown() {
 		"getSendReportOfDateSeting",//61送信日付設定ステータス
 		"getAdmissionMonth",//62入場期日取得
 		"getStorageListName",//63送信対象格納リスト
+		"getPurchasingManagers",//64お客様担当者取得
 		"getServerIP",//最後
 	]
 	var outArray = [];
@@ -165,6 +166,7 @@ var methodNameList = ["getGender",//0.性別区別
 		"getSendReportOfDateSeting",//61送信日付設定ステータス
 		"getAdmissionMonth",//62入場期日取得
 		"getStorageListName",//63送信対象格納リスト
+		"getPurchasingManagers",//64お客様担当者取得
 		"getServerIP",//最後
 	]
 var outArray = [];

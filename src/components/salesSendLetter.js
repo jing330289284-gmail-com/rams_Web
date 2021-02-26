@@ -10,6 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import SalesAppend from './salesAppend';
 import MyToast from './myToast';
 import { Link } from "react-router-dom";
+import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl, faEdit, faPencilAlt, faBookmark, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
@@ -18,22 +19,25 @@ axios.defaults.withCredentials = true;
 class salesSendLetter extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
 	}
-	//　初期化
+	// 初期化
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
-		//customers: store.getState().dropDown[15],// 全部お客様　dropDowm用
+		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		customers: store.getState().dropDown[53].slice(1),
 		storageList: store.getState().dropDown[63].slice(1),
-		customerDepartmentNameDrop: store.getState().dropDown[22],//部門の連想数列
+		personInCharge: store.getState().dropDown[64].slice(1),
+		errorsMessageShow: false,
+		purchasingManagers: '',
+		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
 		customerCode: '',
 		customerDepartmentName: '',
 		allCustomerNo: [],
-		currentPage: 1,//　該当page番号
+		currentPage: 1,// 該当page番号
 		selectetRowIds: [],
 		customerTemp: [],
 		sendLetterBtnFlag: true,
@@ -68,6 +72,9 @@ class salesSendLetter extends React.Component {
 		projectNo:'',
 		selectedCustomers: '',
 		isHidden:true,
+		addCustomerCode: "",
+		test2: "",
+		test3: "",
 	};
 
 	componentDidMount() {
@@ -120,7 +127,7 @@ class salesSendLetter extends React.Component {
 			})
 	}
 
-	//　初期化お客様取る
+	// 初期化お客様取る
 	getCustomers = () => {
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
@@ -147,7 +154,7 @@ class salesSendLetter extends React.Component {
 			})
 	}
 
-	//　 行番号
+	// 行番号
 	indexN = (cell, row, enumObject, index) => {
 		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
 		return (<div>{rowNumber}</div>);
@@ -170,10 +177,18 @@ class salesSendLetter extends React.Component {
 				case 'storageList':
 					this.setState({
 						storageListName: '',
-						storageListNameChange:"",
-						selectedCustomers:"",
+						storageListNameChange: '',
+						selectedCustomers: '',
 					})
 					break;	
+				case 'personInCharge':
+					this.setState({
+						purchasingManagers: '',
+						addCustomerCode: '',
+						test2: '',
+						test3: '',
+					})
+					break;
 				default:
 			}
 		} else {
@@ -182,6 +197,8 @@ class salesSendLetter extends React.Component {
 				case 'customerName':
 					this.setState({
 						customerCode: values.code,
+						purchasingManagers: '',
+						addCustomerCode: values.code,
 					})
 					break;
 				case 'customerDepartmentCode':
@@ -205,6 +222,15 @@ class salesSendLetter extends React.Component {
 				alert(err)
 			})
 					break;	
+				case 'personInCharge':
+					this.setState({
+						purchasingManagers: values.text,
+						customerCode: '',
+						addCustomerCode: values.code,
+						test2: values.name,
+						test3: values.value,
+					})
+					break;
 				default:
 			}
 		}
@@ -229,7 +255,7 @@ class salesSendLetter extends React.Component {
 		}
 	}
 
-	// clearボタン事件 
+	// clearボタン事件
 	clearLists = () => {
 		if (this.state.selectedlistName !== '') {
 			axios.post(this.state.serverIP + "salesSendLetters/deleteList", { storageListName: this.state.selectedlistName })
@@ -281,7 +307,7 @@ class salesSendLetter extends React.Component {
 				this.refs.customersTable.setState({
 					selectedRowKeys: [],
 				})
-				/*listName=listName+1;*/
+				/* listName=listName+1; */
 				this.setState({
 					selectetRowIds: [],
 				});
@@ -331,8 +357,48 @@ class salesSendLetter extends React.Component {
 			selectedCusInfos: targetCustomer,
 			sendLetterBtnFlag: !this.state.sendLetterBtnFlag,
 			selectetRowIds: [],
-			currentPage: 1,//　該当page番号
+			currentPage: 1,// 該当page番号
 		})
+	}
+	// addClick
+	addClick = () => {
+		this.setState({"errorsMessageShow": false });
+		var allCustomerData = this.state.allCustomer;
+		for (let k in allCustomerData) {
+			if(allCustomerData[k].customerNo === this.state.addCustomerCode){
+				this.setState({"errorsMessageShow": true });
+				setTimeout(() => this.setState({ "errorsMessageShow": false }), 2000);
+				return;
+			}
+		}
+		var allCustomerModel = {};
+		if(allCustomerData.length > 0){
+			allCustomerModel["any"] = parseInt(allCustomerData[allCustomerData.length - 1].any) + 1;
+		}else{
+			allCustomerModel["any"] = 1;
+		}
+		allCustomerModel["customerNo"] = this.state.addCustomerCode;
+		allCustomerModel["customerName"] = "";
+		allCustomerModel["purchasingManagers"] = "";
+		allCustomerModel["customerDepartmentCode"] = "";
+		allCustomerModel["positionCode"] = "";
+		allCustomerModel["purchasingManagersMail"] = "";
+		allCustomerModel["purchasingManagersMail"] = "";
+		allCustomerModel["levelCode"] = "";
+		allCustomerModel["monthCount"] = "";
+		allCustomerModel["salesPersonsAppend"] = "";
+		allCustomerModel["monthMailCount"] = "";
+		allCustomerData.push(allCustomerModel);
+		var currentPage = Math.ceil(allCustomerData.length / 10);
+		this.setState({
+			allCustomer: allCustomerData,
+			currentPage: currentPage,
+			purchasingManagers: '',
+			customerCode: '',
+		})
+		this.refs.customersTable.setState({
+			selectedRowKeys: []
+		});
 	}
 
 	// plusClick
@@ -446,7 +512,7 @@ class salesSendLetter extends React.Component {
 			axios.post(this.state.serverIP + "salesSendLetters/listNameUpdate", salesSendLettersListNames)
 				.then(result => {
 	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-	                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
+	                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 						window.location.reload();
@@ -466,12 +532,12 @@ class salesSendLetter extends React.Component {
 		axios.post(this.state.serverIP + "salesSendLetters/deleteList", salesSendLettersListNames)
 				.then(result => {
 	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-	                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
+	                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 						window.location.reload();
 	                } else {
-	                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+	                    this.setState({errorsMessageValue: result.data.errorsMessage });
 	                }
 				})
 				.catch(function (err) {
@@ -583,6 +649,9 @@ class salesSendLetter extends React.Component {
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
 					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
 				</div>
+				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={"お客様は存在しています、チェックしてください。"} type={"danger"} />
+				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
 					<Modal.Header closeButton></Modal.Header>
@@ -600,49 +669,49 @@ class salesSendLetter extends React.Component {
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row>
-							{/*<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
-										options={this.state.customers}
-										getOptionLabel={(option) => option.code ? option.code : ""}
-										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerCode')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
-												/>
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
-										options={this.state.customers}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="customerCode" className="auto form-control Autocompletestyle-salesSend"
-												/>
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>*/}
-							<Col sm={4}>
+							{/*
+								 * <Col sm={2}> <InputGroup size="sm"
+								 * className="mb-3"> <InputGroup.Prepend>
+								 * <InputGroup.Text
+								 * id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
+								 * </InputGroup.Prepend> <Autocomplete
+								 * disabled={this.state.allCustomer.length ===
+								 * this.state.customerTemp.length ? true :
+								 * false} options={this.state.customers}
+								 * getOptionLabel={(option) => option.code ?
+								 * option.code : ""}
+								 * value={this.state.customers.find(v => v.code
+								 * === this.state.customerCode) || ""}
+								 * onChange={(event, values) =>
+								 * this.onTagsChange(event, values,
+								 * 'customerCode')} renderInput={(params) => (
+								 * <div ref={params.InputProps.ref}> <input
+								 * type="text" {...params.inputProps}
+								 * id="customerCode" className="auto
+								 * form-control Autocompletestyle-salesSend" />
+								 * </div> )} /> </InputGroup> </Col> <Col
+								 * sm={2}> <InputGroup size="sm"
+								 * className="mb-3"> <InputGroup.Prepend>
+								 * <InputGroup.Text
+								 * id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
+								 * </InputGroup.Prepend> <Autocomplete
+								 * disabled={this.state.allCustomer.length ===
+								 * this.state.customerTemp.length ? true :
+								 * false} options={this.state.customers}
+								 * getOptionLabel={(option) => option.name ?
+								 * option.name : ""}
+								 * value={this.state.customers.find(v => v.code
+								 * === this.state.customerCode) || ""}
+								 * onChange={(event, values) =>
+								 * this.onTagsChange(event, values,
+								 * 'customerName')} renderInput={(params) => (
+								 * <div ref={params.InputProps.ref}> <input
+								 * type="text" {...params.inputProps}
+								 * id="customerCode" className="auto
+								 * form-control Autocompletestyle-salesSend" />
+								 * </div> )} /> </InputGroup> </Col>
+								 */}
+							<Col sm={7}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
@@ -661,57 +730,112 @@ class salesSendLetter extends React.Component {
 										</div>
 									)}
 								/>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="twoKanji">部門</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
-										options={this.state.customerDepartmentNameDrop}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.customerDepartmentNameDrop.find(v => v.code === this.state.customerDepartmentCode) || ""}
-										onChange={(event, values) => this.onTagsChange(event, values, 'customerDepartmentCode')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="customerDepartmentName" className="auto form-control Autocompletestyle-salesSend"
-												/>
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>
-							<Col sm={3}>
-							<InputGroup size="sm" className="mb-3">
+									{/*
+										 * <InputGroup.Prepend> <InputGroup.Text
+										 * id="twoKanji">部門</InputGroup.Text>
+										 * </InputGroup.Prepend> <Autocomplete
+										 * disabled={this.state.allCustomer.length
+										 * === this.state.customerTemp.length ?
+										 * true : false}
+										 * options={this.state.customerDepartmentNameDrop}
+										 * getOptionLabel={(option) =>
+										 * option.name ? option.name : ""}
+										 * value={this.state.customerDepartmentNameDrop.find(v =>
+										 * v.code ===
+										 * this.state.customerDepartmentCode) ||
+										 * ""} onChange={(event, values) =>
+										 * this.onTagsChange(event, values,
+										 * 'customerDepartmentCode')}
+										 * renderInput={(params) => ( <div
+										 * ref={params.InputProps.ref}> <input
+										 * type="text" {...params.inputProps}
+										 * id="customerDepartmentName"
+										 * className="auto form-control
+										 * Autocompletestyle-salesSend" />
+										 * </div> )} />
+										 */}
 								<InputGroup.Prepend>
 									<InputGroup.Text id="sanKanji">担当者</InputGroup.Text>
 								</InputGroup.Prepend>
-							<Form.Control placeholder="担当者" id="personInCharge" name="personInCharge" onChange={this.valueChange} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false} className="auto form-control Autocompletestyle-salesSend-personInCharge" />
-								<Button size="sm" variant="info" onClick={this.plusClick} disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}>
+								<Autocomplete
+								disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+								options={this.state.personInCharge}
+								getOptionLabel={(option) => option.text ? option.text : ""}
+								value={this.state.personInCharge.find(v => v.text === this.state.purchasingManagers) || ""}
+								onChange={(event, values) => this.onTagsChange(event, values, 'personInCharge')}
+								renderInput={(params) => (
+									<div ref={params.InputProps.ref}>
+										<input type="text" {...params.inputProps}
+											id="personInCharge" className="auto form-control Autocompletestyle-salesSend-personInCharge"
+											 />
+									</div>
+								)}
+							/>
+								<Button size="sm" variant="info" onClick={this.addClick} /*disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}*/
+								disabled={this.state.customerCode !== "" || this.state.purchasingManagers !== ""  ? false : true}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 									</InputGroup>
 							</Col>
 
-							{/*<Col sm={5} style={{ "display": this.state.salesLists.length >= 1 ? "block" : "none" }}>
-								<InputGroup size="sm" className="mb-3" style={{ position: 'relative' }}>
-									<div style={{ "display": this.state.listShowFlag ? "contents" : "none" }}>
-										格納リスト：
-									<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs1, '1')} style={{ "display": this.state.salesLists.length >= 1 ? "block" : "none" }}>
-											<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length >= 1 ? ' ' + this.state.listName1 : ''}</Button>{'　'}
-										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs2, '2')} style={{ "display": this.state.salesLists.length >= 2 ? "block" : "none" }}>
-											<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length >= 2 ? ' ' + this.state.listName2 : ''}</Button>{'　'}
-										<Button size="sm" variant="info" onClick={this.showSelectedCtms.bind(this, this.state.selectedCtmNoStrs3, '3')} style={{ "display": this.state.salesLists.length >= 3 ? "block" : "none" }}>
-											<FontAwesomeIcon icon={faBookmark} />{this.state.salesLists.length >= 3 ? ' ' + this.state.listName3 : ''}</Button>
-									</div>
-									<span style={{ "display": !this.state.listShowFlag ? "contents" : "none" }}>格納リスト： <FormControl autoComplete="off" value={this.state.listName1}
-										disabled={this.state.salesLists.length >= 1 ? false : true}
-										size="sm" name="listName1" style={{ width: "85px" }} onChange={this.changeListName} />
-										<FormControl autoComplete="off" value={this.state.listName2}
-											size="sm" name="listName2" style={{ width: "85px", "display": this.state.salesLists.length >= 2 ? "block" : "none" }} onChange={this.changeListName} />
-										<FormControl autoComplete="off" value={this.state.listName3}
-											size="sm" name="listName3" style={{ width: "85px", "display": this.state.salesLists.length >= 3 ? "block" : "none" }} onChange={this.changeListName} />{'　　　'}</span>
-									<Button style={{ position: 'absolute', right: '0px' }} size="sm" variant="info" onClick={this.changeName}><FontAwesomeIcon icon={faPencilAlt} />{this.state.listShowFlag ? '対象名修正' : '対象名更新'}</Button>
-								</InputGroup>
-							</Col>*/}
+							{/*
+								 * <Col sm={5} style={{ "display":
+								 * this.state.salesLists.length >= 1 ? "block" :
+								 * "none" }}> <InputGroup size="sm"
+								 * className="mb-3" style={{ position:
+								 * 'relative' }}> <div style={{ "display":
+								 * this.state.listShowFlag ? "contents" : "none"
+								 * }}> 格納リスト： <Button size="sm" variant="info"
+								 * onClick={this.showSelectedCtms.bind(this,
+								 * this.state.selectedCtmNoStrs1, '1')} style={{
+								 * "display": this.state.salesLists.length >= 1 ?
+								 * "block" : "none" }}> <FontAwesomeIcon
+								 * icon={faBookmark}
+								 * />{this.state.salesLists.length >= 1 ? ' ' +
+								 * this.state.listName1 : ''}</Button>{' '}
+								 * <Button size="sm" variant="info"
+								 * onClick={this.showSelectedCtms.bind(this,
+								 * this.state.selectedCtmNoStrs2, '2')} style={{
+								 * "display": this.state.salesLists.length >= 2 ?
+								 * "block" : "none" }}> <FontAwesomeIcon
+								 * icon={faBookmark}
+								 * />{this.state.salesLists.length >= 2 ? ' ' +
+								 * this.state.listName2 : ''}</Button>{' '}
+								 * <Button size="sm" variant="info"
+								 * onClick={this.showSelectedCtms.bind(this,
+								 * this.state.selectedCtmNoStrs3, '3')} style={{
+								 * "display": this.state.salesLists.length >= 3 ?
+								 * "block" : "none" }}> <FontAwesomeIcon
+								 * icon={faBookmark}
+								 * />{this.state.salesLists.length >= 3 ? ' ' +
+								 * this.state.listName3 : ''}</Button> </div>
+								 * <span style={{ "display":
+								 * !this.state.listShowFlag ? "contents" :
+								 * "none" }}>格納リスト： <FormControl
+								 * autoComplete="off"
+								 * value={this.state.listName1}
+								 * disabled={this.state.salesLists.length >= 1 ?
+								 * false : true} size="sm" name="listName1"
+								 * style={{ width: "85px" }}
+								 * onChange={this.changeListName} />
+								 * <FormControl autoComplete="off"
+								 * value={this.state.listName2} size="sm"
+								 * name="listName2" style={{ width: "85px",
+								 * "display": this.state.salesLists.length >= 2 ?
+								 * "block" : "none" }}
+								 * onChange={this.changeListName} />
+								 * <FormControl autoComplete="off"
+								 * value={this.state.listName3} size="sm"
+								 * name="listName3" style={{ width: "85px",
+								 * "display": this.state.salesLists.length >= 3 ?
+								 * "block" : "none" }}
+								 * onChange={this.changeListName} />{' '}</span>
+								 * <Button style={{ position: 'absolute', right:
+								 * '0px' }} size="sm" variant="info"
+								 * onClick={this.changeName}><FontAwesomeIcon
+								 * icon={faPencilAlt} />{this.state.listShowFlag ?
+								 * '対象名修正' : '対象名更新'}</Button> </InputGroup>
+								 * </Col>
+								 */}
 							<Col sm={5}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
@@ -758,11 +882,17 @@ class salesSendLetter extends React.Component {
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={this.createList} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
-								{/*<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists}
-									disabled={!this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faBroom} />クリア</Button>{' '}*/}
+									onClick={this.createList} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
+								{/*
+									 * <Button size="sm" variant="info"
+									 * name="clickButton"
+									 * onClick={this.clearLists}
+									 * disabled={!this.state.sendLetterBtnFlag ?
+									 * false : true}><FontAwesomeIcon
+									 * icon={faBroom} />クリア</Button>{' '}
+									 */}
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={this.deleteLists} disabled={this.state.selectetRowIds.length === this.state.customerTemp.length || this.state.selectetRowIds.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
+									onClick={!this.state.sendLetterBtnFlag ? this.clearLists : this.deleteLists} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
 
 										<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
 										
