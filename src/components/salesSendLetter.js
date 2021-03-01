@@ -73,10 +73,8 @@ class salesSendLetter extends React.Component {
 		selectedCustomers: '',
 		isHidden:true,
 		addCustomerCode: "",
-		test2: "",
-		test3: "",
 	};
-
+	
 	componentDidMount() {
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			this.setState({
@@ -185,8 +183,6 @@ class salesSendLetter extends React.Component {
 					this.setState({
 						purchasingManagers: '',
 						addCustomerCode: '',
-						test2: '',
-						test3: '',
 					})
 					break;
 				default:
@@ -216,7 +212,12 @@ class salesSendLetter extends React.Component {
 					.then(result => {
 				this.setState({
 					allCustomer: result.data,
+					selectetRowIds: [],
+					selectedCusInfos: [],
 				});
+				this.refs.customersTable.setState({
+					selectedRowKeys: [],
+				})
 			})
 			.catch(function (err) {
 				alert(err)
@@ -227,8 +228,6 @@ class salesSendLetter extends React.Component {
 						purchasingManagers: values.text,
 						customerCode: '',
 						addCustomerCode: values.code,
-						test2: values.name,
-						test3: values.value,
 					})
 					break;
 				default:
@@ -257,18 +256,29 @@ class salesSendLetter extends React.Component {
 
 	// clearボタン事件
 	clearLists = () => {
-		if (this.state.selectedlistName !== '') {
-			axios.post(this.state.serverIP + "salesSendLetters/deleteList", { storageListName: this.state.selectedlistName })
+		if (this.state.storageListName !== '') {
+			axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerList", { storageListName: this.state.storageListName })
 				.then(result => {
+					let newStorageListArray = new Array();
+					for (let i in this.state.storageList) {
+						if(this.state.storageList[i].name === this.state.storageListName){
+							let storageListTemp = {name:this.state.storageList[i].name,code:''};
+							newStorageListArray.push(storageListTemp);
+						}
+						else{
+							newStorageListArray.push(this.state.storageList[i]);
+
+						}
+					}
 					this.setState({
-						allCustomer: this.state.customerTemp,
+						storageList: newStorageListArray,
+						allCustomer: [],
 						sendLetterBtnFlag: true,
 					})
 					this.refs.customersTable.store.selected = [];
 					this.refs.customersTable.setState({
 						selectedRowKeys: [],
 					})
-					this.getLists();
 				})
 
 		} else {
@@ -314,6 +324,29 @@ class salesSendLetter extends React.Component {
 				this.getLists();
 			})
 	}
+	
+	addNewList = () => {
+		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { code:String(this.refs.customersTable.state.selectedRowKeys) })
+		.then(result => {
+			let newStorageListArray = this.state.storageList;
+			let storageListTemp = {name:result.data,code:String(this.refs.customersTable.state.selectedRowKeys)};
+			newStorageListArray.push(storageListTemp);
+			this.setState({
+				storageList: newStorageListArray,
+				storageListName: result.data,
+				storageListNameChange: result.data,
+			})
+		})
+		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: String(this.refs.customersTable.state.selectedRowKeys).split(',') })
+				.then(result => {
+					this.setState({
+						allCustomer: result.data,
+					});
+				})
+				.catch(function (err) {
+					alert(err)
+				})
+	}
 
 	// deleteボタン事件
 	deleteLists = () => {
@@ -336,6 +369,12 @@ class salesSendLetter extends React.Component {
 		this.refs.customersTable.setState({
 			selectedRowKeys: [],
 		})
+		if (this.state.storageListName !== '') {
+
+		}
+		else{
+			
+		}
 	}
 
 	// 全て選択ボタン事件
@@ -371,34 +410,72 @@ class salesSendLetter extends React.Component {
 				return;
 			}
 		}
-		var allCustomerModel = {};
-		if(allCustomerData.length > 0){
-			allCustomerModel["any"] = parseInt(allCustomerData[allCustomerData.length - 1].any) + 1;
-		}else{
-			allCustomerModel["any"] = 1;
+		if(this.state.storageListName === null || this.state.storageListName === ""){
+			axios.post(this.state.serverIP + "salesSendLetters/getSalesCustomerByNo", { customerNo:this.state.addCustomerCode })
+			.then(result => {
+				var allCustomerModel = {};
+				if(allCustomerData.length > 0){
+					allCustomerModel["any"] = parseInt(allCustomerData[allCustomerData.length - 1].any) + 1;
+				}else{
+					allCustomerModel["any"] = 1;
+				}
+				allCustomerModel["customerNo"] = result.data[0].customerNo;
+				allCustomerModel["customerName"] = result.data[0].customerName;
+				allCustomerModel["purchasingManagers"] = result.data[0].purchasingManagers;
+				allCustomerModel["customerDepartmentCode"] = result.data[0].customerDepartmentCode;
+				allCustomerModel["positionCode"] = result.data[0].positionCode;
+				allCustomerModel["purchasingManagersMail"] = result.data[0].purchasingManagersMail;
+				allCustomerModel["levelCode"] = result.data[0].levelCode;
+				allCustomerModel["monthCount"] = "";
+				allCustomerModel["salesPersonsAppend"] = "";
+				allCustomerModel["monthMailCount"] = "";
+				allCustomerData.push(allCustomerModel);
+				var currentPage = Math.ceil(allCustomerData.length / 10);
+				this.setState({
+					allCustomer: allCustomerData,
+					currentPage: currentPage,
+					purchasingManagers: '',
+					customerCode: '',
+				})
+				this.refs.customersTable.setState({
+					selectedRowKeys: []
+				});
+			})	
 		}
-		allCustomerModel["customerNo"] = this.state.addCustomerCode;
-		allCustomerModel["customerName"] = "";
-		allCustomerModel["purchasingManagers"] = "";
-		allCustomerModel["customerDepartmentCode"] = "";
-		allCustomerModel["positionCode"] = "";
-		allCustomerModel["purchasingManagersMail"] = "";
-		allCustomerModel["purchasingManagersMail"] = "";
-		allCustomerModel["levelCode"] = "";
-		allCustomerModel["monthCount"] = "";
-		allCustomerModel["salesPersonsAppend"] = "";
-		allCustomerModel["monthMailCount"] = "";
-		allCustomerData.push(allCustomerModel);
-		var currentPage = Math.ceil(allCustomerData.length / 10);
-		this.setState({
-			allCustomer: allCustomerData,
-			currentPage: currentPage,
-			purchasingManagers: '',
-			customerCode: '',
-		})
-		this.refs.customersTable.setState({
-			selectedRowKeys: []
-		});
+		else{
+			axios.post(this.state.serverIP + "salesSendLetters/customerListUpdate", 
+					{
+						storageListName:this.state.storageListName,
+						customerList:this.state.addCustomerCode
+					})
+			.then(result => {
+				axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: result.data.split(',') })
+				.then(result => {
+					let newStorageListArray = new Array();
+					for (let i in this.state.storageList) {
+						if(this.state.storageList[i].name === this.state.storageListName){
+							let storageListTemp = {name:this.state.storageList[i].name,code:this.state.storageList[i].code + ',' + this.state.addCustomerCode};
+							newStorageListArray.push(storageListTemp);
+						}
+						else{
+							newStorageListArray.push(this.state.storageList[i]);
+
+						}
+					}
+					this.setState({
+						storageList: newStorageListArray,
+						storageListName: this.state.storageListNameChange,
+						allCustomer: result.data,
+					});
+				})
+				.catch(function (err) {
+					alert(err)
+				})
+			})
+			.catch(function (err) {
+				alert(err)
+			})
+		}	
 	}
 
 	// plusClick
@@ -515,7 +592,23 @@ class salesSendLetter extends React.Component {
 	                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
-						window.location.reload();
+						
+						let newStorageListArray = new Array();
+						for (let i in this.state.storageList) {
+							if(this.state.storageList[i].name === this.state.storageListName){
+								let storageListTemp = {name:this.state.storageListNameChange,code:this.state.storageList[i].code};
+								newStorageListArray.push(storageListTemp);
+							}
+							else{
+								newStorageListArray.push(this.state.storageList[i]);
+
+							}
+						}
+						this.setState({
+							storageList: newStorageListArray,
+							storageListName: this.state.storageListNameChange,
+						})
+						
 	                } else {
 	                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 	                }
@@ -771,7 +864,13 @@ class salesSendLetter extends React.Component {
 									</div>
 								)}
 							/>
-								<Button size="sm" variant="info" onClick={this.addClick} /*disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}*/
+								<Button size="sm" variant="info" onClick={this.addClick} /*
+																							 * disabled={this.state.allCustomer.length
+																							 * ===
+																							 * this.state.customerTemp.length ?
+																							 * true :
+																							 * false}
+																							 */
 								disabled={this.state.customerCode !== "" || this.state.purchasingManagers !== ""  ? false : true}>
 									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
 									</InputGroup>
@@ -844,6 +943,7 @@ class salesSendLetter extends React.Component {
 								<Autocomplete
 									options={this.state.storageList}
 									getOptionLabel={(option) => option.name ? option.name : ""}
+									disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? true : false}
 									value={this.state.storageList.find(v => v.name === this.state.storageListName) || ""}
 									onChange={(event, values) => this.onTagsChange(event, values, 'storageList')}
 									renderInput={(params) => (
@@ -882,7 +982,7 @@ class salesSendLetter extends React.Component {
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={this.createList} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
+									onClick={this.addNewList} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
 								{/*
 									 * <Button size="sm" variant="info"
 									 * name="clickButton"
