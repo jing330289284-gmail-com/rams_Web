@@ -256,40 +256,46 @@ class salesSendLetter extends React.Component {
 
 	// clearボタン事件
 	clearLists = () => {
-		if (this.state.storageListName !== '') {
-			axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerList", { storageListName: this.state.storageListName })
-				.then(result => {
-					let newStorageListArray = new Array();
-					for (let i in this.state.storageList) {
-						if(this.state.storageList[i].name === this.state.storageListName){
-							let storageListTemp = {name:this.state.storageList[i].name,code:''};
-							newStorageListArray.push(storageListTemp);
-						}
-						else{
-							newStorageListArray.push(this.state.storageList[i]);
+		var a = window.confirm("削除していただきますか？");
+		if(a){
+			if (this.state.storageListName !== '') {
+				axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerList", { storageListName: this.state.storageListName })
+					.then(result => {
+						let newStorageListArray = new Array();
+						for (let i in this.state.storageList) {
+							if(this.state.storageList[i].name === this.state.storageListName){
+								let storageListTemp = {name:this.state.storageList[i].name,code:''};
+								newStorageListArray.push(storageListTemp);
+							}
+							else{
+								newStorageListArray.push(this.state.storageList[i]);
 
+							}
 						}
-					}
-					this.setState({
-						storageList: newStorageListArray,
-						allCustomer: [],
-						sendLetterBtnFlag: true,
+						this.setState({
+							storageList: newStorageListArray,
+							allCustomer: [],
+							sendLetterBtnFlag: true,
+						})
+						this.refs.customersTable.store.selected = [];
+						this.refs.customersTable.setState({
+							selectedRowKeys: [],
+						})
+					    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					})
-					this.refs.customersTable.store.selected = [];
-					this.refs.customersTable.setState({
-						selectedRowKeys: [],
-					})
+			} else {
+				this.setState({
+					allCustomer: [],
+					sendLetterBtnFlag: true,
 				})
-
-		} else {
-			this.setState({
-				allCustomer: [],
-				sendLetterBtnFlag: true,
-			})
-			this.refs.customersTable.store.selected = [];
-			this.refs.customersTable.setState({
-				selectedRowKeys: [],
-			})
+				this.refs.customersTable.store.selected = [];
+				this.refs.customersTable.setState({
+					selectedRowKeys: [],
+				})
+				this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			}
 		}
 	}
 	
@@ -326,22 +332,30 @@ class salesSendLetter extends React.Component {
 	}
 	
 	addNewList = () => {
-		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { code:String(this.refs.customersTable.state.selectedRowKeys) })
+		let newAllCtmNos = "";
+		for (let i in this.state.allCustomer){
+			newAllCtmNos += this.state.allCustomer[i].customerNo + ",";
+		}
+		newAllCtmNos = newAllCtmNos.substring(0, newAllCtmNos.lastIndexOf(','));
+		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) })
 		.then(result => {
 			let newStorageListArray = this.state.storageList;
-			let storageListTemp = {name:result.data,code:String(this.refs.customersTable.state.selectedRowKeys)};
+			let storageListTemp = {name:result.data,code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) };
 			newStorageListArray.push(storageListTemp);
 			this.setState({
 				storageList: newStorageListArray,
 				storageListName: result.data,
 				storageListNameChange: result.data,
+				selectedCustomers: (this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos),
 			})
 		})
-		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: String(this.refs.customersTable.state.selectedRowKeys).split(',') })
+		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys).split(','): newAllCtmNos.split(','))})
 				.then(result => {
 					this.setState({
 						allCustomer: result.data,
 					});
+				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				})
 				.catch(function (err) {
 					alert(err)
@@ -350,30 +364,59 @@ class salesSendLetter extends React.Component {
 
 	// deleteボタン事件
 	deleteLists = () => {
-		let selectedIndex = this.state.selectetRowIds;
-		let newCustomer = this.state.allCustomer;
-		for (let i in selectedIndex) {
-			for (let k in newCustomer) {
-				if (selectedIndex[i] === newCustomer[k].rowId) {
-					newCustomer.splice(k, 1);
-					break;
+		var a = window.confirm("削除していただきますか？");
+		if(a){
+			let selectedIndex = this.state.selectetRowIds;
+			let newCustomer = this.state.allCustomer;
+			for (let i in selectedIndex) {
+				for (let k in newCustomer) {
+					if (selectedIndex[i] === newCustomer[k].rowId) {
+						newCustomer.splice(k, 1);
+						break;
+					}
 				}
 			}
-		}
-		this.refs.customersTable.store.selected = [];
-		this.setState({
-			selectedCusInfos: [],
-			allCustomer: newCustomer,
-			selectetRowIds: [],
-		});
-		this.refs.customersTable.setState({
-			selectedRowKeys: [],
-		})
-		if (this.state.storageListName !== '') {
-
-		}
-		else{
-			
+			this.refs.customersTable.store.selected = [];
+			this.setState({
+				selectedCusInfos: [],
+				allCustomer: newCustomer,
+				selectetRowIds: [],
+			});
+			this.refs.customersTable.setState({
+				selectedRowKeys: [],
+			})
+			if (this.state.storageListName !== '') {
+				axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerListByNo",
+						{
+							oldCtmNos: String(this.state.selectedCustomers).split(','),
+							deleteCtmNos: String(this.refs.customersTable.state.selectedRowKeys).split(','),
+							storageListName: this.state.storageListName
+						})
+				.then(result => {
+					let newStorageListArray = new Array();
+					for (let i in this.state.storageList) {
+						if(this.state.storageList[i].name === this.state.storageListName){
+							let storageListTemp = {name:this.state.storageList[i].name,code:result.data};
+							newStorageListArray.push(storageListTemp);
+						}
+						else{
+							newStorageListArray.push(this.state.storageList[i]);
+						}
+					}
+					this.setState({
+						selectedCustomers: result.data,
+						storageList: newStorageListArray,
+					})
+				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				})
+				.catch(function (err) {
+					alert(err)
+				})
+			}else{
+			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			}
 		}
 	}
 
@@ -411,36 +454,35 @@ class salesSendLetter extends React.Component {
 			}
 		}
 		if(this.state.storageListName === null || this.state.storageListName === ""){
-			axios.post(this.state.serverIP + "salesSendLetters/getSalesCustomerByNo", { customerNo:this.state.addCustomerCode })
+			let newAllCtmNos = "";
+			for (let i in this.state.allCustomer){
+				newAllCtmNos += this.state.allCustomer[i].customerNo + ",";
+			}
+			newAllCtmNos += this.state.addCustomerCode;
+			axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: newAllCtmNos.split(',') })
 			.then(result => {
-				var allCustomerModel = {};
-				if(allCustomerData.length > 0){
-					allCustomerModel["any"] = parseInt(allCustomerData[allCustomerData.length - 1].any) + 1;
-				}else{
-					allCustomerModel["any"] = 1;
+				let newStorageListArray = new Array();
+				for (let i in this.state.storageList) {
+					if(this.state.storageList[i].name === this.state.storageListName){
+						let storageListTemp = {name:this.state.storageList[i].name,code:this.state.storageList[i].code + ',' + this.state.addCustomerCode};
+						newStorageListArray.push(storageListTemp);
+					}
+					else{
+						newStorageListArray.push(this.state.storageList[i]);
+
+					}
 				}
-				allCustomerModel["customerNo"] = result.data[0].customerNo;
-				allCustomerModel["customerName"] = result.data[0].customerName;
-				allCustomerModel["purchasingManagers"] = result.data[0].purchasingManagers;
-				allCustomerModel["customerDepartmentCode"] = result.data[0].customerDepartmentCode;
-				allCustomerModel["positionCode"] = result.data[0].positionCode;
-				allCustomerModel["purchasingManagersMail"] = result.data[0].purchasingManagersMail;
-				allCustomerModel["levelCode"] = result.data[0].levelCode;
-				allCustomerModel["monthCount"] = "";
-				allCustomerModel["salesPersonsAppend"] = "";
-				allCustomerModel["monthMailCount"] = "";
-				allCustomerData.push(allCustomerModel);
-				var currentPage = Math.ceil(allCustomerData.length / 10);
 				this.setState({
-					allCustomer: allCustomerData,
-					currentPage: currentPage,
-					purchasingManagers: '',
-					customerCode: '',
-				})
-				this.refs.customersTable.setState({
-					selectedRowKeys: []
+					storageList: newStorageListArray,
+					storageListName: this.state.storageListNameChange,
+					allCustomer: result.data,
 				});
-			})	
+			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			})
+			.catch(function (err) {
+				alert(err)
+			})
 		}
 		else{
 			axios.post(this.state.serverIP + "salesSendLetters/customerListUpdate", 
@@ -467,6 +509,8 @@ class salesSendLetter extends React.Component {
 						storageListName: this.state.storageListNameChange,
 						allCustomer: result.data,
 					});
+				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				})
 				.catch(function (err) {
 					alert(err)
@@ -475,7 +519,7 @@ class salesSendLetter extends React.Component {
 			.catch(function (err) {
 				alert(err)
 			})
-		}	
+		}
 	}
 
 	// plusClick
@@ -619,23 +663,40 @@ class salesSendLetter extends React.Component {
 	}
 	
 	deleteList = () => {
-		var salesSendLettersListNames = {
-				storageListName: this.state.storageListNameChange
-			};
-		axios.post(this.state.serverIP + "salesSendLetters/deleteList", salesSendLettersListNames)
-				.then(result => {
-	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-	                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
-	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
-						window.location.reload();
-	                } else {
-	                    this.setState({errorsMessageValue: result.data.errorsMessage });
-	                }
-				})
-				.catch(function (err) {
-					alert(err)
-				})
+		var a = window.confirm("削除していただきますか？");
+		if(a){
+			var salesSendLettersListNames = {
+					storageListName: this.state.storageListNameChange
+				};
+			axios.post(this.state.serverIP + "salesSendLetters/deleteList", salesSendLettersListNames)
+					.then(result => {
+		                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+							let newStorageListArray = new Array();
+							for (let i in this.state.storageList) {
+								if(this.state.storageList[i].name === this.state.storageListName){
+								}
+								else{
+									newStorageListArray.push(this.state.storageList[i]);
+								}
+							}
+							this.setState({
+								storageList: newStorageListArray,
+								sendLetterBtnFlag: true,
+								storageListNameChange: "",
+								storageListName: "",
+							})
+		                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
+		                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+							store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+		                } else {
+		                    this.setState({errorsMessageValue: result.data.errorsMessage });
+		                }
+		                this.getCustomers();
+					})
+					.catch(function (err) {
+						alert(err)
+					})
+		}
 	}
 
 	showSelectedCtms = (selectedNos, flag) => {
@@ -982,7 +1043,7 @@ class salesSendLetter extends React.Component {
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={this.addNewList} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
+									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
 								{/*
 									 * <Button size="sm" variant="info"
 									 * name="clickButton"

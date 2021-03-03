@@ -15,9 +15,11 @@ class salesAppend extends Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
-		selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [],
+		selectetPersonsName: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
+		allRowId: [],
 		parentSelectedInfo: this.props.customer,
 		appendPersonMsg: {
 			purchasingManagers2: '',
@@ -34,32 +36,35 @@ class salesAppend extends Component {
 
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
+		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
+		for(let i in str){
+			str[i] = Number(str[i]);
+		}
 		this.refs.salesPersonTable.setState({
-			selectedRowKeys: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+			selectedRowKeys: str,
 		});
-		this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
+		this.refs.salesPersonTable.store.selected = str;
+		//this.props.customer.test !== undefined ? alert(this.props.customer.test.split(',')) : alert(this.props.customer.test)
 	}
 
 	getSalesPersons = (customerNo) => {
 		axios.post(this.state.serverIP + "salesSendLetters/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array();
+				let salesRowIdArray = new Array();
 				for (let i in result.data) {
 					salesPersonsNameArray.push(result.data[i].responsiblePerson);
+					salesRowIdArray.push(result.data[i].rowId);
 				}
 				this.setState({
 					allSalesPersons: result.data,
 					allSalesPersonsName: salesPersonsNameArray,
+					allRowId: salesRowIdArray
 				});
 			})
 			.catch(function(err) {
 				alert(err)
 			})
-	}
-	// 行番号
-	indexN = (cell, row, enumObject, index) => {
-		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
-		return (<div>{rowNumber}</div>);
 	}
 
 	// customerDepartmentNameFormat
@@ -90,11 +95,13 @@ class salesAppend extends Component {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
+				selectetPersonsName: [],
 			});
 		}
 		if (isSelected) {
 			this.setState({
-				selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
+				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
+				selectetPersonsName: this.state.selectetPersonsName.concat([row.responsiblePerson]),
 				appendPersonMsg: {
 			purchasingManagers2: row.responsiblePerson,
 			positionCode2: row.positionCode,
@@ -102,10 +109,13 @@ class salesAppend extends Component {
 		}
 			})
 		} else {
-			let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
+			let index = this.state.selectetRowIds.findIndex(item => item === String(row.rowId));
 			this.state.selectetRowIds.splice(index, 1);
+			index = this.state.selectetPersonsName.findIndex(item => item === row.responsiblePerson);
+			this.state.selectetPersonsName.splice(index, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
+				selectetPersonsName: this.state.selectetPersonsName,
 			})
 		}
 	}
@@ -115,11 +125,12 @@ class salesAppend extends Component {
 		this.refs.salesPersonTable.store.selected = [];
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
-				selectedRowKeys: this.state.allSalesPersonsName,
+				selectedRowKeys: this.state.allRowId,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
-				selectetRowIds: this.state.allSalesPersonsName,
+				selectetPersonsName: this.state.allSalesPersonsName,
+				selectetRowIds: this.state.allRowId,
 			})
 		} else {
 			this.refs.salesPersonTable.setState({
@@ -127,14 +138,17 @@ class salesAppend extends Component {
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
+				selectetPersonsName: [],
 				selectetRowIds: [],
 			})
 		}
 	}
 
 	salesSelected = () => {
-		let salesPersons = this.state.selectetRowIds.join(",");
+		let salesPersons = this.state.selectetPersonsName.join(",");
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
+		let salesRowsId = this.state.selectetRowIds.join(",");
+		this.state.parentSelectedInfo.test = salesRowsId;
 		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
 	render() {
@@ -175,7 +189,7 @@ class salesAppend extends Component {
 				</Row>
 				<Form >
 					<Row>
-						<Col sm={4}>
+						<Col sm={6}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text></InputGroup.Prepend>
 								<FormControl defaultValue={this.props.customer.customerName} disabled size="sm" />
@@ -189,7 +203,7 @@ class salesAppend extends Component {
 						</Col>
 					</Row>
 				</Form>
-				<div >
+				<div style={{ marginLeft: "15px", marginRight: "15px" }}>
 					<BootstrapTable
 						ref="salesPersonTable"
 						
@@ -199,10 +213,10 @@ class salesAppend extends Component {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='7%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='11%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 						<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='responsiblePerson' isKey >名前</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='responsiblePerson' >名前</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' >メール</TableHeaderColumn>
 					</BootstrapTable>
 				</div>
