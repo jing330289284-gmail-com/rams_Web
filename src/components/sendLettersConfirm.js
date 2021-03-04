@@ -104,6 +104,8 @@ class sendLettersConfirm extends React.Component {
 		initWellUseLanguagss: [],
 		daiologShowFlag: false,
 		empAdddaiologShowFlag: false,
+		selectRow1Flag: false,
+		selectRowFlag: false,
 		mails: [],
 		loginUserInfo: [],
 		appendEmps: [],
@@ -376,9 +378,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						salesProgressCode: '2',
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
-						employeeStatus: result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
+						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
+						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
+						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
 						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
@@ -429,9 +431,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						//salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
-						employeeStatus: result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
+						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
+						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
+						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
 						unitPrice: result.data[0].unitPrice,
 						remark: result.data[0].remark,
@@ -538,6 +540,15 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			//selectedSalesPerson: isSelected ? row.customerName : '',
 			selectedmail: isSelected ? row.purchasingManagersMail : '',
 		})
+		if (isSelected) {
+			this.setState({
+           	 	selectRow1Flag: true,
+			})
+		}else{
+			this.setState({
+           	 	selectRow1Flag: false,
+			})
+		}
 	}
 
 	openEmpAddDaiolog = (flag) => {
@@ -565,12 +576,17 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		if (isSelected) {
 			this.setState({
            	 	selectedColumnId: row.index,
+           	 	employeeFlag: true,
+           	 	selectRowFlag: true,
 			})
 			$("#bookButton").attr("disabled",false);
 			$("#deleteButton").attr("disabled",false);
 		} else {
 			$("#deleteButton").attr("disabled",true);
 			$("#bookButton").attr("disabled",true);
+			this.setState({
+           	 	selectRowFlag: false,
+			})
 		}
 		if (row.employeeNo !== "" && row.employeeNo !== null) {
 			this.searchPersonnalDetail(row.employeeNo);
@@ -801,6 +817,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.setState({
 			currentPage: currentPage,
 			employeeInfo: employeeInfoList,
+			selectRowFlag: false,
 			//rowNo: '',
 			// customerDepartmentNameValue: '',
 			// customerDepartmentName: '',
@@ -1084,13 +1101,13 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							// className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='13%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
-							<TableHeaderColumn width='6%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
+							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
 							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn placeholder="履歴書名"  width='18%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn placeholder="履歴書名"  width='17%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 							<Form.File id="resumeInfo1" hidden={true} data-browse="添付" value={resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 					</Col>
@@ -1103,20 +1120,23 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						/>
 					</Col>
 				</Row>
-				<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
+				<Row style={{ padding: "10px" }}><Col sm={12}>
+				
+				</Col></Row>
 				<Row>
-					<Col sm={7}></Col>
+					<Col sm={1}></Col>
+					<Col sm={6}>
+					<Button size="sm"
+						hidden={backPage === "" ? true : false}
+						variant="info"
+						onClick={this.back.bind(this)}
+					>
+						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                    </Button>
+                    </Col>
 					<Col sm={3}>
 						<div style={{ "float": "right" }}>
-							<Button
-								size="sm"
-								hidden={backPage === "" ? true : false}
-								variant="info"
-								onClick={this.back.bind(this)}
-							>
-								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-                            </Button>{" "}
-							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
+							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.sendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>

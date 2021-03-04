@@ -88,16 +88,6 @@ class salesAppend extends Component {
 	}
 
 	handleRowSelect = (row, isSelected, e) => {
-		if (this.state.allSelectedFlag) {
-			this.refs.salesPersonTable.setState({
-				selectedRowKeys: [],
-			});
-			this.setState({
-				allSelectedFlag: !this.state.allSelectedFlag,
-				selectetRowIds: [],
-				selectetPersonsName: [],
-			});
-		}
 		if (isSelected) {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
@@ -117,6 +107,16 @@ class salesAppend extends Component {
 				selectetRowIds: this.state.selectetRowIds,
 				selectetPersonsName: this.state.selectetPersonsName,
 			})
+		}
+		if (this.state.allSelectedFlag) {
+			this.refs.salesPersonTable.setState({
+				selectedRowKeys: [],
+			});
+			this.setState({
+				allSelectedFlag: !this.state.allSelectedFlag,
+				selectetRowIds: [],
+				selectetPersonsName: [],
+			});
 		}
 	}
 
@@ -189,7 +189,7 @@ class salesAppend extends Component {
 				</Row>
 				<Form >
 					<Row>
-						<Col sm={6}>
+						<Col sm={4}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text></InputGroup.Prepend>
 								<FormControl defaultValue={this.props.customer.customerName} disabled size="sm" />

@@ -283,6 +283,7 @@ class salesSendLetter extends React.Component {
 						})
 					    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 					})
 			} else {
 				this.setState({
@@ -295,6 +296,7 @@ class salesSendLetter extends React.Component {
 				})
 				this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 			}
 		}
 	}
@@ -347,6 +349,7 @@ class salesSendLetter extends React.Component {
 				storageListName: result.data,
 				storageListNameChange: result.data,
 				selectedCustomers: (this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos),
+				currentPage: 1,
 			})
 		})
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys).split(','): newAllCtmNos.split(','))})
@@ -356,6 +359,7 @@ class salesSendLetter extends React.Component {
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -409,6 +413,7 @@ class salesSendLetter extends React.Component {
 					})
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -416,6 +421,7 @@ class salesSendLetter extends React.Component {
 			}else{
 			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 			}
 		}
 	}
@@ -444,11 +450,11 @@ class salesSendLetter extends React.Component {
 	}
 	// addClick
 	addClick = () => {
-		this.setState({"errorsMessageShow": false });
+		this.setState({"errorsMessageShow": false});
 		var allCustomerData = this.state.allCustomer;
 		for (let k in allCustomerData) {
 			if(allCustomerData[k].customerNo === this.state.addCustomerCode){
-				this.setState({"errorsMessageShow": true });
+				this.setState({"errorsMessageShow": true , message: "お客様は存在しています、チェックしてください。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 2000);
 				return;
 			}
@@ -479,6 +485,7 @@ class salesSendLetter extends React.Component {
 				});
 			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 			})
 			.catch(function (err) {
 				alert(err)
@@ -511,6 +518,7 @@ class salesSendLetter extends React.Component {
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -627,6 +635,13 @@ class salesSendLetter extends React.Component {
 		this.CellFormatter(row.salesPersonsAppend, row);
 	}
 	changeName = () => {
+		for (let i in this.state.storageList) {
+			if(this.state.storageList[i].name === this.state.storageListNameChange){
+                this.setState({ "errorsMessageShow": true, message: "同名なリストが存在しています、チェックしてください。" });
+                setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+				return;
+			}
+		}
 		var salesSendLettersListNames = {
 				storageListName: this.state.storageListNameChange, oldStorageListName:this.state.storageListName,
 			};
@@ -804,10 +819,10 @@ class salesSendLetter extends React.Component {
 					<MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
 				</div>
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
-					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={"お客様は存在しています、チェックしてください。"} type={"danger"} />
+					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={message} type={"danger"} />
 				</div>
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
+					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-purchasingManagersSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
 						<SalesAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
@@ -865,7 +880,7 @@ class salesSendLetter extends React.Component {
 								 * form-control Autocompletestyle-salesSend" />
 								 * </div> )} /> </InputGroup> </Col>
 								 */}
-							<Col sm={7}>
+							<Col sm={6}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
@@ -996,7 +1011,8 @@ class salesSendLetter extends React.Component {
 								 * '対象名修正' : '対象名更新'}</Button> </InputGroup>
 								 * </Col>
 								 */}
-							<Col sm={5}>
+							<Col sm={3}>
+							<div style={{position:'absolute',right:'0px'}}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
 									<InputGroup.Text id="fiveKanji">格納リスト</InputGroup.Text>
@@ -1010,13 +1026,19 @@ class salesSendLetter extends React.Component {
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
 											<input type="text" {...params.inputProps}
-												id="storageList" className="auto form-control Autocompletestyle-salesSend-storageList"
+												id="storageList" className="auto form-control Autocompletestyle-salesSend-storageList" 
 												 />
 										</div>
 									)}
 								/>
+
+							</InputGroup>
+							</div>
+							</Col>
+							<Col sm={3}>
+							<InputGroup size="sm" className="mb-3">
 								<Form.Control placeholder="データ修正" id="storageListNameChange" name="storageListNameChange" value={this.state.storageListNameChange}
-                                onChange={this.valueChange} className="auto form-control Autocompletestyle-salesSend-changeStorageList" />
+                                onChange={this.valueChange} />
 								<Button style={{ marginLeft: "5px", marginRight: "5px" }} size="sm" variant="info" onClick={this.changeName}><FontAwesomeIcon icon={faPencilAlt} />更新</Button>
 								<Button size="sm" variant="info" onClick={this.deleteList}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>
 							</InputGroup>
@@ -1024,10 +1046,13 @@ class salesSendLetter extends React.Component {
 						</Row>
 					</Form.Group>
 					<Row>
-						<Col sm={2}>
+						<Col sm={6}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
+							
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
 							<Button
 								size="sm"
 								hidden={this.state.isHidden ? true : false}
@@ -1036,9 +1061,6 @@ class salesSendLetter extends React.Component {
 							>
 								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
                             </Button>
-						</Col>
-						<Col sm={4}>
-
 						</Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
@@ -1053,11 +1075,7 @@ class salesSendLetter extends React.Component {
 									 * icon={faBroom} />クリア</Button>{' '}
 									 */}
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={!this.state.sendLetterBtnFlag ? this.clearLists : this.deleteLists} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>{' '}
-
-										<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
-										
-										<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>
+									onClick={!this.state.sendLetterBtnFlag ? this.clearLists : this.deleteLists} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>	
 							</div>
 						</Col>
 					</Row>
@@ -1073,16 +1091,16 @@ class salesSendLetter extends React.Component {
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='7%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
 							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='15%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='levelCode' >ランキング</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='monthCount' >取引数(今月)</TableHeaderColumn>
+							<TableHeaderColumn width='16%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='levelCode' >ランキング</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='monthCount' >取引数</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>
 							<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>

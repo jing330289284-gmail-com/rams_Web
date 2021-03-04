@@ -413,6 +413,11 @@ body {
 	max-width: none !important;
 }
 
+.modal-purchasingManagersSet {
+	width: 45%;
+	max-width: none !important;
+}
+
 .customClass {
 	line-height: 20px;
 	padding: 0px;
@@ -944,17 +949,6 @@ body {
 	color: "#495057"
 }
 
-.Autocompletestyle-salesSend-changeStorageList {
-	width: 10.0rem;
-	height: 31px;
-	border-color: "#ced4da";
-	border-width: 1;
-	border-style: "solid";
-	font-size: ".875rem";
-	color: "#495057";
-	margin-left: 1rem;
-}
-
 .Autocompletestyle-salesSend-personInCharge {
 	width: 12.0rem;
 	height: 31px;
@@ -1451,7 +1445,7 @@ body {
 		color: "#495057"
 	}
 	.Autocompletestyle-salesSend-customers {
-		width: 6.5rem;
+		width: 9rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;
@@ -1468,15 +1462,7 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
-	.Autocompletestyle-salesSend-changeStorageList {
-		width: 7.5rem;
-		height: 31px;
-		border-color: "#ced4da";
-		border-width: 1;
-		border-style: "solid";
-		font-size: ".875rem";
-		color: "#495057"
-}
+
 	.Autocompletestyle-salesEmpAdd {
 		width: 3.5rem;
 		height: 31px;
@@ -1487,7 +1473,7 @@ body {
 		color: "#495057"
 	}
 	.Autocompletestyle-salesSend-personInCharge {
-		width: 2.5rem;
+		width: 9rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;
