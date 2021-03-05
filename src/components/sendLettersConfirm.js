@@ -78,6 +78,7 @@ class sendLettersConfirm extends React.Component {
 		developLanguages: store.getState().dropDown[8].slice(1),
 		developLanguagesShow: store.getState().dropDown[8].slice(1),
 		employeeStatusS: store.getState().dropDown[4].slice(1),
+		positions: store.getState().dropDown[20],
 		wellUseLanguagss: [],
 		stationCode: '',
 		disbleState: false,
@@ -255,7 +256,7 @@ class sendLettersConfirm extends React.Component {
 【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `<br/>
 【所　　属】：`+ this.state.employeeStatus + `<br	/>
 【年　　齢】：`+ this.state.age + `歳<br/>
-【最寄り駅】：`+ (this.state.nearestStation !== "" ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
+【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
 【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
 【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
@@ -359,12 +360,35 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.setState({
 			daiologShowFlag: true,
 		});
-
 	}
 	
-	searchPersonnalDetail = (employeeNo) => {
+	getHopeHighestPrice = (result) => {
+		var tempEmployeeInfo = this.state.employeeInfo;
+		for(let i = 0;i < tempEmployeeInfo.length;i++){
+			tempEmployeeInfo[i].hopeHighestPrice = result.data[i].unitPrice
+		}
+
+		this.setState({
+			employeeInfo:tempEmployeeInfo,
+		});
+	}
+	
+	positionNameFormat = (cell) => {
+		let positionsTem = this.state.positions;
+		for (var i in positionsTem) {
+			if (cell === positionsTem[i].code) {
+				return positionsTem[i].name;
+			}
+		}
+	}
+	
+	searchPersonnalDetail = (employeeNo,hopeHighestPrice,index) => {
+		var employeeInfo = this.state.employeeInfo;
 		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo })
 			.then(result => {
+				if(index != undefined){
+					employeeInfo[index-1].hopeHighestPrice = result.data[0].unitPrice;
+				}
 				if (result.data.length === 0 || result.data[0].age === "") {
 					this.setState({
 						employeeName: result.data[0].employeeFullName,
@@ -376,8 +400,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						yearsOfExperience: result.data[0].yearsOfExperience,
 						beginMonth: new Date("2020/09").getTime(),
 						salesProgressCode: '2',
-						nearestStation: result.data[0].nearestStation,
-						stationCode: result.data[0].nearestStation,
+						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
+						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
 						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
@@ -396,6 +420,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						initUnitPrice: '',
 						initRemark: '',
 						initWellUseLanguagss: [],
+						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
+						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 					})
 				} else {
 					this.setState({
@@ -429,15 +455,16 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						beginMonth: new Date("2020/09").getTime(),
 						salesProgressCode: '1',
 						//salesProgressCode: result.data[0].salesProgressCode,
-						nearestStation: result.data[0].nearestStation,
-						stationCode: result.data[0].nearestStation,
+						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
+						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
 						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode,
-						unitPrice: result.data[0].unitPrice,
+						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
 						remark: result.data[0].remark,
 						initAge: result.data[0].age,
+						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 						initNearestStation: result.data[0].nearestStation,
 						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 						initEnglishConversationLevel: result.data[0].englishConversationLevel,
@@ -506,6 +533,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					EmployeeNameIndex : result.data.length,
 					/* 要員追加機能の新規　20201216 　張棟　END*/
 				})
+				this.getHopeHighestPrice(result);
 			})
 			.catch(function(error) {
 				alert(error);
@@ -589,7 +617,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			})
 		}
 		if (row.employeeNo !== "" && row.employeeNo !== null) {
-			this.searchPersonnalDetail(row.employeeNo);
+			this.searchPersonnalDetail(row.employeeNo,row.hopeHighestPrice);
 		}
 	};
 	formatEmpStatus = (cell, row, enumObject, index) => {
@@ -632,7 +660,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 								  onChange={this.employeeNameChange.bind(this, row)}
 								  name="employeeName"
 								  autoComplete="off">
-							<option></option>
+							<option value=""></option>
 						{this.state.allEmployeeName.map(data =>
 
 							<option value={data}>
@@ -648,7 +676,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 								  name="employeeName"
 								  value={cell}
 								  autoComplete="off">
-						<option></option>
+						<option value=""></option>
 						{this.state.allEmployeeName.map(data =>
 
 							<option value={data}>
@@ -663,64 +691,69 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	
 	// 要員名前触発されるイベント
 	employeeNameChange = (row, event) => {
-		var employeeInfo = this.state.employeeInfo;
-		var employeeNoTemp;
+		if(event.target.value !== ""){
+			var employeeInfo = this.state.employeeInfo;
+			var employeeNoTemp;
 
-		for (let i=0; i < this.state.employeeInfo.length; i++) {
-			if (row.index !== this.state.employeeInfo[i].index
-			&& event.target.value === this.state.employeeInfo[i].employeeName) {
-				this.setState({"myToastShow": true,
-					type: false,
-					errorsMessageShow: false,
-					message: "同じ名前は選択されている。",
-					sendLetterButtonDisFlag:true});
-				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				// window.location.reload();
-				return;
-			}
-		}
-		employeeInfo[row.index-1].employeeName  = event.target.value;
-//		this.setState({
-//			[event.target.name]: event.target.value,
-//			employeeInfo: employeeInfo,
-//		})
-		for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
-			if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
-				var employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
-				employeeInfo[row.index-1].employeeNo = employeeNoTemp;
-				if (employeeNoTemp.match("LYC")) {
-					// 社員
-					employeeInfo[row.index-1].employeeStatus = "0";
-					this.setState({
-						employeeInfo : employeeInfo,
-						employeeFlag: true,
-					});
-				} else if (employeeNoTemp.match("BP")){
-					// 協力
-					employeeInfo[row.index-1].employeeStatus = "1";
-					this.setState({
-						employeeInfo : employeeInfo,
-						employeeFlag: true,
-					});
+			for (let i=0; i < this.state.employeeInfo.length; i++) {
+				if (row.index !== this.state.employeeInfo[i].index
+				&& event.target.value === this.state.employeeInfo[i].employeeName) {
+					this.setState({"myToastShow": true,
+						type: false,
+						errorsMessageShow: false,
+						message: "同じ名前は選択されている。",
+						sendLetterButtonDisFlag:true});
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					// window.location.reload();
+					return;
 				}
-				break;
 			}
-		}
-		this.searchPersonnalDetail(employeeNoTemp);
-		var disabledFlg = true;
-		for (var j=0; j<this.state.employeeInfo.length; j++) {
-			if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
-				disabledFlg = false;
-				break;
+			employeeInfo[row.index-1].employeeName  = event.target.value;
+//			this.setState({
+//				[event.target.name]: event.target.value,
+//				employeeInfo: employeeInfo,
+//			})
+			for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
+				if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
+					employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
+					employeeInfo[row.index-1].employeeNo = employeeNoTemp;
+					if (employeeNoTemp.match("LYC")) {
+						// 社員
+						employeeInfo[row.index-1].employeeStatus = "0";
+						this.setState({
+							employeeInfo : employeeInfo,
+							employeeFlag: true,
+						});
+					} else if (employeeNoTemp.match("BP")){
+						// 協力
+						employeeInfo[row.index-1].employeeStatus = "1";
+						this.setState({
+							employeeInfo : employeeInfo,
+							employeeFlag: true,
+						});
+					}
+					break;
+				}
 			}
+			this.searchPersonnalDetail(employeeNoTemp,employeeInfo[row.index-1].hopeHighestPrice,row.index);
+			var disabledFlg = true;
+			for (var j=0; j<this.state.employeeInfo.length; j++) {
+				if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
+					disabledFlg = false;
+					break;
+				}
+			}
+			if (disabledFlg) {
+				// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
+				$("#addButton").attr("disabled",false);
+			}
+			this.setState({
+				sendLetterButtonDisFlag: false,
+			})
 		}
-		if (disabledFlg) {
-			// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
-			$("#addButton").attr("disabled",false);
+		else{
+			
 		}
-		this.setState({
-			sendLetterButtonDisFlag: false,
-		})
 	};
 	/*　要員追加機能の新規　20201216 　張棟　END*/
 	
@@ -1153,10 +1186,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='customerName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='positionCode' editable={false}>職位</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='positionCode2' editable={false}>職位</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='positionCode2' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagersMail2' editable={false}>メール</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>追加者</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='any' editable={false}>送信状況</TableHeaderColumn>
