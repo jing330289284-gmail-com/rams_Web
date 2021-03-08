@@ -40,6 +40,7 @@ class sendLettersConfirm extends React.Component {
 		employeeName: '',
 		hopeHighestPrice: '',
 		nationalityName: '',
+		greetinTtext:'弊社営業中要員をご提案致します。見合う案件が御座いましたら、ご連絡頂けますと幸いです。',
 		birthday: '',
 		stationName: '',
 		developLanguage: '',
@@ -59,6 +60,7 @@ class sendLettersConfirm extends React.Component {
 		japaneseLevellabal: '',
 		englishLevellabal: '',
 		siteRoleCode: '',
+		siteRoleName: '',
 		unitPrice: '',
 		addDevelopLanguage: '',
 		developLanguageCode6: null,
@@ -260,7 +262,7 @@ class sendLettersConfirm extends React.Component {
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
 【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
 【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
-【対応工程】：`+ this.state.siteRoleCode + `<br/>
+【対応工程】：`+ this.state.siteRoleName + `<br/>
 【得意言語】：`+ this.state.developLanguage + `<br/>
 【単　　価】：`+ this.state.unitPrice + `万円<br/>
 【稼働開始】：2020/09<br/>
@@ -405,7 +407,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
 						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode,
+						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
+						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
 						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
 						initNearestStation: result.data[0].nearestStation,
@@ -441,7 +444,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
 							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 						}),
-						disbleState: this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false : true,
+						//disbleState: this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false : true,
 						developLanguage: [this.fromCodeToNameLanguage(result.data[0].developLanguage1),
 						this.fromCodeToNameLanguage(result.data[0].developLanguage2),
 						this.fromCodeToNameLanguage(result.data[0].developLanguage3),
@@ -460,7 +463,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
 						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode,
+						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
+						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
 						remark: result.data[0].remark,
 						initAge: result.data[0].age,
@@ -507,6 +511,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			japaneseLevelCode: "",
 			englishLevelCode: "",
 			siteRoleCode: "",
+			siteRoleName:"",
 			initAge: "",
 			initNearestStation: "",
 			initJapaneaseConversationLevel: '',
@@ -585,12 +590,6 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			popupFlag: flag,
 		});
 	}
-
-	valueChange = event => {
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
-	};
 	
 	handleEmpSelect = (row, isSelected, e) => {
 		this.setState({
@@ -874,7 +873,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			$("#addButton").attr("disabled",false);
 		}
 
-		if (this.state.employeeInfo.length === 0) {
+		if (this.state.employeeInfo.length === 0 || this.state.employeeInfo[0].employeeNo === "") {
 			this.setState({
 				EmployeeNameIndex: 0,
 				employeeFlag: false,
@@ -1012,8 +1011,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
 【業務年数】：`:"")+ this.state.yearsOfExperience + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
-			+(this.state.siteRoleCode !=="" && this.state.siteRoleCode !==null?`
-【対応工程】：`:"")+ (this.state.siteRoleCode !=="" && this.state.siteRoleCode !==null?this.state.siteRoleCode:"") +
+			(this.state.siteRoleName !=="" && this.state.siteRoleName !== null ? `
+【対応工程】：`:"")+ (this.state.siteRoleName !=="" && this.state.siteRoleName !==null ? this.state.siteRoleName:"") +
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
@@ -1104,24 +1103,25 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							<InputGroup.Prepend>
 								<InputGroup.Text id="inputGroup-sizing-sm">挨拶文章</InputGroup.Text>
 							</InputGroup.Prepend>
-							<textarea ref={(textarea) => this.textArea = textarea} maxLength="100"
+							<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.greetinTtext}  id="greetinTtext" name="greetinTtext" 
+								onChange={this.valueChange}
 								style={{ height: '60px', width: '84%', resize: 'none', overflow: 'hidden' }}
 							/>
 						</InputGroup>
 					</Col>
 				</Row>
 				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
-					<Col sm={3}>
+					<Col sm={4}>
 						<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" id="bookButton" name="bookButton" onClick={(event) => this.addFile(event, 'resumeInfo1')}><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
 							<Button size="sm" variant="info" id="addButton" name="addButton" onClick={this.insertRow}><FontAwesomeIcon icon={faUserPlus} />要員追加</Button>{" "}
 							<Button size="sm" variant="info" id="deleteButton" name="deleteButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
 						</div>
 					</Col>
-					<Col sm={1}></Col><Col sm={2}>{'　'}営業文章</Col></Row>
+					<Col sm={2}>{'　'}営業文章</Col></Row>
 				<Row>
 					<Col sm={1}></Col>
-					<Col sm={4}>
+					<Col sm={5}>
 						<BootstrapTable
 							options={options}
 							insertRow={true}
@@ -1136,15 +1136,15 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
 							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn placeholder="履歴書名"  width='17%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn placeholder="履歴書名"  width='19%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
 							<Form.File id="resumeInfo1" hidden={true} data-browse="添付" value={resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 					</Col>
-					<Col sm={1}></Col>
+
 					<Col sm={4}>
 						<textarea ref={(textarea) => this.textArea = textarea} disabled
 							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
@@ -1191,8 +1191,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='positionCode2' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagersMail2' editable={false}>メール</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='employeeName' editable={false}>追加者</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='any' editable={false}>送信状況</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='transmissionStatus' editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>

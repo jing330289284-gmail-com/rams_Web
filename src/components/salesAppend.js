@@ -149,6 +149,9 @@ class salesAppend extends Component {
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
 		let salesRowsId = this.state.selectetRowIds.join(",");
 		this.state.parentSelectedInfo.test = salesRowsId;
+		let purchasingManagersOthers = this.state.selectetPersonsName;
+		purchasingManagersOthers.pop();
+		this.state.appendPersonMsg.purchasingManagersOthers = purchasingManagersOthers;
 		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
 	render() {

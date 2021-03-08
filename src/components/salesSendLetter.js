@@ -629,6 +629,7 @@ class salesSendLetter extends React.Component {
 		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
 		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
 		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
+		this.state.customerTemp[row.rowId].purchasingManagersOthers = appendPersonMsg.purchasingManagersOthers;
 		this.setState({
 			daiologShowFlag: false,
 		});
