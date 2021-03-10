@@ -241,34 +241,105 @@ class sendLettersConfirm extends React.Component {
 			});
 
 	}
+	/*this.setState({
+		employeeName: result.data[0].employeeFullName,
+		genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
+		nationalityName: result.data[0].nationalityName,
+		age: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+			Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
+		developLanguage: result.data[0].developLanguage,
+		yearsOfExperience: result.data[0].yearsOfExperience,
+		beginMonth: new Date("2020/09").getTime(),
+		salesProgressCode: '2',
+		nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
+		stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
+		employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
+		japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
+		englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
+		siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
+		siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
+		initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+			Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
+		initNearestStation: result.data[0].nearestStation,
+		initJapaneaseConversationLevel: '',
+		initEnglishConversationLevel: '',
+		initYearsOfExperience: result.data[0].yearsOfExperience,
+		initDevelopLanguageCode6: null,
+		initDevelopLanguageCode7: null,
+		initDevelopLanguageCode8: null,
+		initDevelopLanguageCode9: null,
+		initDevelopLanguageCode10: null,
+		initUnitPrice: '',
+		initRemark: '',
+		initWellUseLanguagss: [],
+		unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
+		employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
+	})*/
+	// 送信処理
+	beforeSendMailWithFile = () => {
+		let mailText = ``;
+		var time;
+		for(let i = 0 ; i < this.state.employeeInfo.length;i++){
+			if(this.state.employeeInfo[i].employeeNo !== ""){
+				axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: String(this.state.employeeInfo[i].employeeNo) })
+				.then(result => {		
+					mailText += `<br/>
+					【名　　前】：`+ result.data[0].employeeFullName + `　　　` + result.data[0].nationalityName + `　　　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
+					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?"":`<br	/>
+					【年　　齢】：`)+ (result.data[0].age === null || result.data[0].age === ""?"":result.data[0].age + `歳`) + (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":`<br	/>
+					【最寄り駅】：`)+ (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":this.state.stations.find((v) => (v.code === result.data[0].nearestStation)).name) + (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":`<br	/>
+					【日本　語】：`)+ (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":this.state.japaneaseConversationLevels.find((v) => (v.code === result.data[0].japaneaseConversationLevel)).name) + (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":`<br	/>
+					【英　　語】：`)+ (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":this.state.englishConversationLevels.find((v) => (v.code === result.data[0].englishConversationLevel)).name) + (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":`<br	/>
+					【業務年数】：`)+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":result.data[0].yearsOfExperience + `年`) + (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":`<br	/>
+					【対応工程】：`)+ (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":result.data[0].siteRoleName) + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
+					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
+					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
+					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark === null || result.data[0].remark === ""?"":`<br	/>
+					【備　　考】：`)+ (result.data[0].remark === null || result.data[0].remark === ""?"":result.data[0].remark)		
+					+ `<br/>`
+					clearTimeout(time)
+			        time=setTimeout(()=>{
+						this.sendMailWithFile(mailText);
+			        },1000)
+
+				})
+				.catch(function(error) {
+					alert(error);
+				});
+			}
+		}
+
+		//this.sendMailWithFile();
+	}
 
 	// 送信処理
-	sendMailWithFile = () => {
+	sendMailWithFile = (mailText) => {
+/*		alert(this.state.selectedCusInfos.length);
+		alert(this.state.selectedCusInfos[0].customerName);
+		alert(this.state.selectedCusInfos[0].purchasingManagersMail);*/
+/*		【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `<br/>
+		【所　　属】：`+ this.state.employeeStatus + (this.state.age === ""?"":`<br	/>
+		【年　　齢】：`)+ this.state.age + (this.state.age === ""?"":`歳<br/>`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
+		【最寄り駅】：`:"")+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
+		【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
+		【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
+		【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
+		【対応工程】：`+ this.state.siteRoleName + `<br/>
+		【得意言語】：`+ this.state.developLanguage + `<br/>
+		【単　　価】：`+ this.state.unitPrice + `万円<br/>
+		【稼働開始】：2020/09<br/>
+		【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `<br/>
+		【備　　考】：`+ this.state.remark + `<br/>
+		<br/>*/
 		const mailConfirmContont = `<br/>
-
-`+ `<br/>` +
-			this.state.selectedCustomerName + `株式会社<br/>
+`+		this.state.selectedCustomerName + `株式会社<br/>
 `+ this.state.selectedPurchasingManagers + `様<br/>
 <br/>
 お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
-<br/>
-以下の要員を提案させていただきます、案件がございましたら、<br/>
-ご検討の程宜しくお願い致します。<br/>
-<br/>
-【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `<br/>
-【所　　属】：`+ this.state.employeeStatus + `<br	/>
-【年　　齢】：`+ this.state.age + `歳<br/>
-【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
-【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
-【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
-【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
-【対応工程】：`+ this.state.siteRoleName + `<br/>
-【得意言語】：`+ this.state.developLanguage + `<br/>
-【単　　価】：`+ this.state.unitPrice + `万円<br/>
-【稼働開始】：2020/09<br/>
-【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `<br/>
-【備　　考】：`+ this.state.remark + `<br/>
-<br/>
+<br/>`
++ this.state.greetinTtext +
+`<br/>`
++ mailText +`<br/>
 以上、よろしくお願いいたします。<br/>
 ******************************************************************<br/>
 LYC株式会社 `+ this.state.loginUserInfo[0].employeeFristName + ` ` + this.state.loginUserInfo[0].employeeLastName + `<br/>
@@ -903,11 +974,12 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			var employeeInfo1 = this.state.employeeInfo;
 			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1 = filePath;
 			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1Name = fileName;
-
 			this.setState({
 				employeeInfo: employeeInfo1,
 				resumeInfo1: filePath,
 				resumeInfo1Name: fileName,
+				resumePath: filePath,
+				resumeName: fileName,
 			})
 		} else if (name === "image") {
 			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
@@ -1170,7 +1242,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					<Col sm={3}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.sendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>
