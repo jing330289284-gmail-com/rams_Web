@@ -15,7 +15,6 @@ class mailConfirm extends React.Component {
 		this.props.personalInfo.state.selectedMailCC.length >= 2 ? this.props.personalInfo.state.selectedMailCC[1].companyMail : ''].filter(function(s) {
 			return s;
 		}),
-		resumeName: this.props.personalInfo.state.resumeName,
 		mailTitle: this.props.personalInfo.state.mailTitle,
 		employeeName: this.props.personalInfo.state.employeeName,
 		nationalityName: this.props.personalInfo.state.nationalityName,
@@ -40,6 +39,8 @@ class mailConfirm extends React.Component {
 		selectedmail: this.props.personalInfo.state.selectedmail,
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
 		greetinTtext: this.props.personalInfo.state.greetinTtext,
+		theMonthOfStartWork: this.props.personalInfo.state.theMonthOfStartWork,
+		resumeName: this.props.personalInfo.state.resumeName,
 	})
 	componentDidMount() {
 	}
@@ -69,13 +70,13 @@ CC:`+ this.state.companyMailNames.join(';') + `
 【所　　属】：`+ this.state.employeeStatus + (this.state.age === ""?"":`
 【年　　齢】：`)+ this.state.age + (this.state.age === ""?"":`歳`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
 【最寄り駅】：`:"") + (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
-【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ?`
-【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + (this.state.yearsOfExperience === ""?"":`
-【業務年数】：`)+ this.state.yearsOfExperience + (this.state.yearsOfExperience === ""?"":`年`) + (this.state.siteRoleCode === ""?"":`
+【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ?`
+【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?`
+【業務年数】：`:"")+ (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?this.state.yearsOfExperience:"") + (this.state.yearsOfExperience === ""?"":`年`) + (this.state.siteRoleCode === ""?"":`
 【対応工程】：`)+ this.state.siteRoleCode + (this.state.developLanguage === ""?"":`
 【得意言語】：`)+ this.state.developLanguage + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`
-【単　　価】：`)+ (this.state.unitPrice === ""||this.state.unitPrice === null?"":this.state.unitPrice) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`万円`) + `
-【稼働開始】：2020/09` + (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ?`
+【単　　価】：`)+ (this.state.unitPrice === ""||this.state.unitPrice === null?"":this.state.unitPrice) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`万円`) + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
+【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ?`
 【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === ""?"":`
 【備　　考】：`)+ this.state.remark + `
 

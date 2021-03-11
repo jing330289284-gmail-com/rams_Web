@@ -28,8 +28,19 @@ class employeeSearch extends React.Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.ageValueChange = this.ageValueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
 	};
+	
+	// ageValueChange
+	ageValueChange = event => {
+		if(event.target.value > 0){
+			this.setState({
+				[event.target.name]: event.target.value
+			})
+		}
+	}
+	
 	// onchange
 	valueChange = event => {
 		this.setState({
@@ -58,6 +69,7 @@ class employeeSearch extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerMaster: store.getState().dropDown[15].slice(1),
 		searchFlag: false,
+		ageFrom: '', ageTo: '',
 	};
 	// リセット reset
 	resetStates = {
@@ -621,8 +633,8 @@ class employeeSearch extends React.Component {
 										</InputGroup.Prepend>
 										<Form.Control type="number" name="ageFrom"
 										value={ageFrom}
-										autoComplete="off" onChange={this.valueChange} size="sm"
-										/> ～ <Form.Control type="number" name="ageTo" value={ageTo} autoComplete="off" onChange={this.valueChange} size="sm" />
+										autoComplete="off" onChange={this.ageValueChange} size="sm"
+										/> ～ <Form.Control type="number" name="ageTo" value={ageTo} autoComplete="off" onChange={this.ageValueChange} size="sm" />
 
 									</InputGroup>
 								</Col>

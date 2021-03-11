@@ -66,13 +66,14 @@ class salesSendLetter extends React.Component {
 		selectedlistName: "",
 		storageListName:"",
 		storageListNameChange:"",
-		backPage: "manageSituation",
+		backPage: "",
 		searchFlag: true,
 		sendValue: {},
 		projectNo:'',
 		selectedCustomers: '',
 		isHidden:true,
 		addCustomerCode: "",
+		backbackPage: "",
 	};
 	
 	componentDidMount() {
@@ -80,12 +81,12 @@ class salesSendLetter extends React.Component {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
 				projectNo: this.props.location.state.projectNo,
-				isHidden:false,
 			})
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
 				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
 					this.setState({
 						backPage: this.props.location.state.backPage,
+						isHidden:false,
 					})
 			}
 			if(this.props.location.state.salesPersons !== null && this.props.location.state.salesPersons !== undefined && this.props.location.state.salesPersons !== ''){
@@ -96,6 +97,12 @@ class salesSendLetter extends React.Component {
 			if(this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== ''){
 				this.setState({
 					selectedCusInfos: this.props.location.state.targetCusInfos,
+				})
+			}
+			if(this.props.location.state.backbackPage !== null && this.props.location.state.backbackPage !== undefined){
+				this.setState({
+					backPage: this.props.location.state.backbackPage,
+					isHidden:true,
 				})
 			}
 		}
@@ -626,6 +633,7 @@ class salesSendLetter extends React.Component {
 	}
 
 	saveSalesPersons = (row, appendPersonMsg) => {
+		//alert(row.rowId)
 		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
 		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
 		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
@@ -776,6 +784,7 @@ class salesSendLetter extends React.Component {
 						salesPersons: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.state.selectedEmpNos : null,
 						targetCusInfos: this.state.selectedCusInfos,
 						backPage: 'salesSendLetter',
+						backbackPage: this.state.backPage,
 						sendValue: sendValue,
 					},
 				}
@@ -1051,12 +1060,12 @@ class salesSendLetter extends React.Component {
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
-							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
 							
-							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
 							<Button
 								size="sm"
-								hidden={this.state.isHidden ? true : false}
+								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false) || this.state.isHidden ? true : false}
 								variant="info"
 								onClick={this.back.bind(this)}
 							>

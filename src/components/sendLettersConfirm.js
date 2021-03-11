@@ -15,14 +15,15 @@ import MyToast from "./myToast";
 import ErrorsMessageToast from "./errorsMessageToast";
 axios.defaults.withCredentials = true;
 
-/** 
-*営業送信お客確認画面
+/**
+ * 営業送信お客確認画面
  */
 class sendLettersConfirm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.valueChange = this.valueChange.bind(this);
-		this.state = this.initialState;//初期化
+		this.titleValueChange = this.titleValueChange.bind(this);
+		this.state = this.initialState;// 初期化
 	}
 
 	// 初期化変数
@@ -117,7 +118,7 @@ class sendLettersConfirm extends React.Component {
 		backPage: "",
 		searchFlag: true,
 		sendValue: {},
-		/*　要員追加機能の新規　20201216 　張棟　START*/
+		/* 要員追加機能の新規 20201216 張棟 START */
 		// 全部要員名前集合
 		allEmployeeName: [],
 		// 全部要員集合
@@ -142,8 +143,8 @@ class sendLettersConfirm extends React.Component {
 		//
 		employeeFlag: true,
 		// 送信ボタン活性
-		sendLetterButtonDisFlag: false,
-		/*　要員追加機能の新規　20201216 　張棟　END*/
+		sendLetterButtonDisFlag: true,
+		/* 要員追加機能の新規 20201216 張棟 END */
 	})
 	
 	componentDidMount() {
@@ -152,23 +153,24 @@ class sendLettersConfirm extends React.Component {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
 				backPage: this.props.location.state.backPage,
+				backbackPage: this.props.location.state.backbackPage,
 			})
 		}
-		/* 要員追加機能の新規　20201216 　張棟　START*/
+		/* 要員追加機能の新規 20201216 張棟 START */
 		// 営業状況確認一覧画面から選択された送信要員がある
 		if (this.state.selectedEmpNos !== "" && this.state.selectedEmpNos !== null && this.state.selectedEmpNos !== undefined) {
 			// 選択された送信要員の詳細データを取る
 			this.searchEmpDetail();			
 		}
-		/* 要員追加機能の新規　20201216 　張棟　END*/
+		/* 要員追加機能の新規 20201216 張棟 END */
 		// メールデータが取る
 		this.getMail();
 		this.getLoginUserInfo();
 		this.getAllEmpsWithResume();
-		/* 要員追加機能の新規　20201216 　張棟　START*/
-		//　画面初期化する時、全部要員のデータを取る
+		/* 要員追加機能の新規 20201216 張棟 START */
+		// 画面初期化する時、全部要員のデータを取る
 		this.getAllEmployInfoName();
-		/* 要員追加機能の新規　20201216 　張棟　END*/
+		/* 要員追加機能の新規 20201216 張棟 END */
 		$("#deleteButton").attr("disabled",true);
 		$("#bookButton").attr("disabled",true);
 
@@ -179,7 +181,7 @@ class sendLettersConfirm extends React.Component {
 		}
 		
 	}
-	/* 要員追加機能の新規　20201216 　張棟　START*/
+	/* 要員追加機能の新規 20201216 張棟 START */
 	getAllEmployInfoName = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getAllEmployInfoName")
 			.then(result => {
@@ -191,16 +193,16 @@ class sendLettersConfirm extends React.Component {
 					}
 				}
 				this.setState({
-					//	全部所属
+					// 全部所属
 					allEmployeeName : arr,
 					allEmployeeNameInfo: result.data,
-					//	履歴書
+					// 履歴書
 				});
 		}).catch(function(error) {
 			alert(error);
 		});
 	}
-	/* 要員追加機能の新規　20201216 　張棟　END*/
+	/* 要員追加機能の新規 20201216 張棟 END */
 	
 	// 共用CCメールを操作
 	onTagsChange = (event, values, fieldName) => {
@@ -241,40 +243,49 @@ class sendLettersConfirm extends React.Component {
 			});
 
 	}
-	/*this.setState({
-		employeeName: result.data[0].employeeFullName,
-		genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
-		nationalityName: result.data[0].nationalityName,
-		age: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-			Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-		developLanguage: result.data[0].developLanguage,
-		yearsOfExperience: result.data[0].yearsOfExperience,
-		beginMonth: new Date("2020/09").getTime(),
-		salesProgressCode: '2',
-		nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-		stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-		employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-		japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-		englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-		siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
-		siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
-		initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-			Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-		initNearestStation: result.data[0].nearestStation,
-		initJapaneaseConversationLevel: '',
-		initEnglishConversationLevel: '',
-		initYearsOfExperience: result.data[0].yearsOfExperience,
-		initDevelopLanguageCode6: null,
-		initDevelopLanguageCode7: null,
-		initDevelopLanguageCode8: null,
-		initDevelopLanguageCode9: null,
-		initDevelopLanguageCode10: null,
-		initUnitPrice: '',
-		initRemark: '',
-		initWellUseLanguagss: [],
-		unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
-		employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
-	})*/
+	/*
+	 * this.setState({ employeeName: result.data[0].employeeFullName,
+	 * genderStatus: this.state.genders.find((v) => (v.code ===
+	 * result.data[0].genderStatus)).name, nationalityName:
+	 * result.data[0].nationalityName, age:
+	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+	 * Math.ceil((new Date().getTime() -
+	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
+	 * 31536000000), developLanguage: result.data[0].developLanguage,
+	 * yearsOfExperience: result.data[0].yearsOfExperience, beginMonth: new
+	 * Date("2020/09").getTime(), salesProgressCode: '2', nearestStation:
+	 * result.data[0].employeeStatus === null ? "" :
+	 * result.data[0].nearestStation, stationCode: result.data[0].employeeStatus
+	 * === null ? "" : result.data[0].nearestStation, employeeStatus:
+	 * result.data[0].employeeStatus === null || result.data[0].employeeStatus
+	 * ===""?"":this.state.employees.find((v) => (v.code ===
+	 * result.data[0].employeeStatus)).name, japaneseLevelCode:
+	 * result.data[0].japaneseLevelCode === null ||
+	 * result.data[0].japaneseLevelCode
+	 * ===""?"":this.state.japaneseLevels.find((v) => (v.code ===
+	 * result.data[0].japaneseLevelCode)).name, englishLevelCode:
+	 * result.data[0].englishLevelCode === null ||
+	 * result.data[0].englishLevelCode === "" ?
+	 * "":this.state.englishLevels.find((v) => (v.code ===
+	 * result.data[0].englishLevelCode)).name, siteRoleCode:
+	 * result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ?
+	 * "":result.data[0].siteRoleCode, siteRoleName: result.data[0].siteRoleCode
+	 * === null || result.data[0].siteRoleCode === "" ?
+	 * "":result.data[0].siteRoleName, initAge:
+	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+	 * Math.ceil((new Date().getTime() -
+	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
+	 * 31536000000), initNearestStation: result.data[0].nearestStation,
+	 * initJapaneaseConversationLevel: '', initEnglishConversationLevel: '',
+	 * initYearsOfExperience: result.data[0].yearsOfExperience,
+	 * initDevelopLanguageCode6: null, initDevelopLanguageCode7: null,
+	 * initDevelopLanguageCode8: null, initDevelopLanguageCode9: null,
+	 * initDevelopLanguageCode10: null, initUnitPrice: '', initRemark: '',
+	 * initWellUseLanguagss: [], unitPrice: hopeHighestPrice !== null &&
+	 * hopeHighestPrice !== "" && hopeHighestPrice !== undefined ?
+	 * hopeHighestPrice : result.data[0].unitPrice , employeeInfo : index !==
+	 * undefined ? employeeInfo : this.state.employeeInfo, })
+	 */
 	// 送信処理
 	beforeSendMailWithFile = () => {
 		let mailText = ``;
@@ -285,15 +296,18 @@ class sendLettersConfirm extends React.Component {
 				.then(result => {		
 					mailText += `<br/>
 					【名　　前】：`+ result.data[0].employeeFullName + `　　　` + result.data[0].nationalityName + `　　　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
-					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?"":`<br	/>
-					【年　　齢】：`)+ (result.data[0].age === null || result.data[0].age === ""?"":result.data[0].age + `歳`) + (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":`<br	/>
+					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :`<br	/>
+					【年　　齢】：`):`<br	/>
+					【年　　齢】：`)+ (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+					Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000) + `歳`):result.data[0].age + `歳`) + (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":`<br	/>
 					【最寄り駅】：`)+ (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":this.state.stations.find((v) => (v.code === result.data[0].nearestStation)).name) + (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":`<br	/>
 					【日本　語】：`)+ (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":this.state.japaneaseConversationLevels.find((v) => (v.code === result.data[0].japaneaseConversationLevel)).name) + (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":`<br	/>
 					【英　　語】：`)+ (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":this.state.englishConversationLevels.find((v) => (v.code === result.data[0].englishConversationLevel)).name) + (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":`<br	/>
 					【業務年数】：`)+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":result.data[0].yearsOfExperience + `年`) + (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":`<br	/>
 					【対応工程】：`)+ (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":result.data[0].siteRoleName) + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
 					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
-					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
+					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null?"":`<br	/>
+					【稼働開始】：`) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null ? "":result.data[0].theMonthOfStartWork) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
 					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark === null || result.data[0].remark === ""?"":`<br	/>
 					【備　　考】：`)+ (result.data[0].remark === null || result.data[0].remark === ""?"":result.data[0].remark)		
 					+ `<br/>`
@@ -309,63 +323,70 @@ class sendLettersConfirm extends React.Component {
 			}
 		}
 
-		//this.sendMailWithFile();
+		// this.sendMailWithFile();
 	}
 
 	// 送信処理
 	sendMailWithFile = (mailText) => {
-/*		alert(this.state.selectedCusInfos.length);
-		alert(this.state.selectedCusInfos[0].customerName);
-		alert(this.state.selectedCusInfos[0].purchasingManagersMail);*/
-/*		【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `<br/>
-		【所　　属】：`+ this.state.employeeStatus + (this.state.age === ""?"":`<br	/>
-		【年　　齢】：`)+ this.state.age + (this.state.age === ""?"":`歳<br/>`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
-		【最寄り駅】：`:"")+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `<br/>
-		【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `<br/>
-		【英　　語】：`+ (this.state.englishConversationLevel !== "" ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `<br/>
-		【業務年数】：`+ this.state.yearsOfExperience + `年<br/>
-		【対応工程】：`+ this.state.siteRoleName + `<br/>
-		【得意言語】：`+ this.state.developLanguage + `<br/>
-		【単　　価】：`+ this.state.unitPrice + `万円<br/>
-		【稼働開始】：2020/09<br/>
-		【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `<br/>
-		【備　　考】：`+ this.state.remark + `<br/>
-		<br/>*/
-		const mailConfirmContont = `<br/>
-`+		this.state.selectedCustomerName + `株式会社<br/>
-`+ this.state.selectedPurchasingManagers + `様<br/>
-<br/>
-お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
-<br/>`
-+ this.state.greetinTtext +
-`<br/>`
-+ mailText +`<br/>
-以上、よろしくお願いいたします。<br/>
-******************************************************************<br/>
-LYC株式会社 `+ this.state.loginUserInfo[0].employeeFristName + ` ` + this.state.loginUserInfo[0].employeeLastName + `<br/>
-〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F <br/> 
-http://www.lyc.co.jp/   <br/>
-TEL：03-6908-5796  携帯：`+ this.state.loginUserInfo[0].phoneNo + `(優先）<br/>
-Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc.co.jp <br/>
-労働者派遣事業許可番号　派遣許可番号　派13-306371<br/>
-ＩＳＭＳ：MSA-IS-385<br/>
-*****************************************************************`;
-		const { resumeName, mailTitle, resumePath, selectedmail } = this.state;
-		let selectedMailCC = [this.state.selectedMailCC.length >= 1 ? this.state.selectedMailCC[0].companyMail : '',
-		this.state.selectedMailCC.length >= 2 ? this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
-			return s;
-		});
-		console.log(selectedMailCC);
-		let mailFrom = this.state.loginUserInfo[0].companyMail;
-		axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
-			.then(result => {
-				/*this.setState({
-					mails: result.data,
-				})*/
-			})
-			.catch(function(error) {
-				alert(error);
-			});
+/*
+ * 【名 前】：`+ this.state.employeeName + ` ` + this.state.nationalityName + ` ` +
+ * this.state.genderStatus + `<br/> 【所 属】：`+ this.state.employeeStatus +
+ * (this.state.age === ""?"":`<br	/> 【年 齢】：`)+ this.state.age + (this.state.age
+ * === ""?"":`歳<br/>`) + (this.state.nearestStation !== "" &&
+ * this.state.nearestStation !== null ?` 【最寄り駅】：`:"")+
+ * (this.state.nearestStation !== "" && this.state.nearestStation !== null ?
+ * this.state.stations.find((v) => (v.code === this.state.nearestStation)).name :
+ * '') + `<br/> 【日本 語】：`+ (this.state.japaneaseConversationLevel !== "" ?
+ * this.state.japaneaseConversationLevels.find((v) => (v.code ===
+ * this.state.japaneaseConversationLevel)).name : '') + `<br/> 【英 語】：`+
+ * (this.state.englishConversationLevel !== "" ?
+ * this.state.englishConversationLevels.find((v) => (v.code ===
+ * this.state.englishConversationLevel)).name : '') + `<br/> 【業務年数】：`+
+ * this.state.yearsOfExperience + `年<br/> 【対応工程】：`+ this.state.siteRoleName + `<br/>
+ * 【得意言語】：`+ this.state.developLanguage + `<br/> 【単 価】：`+ this.state.unitPrice +
+ * `万円<br/> 【稼働開始】：2020/09<br/> 【営業状況】：`+ (this.state.salesProgressCode !== "" ?
+ * this.state.salesProgresss.find((v) => (v.code ===
+ * this.state.salesProgressCode)).name : '') + `<br/> 【備 考】：`+
+ * this.state.remark + `<br/> <br/>
+ */
+		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
+			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
+				`+ this.state.selectedCusInfos[i].purchasingManagers + `様<br/>
+				<br/>
+				お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
+				<br/>`
+				+ this.state.greetinTtext +
+				`<br/>`
+				+ mailText +`<br/>
+				以上、よろしくお願いいたします。<br/>
+				<br/>
+				******************************************************************<br/>
+				LYC株式会社 `+ this.state.loginUserInfo[0].employeeFristName + ` ` + this.state.loginUserInfo[0].employeeLastName + `<br/>
+				〒:101-0032 東京都千代田区岩本町3-3-3サザンビル3F <br/> 
+				http://www.lyc.co.jp/   <br/>
+				TEL：03-6908-5796  携帯：`+ this.state.loginUserInfo[0].phoneNo + `(優先）<br/>
+				Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc.co.jp <br/>
+				労働者派遣事業許可番号　派遣許可番号　派13-306371<br/>
+				ＩＳＭＳ：MSA-IS-385<br/>
+				*****************************************************************`;
+						const { resumeName, mailTitle, resumePath, selectedmail } = this.state;
+						selectedmail = this.state.selectedCusInfos[i].purchasingManagersMail + "," + this.state.selectedCusInfos[i].purchasingManagersMail2;
+						let selectedMailCC = [this.state.selectedMailCC.length >= 1 ? this.state.selectedMailCC[0].companyMail : '',
+						this.state.selectedMailCC.length >= 2 ? this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
+							return s;
+						});
+						console.log(selectedMailCC);
+						let mailFrom = this.state.loginUserInfo[0].companyMail;
+						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
+							.then(result => {
+								/*
+								 * this.setState({ mails: result.data, })
+								 */
+							})
+							.catch(function(error) {
+								alert(error);
+							});
+		}	
 	}
 
 	getLoginUserInfo = () => {
@@ -393,8 +414,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	}
 
 	/**
-	 * @param now 当前日期 格式:yyyy-MM
-	 * @param addMonths 传-1 上个月,传1 下个月
+	 * @param now
+	 *            当前日期 格式:yyyy-MM
+	 * @param addMonths
+	 *            传-1 上个月,传1 下个月
 	 */
 	getNextMonth = (addMonths) => {
 		var dd = new Date();
@@ -472,7 +495,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						developLanguage: result.data[0].developLanguage,
 						yearsOfExperience: result.data[0].yearsOfExperience,
 						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: '2',
+						salesProgressCode: result.data[0].salesProgressCode === null ? "" : result.data[0].salesProgressCode,
 						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
@@ -496,6 +519,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						initWellUseLanguagss: [],
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
 						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
+						theMonthOfStartWork: result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 					})
 				} else {
 					this.setState({
@@ -515,7 +539,9 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
 							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 						}),
-						//disbleState: this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false : true,
+						// disbleState:
+						// this.fromCodeToListLanguage(result.data[0].developLanguage5)
+						// === '' ? false : true,
 						developLanguage: [this.fromCodeToNameLanguage(result.data[0].developLanguage1),
 						this.fromCodeToNameLanguage(result.data[0].developLanguage2),
 						this.fromCodeToNameLanguage(result.data[0].developLanguage3),
@@ -527,8 +553,8 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 						englishConversationLevel: result.data[0].englishConversationLevel,
 						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: '1',
-						//salesProgressCode: result.data[0].salesProgressCode,
+						salesProgressCode: result.data[0].salesProgressCode === null ? "" : result.data[0].salesProgressCode,
+						// salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
 						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
@@ -551,6 +577,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 						initDevelopLanguageCode10: result.data[0].developLanguage5,
 						initUnitPrice: result.data[0].unitPrice,
 						initRemark: result.data[0].remark,
+						theMonthOfStartWork: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 						this.fromCodeToListLanguage(result.data[0].developLanguage2),
 						this.fromCodeToListLanguage(result.data[0].developLanguage3),
@@ -604,10 +631,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			.then(result => {
 				this.setState({
 					employeeInfo: result.data,
-					/* 要員追加機能の新規　20201216 　張棟　START*/
+					/* 要員追加機能の新規 20201216 張棟 START */
 					// 営業状況確認一覧画面から遷移した後で、要員画面初期化して要員一覧のindex初期化
 					EmployeeNameIndex : result.data.length,
-					/* 要員追加機能の新規　20201216 　張棟　END*/
+					/* 要員追加機能の新規 20201216 張棟 END */
 				})
 				this.getHopeHighestPrice(result);
 			})
@@ -641,7 +668,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		this.setState({
 			selectedCustomerName: isSelected ? row.customerName : '',
 			selectedPurchasingManagers: isSelected ? row.purchasingManagers : '',
-			//selectedSalesPerson: isSelected ? row.customerName : '',
+			// selectedSalesPerson: isSelected ? row.customerName : '',
 			selectedmail: isSelected ? row.purchasingManagersMail : '',
 		})
 		if (isSelected) {
@@ -669,7 +696,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 
 		this.searchPersonnalDetail(row.employeeNo);
 	}
-	/* 要員追加機能の新規　20201216 　張棟　START*/
+	/* 要員追加機能の新規 20201216 張棟 START */
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
 			this.setState({
@@ -693,22 +720,24 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 	formatEmpStatus = (cell, row, enumObject, index) => {
 		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
-	/* 要員追加機能の新規　20201216 　張棟　END*/
+	/* 要員追加機能の新規 20201216 張棟 END */
 	// formatResume(cell, row, enumObject, index) {
-	// 	return (<div>
-	// 		<Form.Control as="select" size="sm"
-	// 			onChange={this.resumeValueChange.bind(this, row)}
-	// 			name="resumeName"
-	// 			autoComplete="off">
-	// 			<option ></option>
+	// return (<div>
+	// <Form.Control as="select" size="sm"
+	// onChange={this.resumeValueChange.bind(this, row)}
+	// name="resumeName"
+	// autoComplete="off">
+	// <option ></option>
 	//
-	// 			<option >{row.resumeInfo1 == null ? "" : row.resumeInfo1.split('/')[4]}</option>
-	// 			<option >{row.resumeInfo2 == null ? "" : row.resumeInfo2.split('/')[4]}</option>
-	// 		</Form.Control>
-	// 	</div>);
+	// <option >{row.resumeInfo1 == null ? "" :
+	// row.resumeInfo1.split('/')[4]}</option>
+	// <option >{row.resumeInfo2 == null ? "" :
+	// row.resumeInfo2.split('/')[4]}</option>
+	// </Form.Control>
+	// </div>);
 	// }
 	
-	/*　要員追加機能の新規　20201216 　張棟　START*/
+	/* 要員追加機能の新規 20201216 張棟 START */
 	// 要員名前処理
 	formatEmployeeName(cell, row, enumObject, index) {
 		var flg = true;
@@ -779,10 +808,10 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				}
 			}
 			employeeInfo[row.index-1].employeeName  = event.target.value;
-//			this.setState({
-//				[event.target.name]: event.target.value,
-//				employeeInfo: employeeInfo,
-//			})
+// this.setState({
+// [event.target.name]: event.target.value,
+// employeeInfo: employeeInfo,
+// })
 			for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
 				if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
 					employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
@@ -817,15 +846,17 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
 				$("#addButton").attr("disabled",false);
 			}
-			this.setState({
-				sendLetterButtonDisFlag: false,
-			})
+			if(this.state.mailTitle !== ""){
+				this.setState({
+					sendLetterButtonDisFlag: false,
+				})
+			}
 		}
 		else{
 			
 		}
 	};
-	/*　要員追加機能の新規　20201216 　張棟　END*/
+	/* 要員追加機能の新規 20201216 張棟 END */
 	
 	resumeValueChange = (row, event) => {
 		this.setState({
@@ -842,7 +873,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		}
 	};
 	
-	//　要員追加機能の新規　20201216 　張棟　START
+	// 要員追加機能の新規 20201216 張棟 START
 	/**
 	 * 行追加処理
 	 */
@@ -871,19 +902,20 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		// 追加した後で、追加ボタンが非活性になる
 		$("#addButton").attr("disabled",true);
 		// for (let m = 0; m < this.state.employeeInfo.length; m++) {
-		// 	for (let i = 0; i< this.state.allEmployeeName.length; i++) {
-		// 		if (this.state.allEmployeeName[i] === this.state.employeeInfo[m].employeeName) {
-		// 			this.state.allEmployeeName.splice(i,1);
-		// 			break;
-		// 		}
-		// 	}
+		// for (let i = 0; i< this.state.allEmployeeName.length; i++) {
+		// if (this.state.allEmployeeName[i] ===
+		// this.state.employeeInfo[m].employeeName) {
+		// this.state.allEmployeeName.splice(i,1);
+		// break;
+		// }
+		// }
 		// }
 	}
 	/**
 	 * 行削除処理
-	 * */
+	 */
 
-	//削除前のデフォルトお知らせの削除
+	// 削除前のデフォルトお知らせの削除
 	customConfirm(next, dropRowKeys) {
 		const dropRowKeysStr = dropRowKeys.join(',');
 		next();
@@ -895,14 +927,14 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 		}
 	}
 
-	//隠した削除ボタン
+	// 隠した削除ボタン
 	createCustomDeleteButton = (onClick) => {
 		return (
 			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
 		);
 	}
 
-	//隠した削除ボタンの実装
+	// 隠した削除ボタンの実装
 	onDeleteRow = (row) => {
 		var id = this.state.selectedColumnId;
 		var employeeInfoList = this.state.employeeInfo;
@@ -921,7 +953,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			currentPage: currentPage,
 			employeeInfo: employeeInfoList,
 			selectRowFlag: false,
-			//rowNo: '',
+			// rowNo: '',
 			// customerDepartmentNameValue: '',
 			// customerDepartmentName: '',
 		})
@@ -948,6 +980,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			this.setState({
 				EmployeeNameIndex: 0,
 				employeeFlag: false,
+				sendLetterButtonDisFlag : true,
 			});
 			this.initPersonnalDetail();
 		} else {
@@ -959,8 +992,11 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 
 	/**
 	 * ファイルを処理
-	 * @param {*} event
-	 * @param {*} name
+	 * 
+	 * @param {*}
+	 *            event
+	 * @param {*}
+	 *            name
 	 */
 	addFile = (event, name) => {
 		$("#" + name).click();
@@ -998,8 +1034,23 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			[event.target.name]: event.target.value,
 		})
 	}
+	
+	titleValueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		if(event.target.value !== ""){
+			this.setState({
+				sendLetterButtonDisFlag : false,
+			})
+		}else{
+			this.setState({
+				sendLetterButtonDisFlag : true,
+			})
+		}
+	}
 
-	//　要員追加機能の新規　20201216 　張棟　END
+	// 要員追加機能の新規 20201216 張棟 END
 	/**
 	 * 戻るボタン
 	 */
@@ -1012,6 +1063,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 				sendValue: this.state.sendValue ,
 				salesPersons: this.state.selectedEmpNos,
 				targetCusInfos: this.state.selectedCusInfos,
+				backbackPage: this.state.backbackPage,
 			},
 		}
 		this.props.history.push(path);
@@ -1035,7 +1087,6 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			firstPage: '<<', // First page button text
 			lastPage: '>>', // Last page button text
 			hideSizePerPage: true,
-			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 			//
 			expandRowBgColor: 'rgb(165, 165, 165)',
@@ -1058,7 +1109,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 			hideSelectColumn: true,
 			clickToSelect: true,
 			// clickToExpand: true,
-			//onSelect: this.handleEmpSelect,
+			// onSelect: this.handleEmpSelect,
 			onSelect: this.handleRowSelect,
 			clickToSelectAndEditCell: true,
 		};
@@ -1082,16 +1133,16 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 +(this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null?`
 【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
-【業務年数】：`:"")+ this.state.yearsOfExperience + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
+【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
 			(this.state.siteRoleName !=="" && this.state.siteRoleName !== null ? `
 【対応工程】：`:"")+ (this.state.siteRoleName !=="" && this.state.siteRoleName !==null ? this.state.siteRoleName:"") +
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
 【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?this.state.unitPrice:"") +
-			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"")+`
-【稼働開始】：2020/09`+`
-【営業状況】：`+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
+			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
+【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
+【営業状況】：`)+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
 (this.state.remark !== "" && this.state.remark !== null?`
 【備　　考】：`:"")+ this.state.remark;
 		return (
@@ -1133,7 +1184,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							<InputGroup.Prepend>
 								<InputGroup.Text id="inputGroup-sizing-sm">タイトル</InputGroup.Text>
 							</InputGroup.Prepend>
-							<Form.Control as="select" size="sm" onChange={this.valueChange} name="mailTitle" >
+							<Form.Control as="select" size="sm" onChange={this.titleValueChange} name="mailTitle" >
 								<option></option>
 								<option>{this.getNextMonth(1)}の要員提案に関して</option>
 								<option>即日要員提案に関して</option>
@@ -1143,9 +1194,11 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 					</Col>
 					<Col sm={5}>
 						<InputGroup size="sm" className="mb-3">
-							{/*<InputGroup.Prepend>
-								<InputGroup.Text id="inputGroup-sizing-sm">共用CCメール</InputGroup.Text>
-							</InputGroup.Prepend>*/}
+							{/*
+								 * <InputGroup.Prepend> <InputGroup.Text
+								 * id="inputGroup-sizing-sm">共用CCメール</InputGroup.Text>
+								 * </InputGroup.Prepend>
+								 */}
 							<Autocomplete
 								multiple
 								size="small"
@@ -1159,7 +1212,7 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 									<TextField
 										{...params}
 										variant="standard"
-										/*label="共用CCメール"*/
+										/* label="共用CCメール" */
 										placeholder="共用CCメール"
 										style={{ width: "680px", float: "right" }}
 									/>
@@ -1209,8 +1262,14 @@ Email：`+ this.state.loginUserInfo[0].companyMail + ` 営業共通：eigyou@lyc
 							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
-							{/*<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>*/}
-							{/*<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>*/}
+							{/*
+								 * <TableHeaderColumn dataField='resumeInfo1'
+								 * hidden={true}>履歴書1</TableHeaderColumn>
+								 */}
+							{/*
+								 * <TableHeaderColumn dataField='resumeInfo2'
+								 * hidden={true}>履歴書2</TableHeaderColumn>
+								 */}
 							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
 							<TableHeaderColumn placeholder="履歴書名"  width='19%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
 						</BootstrapTable>
