@@ -60,13 +60,13 @@ CC:`+ this.state.companyMailNames.join(';') + `
 							this.state.selectedCustomerName + `株式会社
 `+ this.state.selectedPurchasingManagers + `様
 
-お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。
+お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。
 
  ` +
  this.state.greetinTtext
  + `
 
-【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
+【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + (this.state.age === ""?"":`
 【年　　齢】：`)+ this.state.age + (this.state.age === ""?"":`歳`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
 【最寄り駅】：`:"") + (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`

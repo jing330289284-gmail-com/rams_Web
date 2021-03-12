@@ -15,7 +15,7 @@ class salesAppend extends Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
-		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [],
+		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
 		selectetPersonsName: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
@@ -36,6 +36,7 @@ class salesAppend extends Component {
 
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
+		this.props.customer.test = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test:this.props.customer.mainChargeList;
 		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
 		for(let i in str){
 			str[i] = Number(str[i]);
@@ -149,9 +150,25 @@ class salesAppend extends Component {
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
 		let salesRowsId = this.state.selectetRowIds.join(",");
 		this.state.parentSelectedInfo.test = salesRowsId;
+		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
 		let purchasingManagersOthers = this.state.selectetPersonsName;
 		purchasingManagersOthers.pop();
 		this.state.appendPersonMsg.purchasingManagersOthers = purchasingManagersOthers;
+		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
+			axios.post(this.state.serverIP + "salesSendLetters/customerSendMailStorageListUpdate", 
+					{
+						storageListName:this.props.customer.storageListName,
+						customerNo:this.props.customer.customerNo,
+						mainChargeList:salesRowsId,
+						departmentCodeList:salesPersons,
+					})
+			.then(result => {
+					
+				})
+				.catch(function (err) {
+					alert(err)
+				})
+		}
 		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
 	render() {

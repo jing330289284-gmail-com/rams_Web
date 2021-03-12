@@ -154,6 +154,7 @@ class sendLettersConfirm extends React.Component {
 				sendValue: this.props.location.state.sendValue,
 				backPage: this.props.location.state.backPage,
 				backbackPage: this.props.location.state.backbackPage,
+				projectNo: this.props.location.state.projectNo,
 			})
 		}
 		/* 要員追加機能の新規 20201216 張棟 START */
@@ -292,10 +293,11 @@ class sendLettersConfirm extends React.Component {
 		var time;
 		for(let i = 0 ; i < this.state.employeeInfo.length;i++){
 			if(this.state.employeeInfo[i].employeeNo !== ""){
+				//alert(this.state.employeeInfo[i].resumeInfo1Name)
 				axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: String(this.state.employeeInfo[i].employeeNo) })
 				.then(result => {		
 					mailText += `<br/>
-					【名　　前】：`+ result.data[0].employeeFullName + `　　　` + result.data[0].nationalityName + `　　　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
+					【名　　前】：`+ result.data[0].employeeFullName + `　` + result.data[0].nationalityName + `　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
 					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :`<br	/>
 					【年　　齢】：`):`<br	/>
 					【年　　齢】：`)+ (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
@@ -353,7 +355,7 @@ class sendLettersConfirm extends React.Component {
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
 				`+ this.state.selectedCusInfos[i].purchasingManagers + `様<br/>
 				<br/>
-				お世話になっております、`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
+				お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
 				<br/>`
 				+ this.state.greetinTtext +
 				`<br/>`
@@ -1064,6 +1066,7 @@ class sendLettersConfirm extends React.Component {
 				salesPersons: this.state.selectedEmpNos,
 				targetCusInfos: this.state.selectedCusInfos,
 				backbackPage: this.state.backbackPage,
+				projectNo: this.state.projectNo,
 			},
 		}
 		this.props.history.push(path);
@@ -1121,7 +1124,7 @@ class sendLettersConfirm extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleCtmSelect,
 		};
-		const mailContent = `【名　　前】：` + this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
+		const mailContent = `【名　　前】：` + this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + 
 (this.state.age !== null && this.state.age !== ""?`
 【年　　齢】：`:"")+ this.state.age + (this.state.age !== null && this.state.age !== ""?`歳`:"") +

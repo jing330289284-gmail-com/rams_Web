@@ -215,7 +215,7 @@ class salesSendLetter extends React.Component {
 						storageListNameChange: values.name,
 						selectedCustomers: values.code,
 					})
-					axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: values.code.split(',') })
+					axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: values.code.split(','),storageListName:values.name,})
 					.then(result => {
 				this.setState({
 					allCustomer: result.data,
@@ -358,8 +358,7 @@ class salesSendLetter extends React.Component {
 				selectedCustomers: (this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos),
 				currentPage: 1,
 			})
-		})
-		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys).split(','): newAllCtmNos.split(','))})
+			axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys).split(','): newAllCtmNos.split(',')),storageListName:result.data,})
 				.then(result => {
 					this.setState({
 						allCustomer: result.data,
@@ -371,6 +370,7 @@ class salesSendLetter extends React.Component {
 				.catch(function (err) {
 					alert(err)
 				})
+		})	
 	}
 
 	// deleteボタン事件
@@ -472,7 +472,7 @@ class salesSendLetter extends React.Component {
 				newAllCtmNos += this.state.allCustomer[i].customerNo + ",";
 			}
 			newAllCtmNos += this.state.addCustomerCode;
-			axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: newAllCtmNos.split(',') })
+			axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: newAllCtmNos.split(','),storageListName:this.state.storageListName, })
 			.then(result => {
 				let newStorageListArray = new Array();
 				for (let i in this.state.storageList) {
@@ -505,7 +505,7 @@ class salesSendLetter extends React.Component {
 						customerList:this.state.addCustomerCode
 					})
 			.then(result => {
-				axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: result.data.split(',') })
+				axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: result.data.split(','),storageListName:this.state.storageListName, })
 				.then(result => {
 					let newStorageListArray = new Array();
 					for (let i in this.state.storageList) {
@@ -633,7 +633,6 @@ class salesSendLetter extends React.Component {
 	}
 
 	saveSalesPersons = (row, appendPersonMsg) => {
-		//alert(row.rowId)
 		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
 		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
 		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
@@ -744,7 +743,7 @@ class salesSendLetter extends React.Component {
 				selectedlistName: this.state.listName3,
 			})
 		}
-		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: selectedNos.split(',') })
+		axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: selectedNos.split(','),storageListName:this.state.storageListName, })
 			.then(result => {
 				this.setState({
 					allCustomer: result.data,
@@ -768,7 +767,7 @@ class salesSendLetter extends React.Component {
 		var path = {};
 		path = {
 			pathname: this.state.backPage,
-			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue , selectedProjectNo:this.state.projectNo},
+			state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue , selectedProjectNo:this.state.projectNo,projectNo:this.state.projectNo,},
 		}
 		this.props.history.push(path);
 	}
@@ -784,6 +783,7 @@ class salesSendLetter extends React.Component {
 						salesPersons: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.state.selectedEmpNos : null,
 						targetCusInfos: this.state.selectedCusInfos,
 						backPage: 'salesSendLetter',
+						projectNo: this.state.projectNo,
 						backbackPage: this.state.backPage,
 						sendValue: sendValue,
 					},
@@ -1065,7 +1065,7 @@ class salesSendLetter extends React.Component {
 							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
 							<Button
 								size="sm"
-								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false) || this.state.isHidden ? true : false}
+								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false)}
 								variant="info"
 								onClick={this.back.bind(this)}
 							>
