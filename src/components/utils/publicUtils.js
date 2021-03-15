@@ -322,11 +322,11 @@ export function valueGetText(code, list) {
 		}
 	}
 }
+
 // Download 方法
 // param path 備考：ファイルのフォーマットは下記です
 // c:/file/LYC124_12/12_履歴書1.xlsx
 export function handleDownload(path, serverIP) {
-	alert(path);
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
 		NewPath = path.split("/");
@@ -360,7 +360,82 @@ export function handleDownload(path, serverIP) {
 	}else{
 		alert('ファイルが存在しません。');
 	}
+}
 
+//Download 方法
+//param path 備考：ファイルのフォーマットは下記です
+//c:/file/LYC124_12/12_履歴書1.xlsx
+export function testHandleDownload(path, serverIP) {
+	for(let i = 0; i < path.length; i++){
+		if (path[i] !== undefined && path[i] !== null && path[i] !== "") {
+			var NewPath = new Array();
+			NewPath = path[i].split("/");
+			if (NewPath.length==1) {
+				NewPath = path[i].split("\\");
+	        }
+			var xhr = new XMLHttpRequest();
+			xhr.open('post', serverIP + 'download', true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+			xhr.withCredentials=true;
+			xhr.onload = function() {
+				if (this.status === 200) {
+					var blob = this.response;
+					if (blob.size === 0) {
+						alert('no resume');
+					} else {
+						var a = document.createElement('a');
+						var url = window.URL.createObjectURL(blob);
+						a.href = url;
+						// 设置文件名称
+						a.download = path[i].split("/")[path[i].split("/").length-1];
+						a.click();
+						a.remove();
+					}
+				}
+			}
+			xhr.send(JSON.stringify({
+				"name": path[i],
+			}));
+		}
+	}
+}
+
+//Download 方法
+//param path 備考：ファイルのフォーマットは下記です
+//c:/file/LYC124_12/12_履歴書1.xlsx
+export function folderDownload(path, serverIP) {
+		if (path !== undefined && path !== null && path !== "") {
+			var NewPath = new Array();
+			NewPath = path.split("/");
+			if (NewPath.length==1) {
+				NewPath = path.split("\\");
+	        }
+			var xhr = new XMLHttpRequest();
+			xhr.open('post', serverIP + 'download', true);
+			xhr.responseType = 'blob';
+			xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+			xhr.withCredentials=true;
+			xhr.onload = function() {
+				if (this.status === 200) {
+					var blob = this.response;
+					if (blob.size === 0) {
+						alert('データ存在しない');
+					} else {
+						var a = document.createElement('a');
+						var url = window.URL.createObjectURL(blob);
+						a.href = url;
+						// 设置文件名称
+						a.download = NewPath[NewPath.length - 1];
+						a.click();
+						a.remove();
+					}
+				}
+			}
+			xhr.send(JSON.stringify({
+				"name": path,
+			}));
+		}
 }
 
 export function postcodeApi(postcode) {
