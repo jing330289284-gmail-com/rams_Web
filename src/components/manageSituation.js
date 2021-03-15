@@ -88,6 +88,7 @@ class manageSituation extends React.Component {
 		checkDisabledFlag: false,
 		daiologShowFlag: false,
 		isSelectedAll:false,
+		makeDirectoryFalg :true,
 	};
 
 	// 初期表示のレコードを取る
@@ -98,12 +99,42 @@ class manageSituation extends React.Component {
 		// 2) : (sysYearMonth.getMonth() + 2));
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			this.getSalesSituation(this.props.location.state.sendValue.salesYearAndMonth);
+			axios.post(this.state.serverIP + "salesSituation/checkDirectory", {salesYearAndMonth:this.props.location.state.sendValue.salesYearAndMonth})
+			.then(response => {
+				if(response.data){
+					this.setState({
+						makeDirectoryFalg: true,
+					});
+				}
+				else{
+					this.setState({
+						makeDirectoryFalg: false,
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
 			this.setState({
 				salesYearAndMonth: this.props.location.state.sendValue.salesYearAndMonth,
 				yearMonth:publicUtils.converToLocalTime(this.props.location.state.sendValue.salesYearAndMonth,false),
 			});
 		}else{
 			this.getSalesSituation(this.getNextMonth(new Date(), 1));
+			axios.post(this.state.serverIP + "salesSituation/checkDirectory", {salesYearAndMonth:this.getNextMonth(new Date(), 1)})
+			.then(response => {
+				if(response.data){
+					this.setState({
+						makeDirectoryFalg: true,
+					});
+				}
+				else{
+					this.setState({
+						makeDirectoryFalg: false,
+					});
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
 			this.setState({
 				salesYearAndMonth: this.getNextMonth(new Date(), 1),
 			});
@@ -478,6 +509,21 @@ class manageSituation extends React.Component {
 
 	// 年月変更後、レコ＾ド再取る
 	setEndDate = (date) => {
+		axios.post(this.state.serverIP + "salesSituation/checkDirectory", {salesYearAndMonth:publicUtils.formateDate(date, false)})
+				.then(response => {
+					if(response.data){
+						this.setState({
+							makeDirectoryFalg: true,
+						});
+					}
+					else{
+						this.setState({
+							makeDirectoryFalg: false,
+						});
+					}
+				}).catch((error) => {
+					console.error("Error - " + error);
+				});
 		this.setState({
 			yearMonth: date,
 			salesYearAndMonth: publicUtils.formateDate(date, false),
@@ -628,6 +674,9 @@ class manageSituation extends React.Component {
 			}
 		}).catch((error) => {
 			console.error("Error - " + error);
+		});
+		this.setState({
+			makeDirectoryFalg: false,
 		});
 	}
 	
@@ -1007,11 +1056,11 @@ class manageSituation extends React.Component {
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton"  disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
-								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> 営業フォルダー</Button>{' '}
+								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダー</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
-								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> 営業フォルダー作成</Button>{' '}
+								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダー作成":"営業フォルダー更新"}</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
 								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
 								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1":(this.state.resumeInfo1.split("/")[this.state.resumeInfo1.split("/").length - 1]).split(",")[0]}</Button>{' '}
