@@ -98,6 +98,7 @@ class employeeUpdate extends React.Component {
 					furigana2: data.furigana2,// カタカナ
 					alphabetName1: data.alphabetName1,// ローマ字
 					alphabetName2: data.alphabetName2,// ローマ字
+					alphabetName3: data.alphabetName3,// ローマ字
 					birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
 					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,// 和暦
@@ -345,7 +346,7 @@ class employeeUpdate extends React.Component {
         this.props.history.push(path);
     }
 	render() {
-		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
+		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2,alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
 			residenceCardNo, employmentInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus
@@ -477,7 +478,9 @@ class employeeUpdate extends React.Component {
 									<FormControl value={alphabetName1}
 										size="sm" name="alphabetName1" disabled />{' '}
 									<FormControl value={alphabetName2}
-										size="sm" name="alphabetName2" disabled />
+										size="sm" name="alphabetName2" disabled /><font color="red" className="site-mark"> </font>
+									<FormControl value={alphabetName3}
+									size="sm" name="alphabetName3" disabled /><font color="red" className="site-mark">★</font>
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>

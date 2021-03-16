@@ -83,6 +83,7 @@ class sendLettersConfirm extends React.Component {
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		positions: store.getState().dropDown[20],
 		wellUseLanguagss: [],
+		resumeInfoList: [],
 		stationCode: '',
 		disbleState: false,
 		japaneaseConversationLevel: '',
@@ -293,7 +294,7 @@ class sendLettersConfirm extends React.Component {
 		var time;
 		for(let i = 0 ; i < this.state.employeeInfo.length;i++){
 			if(this.state.employeeInfo[i].employeeNo !== ""){
-				//alert(this.state.employeeInfo[i].resumeInfo1Name)
+				// alert(this.state.employeeInfo[i].resumeInfo1Name)
 				axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: String(this.state.employeeInfo[i].employeeNo) })
 				.then(result => {		
 					mailText += `<br/>
@@ -486,6 +487,12 @@ class sendLettersConfirm extends React.Component {
 			.then(result => {
 				if(index != undefined){
 					employeeInfo[index-1].hopeHighestPrice = result.data[0].unitPrice;
+					employeeInfo[index-1].resumeInfoList = result.data[0].resumeInfoList;
+					if(result.data[0].resumeInfoList.length > 0){
+						employeeInfo[index-1].resumeInfoName = result.data[0].resumeInfoList[0];
+					}else{
+						employeeInfo[index-1].resumeInfoName = "";
+					}
 				}
 				if (result.data.length === 0 || result.data[0].age === "") {
 					this.setState({
@@ -522,6 +529,7 @@ class sendLettersConfirm extends React.Component {
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
 						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
+						resumeInfoList: result.data[0].resumeInfoList,
 					})
 				} else {
 					this.setState({
@@ -579,6 +587,7 @@ class sendLettersConfirm extends React.Component {
 						initDevelopLanguageCode10: result.data[0].developLanguage5,
 						initUnitPrice: result.data[0].unitPrice,
 						initRemark: result.data[0].remark,
+						resumeInfoList: result.data[0].resumeInfoList,
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 						this.fromCodeToListLanguage(result.data[0].developLanguage2),
@@ -705,6 +714,7 @@ class sendLettersConfirm extends React.Component {
            	 	selectedColumnId: row.index,
            	 	employeeFlag: true,
            	 	selectRowFlag: true,
+           	 	resumeName: this.state.employeeInfo[row.index - 1].resumeInfoName,
 			})
 			$("#bookButton").attr("disabled",false);
 			$("#deleteButton").attr("disabled",false);
@@ -738,6 +748,26 @@ class sendLettersConfirm extends React.Component {
 	// </Form.Control>
 	// </div>);
 	// }
+	
+	formatResumeInfoList(cell, row, enumObject, index) {
+		if(cell === "" || cell === null || cell === undefined){
+			return cell;
+		}
+		else{
+			return (<div>
+			<Form.Control as="select" size="sm"
+						  onChange={this.resumeInfoListChange.bind(this, row)}
+						  name="resumeInfoList"
+						  autoComplete="off">
+				{cell.map(data =>
+					<option value={data}>
+					{data}
+					</option>
+				)}
+			</Form.Control>
+		</div>);
+		}
+	}
 	
 	/* 要員追加機能の新規 20201216 張棟 START */
 	// 要員名前処理
@@ -788,6 +818,14 @@ class sendLettersConfirm extends React.Component {
 				</div>);
 			}
 		}
+	}
+	
+	resumeInfoListChange = (row, event) => {
+		var employeeInfo = this.state.employeeInfo;
+		employeeInfo[row.index - 1].resumeInfoName = event.target.value;
+		this.setState({
+			employeeInfo: employeeInfo,
+		})
 	}
 	
 	// 要員名前触発されるイベント
@@ -1010,14 +1048,22 @@ class sendLettersConfirm extends React.Component {
 		var fileName = arr[arr.length - 1];
 		if (name === "resumeInfo1") {
 			var employeeInfo1 = this.state.employeeInfo;
+			
+			var resumeInfoListTemp = employeeInfo1[this.state.selectedColumnId-1].resumeInfoList;
+			if(!(fileName === null || fileName === "" || fileName === undefined)){
+				resumeInfoListTemp.push(fileName);
+			}
+			
 			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1 = filePath;
+			employeeInfo1[this.state.selectedColumnId-1].resumeInfoList = resumeInfoListTemp;
 			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1Name = fileName;
 			this.setState({
 				employeeInfo: employeeInfo1,
-				resumeInfo1: filePath,
+				resumeInfo1: "",
 				resumeInfo1Name: fileName,
 				resumePath: filePath,
 				resumeName: fileName,
+				selectedColumnId: this.state.selectedColumnId,
 			})
 		} else if (name === "image") {
 			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
@@ -1273,8 +1319,9 @@ class sendLettersConfirm extends React.Component {
 								 * <TableHeaderColumn dataField='resumeInfo2'
 								 * hidden={true}>履歴書2</TableHeaderColumn>
 								 */}
-							<TableHeaderColumn dataField='employeeNo' hidden={true}>employeeNo</TableHeaderColumn>
-							<TableHeaderColumn placeholder="履歴書名"  width='19%' dataField='resumeInfo1Name' value={resumeInfo1} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn dataField='employeeNo' hidden={true}></TableHeaderColumn>
+							<TableHeaderColumn placeholder="履歴書名"  width='19%' dataField='resumeInfoList' value={resumeInfo1} dataFormat={this.formatResumeInfoList.bind(this)} editable={false} onChange={this.valueChange}>履歴書</TableHeaderColumn>
+							<TableHeaderColumn dataField='resumeInfoName' hidden={true}>resumeInfoName</TableHeaderColumn>
 						</BootstrapTable>
 							<Form.File id="resumeInfo1" hidden={true} data-browse="添付" value={resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
 					</Col>

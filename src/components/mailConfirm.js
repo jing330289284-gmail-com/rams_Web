@@ -40,7 +40,7 @@ class mailConfirm extends React.Component {
 		selectedPurchasingManagers: this.props.personalInfo.state.selectedPurchasingManagers,
 		greetinTtext: this.props.personalInfo.state.greetinTtext,
 		theMonthOfStartWork: this.props.personalInfo.state.theMonthOfStartWork,
-		resumeName: this.props.personalInfo.state.resumeName,
+		resumeName: this.props.personalInfo.state.resumeName === undefined || this.props.personalInfo.state.resumeName === null ? "" : this.props.personalInfo.state.resumeName,
 	})
 	componentDidMount() {
 	}
