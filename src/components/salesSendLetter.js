@@ -82,6 +82,7 @@ class salesSendLetter extends React.Component {
 				sendValue: this.props.location.state.sendValue,
 				projectNo: this.props.location.state.projectNo,
 			})
+		
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
 				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
 					this.setState({
@@ -633,9 +634,9 @@ class salesSendLetter extends React.Component {
 	}
 
 	saveSalesPersons = (row, appendPersonMsg) => {
-		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
+/*		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
 		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
-		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
+		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;*/
 		this.state.customerTemp[row.rowId].purchasingManagersOthers = appendPersonMsg.purchasingManagersOthers;
 		this.setState({
 			daiologShowFlag: false,
@@ -781,6 +782,18 @@ class salesSendLetter extends React.Component {
 					pathname: '/subMenuManager/sendLettersConfirm',
 					state: {
 						salesPersons: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.state.selectedEmpNos : null,
+						targetCusInfos: this.state.selectedCusInfos,
+						backPage: 'salesSendLetter',
+						projectNo: this.state.projectNo,
+						backbackPage: this.state.backPage,
+						sendValue: sendValue,
+					},
+				}
+				break;
+			case "sendLettersMatter":
+				path = {
+					pathname: '/subMenuManager/sendLettersMatter',
+					state: {
 						targetCusInfos: this.state.selectedCusInfos,
 						backPage: 'salesSendLetter',
 						projectNo: this.state.projectNo,
@@ -1062,7 +1075,7 @@ class salesSendLetter extends React.Component {
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
 							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
 							
-							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
 							<Button
 								size="sm"
 								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false)}

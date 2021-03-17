@@ -153,7 +153,8 @@ class salesAppend extends Component {
 		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
 		let purchasingManagersOthers = this.state.selectetPersonsName;
 		purchasingManagersOthers.pop();
-		this.state.appendPersonMsg.purchasingManagersOthers = purchasingManagersOthers;
+		//this.state.appendPersonMsg.purchasingManagersOthers = purchasingManagersOthers;
+		this.state.appendPersonMsg.purchasingManagersOthers = salesPersons;
 		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
 			axios.post(this.state.serverIP + "salesSendLetters/customerSendMailStorageListUpdate", 
 					{

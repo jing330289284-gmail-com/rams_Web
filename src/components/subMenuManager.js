@@ -27,6 +27,7 @@ import individualSales from './individualSales';
 import monthlySalesSearch from './monthlySalesSearch';
 import EnterPeriodSearch from './enterPeriodSearch';
 import sendLettersConfirm from './sendLettersConfirm';
+import sendLettersMatter from './sendLettersMatter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
@@ -334,6 +335,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/salesPoint`} component={salesPoint} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
+								<Route exact path={`${this.props.match.url}/sendLettersMatter`} component={sendLettersMatter} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />

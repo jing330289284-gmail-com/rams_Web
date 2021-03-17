@@ -181,8 +181,20 @@ class sendLettersConfirm extends React.Component {
 				employeeFlag : false,
 			})
 		}
-		
+		this.setSelectedCusInfos("未");
 	}
+	
+	setSelectedCusInfos = (text) => {
+		let selectedCusInfos = this.props.location.state.targetCusInfos;
+		for(let i = 0; i < selectedCusInfos.length; i++){
+			selectedCusInfos[i].rowNo = i + 1;
+			selectedCusInfos[i].sendOver = text;
+		}
+		this.setState({
+			selectedCusInfos : selectedCusInfos,
+		})
+	}
+
 	/* 要員追加機能の新規 20201216 張棟 START */
 	getAllEmployInfoName = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getAllEmployInfoName")
@@ -373,7 +385,7 @@ class sendLettersConfirm extends React.Component {
 				ＩＳＭＳ：MSA-IS-385<br/>
 				*****************************************************************`;
 						const { resumeName, mailTitle, resumePath, selectedmail } = this.state;
-						selectedmail = this.state.selectedCusInfos[i].purchasingManagersMail + "," + this.state.selectedCusInfos[i].purchasingManagersMail2;
+						selectedmail = this.state.selectedCusInfos[i].purchasingManagersMail/* + "," + this.state.selectedCusInfos[i].purchasingManagersMail2*/;
 						let selectedMailCC = [this.state.selectedMailCC.length >= 1 ? this.state.selectedMailCC[0].companyMail : '',
 						this.state.selectedMailCC.length >= 2 ? this.state.selectedMailCC[1].companyMail:''].filter(function(s) {
 							return s;
@@ -385,6 +397,7 @@ class sendLettersConfirm extends React.Component {
 								/*
 								 * this.setState({ mails: result.data, })
 								 */
+								this.setSelectedCusInfos("済み");
 							})
 							.catch(function(error) {
 								alert(error);
@@ -761,7 +774,7 @@ class sendLettersConfirm extends React.Component {
 						  autoComplete="off">
 				{cell.map(data =>
 					<option value={data}>
-					{data}
+					{data.split("_").length > 1 ? data.split("_")[data.split("_").length - 1] : data}
 					</option>
 				)}
 			</Form.Control>
@@ -928,6 +941,7 @@ class sendLettersConfirm extends React.Component {
 		employeeInfoModel["resumeInfo1Name"] = "";
 		employeeInfoModel["resumeInfo2"] = "";
 		employeeInfoModel["resumeInfo2Name"] = "";
+		employeeInfoModel["resumeInfoName"] = "";
 		employeeInfoModel["initFlg"] = false;
 		employeeInfoModel["index"] = ++this.state.EmployeeNameIndex;
 		employeeInfo.push(employeeInfoModel);
@@ -1110,7 +1124,7 @@ class sendLettersConfirm extends React.Component {
 				searchFlag: this.state.searchFlag, 
 				sendValue: this.state.sendValue ,
 				salesPersons: this.state.selectedEmpNos,
-				targetCusInfos: this.state.selectedCusInfos,
+				// targetCusInfos: this.state.selectedCusInfos,
 				backbackPage: this.state.backbackPage,
 				projectNo: this.state.projectNo,
 			},
@@ -1148,7 +1162,7 @@ class sendLettersConfirm extends React.Component {
 		// 要員一覧表の入力框
 		const cellEdit = {
 				mode: 'click',
-				blurToSave: true
+				blurToSave: true,
 			};
 
 
@@ -1339,17 +1353,18 @@ class sendLettersConfirm extends React.Component {
 				</Col></Row>
 				<Row>
 					<Col sm={1}></Col>
-					<Col sm={6}>
-					<Button size="sm"
-						hidden={backPage === "" ? true : false}
-						variant="info"
-						onClick={this.back.bind(this)}
-					>
-						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-                    </Button>
-                    </Col>
 					<Col sm={3}>
+					送信対象お客様
+                    </Col>
+					<Col sm={6}>
 						<div style={{ "float": "right" }}>
+							<Button size="sm"
+								hidden={backPage === "" ? true : false}
+								variant="info"
+								onClick={this.back.bind(this)}
+							>
+								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+		                    </Button>{" "}
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
@@ -1362,18 +1377,20 @@ class sendLettersConfirm extends React.Component {
 							selectRow={selectRow1}
 							ref='table1'
 							data={this.state.selectedCusInfos}
+							pagination={true}
 							className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='customerName' dataAlign='center' autoValue dataSort={true} editable={false} isKey>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn width='15%' dataField='customerName' dataAlign='center' autoValue editable={false}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='13%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
+							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
+							{/*<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='positionCode2' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagersMail2' editable={false}>メール</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='transmissionStatus' editable={false}>送信状況</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='purchasingManagersMail2' editable={false}>メール</TableHeaderColumn>*/}
+							<TableHeaderColumn width='17%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='sendOver' editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>
