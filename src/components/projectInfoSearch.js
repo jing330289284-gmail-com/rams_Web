@@ -831,7 +831,7 @@ class ProjectInfoSearch extends Component {
                         <Row >
                             <Col sm={12}>
                                 <BootstrapTable ref="projectInfoSearchTable" data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-                                    <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='85' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
@@ -839,7 +839,7 @@ class ProjectInfoSearch extends Component {
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='130' tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }}>開発言語</TableHeaderColumn>
                                     <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName1'></TableHeaderColumn>
                                     <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName2'></TableHeaderColumn>
