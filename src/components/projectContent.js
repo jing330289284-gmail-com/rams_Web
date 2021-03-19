@@ -175,10 +175,10 @@ class ProjectContent extends Component {
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
                 </div>
-                <ListGroup>
-                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectTypeName}</ListGroup.Item>
-                    <ListGroup.Item>■案件名：{projectName}</ListGroup.Item>
-                    <ListGroup.Item>■業務内容：<br />                              
+                {/*<ListGroup>
+                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectTypeName}
+                    <br/>■案件名：{projectName}
+                    <br/>■業務内容：<br />                              
                     <FormControl
                         maxLength="500"
                         cols="10"
@@ -194,16 +194,41 @@ class ProjectContent extends Component {
                     ·{requiredItem1}
                     <br/>
                     ·{requiredItem2}</ListGroup.Item>
-                    <ListGroup.Item>■月額単金：{unitPriceRange}</ListGroup.Item>
-                    <ListGroup.Item>■清算範囲：{payOffRange}</ListGroup.Item>
-                    <ListGroup.Item>■募集人数：{recruitmentNumbers}</ListGroup.Item>
-                    <ListGroup.Item>■稼動時期：{admissionPeriod}~{projectPeriodName}</ListGroup.Item>
-                    <ListGroup.Item>■勤務地：{siteLocationName}</ListGroup.Item>
-                    <ListGroup.Item>■作業工程：{projectPhase}</ListGroup.Item>
-                    <ListGroup.Item>■国籍：{nationalityName === null ? "" : nationalityName + "、" + japaneaseConversationName}</ListGroup.Item>
-                    <ListGroup.Item>■面談回数：{noOfInterviewName}</ListGroup.Item>
-                    <ListGroup.Item>■備考：{remark}</ListGroup.Item>
-                </ListGroup>
+                    <ListGroup.Item>■月額単金：{unitPriceRange}
+                    <br/>■清算範囲：{payOffRange}
+                    <br/>■募集人数：{recruitmentNumbers}
+                    <br/>■稼動時期：{admissionPeriod}~{projectPeriodName}
+                    <br/>■勤務地：{siteLocationName}
+                    <br/>■作業工程：{projectPhase}
+                    <br/>■国籍：{nationalityName === null ? "" : nationalityName + "、" + japaneaseConversationName}
+                    <br/>■面談回数：{noOfInterviewName}
+                    <br/>■備考：{remark}</ListGroup.Item>
+                </ListGroup>*/}
+                <div >
+				<textarea ref={(textarea) => this.textArea = textarea} disabled
+					style={{ height: '600px', width: '100%', resize: 'none', border: '0'}}
+					value={`■NO_種別：No.` + projectNo + `_` + (projectTypeName === null ? "" : projectTypeName) + `
+■案件名：`+ projectName + `
+■業務内容：` + `
+　` + projectInfoDetail.replace(/\n/g,"\n　") + `
+
+■スキル要件：` + (((keyWordOfLanagurueName1 === null ? "" : (keyWordOfLanagurueName1 + `,`)) + (keyWordOfLanagurueName2 === null ? "" : (keyWordOfLanagurueName2 + `,`)) + (keyWordOfLanagurueName3 === null ? "" : (keyWordOfLanagurueName3 + `,`))).substring(0,((keyWordOfLanagurueName1 === null ? "" : (keyWordOfLanagurueName1 + `,`)) + (keyWordOfLanagurueName2 === null ? "" : (keyWordOfLanagurueName2 + `,`)) + (keyWordOfLanagurueName3 === null ? "" : (keyWordOfLanagurueName3 + `,`))).lastIndexOf(",")) === "" ? `` : `
+　·` + ((keyWordOfLanagurueName1 === null ? "" : (keyWordOfLanagurueName1 + `,`)) + (keyWordOfLanagurueName2 === null ? "" : (keyWordOfLanagurueName2 + `,`)) + (keyWordOfLanagurueName3 === null ? "" : (keyWordOfLanagurueName3 + `,`))).substring(0,((keyWordOfLanagurueName1 === null ? "" : (keyWordOfLanagurueName1 + `,`)) + (keyWordOfLanagurueName2 === null ? "" : (keyWordOfLanagurueName2 + `,`)) + (keyWordOfLanagurueName3 === null ? "" : (keyWordOfLanagurueName3 + `,`))).lastIndexOf(","))) + (requiredItem1 === null || requiredItem1 === "" ? `` : `
+　·` + requiredItem1) + (requiredItem2 === null || requiredItem2 === "" ? `` : `
+　·` + requiredItem2) + `
+` + (unitPriceRange === null || unitPriceRange === "" ? ``:`
+■月額単金：` + unitPriceRange) + (payOffRange === null || payOffRange === "" ? ``:`
+■清算範囲：` + payOffRange) + (recruitmentNumbers === null || recruitmentNumbers === "" ? ``:`
+■募集人数：` + recruitmentNumbers) + ((admissionPeriod === null || admissionPeriod === "") && (projectPeriodName === null || projectPeriodName === "") ? `` : `
+■稼動時期：` + admissionPeriod + ` ~ ` + projectPeriodName) + (siteLocationName === null || siteLocationName === "" ? ``:`
+■勤務地：` + siteLocationName) + (projectPhase === null || projectPhase === "" ? ``:`
+■作業工程：` + projectPhase) + ((nationalityName !== null && nationalityName !== "") || (japaneaseConversationName!== null && japaneaseConversationName !== "") ? `
+■国籍：` + (nationalityName === null ? `` : (nationalityName + `、` + japaneaseConversationName)):``) + (noOfInterviewName === null || noOfInterviewName === "" ? ``:`
+■面談回数：` + noOfInterviewName) + (remark === null || remark === "" ? ``:`
+■備考：` + remark)
+				
+				}
+				/></div>
             </div>
         );
     }

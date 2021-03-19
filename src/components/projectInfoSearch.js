@@ -743,7 +743,7 @@ class ProjectInfoSearch extends Component {
                                         <font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>年以上</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={2}>
+                                <Col sm={4}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>作業工程</InputGroup.Text>
@@ -759,11 +759,8 @@ class ProjectInfoSearch extends Component {
                                                     {date.name}
                                                 </option>
                                             )}
-                                        </FormControl><font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>から</font>
-                                    </InputGroup>
-                                </Col>
-                                <Col sm={2}>
-                                    <InputGroup size="sm" className="mb-3">
+                                        </FormControl><font style={{ marginLeft: "5px", marginRight: "5px", marginTop: "5px" }}>から</font>
+
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>面談回数</InputGroup.Text>
                                         </InputGroup.Prepend>
@@ -818,13 +815,13 @@ class ProjectInfoSearch extends Component {
                     <div>
                         <Row >
                             <Col sm={7}>
+                            <Button size="sm" variant="info" name="clickButton" id="selectCustomer" variant="info" onClick={this.shuseiTo.bind(this, "customer")}><FontAwesomeIcon icon={faEnvelope} /> お客様選択</Button>{' '}
                             </Col>
                             <Col sm={5}>
                                 <div style={{ "float": "right" }}>
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
                                     <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>{' '}
-                                    <Button size="sm" variant="info" name="clickButton" id="selectCustomer" variant="info" onClick={this.shuseiTo.bind(this, "customer")}><FontAwesomeIcon icon={faEnvelope} /> お客様選択</Button>{' '}
                                     <Button size="sm" variant="info" name="clickButton" id="projectContent" variant="info" onClick={this.handleShowModal.bind(this)}><FontAwesomeIcon icon={faBook} /> 案件文章</Button>
                                 </div>
                             </Col>

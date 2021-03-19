@@ -111,7 +111,7 @@ class PasswordSetManager extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="passwordSetText" style={{ "width": this.props.actionType === "update" ? "8rem" : "7.5rem" }}>パスワード設定</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="password" id="newPassword" name="newPassword" />
+								<Form.Control type="password" id="newPassword" name="newPassword" maxlength="12"/>
 							</InputGroup>
 						</Col>
 						<font color="red" >★</font>
@@ -122,7 +122,7 @@ class PasswordSetManager extends Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm" style={{ "width": "8.5rem" }}>パスワード再確認</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="password" id="passwordCheck" a name="passwordCheck" />
+								<Form.Control type="password" id="passwordCheck" a name="passwordCheck" maxlength="12"/>
 							</InputGroup>
 						</Col>
 						<font color="white" >★</font>

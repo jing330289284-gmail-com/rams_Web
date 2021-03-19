@@ -75,6 +75,7 @@ class projectInfo extends Component {
         ageClassificationDrop: store.getState().dropDown[49],
         workStartPeriodDrop: store.getState().dropDown[59],
         admissionMonthDrop: store.getState().dropDown[62],
+        experienceYearDrop: [],
     }
     //onchange
     valueChange = event => {
@@ -82,6 +83,7 @@ class projectInfo extends Component {
             [event.target.name]: event.target.value,
         })
     }
+    
     //リセット
     resetValue = () => {
         this.setState({
@@ -258,6 +260,18 @@ class projectInfo extends Component {
             })
         }
     }
+    
+    getYearChange = (event, values) => {
+        if (values != null) {
+            this.setState({
+            	experienceYear: values.code,
+            })
+        } else {
+            this.setState({
+            	experienceYear: "",
+            })
+        }
+    }
     /**
      * 数字のみ入力
      */
@@ -276,55 +290,67 @@ class projectInfo extends Component {
         }
     }
     componentDidMount() {
-        var projectNo = "";
-        if (this.props.location.state !== null && this.props.location.state !== undefined) {
-            this.setState({
-                projectNo: this.props.location.state.projectNo,
-                backPage: this.props.location.state.backPage,
-                actionType: this.props.location.state.actionType,
-                sendValue: this.props.location.state.sendValue,
-                searchFlag: this.props.location.state.searchFlag,
-            })
-            projectNo = this.props.location.state.projectNo;
-        }
-        var projectInfoModel = {
-            actionType: this.state.actionType,
-            projectNo: projectNo,
-        }
-        axios.post(this.state.serverIP + "projectInfo/init", projectInfoModel)
-            .then(result => {
-                if (this.state.actionType === "insert") {
-                    this.setState({
-                        projectNo: result.data.projectNo,
-                        torokuText: "登録",
-                    })
-                } else {
-                    var customerNo = result.data.resultList[0].customerNo;
-                    var projectInfoMod = result.data.resultList[0];
-                    var projectInfoModel = {
-                        customerNo: customerNo,
-                    }
-                    axios.post(this.state.serverIP + "projectInfo/getPersonInCharge", projectInfoModel)
-                        .then(result => {
-                            this.setState({
-                                personInChargeDrop: result.data.personInChargeDrop,
-                            }, () => {
-                                this.giveValue(projectInfoMod);
-                            })
-                        })
-                        .catch(error => {
-                            this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
-                        });
-                    if (this.state.actionType === "update") {
-                        this.setState({
-                            torokuText: "更新",
-                        })
-                    }
-                }
-            })
-            .catch(error => {
-                this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
-            });
+    	
+    	for(let i = 0;i < 11;i++){
+    		let experienceYearDrop = this.state.experienceYearDrop;
+    		experienceYearDrop.push({code:String(i),name:String(i)});
+    		this.setState({ experienceYearDrop: experienceYearDrop });
+    	}
+       
+        let stationDrop = this.state.stationDrop;
+        stationDrop.push({code:String(stationDrop.length),name:"テレワーク"});
+        this.setState({ stationDrop: stationDrop }, () => {
+        	 var projectNo = "";
+             if (this.props.location.state !== null && this.props.location.state !== undefined) {
+                 this.setState({
+                     projectNo: this.props.location.state.projectNo,
+                     backPage: this.props.location.state.backPage,
+                     actionType: this.props.location.state.actionType,
+                     sendValue: this.props.location.state.sendValue,
+                     searchFlag: this.props.location.state.searchFlag,
+                 })
+                 projectNo = this.props.location.state.projectNo;
+             }
+             var projectInfoModel = {
+                 actionType: this.state.actionType,
+                 projectNo: projectNo,
+             }
+             
+        	 axios.post(this.state.serverIP + "projectInfo/init", projectInfoModel)
+             .then(result => {
+                 if (this.state.actionType === "insert") {
+                     this.setState({
+                         projectNo: result.data.projectNo,
+                         torokuText: "登録",
+                     })
+                 } else {
+                     var customerNo = result.data.resultList[0].customerNo;
+                     var projectInfoMod = result.data.resultList[0];
+                     var projectInfoModel = {
+                         customerNo: customerNo,
+                     }
+                     axios.post(this.state.serverIP + "projectInfo/getPersonInCharge", projectInfoModel)
+                         .then(result => {
+                             this.setState({
+                                 personInChargeDrop: result.data.personInChargeDrop,
+                             }, () => {
+                                 this.giveValue(projectInfoMod);
+                             })
+                         })
+                         .catch(error => {
+                             this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+                         });
+                     if (this.state.actionType === "update") {
+                         this.setState({
+                             torokuText: "更新",
+                         })
+                     }
+                 }
+             })
+             .catch(error => {
+                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+             });
+        });
     }
     /**
      * 登録ボタン
@@ -345,6 +371,7 @@ class projectInfo extends Component {
         projectInfoModel["keyWordOfLanagurue3"] = this.state.keyWordOfLanagurue3;
         projectInfoModel["customerNo"] = this.state.customerNo;
         projectInfoModel["actionType"] = this.state.actionType;
+        projectInfoModel["experienceYear"] = this.state.experienceYear;
         axios.post(this.state.serverIP + "projectInfo/toroku", projectInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -456,6 +483,7 @@ class projectInfo extends Component {
             ageClassificationDrop,
             workStartPeriodDrop,
             admissionMonthDrop,
+            experienceYearDrop,
         } = this.state;
         return (
             <div>
@@ -759,14 +787,30 @@ class projectInfo extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>年数要求</InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <FormControl
+	                                        <Autocomplete
+	                                        id="experienceYear"
+	                                        name="experienceYear"
+	                                        value={experienceYearDrop.find(v => v.code === experienceYear) || {}}
+	                                        options={experienceYearDrop}
+	                                        getOptionLabel={(option) => option.name}
+	                                        disabled={actionType === "detail" ? true : false}
+	                                        onChange={(event, values) => this.getYearChange(event, values)}
+	                                        renderInput={(params) => (
+	                                            <div ref={params.InputProps.ref}>
+	                                                <input placeholder="例：10" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-experienceYear"
+	                                                />
+	                                            </div>
+	                                        )}
+                                    />
+                                        {/*<FormControl
                                             maxLength="2"
                                             placeholder="例：10"
                                             value={experienceYear}
                                             name="experienceYear"
                                             onChange={(e) => this.vNumberChange(e, 'experienceYear')}
                                             disabled={actionType === "detail" ? true : false}>
-                                        </FormControl>
+                                        </FormControl>*/}
+                                        <font style={{ marginLeft: "5px", marginRight: "5px", marginTop: "5px" }}>年以上</font>
                                     </InputGroup>
                                 </Col>
                                 <Col sm={3}>
@@ -1007,7 +1051,6 @@ class projectInfo extends Component {
                                 <a className="projectInfoDetailTitle">案件詳細：</a>
                             </Row>
                             <Row>
-                                <p className="textNum">入力した字数：{projectInfoDetail.length}/500</p>
                                 <FormControl
                                     maxLength="500"
                                     cols="10"
@@ -1018,6 +1061,7 @@ class projectInfo extends Component {
                                     name="projectInfoDetail"
                                     as="textarea">
                                 </FormControl>
+                                <p className="textNum">入力した字数：{projectInfoDetail.length}/500</p>
                             </Row>
                             <br />
                             <div style={{ "textAlign": "center" }}>

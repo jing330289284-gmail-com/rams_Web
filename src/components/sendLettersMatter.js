@@ -7,7 +7,7 @@ import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import MailConfirm from './mailConfirm';
+import MailMatter from './mailMatter';
 import store from './redux/store';
 import SalesEmpAddPopup from './salesEmpAddPopup';
 import $ from "jquery";
@@ -22,7 +22,6 @@ class sendLettersMatter extends React.Component {
 	constructor(props) {
 		super(props);
 		this.valueChange = this.valueChange.bind(this);
-		this.titleValueChange = this.titleValueChange.bind(this);
 		this.state = this.initialState;// 初期化
 	}
 
@@ -109,7 +108,6 @@ class sendLettersMatter extends React.Component {
 		disableFlag: true,
 		initWellUseLanguagss: [],
 		daiologShowFlag: false,
-		empAdddaiologShowFlag: false,
 		selectRow1Flag: false,
 		selectRowFlag: false,
 		mails: [],
@@ -158,83 +156,95 @@ class sendLettersMatter extends React.Component {
 				backbackPage: this.props.location.state.backbackPage,
 				projectNo: this.props.location.state.projectNo,
 			})
-			var projectInfoModel = {
-	            projectNo: this.props.location.state.projectNo,
-	            theSelectProjectperiodStatus: '0',
-	        }
-	        axios.post(this.state.serverIP + "projectInfoSearch/search", projectInfoModel)
-	            .then(result => {
-	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                        var payOffRange = "";
-                        var unitPriceRange = "";
-                        var projectPhase = "";
-                        var keyWordOfLanagurueName = "";
-	                	if(result.data.projectInfoList[0].payOffRangeLowest !== undefined && result.data.projectInfoList[0].payOffRangeLowest !== null && 
-	                            result.data.projectInfoList[0].payOffRangeHighest !== undefined && result.data.projectInfoList[0].payOffRangeHighest !== null){
-	                            payOffRange = (result.data.projectInfoList[0].payOffRangeLowest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeLowest) 
-	                                                + "-" + (result.data.projectInfoList[0].payOffRangeHighest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeHighest) 
-	                        }
-	                    if(result.data.projectInfoList[0].unitPriceRangeLowest !== undefined && result.data.projectInfoList[0].unitPriceRangeLowest !== null && result.data.projectInfoList[0].unitPriceRangeLowest !== ''|| 
-	                            result.data.projectInfoList[0].unitPriceRangeHighest !== undefined && result.data.projectInfoList[0].unitPriceRangeHighest !== null  && result.data.projectInfoList[0].unitPriceRangeHighest !== ''){
-	                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円~" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";
-	                        }
-	                    if(result.data.projectInfoList[0].projectPhaseStart !== undefined && result.data.projectInfoList[0].projectPhaseStart !== null && result.data.projectInfoList[0].projectPhaseStart !== ''){
-	                            projectPhase = result.data.projectInfoList[0].projectPhaseNameStart + "~" + result.data.projectInfoList[0].projectPhaseNameEnd;
-	                        }
+			if(this.props.location.state.projectNo !== null && this.props.location.state.projectNo !== undefined && this.props.location.state.projectNo !== ''){
+				var projectInfoModel = {
+			            projectNo: this.props.location.state.projectNo,
+			            theSelectProjectperiodStatus: '0',
+			        }
+			        axios.post(this.state.serverIP + "projectInfoSearch/search", projectInfoModel)
+			            .then(result => {
+			                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+		                        var payOffRange = "";
+		                        var unitPriceRange = "";
+		                        var projectPhase = "";
+		                        var keyWordOfLanagurueName = "";
+			                	if(result.data.projectInfoList[0].payOffRangeLowest !== undefined && result.data.projectInfoList[0].payOffRangeLowest !== null && 
+			                            result.data.projectInfoList[0].payOffRangeHighest !== undefined && result.data.projectInfoList[0].payOffRangeHighest !== null){
+			                            payOffRange = (result.data.projectInfoList[0].payOffRangeLowest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeLowest) 
+			                                                + "-" + (result.data.projectInfoList[0].payOffRangeHighest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeHighest) 
+			                        }
+			                    if(result.data.projectInfoList[0].unitPriceRangeLowest !== undefined && result.data.projectInfoList[0].unitPriceRangeLowest !== null && result.data.projectInfoList[0].unitPriceRangeLowest !== ''|| 
+			                            result.data.projectInfoList[0].unitPriceRangeHighest !== undefined && result.data.projectInfoList[0].unitPriceRangeHighest !== null  && result.data.projectInfoList[0].unitPriceRangeHighest !== ''){
+			                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円~" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";
+			                        }
+			                    if(result.data.projectInfoList[0].projectPhaseStart !== undefined && result.data.projectInfoList[0].projectPhaseStart !== null && result.data.projectInfoList[0].projectPhaseStart !== ''){
+			                            projectPhase = result.data.projectInfoList[0].projectPhaseNameStart + "~" + result.data.projectInfoList[0].projectPhaseNameEnd;
+			                        }
 
 
-	                    if(result.data.projectInfoList[0].keyWordOfLanagurueName1 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== ''){
-	                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName1 + ",";
-                        }
-	                    if(result.data.projectInfoList[0].keyWordOfLanagurueName2 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName2 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName2 !== ''){
-	                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName2 + ",";
-                        }
-	                    if(result.data.projectInfoList[0].keyWordOfLanagurueName3 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName3 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName3 !== ''){
-	                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName3 + ",";
-                        }
-	                    if(keyWordOfLanagurueName.length > 0){
-	                    	keyWordOfLanagurueName = keyWordOfLanagurueName.substring(0,keyWordOfLanagurueName.lastIndexOf(","));
-	                    }
-	        			this.setState({
-	        				matterText:
-	        					"■業務名：" + result.data.projectInfoList[0].projectName + "\n" +
-	        					"■業務内容：\n　" + result.data.projectInfoList[0].projectInfoDetail.replace(/\n/g,"\n　") + "\n" + "\n" +
-	        					"■スキル要件：\n　· " + keyWordOfLanagurueName + 
-	        					"\n　· " + result.data.projectInfoList[0].requiredItem1 +
-	        					"\n　· " + result.data.projectInfoList[0].requiredItem2 + "\n" + "\n" +
-	        					"■月額単金：" + unitPriceRange + "\n" +
-	        					"■清算範囲：" + payOffRange + "\n" +
-	        					"■募集人数：" + (result.data.projectInfoList[0].recruitmentNumbers === null ? "" : result.data.projectInfoList[0].recruitmentNumbers) + "\n" +
-	        					"■稼動時期：" + result.data.projectInfoList[0].admissionPeriod + "~" + result.data.projectInfoList[0].projectPeriodName + "\n" +
-	        					"■勤務地：" + (result.data.projectInfoList[0].siteLocationName === null ? "" : result.data.projectInfoList[0].siteLocationName) + "\n" +
-	        					"■作業工程：" + projectPhase + "\n" +
-	        					"■国籍：" + (result.data.projectInfoList[0].nationalityName === null ? "" : (result.data.projectInfoList[0].nationalityName + "、" + result.data.projectInfoList[0].japaneaseConversationName))  + "\n" +
-	        					"■面談回数：" + (result.data.projectInfoList[0].noOfInterviewName === null ? "" : result.data.projectInfoList[0].noOfInterviewName) + "\n" +
-	        					"■備考：" + (result.data.projectInfoList[0].remark === null ? "" : result.data.projectInfoList[0].remark),
-	        				mailTitle: result.data.projectInfoList[0].projectName,
-	        			})
-	                } else {
-	                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-	                }
-	            })
-	            .catch(error => {
-	                alert("检索错误，请检查程序");
-	            });
-		}
-		/* 要員追加機能の新規 20201216 張棟 START */
-		// 営業状況確認一覧画面から選択された送信要員がある
-		if (this.state.selectedEmpNos !== "" && this.state.selectedEmpNos !== null && this.state.selectedEmpNos !== undefined) {
-			// 選択された送信要員の詳細データを取る
-			this.searchEmpDetail();			
+			                    if(result.data.projectInfoList[0].keyWordOfLanagurueName1 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== ''){
+			                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName1 + ",";
+		                        }
+			                    if(result.data.projectInfoList[0].keyWordOfLanagurueName2 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName2 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName2 !== ''){
+			                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName2 + ",";
+		                        }
+			                    if(result.data.projectInfoList[0].keyWordOfLanagurueName3 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName3 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName3 !== ''){
+			                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName3 + ",";
+		                        }
+			                    if(keyWordOfLanagurueName.length > 0){
+			                    	keyWordOfLanagurueName = keyWordOfLanagurueName.substring(0,keyWordOfLanagurueName.lastIndexOf(","));
+			                    }
+			        			this.setState({
+			        				matterText:
+			        					"■業務名：" + result.data.projectInfoList[0].projectName + "\n" +
+			        					"■業務内容：\n　" + result.data.projectInfoList[0].projectInfoDetail.replace(/\n/g,"\n　") + "\n" + "\n" +
+			        					"■スキル要件：" + 
+			        					(keyWordOfLanagurueName === "" ? "" : ("\n　· " + keyWordOfLanagurueName)) + 
+			        					(result.data.projectInfoList[0].requiredItem1 === "" ? "" : ("\n　· " + result.data.projectInfoList[0].requiredItem1)) +
+			        					(result.data.projectInfoList[0].requiredItem2 === "" ? "" : ("\n　· " + result.data.projectInfoList[0].requiredItem2)) +
+			        					"\n" + 
+			        					(unitPriceRange ===  "" ? "" : ("\n■月額単金：" + unitPriceRange)) +
+			        					(payOffRange ===  "" ? "" : ("\n■清算範囲：" + payOffRange)) +
+			        					((result.data.projectInfoList[0].recruitmentNumbers === null || result.data.projectInfoList[0].recruitmentNumbers ===  "") ? "" : ("\n■募集人数：" + (result.data.projectInfoList[0].recruitmentNumbers === null ? "" : result.data.projectInfoList[0].recruitmentNumbers))) +
+			        					((result.data.projectInfoList[0].admissionPeriod === null || result.data.projectInfoList[0].admissionPeriod ===  "") && (result.data.projectInfoList[0].projectPeriodName === null || result.data.projectInfoList[0].projectPeriodName ===  "") ? "" : ("\n■稼動時期：" + result.data.projectInfoList[0].admissionPeriod + "~" + result.data.projectInfoList[0].projectPeriodName)) +
+			        					((result.data.projectInfoList[0].siteLocationName === null || result.data.projectInfoList[0].siteLocationName ===  "") ? "" : ("\n■勤務地：" + (result.data.projectInfoList[0].siteLocationName === null ? "" : result.data.projectInfoList[0].siteLocationName))) +
+			        					(projectPhase ===  "" ? "" : ("\n■作業工程：" + projectPhase)) +
+			        					((result.data.projectInfoList[0].nationalityName === null || result.data.projectInfoList[0].nationalityName ===  "") && (result.data.projectInfoList[0].japaneaseConversationName === null || result.data.projectInfoList[0].japaneaseConversationName ===  "") ? "" : ("\n■国籍：" + (result.data.projectInfoList[0].nationalityName === null ? "" : (result.data.projectInfoList[0].nationalityName + "、" + result.data.projectInfoList[0].japaneaseConversationName))))  +
+			        					((result.data.projectInfoList[0].noOfInterviewName === null || result.data.projectInfoList[0].noOfInterviewName ===  "") ? "" : ("\n■面談回数：" + (result.data.projectInfoList[0].noOfInterviewName === null ? "" : result.data.projectInfoList[0].noOfInterviewName))) +
+			        					((result.data.projectInfoList[0].remark === null || result.data.projectInfoList[0].remark ===  "") ? "" : ("\n■備考：" + (result.data.projectInfoList[0].remark === null ? "" : result.data.projectInfoList[0].remark))),
+			        				mailTitle: result.data.projectInfoList[0].projectName,
+			        			})
+			                } else {
+			                    this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+			                }
+			            })
+			            .catch(error => {
+			                alert("检索错误，请检查程序");
+			            });
+			}else{
+				this.setState({
+    				matterText:
+    					"■業務名：" + "" + "\n" +
+    					"■業務内容：\n　" + "\n" + "\n" +
+    					"■スキル要件：\n　· " + "" + "\n" + "\n" +
+    					"■月額単金：" + "" + "\n" +
+    					"■清算範囲：" + "" + "\n" +
+    					"■募集人数：" + "" + "\n" +
+    					"■稼動時期：" + "" + "\n" +
+    					"■勤務地：" + "" + "\n" +
+    					"■作業工程：" + "" + "\n" +
+    					"■国籍：" + ""  + "\n" +
+    					"■面談回数：" + "" + "\n" +
+    					"■備考：" + "",
+    				mailTitle: "",
+				})
+			}
 		}
 		/* 要員追加機能の新規 20201216 張棟 END */
 		// メールデータが取る
 		this.getMail();
 		this.getLoginUserInfo();
-		this.getAllEmpsWithResume();
-		/* 要員追加機能の新規 20201216 張棟 START */
-		// 画面初期化する時、全部要員のデータを取る
-		this.getAllEmployInfoName();
+
 		/* 要員追加機能の新規 20201216 張棟 END */
 		$("#deleteButton").attr("disabled",true);
 		$("#bookButton").attr("disabled",true);
@@ -257,29 +267,6 @@ class sendLettersMatter extends React.Component {
 			selectedCusInfos : selectedCusInfos,
 		})
 	}
-
-	/* 要員追加機能の新規 20201216 張棟 START */
-	getAllEmployInfoName = () => {
-		axios.post(this.state.serverIP + "sendLettersConfirm/getAllEmployInfoName")
-			.then(result => {
-				// 全部要員名前集合
-				let arr = [];
-				if (result.data.length !== 0) {
-					for (var i=0 ; i < result.data.length ; i++) {
-						arr[i] = result.data[i].employeeName;
-					}
-				}
-				this.setState({
-					// 全部所属
-					allEmployeeName : arr,
-					allEmployeeNameInfo: result.data,
-					// 履歴書
-				});
-		}).catch(function(error) {
-			alert(error);
-		});
-	}
-	/* 要員追加機能の新規 20201216 張棟 END */
 	
 	// 共用CCメールを操作
 	onTagsChange = (event, values, fieldName) => {
@@ -320,53 +307,11 @@ class sendLettersMatter extends React.Component {
 			});
 
 	}
-	/*
-	 * this.setState({ employeeName: result.data[0].employeeFullName,
-	 * genderStatus: this.state.genders.find((v) => (v.code ===
-	 * result.data[0].genderStatus)).name, nationalityName:
-	 * result.data[0].nationalityName, age:
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-	 * Math.ceil((new Date().getTime() -
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
-	 * 31536000000), developLanguage: result.data[0].developLanguage,
-	 * yearsOfExperience: result.data[0].yearsOfExperience, beginMonth: new
-	 * Date("2020/09").getTime(), salesProgressCode: '2', nearestStation:
-	 * result.data[0].employeeStatus === null ? "" :
-	 * result.data[0].nearestStation, stationCode: result.data[0].employeeStatus
-	 * === null ? "" : result.data[0].nearestStation, employeeStatus:
-	 * result.data[0].employeeStatus === null || result.data[0].employeeStatus
-	 * ===""?"":this.state.employees.find((v) => (v.code ===
-	 * result.data[0].employeeStatus)).name, japaneseLevelCode:
-	 * result.data[0].japaneseLevelCode === null ||
-	 * result.data[0].japaneseLevelCode
-	 * ===""?"":this.state.japaneseLevels.find((v) => (v.code ===
-	 * result.data[0].japaneseLevelCode)).name, englishLevelCode:
-	 * result.data[0].englishLevelCode === null ||
-	 * result.data[0].englishLevelCode === "" ?
-	 * "":this.state.englishLevels.find((v) => (v.code ===
-	 * result.data[0].englishLevelCode)).name, siteRoleCode:
-	 * result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ?
-	 * "":result.data[0].siteRoleCode, siteRoleName: result.data[0].siteRoleCode
-	 * === null || result.data[0].siteRoleCode === "" ?
-	 * "":result.data[0].siteRoleName, initAge:
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-	 * Math.ceil((new Date().getTime() -
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
-	 * 31536000000), initNearestStation: result.data[0].nearestStation,
-	 * initJapaneaseConversationLevel: '', initEnglishConversationLevel: '',
-	 * initYearsOfExperience: result.data[0].yearsOfExperience,
-	 * initDevelopLanguageCode6: null, initDevelopLanguageCode7: null,
-	 * initDevelopLanguageCode8: null, initDevelopLanguageCode9: null,
-	 * initDevelopLanguageCode10: null, initUnitPrice: '', initRemark: '',
-	 * initWellUseLanguagss: [], unitPrice: hopeHighestPrice !== null &&
-	 * hopeHighestPrice !== "" && hopeHighestPrice !== undefined ?
-	 * hopeHighestPrice : result.data[0].unitPrice , employeeInfo : index !==
-	 * undefined ? employeeInfo : this.state.employeeInfo, })
-	 */
+	
 	// 送信処理
 	beforeSendMailWithFile = () => {
 		var mailText = this.state.matterText;
-		mailText = mailText.replace(/\n/g,"<br>");        //i9及以上
+		mailText = mailText.replace(/\n/g,"<br>");        // i9及以上
 		this.sendMailWithFile(mailText);
 
 		// this.sendMailWithFile();
@@ -374,27 +319,6 @@ class sendLettersMatter extends React.Component {
 
 	// 送信処理
 	sendMailWithFile = (mailText) => {
-/*
- * 【名 前】：`+ this.state.employeeName + ` ` + this.state.nationalityName + ` ` +
- * this.state.genderStatus + `<br/> 【所 属】：`+ this.state.employeeStatus +
- * (this.state.age === ""?"":`<br	/> 【年 齢】：`)+ this.state.age + (this.state.age
- * === ""?"":`歳<br/>`) + (this.state.nearestStation !== "" &&
- * this.state.nearestStation !== null ?` 【最寄り駅】：`:"")+
- * (this.state.nearestStation !== "" && this.state.nearestStation !== null ?
- * this.state.stations.find((v) => (v.code === this.state.nearestStation)).name :
- * '') + `<br/> 【日本 語】：`+ (this.state.japaneaseConversationLevel !== "" ?
- * this.state.japaneaseConversationLevels.find((v) => (v.code ===
- * this.state.japaneaseConversationLevel)).name : '') + `<br/> 【英 語】：`+
- * (this.state.englishConversationLevel !== "" ?
- * this.state.englishConversationLevels.find((v) => (v.code ===
- * this.state.englishConversationLevel)).name : '') + `<br/> 【業務年数】：`+
- * this.state.yearsOfExperience + `年<br/> 【対応工程】：`+ this.state.siteRoleName + `<br/>
- * 【得意言語】：`+ this.state.developLanguage + `<br/> 【単 価】：`+ this.state.unitPrice +
- * `万円<br/> 【稼働開始】：2020/09<br/> 【営業状況】：`+ (this.state.salesProgressCode !== "" ?
- * this.state.salesProgresss.find((v) => (v.code ===
- * this.state.salesProgressCode)).name : '') + `<br/> 【備 考】：`+
- * this.state.remark + `<br/> <br/>
- */
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
 				`+ this.state.selectedCusInfos[i].purchasingManagers + `様<br/>
@@ -451,57 +375,6 @@ class sendLettersMatter extends React.Component {
 				alert(error);
 			});
 	}
-
-	getAllEmpsWithResume = () => {
-		axios.post(this.state.serverIP + "sendLettersConfirm/getAllEmpsWithResume")
-			.then(result => {
-				this.setState({
-					appendEmps: result.data,
-				})
-			})
-			.catch(function(error) {
-				alert(error);
-			});
-	}
-
-	/**
-	 * @param now
-	 *            当前日期 格式:yyyy-MM
-	 * @param addMonths
-	 *            传-1 上个月,传1 下个月
-	 */
-	getNextMonth = (addMonths) => {
-		var dd = new Date();
-		var m = dd.getMonth() + 1;
-		var y = dd.getMonth() + 1 + addMonths > 12 ? (dd.getFullYear() + 1) : dd.getFullYear();
-		if (m + addMonths == 0) {
-			y = y - 1;
-			m = 12;
-		} else {
-			if (m + addMonths > 12) {
-				m = '01';
-			} else {
-				m = m + 1 < 10 ? '0' + (m + addMonths) : (m + addMonths);
-			}
-		}
-		return y + "/" + m;
-	}
-	
-	fromCodeToNameLanguage = (code) => {
-		if (code === "" || code === null) {
-			return;
-		} else {
-			return this.state.developLanguages.find((v) => (v.code === code)).name;
-		}
-	}
-
-	fromCodeToListLanguage = (code) => {
-		if (code === "" || code === null) {
-			return '';
-		} else {
-			return this.state.developLanguages.find((v) => (v.code === code));
-		}
-	}
 	
 	openDaiolog = () => {
 		this.setState({
@@ -509,16 +382,6 @@ class sendLettersMatter extends React.Component {
 		});
 	}
 	
-	getHopeHighestPrice = (result) => {
-		var tempEmployeeInfo = this.state.employeeInfo;
-		for(let i = 0;i < tempEmployeeInfo.length;i++){
-			tempEmployeeInfo[i].hopeHighestPrice = result.data[i].unitPrice
-		}
-
-		this.setState({
-			employeeInfo:tempEmployeeInfo,
-		});
-	}
 	
 	positionNameFormat = (cell) => {
 		let positionsTem = this.state.positions;
@@ -529,129 +392,6 @@ class sendLettersMatter extends React.Component {
 		}
 	}
 	
-	searchPersonnalDetail = (employeeNo,hopeHighestPrice,index) => {
-		var employeeInfo = this.state.employeeInfo;
-		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo })
-			.then(result => {
-				if(index != undefined){
-					employeeInfo[index-1].hopeHighestPrice = result.data[0].unitPrice;
-					employeeInfo[index-1].resumeInfoList = result.data[0].resumeInfoList;
-					if(result.data[0].resumeInfoList.length > 0){
-						employeeInfo[index-1].resumeInfoName = result.data[0].resumeInfoList[0];
-					}else{
-						employeeInfo[index-1].resumeInfoName = "";
-					}
-				}
-				if (result.data.length === 0 || result.data[0].age === "") {
-					this.setState({
-						employeeName: result.data[0].employeeFullName,
-						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
-						nationalityName: result.data[0].nationalityName,
-						age: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-						developLanguage: result.data[0].developLanguage,
-						yearsOfExperience: result.data[0].yearsOfExperience,
-						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: result.data[0].salesProgressCode === null ? "" : result.data[0].salesProgressCode,
-						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
-						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
-						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-						initNearestStation: result.data[0].nearestStation,
-						initJapaneaseConversationLevel: '',
-						initEnglishConversationLevel: '',
-						initYearsOfExperience: result.data[0].yearsOfExperience,
-						initDevelopLanguageCode6: null,
-						initDevelopLanguageCode7: null,
-						initDevelopLanguageCode8: null,
-						initDevelopLanguageCode9: null,
-						initDevelopLanguageCode10: null,
-						initUnitPrice: '',
-						initRemark: '',
-						initWellUseLanguagss: [],
-						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
-						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
-						theMonthOfStartWork: result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
-						resumeInfoList: result.data[0].resumeInfoList,
-					})
-				} else {
-					this.setState({
-						employeeName: result.data[0].employeeFullName,
-						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
-						nationalityName: result.data[0].nationalityName,
-						age: result.data[0].age,
-						developLanguageCode6: result.data[0].developLanguage1,
-						developLanguageCode7: result.data[0].developLanguage2,
-						developLanguageCode8: result.data[0].developLanguage3,
-						developLanguageCode9: result.data[0].developLanguage4,
-						developLanguageCode10: result.data[0].developLanguage5,
-						wellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
-						this.fromCodeToListLanguage(result.data[0].developLanguage2),
-						this.fromCodeToListLanguage(result.data[0].developLanguage3),
-						this.fromCodeToListLanguage(result.data[0].developLanguage4),
-						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}),
-						// disbleState:
-						// this.fromCodeToListLanguage(result.data[0].developLanguage5)
-						// === '' ? false : true,
-						developLanguage: [this.fromCodeToNameLanguage(result.data[0].developLanguage1),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage2),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage3),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage4),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}).join('、'),
-						yearsOfExperience: result.data[0].yearsOfExperience,
-						japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-						englishConversationLevel: result.data[0].englishConversationLevel,
-						beginMonth: new Date("2020/09").getTime(),
-						salesProgressCode: result.data[0].salesProgressCode === null ? "" : result.data[0].salesProgressCode,
-						// salesProgressCode: result.data[0].salesProgressCode,
-						nearestStation: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-						stationCode: result.data[0].employeeStatus === null ? "" : result.data[0].nearestStation,
-						employeeStatus: result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: result.data[0].japaneseLevelCode === null || result.data[0].japaneseLevelCode ===""?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
-						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
-						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
-						remark: result.data[0].remark,
-						initAge: result.data[0].age,
-						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
-						initNearestStation: result.data[0].nearestStation,
-						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-						initEnglishConversationLevel: result.data[0].englishConversationLevel,
-						initYearsOfExperience: result.data[0].yearsOfExperience,
-						initDevelopLanguageCode6: result.data[0].developLanguage1,
-						initDevelopLanguageCode7: result.data[0].developLanguage2,
-						initDevelopLanguageCode8: result.data[0].developLanguage3,
-						initDevelopLanguageCode9: result.data[0].developLanguage4,
-						initDevelopLanguageCode10: result.data[0].developLanguage5,
-						initUnitPrice: result.data[0].unitPrice,
-						initRemark: result.data[0].remark,
-						resumeInfoList: result.data[0].resumeInfoList,
-						theMonthOfStartWork: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
-						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
-						this.fromCodeToListLanguage(result.data[0].developLanguage2),
-						this.fromCodeToListLanguage(result.data[0].developLanguage3),
-						this.fromCodeToListLanguage(result.data[0].developLanguage4),
-						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}),
-					})
-				}
-			})
-			.catch(function(error) {
-				alert(error);
-			});
-	}
-
 	initPersonnalDetail = () => {
 		this.setState({
 			employeeName: "empty",
@@ -674,33 +414,10 @@ class sendLettersMatter extends React.Component {
 			initJapaneaseConversationLevel: '',
 			initEnglishConversationLevel: '',
 			initYearsOfExperience: "",
-			initDevelopLanguageCode6: null,
-			initDevelopLanguageCode7: null,
-			initDevelopLanguageCode8: null,
-			initDevelopLanguageCode9: null,
-			initDevelopLanguageCode10: null,
 			initUnitPrice: '',
 			initRemark: '',
 			initWellUseLanguagss: [],
 		});
-	}
-	
-	searchEmpDetail = () => {
-		axios.post(this.state.serverIP + "sendLettersConfirm/getSalesEmps", { employeeNos: this.state.selectedEmpNos })
-			.then(result => {
-				this.setState({
-					employeeInfo: result.data,
-					/* 要員追加機能の新規 20201216 張棟 START */
-					// 営業状況確認一覧画面から遷移した後で、要員画面初期化して要員一覧のindex初期化
-					EmployeeNameIndex : result.data.length,
-					/* 要員追加機能の新規 20201216 張棟 END */
-				})
-				this.getHopeHighestPrice(result);
-			})
-			.catch(function(error) {
-				alert(error);
-			});
-		this.searchPersonnalDetail(this.state.selectedEmpNos[0]);
 	}
 
 	renderShowsTotal = (start, to, total) => {
@@ -717,17 +434,10 @@ class sendLettersMatter extends React.Component {
 		})
 	}
 
-	closeEmpAddDaiolog = () => {
-		this.setState({
-			empAdddaiologShowFlag: false,
-		})
-	}
-
 	handleCtmSelect = (row, isSelected, e) => {
 		this.setState({
 			selectedCustomerName: isSelected ? row.customerName : '',
 			selectedPurchasingManagers: isSelected ? row.purchasingManagers : '',
-			// selectedSalesPerson: isSelected ? row.customerName : '',
 			selectedmail: isSelected ? row.purchasingManagersMail : '',
 		})
 		if (isSelected) {
@@ -741,410 +451,10 @@ class sendLettersMatter extends React.Component {
 		}
 	}
 
-	openEmpAddDaiolog = (flag) => {
-		this.setState({
-			empAdddaiologShowFlag: true,
-			popupFlag: flag,
-		});
-	}
-	
-	handleEmpSelect = (row, isSelected, e) => {
-		this.setState({
-			selectedEmps: row,
-		})
-
-		this.searchPersonnalDetail(row.employeeNo);
-	}
-	/* 要員追加機能の新規 20201216 張棟 START */
-	handleRowSelect = (row, isSelected, e) => {
-		if (isSelected) {
-			this.setState({
-           	 	selectedColumnId: row.index,
-           	 	employeeFlag: true,
-           	 	selectRowFlag: true,
-           	 	resumeName: this.state.employeeInfo[row.index - 1].resumeInfoName,
-			})
-			$("#bookButton").attr("disabled",false);
-			$("#deleteButton").attr("disabled",false);
-		} else {
-			$("#deleteButton").attr("disabled",true);
-			$("#bookButton").attr("disabled",true);
-			this.setState({
-           	 	selectRowFlag: false,
-			})
-		}
-		if (row.employeeNo !== "" && row.employeeNo !== null) {
-			this.searchPersonnalDetail(row.employeeNo,row.hopeHighestPrice);
-		}
-	};
-	formatEmpStatus = (cell, row, enumObject, index) => {
-		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
-	}
-	/* 要員追加機能の新規 20201216 張棟 END */
-	// formatResume(cell, row, enumObject, index) {
-	// return (<div>
-	// <Form.Control as="select" size="sm"
-	// onChange={this.resumeValueChange.bind(this, row)}
-	// name="resumeName"
-	// autoComplete="off">
-	// <option ></option>
-	//
-	// <option >{row.resumeInfo1 == null ? "" :
-	// row.resumeInfo1.split('/')[4]}</option>
-	// <option >{row.resumeInfo2 == null ? "" :
-	// row.resumeInfo2.split('/')[4]}</option>
-	// </Form.Control>
-	// </div>);
-	// }
-	
-	formatResumeInfoList(cell, row, enumObject, index) {
-		if(cell === "" || cell === null || cell === undefined){
-			return cell;
-		}
-		else{
-			return (<div>
-			<Form.Control as="select" size="sm"
-						  onChange={this.resumeInfoListChange.bind(this, row)}
-						  name="resumeInfoList"
-						  autoComplete="off">
-				{cell.map(data =>
-					<option value={data}>
-					{data.split("_").length > 1 ? data.split("_")[data.split("_").length - 1] : data}
-					</option>
-				)}
-			</Form.Control>
-		</div>);
-		}
-	}
-	
-	/* 要員追加機能の新規 20201216 張棟 START */
-	// 要員名前処理
-	formatEmployeeName(cell, row, enumObject, index) {
-		var flg = true;
-		var name = cell;
-
-		for (var v=0 ; v< this.state.employeeInfo.length; v++) {
-			if (this.state.employeeInfo[v].employeeName === cell) {
-				flg = this.state.employeeInfo[v].initFlg === undefined ? true : this.state.employeeInfo[v].initFlg;
-				name = this.state.employeeInfo[v].employeeName;
-			}
-		}
-
-		if (flg) {
-			return name;
-		} else {
-			if (cell === "" || cell === null) {
-				return (<div>
-					<Form.Control as="select" size="sm"
-								  onChange={this.employeeNameChange.bind(this, row)}
-								  name="employeeName"
-								  autoComplete="off">
-							<option value=""></option>
-						{this.state.allEmployeeName.map(data =>
-
-							<option value={data}>
-							{data}
-							</option>
-						)}
-					</Form.Control>
-				</div>);
-			} else {
-				return (<div>
-					<Form.Control as="select" size="sm"
-								  onChange={this.employeeNameChange.bind(this, row)}
-								  name="employeeName"
-								  value={cell}
-								  autoComplete="off">
-						<option value=""></option>
-						{this.state.allEmployeeName.map(data =>
-
-							<option value={data}>
-								{data}
-							</option>
-						)}
-					</Form.Control>
-				</div>);
-			}
-		}
-	}
-	
-	resumeInfoListChange = (row, event) => {
-		var employeeInfo = this.state.employeeInfo;
-		employeeInfo[row.index - 1].resumeInfoName = event.target.value;
-		this.setState({
-			employeeInfo: employeeInfo,
-		})
-	}
-	
-	// 要員名前触発されるイベント
-	employeeNameChange = (row, event) => {
-		if(event.target.value !== ""){
-			var employeeInfo = this.state.employeeInfo;
-			var employeeNoTemp;
-
-			for (let i=0; i < this.state.employeeInfo.length; i++) {
-				if (row.index !== this.state.employeeInfo[i].index
-				&& event.target.value === this.state.employeeInfo[i].employeeName) {
-					this.setState({"myToastShow": true,
-						type: false,
-						errorsMessageShow: false,
-						message: "同じ名前は選択されている。",
-						sendLetterButtonDisFlag:true});
-					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					// window.location.reload();
-					return;
-				}
-			}
-			employeeInfo[row.index-1].employeeName  = event.target.value;
-// this.setState({
-// [event.target.name]: event.target.value,
-// employeeInfo: employeeInfo,
-// })
-			for (var i =0 ;i<this.state.allEmployeeNameInfo.length;i++) {
-				if (event.target.value === this.state.allEmployeeNameInfo[i].employeeName) {
-					employeeNoTemp = this.state.allEmployeeNameInfo[i].employeeNo;
-					employeeInfo[row.index-1].employeeNo = employeeNoTemp;
-					if (employeeNoTemp.match("LYC")) {
-						// 社員
-						employeeInfo[row.index-1].employeeStatus = "0";
-						this.setState({
-							employeeInfo : employeeInfo,
-							employeeFlag: true,
-						});
-					} else if (employeeNoTemp.match("BP")){
-						// 協力
-						employeeInfo[row.index-1].employeeStatus = "1";
-						this.setState({
-							employeeInfo : employeeInfo,
-							employeeFlag: true,
-						});
-					}
-					break;
-				}
-			}
-			this.searchPersonnalDetail(employeeNoTemp,employeeInfo[row.index-1].hopeHighestPrice,row.index);
-			var disabledFlg = true;
-			for (var j=0; j<this.state.employeeInfo.length; j++) {
-				if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
-					disabledFlg = false;
-					break;
-				}
-			}
-			if (disabledFlg) {
-				// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
-				$("#addButton").attr("disabled",false);
-			}
-			if(this.state.mailTitle !== ""){
-				this.setState({
-					sendLetterButtonDisFlag: false,
-				})
-			}
-		}
-		else{
-			
-		}
-	};
-	/* 要員追加機能の新規 20201216 張棟 END */
-	
-	resumeValueChange = (row, event) => {
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
-		if (event.target.selectedIndex === 1) {
-			this.setState({
-				resumePath: row.resumeInfo1,
-			})
-		} else if (event.target.selectedIndex === 2) {
-			this.setState({
-				resumePath: row.resumeInfo2,
-			})
-		}
-	};
-	
-	// 要員追加機能の新規 20201216 張棟 START
-	/**
-	 * 行追加処理
-	 */
-	insertRow = () => {
-		var employeeInfo= this.state.employeeInfo;
-		var employeeInfoModel = {};
-		employeeInfoModel["employeeNo"] = "";
-		employeeInfoModel["employeeName"] = "";
-		employeeInfoModel["employeeStatus"] = "";
-		employeeInfoModel["hopeHighestPrice"] = "";
-		employeeInfoModel["resumeInfo1"] = "";
-		employeeInfoModel["resumeInfo1Name"] = "";
-		employeeInfoModel["resumeInfo2"] = "";
-		employeeInfoModel["resumeInfo2Name"] = "";
-		employeeInfoModel["resumeInfoName"] = "";
-		employeeInfoModel["initFlg"] = false;
-		employeeInfoModel["index"] = ++this.state.EmployeeNameIndex;
-		employeeInfo.push(employeeInfoModel);
-		var currentPage = Math.ceil(employeeInfo.length / 5);
-		this.setState({
-			employeeInfo: employeeInfo,
-			currentPage: currentPage,
-		})
-		this.refs.table.setState({
-			selectedRowKeys: []
-		});
-		// 追加した後で、追加ボタンが非活性になる
-		$("#addButton").attr("disabled",true);
-		// for (let m = 0; m < this.state.employeeInfo.length; m++) {
-		// for (let i = 0; i< this.state.allEmployeeName.length; i++) {
-		// if (this.state.allEmployeeName[i] ===
-		// this.state.employeeInfo[m].employeeName) {
-		// this.state.allEmployeeName.splice(i,1);
-		// break;
-		// }
-		// }
-		// }
-	}
-	/**
-	 * 行削除処理
-	 */
-
-	// 削除前のデフォルトお知らせの削除
-	customConfirm(next, dropRowKeys) {
-		const dropRowKeysStr = dropRowKeys.join(',');
-		next();
-	}
-	deleteRow　= () => {
-		var deleteFlg = window.confirm("削除していただきますか？");
-		if (deleteFlg) {
-			$("#delectBtn").click();
-		}
-	}
-
-	// 隠した削除ボタン
-	createCustomDeleteButton = (onClick) => {
-		return (
-			<Button variant="info" id="delectBtn" hidden onClick={onClick} >删除</Button>
-		);
-	}
-
-	// 隠した削除ボタンの実装
-	onDeleteRow = (row) => {
-		var id = this.state.selectedColumnId;
-		var employeeInfoList = this.state.employeeInfo;
-		for (let i = employeeInfoList.length -1; i>=0; i--) {
-			if (employeeInfoList[i].index === id) {
-				employeeInfoList.splice(i,1);
-			}
-		}
-		if (employeeInfoList.length !== 0) {
-			for (let i = employeeInfoList.length - 1; i >= 0; i--) {
-				employeeInfoList[i].index = (i + 1);
-			}
-		}
-		var currentPage = Math.ceil(employeeInfoList.length / 5);
-		this.setState({
-			currentPage: currentPage,
-			employeeInfo: employeeInfoList,
-			selectRowFlag: false,
-			// rowNo: '',
-			// customerDepartmentNameValue: '',
-			// customerDepartmentName: '',
-		})
-		// TODO 要員を削除した後で、営業文章の表示について
-		// this.searchPersonnalDetail("");
-		$("#deleteButton").attr("disabled",true);
-		$("#bookButton").attr("disabled",true);
-		this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
-		setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-
-		var disabledFlg = true;
-		for (var j=0; j<this.state.employeeInfo.length; j++) {
-			if (this.state.employeeInfo[j].employeeName === ""|| this.state.employeeInfo[j].employeeName === null) {
-				disabledFlg = false;
-				break;
-			}
-		}
-		if (this.state.employeeInfo.length === 0||disabledFlg) {
-			// 全ての要員明細の名前を入力した後で、追加ボタンが活性になる
-			$("#addButton").attr("disabled",false);
-		}
-
-		if (this.state.employeeInfo.length === 0 || this.state.employeeInfo[0].employeeNo === "") {
-			this.setState({
-				EmployeeNameIndex: 0,
-				employeeFlag: false,
-				sendLetterButtonDisFlag : true,
-			});
-			this.initPersonnalDetail();
-		} else {
-			this.searchPersonnalDetail(this.state.employeeInfo[0].employeeNo);
-		}
-
-		--this.state.EmployeeNameIndex;
-	};
-
-	/**
-	 * ファイルを処理
-	 * 
-	 * @param {*}
-	 *            event
-	 * @param {*}
-	 *            name
-	 */
-	addFile = (event, name) => {
-		$("#" + name).click();
-	}
-
-	changeFile = (event, name) => {
-		var filePath = event.target.value;
-		var arr = filePath.split('\\');
-		var fileName = arr[arr.length - 1];
-		if (name === "resumeInfo1") {
-			var employeeInfo1 = this.state.employeeInfo;
-			
-			var resumeInfoListTemp = employeeInfo1[this.state.selectedColumnId-1].resumeInfoList;
-			if(!(fileName === null || fileName === "" || fileName === undefined)){
-				resumeInfoListTemp.push(fileName);
-			}
-			
-			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1 = filePath;
-			employeeInfo1[this.state.selectedColumnId-1].resumeInfoList = resumeInfoListTemp;
-			employeeInfo1[this.state.selectedColumnId-1].resumeInfo1Name = fileName;
-			this.setState({
-				employeeInfo: employeeInfo1,
-				resumeInfo1: "",
-				resumeInfo1Name: fileName,
-				resumePath: filePath,
-				resumeName: fileName,
-				selectedColumnId: this.state.selectedColumnId,
-			})
-		} else if (name === "image") {
-			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
-				return
-			};
-			var reader = new FileReader();
-			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
-			reader.onload = function() {
-				document.getElementById("imageId").src = reader.result;
-			};
-		}
-	}
-
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
-	}
-	
-	titleValueChange = event => {
-		this.setState({
-			[event.target.name]: event.target.value,
-		})
-		if(event.target.value !== ""){
-			this.setState({
-				sendLetterButtonDisFlag : false,
-			})
-		}else{
-			this.setState({
-				sendLetterButtonDisFlag : true,
-			})
-		}
 	}
 
 	// 要員追加機能の新規 20201216 張棟 END
@@ -1166,8 +476,9 @@ class sendLettersMatter extends React.Component {
 		}
 		this.props.history.push(path);
 	}
+	
 	render() {
-		const {backPage, errorsMessageValue, message, type, resumeInfo1, resumeInfo1Name} = this.state;
+		const {backPage, errorsMessageValue, message, type,} = this.state;
 		
 		// ページネーション
 		const options = {
@@ -1193,24 +504,6 @@ class sendLettersMatter extends React.Component {
 			handleConfirmDeleteRow: this.customConfirm
 			//
 		};
-		
-		// 要員一覧表の入力框
-		const cellEdit = {
-				mode: 'click',
-				blurToSave: true,
-			};
-
-
-		const selectRow = {
-			mode: "radio",
-			bgColor: 'pink',
-			hideSelectColumn: true,
-			clickToSelect: true,
-			// clickToExpand: true,
-			// onSelect: this.handleEmpSelect,
-			onSelect: this.handleRowSelect,
-			clickToSelectAndEditCell: true,
-		};
 
 		const selectRow1 = {
 			mode: "radio",
@@ -1219,30 +512,6 @@ class sendLettersMatter extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleCtmSelect,
 		};
-		const mailContent = `【名　　前】：` + this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + 
-(this.state.age !== null && this.state.age !== ""?`
-【年　　齢】：`:"")+ this.state.age + (this.state.age !== null && this.state.age !== ""?`歳`:"") +
-(this.state.nearestStation !== "" && this.state.nearestStation !== null?`
-【最寄り駅】：`:"")
-+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + 
-(this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
-【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')
-+(this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null?`
-【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
-(this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
-【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
-			(this.state.siteRoleName !=="" && this.state.siteRoleName !== null ? `
-【対応工程】：`:"")+ (this.state.siteRoleName !=="" && this.state.siteRoleName !==null ? this.state.siteRoleName:"") +
-			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
-【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
-			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
-【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?this.state.unitPrice:"") +
-			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
-【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
-【営業状況】：`)+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
-(this.state.remark !== "" && this.state.remark !== null?`
-【備　　考】：`:"")+ this.state.remark;
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1257,16 +526,7 @@ class sendLettersMatter extends React.Component {
 						<h2>メール内容確認</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<MailConfirm personalInfo={this} />
-					</Modal.Body>
-				</Modal>
-				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-					onHide={this.closeEmpAddDaiolog} show={this.state.empAdddaiologShowFlag} dialogClassName="modal-bankInfo">
-					<Modal.Header closeButton><Col className="text-center">
-						<h2>履歴書選択</h2>
-					</Col></Modal.Header>
-					<Modal.Body>
-						<SalesEmpAddPopup personalInfo={this} />
+						<MailMatter personalInfo={this} />
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
@@ -1363,7 +623,7 @@ class sendLettersMatter extends React.Component {
 							>
 								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
 		                    </Button>{" "}
-							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
+							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" ? true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
@@ -1384,18 +644,6 @@ class sendLettersMatter extends React.Component {
 							<TableHeaderColumn width='12%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='13%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
-							{/*
-								 * <TableHeaderColumn width='8%'
-								 * dataField='purchasingManagers2'
-								 * editable={false}>担当者</TableHeaderColumn>
-								 * <TableHeaderColumn width='8%'
-								 * dataField='positionCode2'
-								 * dataFormat={this.positionNameFormat}
-								 * editable={false}>職位</TableHeaderColumn>
-								 * <TableHeaderColumn width='8%'
-								 * dataField='purchasingManagersMail2'
-								 * editable={false}>メール</TableHeaderColumn>
-								 */}
 							<TableHeaderColumn width='17%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='sendOver' editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>

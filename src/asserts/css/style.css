@@ -970,6 +970,16 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-experienceYear {
+	width: 11.5rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 #workStartPeriodDatePicker {
 	background-repeat: no-repeat;
 	width: 8rem;
@@ -1384,6 +1394,15 @@ body {
 	}
 	.Autocompletestyle-projectInfo {
 		width: 9.2rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-experienceYear {
+		width: 6.8rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;

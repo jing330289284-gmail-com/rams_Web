@@ -1322,7 +1322,7 @@ class sendLettersConfirm extends React.Component {
 							// className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue dataSort={true} editable={false} isKey>名前</TableHeaderColumn>
+							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							{/*

@@ -50,7 +50,7 @@ class mailConfirm extends React.Component {
 			<div>
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
-						style={{ height: '880px', width: '100%', resize: 'none', border: '0', overflow: 'hidden' }}
+						style={{ height: '800px', width: '100%', resize: 'none', border: '0'}}
 						value={`To:` + this.state.selectedmail + `
 CC:`+ this.state.companyMailNames.join(';') + `         
 添付ファイル名前:` + this.state.resumeName + `
