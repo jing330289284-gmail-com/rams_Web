@@ -365,6 +365,50 @@ export function handleDownload(path, serverIP) {
 //Download 方法
 //param path 備考：ファイルのフォーマットは下記です
 //c:/file/LYC124_12/12_履歴書1.xlsx
+export function resumeDownload(path, serverIP, name) {
+	if (path !== undefined && path !== null && path !== "") {
+		var NewPath = new Array();
+		NewPath = path.split("/");
+		if (NewPath.length==1) {
+			NewPath = path.split("\\");
+     }
+		var xhr = new XMLHttpRequest();
+		xhr.open('post', serverIP + 'download', true);
+		xhr.responseType = 'blob';
+		xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+		xhr.withCredentials=true;
+		xhr.onload = function() {
+			if (this.status === 200) {
+				var blob = this.response;
+				if (blob.size === 0) {
+					alert('no resume');
+				} else {
+					var a = document.createElement('a');
+					var url = window.URL.createObjectURL(blob);
+					a.href = url;
+					// 设置文件名称
+					if(name !== undefined && name !== null && name !== ""){
+						a.download = NewPath[NewPath.length - 1].split("_")[0] + "_" + name + "." + NewPath[NewPath.length - 1].split(".")[NewPath[NewPath.length - 1].split(".").length - 1];
+					}
+					else{
+						a.download = NewPath[NewPath.length - 1];
+					}
+					a.click();
+					a.remove();
+				}
+			}
+		}
+		xhr.send(JSON.stringify({
+			"name": path,
+		}));
+	}else{
+		alert('ファイルが存在しません。');
+	}
+}
+
+//Download 方法
+//param path 備考：ファイルのフォーマットは下記です
+//c:/file/LYC124_12/12_履歴書1.xlsx
 export function testHandleDownload(path, serverIP) {
 	for(let i = 0; i < path.length; i++){
 		if (path[i] !== undefined && path[i] !== null && path[i] !== "") {

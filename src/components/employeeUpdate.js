@@ -140,8 +140,8 @@ class employeeUpdate extends React.Component {
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 
-		formData.append('resumeInfo1URL', this.state.resumeInfo1URL)
-		formData.append('resumeInfo2URL', this.state.resumeInfo2URL)
+		formData.append('resumeInfo1URL', publicUtils.nullToEmpty(this.state.resumeName1) === "" ? "" : this.state.resumeInfo1URL)
+		formData.append('resumeInfo2URL', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? "" : this.state.resumeInfo2URL)
 		formData.append('residentCardInfoURL', this.state.residentCardInfoURL)
 		formData.append('passportInfoURL', this.state.passportInfoURL)
 		if(this.state.isBp&&this.state.employeeNo.substring(0,2)!=="BP"){

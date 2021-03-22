@@ -95,7 +95,7 @@ class salesContent extends React.Component {
 		this.init();
 		var clipboard2 = new Clipboard('#copyUrl', {
 			text: function() {
-				return document.getElementById('snippet').value;
+				return document.getElementById('snippet').value.replace("　　　　営業文章\n","");
 			}
 		});
 		clipboard2.on('success', function() {
@@ -105,6 +105,23 @@ class salesContent extends React.Component {
 		clipboard2.on('error', function() {
 			console.log("err！");
 		});
+	}
+	
+	getNextMonth = (date, addMonths) => {
+		// var dd = new Date();
+		var m = date.getMonth() + 1;
+		var y = date.getMonth() + 1 + addMonths > 12 ? (date.getFullYear() + 1) : date.getFullYear();
+		if (m + addMonths == 0) {
+			y = y - 1;
+			m = 12;
+		} else {
+			if (m + addMonths > 12) {
+				m = '01';
+			} else {
+				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+			}
+		}
+		return y + "/" + m;
 	}
 	
 	//　valueChange
@@ -210,7 +227,7 @@ class salesContent extends React.Component {
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
 						developLanguage: result.data[0].developLanguage,
 						yearsOfExperience: result.data[0].yearsOfExperience,
-						beginMonth: new Date("2020/09").getTime(),
+						beginMonth: new Date(this.getNextMonth(new Date(),1)).getTime(),
 						salesProgressCode: result.data[0].salesProgressCode,
 						nearestStation: result.data[0].nearestStation,
 						stationCode: result.data[0].nearestStation,
@@ -460,7 +477,7 @@ class salesContent extends React.Component {
 							this.state.yearsOfExperience !== this.state.initYearsOfExperience ||
 							this.state.unitPrice !== this.state.initUnitPrice ||
 							this.state.remark !== this.state.initRemark ||
-							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : true}>
+							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : false/*false : true*/}>
 							<FontAwesomeIcon icon={faSave} /> {"更新"}</Button>{' '}
 						<Button id='copyUrl' size="sm" variant="info" /*onClick={this.copyToClipboard}*/>
 							<FontAwesomeIcon icon={faCopy} /> {"コピー"}</Button></div>

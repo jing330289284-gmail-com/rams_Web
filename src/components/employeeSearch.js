@@ -55,7 +55,7 @@ class employeeSearch extends React.Component {
 
 	// 初期化データ
 	initialState = {
-		employeeList: [], resumeInfo1: '', resumeInfo2: '', residentCardInfo: '',passportInfo: '',
+		employeeList: [], resumeInfo1: '',resumeName1: '', resumeInfo2: '', resumeName2: '', residentCardInfo: '',passportInfo: '',
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -286,7 +286,9 @@ class employeeSearch extends React.Component {
 					residentCardInfo: row.residentCardInfo,
 					passportInfo:row.passportInfo,
 					resumeInfo1: row.resumeInfo1,
+					resumeName1: row.resumeName1,
 					resumeInfo2: row.resumeInfo2,
+					resumeName2: row.resumeName2,
 				}
 			);
 			$('#resumeInfo1').prop('disabled', false);
@@ -856,8 +858,8 @@ class employeeSearch extends React.Component {
 						</Col>
 						<Col sm={5}>
 							<div style={{ "float": "center" }}>
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo1, this.state.serverIP, this.state.resumeName1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo2, this.state.serverIP, this.state.resumeName2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="passportInfo" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> パスポート</Button>{' '}
 							</div>
@@ -888,7 +890,9 @@ class employeeSearch extends React.Component {
 								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='admissionTime' dataSort>入場年月</TableHeaderColumn>
 								<TableHeaderColumn width='100' tdStyle={{ padding: '.45em' }} dataField='stayPeriod' dataFormat={this.formatStayPeriod.bind(this)} dataSort>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeName1' hidden={true}>履歴書名前1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeName2' hidden={true}>履歴書名前2</TableHeaderColumn>
 								<TableHeaderColumn dataField='residentCardInfo' hidden={true}>在留カード</TableHeaderColumn>
 								<TableHeaderColumn dataField='passportInfo' hidden={true}>パスポート</TableHeaderColumn>
 							</BootstrapTable>

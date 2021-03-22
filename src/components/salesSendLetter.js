@@ -220,6 +220,7 @@ class salesSendLetter extends React.Component {
 					.then(result => {
 				this.setState({
 					allCustomer: result.data,
+					customerTemp: [...result.data],
 					selectetRowIds: [],
 					selectedCusInfos: [],
 				});
@@ -283,6 +284,7 @@ class salesSendLetter extends React.Component {
 						this.setState({
 							storageList: newStorageListArray,
 							allCustomer: [],
+							customerTemp: [],
 							sendLetterBtnFlag: true,
 						})
 						this.refs.customersTable.store.selected = [];
@@ -296,6 +298,7 @@ class salesSendLetter extends React.Component {
 			} else {
 				this.setState({
 					allCustomer: [],
+					customerTemp: [],
 					sendLetterBtnFlag: true,
 				})
 				this.refs.customersTable.store.selected = [];
@@ -1113,13 +1116,13 @@ class salesSendLetter extends React.Component {
 							selectRow={selectRow}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='6%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='7%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>所属</TableHeaderColumn>
-							<TableHeaderColumn width='7%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='16%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
+							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
+							<TableHeaderColumn width='14%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='levelCode' >ランキング</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='monthCount' >取引数</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>

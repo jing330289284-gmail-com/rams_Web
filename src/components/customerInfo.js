@@ -1044,24 +1044,24 @@ class CustomerInfo extends Component {
                                 ref='table'
                                 cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
-                                <TableHeaderColumn row='0' rowSpan='2' isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width="4rem">番号</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="7rem">責任者</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="8.5rem"
+                                <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width="6%">番号</TableHeaderColumn>
+                                <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="8%">責任者</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="15%"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="5rem">職位</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} width="13rem">メール</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="6.5rem">業種</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='topCustomerCode'  tdStyle={{ padding: '.45em' }}  
+                                <TableHeaderColumn dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
+                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="12%">職位</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} width="15%">メール</TableHeaderColumn>
+                                <TableHeaderColumn dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
+                                    dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="10%">業種</TableHeaderColumn>
+                                <TableHeaderColumn dataField='topCustomerCode'  tdStyle={{ padding: '.45em' }}  width="11%"
                                     dataFormat={this.formatTopCustomer.bind(this)} customEditor={{ getElement: tableSelect11 }}>Top客様</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='2' dataField='stationCode'  tdStyle={{ padding: '.45em' }} width="7rem"
-                                    dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }}>拠点</TableHeaderColumn>
-                                <TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }} thStyle={{padding:'.10em'}} width="12rem">メイン言語</TableHeaderColumn>
-                                <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.10em'}} dataField='developLanguageCode1' tdStyle={{ padding: '.45em' }} 
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} >A</TableHeaderColumn>
+                                <TableHeaderColumn dataField='stationCode'  tdStyle={{ padding: '.45em' }}
+                                    dataFormat={this.formatStation.bind(this)} customEditor={{ getElement: tableSelect4 }} width="12%">拠点</TableHeaderColumn>
+                                <TableHeaderColumn thStyle={{padding:'.10em'}} dataField='developLanguageCode1' tdStyle={{ padding: '.45em' }} width="11%"
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect5 }} >メイン言語</TableHeaderColumn>
+                                {/*<TableHeaderColumn row='0' rowSpan='1' colSpan='2' dataField=''  tdStyle={{ padding: '.45em' }} thStyle={{padding:'.10em'}} width="12rem">メイン言語</TableHeaderColumn>
                                 <TableHeaderColumn row='1' rowSpan='1' thStyle={{padding:'.10em'}} dataField='developLanguageCode2' tdStyle={{ padding: '.45em' }} 
-                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} >B</TableHeaderColumn>
+                                    dataFormat={this.formatLanguage.bind(this)} customEditor={{ getElement: tableSelect6 }} >B</TableHeaderColumn>*/}
                             </BootstrapTable>
                         </Col>
                     </div>

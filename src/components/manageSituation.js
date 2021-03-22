@@ -75,6 +75,8 @@ class manageSituation extends React.Component {
 		unitPrice: '', // 該当レコード単価
 		resumeInfo1: '',　// 履歴情報１
 		resumeInfo2: '',　// 履歴情報２
+		resumeName1: '',　// 履歴情報１
+		resumeName2: '',　// 履歴情報２
 		myToastShow: false,// 状態ダイアログ
 		myDirectoryShow: false,// 状態ダイアログ
 		errorsMessageShow: false,// ERRダイアログ
@@ -586,6 +588,8 @@ class manageSituation extends React.Component {
 				unitPrice: row.price === null ? '' : row.price,
 				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
 				resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
+				resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
+				resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
 				customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
 			});
 		} else {
@@ -1062,10 +1066,10 @@ class manageSituation extends React.Component {
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
 								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダー作成":"営業フォルダー更新"}</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo1, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
-								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1":(this.state.resumeInfo1.split("/")[this.state.resumeInfo1.split("/").length - 1]).split("_")[1]}</Button>{' '}
-								<Button onClick={publicUtils.handleDownload.bind(this, this.state.resumeInfo2, this.state.serverIP)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
-								{this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? "履歴書2":(this.state.resumeInfo2.split("/")[this.state.resumeInfo2.split("/").length - 1]).split("_")[1]}</Button>
+								<Button onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo1, this.state.serverIP,this.state.resumeName1.split("_")[1])} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
+								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1": this.state.resumeName1.split("_")[1]}</Button>{' '}
+								<Button onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo2, this.state.serverIP,this.state.resumeName2.split("_")[1])} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
+								{this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? "履歴書2":this.state.resumeName2.split("_")[1]}</Button>
 							</div>
 						</Col>
 					</Row>
@@ -1082,7 +1086,7 @@ class manageSituation extends React.Component {
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							    <TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>salesDateUpdateHid</TableHeaderColumn>
-								<TableHeaderColumn width='7%' dataField='rowNo' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='rowNo' autoValue editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeNo' editable={false} hidden={true} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='11%' dataField='employeeName' dataFormat={this.showPriority} editable={false}>氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
@@ -1098,8 +1102,10 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn dataField='admissionStartDate' hidden={true}>開始時間</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeName1' hidden={true}>履歴書名前1</TableHeaderColumn>
+								<TableHeaderColumn dataField='resumeName2' hidden={true}>履歴書名前2</TableHeaderColumn>
 								<TableHeaderColumn width='5%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
-								<TableHeaderColumn width='17%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
+								<TableHeaderColumn width='19%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
 								<TableHeaderColumn width='6%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>進捗</TableHeaderColumn>

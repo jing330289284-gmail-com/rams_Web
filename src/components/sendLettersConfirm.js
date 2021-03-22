@@ -473,7 +473,9 @@ class sendLettersConfirm extends React.Component {
 			daiologShowFlag: true,
 		});
 	}
-	
+	test = () => {
+
+	}
 	getHopeHighestPrice = (result) => {
 		var tempEmployeeInfo = this.state.employeeInfo;
 		for(let i = 0;i < tempEmployeeInfo.length;i++){
@@ -1354,17 +1356,19 @@ class sendLettersConfirm extends React.Component {
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={3}>
-					送信対象お客様
+					<Button size="sm"
+						hidden={backPage === "" ? true : false}
+						variant="info"
+						onClick={this.back.bind(this)}
+					>
+						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+                    </Button>{" "}
                     </Col>
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
-							<Button size="sm"
-								hidden={backPage === "" ? true : false}
-								variant="info"
-								onClick={this.back.bind(this)}
-							>
-								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-		                    </Button>{" "}
+						
+						{/*<Button onClick={this.test} size="sm" variant="info" ><FontAwesomeIcon icon={faGlasses} />test</Button>{" "}*/}
+
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>

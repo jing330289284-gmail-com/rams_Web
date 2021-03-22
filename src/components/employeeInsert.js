@@ -144,8 +144,8 @@ class employeeInsert extends React.Component {
 			picInfo: imgSrc,// pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
-		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
+		formData.append('resumeInfo1', publicUtils.nullToEmpty(this.state.resumeName1) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
+		formData.append('resumeInfo2', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
