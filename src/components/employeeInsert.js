@@ -200,6 +200,27 @@ class employeeInsert extends React.Component {
 			}
 		);
 		this.getNO('LYC');// 採番番号
+		this.getLoginUserInfo();
+	}
+	
+	getLoginUserInfo = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+			.then(result => {
+				if(result.data[0].authorityCode !== "4"){
+					let authorityCodes = new Array();
+					for(let i = 0; i < this.state.authorityCodes.length; i++){
+						if(this.state.authorityCodes[i].code !== "4"){
+							authorityCodes.push({code:this.state.authorityCodes[i].code,name:this.state.authorityCodes[i].name})
+						}
+					}
+					this.setState({
+						authorityCodes:authorityCodes,
+					})
+				}
+			})
+			.catch(function(error) {
+				alert(error);
+			});
 	}
 
 	/**
@@ -368,9 +389,11 @@ class employeeInsert extends React.Component {
 		if (value === '1') {
 			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3',intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
 			this.getNO("BP");
-		} else {
+		} else if (value === '0') {
 			this.getNO("LYC");
 			this.setState({ employeeStatus: "0" });
+		}else{
+			
 		}
 	}
 
@@ -631,7 +654,7 @@ class employeeInsert extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">採用区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -1171,7 +1194,7 @@ class employeeInsert extends React.Component {
 							<Col sm={3}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm">在留期限</InputGroup.Text>
 								</InputGroup.Prepend>
 								<InputGroup.Append>
 									<DatePicker

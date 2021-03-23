@@ -452,7 +452,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">採用区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="intoCompanyCode" value={intoCompanyCode}
@@ -958,7 +958,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm">在留期限</InputGroup.Text>
 								</InputGroup.Prepend>
 								<InputGroup.Append>
 									<DatePicker

@@ -70,6 +70,7 @@ class employeeSearch extends React.Component {
 		customerMaster: store.getState().dropDown[15].slice(1),
 		searchFlag: false,
 		ageFrom: '', ageTo: '',
+		authorityCode: '',
 	};
 	// リセット reset
 	resetStates = {
@@ -82,6 +83,15 @@ class employeeSearch extends React.Component {
 
 	// 初期化メソッド
 	componentDidMount() {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+		.then(result => {
+			this.setState({
+				authorityCode: result.data[0].authorityCode,
+			})
+		})
+		.catch(function(error) {
+			alert(error);
+		});		
 		this.clickButtonDisabled();
 		if (this.props.location.state !== undefined) {
             var sendValue = this.props.location.state.sendValue;
@@ -116,6 +126,7 @@ class employeeSearch extends React.Component {
             	nationalityCode: sendValue.nationalityCode,
             	siteRoleCode: sendValue.siteRoleCode,
             	kadou: sendValue.kadou,
+            	authorityCode: sendValue.authorityCode,
             	intoCompanyYearAndMonthFrom: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthFrom, false),
             	intoCompanyYearAndMonthTo: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthTo, false),
             }, () => {
@@ -161,6 +172,7 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === null || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
+			authorityCode: this.state.authorityCode,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
@@ -451,6 +463,7 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
+			authorityCode: this.state.authorityCode,
 		};
 		switch (actionType) {
 			case "update":
@@ -694,7 +707,7 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">採用区分</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" onChange={this.valueChange} size="sm" name="intoCompanyCode" value={intoCompanyCode}
 											disabled={employeeStatus === "1" ? true : false}

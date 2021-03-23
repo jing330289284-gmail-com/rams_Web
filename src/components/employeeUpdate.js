@@ -211,16 +211,36 @@ class employeeUpdate extends React.Component {
 	 * 初期化メソッド
 	 */
 	componentDidMount() {
-		const { location } = this.props
-		this.setState(
-			{
-				actionType: location.state.actionType,
-				backPage: location.state.backPage,
-				sendValue: this.props.location.state.sendValue,
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+		.then(result => {
+			let authorityCodes = this.state.authorityCodes;
+			if(result.data[0].authorityCode !== "4"){
+				authorityCodes = new Array();
+				for(let i = 0; i < this.state.authorityCodes.length; i++){
+					if(this.state.authorityCodes[i].code !== "4"){
+						authorityCodes.push({code:this.state.authorityCodes[i].code,name:this.state.authorityCodes[i].name})
+					}
+				}
 			}
-		);
-		this.getEmployeeByEmployeeNo(location.state.id);
+			this.setState({
+				authorityCodes:authorityCodes,
+			},()=>{
+				const { location } = this.props
+				this.setState(
+					{
+						actionType: location.state.actionType,
+						backPage: location.state.backPage,
+						sendValue: this.props.location.state.sendValue,
+					}
+				);
+				this.getEmployeeByEmployeeNo(location.state.id);
+			});
+		})
+		.catch(function(error) {
+			alert(error);
+		});		
 	}
+	
 	getEmployeeByEmployeeNo = employeeNo => {
 		const emp = {
 			employeeNo: employeeNo
@@ -788,7 +808,7 @@ class employeeUpdate extends React.Component {
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">入社区分</InputGroup.Text>
+										<InputGroup.Text id="inputGroup-sizing-sm">採用区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
@@ -1327,7 +1347,7 @@ class employeeUpdate extends React.Component {
 							<Col sm={3}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">在留期間</InputGroup.Text>
+									<InputGroup.Text id="inputGroup-sizing-sm">在留期限</InputGroup.Text>
 								</InputGroup.Prepend>
 								<InputGroup.Append>
 									<DatePicker

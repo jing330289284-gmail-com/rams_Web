@@ -145,14 +145,14 @@ class SubMenu extends Component {
 								<ListGroup >
 									<Accordion className="menuCol">
 										<ListGroup.Item style={styleLow} block>
-											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員管理"?"linkFont-click":"linkFont"} onClick={() => this.click('社員管理')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員管理</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員・BP"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員・BP</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={styleLow}>
-														<Link className={this.state.click==="社員情報登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員情報登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
-															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員情報登録</Link></ListGroup.Item>
-													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員情報検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員情報検索')} to="/subMenuManager/employeeSearch">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員情報検索</Link></ListGroup.Item>
+														<Link className={this.state.click==="社員・BP登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
+															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員・BP検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP検索')} to="/subMenuManager/employeeSearch">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員・BP検索</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>

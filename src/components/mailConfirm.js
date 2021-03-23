@@ -68,18 +68,18 @@ CC:`+ this.state.companyMailNames.join(';') + `
  + `
 
 【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + (this.state.age === ""?"":`
-【年　　齢】：`)+ this.state.age + (this.state.age === ""?"":`歳`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
+【所　　属】：`+ this.state.employeeStatus + (this.state.age === "" || this.state.age === null ?"":`
+【年　　齢】：`)+ (this.state.age !== null && this.state.age !== ""? this.state.age : "") + (this.state.age === null || this.state.age === ""?"":`歳`) + (this.state.nearestStation !== "" && this.state.nearestStation !== null ?`
 【最寄り駅】：`:"") + (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
 【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ?`
 【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?`
-【業務年数】：`:"")+ (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?this.state.yearsOfExperience:"") + (this.state.yearsOfExperience === ""?"":`年`) + (this.state.siteRoleCode === ""?"":`
+【業務年数】：`:"")+ (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?this.state.yearsOfExperience:"") + (this.state.yearsOfExperience === null || this.state.yearsOfExperience === ""?"":`年`) + (this.state.siteRoleCode === ""?"":`
 【対応工程】：`)+ this.state.siteRoleCode + (this.state.developLanguage === ""?"":`
 【得意言語】：`)+ this.state.developLanguage + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`
 【単　　価】：`)+ (this.state.unitPrice === ""||this.state.unitPrice === null?"":this.state.unitPrice) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`万円`) + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ?`
-【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === ""?"":`
-【備　　考】：`)+ this.state.remark + `
+【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === null || this.state.remark === ""?"":`
+【備　　考】：`)+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "") + `
 
 以上、よろしくお願いいたします。
 ******************************************************************

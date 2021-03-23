@@ -473,9 +473,19 @@ class sendLettersConfirm extends React.Component {
 			daiologShowFlag: true,
 		});
 	}
-	test = () => {
-
+	
+	onAfterSaveCell = (row, cellName, cellValue) => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/updateSalesSentence", { employeeNo:row.employeeNo, unitPrice:cellValue })
+		.then(result => {
+			this.setState({
+				unitPrice: cellValue,
+			})
+		})
+		.catch(function(error) {
+			alert(error);
+		});
 	}
+	
 	getHopeHighestPrice = (result) => {
 		var tempEmployeeInfo = this.state.employeeInfo;
 		for(let i = 0;i < tempEmployeeInfo.length;i++){
@@ -1099,6 +1109,10 @@ class sendLettersConfirm extends React.Component {
 		})
 	}
 	
+	test = () => {
+
+	}
+	
 	titleValueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -1165,6 +1179,7 @@ class sendLettersConfirm extends React.Component {
 		const cellEdit = {
 				mode: 'click',
 				blurToSave: true,
+				afterSaveCell: this.onAfterSaveCell,
 			};
 
 
@@ -1189,7 +1204,7 @@ class sendLettersConfirm extends React.Component {
 		const mailContent = `【名　　前】：` + this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + 
 (this.state.age !== null && this.state.age !== ""?`
-【年　　齢】：`:"")+ this.state.age + (this.state.age !== null && this.state.age !== ""?`歳`:"") +
+【年　　齢】：`:"")+ (this.state.age !== null && this.state.age !== ""? this.state.age : "") + (this.state.age !== null && this.state.age !== ""?`歳`:"") +
 (this.state.nearestStation !== "" && this.state.nearestStation !== null?`
 【最寄り駅】：`:"")
 + (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + 
@@ -1209,7 +1224,7 @@ class sendLettersConfirm extends React.Component {
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
 【営業状況】：`)+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
 (this.state.remark !== "" && this.state.remark !== null?`
-【備　　考】：`:"")+ this.state.remark;
+【備　　考】：`:"")+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "");
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1367,7 +1382,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
 						
-						{/*<Button onClick={this.test} size="sm" variant="info" ><FontAwesomeIcon icon={faGlasses} />test</Button>{" "}*/}
+						<Button onClick={this.test} size="sm" variant="info" ><FontAwesomeIcon icon={faGlasses} />test</Button>{" "}
 
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
 							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
