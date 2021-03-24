@@ -19,6 +19,7 @@ axios.defaults.withCredentials = true;
  * 営業送信お客確認画面
  */
 class sendLettersConfirm extends React.Component {
+
 	constructor(props) {
 		super(props);
 		this.valueChange = this.valueChange.bind(this);
@@ -146,6 +147,7 @@ class sendLettersConfirm extends React.Component {
 		// 送信ボタン活性
 		sendLetterButtonDisFlag: true,
 		/* 要員追加機能の新規 20201216 張棟 END */
+		sendLetterOverFlag: false,
 	})
 	
 	componentDidMount() {
@@ -157,6 +159,7 @@ class sendLettersConfirm extends React.Component {
 				backbackPage: this.props.location.state.backbackPage,
 				projectNo: this.props.location.state.projectNo,
 			})
+			
 		}
 		/* 要員追加機能の新規 20201216 張棟 START */
 		// 営業状況確認一覧画面から選択された送信要員がある
@@ -302,6 +305,7 @@ class sendLettersConfirm extends React.Component {
 	 */
 	// 送信処理
 	beforeSendMailWithFile = () => {
+		this.setSelectedCusInfos("○");
 		let mailText = ``;
 		var time;
 		for(let i = 0 ; i < this.state.employeeInfo.length;i++){
@@ -398,6 +402,9 @@ class sendLettersConfirm extends React.Component {
 								 * this.setState({ mails: result.data, })
 								 */
 								this.setSelectedCusInfos("済み");
+								this.setState({
+									sendLetterOverFlag: true,
+								})
 							})
 							.catch(function(error) {
 								alert(error);
@@ -473,7 +480,7 @@ class sendLettersConfirm extends React.Component {
 			daiologShowFlag: true,
 		});
 	}
-	
+
 	onAfterSaveCell = (row, cellName, cellValue) => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/updateSalesSentence", { employeeNo:row.employeeNo, unitPrice:cellValue })
 		.then(result => {
@@ -504,6 +511,13 @@ class sendLettersConfirm extends React.Component {
 				return positionsTem[i].name;
 			}
 		}
+	}
+	
+	sendOverFormat = (cell) => {
+		if(cell === "○"){
+			return <div class='donut'></div>;
+		}
+		return cell;
 	}
 	
 	searchPersonnalDetail = (employeeNo,hopeHighestPrice,index) => {
@@ -1109,10 +1123,6 @@ class sendLettersConfirm extends React.Component {
 		})
 	}
 	
-	test = () => {
-
-	}
-	
 	titleValueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -1381,11 +1391,8 @@ class sendLettersConfirm extends React.Component {
                     </Col>
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
-						
-						<Button onClick={this.test} size="sm" variant="info" ><FontAwesomeIcon icon={faGlasses} />test</Button>{" "}
-
-							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag?true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false : true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
+							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag || this.state.sendLetterOverFlag ? true : false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>
@@ -1409,7 +1416,7 @@ class sendLettersConfirm extends React.Component {
 							<TableHeaderColumn width='8%' dataField='positionCode2' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='purchasingManagersMail2' editable={false}>メール</TableHeaderColumn>*/}
 							<TableHeaderColumn width='17%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='sendOver' editable={false}>送信状況</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='sendOver' dataFormat={this.sendOverFormat} editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>
