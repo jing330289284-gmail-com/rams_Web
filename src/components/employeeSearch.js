@@ -428,6 +428,21 @@ class employeeSearch extends React.Component {
 			})
 		}
 	}
+	
+	test= (resumeInfo) => {
+		let fileKey = "";
+		let downLoadPath = "C://file//download//";
+		if(resumeInfo.split("file/").length > 1){
+			fileKey = resumeInfo.split("file/")[1];
+			downLoadPath += resumeInfo.split("/")[resumeInfo.split("/").length - 1];
+		}
+		axios.post(this.state.serverIP + "s3Controller/downloadFile", {fileKey:fileKey , downLoadPath:downLoadPath})
+		.then(result => {
+			
+		}).catch(function (error) {
+			alert("删除错误，请检查程序");
+		});
+	}
 
 	getCustomerNo = (event, values) => {
 		if (values != null) {
@@ -871,6 +886,7 @@ class employeeSearch extends React.Component {
 						</Col>
 						<Col sm={5}>
 							<div style={{ "float": "center" }}>
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={this.test.bind(this,this.state.resumeInfo1)}><FontAwesomeIcon icon={faDownload} /> S3</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo1, this.state.serverIP, this.state.resumeName1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo2, this.state.serverIP, this.state.resumeName2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
