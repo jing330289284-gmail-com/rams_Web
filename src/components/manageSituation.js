@@ -666,6 +666,27 @@ class manageSituation extends React.Component {
 		});
 	}
 	
+	downloadResume= (resumeInfo, no) => {
+		let fileKey = "";
+		let downLoadPath = "";
+		if(resumeInfo !== null && resumeInfo.split("file/").length > 1){
+			fileKey = resumeInfo.split("file/")[1];
+			downLoadPath = (resumeInfo.substring(0, resumeInfo.lastIndexOf("/") + 1) + ( no === 1 ? this.state.resumeName1 : this.state.resumeName2 )).replaceAll("/","//");
+		}
+		axios.post(this.state.serverIP + "s3Controller/downloadFile", {fileKey:fileKey , downLoadPath:downLoadPath})
+		.then(result => {
+			let path = downLoadPath.replaceAll("//","/");
+			if(no === 1){
+				publicUtils.resumeDownload(path, this.state.serverIP, null);
+			}
+			else if(no === 2){
+				publicUtils.resumeDownload(path, this.state.serverIP, null);
+			}
+		}).catch(function (error) {
+			alert("ファイルが存在しません。");
+		});
+	}
+
 	makeDirectory = () => {
 		axios.post(this.state.serverIP + "salesSituation/makeDirectory",
 		{ salesYearAndMonth: this.state.salesYearAndMonth,employeeNoList:this.state.allEmpNoName,resumeInfo1List:this.state.allresumeInfo1,resumeInfo2List:this.state.allresumeInfo2 })
@@ -1060,15 +1081,15 @@ class manageSituation extends React.Component {
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton"  disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
-								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダー</Button>{' '}
+								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダ</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
-								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダー作成":"営業フォルダー更新"}</Button>{' '}
+								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダ作成":"営業フォルダ更新"}</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
-								<Button onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo1, this.state.serverIP,this.state.resumeName1.split("_")[1])} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
+								<Button onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
 								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1": this.state.resumeName1.split("_")[1]}</Button>{' '}
-								<Button onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo2, this.state.serverIP,this.state.resumeName2.split("_")[1])} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
+								<Button onClick={this.downloadResume.bind(this,this.state.resumeInfo2,2)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
 								{this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? "履歴書2":this.state.resumeName2.split("_")[1]}</Button>
 							</div>
 						</Col>

@@ -429,37 +429,24 @@ class employeeSearch extends React.Component {
 		}
 	}
 	
-	test= (resumeInfo) => {
+	downloadResume = (resumeInfo, no) => {
 		let fileKey = "";
 		let downLoadPath = "";
-		if(resumeInfo.split("file/").length > 1){
+		if(resumeInfo !== null && resumeInfo.split("file/").length > 1){
 			fileKey = resumeInfo.split("file/")[1];
-			downLoadPath = resumeInfo.replaceAll("/","//");
+			downLoadPath = (resumeInfo.substring(0, resumeInfo.lastIndexOf("_") + 1) + ( no === 1 ? this.state.resumeName1 : this.state.resumeName2 ) + "." + resumeInfo.split(".")[resumeInfo.split(".").length - 1]).replaceAll("/","//");
 		}
-		axios.post(this.state.serverIP + "s3Controller/downloadTest", {fileKey:fileKey , downLoadPath:downLoadPath})
+		axios.post(this.state.serverIP + "s3Controller/downloadFile", {fileKey:fileKey , downLoadPath:downLoadPath})
 		.then(result => {
-			var oReq = new XMLHttpRequest();
-//url参数为拿后台数据的接口
-oReq.open("POST","https://ramsstoragedevices.s3.amazonaws.com/%E5%B1%A5%E6%AD%B4%E6%9B%B8/LYC162_%E4%B8%8A%E4%BC%A0%E6%B5%8B%E8%AF%95/%E4%B8%8A%E4%BC%A0L_a.xls", true);
-oReq.responseType = "blob";
-oReq.onload = function (oEvent) {
-    var content = oReq.response;
-    var elink = document.createElement('a');
-    //name为后台返给前端的文件名，后缀名必须加，后台有返回后缀就不用管，不然下载在本地不好打开。
- 
-    elink.download = "test.xls";
-    elink.style.display = 'none';
-    var blob = new Blob([content]);
-    elink.href = URL.createObjectURL(blob);
-    document.body.appendChild(elink);
-    elink.click();
-    document.body.removeChild(elink);
-};
-//请求头里放入用户口令，必须在.open()和.send()之间设置
-oReq.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-oReq.send();
+			let path = downLoadPath.replaceAll("//","/");
+			if(no === 1){
+				publicUtils.resumeDownload(path, this.state.serverIP, this.state.resumeName1);
+			}
+			else if(no === 2){
+				publicUtils.resumeDownload(path, this.state.serverIP, this.state.resumeName2);
+			}
 		}).catch(function (error) {
-			alert("删除错误，请检查程序");
+			alert("ファイルが存在しません。");
 		});
 	}
 
@@ -905,9 +892,8 @@ oReq.send();
 						</Col>
 						<Col sm={5}>
 							<div style={{ "float": "center" }}>
-								{/*<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={this.test.bind(this,this.state.resumeInfo1)}><FontAwesomeIcon icon={faDownload} /> S3</Button>{' '}*/}
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo1, this.state.serverIP, this.state.resumeName1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={publicUtils.resumeDownload.bind(this, this.state.resumeInfo2, this.state.serverIP, this.state.resumeName2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={this.downloadResume.bind(this,this.state.resumeInfo2,2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="passportInfo" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> パスポート</Button>{' '}
 							</div>
