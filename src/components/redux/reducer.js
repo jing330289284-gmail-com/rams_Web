@@ -72,8 +72,8 @@ export function fetchDropDown() {
 		"getServerIP",//最後
 	]
 	var outArray = [];
-	var serverIP = "http://127.0.0.1:8080/";
-	//var serverIP = "http://13.58.173.66:8080/";
+	//var serverIP = "http://127.0.0.1:8080/";
+	var serverIP = "http://34.219.123.56:8080/";
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
 		type: "POST",
@@ -170,8 +170,8 @@ var methodNameList = ["getGender",//0.性別区別
 		"getServerIP",//最後
 	]
 var outArray = [];
-var serverIP = "http://127.0.0.1:8080/";
-//var serverIP = "http://13.58.173.66:8080/";
+//var serverIP = "http://127.0.0.1:8080/";
+var serverIP = "http://34.219.123.56:8080/";
 var par = JSON.stringify(methodList);
 $.ajax({
 	type: "POST",
