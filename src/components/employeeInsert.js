@@ -671,7 +671,7 @@ class employeeInsert extends React.Component {
 							</Col>
 							<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員番号</InputGroup.Text></InputGroup.Prepend>
+									<InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">{employeeStatus === "0" ? "社員番号" : (employeeStatus === "1" ? "BP番号" : "")}</InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 								</InputGroup>
 								<InputGroup size="sm" className="mb-3">
