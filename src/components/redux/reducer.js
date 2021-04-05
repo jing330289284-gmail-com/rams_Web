@@ -73,7 +73,7 @@ export function fetchDropDown() {
 	]
 	var outArray = [];
 	// var serverIP = "http://127.0.0.1:8080/";
-	var serverIP = "http://44.241.80.66:8080/";
+	var serverIP = "http://54.201.204.105:8080/";
 
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
@@ -175,7 +175,7 @@ var methodNameList = ["getGender",// 0.性別区別
 	]
 var outArray = [];
 // var serverIP = "http://127.0.0.1:8080/";
-var serverIP = "http://44.241.80.66:8080/";
+var serverIP = "http://54.201.204.105:8080/";
 
 var par = JSON.stringify(methodList);
 $.ajax({
