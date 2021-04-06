@@ -69,6 +69,7 @@ export function fetchDropDown() {
 		"getAdmissionMonth",// 62入場期日取得
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
+		"getTypteOfContract",// 65契約形態取得
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -171,6 +172,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getAdmissionMonth",// 62入場期日取得
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
+		"getTypteOfContract",// 65契約形態取得
 		"getServerIP",// 最後
 	]
 var outArray = [];

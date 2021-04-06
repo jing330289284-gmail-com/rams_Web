@@ -17,13 +17,13 @@ import store from './redux/store';
 axios.defaults.withCredentials = true;
 registerLocale('ja', ja);
 
-/* 
-  現場情報
+/*
+ * 現場情報
  */
 class siteInfo extends Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
 	}
 	initialState = {
@@ -40,23 +40,24 @@ class siteInfo extends Component {
 		siteData:[],
 		scheduledEndDate:'',
 		scheduledEndDateForSave:'',
-		pageDisabledFlag: true,//画面非活性フラグ
+		pageDisabledFlag: true,// 画面非活性フラグ
 		errorsMessageShow: false,
-		updateFlag: true,//修正登録状態フラグ
-		disabledFlag: true,//活性非活性フラグ
-		deleteFlag: true,//活性非活性フラグ
-		dailyCalculationStatusFlag: true,//日割フラグ
+		updateFlag: true,// 修正登録状態フラグ
+		disabledFlag: true,// 活性非活性フラグ
+		deleteFlag: true,// 活性非活性フラグ
+		dailyCalculationStatusFlag: true,// 日割フラグ
 		dailyCalculationStatus: false,
-		payOffRangeStatus: store.getState().dropDown[33].slice(1),//　精算時間
-		siteMaster: store.getState().dropDown[34],//　役割
-		customerMaster: store.getState().dropDown[15].slice(1),//お客様
-		topCustomerMaster: store.getState().dropDown[35].slice(1),//トップお客様
-		developLanguageMaster: store.getState().dropDown[8].slice(1),//開発言語
-		employeeInfo: store.getState().dropDown[9].slice(1),//社員名
-		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),//業種
-		getstations: store.getState().dropDown[14].slice(1),//　場所 
-		levelMaster: store.getState().dropDown[18],//　レベル
-		siteStateStatus: store.getState().dropDown[40].slice(1),//現場状態\
+		payOffRangeStatus: store.getState().dropDown[33].slice(1),// 精算時間
+		siteMaster: store.getState().dropDown[34],// 役割
+		customerMaster: store.getState().dropDown[15].slice(1),// お客様
+		topCustomerMaster: store.getState().dropDown[35].slice(1),// トップお客様
+		developLanguageMaster: store.getState().dropDown[8].slice(1),// 開発言語
+		employeeInfo: store.getState().dropDown[9].slice(1),// 社員名
+		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),// 業種
+		getstations: store.getState().dropDown[14].slice(1),// 場所
+		levelMaster: store.getState().dropDown[18],// レベル
+		siteStateStatus: store.getState().dropDown[40].slice(1),// 現場状態\
+		typteOfContractStatus: store.getState().dropDown[65].slice(1),// 契約形態
 		backPage: "",
 		searchFlag: false,
 		sendValue: [],
@@ -114,7 +115,7 @@ class siteInfo extends Component {
 		admissionStartDate: new Date(),
 		admissionEndDate: new Date()
 	}
-	//　入場年月
+	// 入場年月
 	admissionStartDate = (date) => {
 		this.setState({
 			admissionStartDate: date,
@@ -160,7 +161,7 @@ class siteInfo extends Component {
 			}
 		}
 	};
-	//　退場年月
+	// 退場年月
 	admissionEndDate = (date) => {
 		this.setState(
 			{
@@ -207,7 +208,7 @@ class siteInfo extends Component {
 			}
 		}
 	};
-	//　入場年月
+	// 入場年月
 	scheduledEndDate = (date) => {
 		if (date !== null) {
 			this.setState({
@@ -266,11 +267,11 @@ class siteInfo extends Component {
 				});
 		}
 	}
-	//reset
+	// reset
 	reset = () => {
 		this.setState(() => this.resetStates);
 	};
-	//リセット　reset
+	// リセット reset
 	resetStates = {
 		admissionStartDate: '',
 		time: '',
@@ -278,6 +279,7 @@ class siteInfo extends Component {
 		systemName: '',
 		location: '',
 		customerNo: '',
+		typteOfContract: '',
 		workState: '0',
 		topCustomerNo: '',
 		developLanguageCode: '',
@@ -350,6 +352,21 @@ class siteInfo extends Component {
 			})
 		})
 	}
+	
+	getTypteOfContract = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let typteOfContract = null;
+			if (values !== null) {
+				typteOfContract = values.code;
+			}
+			this.setState({
+				typteOfContract: typteOfContract,
+			})
+		})
+	}
+	
 	getCustomer = (event, values) => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -502,7 +519,7 @@ class siteInfo extends Component {
 			$('button[name="button"]').attr('disabled', false);
 		}
 	}
-	//登録処理
+	// 登録処理
 	tokuro = () => {
 		var siteModel = {};
 		var formArray = $("#siteForm").serializeArray();
@@ -555,7 +572,7 @@ class siteInfo extends Component {
 				console.error("Error - " + error);
 			});
 	}
-	//修正処理
+	// 修正処理
 	update = () => {
 		var siteModel = {};
 		var formArray = $("#siteForm").serializeArray();
@@ -623,19 +640,20 @@ class siteInfo extends Component {
 	}
 
 	// siteInfoeDelete = () => {
-	// 	//将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
-	// 	var a = window.confirm("削除していただきますか？");
-	// 	if (a) {
-	// 		$("#deleteBtn").click();
-	// 	}
+	// //将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
+	// var a = window.confirm("削除していただきますか？");
+	// if (a) {
+	// $("#deleteBtn").click();
+	// }
 	// }
 	// //隠した削除ボタン
 	// createCustomDeleteButton = (onClick) => {
-	// 	return (
-	// 		<Button variant="info" id="deleteBtn" hidden onClick={onClick} >删除</Button>
-	// 	);
+	// return (
+	// <Button variant="info" id="deleteBtn" hidden onClick={onClick}
+	// >删除</Button>
+	// );
 	// }
-	//隠した削除ボタンの実装
+	// 隠した削除ボタンの実装
 	onDeleteRow = (rows) => {
 		var a = window.confirm("削除していただきますか？");
 		if (a) {
@@ -678,15 +696,17 @@ class siteInfo extends Component {
 				});
 		}
 	}
-	// //　　削除前のデフォルトお知らせの削除
+	// // 削除前のデフォルトお知らせの削除
 	// customConfirm(next, dropRowKeys) {
-	// 	const dropRowKeysStr = dropRowKeys.join(',');
-	// 	next();
+	// const dropRowKeysStr = dropRowKeys.join(',');
+	// next();
 	// }
 
 	/**
 	 * 社員名連想
-	 * @param {} event 
+	 * 
+	 * @param {}
+	 *            event
 	 */
 	getRelated1Employees = (event, values) => {
 		this.setState({
@@ -759,22 +779,25 @@ class siteInfo extends Component {
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 8,  // which size per page you want to locate as default
+			sizePerPage: 8,  // which size per page you want to locate as
+								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
 			lastPage: '>>', // Last page button text
-			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
-			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or
+															// function
+			hideSizePerPage: true, // > You can hide the dropdown for
+									// sizePerPage
 			// deleteBtn: this.createCustomDeleteButton,
 			// onDeleteRow: this.onDeleteRow,
 			// handleConfirmDeleteRow: this.customConfirm,
 
 		};
 		const { payOffRange1, payOffRange2, workState, siteData, siteRoleCode, levelCode, time, errorsMessageValue, systemName, unitPrice, related1Employees, related2Employees,
-			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage, pageDisabledFlag } = this.state;		//テーブルの列の選択
+			related3Employees, related4Employees, remark, siteManager, workStateFlag, backPage, pageDisabledFlag } = this.state;		// テーブルの列の選択
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
@@ -794,10 +817,11 @@ class siteInfo extends Component {
 				<div>
 					<Form id="siteForm">
 						<Form.Group>
-							{/* <Row>
-                    <Col sm={3}></Col>
-                    <Col sm={7}> <img className="mb-4" alt="title" src={title}/> </Col>
-                    </Row> */}
+							{/*
+								 * <Row> <Col sm={3}></Col> <Col sm={7}> <img
+								 * className="mb-4" alt="title" src={title}/>
+								 * </Col> </Row>
+								 */}
 							<Row inline="true">
 								<Col className="text-center">
 									<h2>現場情報</h2>
@@ -962,58 +986,59 @@ class siteInfo extends Component {
 													</div>
 												)}
 												disabled={pageDisabledFlag}
-											/><font color="red" className="site-mark">★</font>
-										</InputGroup.Prepend>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
-											<Autocomplete
-												id="topCustomerNo"
-												name="topCustomerNo"
-												value={this.state.topCustomerMaster.find(v => v.code === this.state.topCustomerNo) || {}}
-												onChange={(event, values) => this.getTopCustomer(event, values)}
-												options={this.state.topCustomerMaster}
-												getOptionLabel={(option) => option.name}
-												renderInput={(params) => (
-													<div ref={params.InputProps.ref}>
-														<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-topCustomer"
-														/>
-													</div>
-												)}
-												disabled={pageDisabledFlag}
 											/>
-										</InputGroup.Prepend>
+										<font color="red" className="site-mark">★</font>
+									</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="developLanguageCode"
-											name="developLanguageCode"
-											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
-											onChange={(event, values) => this.getDevelopLanguage(event, values)}
-											options={this.state.developLanguageMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-developLanguageCode"
-														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
-												</div>
-											)}
-											disabled={pageDisabledFlag}
-										/>
-									</InputGroup>
+								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">形態</InputGroup.Text>
+									<Autocomplete
+										id="typteOfContractStatus"
+										name="typteOfContractStatus"
+										options={this.state.typteOfContractStatus}
+										getOptionLabel={(option) => option.name}
+										value={this.state.typteOfContractStatus.find(v => v.code === this.state.typteOfContract) || {}}
+										onChange={(event, values) => this.getTypteOfContract(event, values)}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+												/>
+											</div>
+										)}
+										disabled={pageDisabledFlag}
+									/>
+									</InputGroup.Prepend>
+								</InputGroup>
+								</Col>
+								<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
+									<Autocomplete
+										id="topCustomerNo"
+										name="topCustomerNo"
+										value={this.state.topCustomerMaster.find(v => v.code === this.state.topCustomerNo) || {}}
+										onChange={(event, values) => this.getTopCustomer(event, values)}
+										options={this.state.topCustomerMaster}
+										getOptionLabel={(option) => option.name}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-topCustomer"
+												/>
+											</div>
+										)}
+										disabled={pageDisabledFlag}
+									/>
+								</InputGroup.Prepend>
+							</InputGroup>
 								</Col>
 							</Row>
 							<Row>
 								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
+										{/*<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -1028,6 +1053,26 @@ class siteInfo extends Component {
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
 													/>
+												</div>
+											)}
+											disabled={pageDisabledFlag}
+										/>
+									</InputGroup>*/}
+										<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">開発言語</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Autocomplete
+											id="developLanguageCode"
+											name="developLanguageCode"
+											value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode) || {}}
+											onChange={(event, values) => this.getDevelopLanguage(event, values)}
+											options={this.state.developLanguageMaster}
+											getOptionLabel={(option) => option.name}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-developLanguageCode"
+														style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
 												</div>
 											)}
 											disabled={pageDisabledFlag}

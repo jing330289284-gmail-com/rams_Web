@@ -44,6 +44,7 @@ class siteSearch extends Component {
 		typeOfIndustryMaster: store.getState().dropDown[36].slice(1),//業種
 		getstations: store.getState().dropDown[14].slice(1),//　場所 
 		employeeStatuss: store.getState().dropDown[4],//　社員区分 
+		typteOfContractStatus: store.getState().dropDown[65].slice(1),// 契約形態
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	onchange = event => {
@@ -283,6 +284,20 @@ class siteSearch extends Component {
 			})
 		})
 	}
+	getTypteOfContract = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let typteOfContract = null;
+			if (values !== null) {
+				typteOfContract = values.code;
+			}
+			this.setState({
+				typteOfContract: typteOfContract,
+			})
+		})
+	}
+	
 	getCustomer = (event, values) => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -460,8 +475,7 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
-										</InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 										<Autocomplete
 											id="customerNo"
 											name="customerNo"
@@ -476,6 +490,22 @@ class siteSearch extends Component {
 												</div>
 											)}
 										/>
+										{/*<InputGroup.Text id="twoKanji">形態</InputGroup.Text>
+										<Autocomplete
+											id="typteOfContractStatus"
+											name="typteOfContractStatus"
+											options={this.state.typteOfContractStatus}
+											getOptionLabel={(option) => option.name}
+											value={this.state.typteOfContractStatus.find(v => v.code === this.state.typteOfContract) || {}}
+											onChange={(event, values) => this.getTypteOfContract(event, values)}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-customer"
+													/>
+												</div>
+											)}
+										/>*/}
+								</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -546,7 +576,7 @@ class siteSearch extends Component {
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
+										{/*<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">業種</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
@@ -559,6 +589,23 @@ class siteSearch extends Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input placeholder="  例：保険" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"
+													/>
+												</div>
+											)}
+										/>*/}
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">形態</InputGroup.Text>
+									</InputGroup.Prepend>
+										<Autocomplete
+											id="typteOfContractStatus"
+											name="typteOfContractStatus"
+											options={this.state.typteOfContractStatus}
+											getOptionLabel={(option) => option.name}
+											value={this.state.typteOfContractStatus.find(v => v.code === this.state.typteOfContract) || {}}
+											onChange={(event, values) => this.getTypteOfContract(event, values)}
+											renderInput={(params) => (
+												<div ref={params.InputProps.ref}>
+													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"
 													/>
 												</div>
 											)}
