@@ -14,11 +14,14 @@ class sendRepotAppend extends Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
-		selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
-		selectetRowMails: [],
+		//selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
+		// selectetRowMails: [],
+		// allMailsName: [],
+		selectetPersonsName: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
-		allMailsName: [],
+		allRowId: [],
 		parentSelectedInfo: this.props.customer,
 		appendPersonMsg: {
 			purchasingManagers2: '',
@@ -32,35 +35,47 @@ class sendRepotAppend extends Component {
 	}
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
+		// this.refs.salesPersonTable.setState({
+		// 	selectedRowKeys: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+		// });
+		// this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
+		this.props.customer.test = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test:this.props.customer.mainChargeList;
+		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
+		for(let i in str){
+			str[i] = Number(str[i]);
+		}
 		this.refs.salesPersonTable.setState({
-			selectedRowKeys: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+			selectedRowKeys: str,
 		});
-		this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
+		this.refs.salesPersonTable.store.selected = str;
 	}
 	getSalesPersons = (customerNo) => {
 		axios.post(this.state.serverIP + "sendRepot/getSalesPersons", { customerNo: customerNo })
 			.then(result => {
-				let salesPersonsNameArray = new Array();
-				let mailsNameArray = new Array();
+				let salesPersonsNameArray = new Array([]);
+				//let mailsNameArray = new Array([]);
+				let salesRowIdArray = new Array([]);
 				for (let i in result.data) {
 					salesPersonsNameArray.push(result.data[i].responsiblePerson);
-					mailsNameArray.push(result.data[i].customerDepartmentMail);
+					//mailsNameArray.push(result.data[i].customerDepartmentMail);
+					salesRowIdArray.push(result.data[i].rowId);
 				}
 				this.setState({
 					allSalesPersons: result.data,
 					allSalesPersonsName: salesPersonsNameArray,
-					allMailsName:mailsNameArray,
+					//allMailsName:mailsNameArray,
+					allRowId: salesRowIdArray
 				});
 			})
 			.catch(function (err) {
 				alert(err)
 			})
 	}
-	// 行番号
-	indexN = (cell, row, enumObject, index) => {
-		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
-		return (<div>{rowNumber}</div>);
-	}
+	// // 行番号
+	// indexN = (index) => {
+	// 	let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
+	// 	return (<div>{rowNumber}</div>);
+	// }
 
 	// customerDepartmentNameFormat
 	customerDepartmentNameFormat = (cell) => {
@@ -81,8 +96,27 @@ class sendRepotAppend extends Component {
 			}
 		}
 	}
-
-	handleRowSelect = (row, isSelected, e) => {
+handleRowSelect = (row, isSelected, e) => {
+		if (isSelected) {
+			this.setState({
+				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
+				selectetPersonsName: this.state.selectetPersonsName.concat([row.responsiblePerson]),
+				appendPersonMsg: {
+			purchasingManagers2: row.responsiblePerson,
+			positionCode2: row.positionCode,
+			purchasingManagersMail2: row.customerDepartmentMail,
+		}
+			})
+		} else {
+			let index = this.state.selectetRowIds.findIndex(item => item === String(row.rowId));
+			this.state.selectetRowIds.splice(index, 1);
+			index = this.state.selectetPersonsName.findIndex(item => item === row.responsiblePerson);
+			this.state.selectetPersonsName.splice(index, 1);
+			this.setState({
+				selectetRowIds: this.state.selectetRowIds,
+				selectetPersonsName: this.state.selectetPersonsName,
+			})
+		}
 		if (this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
 				selectedRowKeys: [],
@@ -90,30 +124,42 @@ class sendRepotAppend extends Component {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
-				selectetRowMails: [],
+				selectetPersonsName: [],
 			});
 		}
-		if (isSelected) {
-			this.setState({
-				selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
-				selectetRowMails: this.state.selectetRowMails.concat([row.customerDepartmentMail]),
-				appendPersonMsg: {
-					purchasingManagers2: row.responsiblePerson,
-					positionCode2: row.positionCode,
-					purchasingManagersMail2: row.customerDepartmentMail,
-				}
-			})
-		} else {
-			let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
-			let index2 = this.state.selectetRowMails.findIndex(item => item === row.customerDepartmentMail);
-			this.state.selectetRowIds.splice(index, 1);
-			this.state.selectetRowMails.splice(index2, 1);
-			this.setState({
-				selectetRowIds: this.state.selectetRowIds,
-				selectetRowMails: this.state.selectetRowMails,
-			})
-		}
 	}
+	// handleRowSelect = (row, isSelected) => {
+	// 	if (this.state.allSelectedFlag) {
+	// 		this.refs.salesPersonTable.setState({
+	// 			selectedRowKeys: [],
+	// 		});
+	// 		this.setState({
+	// 			allSelectedFlag: !this.state.allSelectedFlag,
+	// 			selectetRowIds: [],
+	// 			selectetRowMails: [],
+	// 		});
+	// 	}
+	// 	if (isSelected) {
+	// 		this.setState({
+	// 			selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
+	// 			selectetRowMails: this.state.selectetRowMails.concat([row.customerDepartmentMail]),
+	// 			appendPersonMsg: {
+	// 				purchasingManagers2: row.responsiblePerson,
+	// 				positionCode2: row.positionCode,
+	// 				purchasingManagersMail2: row.customerDepartmentMail,
+	// 			}
+	// 		})
+	// 	} else {
+	// 		let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
+	// 		let index2 = this.state.selectetRowMails.findIndex(item => item === row.customerDepartmentMail);
+	// 		this.state.selectetRowIds.splice(index, 1);
+	// 		this.state.selectetRowMails.splice(index2, 1);
+	// 		this.setState({
+	// 			selectetRowIds: this.state.selectetRowIds,
+	// 			selectetRowMails: this.state.selectetRowMails,
+	// 		})
+	// 	}
+	// }
 
 	// 全て選択ボタン事件
 	selectAllLists = () => {
@@ -121,7 +167,7 @@ class sendRepotAppend extends Component {
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
 				selectedRowKeys: this.state.allSalesPersonsName,
-				selectetRowMails: this.state.allMailsName,
+				//selectetRowMails: this.state.allMailsName,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
@@ -141,20 +187,30 @@ class sendRepotAppend extends Component {
 	}
 
 	salesSelected = () => {
-		let salesPersons = this.state.selectetRowIds.join(",");
-		let mails = this.state.selectetRowMails.join(",");
+		let salesPersons = this.state.selectetPersonsName.join(",");
 		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
-		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo, this.state.appendPersonMsg);
-		const model = {
-			subChargeMailList: mails,
-			//storageListName: storageListName,
-		};
-		axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", model)
-			.then(result => {
-			})
-			.catch(function (err) {
-				alert(err)
-			})
+		let salesRowsId = this.state.selectetRowIds.join(",");
+		this.state.parentSelectedInfo.test = salesRowsId;
+		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
+		let purchasingManagersOthers = this.state.selectetPersonsName;
+		purchasingManagersOthers.pop();
+		this.state.appendPersonMsg.purchasingManagersOthers = salesPersons;
+		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
+			axios.post(this.state.serverIP + "salesSendLetters/customerSendMailStorageListUpdate", 
+					{
+						storageListName:this.props.customer.storageListName,
+						customerNo:this.props.customer.customerNo,
+						mainChargeList:salesRowsId,
+						departmentCodeList:salesPersons,
+					})
+			.then(() => {
+					
+				})
+				.catch(function (err) {
+					alert(err)
+				})
+		}
+		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
 	render() {
 
@@ -184,6 +240,49 @@ class sendRepotAppend extends Component {
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 		};
+		// let salesPersons = this.state.selectetRowIds.join(",");
+		// let mails = this.state.selectetRowMails.join(",");
+		// this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
+		// this.props.allState.saveSalesPersons(this.state.parentSelectedInfo, this.state.appendPersonMsg);
+		// const model = {
+		// 	subChargeMailList: mails,
+		// 	//storageListName: storageListName,
+		// };
+		// axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", model)
+		// 	.then(result => {
+		// 	})
+		// 	.catch(function (err) {
+		// 		alert(err)
+		// 	})
+	// }
+	// render() {
+
+	// 	const selectRow = {
+	// 		mode: 'checkbox',
+	// 		bgColor: 'pink',
+	// 		hideSelectColumn: true,
+	// 		clickToSelect: true,
+	// 		clickToExpand: true,
+	// 		onSelect: this.handleRowSelect,
+	// 	};
+
+	// 	const options = {
+	// 		onPageChange: page => {
+	// 			this.setState({ currentPage: page });
+	// 		},
+	// 		page: this.state.currentPage,
+	// 		defaultSortOrder: 'dsc',
+	// 		sizePerPage: 5,
+	// 		pageStartIndex: 1,
+	// 		paginationSize: 2,
+	// 		prePage: '<', // Previous page button text
+	// 		nextPage: '>', // Next page button text
+	// 		firstPage: '<<', // First page button text
+	// 		lastPage: '>>', // Last page button text
+	// 		hideSizePerPage: true,
+	// 		alwaysShowAllBtns: true,
+	// 		paginationShowsTotal: this.renderShowsTotal,
+	// 		};
 
 		return (
 			<div >
@@ -218,10 +317,10 @@ class sendRepotAppend extends Component {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='7%' dataField='any' dataFormat={this.indexN} dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='11%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 						<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='responsiblePerson' isKey >名前</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='responsiblePerson' >名前</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' >メール</TableHeaderColumn>
 					</BootstrapTable>
 				</div>

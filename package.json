@@ -167,5 +167,9 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "@types/react-bootstrap-table": "^4.3.8",
+    "@types/react-datepicker": "^3.1.8"
   }
 }
