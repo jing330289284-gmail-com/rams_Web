@@ -579,10 +579,43 @@ body {
 	background-color: white;
 }
 
+#datePicker-empInsert-right {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 7.3rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+}
+
+#datePicker-empInsert-left {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 10.47rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+}
+
 #datePickerReadonlyDefault {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
 	width: 10rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: #e9ecef;
+}
+
+#datePickerReadonlyDefault-empInsert-right {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 7.3rem;
 	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 		right center transparent;
 	padding-right: 0px;
@@ -746,11 +779,15 @@ body {
 }
 
 #sevenKanji {
-	width: 7.5rem;
+	width: 7.7rem;
 }
 
 .eightKanji {
 	width: 8.5rem;
+}
+
+#empinsert-right-kanji {
+	width: 7.7rem;
 }
 
 .fileUploader .fileContainer {
@@ -895,6 +932,16 @@ body {
 	border-width: 1;
 	border-style: "solid";
 	font-size: ".875rem";
+	color: "#495057"
+}
+
+.Autocompletestyle-emp-station {
+	width: 20.55rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: "0.85rem";
 	color: "#495057"
 }
 
@@ -1174,7 +1221,7 @@ body {
 }
 
 .Autocompletestyle-employeeInsert-developLanguage {
-	width: 11.76rem;
+	width: 10.24rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
@@ -1194,7 +1241,7 @@ body {
 }
 
 #Autocompletestyle-employeeInsert-resumeInfo {
-	width: 7.8rem;
+	width: 16.77rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
@@ -1338,6 +1385,7 @@ body {
 		background-color: white;
 		width: 7rem;
 	}
+	
 	.ageCss {
 		background-repeat: no-repeat;
 		background-position: 10px 7px;
@@ -1396,6 +1444,15 @@ body {
 	font-size: ".875rem";
 	color: "#495057"
 }
+.Autocompletestyle-emp-station {
+	width: 14.34rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
 
 	.Autocompletestyle-customerInfo {
 		width: 10rem;
@@ -1406,6 +1463,7 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
+	
 	.Autocompletestyle-situation {
 		width: 4.5rem;
 		height: 31px;
@@ -1914,6 +1972,18 @@ body {
 	#siteInfo-siteRoleCode {
 		width: 3rem;
 	}
+	#empinsert-right-kanji {
+		width: 5.1rem;
+	}
+	
+	.uploadButtom {
+		width:3.78rem;
+	}
+	
+	.downloadButtom{
+		width:5.99rem;
+	}
+	
 	.Autocompletestyle-customerInfo {
 		width: 10.4rem;
 		height: 31px;
@@ -2008,9 +2078,7 @@ body {
 	#inputGroup-sizing-sm {
 		font-size: 0.85rem;
 	}
-	#inputGroup-test {
-		font-size: 0.85rem;
-	}
+
 	#projectInfoDatepicker {
 		background-repeat: no-repeat;
 		width: 8rem;
@@ -2111,6 +2179,28 @@ body {
 		background-color: white;
 		width: 5.5rem !important;
 	}
+	
+	#datePicker-empInsert-right {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 3.96rem !important;
+}
+
+	#datePicker-empInsert-left {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 7.1rem !important;
+}
 	.input-group-text {
 		background-color: #76a8af;
 		font-family: "幼�?";
@@ -2173,7 +2263,7 @@ body {
 		width: 1rem;
 	}
 	.Autocompletestyle-employeeInsert-developLanguage {
-		width: 9.02rem;
+		width: 7.13rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;

@@ -165,6 +165,7 @@ class siteSearch extends Component {
 		SiteSearchModel["stationCode"] = this.state.stationCode;
 		SiteSearchModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		SiteSearchModel["dataAcquisitionPeriod"] = this.state.dataAcquisitionPeriod;
+		SiteSearchModel["typteOfContractCode"] = this.state.typteOfContract;
 		SiteSearchModel["admissionStartDate"] = publicUtils.formateDate(this.state.admissionStartDate, true);
 		SiteSearchModel["admissionEndDate"] = publicUtils.formateDate(this.state.admissionEndDate, true);
 		SiteSearchModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate, false);

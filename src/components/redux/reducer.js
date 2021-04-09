@@ -70,11 +70,14 @@ export function fetchDropDown() {
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
 		"getTypteOfContract",// 65契約形態取得
+		"getRetirementResonClassification",// 66退職区分取得
+		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
+		"getSocialInsuranceStatus",// 68社会保険加入取得
 		"getServerIP",// 最後
 	]
 	var outArray = [];
-	// var serverIP = "http://127.0.0.1:8080/";
-	var serverIP = "http://54.201.204.105:8080/";
+	var serverIP = "http://127.0.0.1:8080/";
+	// var serverIP = "http://54.201.204.105:8080/";
 
 	var par = JSON.stringify(methodNameList);
 	$.ajax({
@@ -173,11 +176,14 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
 		"getTypteOfContract",// 65契約形態取得
+		"getRetirementResonClassification",// 66退職区分取得
+		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
+		"getSocialInsuranceStatus",// 68社会保険加入取得
 		"getServerIP",// 最後
 	]
 var outArray = [];
-//var serverIP = "http://127.0.0.1:8080/";
-var serverIP = "http://54.201.204.105:8080/";
+var serverIP = "http://127.0.0.1:8080/";
+//var serverIP = "http://54.201.204.105:8080/";
 
 var par = JSON.stringify(methodList);
 $.ajax({

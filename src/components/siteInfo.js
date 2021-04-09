@@ -453,6 +453,7 @@ class siteInfo extends Component {
 				levelCode: row.levelName === null ? '' : row.levelCode,
 				siteManager: row.siteManager === null ? '' : row.siteManager,
 				typeOfIndustryCode: row.typeOfIndustryCode === null ? '' : row.typeOfIndustryCode,
+				typteOfContract: row.typteOfContractCode === null ? '' : row.typteOfContractCode,
 				remark: row.remark === null ? '' : row.remark,
 				scheduledEndDate:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
 				scheduledEndDateForSave:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
@@ -537,6 +538,7 @@ class siteInfo extends Component {
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
+		siteModel["typteOfContractCode"] = this.state.typteOfContract;
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
@@ -590,6 +592,7 @@ class siteInfo extends Component {
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
+		siteModel["typteOfContractCode"] = this.state.typteOfContract;
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {
