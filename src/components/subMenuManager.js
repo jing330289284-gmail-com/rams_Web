@@ -3,7 +3,6 @@ import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import EmployeeInsert from './employeeInsert';
-import EmployeeInsertNew from './employeeInsertNew';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -37,6 +36,7 @@ import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
 import customerSalesList from './customerSalesList';
+import sendRepotConfirm from './sendRepotConfirm';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -48,16 +48,16 @@ import store from './redux/store';
 axios.defaults.withCredentials = true;
 
 /**
- * サブメニュー画面（管理者用） 20201019 劉林涛
+ * サブメニュー画面（管理者用）
+ * 20201019 劉林涛
  */
 class SubMenu extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],// 劉林涛
-																						// テスト
-			nowDate: '',// 今の期日
+			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
+			nowDate: '',//今の期日
 			authorityCode: '',
 		}
 	};
@@ -104,7 +104,7 @@ class SubMenu extends Component {
 		})
 	}
 	render() {
-		// お客様情報画面の追加パラメータ
+		//お客様情報画面の追加パラメータ
 		var customerInfoPath = {
 			pathname: '/subMenuManager/customerInfo', state: { actionType: 'insert' },
 		}
@@ -149,9 +149,6 @@ class SubMenu extends Component {
 											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員・BP"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員・BP</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
-													<ListGroup.Item style={styleLow}>
-														<Link className={this.state.click==="社員・BP(新)登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP(新)登録')} to={{ pathname: '/subMenuManager/employeeInsertNew', state: { actionType: 'insert' } }}>
-															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP(新)登録</Link></ListGroup.Item>
 													<ListGroup.Item style={styleLow}>
 														<Link className={this.state.click==="社員・BP登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
 															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>
@@ -318,7 +315,6 @@ class SubMenu extends Component {
 							<Router>
 								<Route exact path={`${this.props.match.url}/`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employeeInsert`} component={EmployeeInsert} />
-								<Route exact path={`${this.props.match.url}/employeeInsertNew`} component={EmployeeInsertNew} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
@@ -340,6 +336,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/salesPoint`} component={salesPoint} />
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
+								<Route exact path={`${this.props.match.url}/sendRepotConfirm`} component={sendRepotConfirm} />
 								<Route exact path={`${this.props.match.url}/sendLettersMatter`} component={sendLettersMatter} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
