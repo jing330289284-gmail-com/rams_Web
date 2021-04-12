@@ -70,7 +70,10 @@ export function fetchDropDown() {
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
 		"getTypteOfContract",// 65契約形態取得
-		"getStorageListName0",// 66報告書送信対象格納リスト
+		"getRetirementResonClassification",// 66退職区分取得
+		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
+		"getSocialInsuranceStatus",// 68社会保険加入取得
+		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -174,7 +177,10 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getStorageListName",// 63送信対象格納リスト
 		"getPurchasingManagers",// 64お客様担当者取得
 		"getTypteOfContract",// 65契約形態取得
-		"getStorageListName0",// 66報告書送信対象格納リスト
+		"getRetirementResonClassification",// 66退職区分取得
+		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
+		"getSocialInsuranceStatus",// 68社会保険加入取得
+		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getServerIP",// 最後
 	]
 var outArray = [];
