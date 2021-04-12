@@ -25,25 +25,6 @@ class sendRepot extends React.Component {
 	}
 	//初期化
 	initialState = {
-		// customerDepartments: [],
-		// linkDetail2: '対象社員',
-		// customerCode: '',//お客様コード
-		// customerDepartmentCode: '',//部門コード
-		// selectedCustomer: {},//担当追加リスト
-		// customerDepartmentName: '',
-		// selectetRowKeys: [],
-		// customerTemp: [],
-		// sendLetterBtnFlag: false,
-		// tableClickColumn: '0',
-		// daiologShowFlag: false,
-		// daiologShowFlag2: false,
-		// daiologShowFlag3: false,
-		// selectedCusInfos: [],
-		// selectedCtmNoStrs1:"",
-		// selectedCtmNoStrs2:"",
-		// selectedCtmNoStrs3:"",
-		// selectedlistName:"",
-		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		customerName: '', // おきゃく名前
@@ -53,8 +34,8 @@ class sendRepot extends React.Component {
 		customers: store.getState().dropDown[53].slice(1),
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
-		storageList: store.getState().dropDown[63].slice(1),
 		personInCharge: store.getState().dropDown[64].slice(1),
+		storageList: store.getState().dropDown[69].slice(1),//報告書送信対象格納リスト
 		errorsMessageShow: false,
 		purchasingManagers: '',
 		customerCode: '',
@@ -340,7 +321,7 @@ class sendRepot extends React.Component {
 		var a = window.confirm("削除していただきますか？");
 		if(a){
 			if (this.state.storageListName !== '') {
-				axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerList", { storageListName: this.state.storageListName })
+				axios.post(this.state.serverIP + "sendRepot/deleteCustomerList", { storageListName: this.state.storageListName })
 					.then(() => {
 						let newStorageListArray = new Array([]);
 						for (let i in this.state.storageList) {
@@ -350,7 +331,6 @@ class sendRepot extends React.Component {
 							}
 							else{
 								newStorageListArray.push(this.state.storageList[i]);
-
 							}
 						}
 						this.setState({
@@ -401,7 +381,7 @@ class sendRepot extends React.Component {
 			selectedNoArray.push(selectedArray[i].customerNo);
 		}
 		let code = selectedNoArray.join(',');
-		axios.post(this.state.serverIP + "salesSendLetters/creatList", { name, code })
+		axios.post(this.state.serverIP + "sendRepot/creatList", { name, code })
 			.then(() => {
 				this.refs.customersTable.store.selected = [];
 				this.refs.customersTable.setState({
@@ -421,7 +401,7 @@ class sendRepot extends React.Component {
 			newAllCtmNos += this.state.allCustomer[i].customerNo + ",";
 		}
 		newAllCtmNos = newAllCtmNos.substring(0, newAllCtmNos.lastIndexOf(','));
-		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) })
+		axios.post(this.state.serverIP + "sendRepot/addNewList", { code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) })
 		.then(result => {
 			let newStorageListArray = this.state.storageList;
 			let storageListTemp = {name:result.data,code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) };
@@ -472,7 +452,7 @@ class sendRepot extends React.Component {
 				selectedRowKeys: [],
 			})
 			if (this.state.storageListName !== '') {
-				axios.post(this.state.serverIP + "salesSendLetters/deleteCustomerListByNo",
+				axios.post(this.state.serverIP + "sendRepot/deleteCustomerListByNo",
 						{
 							oldCtmNos: String(this.state.selectedCustomers).split(','),
 							deleteCtmNos: String(this.refs.customersTable.state.selectedRowKeys).split(','),
@@ -573,7 +553,7 @@ class sendRepot extends React.Component {
 			})
 		}
 		else{
-			axios.post(this.state.serverIP + "salesSendLetters/customerListUpdate", 
+			axios.post(this.state.serverIP + "sendRepot/customerListUpdate", 
 					{
 						storageListName:this.state.storageListName,
 						customerList:this.state.addCustomerCode
@@ -853,9 +833,9 @@ class sendRepot extends React.Component {
 		var path = {};
 		const sendValue = this.state.sendValue;
 		switch (actionType) {
-			case "sendLettersConfirm":
+			case "sendRepotConfirm":
 				path = {
-					pathname: '/subMenuManager/sendLettersConfirm',
+					pathname: '/subMenuManager/sendRepotConfirm',
 					state: {
 						salesPersons: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.state.selectedEmpNos : null,
 						targetCusInfos: this.state.selectedCusInfos,
@@ -1218,7 +1198,7 @@ class sendRepot extends React.Component {
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendRepotConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />送信</Button>{' '}
 							</div>
 						</Col>
@@ -1805,30 +1785,7 @@ class sendRepot extends React.Component {
 							
 // 						</Row>
 // 					</Form.Group>
-// 					<Row>
-// 						<Col sm={2}>
-// 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists.bind(this)}
-// 								disabled={0 !== this.state.allCustomer.length ? false : true}
-// 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
-// 						</Col>
-// 						<Col sm={4}></Col>
-// 						<Col sm={6}>
-// 							<div style={{ "float": "right" }}>
-// 								<Button size="sm" variant="info" name="clickButton" onClick={this.deleteLists} disabled={this.state.selectetRowKeys.length === this.state.customerTemp.length || this.state.selectetRowKeys.length === 0 ? true : false}><FontAwesomeIcon icon={faMinusCircle} />削除
-// 								</Button>{' '}
-// 								<Button size="sm" variant="info" name="clickButton" onClick={this.clearLists} disabled={0 !== this.state.allCustomer.length ? false : true}><FontAwesomeIcon icon={faMinusCircle} />クリア
-// 								</Button>{' '}
-// 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書
-// 								</Button>{' '}
-// 								<Button size="sm" variant="info" name="clickButton" onClick={this.createList} disabled={this.state.selectetRowKeys.length === this.state.customerTemp.length || this.state.selectetRowKeys.length === 0 || this.state.salesLists.length === 3 ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存
-// 								</Button>{' '}
-// 								<Button size="sm" variant="info" name="clickButton" onClick={this.mailCheck} disabled={true}><FontAwesomeIcon icon={faMinusCircle} />メール確認
-// 								</Button>{' '}
-// 								<Link to={{ pathname: '/subMenuManager/sendLettersConfirm', state: { salesPersons: this.state.selectedEmpNos, targetCusInfos: this.state.selectedCusInfos }}}>
-// 								<Button size="sm" variant="info" name="clickButton" disabled={this.state.sendLetterBtnFlag}><FontAwesomeIcon icon={faEnvelope} />送信</Button></Link>
-// 							</div>
-// 						</Col>
-// 					</Row>
+
 // 				</Form>
 // 				<Row>
 // 					<Col sm={12}>

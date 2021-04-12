@@ -73,6 +73,7 @@ export function fetchDropDown() {
 		"getRetirementResonClassification",// 66退職区分取得
 		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
 		"getSocialInsuranceStatus",// 68社会保険加入取得
+		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -179,6 +180,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getRetirementResonClassification",// 66退職区分取得
 		"getEmploymentInsuranceStatus",// 67雇用保険加入取得
 		"getSocialInsuranceStatus",// 68社会保険加入取得
+		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getServerIP",// 最後
 	]
 var outArray = [];

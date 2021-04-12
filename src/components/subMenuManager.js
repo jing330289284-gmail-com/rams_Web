@@ -37,6 +37,7 @@ import EmployeeDetail from './employeeDetail';
 import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
+import sendRepotConfirm from './sendRepotConfirm';
 import customerSalesList from './customerSalesList';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
@@ -342,6 +343,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/enterPeriodSearch`} component={EnterPeriodSearch} />
 								<Route exact path={`${this.props.match.url}/sendLettersConfirm`} component={sendLettersConfirm} />
 								<Route exact path={`${this.props.match.url}/sendLettersMatter`} component={sendLettersMatter} />
+								<Route exact path={`${this.props.match.url}/sendRepotConfirm`} component={sendRepotConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
 								<Route exact path={`${this.props.match.url}/employeeUpdateNew`} component={EmployeeUpdateNew} />
