@@ -35,7 +35,7 @@ class sendRepot extends React.Component {
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
 		personInCharge: store.getState().dropDown[64].slice(1),
-		storageList: store.getState().dropDown[66].slice(1),//報告書送信対象格納リスト
+		storageList: store.getState().dropDown[69].slice(1),//報告書送信対象格納リスト
 		errorsMessageShow: false,
 		purchasingManagers: '',
 		customerCode: '',
