@@ -32,6 +32,7 @@ import sendLettersMatter from './sendLettersMatter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
+import EmployeeUpdateNew from './employeeUpdateNew';
 import EmployeeDetail from './employeeDetail';
 import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
@@ -343,6 +344,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/sendLettersMatter`} component={sendLettersMatter} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
+								<Route exact path={`${this.props.match.url}/employeeUpdateNew`} component={EmployeeUpdateNew} />
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />

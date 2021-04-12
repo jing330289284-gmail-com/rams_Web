@@ -492,7 +492,7 @@ class employeeSearch extends React.Component {
 		switch (actionType) {
 			case "update":
 				path = {
-					pathname: '/subMenuManager/employeeUpdate',
+					pathname: '/subMenuManager/employeeUpdateNew',
 					state: {
 						actionType: 'update',
 						id: this.state.rowSelectEmployeeNo,
