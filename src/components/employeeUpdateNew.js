@@ -104,6 +104,7 @@ class employeeUpdateNew extends React.Component {
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
 			intoCompanyYearAndMonth: this.state.employeeStatus==='0' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),// 退職年月
+			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),//退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),// 出身地
 			birthplace: publicUtils.nullToEmpty(this.state.birthplace),// 出身県
@@ -126,8 +127,14 @@ class employeeUpdateNew extends React.Component {
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),// 在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),// 在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, false),// 在留期間
+			passportStayPeriod: publicUtils.formateDate(this.state.passportStayPeriod, false),// パスポート期間
+			immigrationStartTime: publicUtils.formateDate(this.state.immigrationStartTime, false),// 出入国開始時間
+			immigrationEndTime: publicUtils.formateDate(this.state.immigrationEndTime, false),// 出入国終了時間
 			contractDeadline: publicUtils.formateDate(this.state.contractDeadline, false),// 契約期間
+			employmentInsuranceStatus: publicUtils.nullToEmpty(this.state.employmentInsurance),// 雇用保険加入
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),// 雇用保険番号
+			socialInsuranceStatus: publicUtils.nullToEmpty(this.state.socialInsurance),// 社会保険加入
+			socialInsuranceNo: publicUtils.nullToEmpty(this.state.socialInsuranceNo),// 社会保険番号
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
 			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),// 履歴書備考1
@@ -152,6 +159,7 @@ class employeeUpdateNew extends React.Component {
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 				} else {
 					const emp = {
 							employeeNo: this.state.bpNo,
@@ -173,6 +181,7 @@ class employeeUpdateNew extends React.Component {
 			.then(response => {
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 				} else {
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -286,6 +295,7 @@ class employeeUpdateNew extends React.Component {
 					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
 					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
+					retirementResonClassificationCode:  data.retirementResonClassification,//退職区分
 					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),// 来日年月
 					temporary_comeToJapanYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false), new Date()),
 					nationalityCode: data.nationalityCode,// 出身地
@@ -310,10 +320,16 @@ class employeeUpdateNew extends React.Component {
 					residenceCode: data.residenceCode,// 在留資格
 					residenceCardNo: data.residenceCardNo,// 在留カード
 					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),// 在留期間
+					passportStayPeriod: publicUtils.converToLocalTime(data.passportStayPeriod, false),// パスポート期間
+					immigrationStartTime: publicUtils.converToLocalTime(data.immigrationStartTime, false),// 出入国開始時間
+					immigrationEndTime: publicUtils.converToLocalTime(data.immigrationEndTime, false),// 出入国終了時間
 					contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false),// 契約期間
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
 					temporary_contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.contractDeadline, false)),
+					employmentInsurance: data.employmentInsuranceStatus,// 雇用保険加入
 					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
+					socialInsurance: data.socialInsuranceStatus,// 社会保険加入
+					socialInsuranceNo: data.socialInsuranceNo,// 社会保険番号
 					myNumber: data.myNumber,// マイナンバー
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
 					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
@@ -512,7 +528,7 @@ class employeeUpdateNew extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',occupationCode: '3',employeeNo: this.state.bpNo,bpDisabled:true,residenceTimeDisabled:true,intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',employeeNo: this.state.bpNo,bpDisabled:true,residenceTimeDisabled:true,intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
 		} else {
 			this.getNO("LYC");
 			this.setState({ employeeStatus: "0",bpDisabled:false,residenceTimeDisabled:this.state.residenceCode === "5"?true:false });
@@ -578,7 +594,7 @@ class employeeUpdateNew extends React.Component {
 		if (value === "3") {
 			this.setState({ retirementYearAndMonthDisabled: true, employeeFormCode: event.target.value })
 		} else {
-			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "", employeeFormCode: event.target.value, temporary_retirementYearAndMonth: "" })
+			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "",retirementResonClassificationCode: '', employeeFormCode: event.target.value, temporary_retirementYearAndMonth: "" })
 		}
 	}
 	
@@ -601,7 +617,7 @@ class employeeUpdateNew extends React.Component {
 	valueChangeResidenceCodeFormCode = (event) => {
 		const value = event.target.value;
 		if (value === "5") {
-			this.setState({ residenceTimeDisabled: true, stayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
+			this.setState({ residenceTimeDisabled: true, stayPeriod: "",passportStayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
 		} else {
 			this.setState({ residenceTimeDisabled: false , residenceCode: event.target.value})
 		}
@@ -1461,7 +1477,7 @@ class employeeUpdateNew extends React.Component {
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
 								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
 						/>
@@ -1492,7 +1508,7 @@ class employeeUpdateNew extends React.Component {
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
 								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
 						/>

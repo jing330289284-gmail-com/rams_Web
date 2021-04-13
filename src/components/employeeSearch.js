@@ -504,7 +504,7 @@ class employeeSearch extends React.Component {
 				break;
 			case "detail":
 				path = {
-					pathname: '/subMenuManager/employeeDetail',
+					pathname: '/subMenuManager/employeeDetailNew',
 					state: {
 						actionType: 'detail',
 						id: this.state.rowSelectEmployeeNo,
@@ -516,7 +516,7 @@ class employeeSearch extends React.Component {
 				break;
 			case "insert":
 				path = {
-					pathname: '/subMenuManager/employeeInsert',
+					pathname: '/subMenuManager/employeeInsertNew',
 					state: {
 						actionType: 'insert',
 						backPage: "employeeSearch",

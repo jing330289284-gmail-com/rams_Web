@@ -34,6 +34,7 @@ import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
 import EmployeeUpdateNew from './employeeUpdateNew';
 import EmployeeDetail from './employeeDetail';
+import EmployeeDetailNew from './employeeDetailNew';
 import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
@@ -348,6 +349,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
 								<Route exact path={`${this.props.match.url}/employeeUpdateNew`} component={EmployeeUpdateNew} />
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
+								<Route exact path={`${this.props.match.url}/employeeDetailNew`} component={EmployeeDetailNew} />
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
 								<Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} />

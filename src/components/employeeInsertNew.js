@@ -113,6 +113,7 @@ class employeeInsertNew extends React.Component {
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
 			intoCompanyYearAndMonth: this.state.employeeStatus==='0' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),// 退職年月
+			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),//退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
 			nationalityCode: publicUtils.nullToEmpty(this.state.nationalityCode),// 出身地
 			birthplace: publicUtils.nullToEmpty(this.state.birthplace),// 出身県
@@ -161,6 +162,7 @@ class employeeInsertNew extends React.Component {
 			.then(result => {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 				} else {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -527,7 +529,7 @@ class employeeInsertNew extends React.Component {
 	valueChangeResidenceCodeFormCode = (event) => {
 		const value = event.target.value;
 		if (value === "5") {
-			this.setState({ residenceTimeDisabled: true, stayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
+			this.setState({ residenceTimeDisabled: true, stayPeriod: "",passportStayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
 		} else {
 			this.setState({ residenceTimeDisabled: false , residenceCode: event.target.value})
 		}
@@ -1015,7 +1017,7 @@ class employeeInsertNew extends React.Component {
 										className="form-control form-control-sm"
 										autoComplete="off"
 										disabled={employeeStatus === "0" ? false : true}
-										id={employeeStatus === "0" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault"}
+										id={employeeStatus === "0" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
 									/>
 								</InputGroup.Append>
 								<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
