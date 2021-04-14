@@ -30,6 +30,7 @@ class situationChange extends Component {//状況変動一覧
 
     initialState = {
         situationChange:'0',
+        isStart:true,
         startsituationChange:new Date(),
         endsituationChange:new Date(),
         situationChanges: store.getState().dropDown[39].slice(1),
@@ -85,7 +86,11 @@ selectSituationChange =() => {
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
                 }else if(response.data.noData != null){
-                    this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                	if(this.state.isStart){
+                        this.setState({ isStart: false});
+                	}else{
+                        this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
+                	}
                 }else {
                     this.setState({"errorsMessageShow":false})
                     this.setState({ situationInfoList: response.data.data })
@@ -119,7 +124,7 @@ renderShowsTotal(start, to, total) {
                 </Row>
                 <br/>
                 <Row>
-                <Col sm={2}>
+                <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text></InputGroup.Prepend>
@@ -166,9 +171,10 @@ renderShowsTotal(start, to, total) {
                         </InputGroup>                       
                     </Col>
 				</Row>
+				<Col>
                 <div>
                     <BootstrapTable data={this.state.situationInfoList}   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='70' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
                             <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='reflectYearAndMonth'>年月</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeName'>社員名</TableHeaderColumn>
@@ -180,7 +186,8 @@ renderShowsTotal(start, to, total) {
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='remark' >備考</TableHeaderColumn>
 					</BootstrapTable>
                     </div>
-            </div>
+                 </Col>
+         </div>
         )
     }
 }
