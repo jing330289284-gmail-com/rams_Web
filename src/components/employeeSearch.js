@@ -68,6 +68,7 @@ class employeeSearch extends React.Component {
 		employeeInfo: store.getState().dropDown[9].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerMaster: store.getState().dropDown[15].slice(1),
+		socialInsuranceStatus: store.getState().dropDown[68],
 		searchFlag: false,
 		ageFrom: '', ageTo: '',
 		authorityCode: '',
@@ -78,7 +79,7 @@ class employeeSearch extends React.Component {
 		employeeFormCode: '', employeeStatus: '', genderStatus: '',
 		ageFrom: '', ageTo: '', residenceCode: '', nationalityCode: '', customerNo: '',
 		intoCompanyCode: '', japaneseLevelCode: '', siteRoleCode: '', intoCompanyYearAndMonthFrom: '', intoCompanyYearAndMonthTo: '',
-		kadou: '', developLanguage1: '', developLanguage2: ''
+		kadou: '', developLanguage1: '', developLanguage2: '', socialInsurance: ''
 	};
 
 	// 初期化メソッド
@@ -110,6 +111,7 @@ class employeeSearch extends React.Component {
             $("#nationalityCode").val(sendValue.nationalityCode);
             $("#siteRoleCode").val(sendValue.siteRoleCode);
             $("#kadou").val(sendValue.kadou);
+            $("#socialInsurance").val(sendValue.socialInsurance);
             this.setState({
             	employeeStatus: sendValue.employeeStatus,
             	genderStatus: sendValue.genderStatus,
@@ -126,6 +128,7 @@ class employeeSearch extends React.Component {
             	nationalityCode: sendValue.nationalityCode,
             	siteRoleCode: sendValue.siteRoleCode,
             	kadou: sendValue.kadou,
+            	socialInsurance: sendValue.socialInsurance,
             	authorityCode: sendValue.authorityCode,
             	intoCompanyYearAndMonthFrom: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthFrom, false),
             	intoCompanyYearAndMonthTo: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthTo, false),
@@ -175,6 +178,7 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthFrom: this.state.intoCompanyYearAndMonthFrom === "" || this.state.intoCompanyYearAndMonthFrom === null || this.state.intoCompanyYearAndMonthFrom === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthFrom, false),
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
+			socialInsuranceStatus: this.state.socialInsurance === "" ? undefined : this.state.socialInsurance,
 			authorityCode: this.state.authorityCode,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
@@ -488,6 +492,7 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 			authorityCode: this.state.authorityCode,
+			socialInsurance: this.state.socialInsurance,
 		};
 		switch (actionType) {
 			case "update":
@@ -554,7 +559,7 @@ class employeeSearch extends React.Component {
 
 	render() {
 		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
-			residenceCode, nationalityCode, customer, japaneseLevelCode, siteRoleCode, kadou, intoCompanyCode,
+			residenceCode, nationalityCode, customer, japaneseLevelCode, siteRoleCode, kadou, intoCompanyCode,socialInsurance,
 			employeeList, errorsMessageValue } = this.state;
 		// テーブルの行の選択
 		const selectRow = {
@@ -708,7 +713,7 @@ class employeeSearch extends React.Component {
 							</Row>
 							<Row>
 								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
+									{/*<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -726,6 +731,22 @@ class employeeSearch extends React.Component {
 											)}
 										/>
 
+									</InputGroup>*/}
+									<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Form.Control as="select" size="sm"
+										onChange={this.valueChange}
+										disabled={employeeStatus === "1" ? true : false}
+										name="employeeFormCode" value={employeeFormCode}
+										autoComplete="off">
+										{this.state.employeeFormCodes.map(data =>
+											<option key={data.code} value={data.code}>
+												{data.name}
+											</option>
+										)}
+									</Form.Control>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
@@ -777,14 +798,13 @@ class employeeSearch extends React.Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
+											<InputGroup.Text id="inputGroup-sizing-sm">社会保険</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm"
 											onChange={this.valueChange}
-											disabled={employeeStatus === "1" ? true : false}
-											name="employeeFormCode" value={employeeFormCode}
+											name="socialInsurance" value={socialInsurance}
 											autoComplete="off">
-											{this.state.employeeFormCodes.map(data =>
+											{this.state.socialInsuranceStatus.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>

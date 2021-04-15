@@ -1045,6 +1045,8 @@ class employeeUpdateNew extends React.Component {
 									<Image src={this.state.image} id="imageId" rounded width="220" height="240" onClick={(event) => this.addFile(event, 'image')} />
 								</InputGroup.Prepend>
 								<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+								<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
+								<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 								</InputGroup>
 								</Col>
 							</Col>
@@ -1679,8 +1681,6 @@ class employeeUpdateNew extends React.Component {
 						</Row>*/}
 
 						<div style={{ "textAlign": "center" }}>
-						<Form.File id="resumeInfo1" hidden data-browse="添付" value={this.state.resumeInfo1} custom onChange={(event) => this.changeFile(event, 'resumeInfo1')} />
-
 							<Button size="sm" variant="info" onClick={this.updateEmployee} type="button" on>
 								<FontAwesomeIcon icon={faEdit} /> 更新
 							</Button>{' '}
@@ -1690,7 +1690,6 @@ class employeeUpdateNew extends React.Component {
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
 								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
-						<Form.File id="resumeInfo2" hidden data-browse="添付" value={this.state.resumeInfo2} custom onChange={(event) => this.changeFile(event, 'resumeInfo2')} />
 						</div>
 					</Form.Group>
 				</Form>
