@@ -10,15 +10,13 @@ axios.defaults.withCredentials = true;
 *営業送信画面お客営業追加
  */
 class sendRepotAppend extends Component {
+
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
-		//selectetRowIds: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
 		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
-		// selectetRowMails: [],
-		// allMailsName: [],
-		selectetPersonsName: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
+		selectetPersonsName: this.props.customer.sendRepotAppend !== "" && this.props.customer.sendRepotAppend !== null ? this.props.customer.sendRepotAppend.split(',') : [],
 		allSelectedFlag: false,
 		allSalesPersonsName: [],
 		allRowId: [],
@@ -29,16 +27,13 @@ class sendRepotAppend extends Component {
 			purchasingManagersMail2: '',
 		}
 	}
+
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
 	}
 	componentDidMount() {
 		this.getSalesPersons(this.props.customer.customerNo);
-		// this.refs.salesPersonTable.setState({
-		// 	selectedRowKeys: this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [],
-		// });
-		// this.refs.salesPersonTable.store.selected = this.props.customer.salesPersonsAppend !== "" && this.props.customer.salesPersonsAppend !== null ? this.props.customer.salesPersonsAppend.split(',') : [];
 		this.props.customer.test = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test:this.props.customer.mainChargeList;
 		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
 		for(let i in str){
@@ -71,12 +66,6 @@ class sendRepotAppend extends Component {
 				alert(err)
 			})
 	}
-	// // 行番号
-	// indexN = (index) => {
-	// 	let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
-	// 	return (<div>{rowNumber}</div>);
-	// }
-
 	// customerDepartmentNameFormat
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.props.depart;
@@ -86,8 +75,7 @@ class sendRepotAppend extends Component {
 			}
 		}
 	}
-
-	// customerDepartmentNameFormat
+	// positionNameFormat
 	positionNameFormat = (cell) => {
 		let positionsTem = this.props.positions;
 		for (var i in positionsTem) {
@@ -188,7 +176,7 @@ handleRowSelect = (row, isSelected, e) => {
 
 	salesSelected = () => {
 		let salesPersons = this.state.selectetPersonsName.join(",");
-		this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
+		this.state.parentSelectedInfo.sendRepotAppend = salesPersons;
 		let salesRowsId = this.state.selectetRowIds.join(",");
 		this.state.parentSelectedInfo.test = salesRowsId;
 		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
@@ -240,50 +228,6 @@ handleRowSelect = (row, isSelected, e) => {
 			alwaysShowAllBtns: true,
 			paginationShowsTotal: this.renderShowsTotal,
 		};
-		// let salesPersons = this.state.selectetRowIds.join(",");
-		// let mails = this.state.selectetRowMails.join(",");
-		// this.state.parentSelectedInfo.salesPersonsAppend = salesPersons;
-		// this.props.allState.saveSalesPersons(this.state.parentSelectedInfo, this.state.appendPersonMsg);
-		// const model = {
-		// 	subChargeMailList: mails,
-		// 	//storageListName: storageListName,
-		// };
-		// axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", model)
-		// 	.then(result => {
-		// 	})
-		// 	.catch(function (err) {
-		// 		alert(err)
-		// 	})
-	// }
-	// render() {
-
-	// 	const selectRow = {
-	// 		mode: 'checkbox',
-	// 		bgColor: 'pink',
-	// 		hideSelectColumn: true,
-	// 		clickToSelect: true,
-	// 		clickToExpand: true,
-	// 		onSelect: this.handleRowSelect,
-	// 	};
-
-	// 	const options = {
-	// 		onPageChange: page => {
-	// 			this.setState({ currentPage: page });
-	// 		},
-	// 		page: this.state.currentPage,
-	// 		defaultSortOrder: 'dsc',
-	// 		sizePerPage: 5,
-	// 		pageStartIndex: 1,
-	// 		paginationSize: 2,
-	// 		prePage: '<', // Previous page button text
-	// 		nextPage: '>', // Next page button text
-	// 		firstPage: '<<', // First page button text
-	// 		lastPage: '>>', // Last page button text
-	// 		hideSizePerPage: true,
-	// 		alwaysShowAllBtns: true,
-	// 		paginationShowsTotal: this.renderShowsTotal,
-	// 		};
-
 		return (
 			<div >
 				<Row inline="true">
