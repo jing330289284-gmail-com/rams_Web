@@ -697,7 +697,7 @@ class WagesInfo extends Component {
 		switch (actionType) {
 			case "employeeInfo":
 				path = {
-					pathname: '/subMenuManager/employeeDetail',
+					pathname: '/subMenuManager/employeeDetailNew',
 					state: {
 						id: this.state.employeeName,
 						backPage: "wagesInfo",

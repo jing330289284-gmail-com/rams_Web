@@ -32,7 +32,9 @@ import sendLettersMatter from './sendLettersMatter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import situationChange from './situationChange';
 import EmployeeUpdate from './employeeUpdate';
+import EmployeeUpdateNew from './employeeUpdateNew';
 import EmployeeDetail from './employeeDetail';
+import EmployeeDetailNew from './employeeDetailNew';
 import ProjectInfoSearch from './projectInfoSearch';
 import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
@@ -151,11 +153,11 @@ class SubMenu extends Component {
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={styleLow}>
-														<Link className={this.state.click==="社員・BP(新)登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP(新)登録')} to={{ pathname: '/subMenuManager/employeeInsertNew', state: { actionType: 'insert' } }}>
-															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP(新)登録</Link></ListGroup.Item>
-													<ListGroup.Item style={styleLow}>
-														<Link className={this.state.click==="社員・BP登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
+														<Link className={this.state.click==="社員・BP登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP登録')} to={{ pathname: '/subMenuManager/employeeInsertNew', state: { actionType: 'insert' } }}>
 															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>
+													{/*<ListGroup.Item style={styleLow}>
+														<Link className={this.state.click==="社員・BP登録"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP登録')} to={{ pathname: '/subMenuManager/employeeInsert', state: { actionType: 'insert' } }}>
+															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>*/}
 													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員・BP検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP検索')} to="/subMenuManager/employeeSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員・BP検索</Link></ListGroup.Item>
 												</ListGroup>
@@ -345,7 +347,9 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/sendRepotConfirm`} component={sendRepotConfirm} />
 								<Route exact path={`${this.props.match.url}/situationChange`} component={situationChange} />
 								<Route exact path={`${this.props.match.url}/employeeUpdate`} component={EmployeeUpdate} />
+								<Route exact path={`${this.props.match.url}/employeeUpdateNew`} component={EmployeeUpdateNew} />
 								<Route exact path={`${this.props.match.url}/employeeDetail`} component={EmployeeDetail} />
+								<Route exact path={`${this.props.match.url}/employeeDetailNew`} component={EmployeeDetailNew} />
 								<Route exact path={`${this.props.match.url}/projectInfo`} component={projectInfo} />
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
 								<Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} />

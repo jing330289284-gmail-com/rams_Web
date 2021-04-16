@@ -753,7 +753,7 @@ class manageSituation extends React.Component {
 				break;
 			case "detail":
 				path = {
-					pathname: '/subMenuManager/employeeDetail',
+					pathname: '/subMenuManager/employeeDetailNew',
 					state: {
 						actionType: 'detail',
 						id: String(this.refs.table.state.selectedRowKeys),
