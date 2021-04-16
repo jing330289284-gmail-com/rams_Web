@@ -66,12 +66,6 @@ class sendRepotAppend extends Component {
 				alert(err)
 			})
 	}
-	// // 行番号
-	// indexN = (index) => {
-	// 	let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
-	// 	return (<div>{rowNumber}</div>);
-	// }
-
 	// customerDepartmentNameFormat
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.props.depart;
@@ -81,8 +75,7 @@ class sendRepotAppend extends Component {
 			}
 		}
 	}
-
-	// customerDepartmentNameFormat
+	// positionNameFormat
 	positionNameFormat = (cell) => {
 		let positionsTem = this.props.positions;
 		for (var i in positionsTem) {
