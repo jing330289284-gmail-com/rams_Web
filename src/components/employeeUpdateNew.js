@@ -1271,6 +1271,7 @@ class employeeUpdateNew extends React.Component {
 							</option>
 						)}
 					</Form.Control>
+					<font className="site-mark"></font>
 
 					<Row></Row>
 					
@@ -1284,6 +1285,7 @@ class employeeUpdateNew extends React.Component {
 						</option>
 					)}
 				</Form.Control>
+				<font className="site-mark"></font>
 
 				<Row></Row>
 				
@@ -1297,6 +1299,7 @@ class employeeUpdateNew extends React.Component {
 						</option>
 					)}
 				</Form.Control>
+				<font className="site-mark"></font>
 
 				<Row></Row>
 				
@@ -1373,6 +1376,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl value={postcode} autoComplete="off" onChange={this.valueChange} onBlur={this.postApi.bind(this)} size="sm" name="postcode" id="postcode" maxlength="7" />
+							<font className="site-mark"></font>
 
 							<Row></Row>
 							
@@ -1380,6 +1384,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl autoComplete="off" size="sm" id="firstHalfAddress" value={firstHalfAddress} ref="firstHalfAddress" disabled />
+						<font className="site-mark"></font>
 
 						<Row></Row>
 						
@@ -1388,6 +1393,7 @@ class employeeUpdateNew extends React.Component {
 						</InputGroup.Prepend>
 						<FormControl placeholder="以降住所" value={lastHalfAddress} autoComplete="off"
 							onChange={this.valueChange} size="sm" name="lastHalfAddress" maxlength="12" />
+								<font className="site-mark"></font>
 
 						<Row></Row>
 								

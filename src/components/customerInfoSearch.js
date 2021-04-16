@@ -96,7 +96,7 @@ class CustomerInfoSearch extends Component {
         num = utils.deleteComma(num);
         var keyLength = 5;
         if (key === "capitalStockFront" || key === "capitalStockBack") {
-            keyLength = 6;
+            keyLength = 7;
             if ((reg.test(num) && num.length < keyLength)) {
                 num = utils.addComma(num);
                 this.setState({

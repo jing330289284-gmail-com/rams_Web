@@ -8,6 +8,7 @@ import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
 import masterUpdate from './masterUpdate';
+import systemSet from './systemSet';
 import CustomerInfoSearch from './customerInfoSearch';
 import siteInfo from './siteInfo';
 import ManageSituation from './manageSituation';
@@ -302,7 +303,7 @@ class SubMenu extends Component {
 													<Accordion.Toggle as={Button} variant="link" eventKey="9"><font className={this.state.click==="他の設定"?"linkFont-click":"linkFont"} onClick={() => this.click('他の設定')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faCogs} />他の設定</font></Accordion.Toggle>
 													<Accordion.Collapse eventKey="9">
 														<ListGroup variant="flush">
-															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="システム設定"?"linkFont-click":"linkFont"} onClick={() => this.click('システム設定')} to={{ pathname: '/subMenuManager/cssTest', state: { actionType: 'insert' } }}>
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="システム設定"?"linkFont-click":"linkFont"} onClick={() => this.click('システム設定')} to="/subMenuManager/systemSet">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faCog} />システム設定</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
@@ -354,6 +355,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/projectInfoSearch`} component={ProjectInfoSearch} />
 								<Route exact path={`${this.props.match.url}/individualCustomerSales`} component={IndividualCustomerSales} />
 								<Route exact path={`${this.props.match.url}/customerSalesList`} component={customerSalesList} />
+								<Route exact path={`${this.props.match.url}/systemSet`} component={systemSet} />
 								<div className="container col-8">
 									<div className="container col-10">
 										<Route exact path={`${this.props.match.url}/masterInsert`} component={masterInsert} />

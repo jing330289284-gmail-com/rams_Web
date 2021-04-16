@@ -225,6 +225,7 @@ class CustomerInfo extends Component {
                         })
                     }
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomer"});
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -770,7 +771,7 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>資本金</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="6" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
+                                    <Form.Control maxLength="7" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>百万円</InputGroup.Text>
                                     </InputGroup.Prepend>

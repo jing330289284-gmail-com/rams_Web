@@ -843,7 +843,7 @@ class EmployeeDetailNew extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									
+									<font className="site-mark"></font>
 									<Row></Row>
 									
 									<InputGroup.Prepend>
@@ -856,7 +856,8 @@ class EmployeeDetailNew extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									
+									<font className="site-mark"></font>
+
 									<Row></Row>
 									
 									<InputGroup.Prepend>
@@ -869,7 +870,8 @@ class EmployeeDetailNew extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									
+									<font className="site-mark"></font>
+
 									<Row></Row>
 									
 									<InputGroup.Prepend>
@@ -940,21 +942,24 @@ class EmployeeDetailNew extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">郵便番号</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={postcode} size="sm" name="postcode" id="postcode" maxlength="7" disabled />
-									
+									<font className="site-mark"></font>
+
 									<Row></Row>
 									
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">都道府県</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl value={firstHalfAddress} size="sm" name="firstHalfAddress" id="firstHalfAddress" ref="firstHalfAddress" disabled />
-									
+									<font className="site-mark"></font>
+
 									<Row></Row>
 									
 								<InputGroup.Prepend>
 									<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 								</InputGroup.Prepend>
 								<FormControl value={lastHalfAddress} size="sm" name="lastHalfAddress" id="lastHalfAddress" disabled />
-								
+								<font className="site-mark"></font>
+
 								<Row></Row>
 								
 								<InputGroup.Prepend>

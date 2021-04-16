@@ -125,18 +125,18 @@ renderShowsTotal(start, to, total) {
                 <br/>
                 <Row>
                 <Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-                                    <InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text></InputGroup.Prepend>
-                                    <Form.Control as="select" size="sm" onChange={this.valueChange} name="situationChange" id="situationChange"autoComplete="off">
-											{situationChanges.map(data =>
-												<option key={data.code} value={data.code}>
-													{data.name}
-												</option>
-											)}
-                                            </Form.Control>
-								</InputGroup>
-							</Col>
+					<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+                        <InputGroup.Text id="inputGroup-sizing-sm">区分</InputGroup.Text></InputGroup.Prepend>
+                           <Form.Control as="select" size="sm" onChange={this.valueChange} name="situationChange" id="situationChange"autoComplete="off">
+							{situationChanges.map(data =>
+							<option key={data.code} value={data.code}>
+								{data.name}
+								</option>
+							)}
+                            </Form.Control>
+						</InputGroup>
+					</Col>
                     <Col sm={6}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
