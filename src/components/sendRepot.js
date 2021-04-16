@@ -7,6 +7,7 @@ import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import SendRepotAppend from './sendRepotAppend';
+import SalesAppend from './salesAppend';
 import DatePicker, { } from "react-datepicker";
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -687,9 +688,6 @@ class sendRepot extends React.Component {
 	}
 
 	saveSalesPersons = (row, appendPersonMsg) => {
-/*		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
-		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
-		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;*/
 		this.state.customerTemp[row.rowId].purchasingManagersOthers = appendPersonMsg.purchasingManagersOthers;
 		this.setState({
 			daiologShowFlag: false,
@@ -903,6 +901,10 @@ class sendRepot extends React.Component {
 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-purchasingManagersSet">
 					<Modal.Header closeButton></Modal.Header>
+					<Modal.Body >
+						<SalesAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
+							allState={this} positions={this.state.positions} />
+					</Modal.Body>
 					<Modal.Body >
 						<SendRepotAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
 							allState={this} positions={this.state.positions} />
@@ -1224,7 +1226,6 @@ class sendRepot extends React.Component {
 							{/* <TableHeaderColumn width='11%' dataField='levelCode' >ランキング</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='monthCount' >取引数</TableHeaderColumn> */}
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-							{/* <TableHeaderColumn width='11%' dataField='monthMailCount'>月送信回数</TableHeaderColumn> */}
 							<TableHeaderColumn width='12%' >対象社員</TableHeaderColumn>
 							<TableHeaderColumn width='12%' >承認済み</TableHeaderColumn>
 							<TableHeaderColumn width='12%' >送信済み</TableHeaderColumn>
@@ -1281,16 +1282,6 @@ class sendRepot extends React.Component {
 // 			selectedCustomer: selectedCustomer,
 // 			daiologShowFlag: true,
 // 		})
-// 	}
-// 	//担当追加保存
-// 	saveSalesPersons = (row, appendPersonMsg) => {
-// 		this.state.customerTemp[row.rowId].purchasingManagers2 = appendPersonMsg.purchasingManagers2;
-// 		this.state.customerTemp[row.rowId].positionCode2 = appendPersonMsg.positionCode2;
-// 		this.state.customerTemp[row.rowId].purchasingManagersMail2 = appendPersonMsg.purchasingManagersMail2;
-// 		this.setState({
-// 			daiologShowFlag: false,
-// 		});
-// 		this.CellFormatter(row.salesPersonsAppend, row);
 // 	}
 // 	//対象社員
 // 	CellFormatter2(cell, row) {
@@ -1661,14 +1652,6 @@ class sendRepot extends React.Component {
 
 // 		return (
 // 			<div>
-// 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
-// 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag} dialogClassName="modal-pbinfoSet">
-// 					<Modal.Header closeButton></Modal.Header>
-// 					<Modal.Body >
-// 						<SendRepotAppend customer={this.state.selectedCustomer} depart={this.state.customerDepartmentNameDrop}
-// 							allState={this} positions={this.state.positions} />
-// 					</Modal.Body>
-// 				</Modal>
 // 				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
 // 					onHide={this.closeDaiolog2} show={this.state.daiologShowFlag2} dialogClassName="modal-pbinfoSet">
 // 					<Modal.Header closeButton></Modal.Header>
