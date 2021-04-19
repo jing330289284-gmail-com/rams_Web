@@ -33,7 +33,7 @@ class sendRepotAppend extends Component {
 		this.state = this.initialState;//初期化
 	}
 	componentDidMount() {
-		this.getSalesPersons(this.props.customer.customerNo);
+		this.getTargetEmployees(this.props.customer.customerNo);
 		this.props.customer.test = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test:this.props.customer.mainChargeList;
 		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
 		for(let i in str){
@@ -44,15 +44,13 @@ class sendRepotAppend extends Component {
 		});
 		this.refs.salesPersonTable.store.selected = str;
 	}
-	getSalesPersons = (customerNo) => {
-		axios.post(this.state.serverIP + "sendRepot/getSalesPersons", { customerNo: customerNo })
+	getTargetEmployees = (customerNo) => {
+		axios.post(this.state.serverIP + "sendRepot/getTargetEmployees", { customerNo: customerNo })
 			.then(result => {
 				let salesPersonsNameArray = new Array([]);
-				//let mailsNameArray = new Array([]);
 				let salesRowIdArray = new Array([]);
 				for (let i in result.data) {
 					salesPersonsNameArray.push(result.data[i].responsiblePerson);
-					//mailsNameArray.push(result.data[i].customerDepartmentMail);
 					salesRowIdArray.push(result.data[i].rowId);
 				}
 				this.setState({
@@ -254,7 +252,6 @@ handleRowSelect = (row, isSelected, e) => {
 				<div >
 					<BootstrapTable
 						ref="salesPersonTable"
-
 						data={this.state.allSalesPersons}
 						pagination={true}
 						options={options}

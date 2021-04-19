@@ -31,13 +31,12 @@ class sendRepot extends React.Component {
 		customerName: '', // おきゃく名前
 		positions: store.getState().dropDown[20],
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
-		approvalStatuslist: store.getState().dropDown[27],//承認ステータス
-		sentReportStatuslist: store.getState().dropDown[60],//送信ステータス
 		customers: store.getState().dropDown[53].slice(1),
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
 		personInCharge: store.getState().dropDown[64].slice(1),
 		storageList: store.getState().dropDown[69].slice(1),//報告書送信対象格納リスト
+		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],//承認済み 送信済み
 		errorsMessageShow: false,
 		purchasingManagers: '',
 		customerCode: '',
@@ -141,19 +140,11 @@ class sendRepot extends React.Component {
 				alert(err)
 			})
 	}
-approvalStatus(code) {
-    let approvalStatuss = this.state.approvalStatuslist;
-        for (var i in approvalStatuss) {
-            if (code === approvalStatuss[i].code) {
-                return approvalStatuss[i].name;
-            }
-        }
-    };
-sentReportStatus(code) {
-    let sentReportStatuss = this.state.sentReportStatuslist;
-        for (var i in sentReportStatuss) {
-            if (code === sentReportStatuss[i].code) {
-                return sentReportStatuss[i].name;
+Judgment(code) {
+    let judgmenStatuss = this.state.judgmentlist;
+        for (var i in judgmenStatuss) {
+            if (code === judgmenStatuss[i].code) {
+                return judgmenStatuss[i].name;
             }
         }
     };
@@ -599,46 +590,6 @@ sentReportStatus(code) {
 			})
 		}
 	}
-
-	// // plusClick
-	// plusClick = () => {
-	// 	let customerNo = this.state.customerCode;
-	// 	let customerDepartmentCode = this.state.customerDepartmentCode;
-	// 	let customers = this.state.allCustomer;
-	// 	let customerInfo = this.state.customerTemp;
-	// 	var sameFlag = false;
-	// 	if (customers.length !== 0) {
-	// 		for (let k in customers) {
-	// 			if (customerNo === customers[k].customerNo &&
-	// 				customerDepartmentCode === customers[k].customerDepartmentCode) {
-	// 				alert("err---the same record");
-	// 				sameFlag = true;
-	// 			}
-	// 		}
-	// 		if (!sameFlag) {
-	// 			for (let k in customerInfo) {
-	// 				if (customerNo === customerInfo[k].customerNo &&
-	// 					customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
-	// 					this.setState({
-	// 						allCustomer: this.state.allCustomer.concat(customerInfo[k]).sort(function (a, b) {
-	// 							return a.rowId - b.rowId
-	// 						}),
-	// 					})
-	// 				}
-	// 			}
-	// 		}
-	// 	} else {
-	// 		for (let k in customerInfo) {
-	// 			if (customerNo === customerInfo[k].customerNo &&
-	// 				customerDepartmentCode === customerInfo[k].customerDepartmentCode) {
-	// 				this.setState({
-	// 					allCustomer: this.state.allCustomer.concat(customerInfo[k]),
-	// 				})
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	renderShowsTotal = (start, to, total) => {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -702,9 +653,10 @@ sentReportStatus(code) {
 			return (<a href="javascript:void(0);" onClick={this.getTargetEmployees.bind(this, row)}>{this.state.linkDetail2}</a>);
 		}
 	}
-	getTargetEmployees = (selectedTargetEmployees) => {
+	getTargetEmployees = (selectedCustomer) => {
+		console.log(selectedCustomer.sendRepotsAppend !== null);
 		this.setState({
-			selectedTargetEmployees: selectedTargetEmployees,
+			selectedCustomer: selectedCustomer,
 			daiologShowFlag2: true,
 		})
 	}
@@ -713,7 +665,7 @@ sentReportStatus(code) {
 		this.setState({
 			daiologShowFlag: false,
 		});
-		this.TargetEmployees(row.salesPersonsAppend, row);
+		this.TargetEmployees(row.sendRepotsAppend, row);
 	}
 //サブ画面クローズ
 	closeDaiolog = () => {
@@ -939,7 +891,7 @@ sentReportStatus(code) {
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag2} dialogClassName="modal-purchasingManagersSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
-						<SalesAppend customer={this.state.selectedTargetEmployee} allState={this}/>
+						<SendRepotAppend customer={this.state.selectedCustomer} allState={this}/>
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
@@ -1122,9 +1074,9 @@ sentReportStatus(code) {
 							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='14%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='targetEmployee' dataFormat={this.CellFormatter2.bind(this)}>対象社員</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='approvalStatus'dataFormat={this.approvalStatus.bind(this)}>承認済み</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='sentReportStatus'>送信済み</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='sendRepotsAppend' dataFormat={this.CellFormatter2.bind(this)}>対象社員</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='approvalStatus'dataFormat={this.Judgment.bind(this)}>承認済み</TableHeaderColumn>
+							<TableHeaderColumn width='12%' dataField='sentReportStatus'dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
 							<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
