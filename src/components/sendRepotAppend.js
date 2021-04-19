@@ -254,7 +254,6 @@ handleRowSelect = (row, isSelected, e) => {
 				<div >
 					<BootstrapTable
 						ref="salesPersonTable"
-
 						data={this.state.allSalesPersons}
 						pagination={true}
 						options={options}
