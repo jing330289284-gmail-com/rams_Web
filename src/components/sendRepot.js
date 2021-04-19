@@ -891,7 +891,7 @@ Judgment(code) {
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag2} dialogClassName="modal-purchasingManagersSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
-						<SendRepotAppend customer={this.state.selectedTargetEmployee} allState={this}/>
+						<SendRepotAppend customer={this.state.selectedCustomer} allState={this}/>
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
