@@ -553,6 +553,24 @@ class employeeUpdateNew extends React.Component {
 			passwordSetInfo: passwordSetTokuro,
 			showpasswordSetModalFlag: false,
 		})
+		const formData = new FormData();
+		const emp = {
+				employeeNo: this.state.employeeNo,// 社員番号
+				password: publicUtils.nullToEmpty(passwordSetTokuro)// pw設定
+		}
+		formData.append('emp', JSON.stringify(emp))
+		axios.post(this.state.serverIP + "employee/updatePassWord", formData)
+		.then(response => {
+			if (response.data.errorsMessage != null) {
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+			} else {
+				this.setState({ "myToastShow": true, "errorsMessageShow": false });
+				setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+			}
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
 	/*
 	 * ポップアップpb情報の取得

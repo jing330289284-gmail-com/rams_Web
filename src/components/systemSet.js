@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as publicUtils from './utils/publicUtils.js';
-import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl,Image } from 'react-bootstrap';
 import $ from 'jquery';
 import axios from 'axios'
 import MyToast from './myToast';
@@ -188,6 +188,34 @@ class systemSet extends Component {
 			})
 		}
 	}
+	
+	/**
+	 * ファイルを処理
+	 * 
+	 * @param {*}
+	 *            event
+	 * @param {*}
+	 *            name
+	 */
+	addFile = (event, name) => {
+		$("#" + name).click();
+	}
+	
+	changeFile = (event, name) => {
+		var filePath = event.target.value;
+		var arr = filePath.split('\\');
+		var fileName = arr[arr.length - 1];
+		if (name === "image") {
+			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
+				return
+			};
+			var reader = new FileReader();
+			reader.readAsDataURL(publicUtils.nullToEmpty($('#image').get(0).files[0]));
+			reader.onload = function() {
+				document.getElementById("imageId").src = reader.result;
+			};
+		}
+	}
 
 	render() {
 		const { master, errorsMessageValue, masterStatus, bankName, bankInfo,companyName,backgroundColor,EmpNoHead } = this.state;
@@ -205,6 +233,7 @@ class systemSet extends Component {
 						<h2>システム設定</h2>
 					</Col>
 				</Row>
+				<Row></Row>
 				<Form id="masterInsertForm">
 					<Row>
 						<Col sm={6}>
@@ -213,6 +242,12 @@ class systemSet extends Component {
 									<InputGroup.Text id="inputGroup-sizing-sm">会社ロゴ</InputGroup.Text>
 								</InputGroup.Prepend>
 							</InputGroup>
+							<InputGroup size="sm" className="mb-3">
+							<InputGroup.Prepend>
+								<Image src={this.state.image} id="imageId" rounded width="220" height="240" onClick={(event) => this.addFile(event, 'image')} />
+							</InputGroup.Prepend>
+							<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
+						</InputGroup>
 						</Col>
 						<Col sm={6}>
 						<InputGroup size="sm" className="mb-3">

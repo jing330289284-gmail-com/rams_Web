@@ -50,7 +50,7 @@ class sendLettersConfirm extends React.Component {
 		japaneseLevelName: '',
 		beginMonth: '',
 		salesProgressCode: '',
-		remark: '',
+		remark1: '',
 		myToastShow: false,// 状態ダイアログ
 		employeeNo: this.props.empNo,
 		genderStatus: '',
@@ -327,8 +327,8 @@ class sendLettersConfirm extends React.Component {
 					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
 					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null?"":`<br	/>
 					【稼働開始】：`) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null ? "":result.data[0].theMonthOfStartWork) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
-					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark === null || result.data[0].remark === ""?"":`<br	/>
-					【備　　考】：`)+ (result.data[0].remark === null || result.data[0].remark === ""?"":result.data[0].remark)		
+					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark1 === null || result.data[0].remark1 === ""?"":`<br	/>
+					【備　　考】：`)+ (result.data[0].remark1 === null || result.data[0].remark1 === ""?"":result.data[0].remark1)		
 					+ `<br/>`
 					clearTimeout(time)
 			        time=setTimeout(()=>{
@@ -612,7 +612,7 @@ class sendLettersConfirm extends React.Component {
 						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
 						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
-						remark: result.data[0].remark,
+						remark1: result.data[0].remark1,
 						initAge: result.data[0].age,
 						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 						initNearestStation: result.data[0].nearestStation,
@@ -625,7 +625,7 @@ class sendLettersConfirm extends React.Component {
 						initDevelopLanguageCode9: result.data[0].developLanguage4,
 						initDevelopLanguageCode10: result.data[0].developLanguage5,
 						initUnitPrice: result.data[0].unitPrice,
-						initRemark: result.data[0].remark,
+						initRemark: result.data[0].remark1,
 						resumeInfoList: result.data[0].resumeInfoList,
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
@@ -1233,8 +1233,8 @@ class sendLettersConfirm extends React.Component {
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
 【営業状況】：`)+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
-(this.state.remark !== "" && this.state.remark !== null?`
-【備　　考】：`:"")+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "");
+(this.state.remark1 !== "" && this.state.remark1 !== null?`
+【備　　考】：`:"")+ (this.state.remark1 !== "" && this.state.remark1 !== null ? this.state.remark1 : "");
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>

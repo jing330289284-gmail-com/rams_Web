@@ -789,12 +789,12 @@ class CustomerInfo extends Component {
                                         autoComplete="off"
                                         locale="pt-BR"
                                         id={actionType === "detail" ? "customerInfoDatePickerReadOnly-establishmentDate" : "customerInfoDatePicker-establishmentDate"}
-                                        yearDropdownItemNumber={15}
-                                        scrollableYearDropdown
-                                        showMonthYearPicker
+                                        className="form-control form-control-sm"
+                                        yearDropdownItemNumber={100}
+    									scrollableYearDropdown
+    									showYearDropdown
                                         showFullMonthYearPicker
                                         showDisabledMonthNavigation
-                                        className="form-control form-control-sm"
                                         name="establishmentDate"
                                         locale="ja"
                                         disabled={actionType === "detail" ? true : false}

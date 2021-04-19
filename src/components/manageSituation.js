@@ -41,7 +41,8 @@ class manageSituation extends React.Component {
 		interviewCustomer2: '',　// 面接2客様
 		hopeLowestPrice: '',　// 希望単価min
 		hopeHighestPrice: '',　// 希望単価max
-		remark: '',　// 備考
+		remark1: '',　// 備考
+		remark2: '',　// 備考
 		salesSituationLists: [],// 明細
 		readFlag: true,// readonlyflag
 		style: {
@@ -215,7 +216,8 @@ class manageSituation extends React.Component {
 						interviewCustomer2: '',　// 面接2客様
 						hopeLowestPrice: '',　// 希望単価min
 						hopeHighestPrice: '',　// 希望単価max
-						remark: '',　// 備考
+						remark1: '',　// 備考
+						remark2: '',　// 備考
 						salesPriorityStatus: '',
 						style: {
 							"backgroundColor": ""
@@ -254,7 +256,7 @@ class manageSituation extends React.Component {
 				}
 			})
 			.catch(function (error) {
-				//alert("ERR");
+				// alert("ERR");
 			});
 	}
 
@@ -355,6 +357,8 @@ class manageSituation extends React.Component {
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 			} else {
 				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
+				this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
+				setTimeout(() => this.setState({ myToastShow: false }), 3000);
 			}
 		}).catch((error) => {
 			console.error("Error - " + error);
@@ -575,7 +579,8 @@ class manageSituation extends React.Component {
 				hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
 				salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
 				salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
-				remark: row.remark === null ? '' : row.remark,
+				remark1: row.remark1 === null ? '' : row.remark1,
+				remark2: row.remark2 === null ? '' : row.remark2,
 				editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
 				updateBtnflag: isSelected,
@@ -607,7 +612,8 @@ class manageSituation extends React.Component {
 				hopeLowestPrice: '',
 				hopeHighestPrice: '',
 				salesPriorityStatus: '',
-				remark: '',
+				remark1: '',
+				remark2: '',
 				editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
 				updateBtnflag: isSelected,
 				readFlag: true,
@@ -884,13 +890,48 @@ class manageSituation extends React.Component {
 						<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
 						<Row>
 							<Col sm={6}>
-								<Form.Label style={{ "color": "#FFD700" }}>面談情報1</Form.Label>
+								<Form.Label style={{ "color": "#FFD700" }}>営業情報設定</Form.Label>
 							</Col>
 							<Col sm={6}>
-								<Form.Label style={{ "color": "#FFD700" }}>面談情報2</Form.Label>
+								<Form.Label style={{ "color": "#FFD700" }}>面談情報</Form.Label>
 							</Col>
 						</Row>
 						<Row>
+							<Col sm={4}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">希望単価</InputGroup.Text>
+								</InputGroup.Prepend>
+								<FormControl value={this.state.hopeLowestPrice} autoComplete="off" name="hopeLowestPrice"
+									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
+								<InputGroup.Append>
+									<InputGroup.Text id="basic-addon1">万円</InputGroup.Text>
+								</InputGroup.Append>
+								<font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>～</font>
+								<FormControl value={this.state.hopeHighestPrice} autoComplete="off" name="hopeHighestPrice"
+									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
+								<InputGroup.Append>
+									<InputGroup.Text id="basic-addon2">万円</InputGroup.Text>
+								</InputGroup.Append>
+							</InputGroup>
+							</Col>
+							<Col sm={2}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">優先度</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Form.Control as="select" size="sm"
+										onChange={this.valueChange}
+										name="salesPriorityStatus" value={this.state.salesPriorityStatus}
+										autoComplete="off" disabled={this.state.readFlag}>
+										{this.state.salesPriorityStatuss.map(date =>
+											<option key={date.code} value={date.code}>
+												{date.name}
+											</option>
+										)}
+									</Form.Control>
+								</InputGroup>
+							</Col>
 							<Col sm={2}>
 								<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
 									<InputGroup.Prepend>
@@ -956,117 +997,88 @@ class manageSituation extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
-									</InputGroup.Prepend>
-									<InputGroup.Append>
-										<DatePicker
-											selected={this.state.interviewDate2Show}
-											onChange={this.setinterviewDate2}
-											autoComplete="off"
-											locale="ja"
-											showTimeSelect
-											className="form-control form-control-sm"
-											dateFormat="MM/dd HH:mm"
-											minDate={new Date()}
-											id={this.state.readFlag ? 'datePickerReadonly' : 'datePicker2'}
-											readOnly={this.state.readFlag}
-										/>
-									</InputGroup.Append>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3" >
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.readFlag}
-										name="stationCode2"
-										options={this.state.getstations}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.getstations.find(v => v.code === this.state.stationCode2) || ""}
-										onSelect={(event) => this.handleTag(event, 'station')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="stationCode2" className="auto form-control Autocompletestyle-situation"
-												/>
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Autocomplete
-										disabled={this.state.readFlag}
-										name="interviewCustomer2"
-										options={this.state.customers}
-										getOptionLabel={(option) => option.name ? option.name : ""}
-										value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || ""}
-										onSelect={(event) => this.handleTag(event, 'interviewCustomer')}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps}
-													id="interviewCustomer2" className="auto form-control Autocompletestyle-situation"
-												/>
-											</div>
-										)}
-									/>
-								</InputGroup>
-							</Col>
+							
 						</Row>
 						<Row>
-							<Col sm={4}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">希望単価</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.hopeLowestPrice} autoComplete="off" name="hopeLowestPrice"
-										style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
-									<InputGroup.Append>
-										<InputGroup.Text id="basic-addon1">万円</InputGroup.Text>
-									</InputGroup.Append>
-									<font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>～</font>
-									<FormControl value={this.state.hopeHighestPrice} autoComplete="off" name="hopeHighestPrice"
-										style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
-									<InputGroup.Append>
-										<InputGroup.Text id="basic-addon2">万円</InputGroup.Text>
-									</InputGroup.Append>
-								</InputGroup>
-							</Col>
-							<Col sm={2}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">優先度</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="salesPriorityStatus" value={this.state.salesPriorityStatus}
-										autoComplete="off" disabled={this.state.readFlag}>
-										{this.state.salesPriorityStatuss.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
-								</InputGroup>
-							</Col>
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl value={this.state.remark} autoComplete="off" name="remark"
-										onChange={this.valueChange} size="sm" maxLength="50" readOnly={this.state.readFlag} />
+									<FormControl value={this.state.remark1} autoComplete="off" name="remark1"
+										onChange={this.valueChange} size="sm" maxLength="30" readOnly={this.state.readFlag} />
+									<font className="site-mark"></font>
+									<FormControl value={this.state.remark2} autoComplete="off" name="remark2"
+									onChange={this.valueChange} size="sm" maxLength="30" readOnly={this.state.readFlag} />
 								</InputGroup>
 							</Col>
+							
+							<Col sm={2}>
+							<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
+								</InputGroup.Prepend>
+								<InputGroup.Append>
+									<DatePicker
+										selected={this.state.interviewDate2Show}
+										onChange={this.setinterviewDate2}
+										autoComplete="off"
+										locale="ja"
+										showTimeSelect
+										className="form-control form-control-sm"
+										dateFormat="MM/dd HH:mm"
+										minDate={new Date()}
+										id={this.state.readFlag ? 'datePickerReadonly' : 'datePicker2'}
+										readOnly={this.state.readFlag}
+									/>
+								</InputGroup.Append>
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3" >
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									disabled={this.state.readFlag}
+									name="stationCode2"
+									options={this.state.getstations}
+									getOptionLabel={(option) => option.name ? option.name : ""}
+									value={this.state.getstations.find(v => v.code === this.state.stationCode2) || ""}
+									onSelect={(event) => this.handleTag(event, 'station')}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="stationCode2" className="auto form-control Autocompletestyle-situation"
+											/>
+										</div>
+									)}
+								/>
+							</InputGroup>
+						</Col>
+						<Col sm={2}>
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									disabled={this.state.readFlag}
+									name="interviewCustomer2"
+									options={this.state.customers}
+									getOptionLabel={(option) => option.name ? option.name : ""}
+									value={this.state.customers.find(v => v.code === this.state.interviewCustomer2) || ""}
+									onSelect={(event) => this.handleTag(event, 'interviewCustomer')}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps}
+												id="interviewCustomer2" className="auto form-control Autocompletestyle-situation"
+											/>
+										</div>
+									)}
+								/>
+							</InputGroup>
+						</Col>
+							
 						</Row>
 					</Form.Group>
 					<div>
@@ -1118,7 +1130,8 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn dataField='interviewCustomer2' hidden={true}>面接2客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='hopeLowestPrice' hidden={true}>希望単価min</TableHeaderColumn>
 								<TableHeaderColumn dataField='hopeHighestPrice' hidden={true}>希望単価max</TableHeaderColumn>
-								<TableHeaderColumn dataField='remark' hidden={true}>備考</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark1' hidden={true}>備考1</TableHeaderColumn>
+								<TableHeaderColumn dataField='remark2' hidden={true}>備考2</TableHeaderColumn>
 								<TableHeaderColumn dataField='salesPriorityStatus' hidden={true}>優先度</TableHeaderColumn>
 								<TableHeaderColumn dataField='admissionStartDate' hidden={true}>開始時間</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>

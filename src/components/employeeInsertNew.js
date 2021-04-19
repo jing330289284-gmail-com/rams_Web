@@ -747,7 +747,7 @@ class employeeInsertNew extends React.Component {
 									onChange={this.inactiveBirthday}
 									autoComplete="off"
 									locale="ja"
-									yearDropdownItemNumber={25}
+									yearDropdownItemNumber={100}
 									scrollableYearDropdown
 									maxDate={new Date()}
 									id="datePicker"
