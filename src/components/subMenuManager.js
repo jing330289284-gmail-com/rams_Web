@@ -61,6 +61,7 @@ class SubMenu extends Component {
 		this.state = {
 			serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],// 劉林涛
 																						// テスト
+			companyName: '',
 			nowDate: '',// 今の期日
 			authorityCode: '',
 		}
@@ -84,6 +85,7 @@ class SubMenu extends Component {
 				}
 			})
 	}
+	
 	/**
 	 * 画面の初期化
 	 */
@@ -91,11 +93,23 @@ class SubMenu extends Component {
 		var dateNow = new Date();
 		let month = dateNow.getMonth() + 1;
 		let day = dateNow.getDate();
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					companyName: response.data.companyName,
+					pic: response.data.companyLogo,
+					backgroundColor: response.data.backgroundColor,
+				})
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
+		
 		this.setState({
 			nowDate: (dateNow.getFullYear() + '年' + (month < 10 ? '0' + month : month) + '月' + (day < 10 ? '0' + day : day) + "日"),
 			click: "",
 		})
 	}
+	
 	logout = () => {
 		axios.post(this.state.serverIP + "subMenu/logout")
 			.then(resultMap => {
@@ -126,7 +140,7 @@ class SubMenu extends Component {
 			<div className="mainBody">
 				<Row style={{ "backgroundColor": "#FFFAF0" }}>
 					<Navbar inline>
-						<img className="titleImg" alt="title" src={title} /><a className="loginMark" inline>LYC株式会社</a>{" "}
+						<img className="titleImg" alt="title" src={this.state.pic} style={{ "width": "65px"}} /><a className="loginMark" inline>{this.state.companyName}</a>{" "}
 					</Navbar>
 					<div style={{ "marginTop": "2%", "marginLeft": "auto", }}>
 						<font className="loginPeople">{this.state.nowDate}{" "}<FontAwesomeIcon className="fa-fw" size="lg" icon={faUser} /><a id="kanriSha"></a></font>{" "}
@@ -316,7 +330,7 @@ class SubMenu extends Component {
 							</Col>
 						</Row>
 					</Col>
-					<Col sm={9} id="page">
+					<Col sm={9} id="page" style={{ "backgroundColor": this.state.backgroundColor }}>
 						<div key={this.props.location.key}>
 							<br />
 							<Router>

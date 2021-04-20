@@ -12,6 +12,7 @@ import store from './redux/store';
 import { Hidden } from '@material-ui/core';
 axios.defaults.withCredentials = true;
 
+
 // マスター登録
 class systemSet extends Component {
 
@@ -27,8 +28,6 @@ class systemSet extends Component {
 		errorsMessageShow: false,
 		flag: true,// 活性非活性flag
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		bankName: '',
-		branchName: '',
 	};
 
 	onchange = (event, values) => {
@@ -53,84 +52,38 @@ class systemSet extends Component {
 
 	// 页面加载
 	componentDidMount() {
-
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					companyName : response.data.companyName,
+					image: response.data.companyLogo,
+					empNoHead: response.data.empNoHead,
+				})
+				$("#myColor").val(response.data.backgroundColor);
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
 
 	/**
-	 * 登録ボタン
+	 * 更新ボタン
 	 */
-	toroku = () => {
-		$("#toroku").attr({"disabled":"disabled"});
-		// setTimeout($("#toroku").removeAttr("disabled"),2000)
-		if (this.state.master != '支店マスター' && this.state.master != 'TOPお客様' ) {
-			var masterModel = {};
-			// 画面输入信息取得
-			var formArray = $("#masterInsertForm").serializeArray();
-			$.each(formArray, function (i, item) {
-				masterModel[item.name] = item.value;
-			});
-			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-			axios.post(this.state.serverIP + "masterInsert/toroku", masterModel)
-				.then(result => {
-					if (result.data.errorsMessage != null) {
-						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
-					} else {
-						this.setState({ "myToastShow": true, "errorsMessageShow": false });
-						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						this.refreshReducer();
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
-		} else if(this.state.master === '支店マスター') {
-			$("#toroku").attr({"disabled":"disabled"});
-			const branchDetails = {
-				bankBranchCode: this.state.branchCode,
-				bankBranchName: this.state.branchName,
-				bankCode: this.state.bankName,
-			};
-			axios.post(this.state.serverIP + "branchInsert/toroku", branchDetails)
-				.then(result => {
-					if (result.data.errorsMessage != null) {
-						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
-					} else {
-						this.setState({ "myToastShow": true, "errorsMessageShow": false });
-						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						this.refreshReducer();
-						this.setState({branchCode:'',
-										branchName:''})
-					$("#toroku").removeAttr("disabled");
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
-		}else if(this.state.master === 'TOPお客様') {
-			$("#toroku").attr({"disabled":"disabled"});
-			const customerDetails = {
-				topCustomerName: this.state.topCustomerName,
-				topCustomerAbbreviation: this.state.topCustomerAbbreviation,
-				url: this.state.url,
-			};
-			axios.post(this.state.serverIP + "customerInsert/toroku", customerDetails)
-				.then(result => {
-					if (result.data.errorsMessage != null) {
-						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
-					} else {
-						this.setState({ "myToastShow": true, "errorsMessageShow": false });
-						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						this.refreshReducer();
-						this.setState({topCustomerName:'',
-							topCustomerAbbreviation:'',
-							url:''})
-					$("#toroku").removeAttr("disabled");
-					}
-				}).catch((error) => {
-					console.error("Error - " + error);
-				});
+	update = () => {
+		let color = $("#myColor").val();
+		let obj = document.getElementById("imageId");
+		let imgSrc = obj.getAttribute("src");
+		const companyDate = {
+				companyName: this.state.companyName,// 会社名前
+				companyLogo: imgSrc,// logo
+				backgroundColor: color,// 背景色
+				empNoHead: this.state.empNoHead,// 社員番号の頭
 		}
+		axios.post(this.state.serverIP + "masterUpdate/updateSystem", companyDate)
+		.then(result => {
+			window.location.reload();
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
 	
 	refreshReducer = () =>{
@@ -171,6 +124,7 @@ class systemSet extends Component {
 			[event.target.name]: event.target.value,
 		})
 	}
+	
 	}
 	vNumberChange = (e, key) => {
 		const { value } = e.target;
@@ -218,7 +172,7 @@ class systemSet extends Component {
 	}
 
 	render() {
-		const { master, errorsMessageValue, masterStatus, bankName, bankInfo,companyName,backgroundColor,EmpNoHead } = this.state;
+		const { master, errorsMessageValue, masterStatus, bankName, bankInfo,companyName,backgroundColor,empNoHead } = this.state;
 
 		return (
 			<div className="container col-7">
@@ -244,7 +198,7 @@ class systemSet extends Component {
 							</InputGroup>
 							<InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
-								<Image src={this.state.image} id="imageId" rounded width="220" height="240" onClick={(event) => this.addFile(event, 'image')} />
+								<Image src={this.state.image} id="imageId" rounded width="260" height="260" onClick={(event) => this.addFile(event, 'image')} />
 							</InputGroup.Prepend>
 							<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
 						</InputGroup>
@@ -262,20 +216,19 @@ class systemSet extends Component {
 						<InputGroup.Prepend>
 							<InputGroup.Text id="inputGroup-sizing-sm">背景色</InputGroup.Text>
 						</InputGroup.Prepend>
-						<Form.Control type="email" placeholder="背景色" value={backgroundColor} autoComplete="off"
-							onChange={this.valueChange} size="sm" name="backgroundColor" />
-					</InputGroup>
+						<input type="color" id="myColor" />
+					    </InputGroup>
 					<InputGroup size="sm" className="mb-3">
 					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">社員番号の頭</InputGroup.Text>
+						<InputGroup.Text id="sixKanji">社員番号の頭</InputGroup.Text>
 					</InputGroup.Prepend>
-					<Form.Control type="email" placeholder="社員番号の頭" value={EmpNoHead} autoComplete="off"
-						onChange={this.valueChange} size="sm" name="EmpNoHead" />
+					<Form.Control type="email" placeholder="社員番号の頭" value={empNoHead} autoComplete="off"
+						onChange={this.valueChange} size="sm" name="empNoHead" />
 				</InputGroup>
 					</Col>
 					</Row>
 					<div style={{ "textAlign": "center" }}>
-					<Button size="sm" variant="info" type="button">
+					<Button size="sm" variant="info" type="button" onClick={this.update}>
 						<FontAwesomeIcon  icon={faEdit} /> 更新
 						</Button>
 						</div>

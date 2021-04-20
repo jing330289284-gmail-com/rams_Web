@@ -24,12 +24,22 @@ class Login extends Component {
 			time: 60,
 			errorsMessageShow: false,
 			errorsMessageValue: '',
+			pic: '',
 		}
 	};
 
 	componentWillMount() {
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					companyName : response.data.companyName,
+					pic: response.data.companyLogo,
+				})
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});	
 		axios.post(this.state.serverIP + "login/init")
 			.then(resultMap => {
 				if (resultMap.data) {
@@ -110,7 +120,7 @@ class Login extends Component {
 						<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 					</div>
 					<div style={{ "textAlign": "center" }}>
-						<img className="mb-4" alt="title" src={title} />{"   "}<a className="loginMark">LYC株式会社</a>
+						<img className="mb-4" alt="title" src={this.state.pic} style={{ "width": "65px"}} />{"   "}<a className="loginMark">{this.state.companyName}</a>
 					</div>
 					<Form className="form-signin" id="loginForm">
 						<Form.Group controlId="formBasicEmail" >

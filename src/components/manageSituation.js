@@ -890,10 +890,10 @@ class manageSituation extends React.Component {
 						<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
 						<Row>
 							<Col sm={6}>
-								<Form.Label style={{ "color": "#FFD700" }}>営業情報設定</Form.Label>
+								<Form.Label style={{ "color": "#000000" }}>営業情報設定</Form.Label>
 							</Col>
 							<Col sm={6}>
-								<Form.Label style={{ "color": "#FFD700" }}>面談情報</Form.Label>
+								<Form.Label style={{ "color": "#000000" }}>面談情報</Form.Label>
 							</Col>
 						</Row>
 						<Row>

@@ -22,11 +22,21 @@ class Login2 extends Component {
 		myToastShow: false,
 		errorsMessageShow: false,
 		errorsMessageValue: '',
+		pic: '',
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
 	}
 	componentWillMount() {
 		$("#sendVerificationCode").attr("disabled", true);
 		$("#login").attr("disabled", true);
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					companyName : response.data.companyName,
+					pic: response.data.companyLogo,
+				})
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});	
 		axios.post(this.state.serverIP + "login2/init")
 			.then(resultMap => {
 				if (resultMap.data) {
@@ -109,7 +119,7 @@ class Login2 extends Component {
 						<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 					</div>
 					<div style={{ "textAlign": "center" }}>
-						<img className="mb-4" alt="title" src={title} />{"   "}<a className="loginMark">LYC株式会社</a>
+						<img className="mb-4" alt="title" src={this.state.pic} style={{ "width": "65px"}} />{"   "}<a className="loginMark">{this.state.companyName}</a>
 					</div>
 					<Form className="form-signin" id="loginForm">
 						<Form.Group>
