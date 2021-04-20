@@ -7,18 +7,20 @@ import { faSave, faListOl } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 /** 
-*営業送信画面お客営業追加
+*報告書送信画面対象社員
  */
 class sendRepotAppend extends Component {
-
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+		positions: store.getState().dropDown[14],//駅
+		employeeStatusList: store.getState().dropDown[4],//社員区分
+		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],//承認済み 送信済み
 		currentPage: 1,//　該当page番号
 		allSalesPersons: [],
 		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
-		selectetPersonsName: this.props.customer.sendRepotAppend !== "" && this.props.customer.sendRepotAppend !== null ? this.props.customer.sendRepotAppend.split(',') : [],
+		//selectetEmployeesNo: this.props.customer.sendRepotAppend !== "" && this.props.customer.sendRepotAppend !== null ? this.props.customer.sendRepotAppend.split(',') : [],
 		allSelectedFlag: false,
-		allSalesPersonsName: [],
+		allTargetEmployeesNo: [],
 		allRowId: [],
 		parentSelectedInfo: this.props.customer,
 		appendPersonMsg: {
@@ -27,7 +29,6 @@ class sendRepotAppend extends Component {
 			purchasingManagersMail2: '',
 		}
 	}
-
 	constructor(props) {
 		super(props);
 		this.state = this.initialState;//初期化
@@ -45,62 +46,43 @@ class sendRepotAppend extends Component {
 		this.refs.salesPersonTable.store.selected = str;
 	}
 	getTargetEmployees = (customerNo) => {
-		axios.post(this.state.serverIP + "sendRepot/getTargetEmployees", { customerNo: customerNo })
-			.then(result => {
-				let salesPersonsNameArray = new Array([]);
-				let salesRowIdArray = new Array([]);
-				for (let i in result.data) {
-					salesPersonsNameArray.push(result.data[i].responsiblePerson);
-					salesRowIdArray.push(result.data[i].rowId);
-				}
-				this.setState({
-					allSalesPersons: result.data,
-					allSalesPersonsName: salesPersonsNameArray,
-					//allMailsName:mailsNameArray,
-					allRowId: salesRowIdArray
-				});
-			})
-			.catch(function (err) {
-				alert(err)
-			})
-	}
-	// customerDepartmentNameFormat
-	customerDepartmentNameFormat = (cell) => {
-		let customerDepartmentNameDropTem = this.props.depart;
-		for (var i in customerDepartmentNameDropTem) {
-			if (cell === customerDepartmentNameDropTem[i].code) {
-				return customerDepartmentNameDropTem[i].name;
+		axios.post(this.state.serverIP + "sendRepot/getTargetEmployees",{customerNo: customerNo})
+		.then(result => {
+			let targetEmployeeNoArray = new Array([]);
+			let rowIdArray = new Array([]);
+			for (let i in result.data) {
+				targetEmployeeNoArray.push(result.data[i].employeeNo);
+				rowIdArray.push(result.data[i].rowId);
 			}
-		}
-	}
-	// positionNameFormat
-	positionNameFormat = (cell) => {
-		let positionsTem = this.props.positions;
-		for (var i in positionsTem) {
-			if (cell === positionsTem[i].code) {
-				return positionsTem[i].name;
-			}
-		}
+			this.setState({
+				allSalesPersons: result.data,
+				allTargetEmployeesNo: targetEmployeeNoArray,
+				allRowId: rowIdArray
+			});
+		})
+		.catch(function (err) {
+			alert(err)
+		})
 	}
 handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
-				selectetPersonsName: this.state.selectetPersonsName.concat([row.responsiblePerson]),
+				selectetEmployeesNo: this.state.selectetEmployeesNo.concat([row.responsiblePerson]),
 				appendPersonMsg: {
-			purchasingManagers2: row.responsiblePerson,
-			positionCode2: row.positionCode,
-			purchasingManagersMail2: row.customerDepartmentMail,
-		}
+					purchasingManagers2: row.responsiblePerson,
+					positionCode2: row.positionCode,
+					purchasingManagersMail2: row.customerDepartmentMail,
+				}
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === String(row.rowId));
 			this.state.selectetRowIds.splice(index, 1);
-			index = this.state.selectetPersonsName.findIndex(item => item === row.responsiblePerson);
-			this.state.selectetPersonsName.splice(index, 1);
+			index = this.state.selectetEmployeesNo.findIndex(item => item === row.responsiblePerson);
+			this.state.selectetEmployeesNo.splice(index, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
-				selectetPersonsName: this.state.selectetPersonsName,
+				selectetEmployeesNo: this.state.selectetEmployeesNo,
 			})
 		}
 		if (this.state.allSelectedFlag) {
@@ -110,55 +92,20 @@ handleRowSelect = (row, isSelected, e) => {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
-				selectetPersonsName: [],
+				selectetEmployeesNo: [],
 			});
 		}
 	}
-	// handleRowSelect = (row, isSelected) => {
-	// 	if (this.state.allSelectedFlag) {
-	// 		this.refs.salesPersonTable.setState({
-	// 			selectedRowKeys: [],
-	// 		});
-	// 		this.setState({
-	// 			allSelectedFlag: !this.state.allSelectedFlag,
-	// 			selectetRowIds: [],
-	// 			selectetRowMails: [],
-	// 		});
-	// 	}
-	// 	if (isSelected) {
-	// 		this.setState({
-	// 			selectetRowIds: this.state.selectetRowIds.concat([row.responsiblePerson]),
-	// 			selectetRowMails: this.state.selectetRowMails.concat([row.customerDepartmentMail]),
-	// 			appendPersonMsg: {
-	// 				purchasingManagers2: row.responsiblePerson,
-	// 				positionCode2: row.positionCode,
-	// 				purchasingManagersMail2: row.customerDepartmentMail,
-	// 			}
-	// 		})
-	// 	} else {
-	// 		let index = this.state.selectetRowIds.findIndex(item => item === row.responsiblePerson);
-	// 		let index2 = this.state.selectetRowMails.findIndex(item => item === row.customerDepartmentMail);
-	// 		this.state.selectetRowIds.splice(index, 1);
-	// 		this.state.selectetRowMails.splice(index2, 1);
-	// 		this.setState({
-	// 			selectetRowIds: this.state.selectetRowIds,
-	// 			selectetRowMails: this.state.selectetRowMails,
-	// 		})
-	// 	}
-	// }
-
 	// 全て選択ボタン事件
 	selectAllLists = () => {
 		this.refs.salesPersonTable.store.selected = [];
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
-				selectedRowKeys: this.state.allSalesPersonsName,
-				//selectetRowMails: this.state.allMailsName,
+				selectedRowKeys: this.state.allTargetEmployeesNo,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
-				selectetRowIds: this.state.allSalesPersonsName,
-				selectetRowMails: this.state.allMailsName,
+				selectetRowIds: this.state.allTargetEmployeesNo,
 			})
 		} else {
 			this.refs.salesPersonTable.setState({
@@ -171,18 +118,17 @@ handleRowSelect = (row, isSelected, e) => {
 			})
 		}
 	}
-
 	salesSelected = () => {
-		let salesPersons = this.state.selectetPersonsName.join(",");
+		let salesPersons = this.state.selectetEmployeesNo.join(",");
 		this.state.parentSelectedInfo.sendRepotAppend = salesPersons;
 		let salesRowsId = this.state.selectetRowIds.join(",");
 		this.state.parentSelectedInfo.test = salesRowsId;
 		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
-		let purchasingManagersOthers = this.state.selectetPersonsName;
+		let purchasingManagersOthers = this.state.selectetEmployeesNo;
 		purchasingManagersOthers.pop();
 		this.state.appendPersonMsg.purchasingManagersOthers = salesPersons;
 		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
-			axios.post(this.state.serverIP + "salesSendLetters/customerSendMailStorageListUpdate", 
+			axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", 
 					{
 						storageListName:this.props.customer.storageListName,
 						customerNo:this.props.customer.customerNo,
@@ -190,7 +136,6 @@ handleRowSelect = (row, isSelected, e) => {
 						departmentCodeList:salesPersons,
 					})
 			.then(() => {
-					
 				})
 				.catch(function (err) {
 					alert(err)
@@ -198,8 +143,31 @@ handleRowSelect = (row, isSelected, e) => {
 		}
 		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
 	}
+	positionsFormat = (cell) => {
+		let positionStatus = this.state.positions;
+		for (var i in positionStatus) {
+			if (cell === positionStatus[i].code) {
+				return positionStatus[i].name;
+			}
+		}
+	}
+	employeeStatusFormat = (cell) => {
+		let employeeStatus = this.state.employeeStatusList;
+		for (var i in employeeStatus) {
+			if (cell === employeeStatus[i].code) {
+				return employeeStatus[i].name;
+			}
+		}
+	}
+	Judgment(code) {
+   		let judgmenStatuss = this.state.judgmentlist;
+        for (var i in judgmenStatuss) {
+            if (code === judgmenStatuss[i].code) {
+                return judgmenStatuss[i].name;
+            }
+        }
+    };
 	render() {
-
 		const selectRow = {
 			mode: 'checkbox',
 			bgColor: 'pink',
@@ -208,7 +176,6 @@ handleRowSelect = (row, isSelected, e) => {
 			clickToExpand: true,
 			onSelect: this.handleRowSelect,
 		};
-
 		const options = {
 			onPageChange: page => {
 				this.setState({ currentPage: page });
@@ -230,7 +197,7 @@ handleRowSelect = (row, isSelected, e) => {
 			<div >
 				<Row inline="true">
 					<Col className="text-center">
-						<h2>部門担当者選択</h2>
+						<h2>対象社員</h2>
 					</Col>
 				</Row>
 				<Form >
@@ -259,10 +226,12 @@ handleRowSelect = (row, isSelected, e) => {
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
 						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false} isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='responsiblePerson' >名前</TableHeaderColumn>
-						<TableHeaderColumn width='20%' dataField='customerDepartmentMail' >メール</TableHeaderColumn>
+						<TableHeaderColumn width='11%' dataField='employeeName'>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='employeeStatus' dataFormat={this.employeeStatusFormat} >所属</TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='stationCode'dataFormat={this.positionsFormat}>現場</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='approvalStatus'dataFormat={this.Judgment.bind(this)} >承認済み</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='sentReportStatus'dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
+						<TableHeaderColumn width='11%' dataField='employeeNo' hidden></TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 				<div>
