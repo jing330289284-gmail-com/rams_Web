@@ -12,21 +12,19 @@ axios.defaults.withCredentials = true;
 class sendRepotAppend extends Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		positions: store.getState().dropDown[14],//駅
-		employeeStatusList: store.getState().dropDown[4],//社員区分
+		
 		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],//承認済み 送信済み
 		currentPage: 1,//　該当page番号
-		allSalesPersons: [],
+		allEmployee: [],
 		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
-		//selectetEmployeesNo: this.props.customer.sendRepotAppend !== "" && this.props.customer.sendRepotAppend !== null ? this.props.customer.sendRepotAppend.split(',') : [],
+		selectetemployeeNo:  this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
 		allSelectedFlag: false,
-		allTargetEmployeesNo: [],
+		allTargetemployeeNo: [],
 		allRowId: [],
 		parentSelectedInfo: this.props.customer,
-		appendPersonMsg: {
-			purchasingManagers2: '',
-			positionCode2: '',
-			purchasingManagersMail2: '',
+		appendEmployeeMsg: {
+			employeeNo2: '',
+			employeeName2: '',
 		}
 	}
 	constructor(props) {
@@ -55,8 +53,8 @@ class sendRepotAppend extends Component {
 				rowIdArray.push(result.data[i].rowId);
 			}
 			this.setState({
-				allSalesPersons: result.data,
-				allTargetEmployeesNo: targetEmployeeNoArray,
+				allEmployee: result.data,
+				allTargetemployeeNo: targetEmployeeNoArray,
 				allRowId: rowIdArray
 			});
 		})
@@ -68,21 +66,20 @@ handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
-				selectetEmployeesNo: this.state.selectetEmployeesNo.concat([row.responsiblePerson]),
-				appendPersonMsg: {
-					purchasingManagers2: row.responsiblePerson,
-					positionCode2: row.positionCode,
-					purchasingManagersMail2: row.customerDepartmentMail,
+				selectetemployeeNo: this.state.selectetemployeeNo.concat([row.employeeNo]),
+				appendEmployeeMsg: {
+					employeeNo2: row.employeeNo,
+					employeeName2: row.employeeName,
 				}
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === String(row.rowId));
 			this.state.selectetRowIds.splice(index, 1);
-			index = this.state.selectetEmployeesNo.findIndex(item => item === row.responsiblePerson);
-			this.state.selectetEmployeesNo.splice(index, 1);
+			index = this.state.selectetemployeeNo.findIndex(item => item === row.employeeNo);
+			this.state.selectetemployeeNo.splice(index, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
-				selectetEmployeesNo: this.state.selectetEmployeesNo,
+				selectetemployeeNo: this.state.selectetemployeeNo,
 			})
 		}
 		if (this.state.allSelectedFlag) {
@@ -92,7 +89,7 @@ handleRowSelect = (row, isSelected, e) => {
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
-				selectetEmployeesNo: [],
+				selectetemployeeNo: [],
 			});
 		}
 	}
@@ -101,11 +98,11 @@ handleRowSelect = (row, isSelected, e) => {
 		this.refs.salesPersonTable.store.selected = [];
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
-				selectedRowKeys: this.state.allTargetEmployeesNo,
+				selectedRowKeys: this.state.allTargetemployeeNo,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
-				selectetRowIds: this.state.allTargetEmployeesNo,
+				selectetRowIds: this.state.allTargetemployeeNo,
 			})
 		} else {
 			this.refs.salesPersonTable.setState({
@@ -118,22 +115,21 @@ handleRowSelect = (row, isSelected, e) => {
 			})
 		}
 	}
-	salesSelected = () => {
-		let salesPersons = this.state.selectetEmployeesNo.join(",");
-		this.state.parentSelectedInfo.sendRepotAppend = salesPersons;
-		let salesRowsId = this.state.selectetRowIds.join(",");
-		this.state.parentSelectedInfo.test = salesRowsId;
-		this.state.parentSelectedInfo.mainChargeList = salesRowsId;
-		let purchasingManagersOthers = this.state.selectetEmployeesNo;
-		purchasingManagersOthers.pop();
-		this.state.appendPersonMsg.purchasingManagersOthers = salesPersons;
+	employeeSelected = () => {
+		let employeeNos = this.state.selectetemployeeNo.join(",");
+		this.state.parentSelectedInfo.sendRepotsAppend = employeeNos;
+		let selectetemployeeName = this.state.selectetemployeeName.join(",");
+		this.state.parentSelectedInfo.test = selectetemployeeName;
+		this.state.parentSelectedInfo.mainChargeList = selectetemployeeName;
+		let employeesOthers = this.state.selectetemployeeNo;
+		employeesOthers.pop();
+		this.state.appendEmployeeMsg.employeesOthers = employeeNos;
 		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
-			axios.post(this.state.serverIP + "sendRepot/salesPersonsListsUpdate", 
+			axios.post(this.state.serverIP + "sendRepot/targetEmployeeListsUpdate", 
 					{
 						storageListName:this.props.customer.storageListName,
 						customerNo:this.props.customer.customerNo,
-						mainChargeList:salesRowsId,
-						departmentCodeList:salesPersons,
+						candidateInChargeList:employeeNos,
 					})
 			.then(() => {
 				})
@@ -141,18 +137,18 @@ handleRowSelect = (row, isSelected, e) => {
 					alert(err)
 				})
 		}
-		this.props.allState.saveSalesPersons(this.state.parentSelectedInfo,this.state.appendPersonMsg);
+		this.props.allState.saveTargetEmployees(this.state.parentSelectedInfo,this.state.appendEmployeeMsg);
 	}
-	positionsFormat = (cell) => {
-		let positionStatus = this.state.positions;
-		for (var i in positionStatus) {
-			if (cell === positionStatus[i].code) {
-				return positionStatus[i].name;
+	stationsFormat = (cell) => {
+		let stationStatus = this.props.stations;
+		for (var i in stationStatus) {
+			if (cell === stationStatus[i].code) {
+				return stationStatus[i].name;
 			}
 		}
 	}
 	employeeStatusFormat = (cell) => {
-		let employeeStatus = this.state.employeeStatusList;
+		let employeeStatus = this.props.employeeStatusList;
 		for (var i in employeeStatus) {
 			if (cell === employeeStatus[i].code) {
 				return employeeStatus[i].name;
@@ -212,30 +208,30 @@ handleRowSelect = (row, isSelected, e) => {
 					<Row>
 						<Col sm={4}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
-								disabled={0 !== this.state.allSalesPersons.length ? false : true}><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
+								disabled={0 !== this.state.allEmployee.length ? false : true}><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
 					</Row>
 				</Form>
 				<div >
 					<BootstrapTable
 						ref="salesPersonTable"
-						data={this.state.allSalesPersons}
+						data={this.state.allEmployee}
 						pagination={true}
 						options={options}
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false} isKey>番号</TableHeaderColumn>
+						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
 						<TableHeaderColumn width='11%' dataField='employeeName'>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='9%' dataField='employeeStatus' dataFormat={this.employeeStatusFormat} >所属</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='stationCode'dataFormat={this.positionsFormat}>現場</TableHeaderColumn>
-						<TableHeaderColumn width='20%' dataField='approvalStatus'dataFormat={this.Judgment.bind(this)} >承認済み</TableHeaderColumn>
-						<TableHeaderColumn width='20%' dataField='sentReportStatus'dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='employeeNo' hidden></TableHeaderColumn>
+						<TableHeaderColumn width='9%' dataField='stationCode' dataFormat={this.stationsFormat}>現場</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='approvalStatus' dataFormat={this.Judgment.bind(this)} >承認済み</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='sentReportStatus' dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
+						<TableHeaderColumn width='11%' dataField='employeeNo' editable={false} isKey></TableHeaderColumn>
 					</BootstrapTable>
 				</div>
 				<div>
-					<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.salesSelected}>
+					<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.employeeSelected}>
 						<FontAwesomeIcon icon={faSave} /> {"確定"}</Button></div>
 				</div>
 			</div>
