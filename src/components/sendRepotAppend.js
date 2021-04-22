@@ -18,6 +18,7 @@ class sendRepotAppend extends Component {
 		allEmployee: [],
 		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
 		selectetemployeeNo:  this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
+		selectetemployeeName:  this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
 		allSelectedFlag: false,
 		allTargetemployeeNo: [],
 		allRowId: [],
@@ -67,6 +68,7 @@ handleRowSelect = (row, isSelected, e) => {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
 				selectetemployeeNo: this.state.selectetemployeeNo.concat([row.employeeNo]),
+				selectetemployeeName: this.state.selectetemployeeNo.concat([row.employeeNo]),
 				appendEmployeeMsg: {
 					employeeNo2: row.employeeNo,
 					employeeName2: row.employeeName,
@@ -129,7 +131,7 @@ handleRowSelect = (row, isSelected, e) => {
 					{
 						storageListName:this.props.customer.storageListName,
 						customerNo:this.props.customer.customerNo,
-						candidateInChargeList:employeeNos,
+						candidateInChargeList:employeeNos+selectetemployeeName,
 					})
 			.then(() => {
 				})
