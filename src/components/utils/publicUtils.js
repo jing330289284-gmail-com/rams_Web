@@ -149,22 +149,42 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		typeName: typeName,
 		name: table
 	};
-	$.ajax({
-		type: "POST",
-		url: serverIP + "getNO",
-		data: JSON.stringify(mo),
-		contentType: "application/json",
-		async: false,
-		xhrFields: {
-			// 允许带上凭据
-	        withCredentials: true
-		},
-		success: function(data) {
-			if (data != null) {
-				no = data
+	if(typeName==="BP"){
+		$.ajax({
+			type: "POST",
+			url: serverIP + "getNO",
+			data: JSON.stringify(mo),
+			contentType: "application/json",
+			async: false,
+			xhrFields: {
+				// 允许带上凭据
+		        withCredentials: true
+			},
+			success: function(data) {
+				if (data != null) {
+					no = data
+				}
 			}
-		}
-	});
+		});
+	}
+	else{
+		$.ajax({
+			type: "POST",
+			url: serverIP + "getNoNew",
+			data: JSON.stringify(mo),
+			contentType: "application/json",
+			async: false,
+			xhrFields: {
+				// 允许带上凭据
+		        withCredentials: true
+			},
+			success: function(data) {
+				if (data != null) {
+					no = data
+				}
+			}
+		});
+	}
 	return no;
 }
 

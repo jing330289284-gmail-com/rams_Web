@@ -275,7 +275,7 @@ class EnterPeriodSearch extends React.Component {
                                 />
                             </InputGroup>
                         </Col>
-                        <Col sm="2">
+                        <Col sm="3">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>区分</InputGroup.Text>
@@ -325,6 +325,7 @@ class EnterPeriodSearch extends React.Component {
                         </Col>
                     </Row>
                 </Form>
+				<Col>
                 <div>
                     <BootstrapTable
                         pagination={true}
@@ -356,6 +357,7 @@ class EnterPeriodSearch extends React.Component {
                             ボーナス予定額</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
+				</Col>
             </div>
         );
     }

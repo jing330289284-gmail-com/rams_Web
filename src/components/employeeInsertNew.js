@@ -167,7 +167,7 @@ class employeeInsertNew extends React.Component {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					window.location.reload();
-					this.getNO("LYC");// 採番番号
+					this.getNO(this.state.empNoHead);// 採番番号
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
@@ -210,7 +210,15 @@ class employeeInsertNew extends React.Component {
 				backPage: location.state.backPage,
 			}
 		);
-		this.getNO('LYC');// 採番番号
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					empNoHead: response.data.empNoHead,
+				})
+				this.getNO(response.data.empNoHead);// 採番番号
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 		this.getLoginUserInfo();
 	}
 	
@@ -438,7 +446,8 @@ class employeeInsertNew extends React.Component {
 			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
 			this.getNO("BP");
 		} else if (value === '0') {
-			this.getNO("LYC");
+			//this.getNO("LYC");
+			this.getNO(this.state.empNoHead);
 			this.setState({ employeeStatus: "0" });
 		}else{
 			

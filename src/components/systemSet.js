@@ -187,7 +187,7 @@ class systemSet extends Component {
 						<h2>システム設定</h2>
 					</Col>
 				</Row>
-				<Row></Row>
+				<br />
 				<Form id="masterInsertForm">
 					<Row>
 						<Col sm={6}>
@@ -198,7 +198,7 @@ class systemSet extends Component {
 							</InputGroup>
 							<InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
-								<Image src={this.state.image} id="imageId" rounded width="260" height="260" onClick={(event) => this.addFile(event, 'image')} />
+								<Image src={this.state.image} id="imageId" rounded width="130" height="120" onClick={(event) => this.addFile(event, 'image')} />
 							</InputGroup.Prepend>
 							<Form.File id="image" hidden data-browse="添付" custom onChange={(event) => this.changeFile(event, 'image')} accept="image/png, image/jpeg"></Form.File>
 						</InputGroup>
@@ -208,7 +208,7 @@ class systemSet extends Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="inputGroup-sizing-sm">会社名</InputGroup.Text>
 							</InputGroup.Prepend>
-							<Form.Control type="email" placeholder="会社名" value={companyName} autoComplete="off"
+							<Form.Control type="text" placeholder="会社名" value={companyName} autoComplete="off" maxlength="20"
 							onChange={this.valueChange} size="sm" name="companyName" />
 						</InputGroup>
 						
@@ -216,17 +216,18 @@ class systemSet extends Component {
 						<InputGroup.Prepend>
 							<InputGroup.Text id="inputGroup-sizing-sm">背景色</InputGroup.Text>
 						</InputGroup.Prepend>
-						<input type="color" id="myColor" />
+						<input type="color" id="myColor" style={{ "height": "30px" }}/>
 					    </InputGroup>
 					<InputGroup size="sm" className="mb-3">
 					<InputGroup.Prepend>
 						<InputGroup.Text id="sixKanji">社員番号の頭</InputGroup.Text>
 					</InputGroup.Prepend>
-					<Form.Control type="email" placeholder="社員番号の頭" value={empNoHead} autoComplete="off"
+					<Form.Control type="text" placeholder="社員番号の頭" value={empNoHead} autoComplete="off" maxlength="3"
 						onChange={this.valueChange} size="sm" name="empNoHead" />
 				</InputGroup>
 					</Col>
 					</Row>
+					<br />
 					<div style={{ "textAlign": "center" }}>
 					<Button size="sm" variant="info" type="button" onClick={this.update}>
 						<FontAwesomeIcon  icon={faEdit} /> 更新
