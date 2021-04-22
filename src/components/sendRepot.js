@@ -31,6 +31,8 @@ class sendRepot extends React.Component {
 		customerName: '', // おきゃく名前
 		positions: store.getState().dropDown[20],
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
+		stations: store.getState().dropDown[14],//駅
+		employeeStatusList: store.getState().dropDown[4],//社員区分
 		customers: store.getState().dropDown[53].slice(1),
 		workReportStatus: store.getState().dropDown[60],//作業報告書送信ステータス
 		sendReportOfDateSeting: store.getState().dropDown[61],//送信日付設定ステータス
@@ -660,12 +662,12 @@ Judgment(code) {
 			daiologShowFlag2: true,
 		})
 	}
-	saveTargetEmployees = (row, appendPersonMsg) => {
-		this.state.customerTemp[row.rowId].purchasingManagersOthers = appendPersonMsg.purchasingManagersOthers;
+	saveTargetEmployees = (row, appendEmployeeMsg) => {
+		this.state.customerTemp[row.rowId].employeesOthers = appendEmployeeMsg.employeesOthers;
 		this.setState({
-			daiologShowFlag: false,
+			daiologShowFlag2: false,
 		});
-		this.TargetEmployees(row.sendRepotsAppend, row);
+		this.CellFormatter2(row.sendRepotsAppend, row);
 	}
 //サブ画面クローズ
 	closeDaiolog = () => {
@@ -891,7 +893,8 @@ Judgment(code) {
 					onHide={this.closeDaiolog} show={this.state.daiologShowFlag2} dialogClassName="modal-purchasingManagersSet">
 					<Modal.Header closeButton></Modal.Header>
 					<Modal.Body >
-						<SendRepotAppend customer={this.state.selectedCustomer} allState={this}/>
+						<SendRepotAppend customer={this.state.selectedCustomer} allState={this} employeeStatusList={this.state.employeeStatusList}
+							stations={this.state.stations}/>
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
