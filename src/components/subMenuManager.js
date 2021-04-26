@@ -4,6 +4,7 @@ import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import EmployeeInsert from './employeeInsert';
 import EmployeeInsertNew from './employeeInsertNew';
+import EmployeeInformation from './employeeInformation';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -175,6 +176,8 @@ class SubMenu extends Component {
 															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>*/}
 													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員・BP検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP検索')} to="/subMenuManager/employeeSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員・BP検索</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="個人情報期限一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('個人情報期限一覧')} to="/subMenuManager/employeeInformation">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />個人情報期限一覧</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -338,6 +341,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeInsert`} component={EmployeeInsert} />
 								<Route exact path={`${this.props.match.url}/employeeInsertNew`} component={EmployeeInsertNew} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
+								<Route exact path={`${this.props.match.url}/employeeInformation`} component={EmployeeInformation} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />

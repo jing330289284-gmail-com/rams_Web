@@ -146,13 +146,13 @@ class EmployeeDetailNew extends React.Component {
 					developLanguage5: data.developLanguage5,// スキール5
 					residenceCode: data.residenceCode,// 在留資格
 					residenceCardNo: data.residenceCardNo,// 在留カード
-					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false),// 在留期間
-					passportStayPeriod: publicUtils.converToLocalTime(data.passportStayPeriod, false),// パスポート期間
+					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, true),// 在留期間
+					passportStayPeriod: publicUtils.converToLocalTime(data.passportStayPeriod, true),// パスポート期間
 					immigrationStartTime: publicUtils.converToLocalTime(data.immigrationStartTime, false),// 出入国開始時間
 					immigrationEndTime: publicUtils.converToLocalTime(data.immigrationEndTime, false),// 出入国終了時間
-					contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false),// 契約期限
+					contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, true),// 契約期限
 					temporary_stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.stayPeriod, false)),
-					temporary_contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, false) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.contractDeadline, false)),
+					temporary_contractDeadline: publicUtils.converToLocalTime(data.contractDeadline, true) === "" ? "" : publicUtils.getFullYearMonth(new Date(), publicUtils.converToLocalTime(data.contractDeadline, true)),
 					employmentInsurance: data.employmentInsuranceStatus,// 雇用保険加入
 					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
 					socialInsurance: data.socialInsuranceStatus,// 社会保険加入
@@ -779,9 +779,7 @@ class EmployeeDetailNew extends React.Component {
 										selected={this.state.contractDeadline}
 										onChange={this.inactiveContractDeadline}
 										locale="ja"
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										autoComplete="off"
 										minDate={new Date()}
@@ -1018,9 +1016,7 @@ class EmployeeDetailNew extends React.Component {
 										selected={this.state.stayPeriod}
 										onChange={this.inactiveStayPeriod}
 										locale="ja"
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										autoComplete="off"
 										minDate={new Date()}
@@ -1049,9 +1045,7 @@ class EmployeeDetailNew extends React.Component {
 										selected={this.state.passportStayPeriod}
 										onChange={this.passportStayPeriodChange}
 										locale="ja"
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										autoComplete="off"
 										minDate={new Date()}
