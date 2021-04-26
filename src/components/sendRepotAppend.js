@@ -12,13 +12,12 @@ axios.defaults.withCredentials = true;
 class sendRepotAppend extends Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		
 		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],//承認済み 送信済み
 		currentPage: 1,//　該当page番号
 		allEmployee: [],
-		selectetRowIds: this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
-		selectetemployeeNo:  this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
-		selectetemployeeName:  this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : (this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[] ),
+		selectetRowIds: this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
+		selectetemployeeNo:this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
+		selectetemployeeName:this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
 		allSelectedFlag: false,
 		allTargetemployeeNo: [],
 		allRowId: [],
@@ -68,10 +67,10 @@ handleRowSelect = (row, isSelected, e) => {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds.concat([row.rowId]),
 				selectetemployeeNo: this.state.selectetemployeeNo.concat([row.employeeNo]),
-				selectetemployeeName: this.state.selectetemployeeNo.concat([row.employeeNo]),
+				selectetemployeeName: this.state.selectetemployeeName.concat([row.employeeName]),
 				appendEmployeeMsg: {
-					employeeNo2: row.employeeNo,
-					employeeName2: row.employeeName,
+					employeeNo2: this.state.selectetemployeeNo.join(","),
+					employeeName2: this.state.selectetemployeeName.join(","),
 				}
 			})
 		} else {
@@ -82,6 +81,7 @@ handleRowSelect = (row, isSelected, e) => {
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
 				selectetemployeeNo: this.state.selectetemployeeNo,
+				selectetemployeeName: this.state.selectetemployeeName,
 			})
 		}
 		if (this.state.allSelectedFlag) {
@@ -92,6 +92,8 @@ handleRowSelect = (row, isSelected, e) => {
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
 				selectetemployeeNo: [],
+				employeeNo2: this.state.selectetemployeeNo.join(","),
+					employeeName2: this.state.selectetemployeeName.join(","),
 			});
 		}
 	}
@@ -117,21 +119,19 @@ handleRowSelect = (row, isSelected, e) => {
 			})
 		}
 	}
-	employeeSelected = () => {
+employeeSelected = () => {
 		let employeeNos = this.state.selectetemployeeNo.join(",");
-		this.state.parentSelectedInfo.sendRepotsAppend = employeeNos;
-		let selectetemployeeName = this.state.selectetemployeeName.join(",");
-		this.state.parentSelectedInfo.test = selectetemployeeName;
-		this.state.parentSelectedInfo.mainChargeList = selectetemployeeName;
+		let employeeNames = this.state.selectetemployeeName.join(",");
+		this.state.parentSelectedInfo.sendRepotsAppend = employeeNames;//表示用
+		this.state.parentSelectedInfo.sendRepotsAppend2 = employeeNos;
 		let employeesOthers = this.state.selectetemployeeNo;
 		employeesOthers.pop();
-		this.state.appendEmployeeMsg.employeesOthers = employeeNos;
-		if(this.props.customer.storageListName != null && this.props.customer.storageListName != ""){
+		if(this.props.customer.storageListName != null && this.props.customer.storageListName !== ""){
 			axios.post(this.state.serverIP + "sendRepot/targetEmployeeListsUpdate", 
 					{
 						storageListName:this.props.customer.storageListName,
 						customerNo:this.props.customer.customerNo,
-						candidateInChargeList:employeeNos+selectetemployeeName,
+						candidateInChargeList:employeeNos+"."+employeeNames,
 					})
 			.then(() => {
 				})
