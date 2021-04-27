@@ -89,6 +89,12 @@ class TableSelect extends React.Component {
 				selectedValue: this.props.dropdowns.state.topCustomerCode,	
 				everyWidth: 110,
 			})
+		} else if (this.props.flag === 12) {
+			this.setState({
+				allOption: this.props.dropdowns.state.salesProgressCodes,
+				selectedValue: this.props.dropdowns.state.dealDistinctioCode,
+				everyWidth: 120,
+			})
 		}
 	}
 
@@ -151,6 +157,11 @@ class TableSelect extends React.Component {
 			this.props.dropdowns.getTopCustomer1(values === null ? this.props.dropdowns.state.topCustomerCode : values.code);
 			this.setState({
 				selectedValue:values === null ? this.props.dropdowns.state.topCustomerCode : values.code,
+			})
+		}else if (this.props.flag === 12) {
+			this.props.dropdowns.getDealDistinctioCode(values === null ? this.props.dropdowns.state.salesProgressCode : values.code);
+			this.setState({
+				selectedValue:values === null ? this.props.dropdowns.state.salesProgressCode : values.code,
 			})
 		}
 	}

@@ -7,6 +7,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import store from './redux/store';
+import TableSelect from './TableSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
@@ -31,6 +32,7 @@ class employeeInformation extends Component {// 状況変動一覧
     }
 
     initialState = {
+    	salesProgressCodes: store.getState().dropDown[70],// ステータス
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		modeSelect: 'checkbox',
 		selectetRowIds: [],
@@ -43,19 +45,23 @@ class employeeInformation extends Component {// 状況変動一覧
     }
 
     componentDidMount(){
-	    	axios.post(this.state.serverIP + "EmployeeInformation/getEmployeeInformation")
-			.then(response => {
-				this.setState({
-					situationInfoList:response.data.data
-		        });   
-			}).catch((error) => {
-				console.error("Error - " + error);
-			});
+    	this.getInformation();
+    }
+    
+    getInformation(){
+    	axios.post(this.state.serverIP + "EmployeeInformation/getEmployeeInformation")
+		.then(response => {
+			this.setState({
+				situationInfoList:response.data.data
+	        });   
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
     }
     
 	// 優先度表示
     stayPeriodChange(cell,row) {
-    	if(row.stayPeriod <= 90){
+    	if(row.stayPeriod <= 90 && row.dealDistinctioCode !== "2"){
         	return (<div><font color="red">{row.stayPeriod}</font></div>);
     	}
     	else{
@@ -64,7 +70,7 @@ class employeeInformation extends Component {// 状況変動一覧
 	}
     
     birthdayChange(cell,row) {
-    	if(row.birthday <= 7){
+    	if(row.birthday <= 7 && row.dealDistinctioCode !== "2"){
         	return (<div><font color="red">{row.birthday}</font></div>);
     	}
     	else{
@@ -73,7 +79,7 @@ class employeeInformation extends Component {// 状況変動一覧
 	}
     
     contractDeadlineChange(cell,row) {
-    	if(row.birthday <= 60){
+    	if(row.contractDeadline <= 60 && row.dealDistinctioCode !== "2"){
         	return (<div><font color="red">{row.contractDeadline}</font></div>);
     	}
     	else{
@@ -81,30 +87,51 @@ class employeeInformation extends Component {// 状況変動一覧
     	}
 	}
     
-    handleRowSelect = (row, isSelected, e) => {
-		if (isSelected) {
-			this.setState({
-				selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
-			});
-		} else {
-			this.setState({
-				selectetRowIds: [],
-			});
+	// レコードのステータス
+	formatType = (cell) => {
+		var statuss = this.state.salesProgressCodes;
+		for (var i in statuss) {
+			if (cell === statuss[i].code) {
+				return statuss[i].name;
+			}
 		}
+	}
+	
+	// 明細選択したSalesProgressCodeを設定する
+	getDealDistinctioCode = (no) => {
+		this.state.situationInfoList[this.state.rowNo - 1].dealDistinctioCode = no;
+		this.formatType(no);
+	}
+    
+    handleRowSelect = (row, isSelected, e) => {
+		this.setState({
+			rowNo: row.rowNo === null ? '' : row.rowNo,
+			dealDistinctioCode: row.dealDistinctioCode === null ? '' : row.dealDistinctioCode,
+		});
+	}
+    
+	update = () => {
+    	this.getInformation();
 	}
     
     render(){
         const  situationChanges= this.state.situationChanges;
         const  errorsMessageValue= this.state.errorsMessageValue;
+		const cellEdit = {
+				mode: 'click',
+				blurToSave: true,
+			}
         const selectRow = {
     			mode: this.state.modeSelect,
-    			bgColor: 'pink',
     			clickToSelectAndEditCell: true,
     			hideSelectColumn: true,
     			clickToSelect: true,
     			clickToExpand: true,
     			onSelect: this.handleRowSelect,
     		};
+		
+		const tableSelect = (onUpdate, props) => (<TableSelect dropdowns={this} flag={12} onUpdate={onUpdate} {...props} />);
+		
         return(
             <div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
@@ -119,26 +146,28 @@ class employeeInformation extends Component {// 状況変動一覧
                 <Row>
                     <Col sm={12}>
                     <div style={{ "float": "right" }}>
-					<Button size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faSave} /> 更新</Button>{' '}
+					<Button size="sm" variant="info" name="clickButton"　onClick={this.update}　><FontAwesomeIcon icon={faSave} /> 更新</Button>{' '}
                     </div>
                     </Col>
 				</Row>
 				<Col>
                 <div>
-                    <BootstrapTable data={this.state.situationInfoList}
+                    <BootstrapTable
+                    data={this.state.situationInfoList}
                     pagination={true}
                     headerStyle={{ background: '#5599FF' }}
                     options={this.options}
                     selectRow={selectRow}
+					cellEdit={cellEdit}
 　					striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='rowNo' >番号</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden dataField='employeeNo' isKey>社員番号</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='employeeName'>社員名</TableHeaderColumn>
-                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='stayPeriod' dataFormat={this.stayPeriodChange}>在留カード</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='birthday' dataFormat={this.birthdayChange}>誕生日</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='contractDeadline' dataFormat={this.contractDeadlineChange}>契約</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='passportStayPeriod' >パスポート</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='14%' dataField='DealDistinctioCode' >処理区分</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='rowNo' editable={false}>番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='employeeNo' isKey editable={false}>社員番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='employeeName' editable={false}>社員名</TableHeaderColumn>
+                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='stayPeriod' dataFormat={this.stayPeriodChange} editable={false}>在留カード</TableHeaderColumn>                           
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='birthday' dataFormat={this.birthdayChange} editable={false}>誕生日</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='contractDeadline' dataFormat={this.contractDeadlineChange} editable={false}>契約</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='passportStayPeriod' editable={false}>パスポート</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='dealDistinctioCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect }} editable={true}>処理区分</TableHeaderColumn>
 					</BootstrapTable>
                     </div>
                  </Col>
