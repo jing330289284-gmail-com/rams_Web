@@ -1110,7 +1110,7 @@ class manageSituation extends React.Component {
 						<Col sm={12}>
 							<BootstrapTable
 								ref='table'
-								className={"bg-white text-dark"}
+								/*className={"bg-white text-dark"}*/
 								data={this.state.salesSituationLists}
 								pagination
 								options={options}

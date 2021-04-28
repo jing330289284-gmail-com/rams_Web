@@ -7,6 +7,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import store from './redux/store';
+import MyToast from './myToast';
 import TableSelect from './TableSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
@@ -27,7 +28,6 @@ class employeeInformation extends Component {// 状況変動一覧
 			hideSizePerPage: true,
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
-
 		};
     }
 
@@ -36,6 +36,7 @@ class employeeInformation extends Component {// 状況変動一覧
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		modeSelect: 'checkbox',
 		selectetRowIds: [],
+		myToastShow: false,
     }
                	// onchange
 	valueChange = event => {
@@ -111,7 +112,27 @@ class employeeInformation extends Component {// 状況変動一覧
 	}
     
 	update = () => {
-    	this.getInformation();
+		let employeeNo = [];
+		let dealDistinctioCode = [];
+		for(let i = 0; i < this.state.situationInfoList.length; i++){
+			employeeNo.push(this.state.situationInfoList[i].employeeNo);
+			dealDistinctioCode.push(this.state.situationInfoList[i].dealDistinctioCode);
+		}
+		this.setState({
+			situationInfoList:[]
+		});
+		
+    	axios.post(this.state.serverIP + "EmployeeInformation/apdateEmployeeInformation",  {
+    		employeeNos : employeeNo,
+    		dealDistinctioCodes : dealDistinctioCode
+    	})
+		.then(response => { 
+		    this.getInformation();
+			this.setState({ "myToastShow": true, "errorsMessageShow": false });
+			setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
 	}
     
     render(){
@@ -136,6 +157,9 @@ class employeeInformation extends Component {// 状況変動一覧
             <div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
+				</div>
+					<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+					<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"success"} />
 				</div>
                  <Row inline="true">
                      <Col  className="text-center">

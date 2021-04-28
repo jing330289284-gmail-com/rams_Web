@@ -93,7 +93,7 @@ class TableSelect extends React.Component {
 			this.setState({
 				allOption: this.props.dropdowns.state.salesProgressCodes,
 				selectedValue: this.props.dropdowns.state.dealDistinctioCode,
-				everyWidth: 120,
+				everyWidth: 100,
 			})
 		}
 	}
