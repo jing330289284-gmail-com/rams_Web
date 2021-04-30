@@ -268,6 +268,7 @@ class employeeSearch extends React.Component {
 						);
 						this.setState({ "myToastShow": true });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                        store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
 					}
 					else{
 						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
