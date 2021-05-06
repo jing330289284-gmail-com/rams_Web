@@ -413,7 +413,7 @@ class salesContent extends React.Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 	                 <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 	            </div>
-				<ListGroup>
+{				<ListGroup>
 					<ListGroup.Item width="200px">【名　　前】：{this.state.employeeName}{'　　　'}{this.state.nationalityName}{'　　　'}{this.state.genderStatus}</ListGroup.Item>
 					<ListGroup.Item>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【年　　齢】：<input value={this.state.age} name="age"
@@ -456,7 +456,7 @@ class salesContent extends React.Component {
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
-					{/*<ListGroup.Item>【対応工程】：{this.state.projectPhase}</ListGroup.Item>*/}
+					{<ListGroup.Item>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
 					<ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}>【対応工程】：
 				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
@@ -518,7 +518,7 @@ class salesContent extends React.Component {
 					</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【備　　考】：<input value={this.state.remark} name="remark"
 						style={{ width: "60%" }} onChange={this.valueChange} className="inputWithoutBorder" /></ListGroup.Item></span>
-				</ListGroup>
+				</ListGroup>}
 				<div style={{ "display": "none" }}>
 					<textarea ref={(textarea) => this.textArea = textarea} id="snippet"
 						value={`　　　　営業文章

@@ -1416,7 +1416,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Text id="inputGroup-sizing-sm">以降住所</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl placeholder="以降住所" value={lastHalfAddress} autoComplete="off"
-							onChange={this.valueChange} size="sm" name="lastHalfAddress" maxlength="12" />
+							onChange={this.valueChange} size="sm" name="lastHalfAddress" maxlength="50" />
 								<font className="site-mark"></font>
 
 						<Row></Row>
@@ -1570,7 +1570,7 @@ class employeeUpdateNew extends React.Component {
 								<InputGroup.Text id="twoKanji">番号</InputGroup.Text>
 							</InputGroup.Prepend>
 							<FormControl placeholder="雇用保険番号" value={employmentInsuranceNo} autoComplete="off" disabled={employmentInsurance === "1" ? false : true}
-								onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="12" />
+								onChange={this.valueChange} size="sm" name="employmentInsuranceNo" maxlength="13" />
 							<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 
 							<Row></Row>
@@ -1592,7 +1592,7 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Text id="twoKanji">番号</InputGroup.Text>
 					</InputGroup.Prepend>
 							<FormControl placeholder="社会保険番号" value={socialInsuranceNo} autoComplete="off"
-							onChange={this.valueChange} size="sm" name="socialInsuranceNo" maxlength="12"  disabled={socialInsurance === "1" ? false : true} />
+							onChange={this.valueChange} size="sm" name="socialInsuranceNo" maxlength="13"  disabled={socialInsurance === "1" ? false : true} />
 						<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 
 						<Row></Row>

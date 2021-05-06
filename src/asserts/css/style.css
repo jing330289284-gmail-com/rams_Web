@@ -1288,7 +1288,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-	width: 10.6rem !important;
+	width: 10.3rem !important;
 }
 
 #datePicker-bpInfo {
@@ -1299,7 +1299,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-	width: 10.6rem !important;
+	width: 10.3rem !important;
 }
 
 .Autocompletestyle-wagesInfo-employeeName {
@@ -2325,7 +2325,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: #e9ecef;
-		width: 6.33rem !important;
+		width: 6.0rem !important;
 	}
 	
 	#datePickerReadonlyDefault-empInsert-right {
@@ -2356,7 +2356,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
-		width: 6.33rem !important;
+		width: 6.0rem !important;
 	}
 	.Autocompletestyle-wagesInfo-employeeName {
 		width: 10.2rem;

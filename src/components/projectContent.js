@@ -86,8 +86,13 @@ class ProjectContent extends Component {
         if(projectInfo.payOffRangeLowest !== undefined && projectInfo.payOffRangeLowest !== null && 
             projectInfo.payOffRangeHighest !== undefined && projectInfo.payOffRangeHighest !== null){
             var payOffRange = '';
-            payOffRange = (projectInfo.payOffRangeLowest === "0" ? "固定" : projectInfo.payOffRangeLowest) 
-                                + "-" + (projectInfo.payOffRangeHighest === "0" ? "固定" : projectInfo.payOffRangeHighest) 
+            if(projectInfo.payOffRangeLowest === "0" && projectInfo.payOffRangeHighest === "0"){
+            	payOffRange = "固定";
+            }
+            else{
+                payOffRange = (projectInfo.payOffRangeLowest === "0" ? "固定" : projectInfo.payOffRangeLowest) 
+                + "-" + (projectInfo.payOffRangeHighest === "0" ? "固定" : projectInfo.payOffRangeHighest)
+            }
             this.setState({
                 payOffRange:payOffRange,
             })
@@ -175,35 +180,25 @@ class ProjectContent extends Component {
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"danger"} />
                 </div>
-                {/*<ListGroup>
-                    <ListGroup.Item>■NO_種別：No.{projectNo}_{projectTypeName}
-                    <br/>■案件名：{projectName}
-                    <br/>■業務内容：<br />                              
-                    <FormControl
-                        maxLength="500"
-                        cols="10"
-                        rows="8"
-                        value={projectInfoDetail}
-                        as="textarea"
-                        disabled
-                        className="projectContentDetail">
-                    </FormControl></ListGroup.Item>
-                    <ListGroup.Item>■スキル要件：
-                    <br/>·{keyWordOfLanagurueName1}，{keyWordOfLanagurueName2}，{keyWordOfLanagurueName3}
-                    <br/>
-                    ·{requiredItem1}
-                    <br/>
-                    ·{requiredItem2}</ListGroup.Item>
-                    <ListGroup.Item>■月額単金：{unitPriceRange}
-                    <br/>■清算範囲：{payOffRange}
-                    <br/>■募集人数：{recruitmentNumbers}
-                    <br/>■稼動時期：{admissionPeriod}~{projectPeriodName}
-                    <br/>■勤務地：{siteLocationName}
-                    <br/>■作業工程：{projectPhase}
-                    <br/>■国籍：{nationalityName === null ? "" : nationalityName + "、" + japaneaseConversationName}
-                    <br/>■面談回数：{noOfInterviewName}
-                    <br/>■備考：{remark}</ListGroup.Item>
-                </ListGroup>*/}
+                {/*
+					 * <ListGroup>
+					 * <ListGroup.Item>■NO_種別：No.{projectNo}_{projectTypeName}
+					 * <br/>■案件名：{projectName} <br/>■業務内容：<br /> <FormControl
+					 * maxLength="500" cols="10" rows="8"
+					 * value={projectInfoDetail} as="textarea" disabled
+					 * className="projectContentDetail"> </FormControl></ListGroup.Item>
+					 * <ListGroup.Item>■スキル要件：
+					 * <br/>·{keyWordOfLanagurueName1}，{keyWordOfLanagurueName2}，{keyWordOfLanagurueName3}
+					 * <br/> ·{requiredItem1} <br/> ·{requiredItem2}</ListGroup.Item>
+					 * <ListGroup.Item>■月額単金：{unitPriceRange}
+					 * <br/>■清算範囲：{payOffRange} <br/>■募集人数：{recruitmentNumbers}
+					 * <br/>■稼動時期：{admissionPeriod}~{projectPeriodName}
+					 * <br/>■勤務地：{siteLocationName} <br/>■作業工程：{projectPhase}
+					 * <br/>■国籍：{nationalityName === null ? "" : nationalityName +
+					 * "、" + japaneaseConversationName}
+					 * <br/>■面談回数：{noOfInterviewName} <br/>■備考：{remark}</ListGroup.Item>
+					 * </ListGroup>
+					 */}
                 <div >
 				<textarea ref={(textarea) => this.textArea = textarea} disabled
 					style={{ height: '600px', width: '100%', resize: 'none', border: '0'}}

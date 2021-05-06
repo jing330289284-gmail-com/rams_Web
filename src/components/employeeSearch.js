@@ -574,7 +574,7 @@ class employeeSearch extends React.Component {
 		// テーブルの定義
 		const options = {
 			page: 1,
-			sizePerPage: 8,
+			sizePerPage: 10,
 			pageStartIndex: 1,
 			paginationSize: 3,
 			prePage: '<',
