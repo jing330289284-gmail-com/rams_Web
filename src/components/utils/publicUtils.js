@@ -739,9 +739,12 @@ export function GetAgeByBrithday(birthday){
 	var birthdayMonth=new Date(birthday).getMonth()+1;
 	var birthdayDay=new Date(birthday).getDate();
 		
-	if(todayMonth*1-birthdayMonth*1<0)
+	if(todayMonth * 1 - birthdayMonth * 1 < 0)
 	{
 		age = (todayYear*1-birthdayYear*1)-1;
+	}
+	else if(todayMonth * 1 - birthdayMonth * 1 > 0){
+		age = (todayYear*1-birthdayYear*1);
 	}
 	else
 	{
