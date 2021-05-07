@@ -39,6 +39,8 @@ class EmployeeDetailNew extends React.Component {
 		developLanguage3: '',
 		developLanguage4: '',
 		developLanguage5: '',
+		frameWork1: '',
+		frameWork2: '',
 		stationCode: '',
 		employeeStatusFlag: true,
 		backPage:"",
@@ -48,11 +50,13 @@ class EmployeeDetailNew extends React.Component {
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
 		siteMaster: store.getState().dropDown[3],
+		projectType: store.getState().dropDown[52],
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		japaneaseLevelCodes: store.getState().dropDown[5],
 		residenceCodes: store.getState().dropDown[6],
 		nationalityCodes: store.getState().dropDown[7],
 		developLanguageMaster: store.getState().dropDown[8].slice(1),
+		frameWorkMaster: store.getState().dropDown[71].slice(1),
 		employeeInfo: store.getState().dropDown[9].slice(1),
 		occupationCodes: store.getState().dropDown[10],
 		departmentCodes: store.getState().dropDown[11],
@@ -91,6 +95,7 @@ class EmployeeDetailNew extends React.Component {
 		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
 			.then(response => response.data)
 			.then((data) => {
+				this.inactiveBirthday(publicUtils.converToLocalTime(data.birthday, true));
 				this.setState({
 					employeeStatus: data.employeeStatus,// 社員区分
 					employeeNo: data.employeeNo,// 社員番号
@@ -103,7 +108,7 @@ class EmployeeDetailNew extends React.Component {
 					alphabetName2: data.alphabetName2,// ローマ字
 					alphabetName3: data.alphabetName3,// ローマ字
 					birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
-					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
+					//temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,// 和暦
 					genderStatus: data.genderStatus,// 性別
 					intoCompanyCode: data.intoCompanyCode,// 入社区分
@@ -135,6 +140,7 @@ class EmployeeDetailNew extends React.Component {
 					certification1: data.certification1,// 資格1
 					certification2: data.certification2,// 資格2
 					siteRoleCode: data.siteRoleCode,// 役割
+					projectTypeCode: data.projectTypeCode,// 分野
 					postcode: data.postcode,// 郵便番号
 					firstHalfAddress: data.firstHalfAddress,
 					lastHalfAddress: data.lastHalfAddress,
@@ -144,6 +150,8 @@ class EmployeeDetailNew extends React.Component {
 					developLanguage3: data.developLanguage3,// スキール3
 					developLanguage4: data.developLanguage4,// スキール4
 					developLanguage5: data.developLanguage5,// スキール5
+					frameWork1: data.frameWork1,
+					frameWork2: data.frameWork2,
 					residenceCode: data.residenceCode,// 在留資格
 					residenceCardNo: data.residenceCardNo,// 在留カード
 					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, true),// 在留期間
@@ -157,6 +165,7 @@ class EmployeeDetailNew extends React.Component {
 					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
 					socialInsurance: data.socialInsuranceStatus,// 社会保険加入
 					socialInsuranceNo: data.socialInsuranceNo,// 社会保険番号
+					socialInsuranceDate: publicUtils.converToLocalTime(data.socialInsuranceDate, true),// 社会保険期間
 					myNumber: data.myNumber,// マイナンバー
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
 					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
@@ -185,6 +194,31 @@ class EmployeeDetailNew extends React.Component {
 		contractDeadline: new Date(),
 		graduationYearAndMonth: new Date(),
 	};
+	
+	/**
+	 * 年齢と和暦
+	 */
+	inactiveBirthday = date => {
+		if (date !== undefined && date !== null && date !== "") {
+			const promise = Promise.resolve(publicUtils.calApi(date));
+			promise.then((data) => {
+				this.setState(
+					{
+						birthday: date,
+						japaneseCalendar: data[0][0].text,
+						temporary_age: data[1],
+					}
+				);
+			});
+		} else {
+			this.setState({
+				temporary_age: "",
+				birthday: "",
+				japaneseCalendar: ""
+			});
+		}
+	};
+	
 	// 卒業年月
 	inactiveGraduationYearAndMonth = date => {
 		this.setState(
@@ -358,7 +392,7 @@ class EmployeeDetailNew extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2,alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo,employmentInsurance,socialInsurance,socialInsuranceNo, myNumber, certification1, certification2, siteRoleCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo,employmentInsurance,socialInsurance,socialInsuranceNo, myNumber, certification1, certification2, siteRoleCode, projectTypeCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus,retirementResonClassificationCode,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -767,6 +801,13 @@ class EmployeeDetailNew extends React.Component {
 										</option>
 									)}
 								</Form.Control>
+								<Form.Control as="select" name="projectTypeCode" value={projectTypeCode} disabled>
+								{this.state.projectType.map(date =>
+									<option key={date.code} value={date.code}>
+										{date.name}
+									</option>
+								)}
+								</Form.Control>
 								<font className="site-mark"></font>
 
 								<Row></Row>
@@ -854,13 +895,6 @@ class EmployeeDetailNew extends React.Component {
 											</option>
 										)}
 									</Form.Control>
-									<font className="site-mark"></font>
-
-									<Row></Row>
-									
-									<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm"></InputGroup.Text>
-									</InputGroup.Prepend>
 									<Form.Control as="select"　disabled name="certification2" onChange={this.valueChange} value={certification2} autoComplete="off" >
 										{this.state.qualification.map(date =>
 											<option key={date.code} value={date.code}>
@@ -931,7 +965,34 @@ class EmployeeDetailNew extends React.Component {
 											</div>
 										)}
 									/>
-								</InputGroup>
+
+									<Row></Row>
+									
+									<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">フレーム</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete disabled
+									value={this.state.frameWorkMaster.find((v) => (v.code === this.state.frameWork1)) || {}}
+									options={this.state.frameWorkMaster}
+									getOptionLabel={(option) => option.name}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="frameWork1" />
+										</div>
+									)}
+								/>
+								
+								<Autocomplete disabled
+									value={this.state.frameWorkMaster.find((v) => (v.code === this.state.frameWork2)) || {}}
+									options={this.state.frameWorkMaster}
+									getOptionLabel={(option) => option.name}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="frameWork2" />
+										</div>
+									)}
+								/>
+							</InputGroup>
 								</Col>
 								<font style={{ "color": "#000000"}}>住所情報</font>
 								<Col>
@@ -1098,7 +1159,7 @@ class EmployeeDetailNew extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="sevenKanji">社会保険加入</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" disabled
+										<Form.Control as="select" size="sm" disabled hidden
 											name="employmentInsurance" value={socialInsurance}
 											autoComplete="off">
 											{this.state.socialInsuranceStatus.map(date =>
@@ -1107,6 +1168,17 @@ class EmployeeDetailNew extends React.Component {
 												</option>
 											)}
 										</Form.Control>
+										<InputGroup.Append>
+										<DatePicker
+											selected={this.state.socialInsuranceDate}
+											locale="ja"
+											dateFormat="yyyy/MM/dd"
+											className="form-control form-control-sm"
+											autoComplete="off"
+											disabled
+											id="datePickerReadonlyDefault-empInsert-right"
+										/>
+										</InputGroup.Append>
 										<InputGroup.Prepend>
 											<InputGroup.Text id="twoKanji">番号</InputGroup.Text>
 										</InputGroup.Prepend>

@@ -179,6 +179,7 @@ class employeeSearch extends React.Component {
 			intoCompanyYearAndMonthTo: this.state.intoCompanyYearAndMonthTo === "" || this.state.intoCompanyYearAndMonthTo === null || this.state.intoCompanyYearAndMonthTo === undefined ? undefined : publicUtils.formateDate(this.state.intoCompanyYearAndMonthTo, false),
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 			socialInsuranceStatus: this.state.socialInsurance === "" ? undefined : this.state.socialInsurance,
+			socialInsuranceDate: this.state.socialInsuranceDate === "" || this.state.socialInsuranceDate === null || this.state.socialInsuranceDate === undefined ? undefined : publicUtils.formateDate(this.state.socialInsuranceDate, true),
 			authorityCode: this.state.authorityCode,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
@@ -232,6 +233,15 @@ class employeeSearch extends React.Component {
 			}
 		);
 	};
+	
+	socialInsuranceDateChange = date => {
+		this.setState(
+			{
+				socialInsuranceDate: date,
+			}
+		);
+	};
+	
 	employeeDelete = () => {
 		// 将id进行数据类型转换，强制转换为数字类型，方便下面进行判断。
 		var a = window.confirm("削除していただきますか？");
@@ -811,6 +821,18 @@ class employeeSearch extends React.Component {
 												</option>
 											)}
 										</Form.Control>
+										<InputGroup.Append>
+										<DatePicker
+											selected={this.state.socialInsuranceDate}
+											onChange={this.socialInsuranceDateChange}
+											locale="ja"
+											dateFormat="yyyy/MM/dd"
+											className="form-control form-control-sm"
+											autoComplete="off"
+											disabled={socialInsurance !== "1" ? true : false}
+											id={socialInsurance !== "1"  ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+										/>
+										</InputGroup.Append>
 									</InputGroup>
 								</Col>
 								<Col sm={3}>

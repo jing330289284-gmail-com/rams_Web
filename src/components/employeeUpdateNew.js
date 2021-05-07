@@ -25,6 +25,7 @@ class employeeUpdateNew extends React.Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.departmentCodeChange = this.departmentCodeChange.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 	}
 	// 初期化
@@ -46,6 +47,8 @@ class employeeUpdateNew extends React.Component {
 		developLanguage3: '',
 		developLanguage4: '',
 		developLanguage5: '',
+		frameWork1: '',
+		frameWork2: '',
 		stationCode: '',
 		sendValue:{},
 		genderStatuss: store.getState().dropDown[0],
@@ -57,6 +60,7 @@ class employeeUpdateNew extends React.Component {
 		residenceCodes: store.getState().dropDown[6],
 		nationalityCodes: store.getState().dropDown[7],
 		developLanguageMaster: store.getState().dropDown[8].slice(1),
+		frameWorkMaster: store.getState().dropDown[71].slice(1),
 		employeeInfo: store.getState().dropDown[9].slice(1),
 		occupationCodes: store.getState().dropDown[10],
 		departmentCodes: store.getState().dropDown[11],
@@ -68,6 +72,7 @@ class employeeUpdateNew extends React.Component {
 		retirementResonClassificationCodes: store.getState().dropDown[66],
 		employmentInsuranceStatus: store.getState().dropDown[67],
 		socialInsuranceStatus: store.getState().dropDown[68],
+		projectType: store.getState().dropDown[52],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],// 劉林涛テスト
 	};
 	// リセット
@@ -115,6 +120,7 @@ class employeeUpdateNew extends React.Component {
 			certification1: publicUtils.nullToEmpty(this.state.certification1),// 資格1
 			certification2: publicUtils.nullToEmpty(this.state.certification2),// 資格2
 			siteRoleCode: publicUtils.nullToEmpty(this.state.siteRoleCode),// 役割
+			projectTypeCode: publicUtils.nullToEmpty(this.state.projectTypeCode),// 分野
 			postcode: publicUtils.nullToEmpty(this.state.postcode),// 郵便番号
 			firstHalfAddress: publicUtils.nullToEmpty(this.refs.firstHalfAddress.value),
 			lastHalfAddress: publicUtils.nullToEmpty(this.state.lastHalfAddress),
@@ -124,6 +130,8 @@ class employeeUpdateNew extends React.Component {
 			developLanguage3: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage3").val(), this.state.developLanguageMaster)),
 			developLanguage4: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage4").val(), this.state.developLanguageMaster)),
 			developLanguage5: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#developLanguage5").val(), this.state.developLanguageMaster)),
+			frameWork1: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#frameWork1").val(), this.state.frameWorkMaster)),
+			frameWork2: publicUtils.nullToEmpty(publicUtils.labelGetValue($("#frameWork2").val(), this.state.frameWorkMaster)),
 			residenceCode: publicUtils.nullToEmpty(this.state.residenceCode),// 在留資格
 			residenceCardNo: publicUtils.nullToEmpty(this.state.residenceCardNo),// 在留カード
 			stayPeriod: publicUtils.formateDate(this.state.stayPeriod, true),// 在留期間
@@ -135,6 +143,7 @@ class employeeUpdateNew extends React.Component {
 			employmentInsuranceNo: publicUtils.nullToEmpty(this.state.employmentInsuranceNo),// 雇用保険番号
 			socialInsuranceStatus: publicUtils.nullToEmpty(this.state.socialInsurance),// 社会保険加入
 			socialInsuranceNo: publicUtils.nullToEmpty(this.state.socialInsuranceNo),// 社会保険番号
+			socialInsuranceDate: publicUtils.formateDate(this.state.socialInsuranceDate, true),// 社会保険期間
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
 			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),// 履歴書備考1
@@ -201,6 +210,26 @@ class employeeUpdateNew extends React.Component {
 			[event.target.name]: event.target.value,
 		})
 	}
+	
+	departmentCodeChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		if(event.target.value==="0"){
+			this.getNO(this.state.empNoHead + "G");// 採番番号
+			this.setState({
+				siteRoleCode: "",
+				projectTypeCode: "",
+				contractDeadline: "",
+				temporary_contractDeadline: "",
+				resumeName1: "",
+				resumeName2: "",
+			})
+		}else{
+			this.getNO(this.state.empNoHead);// 採番番号
+		}
+	}
+	
 	/**
 	 * 出身地に変更する時、日本語ラベルとEnglishラベルを変更する
 	 */
@@ -269,6 +298,7 @@ class employeeUpdateNew extends React.Component {
 			.then(response => response.data)
 			.then((data) => {
 				$("#firstHalfAddress").val(data.firstHalfAddress);
+				this.inactiveBirthday(publicUtils.converToLocalTime(data.birthday, true));
 				this.setState({
 					employeeStatus: data.employeeStatus,// 社員区分
 					isBp:employeeNo.substring(0,2)==="BP"?true:false,
@@ -283,7 +313,7 @@ class employeeUpdateNew extends React.Component {
 					alphabetName2: data.alphabetName2,// ローマ字
 					alphabetName3: data.alphabetName3,// ローマ字
 					birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
-					temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
+					//temporary_age: publicUtils.converToLocalTime(data.birthday, true) === "" ? "" : Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(data.birthday, true).getTime()) / 31536000000),
 					japaneseCalendar: data.japaneseCalendar,// 和暦
 					genderStatus: data.genderStatus,// 性別
 					intoCompanyCode: data.intoCompanyCode,// 入社区分
@@ -317,6 +347,7 @@ class employeeUpdateNew extends React.Component {
 					certification1: data.certification1,// 資格1
 					certification2: data.certification2,// 資格2
 					siteRoleCode: data.siteRoleCode,// 役割
+					projectTypeCode: data.projectTypeCode,// 分野
 					postcode: data.postcode,// 郵便番号
 					lastHalfAddress: data.lastHalfAddress,
 					stationCode: data.stationCode,
@@ -325,6 +356,8 @@ class employeeUpdateNew extends React.Component {
 					developLanguage3: data.developLanguage3,// スキール3
 					developLanguage4: data.developLanguage4,// スキール4
 					developLanguage5: data.developLanguage5,// スキール5
+					frameWork1: data.frameWork1,
+					frameWork2: data.frameWork2,
 					residenceCode: data.residenceCode,// 在留資格
 					residenceCardNo: data.residenceCardNo,// 在留カード
 					stayPeriod: publicUtils.converToLocalTime(data.stayPeriod, true),// 在留期間
@@ -338,6 +371,7 @@ class employeeUpdateNew extends React.Component {
 					employmentInsuranceNo: data.employmentInsuranceNo,// 雇用保険番号
 					socialInsurance: data.socialInsuranceStatus,// 社会保険加入
 					socialInsuranceNo: data.socialInsuranceNo,// 社会保険番号
+					socialInsuranceDate: publicUtils.converToLocalTime(data.socialInsuranceDate, true),// 社会保険期間
 					myNumber: data.myNumber,// マイナンバー
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
 					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
@@ -500,6 +534,20 @@ class employeeUpdateNew extends React.Component {
 				socialInsuranceDate: date,
 			}
 		);
+		if( date !== "" && date !== null ){
+			this.setState(
+					{
+						socialInsurance: "1",
+					}
+				);
+		}else{
+			this.setState(
+					{
+						socialInsurance: "0",
+						socialInsuranceNo: "",
+					}
+				);
+		}
 	};
 	
 	immigrationStartTimeChange = date => {
@@ -777,6 +825,30 @@ class employeeUpdateNew extends React.Component {
 			})
 		}
 	}
+	
+	getFrameWork1 = (event, values) => {
+		if (values != null) {
+			this.setState({
+				frameWork1: values.code,
+			})
+		} else {
+			this.setState({
+				frameWork1: "",
+			})
+		}
+	}
+	
+	getFrameWork2 = (event, values) => {
+		if (values != null) {
+			this.setState({
+				frameWork2: values.code,
+			})
+		} else {
+			this.setState({
+				frameWork2: "",
+			})
+		}
+	}
 
 	/**
 	 * 郵便番号API
@@ -795,7 +867,7 @@ class employeeUpdateNew extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo,socialInsuranceNo,retirementResonClassificationCode, myNumber, certification1, certification2, siteRoleCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo,socialInsuranceNo,retirementResonClassificationCode, myNumber, certification1, certification2, siteRoleCode,　projectTypeCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled,residenceTimeDisabled,bpDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress,employmentInsurance,socialInsurance,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -1012,7 +1084,7 @@ class employeeUpdateNew extends React.Component {
 									<InputGroup.Text id="fiveKanji">部署</InputGroup.Text>
 								</InputGroup.Prepend>
 								<Form.Control as="select" size="sm"
-									onChange={this.valueChange}
+									onChange={this.departmentCodeChange}
 									name="departmentCode" value={departmentCode}
 									autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
 									{this.state.departmentCodes.map(date =>
@@ -1215,12 +1287,21 @@ class employeeUpdateNew extends React.Component {
 				<InputGroup.Prepend>
 					<InputGroup.Text id="inputGroup-sizing-sm">役割</InputGroup.Text>
 				</InputGroup.Prepend>
-				<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" >
+				<Form.Control as="select" name="siteRoleCode" onChange={this.valueChange} value={siteRoleCode} autoComplete="off" 
+					disabled={departmentCode === "0" ? true : false}>
 					{this.state.siteMaster.map(date =>
 						<option key={date.code} value={date.code}>
 							{date.name}
 						</option>
 					)}
+				</Form.Control>
+				<Form.Control as="select" name="projectTypeCode" onChange={this.valueChange} value={projectTypeCode} autoComplete="off"
+					disabled={departmentCode === "0" ? true : false}>
+				{this.state.projectType.map(date =>
+					<option key={date.code} value={date.code}>
+						{date.name}
+					</option>
+				)}
 				</Form.Control>
 				<font className="site-mark"></font>
 
@@ -1238,8 +1319,8 @@ class employeeUpdateNew extends React.Component {
 						className="form-control form-control-sm"
 						autoComplete="off"
 						minDate={new Date()}
-						disabled={employeeStatus === "0" ? false : true}
-						id={"datePicker-empInsert-left"}
+						id={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
+						disabled={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? true : false}
 					/>
 				</InputGroup.Append>
 				<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1251,8 +1332,8 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Text id="inputGroup-sizing-sm" >履歴書1</InputGroup.Text>
 					</InputGroup.Prepend>
 					<FormControl placeholder="履歴書1名" value={resumeName1} autoComplete="off" maxlength="30"
-						onChange={this.valueChange} size="sm" name="resumeName1" />
-							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
+						onChange={this.valueChange} size="sm" name="resumeName1" disabled={departmentCode === "0" ? true : false} />
+							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} disabled={departmentCode === "0" ? true : false} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" || this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
 							<font className="site-mark"></font>
 
 					<Row></Row>
@@ -1261,8 +1342,8 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 					</InputGroup.Prepend>
 					<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off" disabled={employeeStatus === "0" ? false : true}  maxlength="30"
-						onChange={this.valueChange} size="sm" name="resumeName2" />
-							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>
+						onChange={this.valueChange} size="sm" name="resumeName2" disabled={departmentCode === "0" ? true : false} />
+							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>
 							<font className="site-mark"></font>
 					</InputGroup>
 							</Col>
@@ -1309,13 +1390,6 @@ class employeeUpdateNew extends React.Component {
 						</option>
 					)}
 				</Form.Control>
-				<font className="site-mark"></font>
-
-				<Row></Row>
-				
-				<InputGroup.Prepend>
-				<InputGroup.Text id="inputGroup-sizing-sm"></InputGroup.Text>
-				</InputGroup.Prepend>
 				<Form.Control as="select" name="certification2" onChange={this.valueChange} value={certification2} autoComplete="off" >
 					{this.state.qualification.map(date =>
 						<option key={date.code} value={date.code}>
@@ -1391,6 +1465,37 @@ class employeeUpdateNew extends React.Component {
 							)}
 						/>
 						
+						<Row></Row>
+						
+						<InputGroup.Prepend>
+						<InputGroup.Text id="inputGroup-sizing-sm">フレーム</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Autocomplete
+							id="frameWork1"
+							name="frameWork1"
+							value={this.state.frameWorkMaster.find(v => v.code === this.state.frameWork1) || {}}
+							onChange={(event, values) => this.getFrameWork1(event, values)}
+							options={this.state.frameWorkMaster}
+							getOptionLabel={(option) => option.name}
+							renderInput={(params) => (
+								<div ref={params.InputProps.ref}>
+									<input placeholder="  フレームワーク1" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="frameWork1" />
+								</div>
+							)}
+						/>
+						<Autocomplete
+							id="frameWork2"
+							name="frameWork2"
+							value={this.state.frameWorkMaster.find(v => v.code === this.state.frameWork2) || {}}
+							onChange={(event, values) => this.getFrameWork2(event, values)}
+							options={this.state.frameWorkMaster}
+							getOptionLabel={(option) => option.name}
+							renderInput={(params) => (
+								<div ref={params.InputProps.ref}>
+									<input placeholder="  フレームワーク2" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-employeeInsert-developLanguage" id="frameWork2" />
+								</div>
+							)}
+						/>
 					</InputGroup>
 						</Col>
 						<font style={{ "color": "#000000"}}>住所情報</font>
@@ -1481,7 +1586,9 @@ class employeeUpdateNew extends React.Component {
 								<InputGroup.Text id="sevenKanji">在留カード番号</InputGroup.Text>
 							</InputGroup.Prepend>
 							<FormControl placeholder="在留カード番号" value={residenceCardNo} autoComplete="off"  disabled={employeeStatus === "0" ? false : true}
-								onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12" />
+								onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12"
+									disabled={this.state.residenceCode === "6" ? true : false}	/>
+
 									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 
 								<Row></Row>
@@ -1498,8 +1605,8 @@ class employeeUpdateNew extends React.Component {
 								className="form-control form-control-sm"
 								autoComplete="off"
 								minDate={new Date()}
-								disabled={residenceTimeDisabled ? true : false}
-								id={residenceTimeDisabled ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+								disabled={residenceTimeDisabled || this.state.residenceCode === "6" ? true : false}
+								id={residenceTimeDisabled || this.state.residenceCode === "6" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
 							/>
 							</InputGroup.Append>
 							<Autocomplete
@@ -1578,7 +1685,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Prepend>
 							<InputGroup.Text id="sevenKanji">社会保険加入</InputGroup.Text>
 						</InputGroup.Prepend>
-						<Form.Control as="select" size="sm"
+						<Form.Control as="select" size="sm" hidden
 							onChange={this.valueChangesocialInsuranceStatus}
 							name="socialInsurance" value={socialInsurance}
 							autoComplete="off">
@@ -1588,10 +1695,22 @@ class employeeUpdateNew extends React.Component {
 								</option>
 							)}
 						</Form.Control>
+						<InputGroup.Append>
+						<DatePicker
+							selected={this.state.socialInsuranceDate}
+							onChange={this.socialInsuranceDateChange}
+							locale="ja"
+							dateFormat="yyyy/MM/dd"
+							className="form-control form-control-sm"
+							autoComplete="off"
+							disabled={residenceTimeDisabled ? true : false}
+							id={residenceTimeDisabled ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+						/>
+						</InputGroup.Append>
 						<InputGroup.Prepend>
 						<InputGroup.Text id="twoKanji">番号</InputGroup.Text>
 					</InputGroup.Prepend>
-							<FormControl placeholder="社会保険番号" value={socialInsuranceNo} autoComplete="off"
+							<FormControl placeholder="整理番号" value={socialInsuranceNo} autoComplete="off"
 							onChange={this.valueChange} size="sm" name="socialInsuranceNo" maxlength="13"  disabled={socialInsurance === "1" ? false : true} />
 						<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 

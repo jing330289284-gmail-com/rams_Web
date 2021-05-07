@@ -149,10 +149,10 @@ export async function getNO(columnName, typeName, table, serverIP) {
 		typeName: typeName,
 		name: table
 	};
-	if(typeName==="BP"){
+	if(typeName.length > 3){
 		$.ajax({
 			type: "POST",
-			url: serverIP + "getNO",
+			url: serverIP + "getNoG",
 			data: JSON.stringify(mo),
 			contentType: "application/json",
 			async: false,
@@ -166,25 +166,45 @@ export async function getNO(columnName, typeName, table, serverIP) {
 				}
 			}
 		});
-	}
-	else{
-		$.ajax({
-			type: "POST",
-			url: serverIP + "getNoNew",
-			data: JSON.stringify(mo),
-			contentType: "application/json",
-			async: false,
-			xhrFields: {
-				// 允许带上凭据
-		        withCredentials: true
-			},
-			success: function(data) {
-				if (data != null) {
-					no = data
+	}else{
+		if(typeName==="BP"){
+			$.ajax({
+				type: "POST",
+				url: serverIP + "getNO",
+				data: JSON.stringify(mo),
+				contentType: "application/json",
+				async: false,
+				xhrFields: {
+					// 允许带上凭据
+			        withCredentials: true
+				},
+				success: function(data) {
+					if (data != null) {
+						no = data
+					}
 				}
-			}
-		});
+			});
+		}
+		else{
+			$.ajax({
+				type: "POST",
+				url: serverIP + "getNoNew",
+				data: JSON.stringify(mo),
+				contentType: "application/json",
+				async: false,
+				xhrFields: {
+					// 允许带上凭据
+			        withCredentials: true
+				},
+				success: function(data) {
+					if (data != null) {
+						no = data
+					}
+				}
+			});
+		}
 	}
+	
 	return no;
 }
 
@@ -382,9 +402,9 @@ export function handleDownload(path, serverIP) {
 	}
 }
 
-//Download 方法
-//param path 備考：ファイルのフォーマットは下記です
-//c:/file/LYC124_12/12_履歴書1.xlsx
+// Download 方法
+// param path 備考：ファイルのフォーマットは下記です
+// c:/file/LYC124_12/12_履歴書1.xlsx
 export function resumeDownload(path, serverIP, name) {
 	if (path !== undefined && path !== null && path !== "") {
 		var NewPath = new Array();
@@ -426,9 +446,9 @@ export function resumeDownload(path, serverIP, name) {
 	}
 }
 
-//Download 方法
-//param path 備考：ファイルのフォーマットは下記です
-//c:/file/LYC124_12/12_履歴書1.xlsx
+// Download 方法
+// param path 備考：ファイルのフォーマットは下記です
+// c:/file/LYC124_12/12_履歴書1.xlsx
 export function testHandleDownload(path, serverIP) {
 	for(let i = 0; i < path.length; i++){
 		if (path[i] !== undefined && path[i] !== null && path[i] !== "") {
@@ -465,9 +485,9 @@ export function testHandleDownload(path, serverIP) {
 	}
 }
 
-//Download 方法
-//param path 備考：ファイルのフォーマットは下記です
-//c:/file/LYC124_12/12_履歴書1.xlsx
+// Download 方法
+// param path 備考：ファイルのフォーマットは下記です
+// c:/file/LYC124_12/12_履歴書1.xlsx
 export function folderDownload(path, serverIP) {
 		if (path !== undefined && path !== null && path !== "") {
 			var NewPath = new Array();
