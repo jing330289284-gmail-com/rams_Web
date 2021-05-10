@@ -202,6 +202,7 @@ class employeeInsertNew extends React.Component {
 				temporary_contractDeadline: "",
 				resumeName1: "",
 				resumeName2: "",
+				occupationCode: "2",
 			})
 		}else{
 			this.getNO(this.state.empNoHead);// 採番番号
@@ -492,8 +493,16 @@ class employeeInsertNew extends React.Component {
 			// this.getNO("LYC");
 			this.getNO(this.state.empNoHead);
 			this.setState({ employeeStatus: "0" });
-		}else{
-			
+		}else if(value === '2'){
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '2', intoCompanyCode: '', departmentCode: '',
+				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',
+				temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
+				occupationCode: '',socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
+			this.getNO("SP");
+		}
+		else if(value === '3'){
+			this.setState({ employeeStatus: "3" });
+			this.getNO("SC");
 		}
 	}
 
@@ -837,7 +846,7 @@ class employeeInsertNew extends React.Component {
 							<Col sm={4}>
 							<Col>
 								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "0" ? "社員番号" : (employeeStatus === "1" ? "BP番号" : "")}</InputGroup.Text></InputGroup.Prepend>
+									<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "2" ? "事業主番号" : (employeeStatus === "0" || employeeStatus === "3"  ? "社員番号" : (employeeStatus === "1" ? "BP番号" : ""))}</InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 										<font className="site-mark"></font>
 										</InputGroup>
@@ -903,7 +912,9 @@ class employeeInsertNew extends React.Component {
 										/*
 										 * disabled={occupationCode === "3" ?
 										 * true : false}
-										 */>
+										 */
+									disabled={departmentCode === "0" || employeeStatus === "2" ? true : false}
+										>
 										autoComplete="off" >
 										{this.state.occupationCodes.map(date =>
 											<option key={date.code} value={date.code}>
@@ -1441,6 +1452,9 @@ class employeeInsertNew extends React.Component {
 							locale="ja"
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
+							yearDropdownItemNumber={10}
+							scrollableYearDropdown
+							showYearDropdown
 							autoComplete="off"
 							minDate={new Date()}
 							disabled={residenceTimeDisabled || this.state.residenceCode === "6" ? true : false}
@@ -1471,6 +1485,9 @@ class employeeInsertNew extends React.Component {
 							locale="ja"
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
+							yearDropdownItemNumber={10}
+							scrollableYearDropdown
+							showYearDropdown
 							autoComplete="off"
 							minDate={new Date()}
 							disabled={residenceTimeDisabled ? true : false}
@@ -1505,6 +1522,7 @@ class employeeInsertNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChangeEmployeeInsuranceStatus}
 								name="employmentInsurance" value={employmentInsurance}
+								disabled={employeeStatus === "2" ? true : false}
 								autoComplete="off">
 								{this.state.employmentInsuranceStatus.map(date =>
 									<option key={date.code} value={date.code}>
@@ -1542,8 +1560,8 @@ class employeeInsertNew extends React.Component {
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
 							autoComplete="off"
-							disabled={residenceTimeDisabled ? true : false}
-							id={residenceTimeDisabled ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+							disabled={residenceTimeDisabled || employeeStatus === "2" ? true : false}
+							id={residenceTimeDisabled || employeeStatus === "2" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
 						/>
 						</InputGroup.Append>
 						

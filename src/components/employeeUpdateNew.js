@@ -585,9 +585,19 @@ class employeeUpdateNew extends React.Component {
 		const value = event.target.value;
 		if (value === '1') {
 			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',employeeNo: this.state.bpNo,bpDisabled:true,residenceTimeDisabled:true,intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
-		} else {
+		} else if (value === '0')  {
 			this.getNO(this.state.empNoHead);
 			this.setState({ employeeStatus: "0",bpDisabled:false,residenceTimeDisabled:this.state.residenceCode === "5"?true:false });
+		}else if(value === '2'){
+			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '2', intoCompanyCode: '', departmentCode: '',
+				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',
+				temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
+				occupationCode: '',socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
+			this.getNO("SP");
+		}
+		else if(value === '3'){
+			this.setState({ employeeStatus: "3" });
+			this.getNO("SC");
 		}
 	}
 
@@ -1040,7 +1050,7 @@ class employeeUpdateNew extends React.Component {
 							<Col sm={4}>
 								<Col>
 									<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "0" ? "社員番号" : (employeeStatus === "1" ? "BP番号" : "")}</InputGroup.Text></InputGroup.Prepend>
+									<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "2" ? "事業主番号" : (employeeStatus === "0" || employeeStatus === "3"  ? "社員番号" : (employeeStatus === "1" ? "BP番号" : ""))}</InputGroup.Text></InputGroup.Prepend>
 									<FormControl value={employeeNo} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="employeeNo" />
 										<font className="site-mark"></font>
 										</InputGroup>
@@ -1103,7 +1113,9 @@ class employeeUpdateNew extends React.Component {
 								<Form.Control as="select" size="sm"
 									onChange={this.valueChange}
 									name="occupationCode" value={occupationCode}
-									autoComplete="off" >
+									autoComplete="off" 
+									disabled={departmentCode === "0" || employeeStatus === "2" ? true : false}
+									>
 									{this.state.occupationCodes.map(date =>
 										<option key={date.code} value={date.code}>
 											{date.name}
@@ -1603,6 +1615,9 @@ class employeeUpdateNew extends React.Component {
 								locale="ja"
 								dateFormat="yyyy/MM/dd"
 								className="form-control form-control-sm"
+								yearDropdownItemNumber={10}
+								scrollableYearDropdown
+								showYearDropdown
 								autoComplete="off"
 								minDate={new Date()}
 								disabled={residenceTimeDisabled || this.state.residenceCode === "6" ? true : false}
@@ -1632,6 +1647,9 @@ class employeeUpdateNew extends React.Component {
 									locale="ja"
 									dateFormat="yyyy/MM/dd"
 									className="form-control form-control-sm"
+									yearDropdownItemNumber={10}
+									scrollableYearDropdown
+									showYearDropdown
 									autoComplete="off"
 									minDate={new Date()}
 									disabled={residenceTimeDisabled ? true : false}
@@ -1666,6 +1684,7 @@ class employeeUpdateNew extends React.Component {
 						<Form.Control as="select" size="sm"
 							onChange={this.valueChangeEmployeeInsuranceStatus}
 							name="employmentInsurance" value={employmentInsurance}
+							disabled={employeeStatus === "2" ? true : false}
 							autoComplete="off">
 							{this.state.employmentInsuranceStatus.map(date =>
 								<option key={date.code} value={date.code}>
@@ -1703,8 +1722,8 @@ class employeeUpdateNew extends React.Component {
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
 							autoComplete="off"
-							disabled={residenceTimeDisabled ? true : false}
-							id={residenceTimeDisabled ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+							disabled={residenceTimeDisabled || employeeStatus === "2" ? true : false}
+							id={residenceTimeDisabled || employeeStatus === "2" ?  "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
 						/>
 						</InputGroup.Append>
 						<InputGroup.Prepend>

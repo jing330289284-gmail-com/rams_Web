@@ -456,7 +456,7 @@ class CustomerInfoSearch extends Component {
                                 <Form.Control placeholder="例：100" id="capitalStockBack" name="capitalStockBack" value={capitalStockBack}
                                     onChange={(e) => this.vNumberChange(e, 'capitalStockBack')} />
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="sanKanji">百万円</InputGroup.Text>
+                                    <InputGroup.Text id="twoKanji">万円</InputGroup.Text>
                                 </InputGroup.Prepend>
                             </InputGroup>
                         </Col>

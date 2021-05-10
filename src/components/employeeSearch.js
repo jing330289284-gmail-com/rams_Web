@@ -28,6 +28,7 @@ class employeeSearch extends React.Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.socialInsuranceValueChange = this.socialInsuranceValueChange.bind(this);
 		this.ageValueChange = this.ageValueChange.bind(this);
 		this.searchEmployee = this.searchEmployee.bind(this);
 	};
@@ -46,6 +47,17 @@ class employeeSearch extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value
 		})
+	}
+	
+	socialInsuranceValueChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value
+		})
+		if(event.target.value !== "1"){
+			this.setState({
+				socialInsuranceDate: "",
+			})
+		}
 	}
 
 	// reset
@@ -416,11 +428,9 @@ class employeeSearch extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ employeeStatus: '1', intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '' });
-		} else if (value === '0') {
-			this.setState({ employeeStatus: "0" });
+			this.setState({ employeeStatus: value, intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '' });
 		} else {
-			this.setState({ employeeStatus: "" });
+			this.setState({ employeeStatus: value });
 		}
 	}
 
@@ -812,7 +822,7 @@ class employeeSearch extends React.Component {
 											<InputGroup.Text id="inputGroup-sizing-sm">社会保険</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control as="select" size="sm"
-											onChange={this.valueChange}
+											onChange={this.socialInsuranceValueChange}
 											name="socialInsurance" value={socialInsurance}
 											autoComplete="off">
 											{this.state.socialInsuranceStatus.map(data =>
@@ -830,7 +840,7 @@ class employeeSearch extends React.Component {
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled={socialInsurance !== "1" ? true : false}
-											id={socialInsurance !== "1"  ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+											id={socialInsurance !== "1"  ? "datePickerReadonlyDefault-employeeSearch" : "datePicker-employeeSearch"}
 										/>
 										</InputGroup.Append>
 									</InputGroup>
@@ -932,8 +942,8 @@ class employeeSearch extends React.Component {
 					<Row >
 						<Col sm={4}>
 							<div style={{ "float": "left" }}>
-								<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} name="clickButton" variant="info" id="wagesInfo">給料情報</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} hidden={this.state.authorityCode==="4" ? false : true} name="clickButton" variant="info" id="wagesInfo">給料情報</Button>{' '}
 							</div>
 						</Col>
 						<Col sm={5}>
@@ -948,7 +958,7 @@ class employeeSearch extends React.Component {
 							<div style={{ "float": "right" }}>
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
-								<Button size="sm" variant="info" onClick={this.employeeDelete} name="clickButton" id="delete" variant="info"><FontAwesomeIcon icon={faTrash} /> 削	除</Button>
+								<Button size="sm" variant="info" onClick={this.employeeDelete} hidden={this.state.authorityCode==="4" ? false : true} name="clickButton" id="delete" variant="info"><FontAwesomeIcon icon={faTrash} /> 削除</Button>
 							</div>
 						</Col>
 					</Row>

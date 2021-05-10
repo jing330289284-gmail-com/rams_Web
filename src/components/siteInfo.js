@@ -5,7 +5,7 @@ import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo, faTrash, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash, faLevelUpAlt, faIdCard } from '@fortawesome/free-solid-svg-icons';
 import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
@@ -779,6 +779,29 @@ class siteInfo extends Component {
 		}
 		this.props.history.push(path);
 	}
+	
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				backPage: this.state.backPage,
+		};
+		switch (actionType) {
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/employeeDetailNew',
+					state: {
+						actionType: 'detail',
+						id: String(this.state.employeeName),
+						backPage: 'siteInfo',
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
+	
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
@@ -1296,7 +1319,10 @@ class siteInfo extends Component {
 						</Form.Group>
 					</Form>
 					<Row >
-						<Col sm={12}>
+					<Col sm={6}>
+						<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={pageDisabledFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>
+					</Col>
+						<Col sm={6}>
 							<div style={{ "float": "right" }}>
 								<Button name="button" size="sm" onClick={this.onDeleteRow} variant="info" type="button" disabled={this.state.deleteFlag === true ? true : false}>
 									<FontAwesomeIcon icon={faTrash} /> 削除</Button>

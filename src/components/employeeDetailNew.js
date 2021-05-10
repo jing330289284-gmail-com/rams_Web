@@ -556,7 +556,7 @@ class EmployeeDetailNew extends React.Component {
 						<Col sm={4}>
 							<Col>
 								<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "0" ? "社員番号" : (employeeStatus === "1" ? "BP番号" : "")}</InputGroup.Text></InputGroup.Prepend>
+								<InputGroup.Prepend><InputGroup.Text id="fiveKanji">{employeeStatus === "2" ? "事業主番号" : (employeeStatus === "0" || employeeStatus === "3"  ? "社員番号" : (employeeStatus === "1" ? "BP番号" : ""))}</InputGroup.Text></InputGroup.Prepend>
 								<FormControl value={employeeNo} disabled size="sm" name="employeeNo" />
 								<font className="site-mark"></font>
 								</InputGroup>

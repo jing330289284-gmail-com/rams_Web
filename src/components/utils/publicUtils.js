@@ -167,7 +167,7 @@ export async function getNO(columnName, typeName, table, serverIP) {
 			}
 		});
 	}else{
-		if(typeName==="BP"){
+		if(typeName==="BP" || typeName==="SP" || typeName==="SC"){
 			$.ajax({
 				type: "POST",
 				url: serverIP + "getNO",

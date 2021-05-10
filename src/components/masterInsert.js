@@ -123,11 +123,11 @@ class masterInsert extends Component {
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						this.refreshReducer();
 						this.setState({topCustomerName:'',
 							topCustomerAbbreviation:'',
 							url:''})
 					$("#toroku").removeAttr("disabled");
+					this.refreshReducer();
 					}
 				}).catch((error) => {
 					console.error("Error - " + error);
@@ -143,9 +143,29 @@ class masterInsert extends Component {
 		case "支店マスター":
 			break;
 		default:
-			window.location.reload();
 			break;
 		}
+		$("#shuseiTo").click();
+	}
+	
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				backPage: this.state.backPage,
+		};
+		switch (actionType) {
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/masterInsert',
+					state: {
+						actionType: 'detail',
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
 	}
 
 	handleTag = (event, values) => {
@@ -341,6 +361,8 @@ class masterInsert extends Component {
 						<Col sm={4} className="text-center">
 							<Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button" disabled={this.state.flag === true ? true : false}>
 								<FontAwesomeIcon icon={faSave} />登録
+							</Button>
+							<Button size="sm" onClick={	this.shuseiTo.bind(this, "detail")} variant="info" id="shuseiTo" type="button" hidden>
 							</Button>
 						</Col>
 					</Row>

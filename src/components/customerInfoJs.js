@@ -35,6 +35,7 @@ export function setDisabled(){
     $("#toCustomerInfo").attr("disabled",true);
     $("#dateButton").attr("disabled",true);
     $("#capitalStock").attr("disabled",true);
+    $("#basicContract").attr("disabled",true);
 }
 /**
  * お客様名前を入力してないと、小さい画面を開けない

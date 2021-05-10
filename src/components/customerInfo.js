@@ -64,6 +64,7 @@ class CustomerInfo extends Component {
         positionDrop: store.getState().dropDown[20].slice(1),
         typeOfIndustryDrop: store.getState().dropDown[36].slice(1),
         developLanguageDrop: store.getState().dropDown[8].slice(1),
+        basicContractStatus: store.getState().dropDown[72].slice(1),
         currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -174,6 +175,7 @@ class CustomerInfo extends Component {
                     $("#capitalStock").val(customerInfoMod.capitalStock);
                     $("#url").val(customerInfoMod.url);
                     $("#remark").val(customerInfoMod.remark);
+                    $("#basicContract").val(customerInfoMod.basicContract);
                     this.setState({
                         businessStartDate: utils.converToLocalTime(customerInfoMod.businessStartDate, false),
                         establishmentDate: utils.converToLocalTime(customerInfoMod.establishmentDate, false),
@@ -212,7 +214,8 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["customerDepartmentCode"] = this.state.customerDepartmentCode2;
         customerInfoMod["positionCode"] = this.state.positionCode2;
-        customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);;
+        customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);
+        customerInfoMod["basicContract"] = $("#basicContract").val();
         // customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
@@ -612,6 +615,7 @@ class CustomerInfo extends Component {
         $("#companyNatureCode").val("");
         $("#paymentsiteCode").val("");
         $("#purchasingManagersMail").val("");
+        $("#basicContract").val("");
         $("#purchasingManagers").val("");
         $("#capitalStock").val("");
         $("#customerAbbreviation").val("");
@@ -773,7 +777,7 @@ class CustomerInfo extends Component {
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="7" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>百万円</InputGroup.Text>
+                                        <InputGroup.Text id="twoKanji">万円</InputGroup.Text>
                                     </InputGroup.Prepend>
                                 </InputGroup>
                             </Col>
@@ -947,7 +951,7 @@ class CustomerInfo extends Component {
                                     <Form.Control maxLength="20" placeholder="例：田中" id="purchasingManagers" name="purchasingManagers" />
                                 </InputGroup>
                             </Col>
-                            <Col sm={3}>
+                            {/*<Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>部門</InputGroup.Text>
@@ -968,7 +972,7 @@ class CustomerInfo extends Component {
                                         )}
                                     />
                                 </InputGroup>
-                            </Col>
+                            </Col>*/}
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -998,6 +1002,20 @@ class CustomerInfo extends Component {
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="purchasingManagersMail" name="purchasingManagersMail" />
                                 </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+                            <InputGroup size="sm" className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text>基本契約</InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
+                                {this.state.basicContractStatus.map(date =>
+                                    <option key={date.code} value={date.code}>
+                                        {date.name}
+                                    </option>
+                                )}
+                            </Form.Control>
+                            </InputGroup>
                             </Col>
                         </Row>
                         <div style={{ "textAlign": "center" }}>
