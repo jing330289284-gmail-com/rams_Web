@@ -436,7 +436,7 @@ class employeeSearch extends React.Component {
 					newEmpInfoList.push(employeeInfoList[i]);
 				}
 			}
-			this.setState({ employeeInfo: newEmpInfoList });
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
 		} else if (value === '1') {
 			let newEmpInfoList = [];
 			for(let i in employeeInfoList){
@@ -444,7 +444,7 @@ class employeeSearch extends React.Component {
 					newEmpInfoList.push(employeeInfoList[i]);
 				}
 			}
-			this.setState({ intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '', employeeInfo: newEmpInfoList });
+			this.setState({ intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '', employeeInfo: newEmpInfoList, employeeName: ""  });
 		} else if (value === '2') {
 			let newEmpInfoList = [];
 			for(let i in employeeInfoList){
@@ -452,7 +452,7 @@ class employeeSearch extends React.Component {
 					newEmpInfoList.push(employeeInfoList[i]);
 				}
 			}
-			this.setState({ employeeInfo: newEmpInfoList });
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
 		} else if (value === '3') {
 			let newEmpInfoList = [];
 			for(let i in employeeInfoList){
@@ -460,7 +460,7 @@ class employeeSearch extends React.Component {
 					newEmpInfoList.push(employeeInfoList[i]);
 				}
 			}
-			this.setState({ employeeInfo: newEmpInfoList });
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
 		} else {
 			this.setState({ employeeInfo: employeeInfoList });
 		}
