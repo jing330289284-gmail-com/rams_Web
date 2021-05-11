@@ -62,7 +62,7 @@ class masterInsert extends Component {
 	 * 登録ボタン
 	 */
 	toroku = () => {
-		$("#toroku").attr({"disabled":"disabled"});
+		// $("#toroku").attr({"disabled":"disabled"});
 		// setTimeout($("#toroku").removeAttr("disabled"),2000)
 		if (this.state.master != '支店マスター' && this.state.master != 'TOPお客様' ) {
 			var masterModel = {};
@@ -76,7 +76,7 @@ class masterInsert extends Component {
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
+						// $("#toroku").removeAttr("disabled");
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -86,7 +86,7 @@ class masterInsert extends Component {
 					console.error("Error - " + error);
 				});
 		} else if(this.state.master === '支店マスター') {
-			$("#toroku").attr({"disabled":"disabled"});
+			// $("#toroku").attr({"disabled":"disabled"});
 			const branchDetails = {
 				bankBranchCode: this.state.branchCode,
 				bankBranchName: this.state.branchName,
@@ -96,20 +96,20 @@ class masterInsert extends Component {
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
+						// $("#toroku").removeAttr("disabled");
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						this.refreshReducer();
 						this.setState({branchCode:'',
 										branchName:''})
-					$("#toroku").removeAttr("disabled");
+					// $("#toroku").removeAttr("disabled");
 					}
 				}).catch((error) => {
 					console.error("Error - " + error);
 				});
 		}else if(this.state.master === 'TOPお客様') {
-			$("#toroku").attr({"disabled":"disabled"});
+			// $("#toroku").attr({"disabled":"disabled"});
 			const customerDetails = {
 				topCustomerName: this.state.topCustomerName,
 				topCustomerAbbreviation: this.state.topCustomerAbbreviation,
@@ -119,14 +119,14 @@ class masterInsert extends Component {
 				.then(result => {
 					if (result.data.errorsMessage != null) {
 						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-						$("#toroku").removeAttr("disabled");
+						// $("#toroku").removeAttr("disabled");
 					} else {
 						this.setState({ "myToastShow": true, "errorsMessageShow": false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 						this.setState({topCustomerName:'',
 							topCustomerAbbreviation:'',
 							url:''})
-					$("#toroku").removeAttr("disabled");
+					// $("#toroku").removeAttr("disabled");
 					this.refreshReducer();
 					}
 				}).catch((error) => {
@@ -143,20 +143,25 @@ class masterInsert extends Component {
 		case "支店マスター":
 			break;
 		default:
+			let dropName = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus);
+			dropName = "get" + dropName.substring(4,dropName.length);
+			store.dispatch({type:"UPDATE_STATE",dropName:dropName});
 			break;
 		}
-		$("#shuseiTo").click();
+		//$("#shuseiTo").click();
 	}
 	
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = {
+				master: this.state.master,
+				type: "return",
 				backPage: this.state.backPage,
 		};
 		switch (actionType) {
 			case "detail":
 				path = {
-					pathname: '/subMenuManager/masterInsert',
+					pathname: '/subMenuManager/masterUpdate',
 					state: {
 						actionType: 'detail',
 						sendValue: sendValue,

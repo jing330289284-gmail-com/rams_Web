@@ -54,7 +54,7 @@ class employeeUpdateNew extends React.Component {
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
-		siteMaster: store.getState().dropDown[3],
+		siteMaster: store.getState().dropDown[34],
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		japaneaseLevelCodes: store.getState().dropDown[5],
 		residenceCodes: store.getState().dropDown[6],
@@ -924,9 +924,9 @@ class employeeUpdateNew extends React.Component {
 				</Modal>
 				{/* 終了 */}
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === "0" ? false : true} >口座情報</Button>{' '}
-					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === "0" ? false : true}>PW設定</Button>{' '}
-					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === "0" ? true : false}>BP情報</Button>{' '}
+					<Button size="sm" id="bankInfo" onClick={this.handleShowModal.bind(this, "bankInfo")} disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >口座情報</Button>{' '}
+					<Button size="sm" id="passwordSet" onClick={this.handleShowModal.bind(this, "passwordSet")} disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}>PW設定</Button>{' '}
+					<Button size="sm" id="bpInfoModel" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={employeeStatus === "0" || employeeStatus === "3" ? true : false}>BP情報</Button>{' '}
 				</div>
 				<Form onReset={this.resetBook} enctype="multipart/form-data">
 					<Form.Group>
@@ -1062,7 +1062,7 @@ class employeeUpdateNew extends React.Component {
 									<Form.Control as="select" size="sm"
 									onChange={this.valueChangeEmployeeFormCode}
 									name="employeeFormCode" value={employeeFormCode}
-									autoComplete="off" id="Autocompletestyle-employeeInsert-employeeFormCode" disabled={employeeStatus === "0" ? false : true} >
+									autoComplete="off" id="Autocompletestyle-employeeInsert-employeeFormCode" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
 									{this.state.employeeFormCodes.map(date =>
 										<option key={date.code} value={date.code}>
 											{date.name}
@@ -1079,7 +1079,7 @@ class employeeUpdateNew extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
+										autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1096,7 +1096,7 @@ class employeeUpdateNew extends React.Component {
 								<Form.Control as="select" size="sm"
 									onChange={this.departmentCodeChange}
 									name="departmentCode" value={departmentCode}
-									autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
+									autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
 									{this.state.departmentCodes.map(date =>
 										<option key={date.code} value={date.code}>
 											{date.name}
@@ -1129,7 +1129,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="fiveKanji">社内メール</InputGroup.Text>
 							</InputGroup.Prepend>
-							<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
+							<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
 								onChange={this.valueChange} size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
 							<font color="red" className="site-mark">★</font>
 							
@@ -1189,7 +1189,7 @@ class employeeUpdateNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}
 								name="authorityCode" value={authorityCode}
-								autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0" ? false : true} >
+								autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
 								{this.state.authorityCodes.map(date =>
 									<option key={date.code} value={date.code}>
 										{date.name}
@@ -1266,8 +1266,8 @@ class employeeUpdateNew extends React.Component {
 							showFullMonthYearPicker
 							className="form-control form-control-sm"
 							autoComplete="off"
-							disabled={employeeStatus === "0" ? false : true}
-							id={employeeStatus === "0" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
+							disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
+							id={employeeStatus === "0" || employeeStatus === "3" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
 						/>
 					</InputGroup.Append>
 					<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1331,8 +1331,8 @@ class employeeUpdateNew extends React.Component {
 						className="form-control form-control-sm"
 						autoComplete="off"
 						minDate={new Date()}
-						id={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
-						disabled={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? true : false}
+						id={((employeeStatus === "0" || employeeStatus === "3" ? false : true) || departmentCode === "0") ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
+						disabled={((employeeStatus === "0" || employeeStatus === "3" ? false : true) || departmentCode === "0") ? true : false}
 					/>
 				</InputGroup.Append>
 				<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1353,9 +1353,9 @@ class employeeUpdateNew extends React.Component {
 					<InputGroup.Prepend>
 						<InputGroup.Text id="inputGroup-sizing-sm">履歴書2</InputGroup.Text>
 					</InputGroup.Prepend>
-					<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off" disabled={employeeStatus === "0" ? false : true}  maxlength="30"
+					<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}  maxlength="30"
 						onChange={this.valueChange} size="sm" name="resumeName2" disabled={departmentCode === "0" ? true : false} />
-							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={((employeeStatus === "0" ? false : true) || departmentCode === "0") ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>
+							<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={((employeeStatus === "0" || employeeStatus === "3" ? false : true) || departmentCode === "0") ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" || this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>
 							<font className="site-mark"></font>
 					</InputGroup>
 							</Col>
@@ -1583,7 +1583,7 @@ class employeeUpdateNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChangeResidenceCodeFormCode}
 								name="residenceCode" value={residenceCode}
-								autoComplete="off" disabled={employeeStatus === "0" ? false : true} >
+								autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
 								{this.state.residenceCodes.map(data =>
 									<option key={data.code} value={data.code}>
 										{data.name}
@@ -1597,7 +1597,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="sevenKanji">在留カード番号</InputGroup.Text>
 							</InputGroup.Prepend>
-							<FormControl placeholder="在留カード番号" value={residenceCardNo} autoComplete="off"  disabled={employeeStatus === "0" ? false : true}
+							<FormControl placeholder="在留カード番号" value={residenceCardNo} autoComplete="off"  disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
 								onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12"
 									disabled={this.state.residenceCode === "6" ? true : false}	/>
 
@@ -1628,7 +1628,7 @@ class employeeUpdateNew extends React.Component {
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
 								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
@@ -1660,7 +1660,7 @@ class employeeUpdateNew extends React.Component {
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={employeeStatus === "0" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
 								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
@@ -1672,7 +1672,7 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Prepend>
 							<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus === "0" ? false : true}
+						<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
 							onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 								<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 

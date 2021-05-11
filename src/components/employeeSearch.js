@@ -77,6 +77,7 @@ class employeeSearch extends React.Component {
 		residenceCodes: store.getState().dropDown[6],
 		nationalityCodes: store.getState().dropDown[7],
 		developLanguageMaster: store.getState().dropDown[8].slice(1),
+		employeeInfoAll: store.getState().dropDown[9].slice(1),
 		employeeInfo: store.getState().dropDown[9].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerMaster: store.getState().dropDown[15].slice(1),
@@ -427,11 +428,43 @@ class employeeSearch extends React.Component {
 	 */
 	employeeStatusChange = event => {
 		const value = event.target.value;
-		if (value === '1') {
-			this.setState({ employeeStatus: value, intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '' });
+		let employeeInfoList = this.state.employeeInfoAll;
+		if(value === '0'){
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) !== "BP" && employeeInfoList[i].code.substring(0,2) !== "SP" && employeeInfoList[i].code.substring(0,2) !== "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList });
+		} else if (value === '1') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "BP"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '', employeeInfo: newEmpInfoList });
+		} else if (value === '2') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SP"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList });
+		} else if (value === '3') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList });
 		} else {
-			this.setState({ employeeStatus: value });
+			this.setState({ employeeInfo: employeeInfoList });
 		}
+		this.setState({ employeeStatus: value });
 	}
 
 	getDevelopLanguage1 = (event, values) => {

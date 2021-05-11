@@ -49,7 +49,7 @@ class EmployeeDetailNew extends React.Component {
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
-		siteMaster: store.getState().dropDown[3],
+		siteMaster: store.getState().dropDown[34],
 		projectType: store.getState().dropDown[52],
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		japaneaseLevelCodes: store.getState().dropDown[5],

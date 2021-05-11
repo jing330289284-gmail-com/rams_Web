@@ -6,12 +6,12 @@ const defaultState = {
 export function fetchDropDown() {
 	var methodNameList = ["getGender",// 0.性別区別
 		"getIntoCompany",// 1入社区分
-		"getStaffForms", // 2 社員形式
-		"getSiteMaster",// 3役割
+		"getEmployeeForm", // 2 社員形式
+		"getSiteRole",// 3役割
 		"getEmployeeStatus",// 4社員区分
 		"getJapaneseLevel",// 5日本語
 		"getVisa",// 6在留資格
-		"getNationalitys",// 7国籍
+		"getNationality",// 7国籍
 		"getDevelopLanguage", // 8開発言語
 		"getEmployeeName",// 9社員名
 		"getOccupation",// 10 職種
@@ -26,11 +26,11 @@ export function fetchDropDown() {
 		"getCompanyNature",// 19性質
 		"getPosition",// 20職位
 		"getPaymentsite",// 21支払サイト
-		"getDepartmentMasterDrop",// 22部門名前
+		"getCustomerDepartment",// 22部門名前
 		"getNewMember",// 23新人区分
 		"getCustomerContractStatus",// 24契約区分
-		"getSalesPuttern", // 25営業結果パタンー
-		"getSpecialPoint",// 26特別ポイント条件
+		"getSalesPattern", // 25営業結果パタンー
+		"getSpecialPointCondition",// 26特別ポイント条件
 		"getApproval",// 27ステータスを取得する
 		"getCheckSection",// 28確認区分を取得する
 		"getEnterPeriod",// 29enterPeriodを取得する
@@ -38,7 +38,7 @@ export function fetchDropDown() {
 		"getTransportation",// 31交通手段を取得する
 		"getMaster",// 32マスター名を取得する
 		"getPayOffRange",// 33精算時間を取得する
-		"getSiteMaster",// 34役割を取得する
+		"getSiteRole",// 34役割を取得する
 		"getTopCustomer",// 35トップお客様を取得する
 		"getTypeOfIndustry",// 36業種を取得する
 		"getRound",// 37片往を取得する
@@ -59,7 +59,7 @@ export function fetchDropDown() {
 		"getProjectType",// 52案件タイプ取得
 		"getCustomerName",// 53お客様名
 		"getQualification",// 54資格
-        "getDepartmentMasterDrop",// 55お客様部門
+        "getCustomerDepartment",// 55お客様部門
         "getEmployeeNameByOccupationName",// 56社員名(営業、管理者)
 		"getBankInfo",// 57銀行名
 		"getTheSelectProjectperiodStatus",// 58案件期間選択ステータス
@@ -116,12 +116,12 @@ function updateState (state = defaultState,dropName) {
 var methodList = [dropName];
 var methodNameList = ["getGender",// 0.性別区別
 		"getIntoCompany",// 1入社区分
-		"getStaffForms", // 2 社員形式
-		"getSiteMaster",// 3役割
+		"getEmployeeForm", // 2 社員形式
+		"getSiteRole",// 3役割
 		"getEmployeeStatus",// 4社員区分
 		"getJapaneseLevel",// 5日本語
 		"getVisa",// 6在留資格
-		"getNationalitys",// 7国籍
+		"getNationality",// 7国籍
 		"getDevelopLanguage", // 8開発言語
 		"getEmployeeName",// 9社員名
 		"getOccupation",// 10 職種
@@ -136,11 +136,11 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getCompanyNature",// 19性質
 		"getPosition",// 20職位
 		"getPaymentsite",// 21支払サイト
-		"getDepartmentMasterDrop",// 22部門名前
+		"getCustomerDepartment",// 22部門名前
 		"getNewMember",// 23新人区分
 		"getCustomerContractStatus",// 24契約区分
-		"getSalesPuttern", // 25営業結果パタンー
-		"getSpecialPoint",// 26特別ポイント条件
+		"getSalesPattern", // 25営業結果パタンー
+		"getSpecialPointCondition",// 26特別ポイント条件
 		"getApproval",// 27ステータスを取得する
 		"getCheckSection",// 28確認区分を取得する
 		"getEnterPeriod",// 29enterPeriodを取得する
@@ -148,7 +148,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getTransportation",// 31交通手段を取得する
 		"getMaster",// 32マスター名を取得する
 		"getPayOffRange",// 33精算時間を取得する
-		"getSiteMaster",// 34役割を取得する
+		"getSiteRole",// 34役割を取得する
 		"getTopCustomer",// 35トップお客様を取得する
 		"getTypeOfIndustry",// 36業種を取得する
 		"getRound",// 37片往を取得する
@@ -169,7 +169,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getProjectType",// 52案件タイプ取得
 		"getCustomerName",// 53お客様名
 		"getQualification",// 54資格
-        "getDepartmentMasterDrop",// 55お客様部門
+        "getCustomerDepartment",// 55お客様部門
         "getEmployeeNameByOccupationName",// 56社員名(営業、管理者)
 		"getBankInfo",// 57銀行名
 		"getTheSelectProjectperiodStatus",// 58案件期間選択ステータス

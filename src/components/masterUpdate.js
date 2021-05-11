@@ -41,6 +41,13 @@ class masterUpdate extends Component {
 
 	// 页面加载
 	componentDidMount() {
+		const { location } = this.props
+		if( location.state != undefined ){
+			if(location.state.sendValue.type === "return"){
+				
+				$("#shuseiTo").click();
+			}
+		}
 	}
 	// 明细查询
 	selectMaster = (event,values) => {	
@@ -251,9 +258,36 @@ class masterUpdate extends Component {
 		case "TOPお客様":
 			store.dispatch({type:"UPDATE_STATE",dropName:"getTopCustomer"});
 			break;
+		case "支店マスター":
+			break;
 		default:
+			let dropName = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus);
+			dropName = "get" + dropName.substring(4,dropName.length);
+			store.dispatch({type:"UPDATE_STATE",dropName:dropName});
 			break;
 		}
+	}
+	
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				master: this.state.master,
+				type: "return",
+				backPage: this.state.backPage,
+		};
+		switch (actionType) {
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/masterInsert',
+					state: {
+						actionType: 'detail',
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
 	}
 
 	handleTag = (event, values) => {
@@ -490,6 +524,8 @@ class masterUpdate extends Component {
 						<Button size="sm" onClick={this.delete} variant="info" id="delete" type="button" disabled={this.state.flag === true ? true : false} >
 							<FontAwesomeIcon icon={faTrash} /> 削除
                            </Button>
+						<Button size="sm" onClick={	this.shuseiTo.bind(this, "detail")} variant="info" id="shuseiTo" type="button" hidden>
+						</Button>
 					</div>
 					<br />
 					{master === "支店マスター" ?
