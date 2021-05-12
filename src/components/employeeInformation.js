@@ -122,7 +122,7 @@ class employeeInformation extends Component {// 状況変動一覧
 			situationInfoList:[]
 		});
 		
-    	axios.post(this.state.serverIP + "EmployeeInformation/apdateEmployeeInformation",  {
+    	axios.post(this.state.serverIP + "EmployeeInformation/updateEmployeeInformation",  {
     		employeeNos : employeeNo,
     		dealDistinctioCodes : dealDistinctioCode
     	})

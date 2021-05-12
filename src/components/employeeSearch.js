@@ -85,6 +85,7 @@ class employeeSearch extends React.Component {
 		searchFlag: false,
 		ageFrom: '', ageTo: '',
 		authorityCode: '',
+		linkDisableFlag: true,// linkDisableFlag
 	};
 	// リセット reset
 	resetStates = {
@@ -210,7 +211,8 @@ class employeeSearch extends React.Component {
 				})
 				this.setState({
 					searchFlag: true,
-					rowSelectEmployeeNo: ''
+					rowSelectEmployeeNo: '',
+					linkDisableFlag: true,// linkDisableFlag
 				})
 					$('#resumeInfo1').prop('disabled', true);
 					$('#resumeInfo2').prop('disabled', true);
@@ -332,10 +334,9 @@ class employeeSearch extends React.Component {
 					resumeName1: row.resumeName1,
 					resumeInfo2: row.resumeInfo2,
 					resumeName2: row.resumeName2,
+					linkDisableFlag: false,// linkDisableFlag
 				}
 			);
-			$('#resumeInfo1').prop('disabled', false);
-			$('#resumeInfo2').prop('disabled', false);
 			$('#residentCardInfo').prop('disabled', false);
 			$('#passportInfo').prop('disabled', false);
 			$('#delete').attr('disabled', false);
@@ -346,11 +347,10 @@ class employeeSearch extends React.Component {
 		} else {
 			this.setState(
 				{
-					rowSelectEmployeeNo: ''
+					rowSelectEmployeeNo: '',
+					linkDisableFlag: true,// linkDisableFlag
 				}
 			);
-			$('#resumeInfo1').prop('disabled', true);
-			$('#resumeInfo2').prop('disabled', true);
 			$('#residentCardInfo').prop('disabled', true);
 			$('#passportInfo').prop('disabled', true);
 			$('#delete').attr('disabled', true);
@@ -970,19 +970,21 @@ class employeeSearch extends React.Component {
 						<FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
 				</div>
-				<br />
+				<div style={{ "height": "10px" }}>
+				</div>
 				<div>
 					<Row >
-						<Col sm={4}>
+						<Col sm={9}>
 							<div style={{ "float": "left" }}>
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} hidden={this.state.authorityCode==="4" ? false : true} name="clickButton" variant="info" id="wagesInfo">給料情報</Button>{' '}
-							</div>
-						</Col>
-						<Col sm={5}>
-							<div style={{ "float": "center" }}>
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} ><FontAwesomeIcon icon={faDownload} /> 履歴書1</Button>{' '}
-								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={this.downloadResume.bind(this,this.state.resumeInfo2,2)} ><FontAwesomeIcon icon={faDownload} /> 履歴書2</Button>{' '}
+
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo1" onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
+										{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1": this.state.resumeName1}
+								</Button>{' '}
+								<Button size="sm" variant="info" name="clickButton" id="resumeInfo2" onClick={this.downloadResume.bind(this,this.state.resumeInfo2,2)} disabled={this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? true:false} ><FontAwesomeIcon icon={faDownload} />
+										{this.state.linkDisableFlag || this.state.resumeInfo2 === null || this.state.resumeInfo2 === "" ? "履歴書2":this.state.resumeName2}
+								</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="residentCardInfo" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> 在留カード</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton" id="passportInfo" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> パスポート</Button>{' '}
 							</div>

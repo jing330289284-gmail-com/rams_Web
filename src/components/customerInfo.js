@@ -794,9 +794,7 @@ class CustomerInfo extends Component {
                                         locale="pt-BR"
                                         id={actionType === "detail" ? "customerInfoDatePickerReadOnly-establishmentDate" : "customerInfoDatePicker-establishmentDate"}
                                         className="form-control form-control-sm"
-                                        yearDropdownItemNumber={100}
-    									scrollableYearDropdown
-    									showYearDropdown
+                                        showMonthYearPicker
                                         showFullMonthYearPicker
                                         showDisabledMonthNavigation
                                         name="establishmentDate"

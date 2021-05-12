@@ -149,7 +149,7 @@ class WagesInfo extends Component {
      * select取得
      */
     getDropDowns = () => {
-        var methodArray = ["getInsurance", "getBonus", "getStaffForms", "getEmployeeNameNoBP"]
+        var methodArray = ["getInsurance", "getBonus", "getEmployeeForm", "getEmployeeNameNoBP"]
         var data = utils.getPublicDropDown(methodArray, this.state.serverIP);
         this.setState(
             {

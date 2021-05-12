@@ -308,7 +308,7 @@ class salesPoint extends React.Component {
 												showFullMonthYearPicker
 												name="admissionStartDate"
 												className="form-control form-control-sm"
-												id="admissionStartDate"
+												id="datePicker"
 												locale="ja"
 												autoComplete="off"
 											/>〜
@@ -320,7 +320,7 @@ class salesPoint extends React.Component {
 												showFullMonthYearPicker
 												name="admissionEndDate"
 												className="form-control form-control-sm"
-												id="admissionEndDate"
+												id="datePicker"
 												locale="ja"
 												autoComplete="off"
 											/>

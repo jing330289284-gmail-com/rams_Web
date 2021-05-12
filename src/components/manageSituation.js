@@ -96,6 +96,7 @@ class manageSituation extends React.Component {
 
 	// 初期表示のレコードを取る
 	componentDidMount() {
+		this.getLoginUserInfo();
 		// let sysYearMonth = new Date();
 		// let searchYearMonth = sysYearMonth.getFullYear() +
 		// (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() +
@@ -143,7 +144,18 @@ class manageSituation extends React.Component {
 			});
 		}
 	}
-
+	
+	getLoginUserInfo = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+		.then(result => {
+			this.setState({
+				authorityCode: result.data[0].authorityCode,
+			})
+		})
+		.catch(function(error) {
+			alert(error);
+		});	
+	}
 
 	getNextMonth = (date, addMonths) => {
 		// var dd = new Date();
@@ -903,15 +915,15 @@ class manageSituation extends React.Component {
 									<InputGroup.Text id="inputGroup-sizing-sm">希望単価</InputGroup.Text>
 								</InputGroup.Prepend>
 								<FormControl value={this.state.hopeLowestPrice} autoComplete="off" name="hopeLowestPrice"
-									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
+									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag || this.state.authorityCode !== "4" ? true : false } />
 								<InputGroup.Append>
-									<InputGroup.Text id="basic-addon1">万円</InputGroup.Text>
+									<InputGroup.Text id="twoKanji">万円</InputGroup.Text>
 								</InputGroup.Append>
 								<font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>～</font>
 								<FormControl value={this.state.hopeHighestPrice} autoComplete="off" name="hopeHighestPrice"
-									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag} />
+									style={this.state.style} onChange={this.valueChangeNUmberOnly.bind(this)} size="sm" maxLength="3" readOnly={this.state.readFlag || this.state.authorityCode !== "4" ? true : false } />
 								<InputGroup.Append>
-									<InputGroup.Text id="basic-addon2">万円</InputGroup.Text>
+									<InputGroup.Text id="twoKanji">万円</InputGroup.Text>
 								</InputGroup.Append>
 							</InputGroup>
 							</Col>
@@ -923,7 +935,7 @@ class manageSituation extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="salesPriorityStatus" value={this.state.salesPriorityStatus}
-										autoComplete="off" disabled={this.state.readFlag}>
+										autoComplete="off" disabled={this.state.readFlag || this.state.authorityCode !== "4" ? true : false }>
 										{this.state.salesPriorityStatuss.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}

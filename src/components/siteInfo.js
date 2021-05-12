@@ -283,6 +283,7 @@ class siteInfo extends Component {
 		workState: '0',
 		topCustomerNo: '',
 		developLanguageCode: '',
+		developLanguageCode2: '',
 		unitPrice: '',
 		payOffRange1: '0',
 		payOffRange2: '0',
@@ -432,6 +433,20 @@ class siteInfo extends Component {
 			})
 		})
 	}
+	
+	getDevelopLanguage2 = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let developLanguageCode = null;
+			if (values !== null) {
+				developLanguageCode = values.code;
+			}
+			this.setState({
+				developLanguageCode2: developLanguageCode,
+			})
+		})
+	}
 	// レコードselect事件
 	handleRowSelect = (row, isSelected) => {
 		if (isSelected) {
@@ -446,6 +461,7 @@ class siteInfo extends Component {
 				customerNo: row.customerNo === null ? '' : row.customerNo,
 				topCustomerNo: row.topCustomerNo === null ? '' : row.topCustomerNo,
 				developLanguageCode: row.developLanguageCode === null ? '' : row.developLanguageCode,
+				developLanguageCode2: row.developLanguageCode2 === null ? '' : row.developLanguageCode2,
 				unitPrice: row.unitPrice === null ? '' : row.unitPrice,
 				payOffRange1: row.payOffRange1 === null ? '' : row.payOffRange1,
 				payOffRange2: row.payOffRange2 === null ? '' : row.payOffRange2,
@@ -534,6 +550,7 @@ class siteInfo extends Component {
 		siteModel["customerNo"] = this.state.customerNo;
 		siteModel["topCustomerNo"] = this.state.topCustomerNo;
 		siteModel["developLanguageCode"] = this.state.developLanguageCode;
+		siteModel["developLanguageCode2"] = this.state.developLanguageCode2;
 		siteModel["employeeNo"] = this.state.employeeName;
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
@@ -588,6 +605,7 @@ class siteInfo extends Component {
 		siteModel["customerNo"] = this.state.customerNo;
 		siteModel["topCustomerNo"] = this.state.topCustomerNo;
 		siteModel["developLanguageCode"] = this.state.developLanguageCode;
+		siteModel["developLanguageCode2"] = this.state.developLanguageCode2;
 		siteModel["employeeNo"] = this.state.employeeName;
 		siteModel["location"] = this.state.location;
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
@@ -805,7 +823,7 @@ class siteInfo extends Component {
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 8,  // which size per page you want to locate as
+			sizePerPage: 10,  // which size per page you want to locate as
 								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
@@ -1103,7 +1121,22 @@ class siteInfo extends Component {
 											)}
 											disabled={pageDisabledFlag}
 										/>
-									</InputGroup>
+										<Autocomplete
+										id="developLanguageCode2"
+										name="developLanguageCode2"
+										value={this.state.developLanguageMaster.find(v => v.code === this.state.developLanguageCode2) || {}}
+										onChange={(event, values) => this.getDevelopLanguage2(event, values)}
+										options={this.state.developLanguageMaster}
+										getOptionLabel={(option) => option.name}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo-developLanguageCode"
+													style={{ "backgroundColor": this.state.employeeName === '' ? "#e9ecef" : "" }} />
+											</div>
+										)}
+										disabled={pageDisabledFlag}
+									/>
+										</InputGroup>
 								</Col>
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">

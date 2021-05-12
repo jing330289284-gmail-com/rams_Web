@@ -23,7 +23,7 @@ class masterUpdate extends Component {
 	}
 
 	initialState = {
-		code: '',
+		codeNo: '',
 		flag: true,// 活性非活性flag
 		masterStatus: store.getState().dropDown[32].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -127,7 +127,7 @@ class masterUpdate extends Component {
 			}
 			else{
 				this.setState({
-					code: row.code,
+					codeNo: row.codeNo,
 					data: row.data,
 				})
 			}
@@ -145,7 +145,7 @@ class masterUpdate extends Component {
 			masterModel[item.name] = item.value;
 		});
 		masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-		masterModel["code"] = this.state.code - 1;
+		masterModel["codeNo"] = this.state.codeNo;
 		masterModel["bankBranchName"] = this.state.oldBranchName;
 		masterModel["bankBranchCode"] = this.state.oldBranchCode;
 		masterModel["newBankBranchName"] = this.state.branchName;
@@ -202,7 +202,7 @@ class masterUpdate extends Component {
 		if (a) {
 			var masterModel = {};
 			masterModel["master"] = publicUtils.labelGetValue($("#master").val(), this.state.masterStatus)
-			masterModel["code"] = this.state.code - 1;
+			masterModel["codeNo"] = this.state.codeNo;
 			masterModel["bankBranchName"] = this.state.oldBranchName;
 			masterModel["bankBranchCode"] = this.state.oldBranchCode;
 			masterModel["bankCode"] = this.state.bankCode;
@@ -531,7 +531,8 @@ class masterUpdate extends Component {
 					{master === "支店マスター" ?
 						<div>
 							<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='row' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+								<TableHeaderColumn dataField='codeNo' hidden ></TableHeaderColumn>
 								<TableHeaderColumn dataField='bankBranchCode' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='bankBranchName' tdStyle={{ padding: '.45em' }} headerAlign='center'>支店名称</TableHeaderColumn>
 							</BootstrapTable>
@@ -541,7 +542,8 @@ class masterUpdate extends Component {
 					{master === "TOPお客様" ?
 							<div>
 								<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-									<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='row' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='codeNo' hidden ></TableHeaderColumn>
 									<TableHeaderColumn dataField='topCustomerNo' width='120' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様番号</TableHeaderColumn>
 									<TableHeaderColumn dataField='topCustomerName' tdStyle={{ padding: '.45em' }} headerAlign='center'>お客様名称</TableHeaderColumn>
 									<TableHeaderColumn dataField='topCustomerAbbreviation' hidden={true} ></TableHeaderColumn>
@@ -553,7 +555,8 @@ class masterUpdate extends Component {
 					{master != "支店マスター" && master != "TOPお客様"  ?
 							<div>
 								<BootstrapTable selectRow={selectRow} data={this.state.masterData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
-									<TableHeaderColumn dataField='code' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='row' width='60' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
+									<TableHeaderColumn dataField='codeNo' hidden ></TableHeaderColumn>
 									<TableHeaderColumn dataField='data' tdStyle={{ padding: '.45em' }} headerAlign='center'>名称</TableHeaderColumn>
 								</BootstrapTable>
 							</div>:

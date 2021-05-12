@@ -1118,12 +1118,12 @@ class salesSendLetter extends React.Component {
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='6%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='customerNo' hidden isKey>お客様番号</TableHeaderColumn>
-							<TableHeaderColumn width='11%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='22%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
-							<TableHeaderColumn width='11%' dataField='levelCode' >ランキング</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='levelCode' hidden >ランキング</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='monthCount' >取引数</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>

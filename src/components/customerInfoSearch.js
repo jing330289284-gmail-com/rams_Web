@@ -567,7 +567,7 @@ class CustomerInfoSearch extends Component {
                                     // minDate={new Date()}
                                     showDisabledMonthNavigation
                                     className="form-control form-control-sm"
-                                    id="customerInfoDatePicker"
+                                    id="customerInfoDatePicker-customerInfoSearch"
                                     name="businessStartDate"
                                     locale="ja"
                                 />
