@@ -45,6 +45,7 @@ class siteSearch extends Component {
 		getstations: store.getState().dropDown[14].slice(1),//　場所 
 		employeeStatuss: store.getState().dropDown[4],//　社員区分 
 		typteOfContractStatus: store.getState().dropDown[65].slice(1),// 契約形態
+		employeeInfoAll: store.getState().dropDown[9].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 	onchange = event => {
@@ -52,6 +53,51 @@ class siteSearch extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
+	
+	/**
+	 * タイプが違う時に、色々な操作をします。
+	 */
+	employeeStatusChange = event => {
+		const value = event.target.value;
+		let employeeInfoList = this.state.employeeInfoAll;
+		if(value === '0'){
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) !== "BP" && employeeInfoList[i].code.substring(0,2) !== "SP" && employeeInfoList[i].code.substring(0,2) !== "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		} else if (value === '1') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "BP"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '2') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SP"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '3') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else {
+			this.setState({ employeeInfo: employeeInfoList });
+		}
+		this.setState({ employeeStatus: value });
+	}
+	
 	onchangeDataAcquisitionPeriod = event => {
 		this.setState({
 			[event.target.name]: event.target.value
@@ -418,6 +464,20 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" size="sm" onChange={this.employeeStatusChange.bind(this)} name="employeeStatus" value={employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
+								<Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">社員名(BP)</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Autocomplete
@@ -441,20 +501,6 @@ class siteSearch extends Component {
 												</div>
 											)}
 										/>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Form.Control as="select" size="sm" onChange={this.onchange} name="employeeStatus" value={employeeStatus} autoComplete="off">
-											{this.state.employeeStatuss.map(data =>
-												<option key={data.code} value={data.code}>
-													{data.name}
-												</option>
-											)}
-										</Form.Control>
 									</InputGroup>
 								</Col>
 							</Row>

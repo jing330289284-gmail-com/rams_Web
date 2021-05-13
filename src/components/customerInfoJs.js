@@ -25,6 +25,7 @@ export function setDisabled(){
     $("#meisaiToroku").attr("disabled",true);
     $("#meisaiReset").attr("disabled",true);
     $("#purchasingManagersMail").attr("disabled",true);
+    $("#remark").attr("disabled",true);
     $("#purchasingManagers").attr("disabled",true);
     $("#topCustomer").attr("disabled",true);
     $("#customerDepartmentName").attr("disabled",true);

@@ -171,6 +171,7 @@ class CustomerInfo extends Component {
                     $("#representative").val(customerInfoMod.representative);
                     $("#paymentsiteCode").val(customerInfoMod.paymentsiteCode);
                     $("#purchasingManagersMail").val(customerInfoMod.purchasingManagersMail);
+                    $("#remark").val(customerInfoMod.remark);
                     $("#purchasingManagers").val(customerInfoMod.purchasingManagers);
                     $("#capitalStock").val(customerInfoMod.capitalStock);
                     $("#url").val(customerInfoMod.url);
@@ -615,6 +616,7 @@ class CustomerInfo extends Component {
         $("#companyNatureCode").val("");
         $("#paymentsiteCode").val("");
         $("#purchasingManagersMail").val("");
+        $("#remark").val("");
         $("#basicContract").val("");
         $("#purchasingManagers").val("");
         $("#capitalStock").val("");
@@ -735,6 +737,20 @@ class CustomerInfo extends Component {
                     <br />
                     <Form id="customerForm">
                         <Row>
+	                        <Col sm={3}>
+		                        <InputGroup size="sm" className="mb-3">
+		                            <InputGroup.Prepend>
+		                                <InputGroup.Text>基本契約</InputGroup.Text>
+		                            </InputGroup.Prepend>
+		                            <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
+		                            {this.state.basicContractStatus.map(date =>
+		                                <option key={date.code} value={date.code}>
+		                                    {date.name}
+		                                </option>
+		                            )}
+		                        </Form.Control>
+		                        </InputGroup>
+	                        </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -1002,19 +1018,14 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
-                            <InputGroup size="sm" className="mb-3">
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text>基本契約</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
-                                {this.state.basicContractStatus.map(date =>
-                                    <option key={date.code} value={date.code}>
-                                        {date.name}
-                                    </option>
-                                )}
-                            </Form.Control>
-                            </InputGroup>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>備考</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
+	                            </InputGroup>
                             </Col>
+
                         </Row>
                         <div style={{ "textAlign": "center" }}>
                             <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">

@@ -1332,7 +1332,6 @@ class employeeUpdateNew extends React.Component {
 						dateFormat="yyyy/MM/dd"
 						className="form-control form-control-sm"
 						autoComplete="off"
-						minDate={new Date()}
 						id={((employeeStatus === "0" || employeeStatus === "3" ? false : true) || departmentCode === "0") ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
 						disabled={((employeeStatus === "0" || employeeStatus === "3" ? false : true) || departmentCode === "0") ? true : false}
 					/>
@@ -1734,7 +1733,7 @@ class employeeUpdateNew extends React.Component {
 							className="form-control form-control-sm"
 							autoComplete="off"
 							disabled={residenceTimeDisabled || employeeStatus === "2" ? true : false}
-							id={residenceTimeDisabled || employeeStatus === "2" ?  "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+							id={residenceTimeDisabled || employeeStatus === "2" ?  "datePickerReadonlyDefault-empInsert-right-socialInsuranceDate" : "datePicker-empInsert-right-socialInsuranceDate"}
 						/>
 						</InputGroup.Append>
 						<InputGroup.Prepend>
@@ -1750,7 +1749,7 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Text id="inputGroup-sizing-sm">出入国届</InputGroup.Text>
 					</InputGroup.Prepend>
 					<InputGroup.Prepend>
-						<InputGroup.Text id="twoKanji">開始</InputGroup.Text>
+						<InputGroup.Text id="startKanji">開始</InputGroup.Text>
 					</InputGroup.Prepend>
 					<InputGroup.Append>
 					<DatePicker
@@ -1763,7 +1762,7 @@ class employeeUpdateNew extends React.Component {
 						className="form-control form-control-sm"
 						autoComplete="off"
 						minDate={new Date()}
-						id={"datePicker-empInsert-right"}
+						id={"datePicker-empInsert-right-immigrationTime"}
 					/>
 				</InputGroup.Append>
 				<InputGroup.Prepend>
@@ -1780,7 +1779,7 @@ class employeeUpdateNew extends React.Component {
 					className="form-control form-control-sm"
 					autoComplete="off"
 					minDate={new Date()}
-					id={"datePicker-empInsert-right"}
+					id={"datePicker-empInsert-right-immigrationTime"}
 				/>
 			</InputGroup.Append>
 						
@@ -1800,14 +1799,14 @@ class employeeUpdateNew extends React.Component {
 								className="form-control form-control-sm"
 								disabled={retirementYearAndMonthDisabled ? false : true}
 								autoComplete="off"
-								id={retirementYearAndMonthDisabled ? "datePicker-empInsert-right" : "datePickerReadonlyDefault-empInsert-right"}
+								id={retirementYearAndMonthDisabled ? "datePicker-empInsert-right-immigrationTime" : "datePickerReadonlyDefault-empInsert-right-immigrationTime"}
 							/>
 						</InputGroup.Append>
 						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
 						
 									
 							<InputGroup.Prepend>
-								<InputGroup.Text id="fourKanji">退職区分</InputGroup.Text>
+								<InputGroup.Text id="twoKanji">区分</InputGroup.Text>
 							</InputGroup.Prepend>
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}

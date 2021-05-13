@@ -1186,7 +1186,7 @@ class EmployeeDetailNew extends React.Component {
 											className="form-control form-control-sm"
 											autoComplete="off"
 											disabled
-											id="datePickerReadonlyDefault-empInsert-right"
+											id="datePickerReadonlyDefault-empInsert-right-socialInsuranceDate"
 										/>
 										</InputGroup.Append>
 										<InputGroup.Prepend>
@@ -1202,7 +1202,7 @@ class EmployeeDetailNew extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">出入国届</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Prepend>
-										<InputGroup.Text id="twoKanji">開始</InputGroup.Text>
+										<InputGroup.Text id="startKanji">開始</InputGroup.Text>
 									</InputGroup.Prepend>
 									<InputGroup.Append>
 									<DatePicker
@@ -1215,7 +1215,7 @@ class EmployeeDetailNew extends React.Component {
 										autoComplete="off"
 										minDate={new Date()}
 										disabled
-										id={"datePickerReadonlyDefault-empInsert-right"}
+										id={"datePickerReadonlyDefault-empInsert-right-immigrationTime"}
 									/>
 								</InputGroup.Append>
 								<InputGroup.Prepend>
@@ -1232,7 +1232,7 @@ class EmployeeDetailNew extends React.Component {
 									autoComplete="off"
 									minDate={new Date()}
 									disabled
-									id={"datePickerReadonlyDefault-empInsert-right"}
+									id={"datePickerReadonlyDefault-empInsert-right-immigrationTime"}
 								/>
 							</InputGroup.Append>
 										
@@ -1249,14 +1249,14 @@ class EmployeeDetailNew extends React.Component {
 										showMonthYearPicker
 										showFullMonthYearPicker
 										className="form-control form-control-sm"
-										id="datePickerReadonlyDefault-empInsert-right"
+										id="datePickerReadonlyDefault-empInsert-right-immigrationTime"
 										disabled
 									/>
 								</InputGroup.Append>
 								<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
 											
 									<InputGroup.Prepend>
-										<InputGroup.Text id="fourKanji">退職区分</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="retirementResonClassificationCode" value={retirementResonClassificationCode}

@@ -335,25 +335,25 @@ class EnterPeriodSearch extends React.Component {
                         striped
                         hover
                         condensed>
-                        <TableHeaderColumn isKey={true} dataField='rowNo' tdStyle={{ padding: '.45em' }} >
+                        <TableHeaderColumn isKey={true} dataField='rowNo' tdStyle={{ padding: '.45em' }} width='6%' >
                             番号</TableHeaderColumn>
-                        <TableHeaderColumn dataField='employeeNo' tdStyle={{ padding: '.45em' }} >
+                        <TableHeaderColumn dataField='employeeNo' tdStyle={{ padding: '.45em' }} hidden >
                             社員番号</TableHeaderColumn>
-                        <TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} >
+                        <TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='11%' >
                             氏名</TableHeaderColumn>
-                        <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkSalary}>
+                        <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='11%' dataFormat={this.addMarkSalary}>
                             基本支給</TableHeaderColumn>
-                        <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkInsuranceFeeAmount}>
+                        <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width='10%' dataFormat={this.addMarkInsuranceFeeAmount}>
                             社会保険</TableHeaderColumn>
-                        <TableHeaderColumn dataField='reflectYearAndMonth' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkReflectYearAndMonth}>
+                        <TableHeaderColumn dataField='reflectYearAndMonth' tdStyle={{ padding: '.45em' }} width='12%' dataFormat={this.addMarkReflectYearAndMonth}>
                             直近調整年月</TableHeaderColumn>
-                        <TableHeaderColumn dataField='admissionStartDate' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkAdmissionStartDate}>
+                        <TableHeaderColumn dataField='admissionStartDate' tdStyle={{ padding: '.45em' }} width='14%' dataFormat={this.addMarkAdmissionStartDate}>
                             直近入場年月日</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataFormat={this.periodButton.bind(this)}>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='11%' dataFormat={this.periodButton.bind(this)}>
                             非稼動月数</TableHeaderColumn>
-                        <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkUnitPrice}>
+                        <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='12%' dataFormat={this.addMarkUnitPrice}>
                             単価（万円）</TableHeaderColumn>
-                        <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkScheduleOfBonusAmount}>
+                        <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width='13%' dataFormat={this.addMarkScheduleOfBonusAmount}>
                             ボーナス予定額</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
