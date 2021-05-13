@@ -45,6 +45,7 @@ class CustomerInfoSearch extends Component {
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
         transactionStatusDrop: store.getState().dropDown[46].slice(1),
         customerDrop: store.getState().dropDown[53].slice(1),
+        basicContractStatus: store.getState().dropDown[72].slice(1),
         searchFlag: false,//検索ボタン押下フラグ
         sendValue: {},
     }
@@ -125,7 +126,8 @@ class CustomerInfoSearch extends Component {
         customerInfoMod["capitalStockBack"] = utils.deleteComma($("#capitalStockBack").val());
         customerInfoMod["topCustomerNo"] = this.state.topCustomerCode;
         customerInfoMod["stationCode"] = this.state.stationCode;
-        customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
+        customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);  
+        customerInfoMod["basicContract"] = $("#basicContract").val() === "0" ? null : $("#basicContract").val();        
         axios.post(this.state.serverIP + "customerInfoSearch/customerSearch", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -443,8 +445,21 @@ class CustomerInfoSearch extends Component {
                                 </Form.Control>
                             </InputGroup>
                         </Col>
+                        <Col sm={3}>
+                        <InputGroup size="sm" className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>基本契約</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
+                            {this.state.basicContractStatus.map(date =>
+                                <option key={date.code} value={date.code}>
+                                    {date.name}
+                                </option>
+                            )}
+                        </Form.Control>
+                        </InputGroup>
+                    </Col>
                     </Row>
-                    <br />
                     <Row>
                         <Col sm={3}>
                             <InputGroup size="sm">
