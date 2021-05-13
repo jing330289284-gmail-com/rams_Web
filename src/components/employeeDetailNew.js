@@ -167,6 +167,7 @@ class EmployeeDetailNew extends React.Component {
 					socialInsuranceNo: data.socialInsuranceNo,// 社会保険番号
 					socialInsuranceDate: publicUtils.converToLocalTime(data.socialInsuranceDate, true),// 社会保険期間
 					myNumber: data.myNumber,// マイナンバー
+					passportNo: data.passportNo,// パスポート番号
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
 					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
 					resumeName1: data.resumeName1,// 履歴書備考1
@@ -392,7 +393,7 @@ class EmployeeDetailNew extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2,alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo,employmentInsurance,socialInsurance,socialInsuranceNo, myNumber, certification1, certification2, siteRoleCode, projectTypeCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo,employmentInsurance,socialInsurance,socialInsuranceNo, myNumber, passportNo, certification1, certification2, siteRoleCode, projectTypeCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus,retirementResonClassificationCode,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -1127,6 +1128,15 @@ class EmployeeDetailNew extends React.Component {
 									<Row></Row>
 									
 								<InputGroup.Prepend>
+									<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
+								</InputGroup.Prepend>
+								<FormControl value={passportNo}
+									size="sm" name="passportNo" disabled />
+								<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
+								
+									<Row></Row>
+									
+								<InputGroup.Prepend>
 									<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
 								</InputGroup.Prepend>
 								<FormControl value={myNumber}
@@ -1243,13 +1253,10 @@ class EmployeeDetailNew extends React.Component {
 										disabled
 									/>
 								</InputGroup.Append>
-								<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-								<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
-								
-								<Row></Row>
+								<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
 											
 									<InputGroup.Prepend>
-										<InputGroup.Text id="sevenKanji">退職区分</InputGroup.Text>
+										<InputGroup.Text id="fourKanji">退職区分</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
 										name="retirementResonClassificationCode" value={retirementResonClassificationCode}

@@ -153,6 +153,7 @@ class employeeInsertNew extends React.Component {
 			socialInsuranceNo: publicUtils.nullToEmpty(this.state.socialInsuranceNo),// 社会保険番号
 			socialInsuranceDate: publicUtils.formateDate(this.state.socialInsuranceDate, true),// 社会保険期間
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
+			passportNo: publicUtils.nullToEmpty(this.state.passportNo),// パスポート番号
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
 			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),// 履歴書備考1
 			accountInfo: this.state.accountInfo,// 口座情報
@@ -564,7 +565,7 @@ class employeeInsertNew extends React.Component {
 
 	valueChangeEmployeeFormCode = (event) => {
 		const value = event.target.value;
-		if (value === "3") {
+		if (value === "4") {
 			this.setState({ retirementYearAndMonthDisabled: true, employeeFormCode: event.target.value })
 		} else {
 			this.setState({ retirementYearAndMonthDisabled: false, retirementYearAndMonth: "",retirementResonClassificationCode: '', employeeFormCode: event.target.value, temporary_retirementYearAndMonth: "" })
@@ -671,7 +672,7 @@ class employeeInsertNew extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1, alphabetName2, alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo,socialInsuranceNo, myNumber, certification1, certification2, siteRoleCode, projectTypeCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo,socialInsuranceNo, myNumber, passportNo, certification1, certification2, siteRoleCode, projectTypeCode, postcode, firstHalfAddress, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled,residenceTimeDisabled,retirementResonClassificationCode,socialInsurance,employmentInsurance, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus, stationCodeValue, developLanguage1Value, developLanguage2Value, developLanguage3Value, developLanguage4Value, developLanguage5Value,
 			frameWork1Value,frameWork2Value,
 		} = this.state;
@@ -1508,6 +1509,14 @@ class employeeInsertNew extends React.Component {
 							<Row></Row>
 							
 							<InputGroup.Prepend>
+								<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
+							</InputGroup.Prepend>
+								<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off"
+								onChange={this.valueChange} size="sm" name="passportNo" maxlength="9" />
+									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
+							<Row></Row>
+							
+							<InputGroup.Prepend>
 								<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
 							</InputGroup.Prepend>
 								<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
@@ -1664,13 +1673,11 @@ class employeeInsertNew extends React.Component {
 								id={retirementYearAndMonthDisabled ? "datePicker-empInsert-right" : "datePickerReadonlyDefault-empInsert-right"}
 							/>
 						</InputGroup.Append>
-						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-						<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
-
-						<Row></Row>
+						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
+						
 									
 							<InputGroup.Prepend>
-								<InputGroup.Text id="sevenKanji">退職区分</InputGroup.Text>
+								<InputGroup.Text id="fourKanji">退職区分</InputGroup.Text>
 							</InputGroup.Prepend>
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}

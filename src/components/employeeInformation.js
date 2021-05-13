@@ -28,6 +28,7 @@ class employeeInformation extends Component {// 状況変動一覧
 			hideSizePerPage: true,
             alwaysShowAllBtns: true,
             paginationShowsTotal: this.renderShowsTotal,
+			sortIndicator: false, // 隐藏初始排序箭头
 		};
     }
 
@@ -62,30 +63,34 @@ class employeeInformation extends Component {// 状況変動一覧
     
 	// 優先度表示
     stayPeriodChange(cell,row) {
-    	if(row.stayPeriod <= 90 && row.dealDistinctioCode !== "2"){
-        	return (<div><font color="red">{row.stayPeriod}</font></div>);
+    	if(row.stayPeriodDate <= 90 && row.dealDistinctioCode !== "2"){
+        	return (<div><font color="red">{row.stayPeriodDate === 0 ? "" : row.stayPeriodDate}</font></div>);
     	}
     	else{
-        	return (<div><font>{row.stayPeriod}</font></div>);
+        	return (<div><font>{row.stayPeriodDate === 0 ? "" : row.stayPeriodDate}</font></div>);
     	}
 	}
     
     birthdayChange(cell,row) {
-    	if(row.birthday <= 7 && row.dealDistinctioCode !== "2"){
-        	return (<div><font color="red">{row.birthday}</font></div>);
+    	if(row.birthdayDate <= 7 && row.dealDistinctioCode !== "2"){
+        	return (<div><font color="red">{row.birthdayDate === 0 ? "" : row.birthdayDate}</font></div>);
     	}
     	else{
-        	return (<div><font>{row.birthday}</font></div>);
+        	return (<div><font>{row.birthdayDate === 0 ? "" : row.birthdayDate}</font></div>);
     	}
 	}
     
     contractDeadlineChange(cell,row) {
-    	if(row.contractDeadline <= 60 && row.dealDistinctioCode !== "2"){
-        	return (<div><font color="red">{row.contractDeadline}</font></div>);
+    	if(row.contractDeadlineDate <= 60 && row.dealDistinctioCode !== "2"){
+        	return (<div><font color="red">{row.contractDeadlineDate === 0 ? "" : row.contractDeadlineDate}</font></div>);
     	}
     	else{
-        	return (<div><font>{row.contractDeadline}</font></div>);
+        	return (<div><font>{row.contractDeadlineDate === 0 ? "" : row.contractDeadlineDate}</font></div>);
     	}
+	}
+    
+    passportStayPeriodChange(cell,row)  {
+        return (<div><font>{row.passportStayPeriodDate === 0 ? "" : row.passportStayPeriodDate}</font></div>);
 	}
     
 	// レコードのステータス
@@ -184,13 +189,13 @@ class employeeInformation extends Component {// 状況変動一覧
                     selectRow={selectRow}
 					cellEdit={cellEdit}
 　					striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='rowNo' editable={false}>番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='rowNo' editable={false} dataSort >番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='employeeNo' isKey editable={false}>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='employeeName' editable={false}>社員名</TableHeaderColumn>
-                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='stayPeriod' dataFormat={this.stayPeriodChange} editable={false}>在留カード</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='birthday' dataFormat={this.birthdayChange} editable={false}>誕生日</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='contractDeadline' dataFormat={this.contractDeadlineChange} editable={false}>契約</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='passportStayPeriod' editable={false}>パスポート</TableHeaderColumn>
+                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='stayPeriodDate' dataFormat={this.stayPeriodChange} editable={false} dataSort >在留カード</TableHeaderColumn>                           
+                            <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='birthdayDate' dataFormat={this.birthdayChange} editable={false} dataSort >誕生日</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='contractDeadlineDate' dataFormat={this.contractDeadlineChange} editable={false} dataSort >契約</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='passportStayPeriodDate' dataFormat={this.passportStayPeriodChange} editable={false} dataSort >パスポート</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='12%' dataField='dealDistinctioCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect }} editable={true}>処理区分</TableHeaderColumn>
 					</BootstrapTable>
                     </div>

@@ -145,6 +145,7 @@ class employeeUpdateNew extends React.Component {
 			socialInsuranceNo: publicUtils.nullToEmpty(this.state.socialInsuranceNo),// 社会保険番号
 			socialInsuranceDate: publicUtils.formateDate(this.state.socialInsuranceDate, true),// 社会保険期間
 			myNumber: publicUtils.nullToEmpty(this.state.myNumber),// マイナンバー
+			passportNo: publicUtils.nullToEmpty(this.state.passportNo),// パスポート番号
 			resumeName1: publicUtils.nullToEmpty(this.state.resumeName1),// 履歴書備考1
 			resumeName2: publicUtils.nullToEmpty(this.state.resumeName2),// 履歴書備考1
 			accountInfo: this.state.accountInfo,// 口座情報
@@ -373,6 +374,7 @@ class employeeUpdateNew extends React.Component {
 					socialInsuranceNo: data.socialInsuranceNo,// 社会保険番号
 					socialInsuranceDate: publicUtils.converToLocalTime(data.socialInsuranceDate, true),// 社会保険期間
 					myNumber: data.myNumber,// マイナンバー
+					passportNo: data.passportNo,//パスポート番号
 					residentCardInfoURL: publicUtils.nullToEmpty(data.residentCardInfo),// 在留カード
 					resumeInfo1URL: publicUtils.nullToEmpty(data.resumeInfo1),// 履歴書
 					resumeName1: data.resumeName1,// 履歴書備考1
@@ -877,7 +879,7 @@ class employeeUpdateNew extends React.Component {
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1,alphabetName2, alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
-			residenceCardNo, employmentInsuranceNo,socialInsuranceNo,retirementResonClassificationCode, myNumber, certification1, certification2, siteRoleCode,　projectTypeCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
+			residenceCardNo, employmentInsuranceNo,socialInsuranceNo,retirementResonClassificationCode, myNumber, passportNo, certification1, certification2, siteRoleCode,　projectTypeCode, postcode, lastHalfAddress, resumeName1, resumeName2, temporary_stayPeriod,temporary_contractDeadline, temporary_yearsOfExperience, temporary_intoCompanyYearAndMonth, temporary_comeToJapanYearAndMonth,
 			retirementYearAndMonthDisabled,residenceTimeDisabled,bpDisabled, temporary_graduationYearAndMonth, temporary_retirementYearAndMonth, errorsMessageValue, employeeStatus , firstHalfAddress,employmentInsurance,socialInsurance,
 		} = this.state;
 		const { accountInfo, passwordSetInfo, bpInfoModel, actionType } = this.state;
@@ -1666,8 +1668,17 @@ class employeeUpdateNew extends React.Component {
 							)}
 						/>
 						<Form.File id="passportInfo" hidden data-browse="添付" value={this.state.passportInfo} custom onChange={(event) => this.changeFile(event, 'passportInfo')} />
-
-							<Row></Row>
+						
+						<Row></Row>
+							
+							<InputGroup.Prepend>
+								<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
+							</InputGroup.Prepend>
+							<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
+								onChange={this.valueChange} size="sm" name="passportNo" maxlength="12" />
+									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
+						
+						<Row></Row>
 							
 						<InputGroup.Prepend>
 							<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
@@ -1792,13 +1803,11 @@ class employeeUpdateNew extends React.Component {
 								id={retirementYearAndMonthDisabled ? "datePicker-empInsert-right" : "datePickerReadonlyDefault-empInsert-right"}
 							/>
 						</InputGroup.Append>
-						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
-						<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
-
-						<Row></Row>
+						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
+						
 									
 							<InputGroup.Prepend>
-								<InputGroup.Text id="sevenKanji">退職区分</InputGroup.Text>
+								<InputGroup.Text id="fourKanji">退職区分</InputGroup.Text>
 							</InputGroup.Prepend>
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}
