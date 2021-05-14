@@ -26,6 +26,7 @@ class salesSendLetter extends React.Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
+		allCustomerTemp: [],// お客様レコード用
 		customerName: '', // おきゃく名前
 		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		customers: store.getState().dropDown[53].slice(1),
@@ -143,6 +144,7 @@ class salesSendLetter extends React.Component {
 				}
 				this.setState({
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 					customerTemp: [...result.data],
 					allCustomerNo: customerNoArray,
 				},()=>{
@@ -220,6 +222,7 @@ class salesSendLetter extends React.Component {
 					.then(result => {
 				this.setState({
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 					customerTemp: [...result.data],
 					selectetRowIds: [],
 					selectedCusInfos: [],
@@ -366,6 +369,7 @@ class salesSendLetter extends React.Component {
 				.then(result => {
 					this.setState({
 						allCustomer: result.data,
+						allCustomerTemp: result.data,
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -395,6 +399,7 @@ class salesSendLetter extends React.Component {
 			this.setState({
 				selectedCusInfos: [],
 				allCustomer: newCustomer,
+				allCustomerTemp: newCustomer,
 				selectetRowIds: [],
 			});
 			this.refs.customersTable.setState({
@@ -493,6 +498,7 @@ class salesSendLetter extends React.Component {
 					storageList: newStorageListArray,
 					storageListName: this.state.storageListNameChange,
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 				});
 			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -526,6 +532,7 @@ class salesSendLetter extends React.Component {
 						storageList: newStorageListArray,
 						storageListName: this.state.storageListNameChange,
 						allCustomer: result.data,
+						allCustomerTemp: result.data,
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
@@ -751,6 +758,7 @@ class salesSendLetter extends React.Component {
 			.then(result => {
 				this.setState({
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 				});
 			})
 			.catch(function (err) {
@@ -912,7 +920,7 @@ class salesSendLetter extends React.Component {
 									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
 								</InputGroup.Prepend>
 								<Autocomplete
-									disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+									disabled={!(this.state.storageListName === null || this.state.storageListName === "") ? false : this.state.allCustomerTemp.length === this.state.customerTemp.length ? true : false}
 									options={this.state.customers}
 									getOptionLabel={(option) => option.name ? option.name : ""}
 									value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
@@ -953,7 +961,7 @@ class salesSendLetter extends React.Component {
 									<InputGroup.Text id="sanKanji">担当者</InputGroup.Text>
 								</InputGroup.Prepend>
 								<Autocomplete
-								disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+								disabled={!(this.state.storageListName === null || this.state.storageListName === "") ? false : this.state.allCustomerTemp.length === this.state.customerTemp.length ? true : false}
 								options={this.state.personInCharge}
 								getOptionLabel={(option) => option.text ? option.text : ""}
 								value={this.state.personInCharge.find(v => v.text === this.state.purchasingManagers) || ""}

@@ -510,6 +510,79 @@ class employeeSearch extends React.Component {
 			alert("ファイルが存在しません。");
 		});
 	}
+	
+	csvDownload = () => {
+/*		let employeeNo = [];
+		for(let i in this.state.employeeList) {
+			employeeNo.push(this.state.employeeList[i].employeeNo);
+		}
+		
+		axios.post(this.state.serverIP + "employee/csvDownload", employeeNo).then(response => response.data)
+			.then((data) => {
+			}
+		);*/
+		this.download(this.state.employeeList);
+
+
+	}
+	
+	download = (employeeList) => {
+	    // 导出
+        var str = "社員番号,社員名,カタカナ,ローマ字,性別," +
+        		"年齢,国籍,社員形式,採用区分,部署,職種,社内メール,携帯電話,卒業年月," +
+        		"来日年月,入社年月,経験年数,役割,契約期限,郵便番号,都道府県,以後住所," +
+        		"最寄り駅,在留資格,在留カード番号,在留カード期限,パスポート期限,パスポート番号," +
+        		"マイナンバー,雇用保険加入,雇用保険番号,社会保険加入,社会保険番号,出入国開始," +
+        		"終了,退職年月,退職区分" + "\n";
+        for (var i = 0; i < employeeList.length; i++) {
+            str += employeeList[i].employeeNo + ",";
+            str += employeeList[i].employeeName + ",";
+            str += employeeList[i].furigana + ",";
+            str += employeeList[i].alphabetName + ",";
+            str += employeeList[i].genderStatus + ",";
+            str += employeeList[i].birthday + ",";
+            str += employeeList[i].nationalityCode + ",";
+            str += employeeList[i].employeeStatus + ",";
+            str += employeeList[i].intoCompanyCode + ",";
+            str += employeeList[i].departmentCode + ",";
+            str += employeeList[i].occupationCode + ",";
+            str += employeeList[i].companyMail + ",";
+            str += employeeList[i].phoneNo + ",";
+            str += employeeList[i].graduationYearAndMonth + ",";
+            str += employeeList[i].comeToJapanYearAndMonth + ",";
+            str += employeeList[i].intoCompanyYearAndMonth + ",";
+            str += employeeList[i].yearsOfExperience + ",";
+            str += employeeList[i].siteRoleCode + ",";
+            str += employeeList[i].contractDeadline + ",";
+            str += employeeList[i].postcode + ",";
+            str += employeeList[i].firstHalfAddress + ",";
+            str += employeeList[i].lastHalfAddress + ",";
+            str += employeeList[i].stationCode + ",";
+            str += employeeList[i].residenceCode + ",";
+            str += employeeList[i].residenceCardNo + ",";
+            str += employeeList[i].stayPeriod + ",";
+            str += employeeList[i].passportStayPeriod + ",";
+            str += employeeList[i].passportNo + ",";
+            str += employeeList[i].myNumber + ",";
+            str += employeeList[i].employmentInsuranceStatus + ",";
+            str += employeeList[i].employmentInsuranceNo + ",";
+            str += employeeList[i].socialInsuranceStatus + ",";
+            str += employeeList[i].socialInsuranceNo + ",";
+            str += employeeList[i].immigrationStartTime + ",";
+            str += employeeList[i].immigrationEndTime + ",";
+            str += employeeList[i].retirementYearAndMonth + ",";
+            str += employeeList[i].retirementResonClassification + ",";
+            str += "\n";
+        }
+
+        var aaaa = "data:text/csv;charset=utf-8,\ufeff" + str;
+        var link = document.createElement("a");
+        link.setAttribute("href", aaaa);
+        var date = new Date();
+        var filename = "test";
+        link.setAttribute("download", filename + ".csv");
+        link.click();
+	}
 
 	getCustomerNo = (event, values) => {
 		if (values != null) {
@@ -676,7 +749,7 @@ class employeeSearch extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={5}>
+								<Col sm={4}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">社員名(BP)</InputGroup.Text>
@@ -699,7 +772,7 @@ class employeeSearch extends React.Component {
 											renderInput={(params) => (
 												<div ref={params.InputProps.ref}>
 													<input type="text" {...params.inputProps} className="auto"
-														style={{ width: 235, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }}
+														className="auto form-control Autocompletestyle-siteInfoSearch-employeeNo"
 													/>
 												</div>
 											)}
@@ -767,25 +840,28 @@ class employeeSearch extends React.Component {
 							</Row>
 							<Row>
 								<Col sm={3}>
-									{/*<InputGroup size="sm" className="mb-3">
-										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
-										</InputGroup.Prepend>
-										<Autocomplete
-											id="customerNo"
-											name="customerNo"
-											value={this.state.customerMaster.find(v => v.code === this.state.customerNo) || {}}
-											onChange={(event, values) => this.getCustomerNo(event, values)}
-											options={this.state.customerMaster}
-											getOptionLabel={(option) => option.name}
-											renderInput={(params) => (
-												<div ref={params.InputProps.ref}>
-													<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customer"	/>
-												</div>
-											)}
-										/>
-
-									</InputGroup>*/}
+									{/*
+										 * <InputGroup size="sm"
+										 * className="mb-3">
+										 * <InputGroup.Prepend> <InputGroup.Text
+										 * id="inputGroup-sizing-sm">お客様先</InputGroup.Text>
+										 * </InputGroup.Prepend> <Autocomplete
+										 * id="customerNo" name="customerNo"
+										 * value={this.state.customerMaster.find(v =>
+										 * v.code === this.state.customerNo) ||
+										 * {}} onChange={(event, values) =>
+										 * this.getCustomerNo(event, values)}
+										 * options={this.state.customerMaster}
+										 * getOptionLabel={(option) =>
+										 * option.name} renderInput={(params) => (
+										 * <div ref={params.InputProps.ref}>
+										 * <input type="text"
+										 * {...params.inputProps}
+										 * className="auto form-control
+										 * Autocompletestyle-customer" /> </div> )} />
+										 * 
+										 * </InputGroup>
+										 */}
 									<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
@@ -974,7 +1050,7 @@ class employeeSearch extends React.Component {
 				</div>
 				<div>
 					<Row >
-						<Col sm={9}>
+						<Col sm={8}>
 							<div style={{ "float": "left" }}>
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} hidden={this.state.authorityCode==="4" ? false : true} name="clickButton" variant="info" id="wagesInfo">給料情報</Button>{' '}
@@ -989,8 +1065,9 @@ class employeeSearch extends React.Component {
 								<Button size="sm" variant="info" name="clickButton" id="passportInfo" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> パスポート</Button>{' '}
 							</div>
 						</Col>
-						<Col sm={3}>
+						<Col sm={4}>
 							<div style={{ "float": "right" }}>
+								<Button size="sm" variant="info" name="clickButton" id="csvDownload" onClick={this.csvDownload.bind(this)} disabled={this.state.employeeList.length > 0 ? false : true} ><FontAwesomeIcon icon={faDownload} /> CSV出力</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
 								<Button size="sm" variant="info" onClick={this.employeeDelete} hidden={this.state.authorityCode==="4" ? false : true} name="clickButton" id="delete" variant="info"><FontAwesomeIcon icon={faTrash} /> 削除</Button>

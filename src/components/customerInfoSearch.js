@@ -457,6 +457,7 @@ class CustomerInfoSearch extends Component {
                                 </option>
                             )}
                         </Form.Control>
+						<font style={{ marginLeft: "10px", marginRight: "0px" }}></font>
                         </InputGroup>
                     </Col>
                     </Row>
@@ -629,8 +630,8 @@ class CustomerInfoSearch extends Component {
                             ref="customerInfoSearchTable"
                             headerStyle={{ background: '#5599FF' }} striped hover condensed>
                             <TableHeaderColumn dataField='rowNo' tdStyle={{ padding: '.45em' }} width='70'>番号</TableHeaderColumn>
-                            <TableHeaderColumn isKey dataField='customerNo' tdStyle={{ padding: '.45em' }} width="110">お客様番号</TableHeaderColumn>
-                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="240" dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
+                            <TableHeaderColumn isKey dataField='customerNo' tdStyle={{ padding: '.45em' }} width="90">客様番号</TableHeaderColumn>
+                            <TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width="260" dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
                             <TableHeaderColumn dataField='companyNatureName' tdStyle={{ padding: '.45em' }} width="110">会社性質</TableHeaderColumn>
                             <TableHeaderColumn dataField='levelName' tdStyle={{ padding: '.45em' }} width="110">ランキング</TableHeaderColumn>
                             <TableHeaderColumn dataField='establishmentDate' tdStyle={{ padding: '.45em' }} width="80">設立</TableHeaderColumn>

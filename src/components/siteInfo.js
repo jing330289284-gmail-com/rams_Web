@@ -1404,7 +1404,7 @@ class siteInfo extends Component {
 								</Col>
 							</Row>
 							<div style={{ "textAlign": "center" }}>
-								<Button name="button" size="sm" onClick={this.state.updateFlag === true ? this.tokuro : this.update} variant="info" id="toroku" type="button" disabled={pageDisabledFlag === true ? true : false}>
+								<Button name="button" size="sm" onClick={this.state.updateFlag === true ? this.tokuro : this.update} variant="info" id="toroku" type="button" disabled={pageDisabledFlag}>
 									<FontAwesomeIcon icon={faSave} /> {this.state.updateFlag === true ? '登録' : '修正'}
 								</Button>{' '}
 								<Button size="sm" type="reset" variant="info" onClick={this.reset} name="button">
@@ -1427,7 +1427,7 @@ class siteInfo extends Component {
 					</Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>
-								<Button name="button" size="sm" onClick={this.onDeleteRow} variant="info" type="button" disabled={this.state.deleteFlag === true ? true : false}>
+								<Button name="button" size="sm" onClick={this.onDeleteRow} variant="info" type="button" disabled={this.state.deleteFlag}>
 									<FontAwesomeIcon icon={faTrash} /> 削除</Button>
 							</div>
 						</Col>
