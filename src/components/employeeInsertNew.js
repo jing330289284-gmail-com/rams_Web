@@ -115,7 +115,7 @@ class employeeInsertNew extends React.Component {
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),// 専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
-			intoCompanyYearAndMonth: this.state.employeeStatus==='0' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
+			intoCompanyYearAndMonth: this.state.employeeStatus!=='1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, false),// 退職年月
 			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),// 退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
@@ -218,11 +218,11 @@ class employeeInsertNew extends React.Component {
 		this.setState({
 			nationalityCode: value,
 		})
-		if (value === '2') {
+		if (value === '5') {
 			this.setState({
-				japaneseLevelCode: '5',
+				japaneseLevelCode: '5',residenceCode: '6',residenceCardNo: '',stayPeriod: '',
 			})
-		} else if (value === '3' || value === '4' || value === '5') {
+		} else if (value === '0' || value === '1' || value === '7') {
 			this.setState({
 				englishLevelCode: '8',
 			})
@@ -488,21 +488,25 @@ class employeeInsertNew extends React.Component {
 	employeeStatusChange = event => {
 		const value = event.target.value;
 		if (value === '1') {
-			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '1', intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false  });
+			this.setState({ contractDeadline: '',temporary_contractDeadline: '',companyMail: '', authorityCode: "0", employeeStatus: '1',
+				intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',
+				intoCompanyYearAndMonth:'',temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
+				residenceCode: '',residenceCardNo: '',stayPeriod: '',passportStayPeriod: '',passportNo: '',myNumber: '',employmentInsurance: '',employmentInsuranceNo: '',
+				socialInsuranceDate: '',socialInsuranceNo: '',immigrationStartTime: '',immigrationEndTime: '',socialInsurance: '',});
 			this.getNO("BP");
 		} else if (value === '0') {
 			// this.getNO("LYC");
 			this.getNO(this.state.empNoHead);
-			this.setState({ employeeStatus: "0" });
+			this.setState({ employeeStatus: "0", authorityCode: "1", });
 		}else if(value === '2'){
-			this.setState({ companyMail: '', authorityCode: "0", employeeStatus: '2', intoCompanyCode: '', departmentCode: '',
-				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',
-				temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
+			this.setState({ companyMail: '', employeeStatus: '2', intoCompanyCode: '', departmentCode: '', authorityCode: "1",
+				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',
+				employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
 				occupationCode: '',socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
 			this.getNO("SP");
 		}
 		else if(value === '3'){
-			this.setState({ employeeStatus: "3" });
+			this.setState({ employeeStatus: "3", authorityCode: "1",});
 			this.getNO("SC");
 		}
 	}
@@ -590,11 +594,16 @@ class employeeInsertNew extends React.Component {
 	
 	valueChangeResidenceCodeFormCode = (event) => {
 		const value = event.target.value;
-		if (value === "5") {
-			this.setState({ residenceTimeDisabled: true, stayPeriod: "",passportStayPeriod: "", residenceCode: event.target.value, temporary_stayPeriod: ""  })
+		if (value === "3") {
+			this.setState({ residenceTimeDisabled: false , residenceCardNo:"" , stayPeriod:"",})
+		} else if (value === "6") {
+			this.setState({ residenceTimeDisabled: false , residenceCardNo:"", stayPeriod:"",})
+		} else if (value === "7") {
+			this.setState({ residenceTimeDisabled: true, stayPeriod: "",passportStayPeriod: "", temporary_stayPeriod: ""  })
 		} else {
-			this.setState({ residenceTimeDisabled: false , residenceCode: event.target.value})
+			this.setState({ residenceTimeDisabled: false ,})
 		}
+		this.setState({residenceCode: event.target.value})
 	}
 
 	changeFile = (event, name) => {
@@ -756,8 +765,8 @@ class employeeInsertNew extends React.Component {
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text>
 									</InputGroup.Prepend>
-									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="6" />
-									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="6" />
+									<FormControl placeholder="社員氏" value={employeeFristName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeFristName" maxlength="8" />
+									<FormControl placeholder="社員名" value={employeeLastName} autoComplete="off" onChange={this.valueChange} onBlur={this.katakanaApiChange.bind(this)} size="sm" name="employeeLastName" maxlength="8" />
 									<font color="red" className="site-mark">★</font>
 									
 									<Row></Row>
@@ -1014,7 +1023,7 @@ class employeeInsertNew extends React.Component {
 								<Form.Control as="select" size="sm"
 									onChange={this.valueChange}
 									name="authorityCode" value={authorityCode}
-									autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
+									autoComplete="off" id="authorityCodeId" disabled={employeeStatus !== "1" ? false : true} >
 									{this.state.authorityCodes.map(date =>
 										<option key={date.code} value={date.code}>
 											{date.name}
@@ -1091,8 +1100,8 @@ class employeeInsertNew extends React.Component {
 										showFullMonthYearPicker
 										className="form-control form-control-sm"
 										autoComplete="off"
-										disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
-										id={employeeStatus === "0" || employeeStatus === "3" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
+										disabled={employeeStatus !== "1" ? false : true}
+										id={employeeStatus !== "1" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
 									/>
 								</InputGroup.Append>
 								<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1155,8 +1164,8 @@ class employeeInsertNew extends React.Component {
 									dateFormat="yyyy/MM/dd"
 									className="form-control form-control-sm"
 									autoComplete="off"
-									id={departmentCode === "0" ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
-									disabled={departmentCode === "0" ? true : false}
+									id={departmentCode === "0"  || employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
+									disabled={departmentCode === "0" || employeeStatus === "1" ? true : false}
 								/>
 							</InputGroup.Append>
 							<FormControl name="temporary_contractDeadline" value={temporary_contractDeadline} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1419,6 +1428,7 @@ class employeeInsertNew extends React.Component {
 								<InputGroup.Text id="sevenKanji">在留資格 </InputGroup.Text>
 							</InputGroup.Prepend>
 							<Form.Control as="select" size="sm"
+								disabled={nationalityCode === "5" || employeeStatus === "1" ? true : false}
 								onChange={this.valueChangeResidenceCodeFormCode}
 								name="residenceCode" value={residenceCode}
 								autoComplete="off" >
@@ -1437,7 +1447,7 @@ class employeeInsertNew extends React.Component {
 						</InputGroup.Prepend>
 						<FormControl placeholder="在留カード番号" value={residenceCardNo} autoComplete="off"
 							onChange={this.valueChange} size="sm" name="residenceCardNo" maxlength="12"
-								disabled={this.state.residenceCode === "6" ? true : false}	/>
+								disabled={this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" ? true : false}	/>
 							
 						<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 								
@@ -1458,15 +1468,15 @@ class employeeInsertNew extends React.Component {
 							showYearDropdown
 							autoComplete="off"
 							minDate={new Date()}
-							disabled={residenceTimeDisabled || this.state.residenceCode === "6" ? true : false}
-							id={residenceTimeDisabled || this.state.residenceCode === "6" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+							disabled={residenceTimeDisabled || this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" ? true : false}
+							id={residenceTimeDisabled || this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
 						/>
 					</InputGroup.Append>
 						<Autocomplete
 						getOptionLabel={(option) => option.name}
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>
-							<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
+							<Button size="sm" style={{ marginLeft: "3px"}} disabled={employeeStatus === "1"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
 							<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 							</div>
 						)}
@@ -1491,15 +1501,15 @@ class employeeInsertNew extends React.Component {
 							showYearDropdown
 							autoComplete="off"
 							minDate={new Date()}
-							disabled={residenceTimeDisabled ? true : false}
-							id={residenceTimeDisabled ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+							disabled={residenceTimeDisabled || employeeStatus === "1" ? true : false}
+							id={residenceTimeDisabled || employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
 						/>
 					</InputGroup.Append>
 							<Autocomplete
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} disabled={employeeStatus === "1"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
 								<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
@@ -1511,7 +1521,7 @@ class employeeInsertNew extends React.Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
 							</InputGroup.Prepend>
-								<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off"
+								<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off" disabled={employeeStatus === "1"?true:false}
 								onChange={this.valueChange} size="sm" name="passportNo" maxlength="9" />
 									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 							<Row></Row>
@@ -1519,7 +1529,7 @@ class employeeInsertNew extends React.Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
 							</InputGroup.Prepend>
-								<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off"
+								<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus === "1"?true:false}
 								onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 
@@ -1531,7 +1541,7 @@ class employeeInsertNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChangeEmployeeInsuranceStatus}
 								name="employmentInsurance" value={employmentInsurance}
-								disabled={employeeStatus === "2" ? true : false}
+								disabled={employeeStatus === "2" || employeeStatus === "1" ? true : false}
 								autoComplete="off">
 								{this.state.employmentInsuranceStatus.map(date =>
 									<option key={date.code} value={date.code}>
@@ -1569,8 +1579,8 @@ class employeeInsertNew extends React.Component {
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
 							autoComplete="off"
-							disabled={residenceTimeDisabled || employeeStatus === "2" ? true : false}
-							id={residenceTimeDisabled || employeeStatus === "2" ? "datePickerReadonlyDefault-empInsert-right-socialInsuranceDate" : "datePicker-empInsert-right-socialInsuranceDate"}
+							disabled={residenceTimeDisabled || employeeStatus === "2" || employeeStatus === "1" ? true : false}
+							id={residenceTimeDisabled || employeeStatus === "2" || employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right-socialInsuranceDate" : "datePicker-empInsert-right-socialInsuranceDate"}
 						/>
 						</InputGroup.Append>
 						
@@ -1633,7 +1643,8 @@ class employeeInsertNew extends React.Component {
 						className="form-control form-control-sm"
 						autoComplete="off"
 						minDate={new Date()}
-						id={"datePicker-empInsert-right-immigrationTime"}
+						disabled={employeeStatus === "1" ? true : false}
+						id={employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 					/>
 				</InputGroup.Append>
 				<InputGroup.Prepend>
@@ -1650,7 +1661,8 @@ class employeeInsertNew extends React.Component {
 					className="form-control form-control-sm"
 					autoComplete="off"
 					minDate={new Date()}
-					id={"datePicker-empInsert-right-immigrationTime"}
+					disabled={employeeStatus === "1" ? true : false}
+					id={employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 				/>
 			</InputGroup.Append>
 						
@@ -1668,9 +1680,9 @@ class employeeInsertNew extends React.Component {
 								showMonthYearPicker
 								showFullMonthYearPicker
 								className="form-control form-control-sm"
-								disabled={retirementYearAndMonthDisabled ? false : true}
+								disabled={!retirementYearAndMonthDisabled || employeeStatus === "1" ? true : false}
 								autoComplete="off"
-								id={retirementYearAndMonthDisabled ? "datePicker-empInsert-right-immigrationTime" : "datePickerReadonlyDefault-empInsert-right-immigrationTime"}
+								id={!retirementYearAndMonthDisabled || employeeStatus === "1" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 							/>
 						</InputGroup.Append>
 						<FormControl name="temporary_retirementYearAndMonth" value={temporary_retirementYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled hidden />
@@ -1682,7 +1694,7 @@ class employeeInsertNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}
 								name="retirementResonClassificationCode" value={retirementResonClassificationCode}
-								autoComplete="off" disabled={retirementYearAndMonthDisabled ? false : true}>
+								autoComplete="off" disabled={!retirementYearAndMonthDisabled || employeeStatus === "1" ? true : false}>
 								{this.state.retirementResonClassificationCodes.map(date =>
 									<option key={date.code} value={date.code}>
 										{date.name}

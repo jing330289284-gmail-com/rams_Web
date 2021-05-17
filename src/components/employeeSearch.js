@@ -64,6 +64,10 @@ class employeeSearch extends React.Component {
 	resetBook = () => {
 		this.setState(() => this.resetStates);
 	};
+	
+	employeeNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
 
 	// 初期化データ
 	initialState = {
@@ -150,6 +154,18 @@ class employeeSearch extends React.Component {
                     this.searchEmployee();
             })
         }
+		
+		let temp = [];
+		for(let i in this.state.employeeStatuss){
+			if(i == 1){
+				let add = {name: "協力以外",code: "4"}
+				temp.push(add);
+			}
+			temp.push(this.state.employeeStatuss[i]);
+		}
+		this.setState({
+			employeeStatuss: temp,
+		})
 	}
 
 	// 初期化の時、disabledをセットします
@@ -457,6 +473,14 @@ class employeeSearch extends React.Component {
 			let newEmpInfoList = [];
 			for(let i in employeeInfoList){
 				if(employeeInfoList[i].code.substring(0,2) === "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '4') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(!(employeeInfoList[i].code.substring(0,2) === "BP")){
 					newEmpInfoList.push(employeeInfoList[i]);
 				}
 			}
@@ -1082,7 +1106,7 @@ class employeeSearch extends React.Component {
 								data={employeeList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
 								<TableHeaderColumn width='6%' tdStyle={{ padding: '.45em' }} dataField='rowNo'dataSort>番号</TableHeaderColumn>
 								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='employeeNo' isKey dataSort>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='employeeFristName' dataSort>社員名</TableHeaderColumn>
+								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='employeeName' dataFormat={this.employeeNameFormat.bind(this)} dataSort>社員名</TableHeaderColumn>
 								<TableHeaderColumn width='12%' tdStyle={{ padding: '.45em' }} dataField='furigana' dataSort>カタカナ</TableHeaderColumn>
 								<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='alphabetName' dataSort>ローマ字</TableHeaderColumn>
 								<TableHeaderColumn width='12%' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort>年齢</TableHeaderColumn>
