@@ -90,6 +90,7 @@ class employeeSearch extends React.Component {
 		ageFrom: '', ageTo: '',
 		authorityCode: '',
 		linkDisableFlag: true,// linkDisableFlag
+		changeFlag: true, // 協力を検索する場合、入社年月->所属
 	};
 	// リセット reset
 	resetStates = {
@@ -189,6 +190,15 @@ class employeeSearch extends React.Component {
 
 	// 検索s
 	searchEmployee = () => {
+		if(this.state.employeeStatus === "1"){
+			this.setState({
+				changeFlag: false,
+			})
+		}else{
+			this.setState({
+				changeFlag: true,
+			})
+		}
 		var age = parseInt(this.state.ageTo) + 1;
 		const emp = {
 			employeeName: this.state.employeeName === "" ? undefined : this.state.employeeName,
@@ -536,66 +546,58 @@ class employeeSearch extends React.Component {
 	}
 	
 	csvDownload = () => {
-/*		let employeeNo = [];
+		let employeeNo = [];
 		for(let i in this.state.employeeList) {
 			employeeNo.push(this.state.employeeList[i].employeeNo);
 		}
 		
 		axios.post(this.state.serverIP + "employee/csvDownload", employeeNo).then(response => response.data)
 			.then((data) => {
+				this.download(data);
 			}
-		);*/
-		this.download(this.state.employeeList);
+		);
 
 
 	}
 	
 	download = (employeeList) => {
 	    // 导出
-        var str = "社員番号,社員名,カタカナ,ローマ字,性別," +
-        		"年齢,国籍,社員形式,採用区分,部署,職種,社内メール,携帯電話,卒業年月," +
-        		"来日年月,入社年月,経験年数,役割,契約期限,郵便番号,都道府県,以後住所," +
-        		"最寄り駅,在留資格,在留カード番号,在留カード期限,パスポート期限,パスポート番号," +
-        		"マイナンバー,雇用保険加入,雇用保険番号,社会保険加入,社会保険番号,出入国開始," +
-        		"終了,退職年月,退職区分" + "\n";
+        var str = "社員番号,国籍,社員名,アルファベット,ふりがな,性別," +
+        		"社内メール,生年月日,生年月日,年齢,入社年月,入社年数,雇用契約期間,TEL," +
+        		"在留資格,在留期間,在留期限,在留カード番号,旅券番号,有効期限," +
+        		"マイナンバー番号,雇用保険,郵便番号,住所(日本),口座" +
+        		"\n";
         for (var i = 0; i < employeeList.length; i++) {
+        	
             str += employeeList[i].employeeNo + ",";
+            str += employeeList[i].nationality + ",";
             str += employeeList[i].employeeName + ",";
-            str += employeeList[i].furigana + ",";
             str += employeeList[i].alphabetName + ",";
+            str += employeeList[i].furigana + ",";
             str += employeeList[i].genderStatus + ",";
-            str += employeeList[i].birthday + ",";
-            str += employeeList[i].nationalityCode + ",";
-            str += employeeList[i].employeeStatus + ",";
-            str += employeeList[i].intoCompanyCode + ",";
-            str += employeeList[i].departmentCode + ",";
-            str += employeeList[i].occupationCode + ",";
+            
             str += employeeList[i].companyMail + ",";
-            str += employeeList[i].phoneNo + ",";
-            str += employeeList[i].graduationYearAndMonth + ",";
-            str += employeeList[i].comeToJapanYearAndMonth + ",";
+            str += employeeList[i].birthday + ",";
+            str += employeeList[i].japaneseCalendar + ",";
+            str += employeeList[i].age + ",";
             str += employeeList[i].intoCompanyYearAndMonth + ",";
-            str += employeeList[i].yearsOfExperience + ",";
-            str += employeeList[i].siteRoleCode + ",";
+            str += employeeList[i].intoCompanyYears + ",";
             str += employeeList[i].contractDeadline + ",";
-            str += employeeList[i].postcode + ",";
-            str += employeeList[i].firstHalfAddress + ",";
-            str += employeeList[i].lastHalfAddress + ",";
-            str += employeeList[i].stationCode + ",";
-            str += employeeList[i].residenceCode + ",";
-            str += employeeList[i].residenceCardNo + ",";
+            str += employeeList[i].phoneNo + ",";
+            
+            str += employeeList[i].residenceName + ",";
+            str += employeeList[i].stayPeriodYears + ",";
             str += employeeList[i].stayPeriod + ",";
-            str += employeeList[i].passportStayPeriod + ",";
+            str += employeeList[i].residenceCardNo + ",";
             str += employeeList[i].passportNo + ",";
+            str += employeeList[i].passportStayPeriod + ",";
+            
             str += employeeList[i].myNumber + ",";
             str += employeeList[i].employmentInsuranceStatus + ",";
-            str += employeeList[i].employmentInsuranceNo + ",";
-            str += employeeList[i].socialInsuranceStatus + ",";
-            str += employeeList[i].socialInsuranceNo + ",";
-            str += employeeList[i].immigrationStartTime + ",";
-            str += employeeList[i].immigrationEndTime + ",";
-            str += employeeList[i].retirementYearAndMonth + ",";
-            str += employeeList[i].retirementResonClassification + ",";
+            str += employeeList[i].postcode + ",";
+            str += employeeList[i].address + ",";
+            str += employeeList[i].accountInfo + ",";
+
             str += "\n";
         }
 
@@ -1112,7 +1114,12 @@ class employeeSearch extends React.Component {
 								<TableHeaderColumn width='12%' tdStyle={{ padding: '.45em' }} dataField='birthday' dataSort>年齢</TableHeaderColumn>
 								<TableHeaderColumn width='12%' tdStyle={{ padding: '.45em' }} dataField='phoneNo' dataSort>電話番号</TableHeaderColumn>
 								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='stationName' dataSort>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth' dataSort>入社年月</TableHeaderColumn>
+								{
+									this.state.changeFlag ? 
+											<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='intoCompanyYearAndMonth' dataSort>入社年月</TableHeaderColumn>
+											:
+											<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='bpfrom' dataSort>所属</TableHeaderColumn>
+								}
 								<TableHeaderColumn width='9%' tdStyle={{ padding: '.45em' }} dataField='admissionTime' dataSort>入場年月</TableHeaderColumn>
 								<TableHeaderColumn dataField='stayPeriod' hidden={true} /* dataFormat={this.formatStayPeriod.bind(this)} */ dataSort>ビザ期限</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeInfo1' hidden={true}>履歴書1</TableHeaderColumn>
