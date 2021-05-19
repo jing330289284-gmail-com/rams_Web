@@ -331,7 +331,7 @@ class salesProfit extends React.Component {
 												showFullMonthYearPicker
 												name="admissionStartDate"
 												className="form-control form-control-sm"
-												id="admissionStartDate"
+												id="datePicker"
 												locale="ja"
 												autoComplete="off"
 											/>〜
@@ -343,7 +343,7 @@ class salesProfit extends React.Component {
 												showFullMonthYearPicker
 												name="admissionEndDate"
 												className="form-control form-control-sm"
-												id="admissionEndDate"
+												id="datePicker"
 												locale="ja"
 												autoComplete="off"
 											/>
