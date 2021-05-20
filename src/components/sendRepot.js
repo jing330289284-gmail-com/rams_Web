@@ -126,8 +126,10 @@ class sendRepot extends React.Component {
 				}
 				this.setState({
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 					customerTemp: [...result.data],
 					allCustomerNo: customerNoArray,
+					allCustomerNum: result.data.length,
 				},()=>{
 					if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 					if (this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== '') {
@@ -339,6 +341,7 @@ Judgment(code) {
 							storageList: newStorageListArray,
 							allCustomer: [],
 							customerTemp: [],
+							selectedCusInfos: [],
 							sendLetterBtnFlag: true,
 						})
 						this.refs.customersTable.store.selected = [];
@@ -347,12 +350,13 @@ Judgment(code) {
 						})
 					    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 				        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-				        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+				        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 					})
 			} else {
 				this.setState({
 					allCustomer: [],
 					customerTemp: [],
+					selectedCusInfos: [],
 					sendLetterBtnFlag: true,
 				})
 				this.refs.customersTable.store.selected = [];
@@ -361,7 +365,7 @@ Judgment(code) {
 				})
 				this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 			}
 		}
 	}
@@ -419,10 +423,11 @@ Judgment(code) {
 				.then(result => {
 					this.setState({
 						allCustomer: result.data,
+						allCustomerTemp: result.data,
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -444,10 +449,15 @@ Judgment(code) {
 					}
 				}
 			}
+			for (let i in newCustomer) {
+				newCustomer[i].rowId = i;
+			}
 			this.refs.customersTable.store.selected = [];
 			this.setState({
 				selectedCusInfos: [],
 				allCustomer: newCustomer,
+				allCustomerTemp: newCustomer,
+				customerTemp: newCustomer,
 				selectetRowIds: [],
 			});
 			this.refs.customersTable.setState({
@@ -477,7 +487,7 @@ Judgment(code) {
 					})
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -485,7 +495,7 @@ Judgment(code) {
 			}else{
 			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 			}
 		}
 	}
@@ -545,10 +555,12 @@ Judgment(code) {
 					storageList: newStorageListArray,
 					storageListName: this.state.storageListNameChange,
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
+					customerTemp: result.data,
 				});
 			    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+		        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 			})
 			.catch(function (err) {
 				alert(err)
@@ -578,10 +590,12 @@ Judgment(code) {
 						storageList: newStorageListArray,
 						storageListName: this.state.storageListNameChange,
 						allCustomer: result.data,
+						allCustomerTemp: result.data,
+						customerTemp: result.data,
 					});
 				    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 			        setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+			        store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 				})
 				.catch(function (err) {
 					alert(err)
@@ -693,7 +707,7 @@ Judgment(code) {
 	                if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
 	                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 	                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+						store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 						
 						let newStorageListArray = new Array([]);
 						for (let i in this.state.storageList) {
@@ -745,7 +759,7 @@ Judgment(code) {
 							})
 		                    this.setState({ "myToastShow": true, "type": "success", message: "処理成功" });
 		                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-							store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName"});
+							store.dispatch({type:"UPDATE_STATE",dropName:"getStorageListName0"});
 		                } else {
 		                    this.setState({errorsMessageValue: result.data.errorsMessage });
 		                }
@@ -782,6 +796,7 @@ Judgment(code) {
 			.then(result => {
 				this.setState({
 					allCustomer: result.data,
+					allCustomerTemp: result.data,
 				});
 			})
 			.catch(function (err) {
@@ -950,7 +965,7 @@ Judgment(code) {
  											dateFormat="HH:mm"
  											showTimeSelect
  											showTimeSelectOnly
- 											id="datePicker"
+ 											id={this.state.workReportStatusCode=== '1' ?  "datePicker":"datePickerReadonlyDefault"}
  											className="form-control form-control-sm"
  										/>
  									</InputGroup.Prepend>
@@ -964,7 +979,7 @@ Judgment(code) {
 									<InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
 								</InputGroup.Prepend>
 								<Autocomplete
-									disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+									disabled={this.state.allCustomer.length === this.state.allCustomerNum ? true : false}
 									options={this.state.customers}
 									getOptionLabel={(option) => option.name ? option.name : ""}
 									value={this.state.customers.find(v => v.code === this.state.customerCode) || ""}
@@ -981,7 +996,7 @@ Judgment(code) {
 									<InputGroup.Text id="sanKanji">担当者</InputGroup.Text>
 								</InputGroup.Prepend>
 								<Autocomplete
-								disabled={this.state.allCustomer.length === this.state.customerTemp.length ? true : false}
+								disabled={this.state.allCustomer.length === this.state.allCustomerNum ? true : false}
 								options={this.state.personInCharge}
 								getOptionLabel={(option) => option.text ? option.text : ""}
 								value={this.state.personInCharge.find(v => v.text === this.state.purchasingManagers) || ""}
@@ -1069,9 +1084,9 @@ Judgment(code) {
 							selectRow={selectRow}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
-							<TableHeaderColumn width='6%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
-							<TableHeaderColumn width='11%' dataField='customerNo' isKey>お客様番号</TableHeaderColumn>
-							<TableHeaderColumn width='11%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='customerNo' hidden isKey>お客様番号</TableHeaderColumn>
+							<TableHeaderColumn width='20%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='10%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>

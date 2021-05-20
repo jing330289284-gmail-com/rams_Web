@@ -61,6 +61,7 @@ class CustomerInfo extends Component {
         type: '',
         topCustomer: '',
         insertFlag: false,
+        urlDisable: false,
         positionDrop: store.getState().dropDown[20].slice(1),
         typeOfIndustryDrop: store.getState().dropDown[36].slice(1),
         developLanguageDrop: store.getState().dropDown[8].slice(1),
@@ -157,6 +158,7 @@ class CustomerInfo extends Component {
                     this.setState({
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
                         customerNo: customerNoSaiBan,
+                        urlDisable: false,
                     })
                 } else {
                     $("#customerName").val(customerInfoMod.customerName);
@@ -164,6 +166,7 @@ class CustomerInfo extends Component {
                     this.setState({
                         stationCode2: customerInfoMod.stationCode,
                         topCustomer: customerInfoMod.topCustomerNo,
+                        urlDisable: false,
                     })
                     $("#levelCode").val(customerInfoMod.levelCode);
                     $("#listedCompanyFlag").val(customerInfoMod.listedCompanyFlag);
@@ -190,6 +193,9 @@ class CustomerInfo extends Component {
                     $("#toBankInfo").attr("disabled", false);
                     if (actionType === 'detail') {
                         customerInfoJs.setDisabled();
+                        this.setState({
+                            urlDisable: true,
+                        })
                     }
                 }
             })
@@ -626,10 +632,16 @@ class CustomerInfo extends Component {
         $("#remark").val("");
         $("#toBankInfo").attr("disabled", true);
     }
+    
     moneyChange = (e) => {
         var id = e.target.id;
         var money = document.getElementById(id).value;
         $("#" + id + "").val(utils.addComma(money));
+    }
+    
+    urlClick = (event) => {
+    	let href = "http://" + event.target.value;
+    	window.open(href);
     }
     /**
      * 戻るボタン
@@ -934,12 +946,20 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
+                          
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>URL</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="" placeholder="例：www.lyc.co.jp" id="url" name="url" />
-                                </InputGroup>
+                                    {
+                                    	(this.state.urlDisable) ?
+                                    <Form.Control maxLength="" placeholder="例：www.lyc.co.jp" id="url" name="url" onClick={this.urlClick} />
+                                    	: 
+                                    <Form.Control maxLength="" placeholder="例：www.lyc.co.jp" id="url" name="url"/>
+                                    }
+                               </InputGroup>
+                       
+                          
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">

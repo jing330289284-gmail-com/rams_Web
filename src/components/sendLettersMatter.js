@@ -635,7 +635,6 @@ class sendLettersMatter extends React.Component {
 							ref='table1'
 							data={this.state.selectedCusInfos}
 							pagination={true}
-							className={"bg-white text-dark"}
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>

@@ -6,14 +6,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faListOl } from '@fortawesome/free-solid-svg-icons';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
-/** 
-*報告書送信画面対象社員
+/**
+ * 報告書送信画面対象社員
  */
 class sendRepotAppend extends Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],//承認済み 送信済み
-		currentPage: 1,//　該当page番号
+		judgmentlist: [{"code":"0","name":"✕"},{"code":"1","name":"〇"}],// 承認済み
+																		// 送信済み
+		currentPage: 1,// 該当page番号
 		allEmployee: [],
 		selectetRowIds: this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
 		selectetemployeeNo:this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
@@ -29,7 +30,7 @@ class sendRepotAppend extends Component {
 	}
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 	}
 	componentDidMount() {
 		this.getTargetEmployees(this.props.customer.customerNo);
@@ -122,7 +123,7 @@ handleRowSelect = (row, isSelected, e) => {
 employeeSelected = () => {
 		let employeeNos = this.state.selectetemployeeNo.join(",");
 		let employeeNames = this.state.selectetemployeeName.join(",");
-		this.state.parentSelectedInfo.sendRepotsAppend = employeeNames;//表示用
+		this.state.parentSelectedInfo.sendRepotsAppend = employeeNames;// 表示用
 		this.state.parentSelectedInfo.sendRepotsAppend2 = employeeNos;
 		let employeesOthers = this.state.selectetemployeeNo;
 		employeesOthers.pop();
@@ -209,12 +210,14 @@ employeeSelected = () => {
 					</Row>
 					<Row>
 						<Col sm={4}>
+						
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
 								disabled={0 !== this.state.allEmployee.length ? false : true}><FontAwesomeIcon icon={faListOl} />すべて選択</Button>
 						</Col>
 					</Row>
 				</Form>
 				<div >
+					<Col>
 					<BootstrapTable
 						ref="salesPersonTable"
 						data={this.state.allEmployee}
@@ -231,6 +234,7 @@ employeeSelected = () => {
 						<TableHeaderColumn width='20%' dataField='sentReportStatus' dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
 						<TableHeaderColumn width='11%' dataField='employeeNo' editable={false} isKey></TableHeaderColumn>
 					</BootstrapTable>
+					</Col>
 				</div>
 				<div>
 					<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.employeeSelected}>

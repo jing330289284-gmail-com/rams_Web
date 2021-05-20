@@ -222,6 +222,9 @@ class employeeSearch extends React.Component {
 			socialInsuranceDate: this.state.socialInsuranceDate === "" || this.state.socialInsuranceDate === null || this.state.socialInsuranceDate === undefined ? undefined : publicUtils.formateDate(this.state.socialInsuranceDate, true),
 			authorityCode: this.state.authorityCode,
 		};
+		this.refs.siteSearchTable.setState({
+			selectedRowKeys: [],
+		})
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -232,9 +235,7 @@ class employeeSearch extends React.Component {
 				else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
-				this.refs.siteSearchTable.setState({
-					selectedRowKeys: [],
-				})
+
 				this.setState({
 					searchFlag: true,
 					rowSelectEmployeeNo: '',
@@ -250,7 +251,10 @@ class employeeSearch extends React.Component {
 					$('#wagesInfo').attr('disabled', true);
 					$('#siteInfo').attr('disabled', true);
 			}
-			);
+			).catch((error) => {
+				this.props.history.push("/loginManager");
+				console.error("Error - " + error);
+			});;
 	}
 	
 	state = {

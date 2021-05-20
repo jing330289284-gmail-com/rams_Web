@@ -2,7 +2,7 @@ const $ = require('jquery');
 const axios = require('axios');
 
 /**
- *　非活性になる
+ * 非活性になる
  */
 export function setDisabled(){
     $("#customerNo").attr("disabled",true);
