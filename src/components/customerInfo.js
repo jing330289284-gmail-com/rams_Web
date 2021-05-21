@@ -236,6 +236,7 @@ class CustomerInfo extends Component {
                     }
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomer"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerAbbreviation"});
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }

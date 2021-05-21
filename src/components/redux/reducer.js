@@ -77,6 +77,7 @@ export function fetchDropDown() {
 		"getDealDistinction",// 70処理区分取得
 		"getFramework",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
+		"getCustomerAbbreviation",// 73 お客様略称取得
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -187,6 +188,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getDealDistinction",// 70処理区分取得
 		"getFramework",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
+		"getCustomerAbbreviation",// 73 お客様略称取得
 		"getServerIP",// 最後
 	]
 var outArray = [];

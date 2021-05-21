@@ -505,11 +505,11 @@ Judgment(code) {
 		this.refs.customersTable.setState({
 			selectedRowKeys: this.refs.customersTable.state.selectedRowKeys.length !== this.state.allCustomerNo.length ? this.state.allCustomerNo : [],
 		})
-		let customerRowIdArray = new Array([]);
+		let customerRowIdArray = new Array();
 		for (let i in this.state.allCustomer) {
 			customerRowIdArray.push(this.state.allCustomer[i].rowId);
 		};
-		let targetCustomer = new Array([]);
+		let targetCustomer = new Array();
 		for (let i in customerRowIdArray) {
 			let rowNo = customerRowIdArray[i];
 			targetCustomer.push(this.state.customerTemp[rowNo]);
@@ -1093,7 +1093,6 @@ Judgment(code) {
 							<TableHeaderColumn width='14%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='sendRepotsAppend' dataFormat={this.CellFormatter2.bind(this)}>対象社員</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='sendRepotsAppend2' ></TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='approvalStatus'dataFormat={this.Judgment.bind(this)}>承認済み</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='sentReportStatus'dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
 							<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>

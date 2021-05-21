@@ -226,13 +226,13 @@ employeeSelected = () => {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn width='7%' dataField='rowId' dataAlign='center' autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='employeeName'>氏名</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='employeeStatus' dataFormat={this.employeeStatusFormat} >所属</TableHeaderColumn>
-						<TableHeaderColumn width='9%' dataField='stationCode' dataFormat={this.stationsFormat}>現場</TableHeaderColumn>
+						<TableHeaderColumn dataField='rowId' dataAlign='center' hidden autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='employeeName'>氏名</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='employeeStatus' dataFormat={this.employeeStatusFormat} >所属</TableHeaderColumn>
+						<TableHeaderColumn width='20%' dataField='stationCode' dataFormat={this.stationsFormat}>現場</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='approvalStatus' dataFormat={this.Judgment.bind(this)} >承認済み</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='sentReportStatus' dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
-						<TableHeaderColumn width='11%' dataField='employeeNo' editable={false} isKey></TableHeaderColumn>
+						<TableHeaderColumn dataField='employeeNo' editable={false} hidden isKey></TableHeaderColumn>
 					</BootstrapTable>
 					</Col>
 				</div>

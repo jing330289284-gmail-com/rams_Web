@@ -569,38 +569,38 @@ class employeeSearch extends React.Component {
         var str = "社員番号,国籍,社員名,アルファベット,ふりがな,性別," +
         		"社内メール,生年月日,生年月日,年齢,入社年月,入社年数,雇用契約期間,TEL," +
         		"在留資格,在留期間,在留期限,在留カード番号,旅券番号,有効期限," +
-        		"マイナンバー番号,雇用保険,郵便番号,住所(日本),口座" +
+        		"マイナンバー番号,雇用保険番号,郵便番号,住所(日本),口座" +
         		"\n";
         for (var i = 0; i < employeeList.length; i++) {
         	
-            str += employeeList[i].employeeNo + ",";
-            str += employeeList[i].nationality + ",";
-            str += employeeList[i].employeeName + ",";
-            str += employeeList[i].alphabetName + ",";
-            str += employeeList[i].furigana + ",";
-            str += employeeList[i].genderStatus + ",";
+            str += this.checkEmpty(employeeList[i].employeeNo) + ",";
+            str += this.checkEmpty(employeeList[i].nationality) + ",";
+            str += this.checkEmpty(employeeList[i].employeeName) + ",";
+            str += this.checkEmpty(employeeList[i].alphabetName) + ",";
+            str += this.checkEmpty(employeeList[i].furigana) + ",";
+            str += this.checkEmpty(employeeList[i].genderStatus) + ",";
             
-            str += employeeList[i].companyMail + ",";
-            str += employeeList[i].birthday + ",";
-            str += employeeList[i].japaneseCalendar + ",";
-            str += employeeList[i].age + ",";
-            str += employeeList[i].intoCompanyYearAndMonth + ",";
-            str += employeeList[i].intoCompanyYears + ",";
-            str += employeeList[i].contractDeadline + ",";
-            str += employeeList[i].phoneNo + ",";
+            str += this.checkEmpty(employeeList[i].companyMail) + ",";
+            str += this.checkEmpty(employeeList[i].birthday) + ",";
+            str += this.checkEmpty(employeeList[i].japaneseCalendar) + ",";
+            str += this.checkEmpty(employeeList[i].age) + ",";
+            str += this.checkEmpty(employeeList[i].intoCompanyYearAndMonth) + ",";
+            str += this.checkEmpty(employeeList[i].intoCompanyYears) + ",";
+            str += this.checkEmpty(employeeList[i].contractDeadline) + ",";
+            str += this.checkEmpty(employeeList[i].phoneNo) + ",";
             
-            str += employeeList[i].residenceName + ",";
-            str += employeeList[i].stayPeriodYears + ",";
-            str += employeeList[i].stayPeriod + ",";
-            str += employeeList[i].residenceCardNo + ",";
-            str += employeeList[i].passportNo + ",";
-            str += employeeList[i].passportStayPeriod + ",";
+            str += this.checkEmpty(employeeList[i].residenceName) + ",";
+            str += this.checkEmpty(employeeList[i].stayPeriodYears) + ",";
+            str += this.checkEmpty(employeeList[i].stayPeriod) + ",";
+            str += this.checkEmpty(employeeList[i].residenceCardNo) + ",";
+            str += this.checkEmpty(employeeList[i].passportNo) + ",";
+            str += this.checkEmpty(employeeList[i].passportStayPeriod) + ",";
             
-            str += employeeList[i].myNumber + ",";
-            str += employeeList[i].employmentInsuranceStatus + ",";
-            str += employeeList[i].postcode + ",";
-            str += employeeList[i].address + ",";
-            str += employeeList[i].accountInfo + ",";
+            str += this.checkEmpty(employeeList[i].myNumber) + ",";
+            str += this.checkEmpty(employeeList[i].employmentInsuranceNo) + ",";
+            str += this.checkEmpty(employeeList[i].postcode) + ",";
+            str += this.checkEmpty(employeeList[i].address) + ",";
+            str += this.checkEmpty(employeeList[i].accountInfo) + ",";
 
             str += "\n";
         }
@@ -612,6 +612,10 @@ class employeeSearch extends React.Component {
         var filename = "test";
         link.setAttribute("download", filename + ".csv");
         link.click();
+	}
+	
+	checkEmpty = (values) => {
+		return values === "" ? "" : "\t" + values;
 	}
 
 	getCustomerNo = (event, values) => {
