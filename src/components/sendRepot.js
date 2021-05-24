@@ -693,6 +693,11 @@ Judgment(code) {
 	
 	changeName = () => {
 		for (let i in this.state.storageList) {
+			if(this.state.storageListNameChange === ""){
+                this.setState({ "errorsMessageShow": true, message: "リスト名を入力してください。" });
+                setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+				return;
+			}
 			if(this.state.storageList[i].name === this.state.storageListNameChange){
                 this.setState({ "errorsMessageShow": true, message: "同名なリストが存在しています、チェックしてください。" });
                 setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -930,6 +935,7 @@ Judgment(code) {
  										size="sm"
  										name="workReportStatusCode"
  										autoComplete="off"
+ 										disabled = {this.state.storageListName === "" ? true : false}
  										value={this.state.workReportStatusCode}
  										onChange={this.workReportStatusChange}>
  										{this.state.workReportStatus.map(data =>
@@ -1067,9 +1073,13 @@ Judgment(code) {
 									onClick={!this.state.sendLetterBtnFlag ? this.clearLists : this.deleteLists} disabled={this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true}><FontAwesomeIcon icon={faMinusCircle} />削除</Button>	{' '}
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton"
-									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト保存</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendRepotConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />送信</Button>{' '}
+									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendRepotConfirm")} variant="info" name="clickButton"
+									disabled={((this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false) || this.state.storageListName === "" ? true : false }>
+								<FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
+								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton"
+									disabled={((this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false) || this.state.storageListName === "" ? true : false }>
+								<FontAwesomeIcon icon={faEnvelope} />送信</Button>{' '}
 							</div>
 						</Col>
 					</Row>

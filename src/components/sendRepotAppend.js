@@ -16,9 +16,9 @@ class sendRepotAppend extends Component {
 																		// 送信済み
 		currentPage: 1,// 該当page番号
 		allEmployee: [],
-		selectetRowIds: this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
-		selectetemployeeNo:this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
-		selectetemployeeName:this.props.customer.mainChargeList!== undefined && this.props.customer.mainChargeList !== "" && this.props.customer.mainChargeList !== null ? this.props.customer.mainChargeList.split(','):[],
+		selectetRowIds: this.props.customer.noChargeList!== undefined && this.props.customer.noChargeList !== "" && this.props.customer.noChargeList !== null ? this.props.customer.noChargeList.split(','):[],
+		selectetemployeeNo:this.props.customer.noChargeList!== undefined && this.props.customer.noChargeList !== "" && this.props.customer.noChargeList !== null ? this.props.customer.noChargeList.split(','):[],
+		selectetemployeeName:this.props.customer.noChargeList!== undefined && this.props.customer.noChargeList !== "" && this.props.customer.noChargeList !== null ? this.props.customer.noChargeList.split(','):[],
 		allSelectedFlag: false,
 		allTargetemployeeNo: [],
 		allRowId: [],
@@ -34,8 +34,8 @@ class sendRepotAppend extends Component {
 	}
 	componentDidMount() {
 		this.getTargetEmployees(this.props.customer.customerNo);
-		this.props.customer.test = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test:this.props.customer.mainChargeList;
-		let str = this.props.customer.test !== undefined && this.props.customer.test !== "" && this.props.customer.test !== null ? this.props.customer.test.split(',') : [];
+		this.props.customer.noChargeId = this.props.customer.noChargeId !== undefined && this.props.customer.noChargeId !== "" && this.props.customer.noChargeId !== null ? this.props.customer.noChargeId : this.props.customer.noChargeList;
+		let str = this.props.customer.noChargeId !== undefined && this.props.customer.noChargeId !== "" && this.props.customer.noChargeId !== null ? this.props.customer.noChargeId.split(',') : [];
 		for(let i in str){
 			str[i] = Number(str[i]);
 		}
@@ -126,13 +126,16 @@ employeeSelected = () => {
 		this.state.parentSelectedInfo.sendRepotsAppend = employeeNames;// 表示用
 		this.state.parentSelectedInfo.sendRepotsAppend2 = employeeNos;
 		let employeesOthers = this.state.selectetemployeeNo;
+		let salesRowsId = this.state.selectetRowIds.join(",");
+		this.state.parentSelectedInfo.noChargeId = salesRowsId;
 		employeesOthers.pop();
 		if(this.props.customer.storageListName != null && this.props.customer.storageListName !== ""){
 			axios.post(this.state.serverIP + "sendRepot/targetEmployeeListsUpdate", 
 					{
 						storageListName:this.props.customer.storageListName,
 						customerNo:this.props.customer.customerNo,
-						candidateInChargeList:employeeNos+"."+employeeNames,
+						noChargeList:salesRowsId,
+						candidateInChargeList:employeeNames,
 					})
 			.then(() => {
 				})
@@ -226,13 +229,13 @@ employeeSelected = () => {
 						selectRow={selectRow}
 						trClassName="customClass"
 						headerStyle={{ background: '#5599FF' }} striped hover condensed>
-						<TableHeaderColumn dataField='rowId' dataAlign='center' hidden autoValue dataSort={true} editable={false}>番号</TableHeaderColumn>
+						<TableHeaderColumn dataField='rowId' dataAlign='center' hidden autoValue dataSort={true} editable={false} isKey>番号</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='employeeName'>氏名</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='employeeStatus' dataFormat={this.employeeStatusFormat} >所属</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='stationCode' dataFormat={this.stationsFormat}>現場</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='approvalStatus' dataFormat={this.Judgment.bind(this)} >承認済み</TableHeaderColumn>
 						<TableHeaderColumn width='20%' dataField='sentReportStatus' dataFormat={this.Judgment.bind(this)}>送信済み</TableHeaderColumn>
-						<TableHeaderColumn dataField='employeeNo' editable={false} hidden isKey></TableHeaderColumn>
+						<TableHeaderColumn dataField='employeeNo' editable={false} hidden ></TableHeaderColumn>
 					</BootstrapTable>
 					</Col>
 				</div>

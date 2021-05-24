@@ -1684,7 +1684,7 @@ class employeeUpdateNew extends React.Component {
 								<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
 							</InputGroup.Prepend>
 							<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off" disabled={employeeStatus !== "1" ? false : true}
-								onChange={this.valueChange} size="sm" name="passportNo" maxlength="12" />
+								onChange={this.valueChange} size="sm" name="passportNo" maxlength="9" />
 									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 						
 						<Row></Row>

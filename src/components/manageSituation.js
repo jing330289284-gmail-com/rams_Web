@@ -516,10 +516,19 @@ class manageSituation extends React.Component {
 
 	// numbre only
 	valueChangeNUmberOnly = event => {
-		if (event.target.value === '' || this.state.regexp.test(event.target.value)) {
-			this.setState({
-				[event.target.name]: event.target.value,
-			})
+		//全角ー＞半角に変更
+		var val = event.target.value;
+	    var han = val.replace( /[Ａ-Ｚａ-ｚ０-９－！”＃＄％＆’（）＝＜＞，．？＿［］｛｝＠＾～￥]/g, function(s){return String.fromCharCode(s.charCodeAt(0) - 65248)});
+		if (han === '' || this.state.regexp.test(han)) {
+			if(han.length > 3){
+				this.setState({
+					[event.target.name]: han.substring(0,3),
+				})
+			}else{
+				this.setState({
+					[event.target.name]: han,
+				})
+			}
 		} else {
 			alert("ONLY NUMBER");
 		}
