@@ -15,6 +15,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import store from './redux/store';
+import MailReport from './mailReport';
 import { faPlusCircle, faEnvelope, faMinusCircle, faBroom, faListOl,faEdit,faPencilAlt ,faLevelUpAlt} from '@fortawesome/free-solid-svg-icons';
 axios.defaults.withCredentials = true;
 
@@ -28,6 +29,7 @@ class sendRepot extends React.Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
+		loginUserInfo: [],
 		customerName: '', // おきゃく名前
 		positions: store.getState().dropDown[20],
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
@@ -60,6 +62,7 @@ class sendRepot extends React.Component {
 		selectedCustomer: {},
 		selectedTargetEmployee: {},
 		daiologShowFlag: false,
+		mailShowFlag: false,
 		selectedEmpNos: (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') ? this.props.location.state.selectetRowIds : [],
 		selectedCusInfos: [],
 		listName: 1,
@@ -114,6 +117,19 @@ class sendRepot extends React.Component {
 			}
 		}
 		this.getCustomers();
+		this.getLoginUserInfo();
+	}
+	
+	getLoginUserInfo = () => {
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+			.then(result => {
+				this.setState({
+					loginUserInfo: result.data,
+				})
+			})
+			.catch(function(error) {
+				alert(error);
+			});
 	}
 
 	//初期化お客様取る
@@ -144,19 +160,25 @@ class sendRepot extends React.Component {
 				alert(err)
 			})
 	}
-Judgment(code) {
-    let judgmenStatuss = this.state.judgmentlist;
-        for (var i in judgmenStatuss) {
-            if (code === judgmenStatuss[i].code) {
-                return judgmenStatuss[i].name;
-            }
-        }
-    };
+	Judgment(code) {
+		if(this.state.storageListName === "" ){
+			return "";
+		}
+		else{
+			let judgmenStatuss = this.state.judgmentlist;
+			for (var i in judgmenStatuss) {
+				if (code === judgmenStatuss[i].code) {
+					return judgmenStatuss[i].name;
+				}
+			}
+		}
+	}
 	// 行番号
 	indexN = (cell, row, enumObject, index) => {
 		let rowNumber = (this.state.currentPage - 1) * 10 + (index + 1);
 		return (<div>{rowNumber}</div>);
 	}
+	
 	// セレクトボックス変更
 	onTagsChange = (event, values, fieldName) => {
 		if (values === null) {
@@ -214,6 +236,7 @@ Judgment(code) {
 						storageListName:  values.name,
 						storageListNameChange: values.name,
 						selectedCustomers: values.code,
+						allCustomer: [],
 					})
 					axios.post(this.state.serverIP + "sendRepot/getCustomersByNos", { ctmNos: values.code.split(','),storageListName:values.name,})
 					.then(result => {
@@ -626,6 +649,10 @@ Judgment(code) {
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
 				selectedCusInfos: this.state.selectedCusInfos.concat(this.state.customerTemp[rowNo]),
+				purchasingManagersMail: row.purchasingManagersMail,
+				customerName: row.customerName,
+				purchasingManagers: row.purchasingManagers,
+				sendRepotsAppend: row.sendRepotsAppend,
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === rowNo);
@@ -636,6 +663,10 @@ Judgment(code) {
 				selectedCusInfos: this.state.selectedCusInfos,
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds,
+				purchasingManagersMail: "",
+				customerName: "",
+				purchasingManagers: "",
+				sendRepotsAppend: "",
 			})
 		}
 	}
@@ -830,6 +861,19 @@ Judgment(code) {
 	openFolder = () => {
 				axios.post(this.state.serverIP + "sendRepot/openFolder")
 	}
+	
+	openMail = () => {
+		this.setState({
+			mailShowFlag: true,
+		});
+	}
+	
+	closeMail = () => {
+		this.setState({
+			mailShowFlag: false,
+		})
+	}
+	
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = this.state.sendValue;
@@ -915,6 +959,15 @@ Judgment(code) {
 					<Modal.Body >
 						<SendRepotAppend customer={this.state.selectedCustomer} allState={this} employeeStatusList={this.state.employeeStatusList}
 							stations={this.state.stations}/>
+					</Modal.Body>
+				</Modal>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeMail} show={this.state.mailShowFlag} dialogClassName="modal-bankInfo">
+					<Modal.Header closeButton><Col className="text-center">
+						<h2>メール内容確認</h2>
+					</Col></Modal.Header>
+					<Modal.Body >
+						<MailReport personalInfo={this} />
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
@@ -1074,8 +1127,8 @@ Judgment(code) {
 								<Button size="sm" variant="info" name="clickButton" onClick={this.openFolder}><FontAwesomeIcon icon={faBroom} />作業報告書</Button>{' '}
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
-								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendRepotConfirm")} variant="info" name="clickButton"
-									disabled={((this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false) || this.state.storageListName === "" ? true : false }>
+								<Button size="sm" onClick={this.openMail} variant="info" name="clickButton"
+									disabled={((this.state.sendRepotsAppend !== "" || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false) || this.state.storageListName === "" ? true : false }>
 								<FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton"
 									disabled={((this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false) || this.state.storageListName === "" ? true : false }>

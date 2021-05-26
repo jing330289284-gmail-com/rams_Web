@@ -47,15 +47,15 @@ class sendRepotAppend extends Component {
 	getTargetEmployees = (customerNo) => {
 		axios.post(this.state.serverIP + "sendRepot/getTargetEmployees",{customerNo: customerNo})
 		.then(result => {
-			let targetEmployeeNoArray = new Array([]);
-			let rowIdArray = new Array([]);
+			let targetEmployeeNameArray = new Array();
+			let rowIdArray = new Array();
 			for (let i in result.data) {
-				targetEmployeeNoArray.push(result.data[i].employeeNo);
+				targetEmployeeNameArray.push(result.data[i].employeeName);
 				rowIdArray.push(result.data[i].rowId);
 			}
 			this.setState({
 				allEmployee: result.data,
-				allTargetemployeeNo: targetEmployeeNoArray,
+				allTargetemployeeName: targetEmployeeNameArray,
 				allRowId: rowIdArray
 			});
 		})
@@ -77,11 +77,10 @@ handleRowSelect = (row, isSelected, e) => {
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === String(row.rowId));
 			this.state.selectetRowIds.splice(index, 1);
-			index = this.state.selectetemployeeNo.findIndex(item => item === row.employeeNo);
-			this.state.selectetemployeeNo.splice(index, 1);
+			index = this.state.selectetemployeeName.findIndex(item => item === row.employeeName);
+			this.state.selectetemployeeName.splice(index, 1);
 			this.setState({
 				selectetRowIds: this.state.selectetRowIds,
-				selectetemployeeNo: this.state.selectetemployeeNo,
 				selectetemployeeName: this.state.selectetemployeeName,
 			})
 		}
@@ -103,11 +102,12 @@ handleRowSelect = (row, isSelected, e) => {
 		this.refs.salesPersonTable.store.selected = [];
 		if (!this.state.allSelectedFlag) {
 			this.refs.salesPersonTable.setState({
-				selectedRowKeys: this.state.allTargetemployeeNo,
+				selectedRowKeys: this.state.allRowId,
 			})
 			this.setState({
 				allSelectedFlag: !this.state.allSelectedFlag,
-				selectetRowIds: this.state.allTargetemployeeNo,
+				selectetRowIds: this.state.allRowId,
+				selectetemployeeName: this.state.allTargetemployeeName,
 			})
 		} else {
 			this.refs.salesPersonTable.setState({
@@ -117,6 +117,7 @@ handleRowSelect = (row, isSelected, e) => {
 				allSelectedFlag: !this.state.allSelectedFlag,
 				selectetRowIds: [],
 				selectetRowMails: [],
+				selectetemployeeName: [],
 			})
 		}
 	}

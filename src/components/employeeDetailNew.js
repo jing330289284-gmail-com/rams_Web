@@ -124,7 +124,7 @@ class EmployeeDetailNew extends React.Component {
 					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
 					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),// 入社年月
 					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
-					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, false),// 退職年月
+					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
 					retirementResonClassificationCode:  data.retirementResonClassification,//退職区分
 					comeToJapanYearAndMonth: publicUtils.converToLocalTime(data.comeToJapanYearAndMonth, false),// 来日年月
@@ -1245,9 +1245,7 @@ class EmployeeDetailNew extends React.Component {
 									<DatePicker
 										selected={this.state.retirementYearAndMonth}
 										onChange={this.inactiveRetirementYearAndMonth}
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										id="datePickerReadonlyDefault-empInsert-right-immigrationTime"
 										disabled

@@ -53,6 +53,8 @@ class CustomerInfo extends Component {
         customerNo: '',
         backPage: "",//遷移元
         myToastShow: false,
+        myUpdateShow: false,
+        myDeleteShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
         stationCode: '',
@@ -227,7 +229,7 @@ class CustomerInfo extends Component {
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "処理成功" });
+                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false,"myUpdateShow":false,"myDeleteShow":false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     if (this.state.actionType === "insert") {
                         this.setState({
@@ -361,11 +363,11 @@ class CustomerInfo extends Component {
                 axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                     .then(result => {
                         if (result.data) {
-                            this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "削除成功" });
-                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                            this.setState({ "myDeleteShow": true, "type": "success", "errorsMessageShow": false,"myToastShow":false,"myUpdateShow":false, message: "削除成功" });
+                            setTimeout(() => this.setState({ "myDeleteShow": false }), 3000);
                         } else {
-                            this.setState({ "myToastShow": true, "type": "fail", "errorsMessageShow": false, message: '削除失敗' });
-                            setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                            this.setState({ "myDeleteShow": true, "type": "fail", "errorsMessageShow": false,"myToastShow":false,"myUpdateShow":false, message: '削除失敗' });
+                            setTimeout(() => this.setState({ "myDeleteShow": false }), 3000);
                         }
                     })
                     .catch(function (error) {
@@ -595,8 +597,8 @@ class CustomerInfo extends Component {
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: "明細登録成功", customerDepartmentList: result.data.customerDepartmentList });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    this.setState({ "myUpdateShow": true, "type": "success", "errorsMessageShow": false,"myToastShow":false,"myDeleteShow":false, message: "明細登録成功", customerDepartmentList: result.data.customerDepartmentList });
+                    setTimeout(() => this.setState({ "myUpdateShow": false }), 3000);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -712,6 +714,12 @@ class CustomerInfo extends Component {
             <div>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+                </div>
+                <div style={{ "display": this.state.myUpdateShow ? "block" : "none" }}>
+                    <MyToast myToastShow={this.state.myUpdateShow} message={message} type={type} />
+                </div>
+                <div style={{ "display": this.state.myDeleteShow ? "block" : "none" }}>
+                    <MyToast myToastShow={this.state.myDeleteShow} message={message} type={type} />
                 </div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
                     <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
