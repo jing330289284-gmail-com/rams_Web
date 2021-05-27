@@ -568,8 +568,8 @@ class employeeSearch extends React.Component {
 	    // 导出
         var str = "社員番号,国籍,社員名,アルファベット,ふりがな,性別," +
         		"社内メール,生年月日,生年月日,年齢,入社年月,入社年数,雇用契約期間,TEL," +
-        		"在留資格,在留期間,在留期限,在留カード番号,旅券番号,有効期限," +
-        		"マイナンバー番号,雇用保険番号,社会保険期限,整理番号,郵便番号,住所(日本),口座,退職年月" +
+        		"在留資格,在留期間,在留期限,在留カード番号,旅券番号,有効期限,出入国届開始,出入国届終了," +
+        		"マイナンバー番号,雇用保険番号,社会保険期限,整理番号,郵便番号,住所(日本),口座,退職年月日" +
         		"\n";
         for (var i = 0; i < employeeList.length; i++) {
         	
@@ -595,6 +595,8 @@ class employeeSearch extends React.Component {
             str += this.checkEmpty(employeeList[i].residenceCardNo) + ",";
             str += this.checkEmpty(employeeList[i].passportNo) + ",";
             str += this.checkEmpty(employeeList[i].passportStayPeriod) + ",";
+            str += this.checkEmpty(employeeList[i].immigrationStartTime) + ",";
+            str += this.checkEmpty(employeeList[i].immigrationEndTime) + ",";
             
             str += this.checkEmpty(employeeList[i].myNumber) + ",";
             str += this.checkEmpty(employeeList[i].employmentInsuranceNo) + ",";
@@ -612,7 +614,7 @@ class employeeSearch extends React.Component {
         var link = document.createElement("a");
         link.setAttribute("href", aaaa);
         var date = new Date();
-        var filename = "test";
+        var filename = "社員情報";
         link.setAttribute("download", filename + ".csv");
         link.click();
 	}

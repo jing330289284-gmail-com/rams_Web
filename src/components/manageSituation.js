@@ -176,7 +176,7 @@ class manageSituation extends React.Component {
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
-		axios.post(this.state.serverIP + "salesSituation/getSalesSituation", { salesYearAndMonth: searchYearMonth })
+		axios.post(this.state.serverIP + "salesSituation/getSalesSituationNew", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
 					this.refs.table.setState({
@@ -419,12 +419,16 @@ class manageSituation extends React.Component {
  
 	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
-		if (row.salesPriorityStatus === '1') {
-			return (<div>{row.employeeName}<font color="red">★</font></div>);
-		} else if(row.salesPriorityStatus === '2') {
-			return (<div>{row.employeeName}<font color="black">★</font></div>);
-		} else {
-			return (<div>{row.employeeName}</div>);
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.employeeName}</font></div>);
+		}else{
+			if (row.salesPriorityStatus === '1') {
+				return (<div>{row.employeeName}<font color="red">★</font></div>);
+			} else if(row.salesPriorityStatus === '2') {
+				return (<div>{row.employeeName}<font color="black">★</font></div>);
+			} else {
+				return (<div>{row.employeeName}</div>);
+			}
 		}
 	}
 
@@ -516,7 +520,7 @@ class manageSituation extends React.Component {
 
 	// numbre only
 	valueChangeNUmberOnly = event => {
-		//全角ー＞半角に変更
+		// 全角ー＞半角に変更
 		var val = event.target.value;
 	    var han = val.replace( /[Ａ-Ｚａ-ｚ０-９－！”＃＄％＆’（）＝＜＞，．？＿［］｛｝＠＾～￥]/g, function(s){return String.fromCharCode(s.charCodeAt(0) - 65248)});
 		if (han === '' || this.state.regexp.test(han)) {
@@ -1181,7 +1185,7 @@ class manageSituation extends React.Component {
 						<Col sm={12}>
 							<BootstrapTable
 								ref='table'
-								/*className={"bg-white text-dark"}*/
+								/* className={"bg-white text-dark"} */
 								data={this.state.salesSituationLists}
 								pagination
 								options={options}

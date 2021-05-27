@@ -132,7 +132,8 @@ class siteInfo extends Component {
 				levelCode: '',
 				[event.target.name]: event.target.value,
 				remark:'',
-				scheduledEndDate:this.state.scheduledEndDateForSave
+				scheduledEndDate:this.state.scheduledEndDateForSave,
+				admissionEndDate:'',
 			})
 		}else if(event.target.value === '2'){
 			this.setState({
