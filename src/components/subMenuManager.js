@@ -123,7 +123,7 @@ class SubMenu extends Component {
 		})
 	}
 	checkSession = () =>{
-		axios.post(this.state.serverIP + "subMenu/init")
+		axios.post(this.state.serverIP + "subMenu/checkSession")
 		.then(resultMap => {
 			if (resultMap.data === null || resultMap.data === ''){
 				alert("セッションの有効期限が切れています。再度ログインを行なってください。")
