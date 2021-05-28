@@ -26,7 +26,7 @@ class mailReport extends React.Component {
 			<div>
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
-						style={{ height: '800px', width: '100%', resize: 'none', border: '0'}}
+						style={{ height: '500px', width: '100%', resize: 'none', border: '0'}}
 						value={`宛先TO：` + this.state.purchasingManagersMail + `
 メールタイトル：` + new Date().getFullYear() + "年" + (new Date().getMonth() + 1) + "月" + `作業報告書` + `
 

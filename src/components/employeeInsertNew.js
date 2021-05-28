@@ -1669,7 +1669,7 @@ class employeeInsertNew extends React.Component {
 				<Row></Row>
 						
 						<InputGroup.Prepend>
-							<InputGroup.Text id="sevenKanji">退職年月</InputGroup.Text>
+							<InputGroup.Text id="sevenKanji">退職年月日</InputGroup.Text>
 						</InputGroup.Prepend>
 						<InputGroup.Append>
 							<DatePicker
