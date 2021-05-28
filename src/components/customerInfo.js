@@ -52,7 +52,7 @@ class CustomerInfo extends Component {
         sendValue: {},
         customerNo: '',
         backPage: "",//遷移元
-        myToastShow: false,
+        myMessageShow: false,
         myUpdateShow: false,
         myDeleteShow: false,
         errorsMessageShow: false,
@@ -229,16 +229,16 @@ class CustomerInfo extends Component {
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                    this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false,"myUpdateShow":false,"myDeleteShow":false, message: "処理成功" });
-                    setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomer"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerAbbreviation"});
                     if (this.state.actionType === "insert") {
                         this.setState({
                             actionType:"update",
                         })
                     }
-                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
-                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomer"});
-                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerAbbreviation"});
+                	this.setState({ "myMessageShow": true, "type": "success", "errorsMessageShow": false,"myUpdateShow":false,"myDeleteShow":false, message: "処理成功" });
+                    setTimeout(() => this.setState({ "myMessageShow": false }), 3000);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
                 }
@@ -363,10 +363,10 @@ class CustomerInfo extends Component {
                 axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                     .then(result => {
                         if (result.data) {
-                            this.setState({ "myDeleteShow": true, "type": "success", "errorsMessageShow": false,"myToastShow":false,"myUpdateShow":false, message: "削除成功" });
+                            this.setState({ "myDeleteShow": true, "type": "success", "errorsMessageShow": false,"myMessageShow":false,"myUpdateShow":false, message: "削除成功" });
                             setTimeout(() => this.setState({ "myDeleteShow": false }), 3000);
                         } else {
-                            this.setState({ "myDeleteShow": true, "type": "fail", "errorsMessageShow": false,"myToastShow":false,"myUpdateShow":false, message: '削除失敗' });
+                            this.setState({ "myDeleteShow": true, "type": "fail", "errorsMessageShow": false,"myMessageShow":false,"myUpdateShow":false, message: '削除失敗' });
                             setTimeout(() => this.setState({ "myDeleteShow": false }), 3000);
                         }
                     })
@@ -597,7 +597,7 @@ class CustomerInfo extends Component {
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
-                    this.setState({ "myUpdateShow": true, "type": "success", "errorsMessageShow": false,"myToastShow":false,"myDeleteShow":false, message: "明細登録成功", customerDepartmentList: result.data.customerDepartmentList });
+                    this.setState({ "myUpdateShow": true, "type": "success", "errorsMessageShow": false,"myMessageShow":false,"myDeleteShow":false, message: "明細登録成功", customerDepartmentList: result.data.customerDepartmentList });
                     setTimeout(() => this.setState({ "myUpdateShow": false }), 3000);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -712,8 +712,8 @@ class CustomerInfo extends Component {
         const tableSelect11 = (onUpdate, props) => (<TableSelect dropdowns={this} flag={11} onUpdate={onUpdate} {...props} />);
         return (
             <div>
-                <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-                    <MyToast myToastShow={this.state.myToastShow} message={message} type={type} />
+                <div style={{ "display": this.state.myMessageShow ? "block" : "none" }}>
+                    <MyToast myToastShow={this.state.myMessageShow} message={message} type={type} />
                 </div>
                 <div style={{ "display": this.state.myUpdateShow ? "block" : "none" }}>
                     <MyToast myToastShow={this.state.myUpdateShow} message={message} type={type} />
