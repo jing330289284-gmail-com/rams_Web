@@ -428,7 +428,7 @@ export function resumeDownload(path, serverIP, name) {
 					a.href = url;
 					// 设置文件名称
 					if(name !== undefined && name !== null && name !== ""){
-						a.download = NewPath[NewPath.length - 1].split("_")[0] + "_" + name + "." + NewPath[NewPath.length - 1].split(".")[NewPath[NewPath.length - 1].split(".").length - 1];
+						a.download = NewPath[NewPath.length - 1].split("_")[0].replace(/[　]/g,"") + "_" + name + "." + NewPath[NewPath.length - 1].split(".")[NewPath[NewPath.length - 1].split(".").length - 1];
 					}
 					else{
 						a.download = NewPath[NewPath.length - 1];
@@ -439,7 +439,7 @@ export function resumeDownload(path, serverIP, name) {
 			}
 		}
 		xhr.send(JSON.stringify({
-			"name": path,
+			"name": path
 		}));
 	}else{
 		alert('ファイルが存在しません。');

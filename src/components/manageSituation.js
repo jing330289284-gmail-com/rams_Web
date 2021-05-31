@@ -834,7 +834,7 @@ class manageSituation extends React.Component {
 				break;
 			case "detail":
 				path = {
-					pathname: '/subMenuManager/employeeDetailNew',
+					pathname: '/subMenuManager/employeeUpdateNew',
 					state: {
 						actionType: 'detail',
 						id: String(this.refs.table.state.selectedRowKeys),
@@ -922,7 +922,7 @@ class manageSituation extends React.Component {
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<SalesContent empNo={this.state.employeeNo} />
+						<SalesContent empNo={this.state.employeeNo} salesProgressCode={this.state.salesProgressCode} />
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">

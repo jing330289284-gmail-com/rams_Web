@@ -16,16 +16,16 @@ axios.defaults.withCredentials = true;
 class bpInfo extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = this.initialState;//初期化
+		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
 	}
-	//初期化
+	// 初期化
 	initialState = {
-		//salesProgressCodes: [],
-		bpBelongCustomerCode: '',//選択中のBP所属
-		bpUnitPrice: '',//単価
-		bpSalesProgressCode: '4',//選択中の営業状況
-		bpRemark: '',//備考
+		// salesProgressCodes: [],
+		bpBelongCustomerCode: '',// 選択中のBP所属
+		bpUnitPrice: '',// 単価
+		bpSalesProgressCode: '4',// 選択中の営業状況
+		bpRemark: '',// 備考
 		bpOtherCompanyAdmissionEndDate: '',
 		customer: store.getState().dropDown[15].slice(1),
 		salesProgressCodes: store.getState().dropDown[16].slice(1),
@@ -36,18 +36,18 @@ class bpInfo extends React.Component {
 			[event.target.name]: event.target.value,
 		})
 	}
-	//　　リセット
+	// リセット
 	resetButton = () => {
 		this.setState({
-			bpBelongCustomerCode: '',//　　選択中のBP所属
-			bpUnitPrice: '',//単価
-			bpSalesProgressCode: '4',//選択中の営業状況
-			bpOtherCompanyAdmissionEndDate: '',//所属現場終年月
-			bpRemark: '',//備考
+			bpBelongCustomerCode: '',// 選択中のBP所属
+			bpUnitPrice: '',// 単価
+			bpSalesProgressCode: '4',// 選択中の営業状況
+			bpOtherCompanyAdmissionEndDate: '',// 所属現場終年月
+			bpRemark: '',// 備考
 		})
 	};
 
-	//初期化メソッド
+	// 初期化メソッド
 	componentDidMount() {
 		this.setEmployeeName();
 		if (this.props.actionType !== "insert") {
@@ -57,16 +57,16 @@ class bpInfo extends React.Component {
 				.then(response => response.data)
 				.then((data) => {
 					this.setState({
-						bpBelongCustomerCode: data.bpBelongCustomerCode,//　　選択中のBP所属
-						bpUnitPrice: data.bpUnitPrice,//単価
-						bpSalesProgressCode: data.bpSalesProgressCode,//選択中の営業状況
+						bpBelongCustomerCode: data.bpBelongCustomerCode,// 選択中のBP所属
+						bpUnitPrice: data.bpUnitPrice,// 単価
+						bpSalesProgressCode: data.bpSalesProgressCode,// 選択中の営業状況
 						bpOtherCompanyAdmissionEndDate: utils.converToLocalTime(data.bpOtherCompanyAdmissionEndDate, false),
-						bpRemark: data.bpRemark,//備考
+						bpRemark: data.bpRemark,// 備考
 					});
 				}
 				);
 		}
-		var bpInfoModel = this.props.bpInfoModel;//父画面のパラメータ（画面既存口座情報）
+		var bpInfoModel = this.props.bpInfoModel;// 父画面のパラメータ（画面既存口座情報）
 		if (!$.isEmptyObject(bpInfoModel)) {
 			this.setState({
 				bpBelongCustomerCode: bpInfoModel["bpBelongCustomerCode"],
@@ -110,6 +110,20 @@ class bpInfo extends React.Component {
 			bpOtherCompanyAdmissionEndDate: utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate, false),
 			bpRemark: this.state.bpRemark,
 		};
+		if(this.props.actionType === "update"){
+			axios.post(this.state.serverIP + "employee/updatebpInfo", bpInfoModel)
+			.then(response => {
+				if (response.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+				} else {
+					this.setState({ "myToastShow": true, "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				}
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+		}
 		this.props.pbInfoTokuro(bpInfoModel);
 	};
 
@@ -244,21 +258,18 @@ class bpInfo extends React.Component {
 	}
 }
 
-/* const mapStateToProps = state => {
-	return {
-		customer: state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
-		salesProgressCodes: state.data.dataReques.length >= 1 ? state.data.dataReques[16].slice(1) : [],
-		serverIP: state.data.dataReques[state.data.dataReques.length - 1],
-
-	}
-};
-
-const mapDispatchToProps = dispatch => {
-	return {
-		fetchDropDown: () => dispatch(fetchDropDown())
-	}
-};
-export default connect(mapStateToProps, mapDispatchToProps)(bpInfo); */
+/*
+ * const mapStateToProps = state => { return { customer:
+ * state.data.dataReques.length >= 1 ? state.data.dataReques[15].slice(1) : [],
+ * salesProgressCodes: state.data.dataReques.length >= 1 ?
+ * state.data.dataReques[16].slice(1) : [], serverIP:
+ * state.data.dataReques[state.data.dataReques.length - 1],
+ *  } };
+ * 
+ * const mapDispatchToProps = dispatch => { return { fetchDropDown: () =>
+ * dispatch(fetchDropDown()) } }; export default connect(mapStateToProps,
+ * mapDispatchToProps)(bpInfo);
+ */
 export default bpInfo;
 
 

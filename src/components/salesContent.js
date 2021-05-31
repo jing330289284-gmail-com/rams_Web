@@ -36,7 +36,7 @@ class salesContent extends React.Component {
 		japaneseLevelName: '',
 		hopeHighestPrice: '',
 		beginMonth: '',
-		salesProgressCode: '',
+		salesProgressCode: this.props.salesProgressCode,
 		nearestStation: '',
 		employeeStatus: '',
 		japaneseLevelCode: '',
@@ -243,7 +243,6 @@ class salesContent extends React.Component {
 					japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 					englishConversationLevel: result.data[0].englishConversationLevel,
 					beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
-					salesProgressCode: result.data[0].salesProgressCode,
 					nearestStation: result.data[0].nearestStation,
 					stationCode: result.data[0].nearestStation,
 					employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
@@ -414,7 +413,7 @@ class salesContent extends React.Component {
 	                 <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 	            </div>
 {				<ListGroup>
-					<ListGroup.Item width="200px">【名　　前】：{this.state.employeeName}{'　　　'}{this.state.nationalityName}{'　　　'}{this.state.genderStatus}</ListGroup.Item>
+					<ListGroup.Item width="200px">【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
 					<ListGroup.Item>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【年　　齢】：<input value={this.state.age} name="age"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
@@ -456,7 +455,7 @@ class salesContent extends React.Component {
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
-					{<ListGroup.Item>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
+					{<ListGroup.Item hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
 					<ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}>【対応工程】：
 				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
@@ -522,19 +521,19 @@ class salesContent extends React.Component {
 				<div style={{ "display": "none" }}>
 					<textarea ref={(textarea) => this.textArea = textarea} id="snippet"
 						value={`　　　　営業文章
-【名　　前】：`+ this.state.employeeName + `　　　` + this.state.nationalityName + `　　　` + this.state.genderStatus + `
+【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + `
 【年　　齢】：`+ this.state.age + `歳
 【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
 【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
 【業務年数】：`+ this.state.yearsOfExperience + `年
-【対応工程】：`+ this.state.projectPhase + `
+【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `
 【得意言語】：`+ this.state.developLanguage + `
 【単　　価】：`+ this.state.unitPrice + `万円
-【稼働開始】：2020/09
+【稼働開始】：`+ (this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + publicUtils.formateDate(this.state.beginMonth, false).substring(4,6) : '') + `
 【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
-【備　　考】：`+ this.state.remark}
+【備　　考】：`+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : '')}
 					/></div>
 				<div>
 					<div style={{ "textAlign": "center" }}>
