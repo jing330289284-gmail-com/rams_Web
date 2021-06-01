@@ -122,8 +122,8 @@ class EmployeeDetailNew extends React.Component {
 					major: data.major,// 専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),// 卒業年月
 					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
-					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),// 入社年月
-					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
+					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
+					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true), new Date()),
 					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
 					retirementResonClassificationCode:  data.retirementResonClassification,//退職区分
@@ -759,9 +759,7 @@ class EmployeeDetailNew extends React.Component {
 									<DatePicker
 										selected={this.state.intoCompanyYearAndMonth}
 										onChange={this.inactiveintoCompanyYearAndMonth}
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										id="datePickerReadonlyDefault-empInsert-left"
 										className="form-control form-control-sm"
 										disabled

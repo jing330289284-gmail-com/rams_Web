@@ -107,7 +107,7 @@ class employeeUpdateNew extends React.Component {
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),// 専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
-			intoCompanyYearAndMonth: this.state.employeeStatus !== '1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
+			intoCompanyYearAndMonth: this.state.employeeStatus !== '1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, true),// 退職年月
 			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),//退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
@@ -330,8 +330,8 @@ class employeeUpdateNew extends React.Component {
 					major: data.major,// 専門
 					graduationYearAndMonth: publicUtils.converToLocalTime(data.graduationYearAndMonth, false),// 卒業年月
 					temporary_graduationYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.graduationYearAndMonth, false), new Date()),
-					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false),// 入社年月
-					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, false), new Date()),
+					intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
+					temporary_intoCompanyYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true), new Date()),
 					retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
 					temporary_retirementYearAndMonth: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.retirementYearAndMonth, false), new Date()),
 					retirementResonClassificationCode:  data.retirementResonClassification,//退職区分
@@ -773,7 +773,8 @@ class employeeUpdateNew extends React.Component {
 	        var path = {};
 	        path = {
 	            pathname: "/subMenuManager/" + backPage,
-	            state: { sendValue: this.state.sendValue},
+	            state: { sendValue: this.state.sendValue,
+	            },
 	        }
 			return this.props.history.push(path);
 		} else {
@@ -1273,9 +1274,7 @@ class employeeUpdateNew extends React.Component {
 							selected={this.state.intoCompanyYearAndMonth}
 							onChange={this.inactiveintoCompanyYearAndMonth}
 							locale="ja"
-							dateFormat="yyyy/MM"
-							showMonthYearPicker
-							showFullMonthYearPicker
+							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
 							autoComplete="off"
 							disabled={employeeStatus !== "1" ? false : true}

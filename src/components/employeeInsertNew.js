@@ -115,7 +115,7 @@ class employeeInsertNew extends React.Component {
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),// 専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
-			intoCompanyYearAndMonth: this.state.employeeStatus!=='1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, false):' ',// 入社年月
+			intoCompanyYearAndMonth: this.state.employeeStatus!=='1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true):' ',// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, true),// 退職年月
 			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),// 退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
@@ -1095,9 +1095,7 @@ class employeeInsertNew extends React.Component {
 										selected={this.state.intoCompanyYearAndMonth}
 										onChange={this.inactiveintoCompanyYearAndMonth}
 										locale="ja"
-										dateFormat="yyyy/MM"
-										showMonthYearPicker
-										showFullMonthYearPicker
+										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										autoComplete="off"
 										disabled={employeeStatus !== "1" ? false : true}

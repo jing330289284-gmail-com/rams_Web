@@ -1128,7 +1128,7 @@ class sendRepot extends React.Component {
 								<Button size="sm" variant="info" name="clickButton"
 									onClick={this.addNewList} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || !(this.state.storageListName === null || this.state.storageListName === "") ? true : false}><FontAwesomeIcon icon={faEdit} />リスト作成</Button>{' '}
 								<Button size="sm" onClick={this.openMail} variant="info" name="clickButton"
-									disabled={((this.state.sendRepotsAppend !== "" || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false) || this.state.storageListName === "" ? true : false }>
+									disabled={((this.state.sendRepotsAppend !== "" || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false)}>
 								<FontAwesomeIcon icon={faEnvelope} />メール確認</Button>{' '}
 								<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton"
 									disabled={((this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false) || this.state.storageListName === "" ? true : false }>

@@ -203,9 +203,9 @@ class salesContent extends React.Component {
 
 	getProjectPhase = (siteRoleCode) => {
 		if (siteRoleCode === '2') {
-			return 1;
+			return '1';
 		} else if (siteRoleCode === '3') {
-			return 2;
+			return '2';
 		}
 	}
 	
@@ -215,7 +215,7 @@ class salesContent extends React.Component {
 				console.log(result.data);
 				this.setState({
 					employeeName: result.data[0].employeeFullName,
-					projectPhase: result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? this.getProjectPhase(result.data[0].siteRoleCode) : result.data[0].projectPhase,
+					projectPhase: result.data[0].projectPhase === null || result.data[0].projectPhase === "" || result.data[0].projectPhase === undefined ? this.getProjectPhase(result.data[0].siteRoleCode) : result.data[0].projectPhase,
 					genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
 					nationalityName: result.data[0].nationalityName,
 					age: result.data[0].age,
@@ -528,7 +528,7 @@ class salesContent extends React.Component {
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
 【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
 【業務年数】：`+ this.state.yearsOfExperience + `年
-【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `
+【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `から
 【得意言語】：`+ this.state.developLanguage + `
 【単　　価】：`+ this.state.unitPrice + `万円
 【稼働開始】：`+ (this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + publicUtils.formateDate(this.state.beginMonth, false).substring(4,6) : '') + `

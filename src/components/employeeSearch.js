@@ -151,6 +151,15 @@ class employeeSearch extends React.Component {
             	authorityCode: sendValue.authorityCode,
             	intoCompanyYearAndMonthFrom: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthFrom, false),
             	intoCompanyYearAndMonthTo: utils.converToLocalTime(sendValue.intoCompanyYearAndMonthTo, false),
+                currPage: sendValue.currPage,
+                rowSelectEmployeeNoForPageChange:  sendValue.rowSelectEmployeeNoForPageChange,
+                linkDisableFlag: sendValue.linkDisableFlag,
+				resumeInfo1: sendValue.resumeInfo1,
+				resumeName1: sendValue.resumeName1,
+				resumeInfo2: sendValue.resumeInfo2,
+				resumeName2: sendValue.resumeName2,
+				residentCardInfo: sendValue.residentCardInfo,
+				passportInfo: sendValue.passportInfo,
             }, () => {
                     this.searchEmployee();
             })
@@ -222,9 +231,6 @@ class employeeSearch extends React.Component {
 			socialInsuranceDate: this.state.socialInsuranceDate === "" || this.state.socialInsuranceDate === null || this.state.socialInsuranceDate === undefined ? undefined : publicUtils.formateDate(this.state.socialInsuranceDate, true),
 			authorityCode: this.state.authorityCode,
 		};
-		this.refs.siteSearchTable.setState({
-			selectedRowKeys: [],
-		})
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
 				if (response.data.errorsMessage != null) {
@@ -235,12 +241,32 @@ class employeeSearch extends React.Component {
 				else {
 					this.setState({ employeeList: response.data.data, "errorsMessageShow": false })
 				}
+                if (this.state.rowSelectEmployeeNoForPageChange !== "" && this.state.rowSelectEmployeeNoForPageChange !== undefined) {
+    				this.setState({
+    					linkDisableFlag: this.state.linkDisableFlag,
+	    				resumeInfo1: this.state.resumeInfo1,
+	    				resumeName1: this.state.resumeName1,
+	    				resumeInfo2: this.state.resumeInfo2,
+	    				resumeName2: this.state.resumeName2,
+	    				residentCardInfo: this.state.residentCardInfo,
+	    				passportInfo: this.state.passportInfo,
+    				})
 
-				this.setState({
-					searchFlag: true,
-					rowSelectEmployeeNo: '',
-					linkDisableFlag: true,// linkDisableFlag
-				})
+    				this.refs.siteSearchTable.setState({
+    					selectedRowKeys: this.state.rowSelectEmployeeNoForPageChange,
+                        currPage:this.state.currPage,
+    				})
+    				$('#residentCardInfo').prop('disabled', false);
+    				$('#passportInfo').prop('disabled', false);
+    				$('#delete').attr('disabled', false);
+    				$('#update').attr('disabled', false);
+    				$('#detail').attr('disabled', false);
+    				$('#wagesInfo').attr('disabled', false);
+    				$('#siteInfo').attr('disabled', false);
+                } else {
+                    this.refs.siteSearchTable.setState({
+                        selectedRowKeys: [],
+                    })
 					$('#resumeInfo1').prop('disabled', true);
 					$('#resumeInfo2').prop('disabled', true);
 					$('#residentCardInfo').prop('disabled', true);
@@ -250,6 +276,12 @@ class employeeSearch extends React.Component {
 					$('#detail').attr('disabled', true);
 					$('#wagesInfo').attr('disabled', true);
 					$('#siteInfo').attr('disabled', true);
+                }
+
+				this.setState({
+					searchFlag: true,
+					rowSelectEmployeeNo: this.state.rowSelectEmployeeNoForPageChange !== undefined ? this.state.rowSelectEmployeeNoForPageChange :'',
+				})
 			}
 			).catch((error) => {
 				this.props.history.push("/loginManager");
@@ -357,6 +389,7 @@ class employeeSearch extends React.Component {
 /* alert(this.state.employeeList.length); */
 			this.setState(
 				{
+					rowSelectEmployeeNoForPageChange: row.employeeNo,
 					rowSelectEmployeeNo: row.employeeNo,
 					residentCardInfo: row.residentCardInfo,
 					passportInfo:row.passportInfo,
@@ -365,6 +398,7 @@ class employeeSearch extends React.Component {
 					resumeInfo2: row.resumeInfo2,
 					resumeName2: row.resumeName2,
 					linkDisableFlag: false,// linkDisableFlag
+	                currPage:this.refs.siteSearchTable.state.currPage,
 				}
 			);
 			$('#residentCardInfo').prop('disabled', false);
@@ -377,8 +411,10 @@ class employeeSearch extends React.Component {
 		} else {
 			this.setState(
 				{
+					rowSelectEmployeeNoForPageChange: '',
 					rowSelectEmployeeNo: '',
 					linkDisableFlag: true,// linkDisableFlag
+	                currPage:'',
 				}
 			);
 			$('#residentCardInfo').prop('disabled', true);
@@ -659,6 +695,15 @@ class employeeSearch extends React.Component {
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 			authorityCode: this.state.authorityCode,
 			socialInsurance: this.state.socialInsurance,
+			linkDisableFlag: this.state.socialInsurance,
+            currPage:this.state.currPage,
+			rowSelectEmployeeNoForPageChange: this.state.rowSelectEmployeeNoForPageChange,
+			resumeInfo1: this.state.resumeInfo1,
+			resumeName1: this.state.resumeName1,
+			resumeInfo2: this.state.resumeInfo2,
+			resumeName2: this.state.resumeName2,
+			residentCardInfo: this.state.residentCardInfo,
+			passportInfo: this.state.passportInfo,
 		};
 		switch (actionType) {
 			case "update":
@@ -669,7 +714,7 @@ class employeeSearch extends React.Component {
 						id: this.state.rowSelectEmployeeNo,
 						backPage: "employeeSearch",
 						sendValue: sendValue,
-						searchFlag: this.state.searchFlag
+						searchFlag: this.state.searchFlag,
 					},
 				}
 				break;
