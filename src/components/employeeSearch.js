@@ -598,7 +598,7 @@ class employeeSearch extends React.Component {
             str += this.checkEmpty(employeeList[i].immigrationStartTime) + ",";
             str += this.checkEmpty(employeeList[i].immigrationEndTime) + ",";
             
-            str += '="' + employeeList[i].myNumber + '"' + ",";
+            str += employeeList[i].myNumber + ",";
             str += this.checkEmpty(employeeList[i].employmentInsuranceNo) + ",";
             str += this.checkEmpty(employeeList[i].socialInsuranceDate) + ",";
             str += this.checkEmpty(employeeList[i].socialInsuranceNo) + ",";
