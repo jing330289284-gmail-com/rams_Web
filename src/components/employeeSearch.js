@@ -849,7 +849,7 @@ class employeeSearch extends React.Component {
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}</p>
+														{option.name}
 													</React.Fragment>
 												)
 											}}

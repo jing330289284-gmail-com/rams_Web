@@ -14,8 +14,8 @@ import store from './redux/store';
 import ErrorsMessageToast from './errorsMessageToast';
 axios.defaults.withCredentials = true;
 
-/** 
-*営業文章画面
+/**
+ * 営業文章画面
  */
 class salesContent extends React.Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ class salesContent extends React.Component {
 	initState = ({
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		myToastShow: false,// 状態ダイアログ
-		employeeNo: this.props.empNo,
+		employeeNo: this.props.sendValue.empNo,
 		employeeName: '',
 		genderStatus: '',
 		nationalityName: '',
@@ -36,7 +36,7 @@ class salesContent extends React.Component {
 		japaneseLevelName: '',
 		hopeHighestPrice: '',
 		beginMonth: '',
-		salesProgressCode: this.props.salesProgressCode,
+		salesProgressCode: this.props.sendValue.salesProgressCode,
 		nearestStation: '',
 		employeeStatus: '',
 		japaneseLevelCode: '',
@@ -44,7 +44,7 @@ class salesContent extends React.Component {
 		japaneseLevellabal: '',
 		englishLevellabal: '',
 		siteRoleCode: '',
-		unitPrice: '',
+		unitPrice: this.props.sendValue.unitPrice,
 		addDevelopLanguage: '',
 		developLanguageCode6: null,
 		developLanguageCode7: null,
@@ -68,7 +68,7 @@ class salesContent extends React.Component {
 		japaneaseConversationLevel: '',
 		englishConversationLevel: '',
 		projectPhaseCode: '0',
-		remark: '',
+		remark: this.props.sendValue.remark,
 		initAge: '',
 		initNearestStation: '',
 		initJapaneaseConversationLevel: '',
@@ -89,6 +89,7 @@ class salesContent extends React.Component {
         message: '',
         type: '',
         tempDate:'',
+		interviewDate: this.props.sendValue.salesProgressCode === "6" ? this.props.sendValue.interviewDate : "",
 	})
 	
 	componentDidMount() {
@@ -105,7 +106,29 @@ class salesContent extends React.Component {
 		clipboard2.on('error', function() {
 			console.log("err！");
 		});
+		
+		if(this.state.interviewDate !== ""){
+			var myDate = new Date();
+			myDate = myDate.getFullYear() + this.padding1((myDate.getMonth() + 1),2) + this.padding1(myDate.getDate(),2)
+			if(this.state.interviewDate.substring(0,8) >= myDate){
+				this.setState({
+					interviewDate: " " + this.state.interviewDate.substring(4,6) + "/" + this.state.interviewDate.substring(6,8)
+					+ " " + this.state.interviewDate.substring(8,10) + ":" + this.state.interviewDate.substring(10,12),
+				})
+			}else{
+				this.setState({
+					interviewDate: "",
+				})
+			}
+		}
 	}
+	
+    padding1 = (num, length) => {
+        for(var len = (num + "").length; len < length; len = num.length) {
+            num = "0" + num;            
+        }
+        return num;
+    }
 	
 	getNextMonth = (date, addMonths) => {
 		// var dd = new Date();
@@ -124,14 +147,14 @@ class salesContent extends React.Component {
 		return y + "/" + m;
 	}
 	
-	//　valueChange
+	// valueChange
 	valueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
 	};
 
-	//　コピー
+	// コピー
 	copyToClipboard = () => {
 		let tempValue = this.textArea.value;
 		var clipboard2 = new Clipboard('#copyUrl', {
@@ -148,7 +171,7 @@ class salesContent extends React.Component {
 		});
 	};
 
-	//　更新ボタン
+	// 更新ボタン
 	updateSalesSentence = () => {
 		this.setState({tempDate:publicUtils.formateDate(this.state.beginMonth, false)},()=>{
 			axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
@@ -169,13 +192,13 @@ class salesContent extends React.Component {
 		});
 	}
 
-	//　駅LOST FOCUS
+	// 駅LOST FOCUS
 	updateAddress = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
 			stationCode: event.target.value,
 		})
-		axios.post(this.state.serverIP + "salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.empNo, stationCode: event.target.value })
+		axios.post(this.state.serverIP + "salesSituation/updateEmployeeAddressInfo", { employeeNo: this.props.sendValue.empNo, stationCode: event.target.value })
 			.then(result => {
 				this.setState({ myToastShow: true });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
@@ -210,7 +233,7 @@ class salesContent extends React.Component {
 	}
 	
 	init = () => {
-		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.empNo })
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.props.sendValue.empNo })
 			.then(result => {
 				console.log(result.data);
 				this.setState({
@@ -249,8 +272,8 @@ class salesContent extends React.Component {
 					japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
 					englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 					siteRoleCode: result.data[0].siteRoleCode,
-					unitPrice: result.data[0].unitPrice,
-					remark: result.data[0].remark,
+					unitPrice: result.data[0].unitPrice === null || result.data[0].unitPrice=== "" || result.data[0].unitPrice=== undefined ? this.state.unitPrice : result.data[0].unitPrice,
+					remark: result.data[0].remark === null || result.data[0].remark=== "" || result.data[0].remark=== undefined ? this.state.remark : result.data[0].remark,
 					initAge: result.data[0].age,
 					initNearestStation: result.data[0].nearestStation,
 					initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
@@ -271,101 +294,103 @@ class salesContent extends React.Component {
 						return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 					}),
 				})
-/*				if (result.data[0].age === "") {
-					this.setState({
-						employeeName: result.data[0].employeeFullName,
-						projectPhase: result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? this.getProjectPhase(result.data[0].siteRoleCode) : result.data[0].projectPhase,
-						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
-						nationalityName: result.data[0].nationalityName,
-						age: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-						developLanguage: result.data[0].developLanguage,
-						yearsOfExperience: result.data[0].yearsOfExperience,
-						beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
-						salesProgressCode: result.data[0].salesProgressCode,
-						nearestStation: result.data[0].nearestStation,
-						stationCode: result.data[0].nearestStation,
-						employeeStatus: result.data[0].employeeStatus === ""? "":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: result.data[0].japaneseLevelCode === "" ?"":this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: result.data[0].englishLevelCode === ""? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode,
-						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
-						initNearestStation: result.data[0].nearestStation,
-						initJapaneaseConversationLevel: '',
-						initEnglishConversationLevel: '',
-						initYearsOfExperience: result.data[0].yearsOfExperience,
-						initDevelopLanguageCode6: null,
-						initDevelopLanguageCode7: null,
-						initDevelopLanguageCode8: null,
-						initDevelopLanguageCode9: null,
-						initDevelopLanguageCode10: null,
-						initUnitPrice: '',
-						initRemark: '',
-						initWellUseLanguagss: [],
-						unitPrice: result.data[0].unitPrice,
-					})
-				} else {
-					this.setState({
-						employeeName: result.data[0].employeeFullName,
-						projectPhase: result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? this.getProjectPhase(result.data[0].siteRoleCode) : result.data[0].projectPhase,
-						genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
-						nationalityName: result.data[0].nationalityName,
-						age: result.data[0].age,
-						developLanguageCode6: result.data[0].developLanguage1,
-						developLanguageCode7: result.data[0].developLanguage2,
-						developLanguageCode8: result.data[0].developLanguage3,
-						developLanguageCode9: result.data[0].developLanguage4,
-						developLanguageCode10: result.data[0].developLanguage5,
-						wellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
-						this.fromCodeToListLanguage(result.data[0].developLanguage2),
-						this.fromCodeToListLanguage(result.data[0].developLanguage3),
-						this.fromCodeToListLanguage(result.data[0].developLanguage4),
-						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}),
-						disbleState: this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false : true,
-						developLanguage: [this.fromCodeToNameLanguage(result.data[0].developLanguage1),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage2),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage3),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage4),
-						this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}).join('、'),
-						yearsOfExperience: result.data[0].yearsOfExperience,
-						japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-						englishConversationLevel: result.data[0].englishConversationLevel,
-						beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
-						salesProgressCode: result.data[0].salesProgressCode,
-						nearestStation: result.data[0].nearestStation,
-						stationCode: result.data[0].nearestStation,
-						employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,
-						japaneseLevelCode: this.state.japaneseLevels.find((v) => (v.code === result.data[0].japaneseLevelCode)).name,
-						englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
-						siteRoleCode: result.data[0].siteRoleCode,
-						unitPrice: result.data[0].unitPrice,
-						remark: result.data[0].remark,
-						initAge: result.data[0].age,
-						initNearestStation: result.data[0].nearestStation,
-						initJapaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
-						initEnglishConversationLevel: result.data[0].englishConversationLevel,
-						initYearsOfExperience: result.data[0].yearsOfExperience,
-						initDevelopLanguageCode6: result.data[0].developLanguage1,
-						initDevelopLanguageCode7: result.data[0].developLanguage2,
-						initDevelopLanguageCode8: result.data[0].developLanguage3,
-						initDevelopLanguageCode9: result.data[0].developLanguage4,
-						initDevelopLanguageCode10: result.data[0].developLanguage5,
-						initUnitPrice: result.data[0].unitPrice,
-						initRemark: result.data[0].remark,
-						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
-						this.fromCodeToListLanguage(result.data[0].developLanguage2),
-						this.fromCodeToListLanguage(result.data[0].developLanguage3),
-						this.fromCodeToListLanguage(result.data[0].developLanguage4),
-						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
-							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
-						}),
-					})
-				}*/
+/*
+ * if (result.data[0].age === "") { this.setState({ employeeName:
+ * result.data[0].employeeFullName, projectPhase: result.data[0].projectPhase
+ * === null || result.data[0].projectPhase === "" ?
+ * this.getProjectPhase(result.data[0].siteRoleCode) :
+ * result.data[0].projectPhase, genderStatus: this.state.genders.find((v) =>
+ * (v.code === result.data[0].genderStatus)).name, nationalityName:
+ * result.data[0].nationalityName, age:
+ * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+ * Math.ceil((new Date().getTime() -
+ * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
+ * 31536000000), developLanguage: result.data[0].developLanguage,
+ * yearsOfExperience: result.data[0].yearsOfExperience, beginMonth:
+ * result.data[0].theMonthOfStartWork === null ||
+ * result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new
+ * Date(),1)).getTime() : new
+ * Date(result.data[0].theMonthOfStartWork).getTime(), salesProgressCode:
+ * result.data[0].salesProgressCode, nearestStation:
+ * result.data[0].nearestStation, stationCode: result.data[0].nearestStation,
+ * employeeStatus: result.data[0].employeeStatus === ""?
+ * "":this.state.employees.find((v) => (v.code ===
+ * result.data[0].employeeStatus)).name, japaneseLevelCode:
+ * result.data[0].japaneseLevelCode === ""
+ * ?"":this.state.japaneseLevels.find((v) => (v.code ===
+ * result.data[0].japaneseLevelCode)).name, englishLevelCode:
+ * result.data[0].englishLevelCode === ""? "":this.state.englishLevels.find((v) =>
+ * (v.code === result.data[0].englishLevelCode)).name, siteRoleCode:
+ * result.data[0].siteRoleCode, initAge:
+ * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
+ * Math.ceil((new Date().getTime() -
+ * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
+ * 31536000000), initNearestStation: result.data[0].nearestStation,
+ * initJapaneaseConversationLevel: '', initEnglishConversationLevel: '',
+ * initYearsOfExperience: result.data[0].yearsOfExperience,
+ * initDevelopLanguageCode6: null, initDevelopLanguageCode7: null,
+ * initDevelopLanguageCode8: null, initDevelopLanguageCode9: null,
+ * initDevelopLanguageCode10: null, initUnitPrice: '', initRemark: '',
+ * initWellUseLanguagss: [], unitPrice: result.data[0].unitPrice, }) } else {
+ * this.setState({ employeeName: result.data[0].employeeFullName, projectPhase:
+ * result.data[0].projectPhase === null || result.data[0].projectPhase === "" ?
+ * this.getProjectPhase(result.data[0].siteRoleCode) :
+ * result.data[0].projectPhase, genderStatus: this.state.genders.find((v) =>
+ * (v.code === result.data[0].genderStatus)).name, nationalityName:
+ * result.data[0].nationalityName, age: result.data[0].age,
+ * developLanguageCode6: result.data[0].developLanguage1, developLanguageCode7:
+ * result.data[0].developLanguage2, developLanguageCode8:
+ * result.data[0].developLanguage3, developLanguageCode9:
+ * result.data[0].developLanguage4, developLanguageCode10:
+ * result.data[0].developLanguage5, wellUseLanguagss:
+ * [this.fromCodeToListLanguage(result.data[0].developLanguage1),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage2),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage3),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage4),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
+ * return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法 }), disbleState:
+ * this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false :
+ * true, developLanguage:
+ * [this.fromCodeToNameLanguage(result.data[0].developLanguage1),
+ * this.fromCodeToNameLanguage(result.data[0].developLanguage2),
+ * this.fromCodeToNameLanguage(result.data[0].developLanguage3),
+ * this.fromCodeToNameLanguage(result.data[0].developLanguage4),
+ * this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {
+ * return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法 }).join('、'),
+ * yearsOfExperience: result.data[0].yearsOfExperience,
+ * japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
+ * englishConversationLevel: result.data[0].englishConversationLevel,
+ * beginMonth: result.data[0].theMonthOfStartWork === null ||
+ * result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new
+ * Date(),1)).getTime() : new
+ * Date(result.data[0].theMonthOfStartWork).getTime(), salesProgressCode:
+ * result.data[0].salesProgressCode, nearestStation:
+ * result.data[0].nearestStation, stationCode: result.data[0].nearestStation,
+ * employeeStatus: this.state.employees.find((v) => (v.code ===
+ * result.data[0].employeeStatus)).name, japaneseLevelCode:
+ * this.state.japaneseLevels.find((v) => (v.code ===
+ * result.data[0].japaneseLevelCode)).name, englishLevelCode:
+ * this.state.englishLevels.find((v) => (v.code ===
+ * result.data[0].englishLevelCode)).name, siteRoleCode:
+ * result.data[0].siteRoleCode, unitPrice: result.data[0].unitPrice, remark:
+ * result.data[0].remark, initAge: result.data[0].age, initNearestStation:
+ * result.data[0].nearestStation, initJapaneaseConversationLevel:
+ * result.data[0].japaneaseConversationLevel, initEnglishConversationLevel:
+ * result.data[0].englishConversationLevel, initYearsOfExperience:
+ * result.data[0].yearsOfExperience, initDevelopLanguageCode6:
+ * result.data[0].developLanguage1, initDevelopLanguageCode7:
+ * result.data[0].developLanguage2, initDevelopLanguageCode8:
+ * result.data[0].developLanguage3, initDevelopLanguageCode9:
+ * result.data[0].developLanguage4, initDevelopLanguageCode10:
+ * result.data[0].developLanguage5, initUnitPrice: result.data[0].unitPrice,
+ * initRemark: result.data[0].remark, initWellUseLanguagss:
+ * [this.fromCodeToListLanguage(result.data[0].developLanguage1),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage2),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage3),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage4),
+ * this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
+ * return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法 }), }) }
+ */
 			})
 	}
 
@@ -413,12 +438,12 @@ class salesContent extends React.Component {
 	                 <ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 	            </div>
 {				<ListGroup>
-					<ListGroup.Item width="200px">【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
-					<ListGroup.Item>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【年　　齢】：<input value={this.state.age} name="age"
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【年　　齢】：<input value={this.state.age} name="age"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					歳</ListGroup.Item></span>
-					<ListGroup.Item>
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【最寄り駅】：
 					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.updateAddress}
 								name="nearestStation" value={this.state.nearestStation}>
@@ -429,7 +454,7 @@ class salesContent extends React.Component {
 								)}
 							</Form.Control></span>
 					</ListGroup.Item>
-					<ListGroup.Item>
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
 					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
 								name="japaneaseConversationLevel" value={this.state.japaneaseConversationLevel}>
@@ -440,7 +465,7 @@ class salesContent extends React.Component {
 								)}
 							</Form.Control></span>
 							&nbsp;&nbsp;{this.state.japaneseLevelCode}</ListGroup.Item>
-					<ListGroup.Item>
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【英　　語】：
 					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
 								name="englishConversationLevel" value={this.state.englishConversationLevel}
@@ -452,11 +477,11 @@ class salesContent extends React.Component {
 								)}
 							</Form.Control></span>
 						&nbsp;&nbsp;{this.state.englishLevelCode}</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
-					{<ListGroup.Item hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
-					<ListGroup.Item>
+					{<ListGroup.Item style={{padding:".3rem 1.25rem"}} hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 					<span style={{ flexFlow: "nowrap" }}>【対応工程】：
 				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
 							name="projectPhase" value={this.state.projectPhase}
@@ -468,13 +493,15 @@ class salesContent extends React.Component {
 							)}
 						</Form.Control></span>
 					</ListGroup.Item>
-					<ListGroup.Item width="200px">【得意言語】：{this.state.developLanguage}
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【得意言語】：{this.state.developLanguage}
 						<Autocomplete
 							multiple
 							id="tags-standard"
 							options={this.state.developLanguagesShow}
 							getOptionDisabled={option => this.state.disbleState}
-							//getOptionDisabled={(option) => option === this.state.developLanguagesShow[0] || option === this.state.developLanguagesShow[2]}
+							// getOptionDisabled={(option) => option ===
+							// this.state.developLanguagesShow[0] || option ===
+							// this.state.developLanguagesShow[2]}
 							value={this.state.wellUseLanguagss}
 							getOptionLabel={(option) => option.name ? option.name : ""}
 							onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
@@ -489,9 +516,10 @@ class salesContent extends React.Component {
 							)}
 						/>
 					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item width="200px">【単　　価】：<input value={this.state.unitPrice} name="unitPrice"
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPrice} name="unitPrice"
 						style={{ width: "30px" }} onChange={this.valueChange} className="inputWithoutBorder" />万円</ListGroup.Item></span>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【稼働開始】：
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
+					{	this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":
 					<DatePicker
 							selected={this.state.beginMonth}
 							onChange={this.setEndDate}
@@ -503,8 +531,9 @@ class salesContent extends React.Component {
 							dateFormat="yyyy/MM"
 							id="datePicker"
 						/>
+					}
 					</ListGroup.Item></span>
-					<ListGroup.Item><span style={{ flexFlow: "nowrap" }}>【営業状況】：
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}><span style={{ flexFlow: "nowrap" }}>【営業状況】：
 					    <Form.Control as="select" disabled style={{ display: "inherit", width: "145px", height: "35px" }} onChange={this.valueChange}
 							name="salesProgressCode" value={this.state.salesProgressCode}
 						>
@@ -514,8 +543,9 @@ class salesContent extends React.Component {
 								</option>
 							)}
 						</Form.Control></span>
+						{this.state.interviewDate}
 					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item>【備　　考】：<input value={this.state.remark} name="remark"
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【備　　考】：<input value={this.state.remark} name="remark"
 						style={{ width: "60%" }} onChange={this.valueChange} className="inputWithoutBorder" /></ListGroup.Item></span>
 				</ListGroup>}
 				<div style={{ "display": "none" }}>
@@ -531,8 +561,9 @@ class salesContent extends React.Component {
 【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `から
 【得意言語】：`+ this.state.developLanguage + `
 【単　　価】：`+ this.state.unitPrice + `万円
-【稼働開始】：`+ (this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + publicUtils.formateDate(this.state.beginMonth, false).substring(4,6) : '') + `
-【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + `
+【稼働開始】：`+ /*(this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + */
+(this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6) + "月")) + `
+【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + this.state.interviewDate + `
 【備　　考】：`+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : '')}
 					/></div>
 				<div>
@@ -544,9 +575,12 @@ class salesContent extends React.Component {
 							this.state.yearsOfExperience !== this.state.initYearsOfExperience ||
 							this.state.unitPrice !== this.state.initUnitPrice ||
 							this.state.remark !== this.state.initRemark ||
-							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : false/*false : true*/}>
+							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : false/*
+																																				 * false :
+																																				 * true
+																																				 */}>
 							<FontAwesomeIcon icon={faSave} /> {"更新"}</Button>{' '}
-						<Button id='copyUrl' size="sm" variant="info" /*onClick={this.copyToClipboard}*/>
+						<Button id='copyUrl' size="sm" variant="info" /* onClick={this.copyToClipboard} */>
 							<FontAwesomeIcon icon={faCopy} /> {"コピー"}</Button></div>
 				</div>
 			</div>

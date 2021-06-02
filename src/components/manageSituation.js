@@ -84,7 +84,7 @@ class manageSituation extends React.Component {
 		errorsMessageValue: '',// ERRメッセージ
 		customerContracts: store.getState().dropDown[24],
 		customerContractStatus: '',
-		modeSelect: 'checkbox',
+		modeSelect: 'radio',
 		selectetRowIds: [],
 		onSelectFlag: true,
 		checkFlag: false,
@@ -213,7 +213,7 @@ class manageSituation extends React.Component {
 					});
 					this.setState({
 						selectetRowIds: [],
-						modeSelect: 'checkbox',
+						modeSelect: 'radio',
 						checkSelect: true,
 						onSelectFlag: true,
 						checkFlag: false,
@@ -586,117 +586,244 @@ class manageSituation extends React.Component {
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
-		if (isSelected) {
+		if(window.event.ctrlKey){
 			this.setState({
-				selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
-				rowNo: row.rowNo === null ? '' : row.rowNo,
-				salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
-				employeeNo: row.employeeNo === null ? '' : row.employeeNo,
-				interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
-				interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
-				interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
-				interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
-				stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
-				stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
-				interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
-				interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
-				hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
-				hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
-				salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
-				salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
-				remark1: row.remark1 === null ? '' : row.remark1,
-				remark2: row.remark2 === null ? '' : row.remark2,
-				editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
-				priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
-				updateBtnflag: isSelected,
-				salesStaff: row.salesStaff === null ? '' : row.salesStaff,
-				readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
-				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 0 ? false : true,
-				sendLetterFalg: this.refs.table.state.selectedRowKeys.length >= 0 ? false : true,
-				admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
-				customerNo: row.customer === null ? '' : row.customer,
-				unitPrice: row.price === null ? '' : row.price,
-				resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
-				resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
-				resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
-				resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
-				customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+				modeSelect: "checkbox",
+			},()=>{
+				if (isSelected) {
+					this.setState({
+						selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
+						rowNo: row.rowNo === null ? '' : row.rowNo,
+						salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
+						employeeNo: row.employeeNo === null ? '' : row.employeeNo,
+						interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
+						interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+						interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
+						interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
+						stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
+						stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
+						interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+						interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
+						hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
+						hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
+						salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
+						salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
+						remark1: row.remark1 === null ? '' : row.remark1,
+						remark2: row.remark2 === null ? '' : row.remark2,
+						editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+						priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
+						updateBtnflag: isSelected,
+						salesStaff: row.salesStaff === null ? '' : row.salesStaff,
+						readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
+						linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 0 ? false : true,
+						sendLetterFalg: this.refs.table.state.selectedRowKeys.length >= 0 ? false : true,
+						admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
+						customerNo: row.customer === null ? '' : row.customer,
+						unitPrice: row.price === null ? row.unitPrice : row.price,
+						resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
+						resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
+						resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
+						resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
+						customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+					});
+				} else {
+					if(this.refs.table.state.selectedRowKeys.length === 2){
+						let employeeNo;
+						for(let i = 0; i < this.refs.table.state.selectedRowKeys.length; i++){
+							if(String(row.employeeNo) !== String(this.refs.table.state.selectedRowKeys[i])){
+								employeeNo = this.refs.table.state.selectedRowKeys[i];
+							}
+						}
+						for(let i = 0; i < this.state.salesSituationLists.length; i++){
+							if(String(employeeNo) === String(this.state.salesSituationLists[i].employeeNo)){
+								row = this.state.salesSituationLists[i];
+							}
+						}
+						this.setState({
+							selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
+							rowNo: row.rowNo === null ? '' : row.rowNo,
+							salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
+							employeeNo: row.employeeNo === null ? '' : row.employeeNo,
+							interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
+							interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+							interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
+							interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
+							stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
+							stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
+							interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+							interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
+							hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
+							hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
+							salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
+							salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
+							remark1: row.remark1 === null ? '' : row.remark1,
+							remark2: row.remark2 === null ? '' : row.remark2,
+							editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+							priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
+							updateBtnflag: isSelected,
+							salesStaff: row.salesStaff === null ? '' : row.salesStaff,
+							readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
+							linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
+							sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
+							admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
+							customerNo: row.customer === null ? '' : row.customer,
+							unitPrice: row.price === null ? row.unitPrice : row.price,
+							resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
+							resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
+							resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
+							resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
+							customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+						});
+						}
+						else{
+							this.setState({
+								selectetRowIds: [],
+								employeeNo: '',
+								interviewDate1: '',
+								interviewDate1Show: '',
+								interviewDate2: '',
+								interviewDate2Show: '',
+								stationCode1: '',
+								stationCode2: '',
+								interviewCustomer1: '',
+								interviewCustomer2: '',
+								hopeLowestPrice: '',
+								hopeHighestPrice: '',
+								salesPriorityStatus: '',
+								remark1: '',
+								remark2: '',
+								editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+								updateBtnflag: isSelected,
+								readFlag: true,
+								linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
+								sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
+								isSelectedAll: false,
+							});
+						}
+				}
 			});
-		} else {
-			if(this.refs.table.state.selectedRowKeys.length === 2){
-				let employeeNo;
-				for(let i = 0; i < this.refs.table.state.selectedRowKeys.length; i++){
-					if(String(row.employeeNo) !== String(this.refs.table.state.selectedRowKeys[i])){
-						employeeNo = this.refs.table.state.selectedRowKeys[i];
-					}
-				}
-				for(let i = 0; i < this.state.salesSituationLists.length; i++){
-					if(String(employeeNo) === String(this.state.salesSituationLists[i].employeeNo)){
-						row = this.state.salesSituationLists[i];
-					}
-				}
-				this.setState({
-					selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
-					rowNo: row.rowNo === null ? '' : row.rowNo,
-					salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
-					employeeNo: row.employeeNo === null ? '' : row.employeeNo,
-					interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
-					interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
-					interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
-					interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
-					stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
-					stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
-					interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
-					interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
-					hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
-					hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
-					salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
-					salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
-					remark1: row.remark1 === null ? '' : row.remark1,
-					remark2: row.remark2 === null ? '' : row.remark2,
-					editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
-					priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
-					updateBtnflag: isSelected,
-					salesStaff: row.salesStaff === null ? '' : row.salesStaff,
-					readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
-					linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
-					sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
-					admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
-					customerNo: row.customer === null ? '' : row.customer,
-					unitPrice: row.price === null ? '' : row.price,
-					resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
-					resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
-					resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
-					resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
-					customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-				});
-			}
-			else{
-				this.setState({
-					selectetRowIds: [],
-					employeeNo: '',
-					interviewDate1: '',
-					interviewDate1Show: '',
-					interviewDate2: '',
-					interviewDate2Show: '',
-					stationCode1: '',
-					stationCode2: '',
-					interviewCustomer1: '',
-					interviewCustomer2: '',
-					hopeLowestPrice: '',
-					hopeHighestPrice: '',
-					salesPriorityStatus: '',
-					remark1: '',
-					remark2: '',
-					editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
-					updateBtnflag: isSelected,
-					readFlag: true,
-					linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
-					sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
-					isSelectedAll: false,
-				});
-			}
 		}
+		else{
+			this.setState({
+				modeSelect: "radio",
+			},()=>{
+				if (isSelected) {
+					this.setState({
+						selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
+						rowNo: row.rowNo === null ? '' : row.rowNo,
+						salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
+						employeeNo: row.employeeNo === null ? '' : row.employeeNo,
+						interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
+						interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+						interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
+						interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
+						stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
+						stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
+						interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+						interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
+						hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
+						hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
+						salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
+						salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
+						remark1: row.remark1 === null ? '' : row.remark1,
+						remark2: row.remark2 === null ? '' : row.remark2,
+						editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+						priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
+						updateBtnflag: isSelected,
+						salesStaff: row.salesStaff === null ? '' : row.salesStaff,
+						readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
+		/*				linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 0 ? false : true,
+						sendLetterFalg: this.refs.table.state.selectedRowKeys.length >= 0 ? false : true,*/
+						linkDisableFlag: false,
+						sendLetterFalg: false,
+						admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
+						customerNo: row.customer === null ? '' : row.customer,
+						unitPrice: row.price === null ? row.unitPrice : row.price,
+						resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
+						resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
+						resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
+						resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
+						customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+					});
+				} else {
+					if(this.refs.table.state.selectedRowKeys.length === 2){
+						let employeeNo;
+						for(let i = 0; i < this.refs.table.state.selectedRowKeys.length; i++){
+							if(String(row.employeeNo) !== String(this.refs.table.state.selectedRowKeys[i])){
+								employeeNo = this.refs.table.state.selectedRowKeys[i];
+							}
+						}
+						for(let i = 0; i < this.state.salesSituationLists.length; i++){
+							if(String(employeeNo) === String(this.state.salesSituationLists[i].employeeNo)){
+								row = this.state.salesSituationLists[i];
+							}
+						}
+						this.setState({
+							selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
+							rowNo: row.rowNo === null ? '' : row.rowNo,
+							salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
+							employeeNo: row.employeeNo === null ? '' : row.employeeNo,
+							interviewDate1: row.interviewDate1 === null ? '' : row.interviewDate1,
+							interviewDate1Show: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+							interviewDate2: row.interviewDate2 === null ? '' : row.interviewDate2,
+							interviewDate2Show: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
+							stationCode1: row.stationCode1 === null ? '' : row.stationCode1,
+							stationCode2: row.stationCode2 === null ? '' : row.stationCode2,
+							interviewCustomer1: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+							interviewCustomer2: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
+							hopeLowestPrice: row.hopeLowestPrice === null ? '' : row.hopeLowestPrice,
+							hopeHighestPrice: row.hopeHighestPrice === null ? '' : row.hopeHighestPrice,
+							salesPriorityStatus: row.salesPriorityStatus === null ? '' : row.salesPriorityStatus,
+							salesProgressCode: row.salesProgressCode === null ? '' : row.salesProgressCode,
+							remark1: row.remark1 === null ? '' : row.remark1,
+							remark2: row.remark2 === null ? '' : row.remark2,
+							editFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+							priceEditFlag: row.salesProgressCode === '4' || row.salesProgressCode === '5' ? true : false,// 確定単価編集flag
+							updateBtnflag: isSelected,
+							salesStaff: row.salesStaff === null ? '' : row.salesStaff,
+							readFlag: row.employeeNo === this.state.employeeNo && !this.state.readFlag ? false : true,
+							linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
+							sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
+							admissionStartDate: row.admissionStartDate === null ? publicUtils.formateDate(new Date(), true) : row.admissionStartDate,
+							customerNo: row.customer === null ? '' : row.customer,
+							unitPrice: row.price === null ? row.unitPrice : row.price,
+							resumeInfo1: row.resumeInfo1 === null ? '' : row.resumeInfo1,
+							resumeInfo2: row.resumeInfo2 === null ? '' : row.resumeInfo2,
+							resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
+							resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
+							customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
+						});
+						}
+						else{
+							this.setState({
+								selectetRowIds: [],
+								employeeNo: '',
+								interviewDate1: '',
+								interviewDate1Show: '',
+								interviewDate2: '',
+								interviewDate2Show: '',
+								stationCode1: '',
+								stationCode2: '',
+								interviewCustomer1: '',
+								interviewCustomer2: '',
+								hopeLowestPrice: '',
+								hopeHighestPrice: '',
+								salesPriorityStatus: '',
+								remark1: '',
+								remark2: '',
+								editFlag: row.salesProgressCode === '4' ? { type: 'select', readOnly: false, options: { values: this.state.allCustomer } } : false,
+								updateBtnflag: isSelected,
+								readFlag: true,
+								linkDisableFlag: this.refs.table.state.selectedRowKeys.length === 2 ? false : true,
+								sendLetterFalg: (!this.state.isSelectedAll && this.refs.table.state.selectedRowKeys.length > 1 ) ? false : true,
+								isSelectedAll: false,
+							});
+						}
+				}
+			});
+		}
+
+		
 	}
 	
 	// 全て選択ボタン事件
@@ -922,7 +1049,18 @@ class manageSituation extends React.Component {
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<SalesContent empNo={this.state.employeeNo} salesProgressCode={this.state.salesProgressCode} />
+						<SalesContent 
+						sendValue = {{
+									empNo: this.state.employeeNo,
+									salesProgressCode: this.state.salesProgressCode,
+									unitPrice: this.state.unitPrice,
+									remark: this.state.remark1 + " " + this.state.remark2,
+									interviewDate: 
+									this.state.interviewDate1 !== "" && this.state.interviewDate2 !== "" ? 
+									this.state.interviewDate1 < this.state.interviewDate2 ? this.state.interviewDate1 : this.state.interviewDate2:
+									(this.state.interviewDate1 !== "" ? this.state.interviewDate1:this.state.interviewDate2)
+						}}
+						/>
 					</Modal.Body>
 				</Modal>
 				<Row inline="true">
