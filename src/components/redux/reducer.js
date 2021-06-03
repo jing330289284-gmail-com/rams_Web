@@ -75,7 +75,7 @@ export function fetchDropDown() {
 		"getSocialInsuranceStatus",// 68社会保険加入取得
 		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getDealDistinction",// 70処理区分取得
-		"getFramework",// 71フレームワーク取得
+		"getframeWork",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
 		"getCustomerAbbreviation",// 73 お客様略称取得
 		"getServerIP",// 最後
@@ -186,7 +186,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getSocialInsuranceStatus",// 68社会保険加入取得
 		"getStorageListName0",// 69報告書送信対象格納リスト
 		"getDealDistinction",// 70処理区分取得
-		"getFramework",// 71フレームワーク取得
+		"getframeWork",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
 		"getCustomerAbbreviation",// 73 お客様略称取得
 		"getServerIP",// 最後

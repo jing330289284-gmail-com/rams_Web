@@ -241,7 +241,7 @@ class salesContent extends React.Component {
 					projectPhase: result.data[0].projectPhase === null || result.data[0].projectPhase === "" || result.data[0].projectPhase === undefined ? this.getProjectPhase(result.data[0].siteRoleCode) : result.data[0].projectPhase,
 					genderStatus: this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name,
 					nationalityName: result.data[0].nationalityName,
-					age: result.data[0].age,
+					age: result.data[0].age === null || result.data[0].age === undefined ? "" : result.data[0].age,
 					developLanguageCode6: result.data[0].developLanguage1,
 					developLanguageCode7: result.data[0].developLanguage2,
 					developLanguageCode8: result.data[0].developLanguage3,
@@ -262,7 +262,7 @@ class salesContent extends React.Component {
 					this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {
 						return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
 					}).join('、'),
-					yearsOfExperience: result.data[0].yearsOfExperience,
+					yearsOfExperience: result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === undefined ? "" : result.data[0].yearsOfExperience,
 					japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 					englishConversationLevel: result.data[0].englishConversationLevel,
 					beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
@@ -552,19 +552,19 @@ class salesContent extends React.Component {
 					<textarea ref={(textarea) => this.textArea = textarea} id="snippet"
 						value={`　　　　営業文章
 【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + `
-【年　　齢】：`+ this.state.age + `歳
-【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + `
-【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + `
-【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + `
-【業務年数】：`+ this.state.yearsOfExperience + `年
-【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `から
-【得意言語】：`+ this.state.developLanguage + `
-【単　　価】：`+ this.state.unitPrice + `万円
+【所　　属】：`+ this.state.employeeStatus + (this.state.age === "" ? "" : `
+【年　　齢】：`+ this.state.age + `歳`) + (this.state.nearestStation === "" || this.state.nearestStation === null ? "" :  `
+【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '')) + (this.state.japaneaseConversationLevel === "" || this.state.japaneaseConversationLevel === null ? "" :  `
+【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')) + (this.state.englishConversationLevel === "" || this.state.englishConversationLevel === null ? "" :  `
+【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '')) +  (this.state.yearsOfExperience === "" ? "" : `
+【業務年数】：`+ this.state.yearsOfExperience + `年`) + (this.state.projectPhase === "" || this.state.projectPhase === null  || this.state.projectPhase === undefined ? "" :  `
+【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `から`) + (this.state.developLanguage === "" ? "" : `
+【得意言語】：`+ this.state.developLanguage) + (this.state.unitPrice === "" ? "" : `
+【単　　価】：`+ this.state.unitPrice + `万円`) + `
 【稼働開始】：`+ /*(this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + */
-(this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6) + "月")) + `
-【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + this.state.interviewDate + `
-【備　　考】：`+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : '')}
+(this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月")) + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null ? "" :  `
+【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + this.state.interviewDate) + (this.state.remark === " " ? "" : `
+【備　　考】：`+ (this.state.remark !== " " && this.state.remark !== null ? this.state.remark : ''))}
 					/></div>
 				<div>
 					<div style={{ "textAlign": "center" }}>

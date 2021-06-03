@@ -916,6 +916,42 @@ class manageSituation extends React.Component {
 	folderDownload = () => {
 		publicUtils.folderDownload("C:/file/salesFolder/" + this.state.salesYearAndMonth + ".rar", this.state.serverIP);
 	}
+	
+	test = () => {
+		var promiseList = [];
+		for(let i = 0; i < this.state.salesSituationLists.length;i++){
+			promiseList.push(new Promise((resolve, reject)=> {
+		        setTimeout(()=> {
+		        	axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.salesSituationLists[i].employeeNo })
+					.then(result => {
+			            resolve((i + 1) + "\n" + "【名　　前】：" + result.data[0].employeeFullName + "\n");
+					})
+
+		        }, Math.random()*3000);
+		    }));
+		}
+		Promise.all(promiseList).then((rspList)=> {
+		    rspList.map((val)=> {
+		    	this.download("test.txt",val)
+		    });
+		});
+	}
+	
+	download = (filename, text) => {
+		var pom = document.createElement("a");
+	      pom.setAttribute(
+	        "href",
+	        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+	      );
+	      pom.setAttribute("download", filename);
+	      if (document.createEvent) {
+	        var event = document.createEvent("MouseEvents");
+	        event.initEvent("click", true, true);
+	        pom.dispatchEvent(event);
+	      } else {
+	        pom.click();
+	      }
+	}
 
 	// TABLE共通
 	renderShowsTotal = (start, to, total) => {
@@ -1309,6 +1345,7 @@ class manageSituation extends React.Component {
 								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダ</Button>{' '}
 							</div>
 							<div style={{ "float": "right" }}>
+								<Button onClick={this.test} size="sm" variant="info" name="clickButton" hidden><FontAwesomeIcon icon={faDownload} /> test </Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
 								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダ作成":"営業フォルダ更新"}</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}

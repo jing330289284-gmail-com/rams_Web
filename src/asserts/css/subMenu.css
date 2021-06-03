@@ -69,12 +69,74 @@ h2 {
 	color: rgb(247, 226, 248);
 }
 
+/*  .linkFont:hover {
+	color: orange;
+	text-decoration: none;
+	animation: light 0.5s ease infinite alternate;
+} */
+
+/*.linkFont:hover {
+	color: orange;
+	background: linear-gradient(to bottom right, orange , #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: change 5s infinite linear;
+} */
+
 .linkFont-click {
 	font-family: "黑体", Sans-serif;
 	font-size: 1rem;
 	margin-left: -0.5rem;
-	color: rgb(0, 0, 0);
+	color: black;
 }
+
+/* .linkFont-click:hover {
+	color: orange;
+	text-decoration: none;
+	animation: light 0.5s ease infinite alternate;
+} */
+
+/* .linkFont-click:hover {
+	color: orange;
+	background: linear-gradient(to bottom right, orange , #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: change 5s infinite linear;
+} */
+
+@-webkit-keyframes change {
+    from {
+      -webkit-filter: hue-rotate(0deg);
+    }
+    to {
+      -webkit-filter: hue-rotate(-360deg);
+    }
+}
+
+
+@keyframes light {
+            from {
+                text-shadow: 0 0 10px #fff,
+                    0 0 20px #fff,
+                    0 0 30px #fff,
+                    0 0 40px #fff700,
+                    0 0 70px #fff700,
+                    0 0 80px #fff700,
+                    0 0 100px #fff700,
+                    0 0 150px #fff700;
+            }
+
+            to {
+                text-shadow: 0 0 0px #fff,
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 15px #fff700,
+                    0 0 20px #fff700,
+                    0 0 30px #fff700,
+                    0 0 40px #fff700,
+                    0 0 50px #fff700;
+            }
+        }
 
 .collapse {
 	margin-left: 1rem;
