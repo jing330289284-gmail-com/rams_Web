@@ -148,6 +148,7 @@ class sendLettersConfirm extends React.Component {
 		sendLetterButtonDisFlag: true,
 		/* 要員追加機能の新規 20201216 張棟 END */
 		sendLetterOverFlag: false,
+		titleFlag: false,
 	})
 	
 	componentDidMount() {
@@ -1137,6 +1138,14 @@ class sendLettersConfirm extends React.Component {
 			})
 		}
 	}
+	
+	titleChange = () => {
+		this.setState({
+			titleFlag: !this.state.titleFlag,
+			mailTitle: "",
+			sendLetterButtonDisFlag: true,
+		})
+	}
 
 	// 要員追加機能の新規 20201216 張棟 END
 	/**
@@ -1272,14 +1281,22 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={3}>
 						<InputGroup size="sm" className="mb-3">
 							<InputGroup.Prepend>
-								<InputGroup.Text id="inputGroup-sizing-sm">タイトル</InputGroup.Text>
+								<InputGroup.Text id="inputGroup-sizing-sm" onClick={this.titleChange}>タイトル</InputGroup.Text>
 							</InputGroup.Prepend>
+							{this.state.titleFlag ? 
+							<FormControl
+		                            value={this.state.mailTitle}
+		                            name="mailTitle"
+		                            onChange={this.valueChange}
+								></FormControl>
+							:
 							<Form.Control as="select" size="sm" onChange={this.titleValueChange} name="mailTitle" >
 								<option></option>
 								<option>{this.getNextMonth(1)}の要員提案に関して</option>
 								<option>即日要員提案に関して</option>
 								<option>{this.getNextMonth(2)}の要員提案に関して</option>
 							</Form.Control>
+							}
 						</InputGroup>
 					</Col>
 					<Col sm={5}>
@@ -1392,7 +1409,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false : true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.sendLetterButtonDisFlag || this.state.sendLetterOverFlag ? true : false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" || this.state.sendLetterOverFlag ? true : false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>

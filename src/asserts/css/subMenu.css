@@ -64,16 +64,16 @@ h2 {
 
 .linkFont {
 	font-family: "黑体", Sans-serif;
-	font-size: 1rem;
+	font-size: 1.1rem;
 	margin-left: -0.5rem;
 	color: rgb(247, 226, 248);
 }
 
-/*  .linkFont:hover {
-	color: orange;
+.linkFont:hover {
+	color: black;
 	text-decoration: none;
 	animation: light 0.5s ease infinite alternate;
-} */
+}
 
 /*.linkFont:hover {
 	color: orange;
@@ -85,16 +85,16 @@ h2 {
 
 .linkFont-click {
 	font-family: "黑体", Sans-serif;
-	font-size: 1rem;
+	font-size: 1.1rem;
 	margin-left: -0.5rem;
 	color: black;
 }
 
-/* .linkFont-click:hover {
-	color: orange;
+.linkFont-click:hover {
+	color: black;
 	text-decoration: none;
 	animation: light 0.5s ease infinite alternate;
-} */
+}
 
 /* .linkFont-click:hover {
 	color: orange;
@@ -121,9 +121,7 @@ h2 {
                     0 0 30px #fff,
                     0 0 40px #fff700,
                     0 0 70px #fff700,
-                    0 0 80px #fff700,
-                    0 0 100px #fff700,
-                    0 0 150px #fff700;
+                    0 0 80px #fff700;
             }
 
             to {
@@ -132,9 +130,7 @@ h2 {
                     0 0 10px #fff,
                     0 0 15px #fff700,
                     0 0 20px #fff700,
-                    0 0 30px #fff700,
-                    0 0 40px #fff700,
-                    0 0 50px #fff700;
+                    0 0 30px #fff700;
             }
         }
 

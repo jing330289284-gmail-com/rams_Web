@@ -185,8 +185,8 @@ class SubMenu extends Component {
 															<FontAwesomeIcon className="fa-fw" size="lg" icon={faSave}/>社員・BP登録</Link></ListGroup.Item>*/}
 													<ListGroup.Item style={styleLow}><Link className={this.state.click==="社員・BP検索"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP検索')} to="/subMenuManager/employeeSearch">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員・BP検索</Link></ListGroup.Item>
-													<ListGroup.Item style={styleLow}><Link className={this.state.click==="個人情報期限一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('個人情報期限一覧')} to="/subMenuManager/employeeInformation">
-														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />個人情報期限一覧</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="個人情報期限"?"linkFont-click":"linkFont"} onClick={() => this.click('個人情報期限')} to="/subMenuManager/employeeInformation">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />個人情報期限</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -266,8 +266,8 @@ class SubMenu extends Component {
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} color="rgb(247, 226, 248)"/>営業ポイント設定</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業個別売上"?"linkFont-click":"linkFont"} onClick={() => this.click('営業個別売上')} to="/subMenuManager/salesProfit">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>
-															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業ポイント明細"?"linkFont-click":"linkFont"} onClick={() => this.click('営業ポイント明細')} to="/subMenuManager/salesPoint">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faBars} />営業ポイント明細</Link></ListGroup.Item>										</ListGroup>
+															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業ポイント"?"linkFont-click":"linkFont"} onClick={() => this.click('営業ポイント')} to="/subMenuManager/salesPoint">
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faBars} />営業ポイント</Link></ListGroup.Item>										</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
 												:

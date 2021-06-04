@@ -90,6 +90,7 @@ class salesContent extends React.Component {
         type: '',
         tempDate:'',
 		interviewDate: this.props.sendValue.salesProgressCode === "6" ? this.props.sendValue.interviewDate : "",
+		admissionEndDate: this.props.sendValue.admissionEndDate,
 	})
 	
 	componentDidMount() {
@@ -439,7 +440,7 @@ class salesContent extends React.Component {
 	            </div>
 {				<ListGroup>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
-					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus}</ListGroup.Item>
+					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus === "子会社社員" ? "社員" : this.state.employeeStatus}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【年　　齢】：<input value={this.state.age} name="age"
 						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					歳</ListGroup.Item></span>
@@ -519,7 +520,8 @@ class salesContent extends React.Component {
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPrice} name="unitPrice"
 						style={{ width: "30px" }} onChange={this.valueChange} className="inputWithoutBorder" />万円</ListGroup.Item></span>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
-					{	this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":
+					{	
+					(Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":
 					<DatePicker
 							selected={this.state.beginMonth}
 							onChange={this.setEndDate}
@@ -529,7 +531,8 @@ class salesContent extends React.Component {
 							showFullMonthYearPicker
 							className="form-control form-control-sm"
 							dateFormat="yyyy/MM"
-							id="datePicker"
+							id="datePickerReadonly"
+							disabled
 						/>
 					}
 					</ListGroup.Item></span>
@@ -552,7 +555,7 @@ class salesContent extends React.Component {
 					<textarea ref={(textarea) => this.textArea = textarea} id="snippet"
 						value={`　　　　営業文章
 【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + (this.state.age === "" ? "" : `
+【所　　属】：`+ (this.state.employeeStatus === "子会社社員" ? "社員" : this.state.employeeStatus) + (this.state.age === "" ? "" : `
 【年　　齢】：`+ this.state.age + `歳`) + (this.state.nearestStation === "" || this.state.nearestStation === null ? "" :  `
 【最寄り駅】：`+ (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '')) + (this.state.japaneaseConversationLevel === "" || this.state.japaneaseConversationLevel === null ? "" :  `
 【日本　語】：`+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')) + (this.state.englishConversationLevel === "" || this.state.englishConversationLevel === null ? "" :  `
@@ -562,7 +565,7 @@ class salesContent extends React.Component {
 【得意言語】：`+ this.state.developLanguage) + (this.state.unitPrice === "" ? "" : `
 【単　　価】：`+ this.state.unitPrice + `万円`) + `
 【稼働開始】：`+ /*(this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + */
-(this.state.beginMonth < new Date(this.getNextMonth(new Date(),1)).getTime() ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月")) + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null ? "" :  `
+((Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月")) + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null ? "" :  `
 【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + this.state.interviewDate) + (this.state.remark === " " ? "" : `
 【備　　考】：`+ (this.state.remark !== " " && this.state.remark !== null ? this.state.remark : ''))}
 					/></div>
