@@ -167,10 +167,28 @@ export async function getNO(columnName, typeName, table, serverIP) {
 			}
 		});
 	}else{
-		if(typeName==="BP" || typeName==="SP" || typeName==="SC"){
+		if(typeName==="BPR" || typeName==="SP" || typeName==="SC"){
 			$.ajax({
 				type: "POST",
 				url: serverIP + "getNO",
+				data: JSON.stringify(mo),
+				contentType: "application/json",
+				async: false,
+				xhrFields: {
+					// 允许带上凭据
+			        withCredentials: true
+				},
+				success: function(data) {
+					if (data != null) {
+						no = data
+					}
+				}
+			});
+		}
+		else if(typeName==="BP"){
+			$.ajax({
+				type: "POST",
+				url: serverIP + "getNoBP",
 				data: JSON.stringify(mo),
 				contentType: "application/json",
 				async: false,

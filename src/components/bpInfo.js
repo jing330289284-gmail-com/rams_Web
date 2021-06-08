@@ -18,13 +18,14 @@ class bpInfo extends React.Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.valueChange = this.valueChange.bind(this);
+		this.bpSalesProgressCodeChange = this.bpSalesProgressCodeChange.bind(this);
 	}
 	// 初期化
 	initialState = {
 		// salesProgressCodes: [],
 		bpBelongCustomerCode: '',// 選択中のBP所属
 		bpUnitPrice: '',// 単価
-		bpSalesProgressCode: '4',// 選択中の営業状況
+		bpSalesProgressCode: String(this.props.employeeNo).substring(0,3) === "BPR" ? '3' : '4',// 選択中の営業状況
 		bpRemark: '',// 備考
 		bpOtherCompanyAdmissionEndDate: '',
 		customer: store.getState().dropDown[15].slice(1),
@@ -36,12 +37,23 @@ class bpInfo extends React.Component {
 			[event.target.name]: event.target.value,
 		})
 	}
+	
+	bpSalesProgressCodeChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		if(event.target.value === "4"){
+			this.setState({
+				bpOtherCompanyAdmissionEndDate: "",
+			})
+		}
+	}
 	// リセット
 	resetButton = () => {
 		this.setState({
 			bpBelongCustomerCode: '',// 選択中のBP所属
 			bpUnitPrice: '',// 単価
-			bpSalesProgressCode: '4',// 選択中の営業状況
+			bpSalesProgressCode: String(this.props.employeeNo).substring(0,3) === "BPR" ? '3' : '4',// 選択中の営業状況
 			bpOtherCompanyAdmissionEndDate: '',// 所属現場終年月
 			bpRemark: '',// 備考
 		})
@@ -139,7 +151,7 @@ class bpInfo extends React.Component {
 		}
 	}
 	render() {
-		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName } = this.state;
+		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName, } = this.state;
 		return (
 			<div>
 				<Row inline="true">
@@ -200,7 +212,7 @@ class bpInfo extends React.Component {
 										<InputGroup.Text id="inputGroup-sizing-sm">営業状況</InputGroup.Text>
 									</InputGroup.Prepend>
 									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
+										onChange={this.bpSalesProgressCodeChange}
 										name="bpSalesProgressCode" value={bpSalesProgressCode}
 										autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}>
 										{this.state.salesProgressCodes.map(date =>
@@ -224,10 +236,10 @@ class bpInfo extends React.Component {
 										showFullMonthYearPicker
 										showDisabledMonthNavigation
 										className="form-control form-control-sm"
-										id={this.props.actionType === "detail" ? "datePickerReadonlyDefault-bpInfo" : "datePicker-bpInfo"}
+										id={this.props.actionType === "detail" || bpSalesProgressCode === "4" ? "datePickerReadonlyDefault-bpInfo" : "datePicker-bpInfo"}
 										dateFormat={"yyyy/MM"}
 										locale="ja"
-										disabled={this.props.actionType === "detail" ? true : false}
+										disabled={this.props.actionType === "detail" || bpSalesProgressCode === "4" ? true : false}
 									/>
 								</InputGroup>
 							</Col>

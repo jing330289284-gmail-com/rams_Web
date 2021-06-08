@@ -73,10 +73,10 @@ class employeeInformation extends Component {// 状況変動一覧
     
     birthdayChange(cell,row) {
     	if(row.birthdayDate <= 7 && row.dealDistinctioCode !== "2"){
-        	return (<div><font color="red">{row.birthdayDate === 0 ? "" : row.birthdayDate}</font></div>);
+        	return (<div><font color="red">{row.birthdayDate === -1 ? "" : row.birthdayDate}</font></div>);
     	}
     	else{
-        	return (<div><font>{row.birthdayDate === 0 ? "" : row.birthdayDate}</font></div>);
+        	return (<div><font>{row.birthdayDate === -1 ? "" : row.birthdayDate}</font></div>);
     	}
 	}
     

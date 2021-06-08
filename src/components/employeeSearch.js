@@ -168,7 +168,7 @@ class employeeSearch extends React.Component {
 		let temp = [];
 		for(let i in this.state.employeeStatuss){
 			if(i == 1){
-				let add = {name: "協力以外",code: "4"}
+				let add = {name: "協力以外",code: "5"}
 				temp.push(add);
 			}
 			temp.push(this.state.employeeStatuss[i]);
@@ -528,6 +528,14 @@ class employeeSearch extends React.Component {
 			}
 			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
 		} else if (value === '4') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,3) === "BPR"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ intoCompanyYearAndMonthFrom: '', intoCompanyCode: '', employeeFormCode: '', intoCompanyYearAndMonthTo: '', employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '5') {
 			let newEmpInfoList = [];
 			for(let i in employeeInfoList){
 				if(!(employeeInfoList[i].code.substring(0,2) === "BP")){

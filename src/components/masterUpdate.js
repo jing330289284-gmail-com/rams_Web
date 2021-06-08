@@ -351,7 +351,7 @@ class masterUpdate extends Component {
 		// 表格样式设定
 		this.options = {
 			page: 1,  // which page you want to show as default
-			sizePerPage: 5,  // which size per page you want to locate as
+			sizePerPage: 10,  // which size per page you want to locate as
 								// default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.

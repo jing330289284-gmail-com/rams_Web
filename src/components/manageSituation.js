@@ -593,7 +593,8 @@ class manageSituation extends React.Component {
 		this.refs.table.setState({
 			selectedRowKeys: []
 		});
-		if(window.event.ctrlKey){
+		var ctrlKey = window.event === undefined ? false : window.event.ctrlKey;
+		if(ctrlKey){
 			this.setState({
 				modeSelect: "checkbox",
 			},()=>{
@@ -1095,7 +1096,7 @@ class manageSituation extends React.Component {
 				path = {
 					pathname: '/subMenuManager/employeeUpdateNew',
 					state: {
-						actionType: 'detail',
+						actionType: 'update',
 						id: String(this.refs.table.state.selectedRowKeys),
 						backPage: 'manageSituation',
 						sendValue: sendValue,
