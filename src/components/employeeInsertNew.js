@@ -180,6 +180,8 @@ class employeeInsertNew extends React.Component {
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
+				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 			});
 	};
 

@@ -323,11 +323,11 @@ class manageSituation extends React.Component {
 	// 明細選択したSalesProgressCodeを設定する
 	getSalesProgressCode = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesProgressCode = no;
-		if (!(no === '4' || no === '5')) {
+		if (!(no === '1' || no === '2')) {
 			this.state.salesSituationLists[this.state.rowNo - 1].customer = '';
 			this.formatCustome(no);
 		}
-		if (no === '5') {
+		if (no === '1') {
 			this.state.salesSituationLists[this.state.rowNo - 1].customer =
 				this.state.salesSituationLists[this.state.rowNo - 1].nowCustomer;
 		}

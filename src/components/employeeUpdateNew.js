@@ -185,6 +185,8 @@ class employeeUpdateNew extends React.Component {
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
+				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 			});
 		}else{
 			axios.post(this.state.serverIP + "employee/updateEmployee", formData)
@@ -200,6 +202,8 @@ class employeeUpdateNew extends React.Component {
 				}
 			}).catch((error) => {
 				console.error("Error - " + error);
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
+				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 			});
 		}	
 	};
