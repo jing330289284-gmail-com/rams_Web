@@ -284,17 +284,27 @@ class manageSituation extends React.Component {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
 			if (cell === statuss[i].code) {
-				return statuss[i].name;
+				if(cell === "1" || cell === "2" || cell === "4"){
+					return (<div><font color="grey">{statuss[i].name}</font></div>);
+				}else{
+					return (<div>{statuss[i].name}</div>);
+				}
+				//return statuss[i].name;
 			}
 		}
 	}
 
 	// 契約区分
-	formatcustomerContract = (cell) => {
+	formatcustomerContract = (cell,row) => {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
 			if (cell === customerContracts[i].code) {
-				return customerContracts[i].name;
+				if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+					return (<div><font color="grey">{customerContracts[i].name}</font></div>);
+				}else{
+					return (<div>{customerContracts[i].name}</div>);
+				}
+				//return customerContracts[i].name;
 			}
 		}
 	}
@@ -307,7 +317,7 @@ class manageSituation extends React.Component {
 		} else {
 			for (var i in allCustomers) {
 				if (cell === allCustomers[i].code) {
-					return allCustomers[i].name;
+					return <div><font color="grey">{allCustomers[i].name}</font></div>;
 				}
 			}
 		}
@@ -351,7 +361,7 @@ class manageSituation extends React.Component {
 	// 明細選択したCustomerContractを設定する
 	getCustomerContract = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].customerContractStatus = no;
-		this.formatcustomerContract(no);
+		this.formatcustomerContract(no,this.state.salesSituationLists[this.state.rowNo - 1]);
 		this.setState({
 			customerContractStatus: no,
 		});
@@ -362,7 +372,7 @@ class manageSituation extends React.Component {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
 			if (cell === salesPersons[i].code) {
-				return salesPersons[i].name.replace(/\(.*?\)/g, '' );
+				return <div><font color="grey">{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</font></div>;
 			}
 		}
 	}
@@ -424,6 +434,51 @@ class manageSituation extends React.Component {
 	 * indexN(cell, row, enumObject, index) { return (<div>{index + 1}</div>); }
 	 */
  
+	// 優先度表示
+	showGreyNo(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.rowNo}</font></div>);
+		}else{
+			return (<div>{row.rowNo}</div>);
+		}
+	}
+	
+	showGreySiteRoleCode(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.siteRoleCode}</font></div>);
+		}else{
+			return (<div>{row.siteRoleCode}</div>);
+		}
+	}
+	showGreyDevelopLanguage(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.developLanguage}</font></div>);
+		}else{
+			return (<div>{row.developLanguage}</div>);
+		}
+	}
+	showGreyNearestStation(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.nearestStation}</font></div>);
+		}else{
+			return (<div>{row.nearestStation}</div>);
+		}
+	}
+	showGreyUnitPrice(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.unitPrice}</font></div>);
+		}else{
+			return (<div>{row.unitPrice}</div>);
+		}
+	}
+	showGreyPrice(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.price}</font></div>);
+		}else{
+			return (<div>{row.price}</div>);
+		}
+	}
+	
 	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
 		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
@@ -1466,7 +1521,7 @@ class manageSituation extends React.Component {
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							    <TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>salesDateUpdateHid</TableHeaderColumn>
-								<TableHeaderColumn width='5%' dataField='rowNo' autoValue editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataFormat={this.showGreyNo} editable={false}>番号</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeNo' editable={false} hidden={true} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='11%' dataField='employeeName' dataFormat={this.showPriority} editable={false}>氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>
@@ -1485,17 +1540,17 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn dataField='resumeInfo2' hidden={true}>履歴書2</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeName1' hidden={true}>履歴書名前1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeName2' hidden={true}>履歴書名前2</TableHeaderColumn>
-								<TableHeaderColumn width='5%' dataField='siteRoleCode' editable={false}>役割</TableHeaderColumn>
-								<TableHeaderColumn width='19%' dataField='developLanguage' editable={false}>開発言語</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='nearestStation' editable={false}>寄り駅</TableHeaderColumn>
-								<TableHeaderColumn width='6%' dataField='unitPrice' editable={false}>単価</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='siteRoleCode' dataFormat={this.showGreySiteRoleCode} editable={false}>役割</TableHeaderColumn>
+								<TableHeaderColumn width='19%' dataField='developLanguage' dataFormat={this.showGreyDevelopLanguage} editable={false}>開発言語</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='nearestStation' dataFormat={this.showGreyNearestStation} editable={false}>寄り駅</TableHeaderColumn>
+								<TableHeaderColumn width='6%' dataField='unitPrice' dataFormat={this.showGreyUnitPrice} editable={false}>単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>進捗</TableHeaderColumn>
-								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract.bind(this)} customEditor={{ getElement: tableSelect4 }}
+								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract} customEditor={{ getElement: tableSelect4 }}
 									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
 								<TableHeaderColumn width='10%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
 									editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}
-									editColumnClassName="dutyRegistration-DataTableEditingCell" editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
+									editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.showGreyPrice} editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
