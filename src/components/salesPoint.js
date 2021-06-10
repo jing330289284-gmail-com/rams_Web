@@ -350,7 +350,7 @@ class salesPoint extends React.Component {
 										<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} width='120'>所属会社</TableHeaderColumn>
 										<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width='120'>お客様</TableHeaderColumn>
-										<TableHeaderColumn dataField='customerContractStatus' tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='customerContractStatus' hidden tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
 										<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
 										<TableHeaderColumn dataField='point' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
 										<TableHeaderColumn dataField='specialsalesPointCondition' tdStyle={{ padding: '.45em' }} width='200' dataFormat={this.specialPointStatusFormat.bind(this)}>特別ポイント理由</TableHeaderColumn>

@@ -62,6 +62,7 @@ class salesContent extends React.Component {
 		stations: store.getState().dropDown[14],
 		developLanguages: store.getState().dropDown[8],
 		developLanguagesShow: store.getState().dropDown[8],
+		frameWorkShow: store.getState().dropDown[71],
 		wellUseLanguagss: [],
 		stationCode: '',
 		disbleState: false,
@@ -94,6 +95,7 @@ class salesContent extends React.Component {
 	})
 	
 	componentDidMount() {
+		this.setNewDevelopLanguagesShow();
 		this.init();
 		var clipboard2 = new Clipboard('#copyUrl', {
 			text: function() {
@@ -123,6 +125,22 @@ class salesContent extends React.Component {
 			}
 		}
 	}
+	
+	setNewDevelopLanguagesShow = () => {
+		let developLanguagesShow = this.state.developLanguagesShow;
+		for(let i = 0; i < developLanguagesShow.length; i++){
+			if(developLanguagesShow[i].code < 0)
+				return;
+		}
+			let frameWorkShow = this.state.frameWorkShow;
+			for(let i = 0; i < frameWorkShow.length; i++){
+				frameWorkShow[i].code = String((Number(frameWorkShow[i].code) + 1) * -1);
+				developLanguagesShow.push(frameWorkShow[i]);
+			}
+			this.setState({
+				developLanguagesShow: developLanguagesShow,
+			})
+    }
 	
     padding1 = (num, length) => {
         for(var len = (num + "").length; len < length; len = num.length) {
@@ -213,7 +231,7 @@ class salesContent extends React.Component {
 		if (code === "" || code === null) {
 			return;
 		} else {
-			return this.state.developLanguages.find((v) => (v.code === code)).name;
+			return this.state.developLanguagesShow.find((v) => (v.code === code)).name;
 		}
 	}
 
@@ -221,7 +239,7 @@ class salesContent extends React.Component {
 		if (code === "" || code === null) {
 			return '';
 		} else {
-			return this.state.developLanguages.find((v) => (v.code === code));
+			return this.state.developLanguagesShow.find((v) => (v.code === code));
 		}
 	}
 
@@ -578,10 +596,7 @@ class salesContent extends React.Component {
 							this.state.yearsOfExperience !== this.state.initYearsOfExperience ||
 							this.state.unitPrice !== this.state.initUnitPrice ||
 							this.state.remark !== this.state.initRemark ||
-							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : false/*
-																																				 * false :
-																																				 * true
-																																				 */}>
+							this.state.wellUseLanguagss.sort().toString() !== this.state.initWellUseLanguagss.sort().toString() ? false : false}>
 							<FontAwesomeIcon icon={faSave} /> {"更新"}</Button>{' '}
 						<Button id='copyUrl' size="sm" variant="info" /* onClick={this.copyToClipboard} */>
 							<FontAwesomeIcon icon={faCopy} /> {"コピー"}</Button></div>

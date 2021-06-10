@@ -17,19 +17,83 @@
 	background-color: transparent;
 }
 
-@Keyframes donut-spin { 0% {
-	transform: rotate(0deg);
+.loadingImage {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background: #2e98df;
+    border-radius: 50px;
+    animation: loadingImage 1.5s infinite linear;
 }
-100%
-{transform:rotate
-(360
-deg
-);
+
+.loadingImage::after {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-top: 20px solid #b160d1;
+    border-bottom: 20px solid #b160d1;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-radius: 300px;
+    content: '';
+    top: -100px;
+    left: -100px;
+    animation: loadingImage_after 1.5s infinite linear;
 }
+
+@keyframes loadingImage {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+        background: #2ecc71;
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loadingImage_after {
+    0% {
+        border-top: 10px solid #b160d1;
+        border-bottom: 10px solid #b160d1;
+    }
+
+    50% {
+        border-top: 10px solid #2e98df;
+        border-bottom: 10px solid #2e98df;
+    }
+
+    100% {
+        border-top: 10px solid #b160d1;
+        border-bottom: 10px solid #b160d1;
+    }
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .form-control::placeholder{
   color: #c0c0c0;
+}
+
+.loading {
+	display: inline-block;
+	border: 20px solid rgba(0, 0, 0, 0.1);
+	border-left-color: #59a782;
+	border-radius: 50%;
+	width: 300px;
+	height: 300px;
+	animation: donut-spin 1.2s linear infinite;
 }
 
 .donut {

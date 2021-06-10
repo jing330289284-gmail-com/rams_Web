@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import { Form, Button, Col, Row, InputGroup, FormControl, Modal, Image } from 'react-bootstrap';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import axios from 'axios';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -55,6 +56,7 @@ class employeeInsertNew extends React.Component {
 		employeeStatus: "0",
 		authorityCode: '1',
 		socialInsurance: "0",
+		loading:true,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -89,6 +91,7 @@ class employeeInsertNew extends React.Component {
 	 * 登録
 	 */
 	insertEmployee = (event) => {
+		this.setState({ loading: false, });
 		event.preventDefault();
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
@@ -169,6 +172,7 @@ class employeeInsertNew extends React.Component {
 		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 		axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
+				this.setState({ loading: true, });
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -179,6 +183,7 @@ class employeeInsertNew extends React.Component {
 					this.getNO(this.state.empNoHead);// 採番番号
 				}
 			}).catch((error) => {
+				this.setState({ loading: true, });
 				console.error("Error - " + error);
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -687,6 +692,11 @@ class employeeInsertNew extends React.Component {
 			}
 		});
 	};
+	
+	sendOverFormat = (cell) => {
+		return <div class='donut'></div>;
+	}
+	
 	render() {
 		const { employeeNo, employeeFristName, employeeLastName, furigana1, furigana2, alphabetName1, alphabetName2, alphabetName3, temporary_age, japaneseCalendar, genderStatus, major, intoCompanyCode,
 			employeeFormCode, occupationCode, departmentCode, companyMail, graduationUniversity, nationalityCode, birthplace, phoneNo1, phoneNo2, phoneNo3, authorityCode, japaneseLevelCode, englishLevelCode, residenceCode,
@@ -1742,6 +1752,9 @@ class employeeInsertNew extends React.Component {
 							<Button size="sm" variant="info" type="button" onClick={this.back}>
 								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
+						</div>
+						{/*<div className='loading' hidden={this.state.loading} style = {{"position": "absolute","top":"50%","left":"50%","margin-left":"-300px", "margin-top":"-150px",}}></div>*/}
+						<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-300px", "margin-top":"-150px",}}>
 						</div>
 					</Form.Group>
 				</Form>

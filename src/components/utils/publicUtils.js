@@ -47,10 +47,55 @@ export function getFullYearMonth(date, now) {
 	} else {
 		return "";
 	}
-
-
 }
 
+export function getYear(date, now) {
+	if (date !== undefined && date !== null && date !== "" && now !== undefined && now !== null && now !== "") {
+		var returnYears = 0;
+		var returnMonths = 0;
+		var yearmonth = -1;
+		var keyYear = date.getFullYear();
+		var keyMonth = date.getMonth() + 1;
+		var keyDay = date.getDate();
+		var nowYear = now.getFullYear();
+		var nowMonth = now.getMonth() + 1;
+		var nowDay = now.getDate();
+		var yearDiff = nowYear - keyYear;
+		var monthDiff = nowMonth - keyMonth;
+		var dayDiff = nowDay - keyDay;
+
+		if (yearDiff < 0) {
+			return "0";
+		}
+
+		if (yearDiff === 0 && monthDiff < 0) {
+			return "0";
+		}
+
+		if (yearDiff === 0 && monthDiff === 0 && dayDiff < 0) {
+			return "0";
+		}
+
+		returnYears = yearDiff;
+		if (monthDiff < 0) {
+			returnYears = returnYears - 1;
+			monthDiff = 12 + monthDiff;
+		}
+
+		returnMonths = monthDiff
+/*
+ * if (dayDiff < 0) { returnMonths = returnMonths - 1; }
+ */
+		if (returnYears === 0) {
+			yearmonth = "0";
+		} else {
+			yearmonth = returnYears;
+		}
+		return yearmonth;
+	} else {
+		return "";
+	}
+}
 
 // ド時間プラグインの値をセット
 export function setFullYearMonth(date) {

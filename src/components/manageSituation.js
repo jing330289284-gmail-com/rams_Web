@@ -350,7 +350,7 @@ class manageSituation extends React.Component {
 	// 明細選択したSalesStaffを設定する
 	getSalesStaff = (no) => {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = no;
-		this.formatStaff(no);
+		this.formatStaff(no,this.state.salesSituationLists[this.state.rowNo - 1]);
 		this.setState({
 			salesStaff: no,
 		});
@@ -368,11 +368,16 @@ class manageSituation extends React.Component {
 	}
 
 	// レコードおきゃく表示
-	formatStaff(cell) {
+	formatStaff = (cell,row) => {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
 			if (cell === salesPersons[i].code) {
-				return <div><font color="grey">{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</font></div>;
+				if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+					return (<div><font color="grey">{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</font></div>);
+				}else{
+					return (<div>{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</div>);
+				}
+				//return {salesPersons[i].name.replace(/\(.*?\)/g, '' )}
 			}
 		}
 	}
@@ -448,6 +453,13 @@ class manageSituation extends React.Component {
 			return (<div><font color="grey">{row.siteRoleCode}</font></div>);
 		}else{
 			return (<div>{row.siteRoleCode}</div>);
+		}
+	}
+	showGreyYearsOfExperience(cell, row, enumObject, index) {
+		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
+			return (<div><font color="grey">{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, true), new Date()) : row.yearsOfExperience}</font></div>);
+		}else{
+			return (<div>{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, true), new Date()) : row.yearsOfExperience}</div>);
 		}
 	}
 	showGreyDevelopLanguage(cell, row, enumObject, index) {
@@ -1541,17 +1553,18 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn dataField='resumeName1' hidden={true}>履歴書名前1</TableHeaderColumn>
 								<TableHeaderColumn dataField='resumeName2' hidden={true}>履歴書名前2</TableHeaderColumn>
 								<TableHeaderColumn width='5%' dataField='siteRoleCode' dataFormat={this.showGreySiteRoleCode} editable={false}>役割</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='yearsOfExperience' dataFormat={this.showGreyYearsOfExperience} editable={false}>年数</TableHeaderColumn>
 								<TableHeaderColumn width='19%' dataField='developLanguage' dataFormat={this.showGreyDevelopLanguage} editable={false}>開発言語</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='nearestStation' dataFormat={this.showGreyNearestStation} editable={false}>寄り駅</TableHeaderColumn>
 								<TableHeaderColumn width='6%' dataField='unitPrice' dataFormat={this.showGreyUnitPrice} editable={false}>単価</TableHeaderColumn>
 								<TableHeaderColumn width='9%' dataField='salesProgressCode' dataFormat={this.formatType.bind(this)} customEditor={{ getElement: tableSelect2 }}>進捗</TableHeaderColumn>
-								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract} customEditor={{ getElement: tableSelect4 }}
+								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract} customEditor={{ getElement: tableSelect4 }} hidden
 									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
 								<TableHeaderColumn width='10%' dataField='customer' dataFormat={this.formatCustome.bind(this)} customEditor={{ getElement: tableSelect1 }}
 									editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}>確定客様</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '4' || this.state.salesProgressCode === '5' ? true : false}
 									editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.showGreyPrice} editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
-								<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff.bind(this)} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
+								<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

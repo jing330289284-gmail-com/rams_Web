@@ -51,6 +51,7 @@ class employeeUpdateNew extends React.Component {
 		frameWork2: '',
 		stationCode: '',
 		sendValue:{},
+		loading:true,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -82,6 +83,7 @@ class employeeUpdateNew extends React.Component {
 
 	// 更新ボタン
 	updateEmployee = () => {
+		this.setState({ loading: false, });
 		const formData = new FormData()
 		let obj = document.getElementById("imageId");
 		let imgSrc = obj.getAttribute("src");
@@ -167,6 +169,7 @@ class employeeUpdateNew extends React.Component {
 		if(this.state.isBp&&this.state.employeeNo.substring(0,2)!=="BP"){
 			axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
+				this.setState({ loading: true, });
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -184,6 +187,7 @@ class employeeUpdateNew extends React.Component {
 					});
 				}
 			}).catch((error) => {
+				this.setState({ loading: true, });
 				console.error("Error - " + error);
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -191,6 +195,7 @@ class employeeUpdateNew extends React.Component {
 		}else{
 			axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
+				this.setState({ loading: true, });
 				if (response.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -201,6 +206,7 @@ class employeeUpdateNew extends React.Component {
 					this.getNO(this.state.empNoHead);// 採番番号
 				}
 			}).catch((error) => {
+				this.setState({ loading: true, });
 				console.error("Error - " + error);
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
@@ -1877,6 +1883,7 @@ class employeeUpdateNew extends React.Component {
 								<FontAwesomeIcon icon={faLevelUpAlt} /> 戻る
                         </Button>
 						</div>
+						<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-300px", "margin-top":"-150px",}}></div>
 					</Form.Group>
 				</Form>
 			</div>

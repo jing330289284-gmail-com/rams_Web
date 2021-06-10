@@ -174,7 +174,7 @@ class salesPointSet extends React.Component {
 		}
 		salesPointSetModel["employee"] = "";
 		salesPointSetModel["newMember"] = "";
-		salesPointSetModel["customerContract"] = "";
+		salesPointSetModel["customerContract"] = "0";
 		salesPointSetModel["level"] = "";
 		salesPointSetModel["salesPuttern"] = "";
 		salesPointSetModel["specialPoint"] = "";
@@ -435,7 +435,7 @@ class salesPointSet extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
-								<Col sm={3}>
+{/*								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">契約区分</InputGroup.Text>
@@ -446,7 +446,7 @@ class salesPointSet extends React.Component {
 											<option value="1">新規</option>
 										</Form.Control>
 									</InputGroup>
-								</Col>
+								</Col>*/}
 							</Row>
 							<Row>
 								<Col sm={9}>
@@ -473,7 +473,7 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='customerContract' editable={{ type: 'select', options: { values: this.state.customerContractStatus } }}
+										<TableHeaderColumn dataField='customerContract' editable={{ type: 'select', options: { values: this.state.customerContractStatus } }} hidden
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.customerContractStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >契約区分</TableHeaderColumn>
 
