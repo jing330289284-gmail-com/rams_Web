@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, ListGroup, Accordion, Button, Navbar, Container } from 'react-bootstrap';
+import $ from 'jquery';
 import title from '../asserts/images/LYCmark.png';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import EmployeeInsert from './employeeInsert';
@@ -131,6 +132,24 @@ class SubMenu extends Component {
 			}
 		})
 	}
+	
+	handleMouseOver = () =>{
+		var popudiv = $('#popu_div');
+		var test = "test";
+        popudiv.html(test);//设置内容
+        popudiv.css('position','absolute');//设置position
+        var pos = {//定位popudiv，这里以在td右边显示为例子，左边跟上边的时候还要计算popudiv的尺寸
+            top : 0,
+            left : 0
+        }
+        popudiv.css(pos).show();//设置left，top，并显示出来
+	}
+	
+	handleMouseOut = () =>{
+		var popudiv = $('#popu_div');
+        popudiv.hide();
+	}
+
 	render() {
 		// お客様情報画面の追加パラメータ
 		var customerInfoPath = {
@@ -148,6 +167,7 @@ class SubMenu extends Component {
 		}
 		return (
 			<div className="mainBody">
+				<div id="popu_div"></div>
 				<Row style={{ "backgroundColor": "#FFFAF0" }}>
 					<Navbar inline>
 						<img className="titleImg" alt="title" src={this.state.pic} style={{ "width": "65px"}} /><a className="loginMark" inline>{this.state.companyName}</a>{" "}
@@ -173,6 +193,15 @@ class SubMenu extends Component {
 							<Col>
 								<ListGroup >
 									<Accordion className="menuCol">
+									{/*<ListGroup.Item style={styleLow} block>
+										<div>
+							                <div id = "test"
+							                     onMouseOver={this.handleMouseOver}
+							                     onMouseLeave={this.handleMouseOut}
+							                >test</div>
+						                </div>
+						            </ListGroup.Item>*/}
+
 										<ListGroup.Item style={styleLow} block>
 											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員・BP"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員・BP</font></Accordion.Toggle>
 											<Accordion.Collapse eventKey="0">

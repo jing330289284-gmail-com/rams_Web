@@ -166,7 +166,7 @@ class employeeUpdateNew extends React.Component {
 		formData.append('resumeInfo2URL', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? "" : this.state.resumeInfo2URL)
 		formData.append('residentCardInfoURL', this.state.residentCardInfoURL)
 		formData.append('passportInfoURL', this.state.passportInfoURL)
-		if(this.state.isBp&&this.state.employeeNo.substring(0,2)!=="BP"){
+		if(this.state.isBp && this.state.employeeNo.substring(0,2)!=="BP"){
 			axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				this.setState({ loading: true, });
@@ -181,6 +181,9 @@ class employeeUpdateNew extends React.Component {
 					.then(result => {
 						this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false,isBp:false });
 						setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+						store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
+						store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
+						store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});
 					})
 					.catch(function (error) {
 						alert("删除错误，请检查程序");
@@ -202,8 +205,11 @@ class employeeUpdateNew extends React.Component {
 				} else {
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
-					this.getNO(this.state.empNoHead);// 採番番号
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});
+					//window.location.reload();
+					//this.getNO(this.state.empNoHead);// 採番番号
 				}
 			}).catch((error) => {
 				this.setState({ loading: true, });
@@ -1213,7 +1219,7 @@ class employeeUpdateNew extends React.Component {
 							<Form.Control as="select" size="sm"
 								onChange={this.valueChange}
 								name="authorityCode" value={authorityCode}
-								autoComplete="off" id="authorityCodeId" disabled={employeeStatus !== "1" || employeeStatus !== "4" ? false : true} >
+								autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false} >
 								{this.state.authorityCodes.map(date =>
 									<option key={date.code} value={date.code}>
 										{date.name}
@@ -1288,8 +1294,8 @@ class employeeUpdateNew extends React.Component {
 							dateFormat="yyyy/MM/dd"
 							className="form-control form-control-sm"
 							autoComplete="off"
-							disabled={employeeStatus !== "1" || employeeStatus !== "4" ? false : true}
-							id={employeeStatus !== "1" || employeeStatus !== "4" ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
+							disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
+							id={employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
 						/>
 					</InputGroup.Append>
 					<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1649,7 +1655,7 @@ class employeeUpdateNew extends React.Component {
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={ employeeStatus !== "1" || employeeStatus !== "4" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={ employeeStatus === "1" || employeeStatus === "4" ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
 								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
@@ -1681,7 +1687,7 @@ class employeeUpdateNew extends React.Component {
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={ employeeStatus !== "1" || employeeStatus !== "4" ? false : true}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={ employeeStatus === "1" || employeeStatus === "4" ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
 								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 								</div>
 							)}
@@ -1693,7 +1699,7 @@ class employeeUpdateNew extends React.Component {
 							<InputGroup.Prepend>
 								<InputGroup.Text id="sevenKanji">パスポート番号</InputGroup.Text>
 							</InputGroup.Prepend>
-							<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off" disabled={employeeStatus !== "1" || employeeStatus !== "4" ? false : true}
+							<FormControl placeholder="パスポート番号" value={passportNo} autoComplete="off" disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 								onChange={this.valueChange} size="sm" name="passportNo" maxlength="9" />
 									<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 						
@@ -1702,7 +1708,7 @@ class employeeUpdateNew extends React.Component {
 						<InputGroup.Prepend>
 							<InputGroup.Text id="sevenKanji">マイナンバー</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus !== "1" || employeeStatus !== "4" ? false : true}
+						<FormControl placeholder="マイナンバー" value={myNumber} autoComplete="off" disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 							onChange={this.valueChange} size="sm" name="myNumber" maxlength="12" />
 								<font style={{ marginLeft: "5px", marginRight: "0px" }}></font>
 
@@ -1781,7 +1787,6 @@ class employeeUpdateNew extends React.Component {
 						showFullMonthYearPicker
 						className="form-control form-control-sm"
 						autoComplete="off"
-						minDate={new Date()}
 						disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 						id={employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 					/>
@@ -1799,7 +1804,6 @@ class employeeUpdateNew extends React.Component {
 					showFullMonthYearPicker
 					className="form-control form-control-sm"
 					autoComplete="off"
-					minDate={new Date()}
 					disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 					id={employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 				/>

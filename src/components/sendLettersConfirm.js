@@ -371,7 +371,7 @@ class sendLettersConfirm extends React.Component {
  */
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
-				`+ this.state.selectedCusInfos[i].purchasingManagers + `様<br/>
+				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers) + `様<br/>
 				<br/>
 				お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
 				<br/>`

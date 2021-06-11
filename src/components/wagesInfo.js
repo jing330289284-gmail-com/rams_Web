@@ -538,7 +538,7 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
-        if (this.state.employeeFormCode === "2") {
+        if (this.state.employeeFormCode === "3") {
             $("#socialInsuranceFlag").attr("disabled", true);
             $("#bonusFlag").attr("disabled", true);
         }
@@ -636,7 +636,7 @@ class WagesInfo extends Component {
         this.setState({
             [event.target.name]: event.target.value,
         }, () => {
-            if (this.state.employeeFormCode === "2") {
+            if (this.state.employeeFormCode === "3") {
                 this.setState({
                     socialInsuranceFlag: "0",
                     welfarePensionAmount: "",
@@ -918,7 +918,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : kadouCheck === true ? true : employeeFormCode === "2" ? true : false}
+                                            disabled={actionType === "detail" ? true : kadouCheck === true ? true : employeeFormCode === "3" ? true : false}
                                             name="socialInsuranceFlag"
                                             id="socialInsuranceFlag"
                                             onChange={this.valueChangeInsurance}
@@ -991,7 +991,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : employeeFormCode === "2" ? true : false}
+                                            disabled={actionType === "detail" ? true : employeeFormCode === "3" ? true : false}
                                             name="bonusFlag"
                                             id="bonusFlag"
                                             onChange={this.valueChangeBonus}

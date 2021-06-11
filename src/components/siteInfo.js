@@ -131,7 +131,6 @@ class siteInfo extends Component {
 				workStateFlag: true,
 				levelCode: '',
 				[event.target.name]: event.target.value,
-				remark:'',
 				scheduledEndDate:this.state.scheduledEndDateForSave,
 				admissionEndDate:'',
 			})
@@ -146,7 +145,6 @@ class siteInfo extends Component {
 			this.setState({
 				workStateFlag: false,
 				[event.target.name]: event.target.value,
-				remark:'',
 				scheduledEndDate:'',
 			})
 		}

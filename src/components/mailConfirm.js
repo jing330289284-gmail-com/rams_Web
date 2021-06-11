@@ -59,7 +59,7 @@ CC:`+ this.state.companyMailNames.join(';') + `
 
 `+
 							this.state.selectedCustomerName + `株式会社
-`+ this.state.selectedPurchasingManagers + `様
+`+ (this.state.selectedPurchasingManagers === "" ? "ご担当者" : this.state.selectedPurchasingManagers) + `様
 
 お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。
 

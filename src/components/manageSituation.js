@@ -393,6 +393,9 @@ class manageSituation extends React.Component {
 				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
 				this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
+				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
+				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
+				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});
 			}
 		}).catch((error) => {
 			console.error("Error - " + error);
@@ -457,9 +460,9 @@ class manageSituation extends React.Component {
 	}
 	showGreyYearsOfExperience(cell, row, enumObject, index) {
 		if(row.salesProgressCode === "1" || row.salesProgressCode === "2" || row.salesProgressCode === "4"){
-			return (<div><font color="grey">{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, true), new Date()) : row.yearsOfExperience}</font></div>);
+			return (<div><font color="grey">{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, false), new Date()) : row.yearsOfExperience}</font></div>);
 		}else{
-			return (<div>{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, true), new Date()) : row.yearsOfExperience}</div>);
+			return (<div>{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, false), new Date()) : row.yearsOfExperience}</div>);
 		}
 	}
 	showGreyDevelopLanguage(cell, row, enumObject, index) {

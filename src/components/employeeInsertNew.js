@@ -179,7 +179,10 @@ class employeeInsertNew extends React.Component {
 				} else {
 					this.setState({ "myToastShow": true, "method": "post", "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
-					window.location.reload();
+					//window.location.reload();
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
+					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});
 					this.getNO(this.state.empNoHead);// 採番番号
 				}
 			}).catch((error) => {
@@ -1042,7 +1045,7 @@ class employeeInsertNew extends React.Component {
 								<Form.Control as="select" size="sm"
 									onChange={this.valueChange}
 									name="authorityCode" value={authorityCode}
-									autoComplete="off" id="authorityCodeId" disabled={employeeStatus !== "1" || employeeStatus !== "4" ? false : true} >
+									autoComplete="off" id="authorityCodeId" disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false} >
 									{this.state.authorityCodes.map(date =>
 										<option key={date.code} value={date.code}>
 											{date.name}
@@ -1117,8 +1120,8 @@ class employeeInsertNew extends React.Component {
 										dateFormat="yyyy/MM/dd"
 										className="form-control form-control-sm"
 										autoComplete="off"
-										disabled={employeeStatus !== "1" || employeeStatus !== "4"  ? false : true}
-										id={employeeStatus !== "1" || employeeStatus !== "4"  ? "datePicker-empInsert-left" : "datePickerReadonlyDefault-empInsert-left"}
+										disabled={employeeStatus === "1" || employeeStatus === "4"  ? true : false}
+										id={employeeStatus === "1" || employeeStatus === "4"  ? "datePickerReadonlyDefault-empInsert-left" : "datePicker-empInsert-left"}
 									/>
 								</InputGroup.Append>
 								<FormControl name="temporary_intoCompanyYearAndMonth" value={temporary_intoCompanyYearAndMonth} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled />
@@ -1659,7 +1662,6 @@ class employeeInsertNew extends React.Component {
 						showFullMonthYearPicker
 						className="form-control form-control-sm"
 						autoComplete="off"
-						minDate={new Date()}
 						disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 						id={employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 					/>
@@ -1677,7 +1679,6 @@ class employeeInsertNew extends React.Component {
 					showFullMonthYearPicker
 					className="form-control form-control-sm"
 					autoComplete="off"
-					minDate={new Date()}
 					disabled={employeeStatus === "1" || employeeStatus === "4" ? true : false}
 					id={employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-immigrationTime" : "datePicker-empInsert-right-immigrationTime"}
 				/>
