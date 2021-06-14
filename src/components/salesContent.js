@@ -96,7 +96,6 @@ class salesContent extends React.Component {
 	
 	componentDidMount() {
 		this.setNewDevelopLanguagesShow();
-		this.init();
 		var clipboard2 = new Clipboard('#copyUrl', {
 			text: function() {
 				return document.getElementById('snippet').value.replace("　　　　営業文章\n","");
@@ -127,19 +126,19 @@ class salesContent extends React.Component {
 	}
 	
 	setNewDevelopLanguagesShow = () => {
-		let developLanguagesShow = this.state.developLanguagesShow;
-		for(let i = 0; i < developLanguagesShow.length; i++){
-			if(developLanguagesShow[i].code < 0)
-				return;
+		let developLanguagesTemp = [];
+		for(let i = 0; i < this.state.developLanguagesShow.length; i++){
+			developLanguagesTemp.push(this.state.developLanguagesShow[i]);
 		}
-			let frameWorkShow = this.state.frameWorkShow;
-			for(let i = 0; i < frameWorkShow.length; i++){
-				frameWorkShow[i].code = String((Number(frameWorkShow[i].code) + 1) * -1);
-				developLanguagesShow.push(frameWorkShow[i]);
-			}
-			this.setState({
-				developLanguagesShow: developLanguagesShow,
-			})
+		let frameWorkTemp = [];
+		for(let i = 1; i < this.state.frameWorkShow.length; i++){
+			developLanguagesTemp.push({code:String((Number(this.state.frameWorkShow[i].code) + 1) * -1),name:this.state.frameWorkShow[i].name});
+		}
+		this.setState({
+			developLanguagesShow: developLanguagesTemp,
+		},()=>{
+			this.init();
+		});
     }
 	
     padding1 = (num, length) => {
@@ -195,7 +194,7 @@ class salesContent extends React.Component {
 		this.setState({tempDate:publicUtils.formateDate(this.state.beginMonth, false)},()=>{
 			axios.post(this.state.serverIP + "salesSituation/updateSalesSentence", this.state)
 			.then(result => {
-				this.init();
+				this.setNewDevelopLanguagesShow();
 				this.setState({ 
 					beginMonth: new Date(this.state.beginMonth).getTime(),
 					myToastShow: true ,

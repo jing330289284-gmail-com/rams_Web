@@ -33,6 +33,7 @@ class EnterPeriodSearch extends React.Component {
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
+        rowSelectEmployeeNo: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount(){
@@ -206,6 +207,66 @@ class EnterPeriodSearch extends React.Component {
         let admissionStartDate = utils.dateFormate(row.admissionStartDate);
         return admissionStartDate;
     }
+    
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				
+		};
+		switch (actionType) {
+			case "detail":
+				path = {
+					pathname: '/subMenuManager/employeeDetailNew',
+					state: {
+						actionType: 'detail',
+						id: this.state.rowSelectEmployeeNo,
+						backPage: "enterPeriodSearch",
+						sendValue: sendValue,
+					},
+				}
+			break;
+			case "wagesInfo":
+				path = {
+					pathname: '/subMenuManager/wagesInfo',
+					state: {
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "enterPeriodSearch",
+						sendValue: sendValue,
+					},
+				}
+				break;
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "enterPeriodSearch",
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
+    
+	handleRowSelect = (row, isSelected, e) => {
+		if (isSelected) {
+			this.setState(
+					{
+						rowSelectEmployeeNo: row.employeeNo,
+					}
+			);
+		}
+		else{
+			this.setState(
+					{
+						rowSelectEmployeeNo: "",
+					}
+			);
+		}
+	}	
+    
     render() {
         const {
             yearAndMonthDate,
@@ -222,7 +283,7 @@ class EnterPeriodSearch extends React.Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,  // which page you want to show as default
-            sizePerPage: 5,  // which size per page you want to locate as default
+            sizePerPage: 12,  // which size per page you want to locate as default
             pageStartIndex: 1, // where to start counting the pages
             paginationSize: 3,  // the pagination bar size.
             prePage: '<', // Previous page button text
@@ -234,6 +295,15 @@ class EnterPeriodSearch extends React.Component {
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
         };
+		const selectRow = {
+				mode: 'radio',
+				bgColor: 'pink',
+				clickToSelectAndEditCell: true,
+				hideSelectColumn: true,
+				clickToSelect: true,
+				clickToExpand: true,
+				onSelect: this.handleRowSelect,
+			};
         return (
             <div>
                 <div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -244,7 +314,7 @@ class EnterPeriodSearch extends React.Component {
                 </div>
                 <Row inline="true">
                     <Col className="text-center">
-                        <h2>入社入場期限一覧</h2>
+                        <h2>入社入場期限一覧（一年）</h2>
                     </Col>
                 </Row>
                 <br />
@@ -324,6 +394,13 @@ class EnterPeriodSearch extends React.Component {
                             </InputGroup>
                         </Col>
                     </Row>
+                    <Row>
+	                    <Col sm="12">
+							<Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">個人情報</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">給料情報</Button>{' '}
+	                    </Col>
+                    </Row>
                 </Form>
 				<Col>
                 <div>
@@ -331,6 +408,7 @@ class EnterPeriodSearch extends React.Component {
                         pagination={true}
                         options={options}
                         data={enterPeriodList}
+						selectRow={selectRow}
                         headerStyle={{ background: '#5599FF' }}
                         striped
                         hover

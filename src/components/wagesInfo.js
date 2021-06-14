@@ -76,6 +76,8 @@ class WagesInfo extends Component {
         allExpensesInfoList:[],
         deleteFlag:true,
         hatsunyubaFlag:true,
+        employeeStatus: '',
+		employeeStatuss: store.getState().dropDown[4],
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -128,6 +130,7 @@ class WagesInfo extends Component {
         )
     }
     componentDidMount() {
+    	this.setEmployeeStatuss();
         this.getDropDowns();
         console.log(this.props.history);
         $("#expensesInfoBtn").attr("disabled", true);
@@ -145,6 +148,22 @@ class WagesInfo extends Component {
             this.search(wagesInfo);
         }
     }
+    
+    setEmployeeStatuss = () => {
+    	let employeeStatuss = [];
+    	for(let i = 0; i < this.state.employeeStatuss.length; i++){
+    		if(String(this.state.employeeStatuss[i].code) === "" || String(this.state.employeeStatuss[i].code) === "0" || 
+    			String(this.state.employeeStatuss[i].code) === "2" || String(this.state.employeeStatuss[i].code) === "3"){
+    			employeeStatuss.push(this.state.employeeStatuss[i]);
+    		}
+    	}
+        this.setState(
+                {
+                	employeeStatuss:employeeStatuss,
+                }
+            );
+    }
+    
     /**
      * select取得
      */
@@ -157,6 +176,7 @@ class WagesInfo extends Component {
                 bonusFlagDrop: data[1].slice(1),
                 EmployeeFormCodeDrop: data[2],
                 employeeNameDrop: data[3].slice(1),
+                employeeInfo: data[3].slice(1),
             }
         );
     };
@@ -292,6 +312,43 @@ class WagesInfo extends Component {
             })
         }
     }
+    
+	/**
+	 * タイプが違う時に、色々な操作をします。
+	 */
+	employeeStatusChange = event => {
+		const value = event.target.value;
+		let employeeInfoList = this.state.employeeInfo;
+		if(value === '0'){
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) !== "BP" && employeeInfoList[i].code.substring(0,2) !== "SP" && employeeInfoList[i].code.substring(0,2) !== "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeNameDrop: newEmpInfoList , employeeName: "" });
+		}else if (value === '2') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SP"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeNameDrop: newEmpInfoList, employeeName: ""  });
+		} else if (value === '3') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,2) === "SC"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeNameDrop: newEmpInfoList, employeeName: ""  });
+		}else {
+			this.setState({ employeeNameDrop: employeeInfoList });
+		}
+		this.setState({ employeeStatus: value });
+	}
+    
     getWagesInfo = (event, values) => {
         this.setState({
             [event.target.name]: event.target.value,
@@ -824,6 +881,20 @@ class WagesInfo extends Component {
                     <Form id="wagesInfoForm">
                         <Form.Group>
                             <Row>
+	                            <Col sm={3}>
+									<InputGroup size="sm" className="mb-3">
+										<InputGroup.Prepend>
+											<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
+										</InputGroup.Prepend>
+										<Form.Control as="select" size="sm" onChange={this.employeeStatusChange.bind(this)} name="employeeStatus" value={this.state.employeeStatus} autoComplete="off">
+											{this.state.employeeStatuss.map(data =>
+												<option key={data.code} value={data.code}>
+													{data.name}
+												</option>
+											)}
+										</Form.Control>
+									</InputGroup>
+								</Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
@@ -855,7 +926,7 @@ class WagesInfo extends Component {
                                             className="site-mark">★</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={8}></Col>
+                                <Col sm={5}></Col>
                                 <Col sm={1}>
                                     <Button
                                         block
@@ -1088,7 +1159,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>反映年月</InputGroup.Text>
+                                            <InputGroup.Text>開始年月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <DatePicker
@@ -1205,17 +1276,17 @@ class WagesInfo extends Component {
                                 hover
                                 ref="wagesInfoTable"
                                 condensed>
-                                <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='145'>給料期間</TableHeaderColumn>
-                                <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="100">社員形式</TableHeaderColumn>
-                                <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkSalary}>給料</TableHeaderColumn>
-                                <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkInsuranceFeeAmount}>社会保険</TableHeaderColumn>
-                                <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="100" dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
-                                <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}>リーダー手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}>住宅手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }} >他の手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkOtherAllowanceAmount}>手当費用</TableHeaderColumn>
-                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
-                                <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} >備考</TableHeaderColumn>
+                                <TableHeaderColumn isKey={true} dataField='period' tdStyle={{ padding: '.45em' }} width='13%'>給料期間</TableHeaderColumn>
+                                <TableHeaderColumn dataField='employeeFormName' tdStyle={{ padding: '.45em' }} width="10%">社員形式</TableHeaderColumn>
+                                <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width="100" width="10%" dataFormat={this.addMarkSalary}>給料</TableHeaderColumn>
+                                <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkInsuranceFeeAmount}>社会保険</TableHeaderColumn>
+                                <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
+                                <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}　hidden >リーダー手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}　hidden >住宅手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }}　hidden >他の手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当費用</TableHeaderColumn>
+                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
+                                <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} width="27%" >備考</TableHeaderColumn>
                             </BootstrapTable>
                         </Col>
                     </div>

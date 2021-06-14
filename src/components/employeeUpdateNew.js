@@ -109,7 +109,7 @@ class employeeUpdateNew extends React.Component {
 			graduationUniversity: publicUtils.nullToEmpty(this.state.graduationUniversity),// 卒業学校
 			major: publicUtils.nullToEmpty(this.state.major),// 専門
 			graduationYearAndMonth: publicUtils.formateDate(this.state.graduationYearAndMonth, false),// 卒業年月
-			intoCompanyYearAndMonth: this.state.employeeStatus !== '1' ? publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true):' ',// 入社年月
+			intoCompanyYearAndMonth: this.state.employeeStatus === '1' || this.state.employeeStatus === '4' ? ' ' : publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true),// 入社年月
 			retirementYearAndMonth: publicUtils.formateDate(this.state.retirementYearAndMonth, true),// 退職年月
 			retirementResonClassification: publicUtils.nullToEmpty(this.state.retirementResonClassificationCode),//退職区分
 			comeToJapanYearAndMonth: publicUtils.formateDate(this.state.comeToJapanYearAndMonth, false),// 来日年月
