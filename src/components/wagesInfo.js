@@ -239,7 +239,8 @@ class WagesInfo extends Component {
         }
         sum = sum + parseInt((insuranceFeeAmount === '' ? 0 : insuranceFeeAmount))
             + Math.floor((scheduleOfBonusAmount === '' ? 0 : scheduleOfBonusAmount) / 12);
-        var totalAmount = (isNaN(sum) ? '' : (sum === 0 ? '' : sum));
+        //var totalAmount = (isNaN(sum) ? '' : (sum === 0 ? '' : sum));
+        var totalAmount = (isNaN(sum) ? '' : sum);
         this.setState({
             totalAmount: utils.addComma(totalAmount),
         })
