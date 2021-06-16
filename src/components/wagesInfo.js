@@ -666,9 +666,9 @@ class WagesInfo extends Component {
         let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
         return leaderAllowanceAmount;
     }
-    addMarkHousingAllowance = (cell, row) => {
-        let housingAllowance = utils.addComma(row.housingAllowance);
-        return housingAllowance;
+    addMarkSpecialAllowance = (cell, row) => {
+        let specialAllowance = utils.addComma(row.specialAllowance);
+        return specialAllowance;
     }
     addMarkOtherAllowanceAmount = (cell, row) => {
         let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
@@ -1144,7 +1144,7 @@ class WagesInfo extends Component {
                                                 locale="pt-BR"
                                                 showMonthYearPicker
                                                 showFullMonthYearPicker
-                                                minDate={new Date()}
+                                                minDate={new Date(new Date().getFullYear(), new Date().getMonth())}
                                                 showDisabledMonthNavigation
                                                 className="form-control form-control-sm"
                                                 id={actionType === "detail" ? "wagesInfoDatePicker-nextRaiseMonth-readOnly" : "wagesInfoDatePicker-nextRaiseMonth"}
@@ -1245,7 +1245,7 @@ class WagesInfo extends Component {
                         <Col sm={4}>
                             <div style={{ "float": "left" }}>
                                 <Button size="sm" onClick={this.shuseiTo.bind(this, "employeeInfo")} disabled={this.state.employeeName === "" ? true : false} variant="info" id="employeeInfo">個人情報</Button>{' '}
-                                <Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={hatsunyubaFlag} variant="info" id="siteInfo">現場情報</Button>{' '}
+                                <Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeName === "" ? true : false} variant="info" id="siteInfo">現場情報</Button>{' '}
                             </div>
                         </Col>
                         <Col sm={7}>
@@ -1282,7 +1282,7 @@ class WagesInfo extends Component {
                                 <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkInsuranceFeeAmount}>社会保険</TableHeaderColumn>
                                 <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
                                 <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}　hidden >リーダー手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}　hidden >住宅手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='specialAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkSpecialAllowance}　hidden >特別手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }}　hidden >他の手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当費用</TableHeaderColumn>
                                 <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>

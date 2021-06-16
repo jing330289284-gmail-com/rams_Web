@@ -52,6 +52,8 @@ class employeeUpdateNew extends React.Component {
 		stationCode: '',
 		sendValue:{},
 		loading:true,
+		residentCardInfoName: '',
+		passportInfoName: '',
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -155,12 +157,17 @@ class employeeUpdateNew extends React.Component {
 			yearsOfExperience: publicUtils.formateDate(this.state.yearsOfExperience, false),// 経験年数
 			bpInfoModel: this.state.bpInfoModel,// pb情報
 			picInfo: imgSrc,// pb情報
+			residentCardInfoName: this.state.residentCardInfoName,
+			passportInfoName: this.state.passportInfoName,
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
 		formData.append('resumeInfo2', publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
-		formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
-		formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
+		
+		if(this.state.residentCardInfo != undefined)
+			formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
+		if(this.state.passportInfo != undefined)
+			formData.append('passportInfo', publicUtils.nullToEmpty($('#passportInfo').get(0).files[0]))
 
 		formData.append('resumeInfo1URL', publicUtils.nullToEmpty(this.state.resumeName1) === "" ? "" : this.state.resumeInfo1URL)
 		formData.append('resumeInfo2URL', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? "" : this.state.resumeInfo2URL)
@@ -744,6 +751,7 @@ class employeeUpdateNew extends React.Component {
 			this.setState({
 				residentCardInfo: filePath,
 				residentCardInfoName: fileName,
+				residentCardInfoURL: filePath,
 			})
 		} else if (name === "resumeInfo1") {
 			this.setState({
@@ -759,6 +767,7 @@ class employeeUpdateNew extends React.Component {
 			this.setState({
 				passportInfo: filePath,
 				passportInfoName: fileName,
+				passportInfoURL: filePath,
 			})
 		} else if (name === "image") {
 			if (publicUtils.nullToEmpty($('#image').get(0).files[0]) === "") {
@@ -782,6 +791,27 @@ class employeeUpdateNew extends React.Component {
 	 */
 	addFile = (event, name) => {
 		$("#" + name).click();
+	}
+	
+	deleteFile = (name) => {
+		switch (name) {
+		case "residentCardInfo":
+			this.setState({
+				residentCardInfoURL: "",
+				residentCardInfo: undefined,
+				residentCardInfoName: null,
+			})
+			break;
+		case "passportInfo":
+			this.setState({
+				passportInfoURL: "",
+				passportInfo: undefined,
+				passportInfoName: null,
+			})
+			break;
+		default:
+			break;
+		}
 	}
 
 	back = () => {
@@ -975,7 +1005,7 @@ class employeeUpdateNew extends React.Component {
 										<Form.Control as="select" size="sm"
 											onChange={this.employeeStatusChange.bind(this)}
 											name="employeeStatus" value={employeeStatus}
-											autoComplete="off" disabled={this.state.isBp?false:true}>
+											autoComplete="off" /*disabled={this.state.isBp?false:true}*/>
 											{this.state.employeeStatusS.map(date =>
 												<option key={date.code} value={date.code}>
 													{date.name}
@@ -1648,7 +1678,7 @@ class employeeUpdateNew extends React.Component {
 								autoComplete="off"
 								minDate={new Date()}
 								disabled={residenceTimeDisabled || this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" || employeeStatus === "4" ? true : false}
-								id={residenceTimeDisabled || this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+								id={residenceTimeDisabled || this.state.residenceCode === "3" || this.state.residenceCode === "6" || employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-stayPeriod" : "datePicker-empInsert-right-stayPeriod"}
 							/>
 							</InputGroup.Append>
 							<Autocomplete
@@ -1656,7 +1686,8 @@ class employeeUpdateNew extends React.Component {
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
 								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom"  onClick={(event) => this.addFile(event, 'residentCardInfo')} disabled={ employeeStatus === "1" || employeeStatus === "4" ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+								{/*<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>*/}
+								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL !== "" || this.state.residentCardInfo !== undefined ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'residentCardInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
 								</div>
 							)}
 						/>
@@ -1680,7 +1711,7 @@ class employeeUpdateNew extends React.Component {
 									autoComplete="off"
 									minDate={new Date()}
 									disabled={residenceTimeDisabled || employeeStatus === "1" || employeeStatus === "4" ? true : false}
-									id={residenceTimeDisabled || employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right" : "datePicker-empInsert-right"}
+									id={residenceTimeDisabled || employeeStatus === "1" || employeeStatus === "4" ? "datePickerReadonlyDefault-empInsert-right-stayPeriod" : "datePicker-empInsert-right-stayPeriod"}
 								/>
 							</InputGroup.Append>
 							<Autocomplete
@@ -1688,7 +1719,8 @@ class employeeUpdateNew extends React.Component {
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
 								<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')} disabled={ employeeStatus === "1" || employeeStatus === "4" ? true : false}><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+								{/*<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>*/}
+								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL !== "" || this.state.passportInfo !== undefined  ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'passportInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
 								</div>
 							)}
 						/>

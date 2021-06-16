@@ -33,7 +33,7 @@ class ExpensesInfo extends Component {
         otherAllowanceAmount: '',//他の手当
         leaderAllowanceAmount: '',//リーダー手当
         totalExpenses: '',//住宅ステータス
-        housingAllowance: '',//住宅手当
+        specialAllowance: '',//住宅手当
         message: '',//toastのメッセージ
         type: '',//成功や失敗
         myToastShow: false,//toastのフラグ
@@ -46,6 +46,7 @@ class ExpensesInfo extends Component {
         relatedEmployees: '',//要員
         leaderCheck: false,//リーダーフラグ
         siteRoleCode: '',//役割
+        remark: '', //備考
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
@@ -95,7 +96,8 @@ class ExpensesInfo extends Component {
             otherAllowanceAmount: expensesInfoMod.otherAllowanceAmount,
             leaderAllowanceAmount: expensesInfoMod.leaderAllowanceAmount,
             totalExpenses: expensesInfoMod.totalExpenses,
-            housingAllowance: expensesInfoMod.housingAllowance,
+            specialAllowance: expensesInfoMod.specialAllowance,
+            remark: expensesInfoMod.remark,
         })
     }
     /**
@@ -109,7 +111,8 @@ class ExpensesInfo extends Component {
             otherAllowanceAmount: '',
             leaderAllowanceAmount: '',
             totalExpenses: '',
-            housingAllowance: '',
+            specialAllowance: '',
+            remark: '',
         })
     }
     //onchange
@@ -141,10 +144,11 @@ class ExpensesInfo extends Component {
         expensesInfoModel["transportationExpenses"] = utils.deleteComma(this.state.transportationExpenses);
         expensesInfoModel["leaderAllowanceAmount"] = utils.deleteComma(this.state.leaderAllowanceAmount);
         expensesInfoModel["otherAllowanceAmount"] = utils.deleteComma(this.state.otherAllowanceAmount);
-        expensesInfoModel["housingAllowance"] = utils.deleteComma(this.state.housingAllowance);
+        expensesInfoModel["specialAllowance"] = utils.deleteComma(this.state.specialAllowance);
         expensesInfoModel["totalExpenses"] = utils.deleteComma(this.state.totalExpenses);
         expensesInfoModel["actionType"] = this.state.actionType;
         expensesInfoModel["employeeNo"] = this.state.employeeNo;
+        expensesInfoModel["remark"] = this.state.remark;
         expensesInfoModel["expensesReflectYearAndMonth"] = utils.formateDate(this.state.expensesReflectStartDate, false);
         axios.post(this.state.serverIP + "expensesInfo/toroku", expensesInfoModel)
             .then(result => {
@@ -200,10 +204,10 @@ class ExpensesInfo extends Component {
         var transportationExpenses = utils.deleteComma(this.state.transportationExpenses);
         var leaderAllowanceAmount = utils.deleteComma(this.state.leaderAllowanceAmount);
         var otherAllowanceAmount = utils.deleteComma(this.state.otherAllowanceAmount);
-        var housingAllowance = utils.deleteComma(this.state.housingAllowance);
+        var specialAllowance = utils.deleteComma(this.state.specialAllowance);
 
         sum = sum + parseInt((transportationExpenses === '' ? 0 : transportationExpenses))+ parseInt((leaderAllowanceAmount === '' ? 0 : leaderAllowanceAmount))
-        + parseInt((otherAllowanceAmount === '' ? 0 : otherAllowanceAmount))+ parseInt((housingAllowance === '' ? 0 : housingAllowance));
+        + parseInt((otherAllowanceAmount === '' ? 0 : otherAllowanceAmount))+ parseInt((specialAllowance === '' ? 0 : specialAllowance));
         var totalExpenses = (isNaN(sum) ? '' : (sum === 0 ? '' : sum));
         this.setState({
             totalExpenses: utils.addComma(totalExpenses),
@@ -242,9 +246,9 @@ class ExpensesInfo extends Component {
         let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
         return leaderAllowanceAmount;
     }
-    addMarkHousingAllowance = (cell, row) => {
-        let housingAllowance = utils.addComma(row.housingAllowance);
-        return housingAllowance;
+    addMarkspecialAllowance = (cell, row) => {
+        let specialAllowance = utils.addComma(row.specialAllowance);
+        return specialAllowance;
     }
     addMarkOtherAllowanceAmount = (cell, row) => {
         let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
@@ -256,7 +260,7 @@ class ExpensesInfo extends Component {
             otherAllowanceName,
             otherAllowanceAmount,
             leaderAllowanceAmount,
-            housingAllowance,
+            specialAllowance,
             message,
             type,
             totalExpenses,
@@ -266,7 +270,8 @@ class ExpensesInfo extends Component {
             btnText,
             kadouCheck,
             leaderCheck,
-            relatedEmployees } = this.state;
+            relatedEmployees,
+            remark} = this.state;
         //テーブルの列の選択
         const selectRow = {
             mode: 'radio',
@@ -353,7 +358,7 @@ class ExpensesInfo extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={6}>
+                            <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>他の手当</InputGroup.Text>
@@ -367,7 +372,7 @@ class ExpensesInfo extends Component {
                                         placeholder="例：家族手当" />
                                 </InputGroup>
                             </Col>
-                            <Col sm={6}>
+                            <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>費用</InputGroup.Text>
@@ -381,22 +386,22 @@ class ExpensesInfo extends Component {
                                         placeholder="例：112000" />
                                 </InputGroup>
                             </Col>
+                            <Col sm={4}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text> 特別手当</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <FormControl
+	                                    maxLength="6"
+	                                    value={specialAllowance}
+	                                    name="specialAllowance"
+	                                    onChange={this.valueChangeMoney}
+	                                    disabled={actionType === "detail" ? true : false}
+	                                    placeholder="例：10000" />
+	                            </InputGroup>
+                            </Col>
                         </Row>
                         <Row>
-                            <Col sm={4}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text> 住宅手当</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl
-                                        maxLength="6"
-                                        value={housingAllowance}
-                                        name="housingAllowance"
-                                        onChange={this.valueChangeMoney}
-                                        disabled={actionType === "detail" ? true : false}
-                                        placeholder="例：10000" />
-                                </InputGroup>
-                            </Col>
                             <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -415,7 +420,7 @@ class ExpensesInfo extends Component {
                             <Col sm={4}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>反映年月</InputGroup.Text>
+                                        <InputGroup.Text>開始年月</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <InputGroup.Append>
                                         <DatePicker
@@ -434,10 +439,24 @@ class ExpensesInfo extends Component {
                                             name="expensesReflectYearAndMonth"
                                             locale="ja"
                                             disabled={actionType === "detail" ? true : false}
-                                        /><font id="mark" color="red"
-                                            className="site-mark">★</font>
+                                        />
+                                        <font color="red" className="site-mark">★</font>
                                     </InputGroup.Append>
                                 </InputGroup>
+                            </Col>
+                            <Col sm={4}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>備考</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <FormControl
+	                                    maxLength="20"
+	                                    value={remark}
+	                                    name="remark"
+	                                    onChange={this.valueChange}
+	                                    disabled={actionType === "detail" ? true : false}
+	                                    placeholder="備考" />
+	                            </InputGroup>
                             </Col>
                         </Row>
                         <div style={{ "textAlign": "center" }}>
@@ -485,7 +504,7 @@ class ExpensesInfo extends Component {
                                     <TableHeaderColumn isKey={true} dataField='expensesPeriod' tdStyle={{ padding: '.45em' }} width="230">諸費用期間</TableHeaderColumn>
                                     <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
                                     <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}>リーダー</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='housingAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkHousingAllowance}>住宅</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='specialAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkspecialAllowance}>特別</TableHeaderColumn>
                                     <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkOtherAllowanceAmount}>他の手当</TableHeaderColumn>
                                 </BootstrapTable>
                             </Col>

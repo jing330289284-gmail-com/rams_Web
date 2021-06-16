@@ -670,6 +670,17 @@ body {
 	background-color: white;
 }
 
+#datePicker-empInsert-right-stayPeriod {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 9.8rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+}
+
 #datePicker-empInsert-right-immigrationTime {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
@@ -739,6 +750,17 @@ body {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
 	width: 7.3rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: #e9ecef;
+}
+
+#datePickerReadonlyDefault-empInsert-right-stayPeriod {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 9.8rem;
 	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 		right center transparent;
 	padding-right: 0px;
@@ -2350,6 +2372,17 @@ body {
 		background-color: white;
 		width: 3.96rem !important;
 }
+	
+	#datePicker-empInsert-right-stayPeriod {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.2rem !important;
+}
 
 	#datePicker-empInsert-right-immigrationTime {
 		background-repeat: no-repeat;
@@ -2515,6 +2548,17 @@ body {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
 	width: 3.96rem;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: #e9ecef;
+}
+
+	#datePickerReadonlyDefault-empInsert-right-stayPeriod {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	width: 6.2rem;
 	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 		right center transparent;
 	padding-right: 0px;
