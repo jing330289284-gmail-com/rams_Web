@@ -208,6 +208,7 @@ class salesContent extends React.Component {
 				alert(error);
 			});
 		});
+		this.props.allState.setValue(this.state.unitPrice,this.state.yearsOfExperience);
 	}
 
 	// 駅LOST FOCUS

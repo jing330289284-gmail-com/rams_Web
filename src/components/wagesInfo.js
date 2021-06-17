@@ -672,8 +672,8 @@ class WagesInfo extends Component {
         return specialAllowance;
     }
     addMarkOtherAllowanceAmount = (cell, row) => {
-        let otherAllowanceAmount = utils.addComma(row.otherAllowanceAmount);
-        return otherAllowanceAmount;
+        let otherAllowanceAmount = utils.addComma(Number(row.otherAllowanceAmount) + Number(row.leaderAllowanceAmount) + Number(row.specialAllowance));
+        return otherAllowanceAmount === "0" ? "" : otherAllowanceAmount;
     }
     addMarkScheduleOfBonusAmount = (cell, row) => {
         let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
@@ -1233,7 +1233,7 @@ class WagesInfo extends Component {
                             </Button>{" "}
                                 <Button
                                     size="sm"
-                                    hidden={backPage !== "employeeSearch" ? true : false}
+                                    hidden={backPage === "" ? true : false}
                                     variant="info"
                                     onClick={this.back}
                                 >
@@ -1285,7 +1285,7 @@ class WagesInfo extends Component {
                                 <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}　hidden >リーダー手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='specialAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkSpecialAllowance}　hidden >特別手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }}　hidden >他の手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当費用</TableHeaderColumn>
+                                <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当合計</TableHeaderColumn>
                                 <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
                                 <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} width="27%" >備考</TableHeaderColumn>
                             </BootstrapTable>

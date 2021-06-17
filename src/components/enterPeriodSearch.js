@@ -96,7 +96,7 @@ class EnterPeriodSearch extends React.Component {
         enterPeriodSearchModel["yearAndMonth"] = yearAndMonth;
         enterPeriodSearchModel["employeeNo"] = employeeNo;
         enterPeriodSearchModel["enterPeriodKbn"] = enterPeriodKbn;
-            axios.post(this.state.serverIP + "enterPeriodSearch/selectEnterPeriodData", enterPeriodSearchModel)
+            axios.post(this.state.serverIP + "enterPeriodSearch/selectEnterPeriodDataNew", enterPeriodSearchModel)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                         this.setState({

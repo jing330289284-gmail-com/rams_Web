@@ -210,6 +210,14 @@ class employeeUpdateNew extends React.Component {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
 					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 				} else {
+					let sendValue = this.state.sendValue;
+					if(response.data.residentCardInfo != null){
+						sendValue.residentCardInfo = response.data.residentCardInfo;
+					}
+					if(response.data.passportInfo != null){
+						sendValue.passportInfo = response.data.passportInfo;
+					}
+					this.setState({ sendValue: sendValue });
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
@@ -825,7 +833,7 @@ class employeeUpdateNew extends React.Component {
 	        }
 			return this.props.history.push(path);
 		} else {
-			return this.props.history.push("/subMenuManager/employeeInsert");
+			return this.props.history.push("/subMenuManager/employeeInsertNew");
 		}
 	};
 

@@ -73,6 +73,7 @@ class manageSituation extends React.Component {
 		englishConversationLevels: store.getState().dropDown[44],
 		projectPhases: store.getState().dropDown[45],
 		developLanguages: store.getState().dropDown[8],
+		frameWorks: store.getState().dropDown[71],
 		totalPersons: '',// 合計人数
 		decidedPersons: '',// 確定人数
 		linkDisableFlag: true,// linkDisableFlag
@@ -99,11 +100,13 @@ class manageSituation extends React.Component {
 		daiologShowFlag: false,
 		isSelectedAll:false,
 		makeDirectoryFalg :true,
+		loading:true,
 	};
 
 	// 初期表示のレコードを取る
 	componentDidMount() {
 		this.getLoginUserInfo();
+		this.setNewDevelopLanguagesShow();
 		// let sysYearMonth = new Date();
 		// let searchYearMonth = sysYearMonth.getFullYear() +
 		// (sysYearMonth.getMonth() + 1 < 10 ? '0' + (sysYearMonth.getMonth() +
@@ -151,6 +154,20 @@ class manageSituation extends React.Component {
 			});
 		}
 	}
+	
+	setNewDevelopLanguagesShow = () => {
+		let developLanguagesTemp = [];
+		for(let i = 0; i < this.state.developLanguages.length; i++){
+			developLanguagesTemp.push(this.state.developLanguages[i]);
+		}
+		let frameWorkTemp = [];
+		for(let i = 1; i < this.state.frameWorks.length; i++){
+			developLanguagesTemp.push({code:String((Number(this.state.frameWorks[i].code) + 1) * -1),name:this.state.frameWorks[i].name});
+		}
+		this.setState({
+			developLanguages: developLanguagesTemp,
+		});
+    }
 	
 	getLoginUserInfo = () => {
 		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
@@ -1033,6 +1050,7 @@ class manageSituation extends React.Component {
     makeDirectory = () => {
 		var text = "";
 		var promiseList = [];
+		this.setState({ loading: false, });
 		for(let i = 0; i < this.state.salesSituationLists.length;i++){
 			promiseList.push(new Promise((resolve, reject)=> {
 		        setTimeout(()=> {
@@ -1090,11 +1108,14 @@ class manageSituation extends React.Component {
 		    				.then(response => {
 		    					if (response.data.errorsMessage != null) {
 		    						this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+		    						this.setState({ loading: true, });
 		    					} else {
 		    						this.setState({ myDirectoryShow: true, errorsMessageShow: false, errorsMessageValue: '' });
 		    						setTimeout(() => this.setState({ myDirectoryShow: false }), 3000);
+		    						this.setState({ loading: true, });
 		    					}
 		    				}).catch((error) => {
+		    					this.setState({ loading: true, });
 		    					console.error("Error - " + error);
 		    				});
 		    				this.setState({
@@ -1104,6 +1125,15 @@ class manageSituation extends React.Component {
 		});
 	}
 	
+    setValue = (unitPrice,yearsOfExperience) =>{
+    	let salesSituationLists = this.state.salesSituationLists;
+    	salesSituationLists[(Number(this.state.rowNo) - 1)].unitPrice = unitPrice;
+    	salesSituationLists[(Number(this.state.rowNo) - 1)].yearsOfExperience = yearsOfExperience;
+		this.setState({
+			salesSituationLists: salesSituationLists,
+		});
+    }
+    
 	download = (filename, text) => {
 		var pom = document.createElement("a");
 	      pom.setAttribute(
@@ -1252,7 +1282,7 @@ class manageSituation extends React.Component {
 						<h2>営業文章</h2>
 					</Col></Modal.Header>
 					<Modal.Body >
-						<SalesContent 
+						<SalesContent allState={this} 
 						sendValue = {{
 									empNo: this.state.employeeNo,
 									salesProgressCode: this.state.salesProgressCode,
@@ -1572,6 +1602,7 @@ class manageSituation extends React.Component {
 						</Col>
 					</Row>
 				</Form>
+				<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-300px", "margin-top":"-150px",}}></div>
 			</div>
 		);
 	}
