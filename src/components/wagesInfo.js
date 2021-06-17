@@ -667,12 +667,12 @@ class WagesInfo extends Component {
         let leaderAllowanceAmount = utils.addComma(row.leaderAllowanceAmount);
         return leaderAllowanceAmount;
     }
-    addMarkSpecialAllowance = (cell, row) => {
-        let specialAllowance = utils.addComma(row.specialAllowance);
-        return specialAllowance;
+    addMarkintroductionAllowance = (cell, row) => {
+        let introductionAllowance = utils.addComma(row.introductionAllowance);
+        return introductionAllowance;
     }
     addMarkOtherAllowanceAmount = (cell, row) => {
-        let otherAllowanceAmount = utils.addComma(Number(row.otherAllowanceAmount) + Number(row.leaderAllowanceAmount) + Number(row.specialAllowance));
+        let otherAllowanceAmount = utils.addComma(Number(row.otherAllowanceAmount) + Number(row.leaderAllowanceAmount) + Number(row.introductionAllowance));
         return otherAllowanceAmount === "0" ? "" : otherAllowanceAmount;
     }
     addMarkScheduleOfBonusAmount = (cell, row) => {
@@ -1283,7 +1283,7 @@ class WagesInfo extends Component {
                                 <TableHeaderColumn dataField='insuranceFeeAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkInsuranceFeeAmount}>社会保険</TableHeaderColumn>
                                 <TableHeaderColumn dataField='transportationExpenses' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkTransportationExpenses}>交通代</TableHeaderColumn>
                                 <TableHeaderColumn dataField='leaderAllowanceAmount' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkLeaderAllowanceAmount}　hidden >リーダー手当</TableHeaderColumn>
-                                <TableHeaderColumn dataField='specialAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkSpecialAllowance}　hidden >特別手当</TableHeaderColumn>
+                                <TableHeaderColumn dataField='introductionAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkintroductionAllowance}　hidden >特別手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }}　hidden >他の手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当合計</TableHeaderColumn>
                                 <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
