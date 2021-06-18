@@ -107,7 +107,7 @@ class EnterPeriodSearch extends React.Component {
                             enterPeriodList: [],
                         })
                         this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
-                        setTimeout(() => this.setState({ "errorsMessageValue": false }), 3000);
+                        setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
                     }
                 })
     }
@@ -229,6 +229,7 @@ class EnterPeriodSearch extends React.Component {
 				path = {
 					pathname: '/subMenuManager/wagesInfo',
 					state: {
+						actionType: "insert",
 						employeeNo: this.state.rowSelectEmployeeNo,
 						backPage: "enterPeriodSearch",
 						sendValue: sendValue,
@@ -266,7 +267,7 @@ class EnterPeriodSearch extends React.Component {
 			);
 		}
 	}	
-    
+	
     render() {
         const {
             yearAndMonthDate,

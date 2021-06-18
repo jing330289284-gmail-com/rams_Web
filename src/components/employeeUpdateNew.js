@@ -618,6 +618,12 @@ class employeeUpdateNew extends React.Component {
 		const value = event.target.value;
 		this.setState({ employeeStatus: value });
 		if (value === '1' || value === '4') {
+			if(value === '1'){
+				this.getNO("BP");
+			}
+			else{
+				this.getNO("BPR");
+			}
 			this.setState({ contractDeadline: '',temporary_contractDeadline: '',companyMail: '', authorityCode: "0",
 				intoCompanyCode: '', departmentCode: '', retirementYearAndMonth: '',retirementResonClassificationCode: '',
 				occupationCode: '3',employeeNo: this.state.bpNo,bpDisabled:true,residenceTimeDisabled:true,intoCompanyYearAndMonth:'',

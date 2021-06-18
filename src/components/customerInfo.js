@@ -812,7 +812,7 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text>資本金</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control maxLength="7" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
+                                    <Form.Control maxLength="8" placeholder="例：1000" id="capitalStock" name="capitalStock" onChange={(e) => this.moneyChange(e)} />
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="twoKanji">万円</InputGroup.Text>
                                     </InputGroup.Prepend>

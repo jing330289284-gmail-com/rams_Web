@@ -141,6 +141,7 @@ class WagesInfo extends Component {
             this.setState({
                 sendValue: this.props.location.state.sendValue,
                 searchFlag: this.props.location.state.searchFlag,
+                actionType: this.props.location.state.actionType,
                 employeeName: employeeNo,
                 employeeNo: employeeNo,
                 backPage: this.props.location.state.backPage,

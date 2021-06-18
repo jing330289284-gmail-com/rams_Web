@@ -751,7 +751,7 @@ export function deleteComma(money) {
 		return "";
 	}
 	var moneyStr = money + '';
-	return moneyStr.replace(",", "");
+	return moneyStr.replaceAll(",", "");
 }
 /**
  * YYYYMMDD→YYYY/MM/DDまたYYYYMM→YYYY/MM
