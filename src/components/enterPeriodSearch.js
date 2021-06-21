@@ -181,6 +181,14 @@ class EnterPeriodSearch extends React.Component {
       </OverlayTrigger>
         return returnItem;
     }
+    
+    colorChange = (cell,row) => {
+    	if(row.isRed === "true")
+    		return (<div><font color="red">{row.employeeName}</font></div>);
+    	else
+    		return (<div><font>{row.employeeName}</font></div>);
+    }
+    
     //以下の四つは金額マークの追加
     addMarkSalary=(cell,row)=>{
         let salary = utils.addComma(row.salary);
@@ -418,7 +426,7 @@ class EnterPeriodSearch extends React.Component {
                             番号</TableHeaderColumn>
                         <TableHeaderColumn dataField='employeeNo' tdStyle={{ padding: '.45em' }} hidden >
                             社員番号</TableHeaderColumn>
-                        <TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='11%' >
+                        <TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} dataFormat={this.colorChange} width='11%' >
                             氏名</TableHeaderColumn>
                         <TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='11%' dataFormat={this.addMarkSalary}>
                             基本支給</TableHeaderColumn>

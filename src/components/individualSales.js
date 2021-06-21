@@ -150,7 +150,7 @@ class individualSales extends React.Component {//個人売上検索
         var paymentTotal = 0;
         var paymentCal = 0;
         for (var i = 0; i < this.state.employeeInfoList.length; i++) {
-            paymentCal = parseInt(this.state.employeeInfoList[i].salary) + parseInt(this.state.employeeInfoList[i].transportationExpenses) + parseInt(this.state.employeeInfoList[i].insuranceFeeAmount) + parseInt(this.state.employeeInfoList[i].bonusFee) + parseInt(this.state.employeeInfoList[i].deductionsAndOvertimePay) + parseInt(this.state.employeeInfoList[i].leaderAllowanceAmount) + parseInt(this.state.employeeInfoList[i].otherAllowanceAmount) + parseInt(this.state.employeeInfoList[i].housingAllowance)
+            paymentCal = parseInt(this.state.employeeInfoList[i].salary) + parseInt(this.state.employeeInfoList[i].transportationExpenses) + parseInt(this.state.employeeInfoList[i].insuranceFeeAmount) + parseInt(this.state.employeeInfoList[i].bonusFee) + parseInt(this.state.employeeInfoList[i].deductionsAndOvertimePay) + parseInt(this.state.employeeInfoList[i].leaderAllowanceAmount) + parseInt(this.state.employeeInfoList[i].otherAllowanceAmount) + parseInt(this.state.employeeInfoList[i].introductionAllowance)
             paymentTotal = parseInt(paymentTotal) + paymentCal
         }
         //this.setState({ totalgrosProfits: publicUtils.addComma(unitPriceTotal-paymentTotal, false) })
@@ -848,7 +848,7 @@ class individualSales extends React.Component {//個人売上検索
 
                                         <tr>
                                             <td >住宅</td>
-                                            <td >{publicUtils.addComma(row.housingAllowance, false)}</td>
+                                            <td >{publicUtils.addComma(row.introductionAllowance, false)}</td>
                                         </tr>
                                         <tr>
                                             <td >リーダー</td>
@@ -913,7 +913,7 @@ class individualSales extends React.Component {//個人売上検索
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
                                         <input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
-                                            style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                     </div>
                                 )}
                             />

@@ -83,7 +83,7 @@ class EmployeeDetailNew extends React.Component {
 				backPage: location.state.backPage,
 				sendValue:location.state.sendValue,
 				searchFlag:location.state.searchFlag,
-
+				backbackPage :location.state.backbackPage,
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -386,7 +386,7 @@ class EmployeeDetailNew extends React.Component {
         var path = {};
         path = {
             pathname: this.state.backPage,
-            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue ,employeeNo:this.state.employeeNo},
+            state: { searchFlag: this.state.searchFlag, sendValue: this.state.sendValue ,employeeNo:this.state.employeeNo , backPage:this.state.backbackPage},
         }
         this.props.history.push(path);
     }

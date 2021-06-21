@@ -293,6 +293,7 @@ class siteInfo extends Component {
 				sendValue: this.props.location.state.sendValue,
 				pageDisabledFlag:false,
 				searchFlag: this.props.location.state.searchFlag,
+				backbackPage : this.props.location.state.backbackPage,
 			})
 			if (this.props.location.state.currPage !== null && this.props.location.state.currPage !== undefined && this.props.location.state.currPage !== '') {
 				this.setState({
@@ -528,10 +529,10 @@ class siteInfo extends Component {
 				remark: row.remark === null ? '' : row.remark,
 				scheduledEndDate:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
 				scheduledEndDateForSave:row.scheduledEndDate === null ? '' : publicUtils.converToLocalTime(row.scheduledEndDate,false),
-				related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0], this.state.employeeInfo)),
-				related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1], this.state.employeeInfo)),
-				related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2], this.state.employeeInfo)),
-				related4Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[3] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[3], this.state.employeeInfo)),
+				related1Employees: (row.relatedEmployees === null ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[0], this.state.employeeInfoAll)),
+				related2Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[1] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[1], this.state.employeeInfoAll)),
+				related3Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[2] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[2], this.state.employeeInfoAll)),
+				related4Employees: (row.relatedEmployees === null ? '' : row.relatedEmployees.split(",")[3] === undefined ? '' : publicUtils.textGetValue(row.relatedEmployees.split(",")[3], this.state.employeeInfoAll)),
 				updateFlag: false,
 				relatedEmployeesFlag: row.siteRoleCode === "0" ? true : row.siteRoleCode === "1" ? true : false,
 				workDate: row.workDate,
@@ -598,10 +599,10 @@ class siteInfo extends Component {
 		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfo);
-		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfo);
-		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfo);
-		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfo);
+		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfoAll);
+		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfoAll);
+		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfoAll);
+		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfoAll);
 		siteModel["customerNo"] = this.state.customerNo;
 		siteModel["topCustomerNo"] = this.state.topCustomerNo;
 		siteModel["developLanguageCode"] = this.state.developLanguageCode;
@@ -653,10 +654,10 @@ class siteInfo extends Component {
 		$.each(formArray, function (i, item) {
 			siteModel[item.name] = item.value;
 		});
-		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfo);
-		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfo);
-		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfo);
-		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfo);
+		siteModel["related1Employees"] = publicUtils.valueGetText(this.state.related1Employees, this.state.employeeInfoAll);
+		siteModel["related2Employees"] = publicUtils.valueGetText(this.state.related2Employees, this.state.employeeInfoAll);
+		siteModel["related3Employees"] = publicUtils.valueGetText(this.state.related3Employees, this.state.employeeInfoAll);
+		siteModel["related4Employees"] = publicUtils.valueGetText(this.state.related4Employees, this.state.employeeInfoAll);
 		siteModel["customerNo"] = this.state.customerNo;
 		siteModel["topCustomerNo"] = this.state.topCustomerNo;
 		siteModel["developLanguageCode"] = this.state.developLanguageCode;
@@ -848,6 +849,7 @@ class siteInfo extends Component {
 				sendValue: this.state.sendValue,
 				currPage: this.state.currPage,
 				employeeNo: this.state.employeeName,
+				backPage:this.state.backbackPage
 			},
 		}
 		this.props.history.push(path);
@@ -867,6 +869,7 @@ class siteInfo extends Component {
 						id: String(this.state.employeeName),
 						backPage: 'siteInfo',
 						sendValue: sendValue,
+						backbackPage: this.state.backPage,
 					},
 				}
 				break;
@@ -1281,15 +1284,15 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.related1Employees) || ""}
-											options={this.state.employeeInfo}
+											value={this.state.employeeInfoAll.find(v => v.code === this.state.related1Employees) || ""}
+											options={this.state.employeeInfoAll}
 											getOptionLabel={(option) => option.text ? option.text : ""}
 											disabled={this.state.relatedEmployeesFlag ? pageDisabledFlag ? true : false : true}
 											onChange={(event, values) => this.getRelated1Employees(event, values)}
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}</p>
+														{option.name}
 													</React.Fragment>
 												)
 											}}
@@ -1303,15 +1306,15 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.related2Employees) || ""}
-											options={this.state.employeeInfo}
+											value={this.state.employeeInfoAll.find(v => v.code === this.state.related2Employees) || ""}
+											options={this.state.employeeInfoAll}
 											disabled={this.state.relatedEmployeesFlag ? pageDisabledFlag ? true : false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
 											onChange={(event, values) => this.getRelated2Employees(event, values)}
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}</p>
+														{option.name}
 													</React.Fragment>
 												)
 											}}
@@ -1325,15 +1328,15 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.related3Employees) || ""}
-											options={this.state.employeeInfo}
+											value={this.state.employeeInfoAll.find(v => v.code === this.state.related3Employees) || ""}
+											options={this.state.employeeInfoAll}
 											disabled={this.state.relatedEmployeesFlag ? pageDisabledFlag ? true : false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
 											onChange={(event, values) => this.getRelated3Employees(event, values)}
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}</p>
+														{option.name}
 													</React.Fragment>
 												)
 											}}
@@ -1347,15 +1350,15 @@ class siteInfo extends Component {
 										<Autocomplete
 											id="employeeName"
 											name="employeeName"
-											value={this.state.employeeInfo.find(v => v.code === this.state.related4Employees) || ""}
-											options={this.state.employeeInfo}
+											value={this.state.employeeInfoAll.find(v => v.code === this.state.related4Employees) || ""}
+											options={this.state.employeeInfoAll}
 											disabled={this.state.relatedEmployeesFlag ? pageDisabledFlag ? true : false : true}
 											getOptionLabel={(option) => option.text ? option.text : ""}
 											onChange={(event, values) => this.getRelated4Employees(event, values)}
 											renderOption={(option) => {
 												return (
 													<React.Fragment>
-														<p >{option.name}</p>
+														{option.name}
 													</React.Fragment>
 												)
 											}}

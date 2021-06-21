@@ -406,7 +406,7 @@ class IndividualCustomerSales extends React.Component {
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
                                         <input placeholder="  お客様名" type="text" {...params.inputProps} className="auto"
-                                            style={{ width: 140, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+                                            style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
                                     </div>
                                 )}
                             />
