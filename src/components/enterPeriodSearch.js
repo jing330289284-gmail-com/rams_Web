@@ -20,9 +20,10 @@ axios.defaults.withCredentials = true;
  */
 class EnterPeriodSearch extends React.Component {
     state = {
-        yearAndMonthDate: new Date('' + (new Date().getMonth() === 11 ? (new Date().getFullYear() + 1) : new Date().getFullYear()) + ' ' + 
-        (new Date().getMonth() === 11 ? 1 : new Date().getMonth() + 2) + ''),//今の期日より一月後の年月
-        enterPeriodKbn: '0',//区分
+    	yearAndMonthDate: new Date(),
+        /*yearAndMonthDate: new Date('' + (new Date().getMonth() === 11 ? (new Date().getFullYear() + 1) : new Date().getFullYear()) + ' ' + 
+        (new Date().getMonth() === 11 ? 1 : new Date().getMonth() + 2) + ''),//今の期日より一月後の年月*/
+    	enterPeriodKbn: '0',//区分
         enterPeriodKbnDrop: [],//区分List
         enterPeriodList: [],//入社入場期限List
         actionType: '',//処理区分
@@ -345,7 +346,7 @@ class EnterPeriodSearch extends React.Component {
                                     scrollableYearDropdown
                                     showMonthYearPicker
                                     showFullMonthYearPicker
-                                    minDate={new Date()}
+                                    minDate={new Date(new Date().getFullYear(), new Date().getMonth())}
                                     showDisabledMonthNavigation
                                     className="form-control form-control-sm"
                                     id="enterPeriodSearchDatePicker"

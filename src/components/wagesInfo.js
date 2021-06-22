@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
+import * as publicUtils from './utils/publicUtils.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTrash, faUndo, faLevelUpAlt } from '@fortawesome/free-solid-svg-icons';
 import * as utils from './utils/publicUtils.js';
@@ -29,6 +30,7 @@ class WagesInfo extends Component {
 
     initialState = {
         employeeNo: '',//社員番号
+        newEmployeeNo: '',//社員番号
         employeeName:"",
         reflectYearAndMonth: '',//反映年月
         socialInsuranceFlag: '',//社会保険フラグ
@@ -78,6 +80,7 @@ class WagesInfo extends Component {
         hatsunyubaFlag:true,
         employeeStatus: '',
 		employeeStatuss: store.getState().dropDown[4],
+		newEmployeeStatus: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -130,6 +133,14 @@ class WagesInfo extends Component {
         )
     }
     componentDidMount() {
+		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
+		.then(response => {
+				this.setState({
+					empNoHead: response.data.empNoHead,
+				})
+		}).catch((error) => {
+			console.error("Error - " + error);
+		});
     	this.setEmployeeStatuss();
         this.getDropDowns();
         console.log(this.props.history);
@@ -148,6 +159,21 @@ class WagesInfo extends Component {
             })
             this.search(wagesInfo);
         }
+    }
+    
+    getemployeeStatus = (employeeNo) =>{
+    	if(employeeNo === null){
+            this.setState({newEmployeeStatus:"",});
+    	}
+    	else if(employeeNo.substring(0,2)==="SP"){
+            this.setState({newEmployeeStatus:2,});
+    	}
+    	else if(employeeNo.substring(0,2)==="SC"){
+            this.setState({newEmployeeStatus:3,});
+    	}
+    	else{
+            this.setState({newEmployeeStatus:0,});
+    	}
     }
     
     setEmployeeStatuss = () => {
@@ -313,6 +339,7 @@ class WagesInfo extends Component {
                 this.totalKeisan();
             })
         }
+        this.getemployeeStatus(this.state.employeeNo);
     }
     
 	/**
@@ -389,8 +416,8 @@ class WagesInfo extends Component {
                     this.resetValue();
                 })
             }
-        }
-        )
+            this.getemployeeStatus(employeeNo);
+        })
     }
     search = (wagesInfoMod) => {
         axios.post(this.state.serverIP + "wagesInfo/getWagesInfo", wagesInfoMod)
@@ -597,6 +624,8 @@ class WagesInfo extends Component {
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
+        wagesInfoModel["newEmployeeNo"] = this.state.newEmployeeNo;
+        wagesInfoModel["employeeStatus"] = this.state.newEmployeeStatus;
         if (this.state.employeeFormCode === "3") {
             $("#socialInsuranceFlag").attr("disabled", true);
             $("#bonusFlag").attr("disabled", true);
@@ -606,6 +635,11 @@ class WagesInfo extends Component {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+                    if(this.state.newEmployeeNo !== ""){
+    					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
+    					this.getNewEmployeeNameDrop(wagesInfoModel["employeeNo"],this.state.newEmployeeNo);
+                        wagesInfoModel["employeeNo"] = this.state.newEmployeeNo;
+                    }
                     this.search(wagesInfoModel);
                     this.resetValue();
                     this.refs.wagesInfoTable.setState({
@@ -623,6 +657,18 @@ class WagesInfo extends Component {
                 this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
             });
     }
+    
+    getNewEmployeeNameDrop = (employeeNo,newEmployeeNo) =>{
+    	let employeeNameDrop = this.state.employeeNameDrop;
+    	for(let i = 0;i < employeeNameDrop.length;i++){
+    		if(employeeNameDrop[i].code === employeeNo){
+    			employeeNameDrop[i].code = newEmployeeNo;
+    			employeeNameDrop[i].name = employeeNameDrop[i].text + "(" + newEmployeeNo + ")";
+    		}
+    	}
+        this.setState({ employeeNameDrop: employeeNameDrop,employeeName:newEmployeeNo,employeeNo: newEmployeeNo, });
+    }
+    
     /**
      * 小さい画面の閉め 
      */
@@ -691,6 +737,66 @@ class WagesInfo extends Component {
         }
         this.props.history.push(path);
     }
+    
+    newEmployeeStatusChange = event => {
+    	this.setState({
+            [event.target.name]: event.target.value,
+        });
+    	let employeeNo = this.state.employeeNo;
+    	if(employeeNo != null){
+        	switch (event.target.value) {
+    		case "":
+    	    	this.setState({ newEmployeeNo :"", });
+    			break;
+    		case "0":	//社員
+    			if(employeeNo.substring(0,2) !== "SP" && employeeNo.substring(0,2) !== "SC"){
+    				this.setState({ newEmployeeNo :"", });
+    			}else if(employeeNo.substring(0,2) === "SP"){
+    				this.getNO(this.state.empNoHead);
+    			}else if(employeeNo.substring(0,2) === "SC"){
+    				this.getNO(this.state.empNoHead);
+    			}
+    			break;
+    		case "2":	//個人事業主
+    			if(employeeNo.substring(0,2) !== "SP" && employeeNo.substring(0,2) !== "SC"){
+    				this.getNO("SP");
+    			}else if(employeeNo.substring(0,2) === "SP"){
+    				this.setState({ newEmployeeNo :"", });
+    			}else if(employeeNo.substring(0,2) === "SC"){
+    				this.getNO("SP");
+    			}    	
+    			break;
+    		case "3":	//子会社社員
+    			if(employeeNo.substring(0,2) !== "SP" && employeeNo.substring(0,2) !== "SC"){
+    				this.getNO("SC");
+    			}else if(employeeNo.substring(0,2) === "SP"){
+    				this.getNO("SC");
+    			}else if(employeeNo.substring(0,2) === "SC"){
+    				this.setState({ newEmployeeNo :"", });
+    			}    			
+    			break;
+    		default:
+    			break;
+    		}
+    	}else{
+	    	this.setState({ newEmployeeNo :"", });
+    	}
+    }
+    
+	/**
+	 * 採番番号
+	 */
+	getNO = (NO) => {
+		const promise = Promise.resolve(publicUtils.getNO("employeeNo", NO, "T001Employee", this.state.serverIP));
+		promise.then((value) => {
+			this.setState(
+				{
+					newEmployeeNo: value
+				}
+			);
+		});
+	};
+    
     employeeFormChange = event => {
         this.setState({
             [event.target.name]: event.target.value,
@@ -799,6 +905,7 @@ class WagesInfo extends Component {
             bonus,
             totalAmount,
             employeeFormCode,
+            newEmployeeStatus,
             remark,
             raiseStartDate,
             costInfoShow,
@@ -1040,7 +1147,7 @@ class WagesInfo extends Component {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col sm={3}>
+                                <Col hidden>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>社員形式</InputGroup.Text>
@@ -1058,6 +1165,25 @@ class WagesInfo extends Component {
                                             )}
                                         </FormControl>
                                     </InputGroup>
+                                </Col>
+                                <Col sm={3}>
+	                                <InputGroup size="sm" className="mb-3">
+	                                    <InputGroup.Prepend>
+	                                        <InputGroup.Text>社員区分</InputGroup.Text>
+	                                    </InputGroup.Prepend>
+	                                    <FormControl
+	                                        as="select"
+	                                        onChange={this.newEmployeeStatusChange}
+	                                        disabled={actionType === "detail" ? true : false}
+	                                        name="newEmployeeStatus"
+	                                        value={newEmployeeStatus}>
+	                                        {this.state.employeeStatuss.map(date =>
+	                                            <option key={date.code} value={date.code}>
+	                                                {date.name}
+	                                            </option>
+	                                        )}
+	                                    </FormControl>
+	                                </InputGroup>
                                 </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">

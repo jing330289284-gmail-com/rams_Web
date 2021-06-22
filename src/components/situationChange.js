@@ -179,7 +179,7 @@ renderShowsTotal(start, to, total) {
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo'>社員番号</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeName'>社員名</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='status'>区分</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>給料</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='socialInsuranceFlag'>社会保険</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' >ボーナス</TableHeaderColumn>
