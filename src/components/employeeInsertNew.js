@@ -982,7 +982,7 @@ class employeeInsertNew extends React.Component {
 								<InputGroup.Prepend>
 									<InputGroup.Text id="fiveKanji">社内メール</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true}
+								<Form.Control type="email" placeholder="メール" value={companyMail} autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "2" || employeeStatus === "3" ? false : true}
 									onChange={this.valueChange} size="sm" name="companyMail" /><FormControl value="@lyc.co.jp" size="sm" disabled />
 								<font color="red" className="site-mark">★</font>
 								

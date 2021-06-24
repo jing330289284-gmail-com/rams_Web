@@ -866,7 +866,7 @@ class WagesInfo extends Component {
 					state: {
 						id: this.state.employeeName,
 						backPage: "wagesInfo",
-						sendValue: [],
+						sendValue: this.state.sendValue,
                         searchFlag: true,
                         actionType:"detail",
                         backbackPage: this.state.backPage,
@@ -879,7 +879,7 @@ class WagesInfo extends Component {
 					state: {
 						employeeNo: this.state.employeeName,
 						backPage: "wagesInfo",
-						sendValue: [],
+						sendValue: this.state.sendValue,
 						searchFlag: true,
                         backbackPage: this.state.backPage,
 					},

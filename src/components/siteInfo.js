@@ -857,9 +857,6 @@ class siteInfo extends Component {
 	
 	shuseiTo = (actionType) => {
 		var path = {};
-		const sendValue = {
-				backPage: this.state.backPage,
-		};
 		switch (actionType) {
 			case "detail":
 				path = {
@@ -868,7 +865,7 @@ class siteInfo extends Component {
 						actionType: 'detail',
 						id: String(this.state.employeeName),
 						backPage: 'siteInfo',
-						sendValue: sendValue,
+						sendValue: this.state.sendValue,
 						backbackPage: this.state.backPage,
 					},
 				}

@@ -43,7 +43,17 @@ class EnterPeriodSearch extends React.Component {
             enterPeriodKbnDrop:store.getState().dropDown[29].slice(1),
             employeeNameDropBp:store.getState().dropDown[9].slice(1),
         })
-        this.search(utils.formateDate(this.state.yearAndMonthDate,false),this.state.enterPeriodKbn,utils.labelGetValue($("#employeeName").val(),this.state.employeeNameDrop));
+        if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+            this.setState({
+                yearAndMonthDate: this.props.location.state.sendValue.yearAndMonthDate,
+                enterPeriodKbn: this.props.location.state.sendValue.enterPeriodKbn,
+                //employeeName: this.props.location.state.sendValue.employeeName,
+            },()=>{
+                this.search(utils.formateDate(this.state.yearAndMonthDate,false),this.state.enterPeriodKbn,utils.labelGetValue(this.props.location.state.sendValue.employeeNo,this.state.employeeNameDrop));
+            })
+        }else{
+            this.search(utils.formateDate(this.state.yearAndMonthDate,false),this.state.enterPeriodKbn,utils.labelGetValue($("#employeeName").val(),this.state.employeeNameDrop));
+        }
     }
     /**
      * 年月のonChange 
@@ -220,7 +230,10 @@ class EnterPeriodSearch extends React.Component {
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = {
-				
+				yearAndMonthDate: this.state.yearAndMonthDate,
+				enterPeriodKbn: this.state.enterPeriodKbn,
+				employeeName: this.state.employeeName,
+				employeeNo: $("#employeeName").val(),
 		};
 		switch (actionType) {
 			case "detail":
@@ -374,7 +387,7 @@ class EnterPeriodSearch extends React.Component {
                                 </FormControl>
                             </InputGroup>
                         </Col>
-                        <Col sm="3">
+                        <Col sm="6">
                             <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text>社員名</InputGroup.Text>
@@ -397,6 +410,7 @@ class EnterPeriodSearch extends React.Component {
                                     renderInput={(params) => (
                                         <div ref={params.InputProps.ref}>
                                         <input placeholder="  例：佐藤真一" type="text" {...params.inputProps} className="form-control Autocomplete-style"
+                                            style={{ width: 200,}}
                                          />
                                         </div>
                                     )}
