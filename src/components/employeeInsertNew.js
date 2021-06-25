@@ -166,8 +166,8 @@ class employeeInsertNew extends React.Component {
 			picInfo: imgSrc,// pb情報
 		};
 		formData.append('emp', JSON.stringify(emp))
-		formData.append('resumeInfo1', publicUtils.nullToEmpty(this.state.resumeName1) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
-		formData.append('resumeInfo2', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
+		formData.append('resumeInfo1', publicUtils.nullToEmpty(this.state.resumeInfo1) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
+		formData.append('resumeInfo2', publicUtils.nullToEmpty(this.state.resumeInfo2) === "" ? null : publicUtils.nullToEmpty($('#resumeInfo2').get(0).files[0]))
 		if(this.state.residentCardInfo != undefined)
 			formData.append('residentCardInfo', publicUtils.nullToEmpty($('#residentCardInfo').get(0).files[0]))
 		if(this.state.passportInfo != undefined)

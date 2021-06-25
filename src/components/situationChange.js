@@ -176,8 +176,8 @@ renderShowsTotal(start, to, total) {
                     <BootstrapTable data={this.state.situationInfoList}   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
                             <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='reflectYearAndMonth'>年月</TableHeaderColumn>                           
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo'>社員番号</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeName'>社員名</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo' hidden >社員番号</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='180' dataField='employeeName'>社員名</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='status'>区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>給料</TableHeaderColumn>

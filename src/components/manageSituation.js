@@ -1303,7 +1303,6 @@ class manageSituation extends React.Component {
 					</Col>
 				</Row>
 				<Form onSubmit={this.savealesSituation}>
-					<Form.Group>
 						<Row >
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3" >
@@ -1334,7 +1333,6 @@ class manageSituation extends React.Component {
 								</InputGroup>
 							</Col>
 						</Row>
-						<Row style={{ padding: "10px" }}><Col sm={12}></Col></Row>
 						<Row>
 							<Col sm={6}>
 								<Form.Label style={{ "color": "#000000" }}>営業情報設定</Form.Label>
@@ -1527,12 +1525,10 @@ class manageSituation extends React.Component {
 						</Col>
 							
 						</Row>
-					</Form.Group>
 					<div>
 						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
 							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button></div>
 					</div>
-					<br />
 					<Row>
 						<Col sm={12}>
 							<div style={{"float": "left"}}>

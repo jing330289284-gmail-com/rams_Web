@@ -777,8 +777,8 @@ class CustomerInfo extends Component {
                                     <InputGroup.Prepend>
                                         <InputGroup.Text >お客様名</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" /><font color="red"
-                                        style={{ marginLeft: "10px", marginRight: "10px" }}>★</font>
+                                    <Form.Control placeholder="例：LYC株式会社" maxLength="50" id="customerName" onChange={customerInfoJs.toDisabed} name="customerName" />
+                                    <font color="red">★</font>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
@@ -797,6 +797,7 @@ class CustomerInfo extends Component {
                                         <InputGroup.Text>略称</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
+                                    <font color="red">★</font>
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>

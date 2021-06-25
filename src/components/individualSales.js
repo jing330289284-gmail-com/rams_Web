@@ -667,6 +667,11 @@ class individualSales extends React.Component {//個人売上検索
 
             var dailySalay = publicUtils.addComma(dailySalay, false)
             let returnItem = cell;
+            var date = new Date;
+            var month = date.getMonth() + 1;
+            var yearAndMonth = String(date.getFullYear()) + String(month.toString()[1] ? month : "0" + month);
+            if(row.onlyYandM > yearAndMonth && dailySalay != 0)
+            	dailySalay += "(予)";
             returnItem = dailySalay;
             if (returnItem == 0) {
                 returnItem = '';
@@ -817,7 +822,7 @@ class individualSales extends React.Component {//個人売上検索
         const listItems = row.empNameList.map((empNameList) =>
             <li>{empNameList}</li>
         );
-        if (row.allowanceAmount === null) {
+        if (row.allowanceAmount === null || row.allowanceAmount === "0") {
             return
         } else {
 
@@ -984,15 +989,15 @@ class individualSales extends React.Component {//個人売上検索
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='170' dataField='customerName'>所属客様</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='108' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='118' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='100' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'width='90' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' width='90' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='110' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='90' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='100' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </div>

@@ -292,7 +292,7 @@ class SubMenu extends Component {
 													<Accordion.Collapse eventKey="5">
 														<ListGroup variant="flush">
 															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="ポイント設定"?"linkFont-click":"linkFont"} onClick={() => this.click('ポイント設定')} to="/subMenuManager/salesPointSet">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} color="rgb(247, 226, 248)"/>ポイント設定</Link></ListGroup.Item>
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faFilePowerpoint} /*color="rgb(247, 226, 248)"*//>ポイント設定</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業個別売上"?"linkFont-click":"linkFont"} onClick={() => this.click('営業個別売上')} to="/subMenuManager/salesProfit">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faChartPie} />営業個別売上</Link></ListGroup.Item>
 															<ListGroup.Item style={authorityCode === "3" ? styleLow : styleHigh}><Link className={this.state.click==="営業ポイント"?"linkFont-click":"linkFont"} onClick={() => this.click('営業ポイント')} to="/subMenuManager/salesPoint">
@@ -326,8 +326,8 @@ class SubMenu extends Component {
 														<ListGroup variant="flush">
 															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="状況変動一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('状況変動一覧')} to="/subMenuManager/situationChange">
 																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />状況変動一覧</Link></ListGroup.Item>
-															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="入社入場期限一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('入社入場期限一覧')} to="/subMenuManager/enterPeriodSearch">
-																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />入社入場期限一覧</Link></ListGroup.Item>
+															<ListGroup.Item style={styleHigh}><Link className={this.state.click==="期限一覧"?"linkFont-click":"linkFont"} onClick={() => this.click('期限一覧')} to="/subMenuManager/enterPeriodSearch">
+																<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />期限一覧</Link></ListGroup.Item>
 														</ListGroup>
 													</Accordion.Collapse>
 												</ListGroup.Item>
