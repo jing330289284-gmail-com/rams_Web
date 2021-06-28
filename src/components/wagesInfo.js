@@ -152,7 +152,7 @@ class WagesInfo extends Component {
             this.setState({
                 sendValue: this.props.location.state.sendValue,
                 searchFlag: this.props.location.state.searchFlag,
-                actionType: this.props.location.state.actionType,
+                actionType: "insert",
                 employeeName: employeeNo,
                 employeeNo: employeeNo,
                 backPage: this.props.location.state.backPage,
@@ -554,6 +554,8 @@ class WagesInfo extends Component {
                 this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を0以上に入力してください", socialInsuranceFlag: "0", healthInsuranceAmount: '', welfarePensionAmount: '', insuranceFeeAmount: '' });
                 setTimeout(() => this.setState({ "errorsMessageValue": false }), 3000);
             } else {
+            	if(salary > 1000000)
+            		salary = 1000000;
                 await axios.post("/api/getSocialInsurance202003?salary=" + salary + "&kaigo=0")
                     .then(result => {
                         var welfarePensionAmount = utils.addComma(result.data.pension.payment);
@@ -646,6 +648,7 @@ class WagesInfo extends Component {
                         selectedRowKeys: [],
                     });
                     this.setState({
+                        actionType: 'insert',
                         torokuText: "登録",
                         deleteFlag:true,
                     })
@@ -1055,7 +1058,7 @@ class WagesInfo extends Component {
                                             <InputGroup.Text>給料</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            maxLength="7"
+                                            maxLength="8"
                                             value={salary}
                                             name="salary"
                                             onChange={this.valueChangeMoney}

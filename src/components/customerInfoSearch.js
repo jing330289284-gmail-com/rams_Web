@@ -39,6 +39,7 @@ class CustomerInfoSearch extends Component {
         paymentsiteCodeDrop: store.getState().dropDown[21],
         message: '',
         type: '',
+    	responseFlag: true,
         myToastShow: false,
         errorsMessageShow: false,
         errorsMessageValue: '',
@@ -47,6 +48,7 @@ class CustomerInfoSearch extends Component {
         customerDrop: store.getState().dropDown[53].slice(1),
         customerAbbreviationList: store.getState().dropDown[73].slice(1),
         basicContractStatus: store.getState().dropDown[72].slice(1),
+        responseStatus: store.getState().dropDown[72].slice(1),
         listedCompanyFlag: store.getState().dropDown[17],
         searchFlag: false,//検索ボタン押下フラグ
         sendValue: {},
@@ -76,6 +78,7 @@ class CustomerInfoSearch extends Component {
             $("#representative").val(sendValue.representative);
             $("#listedCompanyFlag").val(sendValue.listedCompanyFlag);
             $("#basicContract").val(sendValue.basicContract);
+            $("#response").val(sendValue.response);
             this.setState({
                 customerNo: sendValue.customerNo,
                 customerAbbreviation: sendValue.customerAbbreviation,
@@ -134,6 +137,7 @@ class CustomerInfoSearch extends Component {
         customerInfoMod["stationCode"] = this.state.stationCode;
         customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);  
         customerInfoMod["basicContract"] = $("#basicContract").val() === "0" ? null : $("#basicContract").val(); 
+        customerInfoMod["response"] = $("#response").val() === "0" ? null : $("#response").val(); 
         customerInfoMod["representative"] = $("#representative").val();
         customerInfoMod["listedCompanyFlag"] = $("#listedCompanyFlag").val();
         axios.post(this.state.serverIP + "customerInfoSearch/customerSearch", customerInfoMod)
@@ -367,6 +371,20 @@ class CustomerInfoSearch extends Component {
             })
         }
     }
+    
+    test = (event) => {
+    	if(event.target.value === "2"){
+            this.setState({
+            	responseFlag: false,
+            })
+    	}else{
+            $("#response").val("");
+            this.setState({
+            	responseFlag: true,
+            })
+    	}
+    }
+    
     reset = () => {
         $("#traderPersonFront").val("");
         $("#traderPersonBack").val("");
@@ -377,7 +395,8 @@ class CustomerInfoSearch extends Component {
         $("#representative").val("");
         $("#listedCompanyFlag").val("");
         $("#basicContract").val("");
-
+        $("#response").val("");
+        
         this.setState({
             customerNo:'',
             customerAbbreviation:'',
@@ -388,6 +407,7 @@ class CustomerInfoSearch extends Component {
             businessStartDate:'',
             capitalStockFront:'',
             capitalStockBack:'',
+        	responseFlag: true,
         })
     }
     // 鼠标悬停显示全文
@@ -499,8 +519,18 @@ class CustomerInfoSearch extends Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="fiveKanji">基本契約</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
+                            <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" onChange={this.test.bind(this)}>
                             {this.state.basicContractStatus.map(date =>
+                                <option key={date.code} value={date.code}>
+                                    {date.name}
+                                </option>
+                            )}
+                            </Form.Control>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="twoKanji">返事</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Form.Control as="select" placeholder="返事" id="response" name="response" disabled={this.state.responseFlag} >
+                            {this.state.responseStatus.map(date =>
                                 <option key={date.code} value={date.code}>
                                     {date.name}
                                 </option>

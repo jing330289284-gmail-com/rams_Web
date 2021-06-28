@@ -1,9 +1,10 @@
 import React,{Component} from 'react';
-import {Row , Col , InputGroup ,Form } from 'react-bootstrap';
+import {Row , Col , InputGroup ,Form, Button } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import $ from 'jquery';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios';
 import store from './redux/store';
@@ -30,12 +31,12 @@ class situationChange extends Component {//状況変動一覧
 
     initialState = {
         situationChange:'0',
+        rowSelectEmployeeNo: "",
         isStart:true,
         startsituationChange:new Date(),
         endsituationChange:new Date(),
         situationChanges: store.getState().dropDown[39].slice(1),
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-        
     }
 
                	//onchange
@@ -46,8 +47,17 @@ class situationChange extends Component {//状況変動一覧
     }
 
     componentDidMount(){
-        this.selectSituationChange();
-
+        if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
+        	$("#situationChange").val(this.props.location.state.sendValue.situationChange);
+    		this.setState({
+    			situationChange: this.props.location.state.sendValue.situationChange,
+    			startsituationChange: this.props.location.state.sendValue.startsituationChange,
+    			endsituationChange: this.props.location.state.sendValue.endsituationChange,
+            } ,()=>{this.selectSituationChange()})   
+        }
+        else{
+            this.selectSituationChange();
+        }
     }
     startsituationChange = date => {
         if(date !== null){
@@ -102,6 +112,11 @@ selectSituationChange =() => {
 
 }
 
+handleRowSelect = (row, isSelected, e) => {
+	if (isSelected) {this.setState({rowSelectEmployeeNo: row.employeeNo,});}
+	else{this.setState({rowSelectEmployeeNo: "",});}
+}	
+
 renderShowsTotal(start, to, total) {
     return (
         <p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -109,9 +124,64 @@ renderShowsTotal(start, to, total) {
         </p>
     );
 }
+
+shuseiTo = (actionType) => {
+	var path = {};
+	const sendValue = {
+			situationChange: this.state.situationChange,
+			startsituationChange: this.state.startsituationChange,
+			endsituationChange: this.state.endsituationChange,
+	};
+	switch (actionType) {
+		case "detail":
+			path = {
+				pathname: '/subMenuManager/employeeDetailNew',
+				state: {
+					actionType: 'detail',
+					id: this.state.rowSelectEmployeeNo,
+					backPage: "situationChange",
+					sendValue: sendValue,
+				},
+			}
+		break;
+		case "wagesInfo":
+			path = {
+				pathname: '/subMenuManager/wagesInfo',
+				state: {
+					actionType: "insert",
+					employeeNo: this.state.rowSelectEmployeeNo,
+					backPage: "situationChange",
+					sendValue: sendValue,
+				},
+			}
+			break;
+		case "siteInfo":
+			path = {
+				pathname: '/subMenuManager/siteInfo',
+				state: {
+					employeeNo: this.state.rowSelectEmployeeNo,
+					backPage: "situationChange",
+					sendValue: sendValue,
+				},
+			}
+			break;
+		default:
+	}
+	this.props.history.push(path);
+}
+
     render(){
         const  situationChanges= this.state.situationChanges;
         const  errorsMessageValue= this.state.errorsMessageValue;
+		const selectRow = {
+				mode: 'radio',
+				bgColor: 'pink',
+				clickToSelectAndEditCell: true,
+				hideSelectColumn: true,
+				clickToSelect: true,
+				clickToExpand: true,
+				onSelect: this.handleRowSelect,
+			};
         return(
             <div>
                 <div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
@@ -171,9 +241,18 @@ renderShowsTotal(start, to, total) {
                         </InputGroup>                       
                     </Col>
 				</Row>
+                <Row>
+	                <Col>
+						<Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">個人情報</Button>{' '}
+						<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
+						<Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">給料情報</Button>{' '}
+		            </Col>
+				</Row>
 				<Col>
                 <div>
-                    <BootstrapTable data={this.state.situationInfoList}   pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
+                    <BootstrapTable data={this.state.situationInfoList}
+					selectRow={selectRow}
+                    pagination={true}  headerStyle={{ background: '#5599FF' }} options={this.options}　striped hover condensed>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey>番号</TableHeaderColumn>
                             <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='reflectYearAndMonth'>年月</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='110' dataField='employeeNo' hidden >社員番号</TableHeaderColumn>
