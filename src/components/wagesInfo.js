@@ -80,7 +80,9 @@ class WagesInfo extends Component {
         hatsunyubaFlag:true,
         employeeStatus: '',
 		employeeStatuss: store.getState().dropDown[4],
+		workingConditionStatus: store.getState().dropDown[74].slice(1),
 		newEmployeeStatus: '',
+		workingCondition: "0",
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -292,6 +294,7 @@ class WagesInfo extends Component {
             bonusStartDate: utils.converToLocalTime(wagesInfoMod.nextBonusMonth, false),
             raiseStartDate: utils.converToLocalTime(wagesInfoMod.nextRaiseMonth, false),
             reflectStartDate: utils.converToLocalTime(wagesInfoMod.reflectYearAndMonth, false),
+            workingCondition: wagesInfoMod.workingCondition,
         })
     }
     /**
@@ -612,8 +615,14 @@ class WagesInfo extends Component {
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
         });
-        wagesInfoModel["salary"] = utils.deleteComma(this.state.salary);
-        wagesInfoModel["waitingCost"] = utils.deleteComma(this.state.waitingCost);
+        wagesInfoModel["workingCondition"] = this.state.workingCondition;
+        if(this.state.workingCondition === "0"){
+            wagesInfoModel["salary"] = utils.deleteComma(this.state.salary);
+            wagesInfoModel["waitingCost"] = "";
+        }else{
+            wagesInfoModel["salary"] = "";
+            wagesInfoModel["waitingCost"] = utils.deleteComma(this.state.waitingCost);
+        }
         wagesInfoModel["welfarePensionAmount"] = utils.deleteComma(this.state.welfarePensionAmount);
         wagesInfoModel["healthInsuranceAmount"] = utils.deleteComma(this.state.healthInsuranceAmount);
         wagesInfoModel["insuranceFeeAmount"] = utils.deleteComma(this.state.insuranceFeeAmount);
@@ -1052,7 +1061,22 @@ class WagesInfo extends Component {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col sm={3}>
+	                            <Col sm={3}>
+		                            <InputGroup size="sm" className="mb-3">
+		                                <InputGroup.Prepend>
+		                                    <InputGroup.Text>稼働区分</InputGroup.Text>
+		                                </InputGroup.Prepend>
+		                                <Form.Control as="select" size="sm" onChange={this.valueChange} name="workingCondition" value={this.state.workingCondition}
+                                        disabled={actionType === "detail" ? true : false} autoComplete="off">
+										{this.state.workingConditionStatus.map(data =>
+											<option key={data.code} value={data.code}>
+												{data.name}
+											</option>
+										)}
+										</Form.Control>
+		                            </InputGroup>
+	                            </Col>
+                                <Col sm={3} hidden={this.state.workingCondition === "0" ? false : true}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>給料</InputGroup.Text>
@@ -1062,26 +1086,26 @@ class WagesInfo extends Component {
                                             value={salary}
                                             name="salary"
                                             onChange={this.valueChangeMoney}
-                                            readOnly={kadouCheck}
+                                            /*readOnly={kadouCheck}*/
                                             disabled={actionType === "detail" ? true : false}
                                             placeholder="例：220000" />
                                         <InputGroup.Prepend>
                                             <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
-                                            hidden={kadouCheck}
+                                            /*hidden={kadouCheck}*/
                                             id="mark" color="red"
                                             className="site-mark">★</font>{" "}
                                     </InputGroup>
                                 </Col>
-                                <Col sm={3}>
+                                <Col sm={3} hidden={this.state.workingCondition === "0" ? true : false}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text id="fiveKanji">非稼動費用</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             maxLength="7"
-                                            readOnly={!kadouCheck}
+                                            /*readOnly={!kadouCheck}*/
                                             disabled={actionType === "detail" ? true : false}
                                             name="waitingCost"
                                             value={waitingCost}
@@ -1091,7 +1115,7 @@ class WagesInfo extends Component {
                                             <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <font
-                                            hidden={!kadouCheck}
+                                            /*hidden={!kadouCheck}*/
                                             id="mark" color="red"
                                             className="site-mark">★</font>
                                     </InputGroup>

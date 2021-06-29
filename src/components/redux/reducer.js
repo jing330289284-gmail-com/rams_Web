@@ -25,7 +25,7 @@ export function fetchDropDown() {
 		"getLevel",// 18レベル
 		"getCompanyNature",// 19性質
 		"getPosition",// 20職位
-		"getPaymentsite",// 21支払サイト
+		"getPaymentSite",// 21支払サイト
 		"getCustomerDepartment",// 22部門名前
 		"getNewMember",// 23新人区分
 		"getCustomerContractStatus",// 24契約区分
@@ -78,6 +78,7 @@ export function fetchDropDown() {
 		"getframeWork",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
 		"getCustomerAbbreviation",// 73 お客様略称取得
+		"getWorkingConditionStatus",// 74 稼働ステータス取得
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -136,7 +137,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getLevel",// 18レベル
 		"getCompanyNature",// 19性質
 		"getPosition",// 20職位
-		"getPaymentsite",// 21支払サイト
+		"getPaymentSite",// 21支払サイト
 		"getCustomerDepartment",// 22部門名前
 		"getNewMember",// 23新人区分
 		"getCustomerContractStatus",// 24契約区分
@@ -189,6 +190,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getframeWork",// 71フレームワーク取得
 		"getBasicContractStatus",// 72 基本契約取得
 		"getCustomerAbbreviation",// 73 お客様略称取得
+		"getWorkingConditionStatus",// 74 稼働ステータス取得
 		"getServerIP",// 最後
 	]
 var outArray = [];

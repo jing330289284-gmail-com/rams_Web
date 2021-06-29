@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker, { registerLocale } from "react-datepicker"
 import ja from 'date-fns/locale/ja';
 import axios from 'axios';
+import * as publicUtils from './utils/publicUtils.js';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import * as utils from './utils/publicUtils.js';
@@ -52,6 +53,9 @@ class CustomerInfo extends Component {
         sendValue: {},
         customerNo: '',
         backPage: "",//遷移元
+    	contactDateFlag: true,
+    	contactDate: "",
+    	responseFlag: true,
         myMessageShow: false,
         myUpdateShow: false,
         myDeleteShow: false,
@@ -68,6 +72,8 @@ class CustomerInfo extends Component {
         typeOfIndustryDrop: store.getState().dropDown[36].slice(1),
         developLanguageDrop: store.getState().dropDown[8].slice(1),
         basicContractStatus: store.getState().dropDown[72].slice(1),
+        responseStatus: store.getState().dropDown[72].slice(1),
+        salesStaffDrop: store.getState().dropDown[56].slice(1),
         currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -99,6 +105,22 @@ class CustomerInfo extends Component {
             });
         }
     };
+    
+    /**
+     * 連絡日のonChange 
+     */
+    contactDateChange = date => {
+        if (date !== null) {
+            this.setState({
+            	contactDate: date,
+            });
+        } else {
+            this.setState({
+            	contactDate: '',
+            });
+        }
+    };
+    
     constructor(props) {
         super(props);
         this.handleShowModal = this.handleShowModal.bind(this);
@@ -182,12 +204,19 @@ class CustomerInfo extends Component {
                     $("#url").val(customerInfoMod.url);
                     $("#remark").val(customerInfoMod.remark);
                     $("#basicContract").val(customerInfoMod.basicContract);
+                    $("#response").val(customerInfoMod.response);
+                    $("#commonMail").val(customerInfoMod.commonMail);
+
                     this.setState({
                         businessStartDate: utils.converToLocalTime(customerInfoMod.businessStartDate, false),
                         establishmentDate: utils.converToLocalTime(customerInfoMod.establishmentDate, false),
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
                         customerDepartmentCode2: customerInfoMod.customerDepartmentCode,
                         positionCode2: customerInfoMod.positionCode,
+                        contactDate: publicUtils.converToLocalTime(customerInfoMod.contactDate, true),
+                        salesStaff: customerInfoMod.salesStaff,
+                        responseFlag: customerInfoMod.basicContract !== "2" ? true : false,
+                        contactDateFlag: customerInfoMod.response !== "2" ? true : false,
                     })
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
@@ -215,7 +244,8 @@ class CustomerInfo extends Component {
             customerInfoMod[item.name] = item.value;
         });
         customerInfoMod["capitalStock"] = utils.deleteComma($("#capitalStock").val());
-        customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
+        //customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
+        customerInfoMod["topCustomerNo"] = this.state.topCustomer;
         customerInfoMod["establishmentDate"] = utils.formateDate(this.state.establishmentDate, false);
         customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);
         customerInfoMod["actionType"] = this.state.actionType;
@@ -223,8 +253,12 @@ class CustomerInfo extends Component {
         customerInfoMod["accountInfo"] = this.state.accountInfo;
         customerInfoMod["customerDepartmentCode"] = this.state.customerDepartmentCode2;
         customerInfoMod["positionCode"] = this.state.positionCode2;
-        customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);
+        //customerInfoMod["stationCode"] = utils.labelGetValue($("#stationCode").val(), this.state.stationCodeDrop);
+        customerInfoMod["stationCode"] = this.state.stationCode2;
         customerInfoMod["basicContract"] = $("#basicContract").val();
+        customerInfoMod["contactDate"] = publicUtils.formateDate(this.state.contactDate, true)
+        customerInfoMod["salesStaff"] = this.state.salesStaff;
+
         // customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
             .then(result => {
@@ -380,6 +414,29 @@ class CustomerInfo extends Component {
             }
         }
     }
+    
+	/**
+	 * 社員名連想
+	 * 
+	 * @param {}
+	 *            event
+	 */
+    getSalesStaff = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let salesStaff = null;
+			if (values !== null) {
+				salesStaff = values.code;
+			}else{
+				salesStaff = "";
+			}
+			this.setState({
+				salesStaff: salesStaff,
+			})
+		})
+	}
+    
     getStationCode = (event, values) => {
         if (values != null) {
             this.setState({
@@ -418,6 +475,7 @@ class CustomerInfo extends Component {
                 topCustomer: values.code,
             })
         } else {
+            $("#topCustomer").val("");
             this.setState({
                 topCustomer: "",
             })
@@ -529,6 +587,34 @@ class CustomerInfo extends Component {
             }
         }
     }
+    
+    basicContractChange = (event) => {
+    	if(event.target.value === "2"){
+            this.setState({
+            	responseFlag: false,
+            })
+    	}else{
+            $("#response").val("");
+            this.setState({
+            	responseFlag: true,
+            	contactDateFlag: true,
+            	contactDate: "",
+            })
+    	}
+    }
+    
+    responseChange = (event) => {
+    	if(event.target.value === "2"){
+            this.setState({
+            	contactDateFlag: false,
+            })
+    	}else{
+            this.setState({
+            	contactDate: "",
+            	contactDateFlag: true,
+            })
+    	}
+    }
 
     getStation = (no) => {
         this.state.customerDepartmentList[this.state.rowNo - 1].stationCode = no;
@@ -613,9 +699,14 @@ class CustomerInfo extends Component {
     reset = () => {
         this.setState({
             stationCode2: '',
+            positionCode2: '',
             topCustomer: '',
             establishmentDate: '',
             businessStartDate: '',
+        	responseFlag: true,
+        	contactDateFlag: true,
+        	contactDate: "",
+        	customerNo: "",
         })
         $("#customerName").val("");
         $("#stationCode").val("");
@@ -633,6 +724,9 @@ class CustomerInfo extends Component {
         $("#representative").val("");
         $("#url").val("");
         $("#remark").val("");
+        $("#response").val("");
+        $("#commonMail").val("");
+        $("#topCustomer").val("");
         $("#toBankInfo").attr("disabled", true);
     }
     
@@ -758,20 +852,6 @@ class CustomerInfo extends Component {
                     <br />
                     <Form id="customerForm">
                         <Row>
-	                        <Col sm={3}>
-		                        <InputGroup size="sm" className="mb-3">
-		                            <InputGroup.Prepend>
-		                                <InputGroup.Text>基本契約</InputGroup.Text>
-		                            </InputGroup.Prepend>
-		                            <Form.Control as="select" placeholder="基本契約" id="basicContract" name="basicContract" >
-		                            {this.state.basicContractStatus.map(date =>
-		                                <option key={date.code} value={date.code}>
-		                                    {date.name}
-		                                </option>
-		                            )}
-		                        </Form.Control>
-		                        </InputGroup>
-	                        </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -986,6 +1066,12 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
+                        
+                        <Row>
+                        	<Col>
+                				<font>情報補足</font>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
@@ -1050,13 +1136,96 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
 	                            <InputGroup size="sm" className="mb-3">
 	                                <InputGroup.Prepend>
-	                                    <InputGroup.Text>備考</InputGroup.Text>
+	                                    <InputGroup.Text id="fiveKanji">共通メール</InputGroup.Text>
 	                                </InputGroup.Prepend>
-	                                <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
+	                                <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="commonMail" name="commonMail" />
 	                            </InputGroup>
                             </Col>
-
                         </Row>
+                        <Row>
+	                        <Col sm={3}>
+		                        <InputGroup size="sm" className="mb-3">
+		                            <InputGroup.Prepend>
+		                                <InputGroup.Text id="twoKanji">契約</InputGroup.Text>
+		                            </InputGroup.Prepend>
+		                            <Form.Control as="select" placeholder="契約" id="basicContract" name="basicContract" onChange={this.basicContractChange.bind(this)}>
+		                            {this.state.basicContractStatus.map(date =>
+		                                <option key={date.code} value={date.code}>
+		                                    {date.name}
+		                                </option>
+		                            )}
+		                        </Form.Control>
+		                        <InputGroup.Prepend>
+		                        	<InputGroup.Text id="twoKanji">返事</InputGroup.Text>
+		                        </InputGroup.Prepend>
+		                        <Form.Control as="select" placeholder="返事" id="response" name="response" onChange={this.responseChange.bind(this)} disabled={this.state.responseFlag} >
+		                        {this.state.responseStatus.map(date =>
+		                            <option key={date.code} value={date.code}>
+		                                {date.name}
+		                            </option>
+		                        )}
+		                        </Form.Control>
+		                        </InputGroup>
+	                        </Col>
+	                        
+	                        <Col sm={3}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>連絡日</InputGroup.Text>
+		                            </InputGroup.Prepend>
+	                                <DatePicker
+	                                    selected={this.state.contactDate}
+	                                    onChange={this.contactDateChange}
+	                                    dateFormat="yyyy/MM/dd"
+	                                    autoComplete="off"
+	                                    locale="pt-BR"
+	                                    id={actionType === "detail" || this.state.responseFlag || this.state.contactDateFlag ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
+	                                    name="contactDate"
+	                                    className="form-control form-control-sm"
+	                                    locale="ja"
+	                                    disabled={actionType === "detail" || this.state.responseFlag || this.state.contactDateFlag ? true : false}
+	                                />
+	                            </InputGroup>
+                           </Col>
+                           
+                           <Col sm={3}>
+	                           <InputGroup size="sm" className="mb-3">
+	                               <InputGroup.Prepend>
+	                                   <InputGroup.Text>連絡担当</InputGroup.Text>
+	                               </InputGroup.Prepend>
+									<Autocomplete
+									id="customerNo"
+									name="customerNo"
+									value={this.state.salesStaffDrop.find(v => v.code === this.state.salesStaff) || {}}
+									options={this.state.salesStaffDrop}
+									getOptionLabel={(option) => option.text ? option.text : ""}
+									onChange={(event, values) => this.getSalesStaff(event, values)}
+									renderOption={(option) => {
+										return (
+											<React.Fragment>
+												{option.name}
+											</React.Fragment>
+										)
+									}}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+											/>
+										</div>
+									)}
+								/>
+	                           </InputGroup>
+                           </Col>
+                           <Col sm={3}>
+	                           <InputGroup size="sm" className="mb-3">
+	                               <InputGroup.Prepend>
+	                                   <InputGroup.Text>備考</InputGroup.Text>
+	                               </InputGroup.Prepend>
+	                               <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
+	                           </InputGroup>
+                           </Col>
+                        </Row>
+
                         <div style={{ "textAlign": "center" }}>
                             <Button size="sm" onClick={this.toroku} variant="info" id="toroku" type="button">
                                 <FontAwesomeIcon icon={faSave} />{actionType === "update" ? "更新" : "登録"}
