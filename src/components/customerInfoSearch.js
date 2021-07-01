@@ -47,7 +47,7 @@ class CustomerInfoSearch extends Component {
         transactionStatusDrop: store.getState().dropDown[46].slice(1),
         customerDrop: store.getState().dropDown[53].slice(1),
         customerAbbreviationList: store.getState().dropDown[73].slice(1),
-        basicContractStatus: store.getState().dropDown[72].slice(1),
+        basicContractStatus: store.getState().dropDown[72],
         responseStatus: store.getState().dropDown[72].slice(1),
         listedCompanyFlag: store.getState().dropDown[17],
         searchFlag: false,//検索ボタン押下フラグ
@@ -65,6 +65,7 @@ class CustomerInfoSearch extends Component {
         $("#shusei").attr("disabled", true);
         $("#shosai").attr("disabled", true);
         $("#sakujo").attr("disabled", true);
+        $("#response").val("");
         if (this.props.location.state !== undefined) {
             var sendValue = this.props.location.state.sendValue;
             var searchFlag = this.props.location.state.searchFlag;
@@ -88,6 +89,7 @@ class CustomerInfoSearch extends Component {
                 topCustomerCode: sendValue.topCustomerNo,
                 stationCode: sendValue.stationCode,
                 businessStartDate: utils.converToLocalTime(sendValue.businessStartDate, false),
+                responseFlag: sendValue.basicContract !== "1" ? true : false,
             }, () => {
                 if (searchFlag) {
                     this.search();
@@ -143,8 +145,8 @@ class CustomerInfoSearch extends Component {
             customerInfoMod["businessStartDate"] = utils.formateDate(this.state.businessStartDate, false);  
             customerInfoMod["contactDate"] = "";  
         }
-        customerInfoMod["basicContract"] = $("#basicContract").val() === "0" ? null : $("#basicContract").val(); 
-        customerInfoMod["response"] = $("#response").val() === "0" ? null : $("#response").val(); 
+        customerInfoMod["basicContract"] = $("#basicContract").val() === "" ? null : $("#basicContract").val(); 
+        customerInfoMod["response"] = $("#response").val() === "" ? null : $("#response").val(); 
         customerInfoMod["representative"] = $("#representative").val();
         customerInfoMod["listedCompanyFlag"] = $("#listedCompanyFlag").val();
         axios.post(this.state.serverIP + "customerInfoSearch/customerSearch", customerInfoMod)
@@ -380,10 +382,11 @@ class CustomerInfoSearch extends Component {
     }
     
     basicContractChange = (event) => {
-    	if(event.target.value === "2"){
+    	if(event.target.value === "1"){
             this.setState({
             	responseFlag: false,
             })
+            $("#response").val("0");
     	}else{
             $("#response").val("");
             this.setState({
@@ -394,7 +397,7 @@ class CustomerInfoSearch extends Component {
     }
     
     responseChange = (event) => {
-    	if(event.target.value === "2"){
+    	if(event.target.value === "1"){
             $("#traderPersonFront").val("");
             $("#traderPersonBack").val("");
             $("#transactionStatus").val("");
@@ -696,7 +699,7 @@ class CustomerInfoSearch extends Component {
                         <Col sm={3}>
                             <InputGroup size="sm" className="mb-2">
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id="fiveKanji">{this.state.contactDateFlag ? "契約期間" : "取引開始日"}</InputGroup.Text>
+                                    <InputGroup.Text id="fiveKanji">{this.state.contactDateFlag ? "最終連絡日" : "取引開始日"}</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <DatePicker
                                     selected={this.state.businessStartDate}

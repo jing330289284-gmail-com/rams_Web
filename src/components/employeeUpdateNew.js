@@ -91,7 +91,8 @@ class employeeUpdateNew extends React.Component {
 		let imgSrc = obj.getAttribute("src");
 		const emp = {
 			employeeStatus: this.state.employeeStatus,// 社員区分
-			employeeNo: this.state.employeeNo,// 社員番号
+			newEmployeeNo: this.state.employeeNo,// 社員番号
+			employeeNo: this.state.oldEmployeeNo,// 社員番号
 			bpEmployeeNo: this.state.employeeNo,// 社員番号
 			employeeFristName: this.state.employeeFristName,// 社員氏
 			employeeLastName: this.state.employeeLastName,// 社員名
@@ -173,7 +174,7 @@ class employeeUpdateNew extends React.Component {
 		formData.append('resumeInfo2URL', publicUtils.nullToEmpty(this.state.resumeName2) === "" ? "" : this.state.resumeInfo2URL)
 		formData.append('residentCardInfoURL', this.state.residentCardInfoURL)
 		formData.append('passportInfoURL', this.state.passportInfoURL)
-		if(this.state.isBp && this.state.employeeNo.substring(0,2)!=="BP"){
+/*		if(this.state.isBp && this.state.employeeNo.substring(0,2)!=="BP"){
 			axios.post(this.state.serverIP + "employee/insertEmployee", formData)
 			.then(result => {
 				this.setState({ loading: true, });
@@ -202,7 +203,7 @@ class employeeUpdateNew extends React.Component {
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 			});
-		}else{
+		}else{*/
 			axios.post(this.state.serverIP + "employee/updateEmployee", formData)
 			.then(response => {
 				this.setState({ loading: true, });
@@ -232,7 +233,7 @@ class employeeUpdateNew extends React.Component {
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "アップデートするファイル大きすぎる。" });
 				setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 			});
-		}	
+		/*}*/	
 	};
 
 
@@ -335,6 +336,7 @@ class employeeUpdateNew extends React.Component {
 					employeeStatus: data.employeeStatus,// 社員区分
 					isBp:employeeNo.substring(0,2)==="BP"?true:false,
 					bpNo:employeeNo.substring(0,2)==="BP"?employeeNo:'',
+					oldEmployeeNo: data.employeeNo,// 社員番号
 					employeeNo: data.employeeNo,// 社員番号
 					bpEmployeeNo: data.employeeNo,// 社員番号
 					employeeFristName: data.employeeFristName,// 社員氏
@@ -635,8 +637,8 @@ class employeeUpdateNew extends React.Component {
 			this.setState({ bpDisabled:false,residenceTimeDisabled:this.state.residenceCode === "5"?true:false, authorityCode: "1",  });
 		}else if(value === '2'){
 			this.setState({ companyMail: '', authorityCode: "1", intoCompanyCode: '', departmentCode: '',
-				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',intoCompanyYearAndMonth:'',
-				temporary_intoCompanyYearAndMonth:'',employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
+				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',
+				employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
 				occupationCode: '',socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
 			this.getNO("SP");
 		}

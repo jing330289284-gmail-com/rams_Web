@@ -71,7 +71,7 @@ class CustomerInfo extends Component {
         positionDrop: store.getState().dropDown[20].slice(1),
         typeOfIndustryDrop: store.getState().dropDown[36].slice(1),
         developLanguageDrop: store.getState().dropDown[8].slice(1),
-        basicContractStatus: store.getState().dropDown[72].slice(1),
+        basicContractStatus: store.getState().dropDown[72],
         responseStatus: store.getState().dropDown[72].slice(1),
         salesStaffDrop: store.getState().dropDown[56].slice(1),
         currentPage: 1,//今のページ
@@ -151,6 +151,7 @@ class CustomerInfo extends Component {
     */
     async componentDidMount() {
         console.log(this.props.history);
+        $("#response").val("");
         this.setState({
             actionType: this.props.location.state.actionType,
             backPage: this.props.location.state.backPage,
@@ -215,8 +216,8 @@ class CustomerInfo extends Component {
                         positionCode2: customerInfoMod.positionCode,
                         contactDate: publicUtils.converToLocalTime(customerInfoMod.contactDate, true),
                         salesStaff: customerInfoMod.salesStaff,
-                        responseFlag: customerInfoMod.basicContract !== "2" ? true : false,
-                        contactDateFlag: customerInfoMod.response !== "2" ? true : false,
+                        responseFlag: actionType === "detail" || customerInfoMod.basicContract !== "1" ? true : false,
+                        contactDateFlag: actionType === "detail" || customerInfoMod.response !== "1" ? true : false,
                     })
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
@@ -589,10 +590,11 @@ class CustomerInfo extends Component {
     }
     
     basicContractChange = (event) => {
-    	if(event.target.value === "2"){
+    	if(event.target.value === "1"){
             this.setState({
             	responseFlag: false,
             })
+            $("#response").val("0");
     	}else{
             $("#response").val("");
             this.setState({
@@ -604,7 +606,7 @@ class CustomerInfo extends Component {
     }
     
     responseChange = (event) => {
-    	if(event.target.value === "2"){
+    	if(event.target.value === "1"){
             this.setState({
             	contactDateFlag: false,
             })
