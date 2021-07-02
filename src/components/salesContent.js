@@ -51,6 +51,7 @@ class salesContent extends React.Component {
 		developLanguageCode8: null,
 		developLanguageCode9: null,
 		developLanguageCode10: null,
+		developLanguageCode11: null,
 		genders: store.getState().dropDown[0],
 		employees: store.getState().dropDown[4],
 		japaneseLevels: store.getState().dropDown[5],
@@ -80,6 +81,7 @@ class salesContent extends React.Component {
 		initDevelopLanguageCode8: null,
 		initDevelopLanguageCode9: null,
 		initDevelopLanguageCode10: null,
+		initDevelopLanguageCode11: null,
 		initUnitPrice: '',
 		initRemark: '',
 		disableFlag: true,
@@ -210,6 +212,21 @@ class salesContent extends React.Component {
 		});
 		this.props.allState.setValue(this.state.unitPrice,this.state.yearsOfExperience);
 	}
+	
+	getStation = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let nearestStation = null;
+			if (values !== null) {
+				nearestStation = values.code;
+			}
+			this.setState({
+				nearestStation: nearestStation,
+				stationCode: nearestStation,
+			})
+		})
+	}
 
 	// 駅LOST FOCUS
 	updateAddress = event => {
@@ -266,11 +283,13 @@ class salesContent extends React.Component {
 					developLanguageCode8: result.data[0].developLanguage3,
 					developLanguageCode9: result.data[0].developLanguage4,
 					developLanguageCode10: result.data[0].developLanguage5,
+					developLanguageCode11: result.data[0].developLanguage6,
 					wellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 					this.fromCodeToListLanguage(result.data[0].developLanguage2),
 					this.fromCodeToListLanguage(result.data[0].developLanguage3),
 					this.fromCodeToListLanguage(result.data[0].developLanguage4),
-					this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
+					this.fromCodeToListLanguage(result.data[0].developLanguage5),
+					this.fromCodeToListLanguage(result.data[0].developLanguage6)].filter(function(s) {
 						return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 					}),
 					disbleState: this.fromCodeToListLanguage(result.data[0].developLanguage5) === '' ? false : true,
@@ -278,7 +297,8 @@ class salesContent extends React.Component {
 					this.fromCodeToNameLanguage(result.data[0].developLanguage2),
 					this.fromCodeToNameLanguage(result.data[0].developLanguage3),
 					this.fromCodeToNameLanguage(result.data[0].developLanguage4),
-					this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {
+					this.fromCodeToNameLanguage(result.data[0].developLanguage5),
+					this.fromCodeToNameLanguage(result.data[0].developLanguage6)].filter(function(s) {
 						return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
 					}).join('、'),
 					yearsOfExperience: result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === undefined ? "" : result.data[0].yearsOfExperience,
@@ -303,13 +323,15 @@ class salesContent extends React.Component {
 					initDevelopLanguageCode8: result.data[0].developLanguage3,
 					initDevelopLanguageCode9: result.data[0].developLanguage4,
 					initDevelopLanguageCode10: result.data[0].developLanguage5,
+					initDevelopLanguageCode11: result.data[0].developLanguage6,
 					initUnitPrice: result.data[0].unitPrice,
 					initRemark: result.data[0].remark,
 					initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
 					this.fromCodeToListLanguage(result.data[0].developLanguage2),
 					this.fromCodeToListLanguage(result.data[0].developLanguage3),
 					this.fromCodeToListLanguage(result.data[0].developLanguage4),
-					this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
+					this.fromCodeToListLanguage(result.data[0].developLanguage5),
+					this.fromCodeToListLanguage(result.data[0].developLanguage6)].filter(function(s) {
 						return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 					}),
 				})
@@ -420,7 +442,7 @@ class salesContent extends React.Component {
 	}
 	
 	onTagsChange = (event, values, fieldName) => {
-		if (values.length === 5) {
+		if (values.length === 6) {
 			this.setState({
 				disbleState: true,
 			});
@@ -435,11 +457,13 @@ class salesContent extends React.Component {
 			developLanguageCode8: values.length >= 3 ? values[2].code : null,
 			developLanguageCode9: values.length >= 4 ? values[3].code : null,
 			developLanguageCode10: values.length >= 5 ? values[4].code : null,
+			developLanguageCode11: values.length >= 6 ? values[5].code : null,
 			wellUseLanguagss: [this.fromCodeToListLanguage(values.length >= 1 ? values[0].code : ''),
 			this.fromCodeToListLanguage(values.length >= 2 ? values[1].code : ''),
 			this.fromCodeToListLanguage(values.length >= 3 ? values[2].code : ''),
 			this.fromCodeToListLanguage(values.length >= 4 ? values[3].code : ''),
-			this.fromCodeToListLanguage(values.length >= 5 ? values[4].code : '')].filter(function(s) {
+			this.fromCodeToListLanguage(values.length >= 5 ? values[4].code : ''),
+			this.fromCodeToListLanguage(values.length >= 6 ? values[5].code : '')].filter(function(s) {
 				return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 			}),
 		})
@@ -460,18 +484,25 @@ class salesContent extends React.Component {
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus === "子会社社員" ? "社員" : this.state.employeeStatus}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【年　　齢】：<input value={this.state.age} name="age"
-						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
+						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					歳</ListGroup.Item></span>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【最寄り駅】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.updateAddress}
-								name="nearestStation" value={this.state.nearestStation}>
-								{this.state.stations.map(date =>
-									<option key={date.code} value={date.code}>
-										{date.name}
-									</option>
-								)}
-							</Form.Control></span>
+						<Autocomplete
+						id="nearestStation"
+						name="nearestStation"
+						value={this.state.stations.find(v => v.code === this.state.nearestStation) || {}}
+						onChange={(event, values) => this.getStation(event, values)}
+						options={this.state.stations}
+						getOptionLabel={(option) => option.name}
+						renderInput={(params) => (
+							<div ref={params.InputProps.ref}>
+								<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-salesContent-station"
+								/>
+							</div>
+						)}
+					/>
+				    </span>
 					</ListGroup.Item>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
@@ -497,7 +528,7 @@ class salesContent extends React.Component {
 							</Form.Control></span>
 						&nbsp;&nbsp;{this.state.englishLevelCode}</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
-						style={{ width: "25px" }} onChange={this.valueChange} className="inputWithoutBorder" />
+						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />
 					年</ListGroup.Item></span>
 					{<ListGroup.Item style={{padding:".3rem 1.25rem"}} hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
@@ -536,7 +567,7 @@ class salesContent extends React.Component {
 						/>
 					</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPrice} name="unitPrice"
-						style={{ width: "30px" }} onChange={this.valueChange} className="inputWithoutBorder" />万円</ListGroup.Item></span>
+						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />万円</ListGroup.Item></span>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
 					{	
 					(Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":

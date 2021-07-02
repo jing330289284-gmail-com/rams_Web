@@ -224,6 +224,7 @@ class EnterPeriodSearch extends React.Component {
     }
     addMarkAdmissionStartDate=(cell,row)=>{
         let admissionStartDate = utils.dateFormate(row.admissionStartDate);
+        admissionStartDate += "(" + row.admissionMonth + ")";
         return admissionStartDate;
     }
     

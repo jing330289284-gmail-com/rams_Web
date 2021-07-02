@@ -1117,6 +1117,19 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-salesContent-station {
+	position: absolute;
+	top: 3px;
+    left: 132px;
+	width: 9.5rem;
+	height: 28px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: "0.85rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-emp-station {
 	width: 20.58rem;
 	height: 31px;

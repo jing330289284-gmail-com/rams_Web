@@ -90,6 +90,7 @@ class CustomerInfoSearch extends Component {
                 stationCode: sendValue.stationCode,
                 businessStartDate: utils.converToLocalTime(sendValue.businessStartDate, false),
                 responseFlag: sendValue.basicContract !== "1" ? true : false,
+                contactDateFlag: sendValue.response === "1" ? true : false,
             }, () => {
                 if (searchFlag) {
                     this.search();

@@ -25,14 +25,14 @@ class TableSelect extends React.Component {
 				everyWidth: 133,
 			})
 		} else if (this.props.flag === 2) {
-			if(String(this.props.dropdowns.state.employeeNo).substring(0,2)==="BP"){
+			if(String(this.props.dropdowns.state.lastEmpNo) === "" || String(this.props.dropdowns.state.lastEmpNo).substring(0,2)==="BP"){
 				this.setState({
 					allOption: this.props.dropdowns.state.salesProgressCodes,
 				})
 			}else{
 				let temp = [];
 				for(let i in this.props.dropdowns.state.salesProgressCodes){
-					if(this.props.dropdowns.state.salesProgressCodes[i].code !== "7"){
+					if(this.props.dropdowns.state.salesProgressCodes[i].code !== "4"){
 						temp.push(this.props.dropdowns.state.salesProgressCodes[i]);
 					}
 				}
