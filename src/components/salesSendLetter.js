@@ -257,6 +257,46 @@ class salesSendLetter extends React.Component {
 			}
 		}
 	}
+	
+	businessCountFormat = (cell) => {
+		if(cell === "0")
+			return "";
+		else
+			return cell;
+	}
+	
+	mailListFormat = (cell,row, enumObject, index) => {
+		if(cell !== null){
+			if(cell.length > 1){
+				return (<div>
+				<Form.Control as="select" size="sm"
+							  onChange={this.mailChange.bind(this, row)}
+							  name="mail"
+							  autoComplete="off">
+					{cell.map(data =>
+						<option value={data}>{data}</option>
+					)}
+				</Form.Control>
+			</div>);
+			}
+			else{
+				return cell;
+			}
+		}
+	}
+	
+	mailChange = (row, event) => {
+		var allCustomer = this.state.allCustomer;
+		allCustomer[row.rowId].purchasingManagersMail = event.target.value;
+		this.setState({
+			allCustomer: allCustomer,
+		})
+	}
+	
+    // 鼠标悬停显示全文
+    customerNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
 
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.state.customerDepartmentNameDrop;
@@ -807,7 +847,7 @@ class salesSendLetter extends React.Component {
 			defaultSortOrder: 'dsc',
 			sizePerPage: 10,
 			pageStartIndex: 1,
-			paginationSize: 2,
+			paginationSize: 3,
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
@@ -1096,13 +1136,14 @@ class salesSendLetter extends React.Component {
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='6%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='customerNo' hidden isKey>お客様番号</TableHeaderColumn>
-							<TableHeaderColumn width='22%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='22%' dataField='customerName' dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='customerDepartmentCode' dataFormat={this.customerDepartmentNameFormat} hidden>部門</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>
-							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' >メール</TableHeaderColumn>
+							<TableHeaderColumn width='25%' dataField='mailList' dataFormat={this.mailListFormat.bind(this)}>メール</TableHeaderColumn>
+							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' hidden></TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='levelCode' hidden >ランキング</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='monthCount' >取引数</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='businessCount' dataFormat={this.businessCountFormat}>取引数</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>
 							<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>

@@ -94,6 +94,7 @@ class sendLettersConfirm extends React.Component {
 		ctmSelectedFlag: false,
 		selectedCustomerName: '',
 		selectedPurchasingManagers: '',
+		projectPhaseName: '',
 		initAge: '',
 		initNearestStation: '',
 		initJapaneaseConversationLevel: '',
@@ -323,8 +324,8 @@ class sendLettersConfirm extends React.Component {
 					【最寄り駅】：`)+ (result.data[0].nearestStation === null || result.data[0].nearestStation === ""?"":this.state.stations.find((v) => (v.code === result.data[0].nearestStation)).name) + (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":`<br	/>
 					【日本　語】：`)+ (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":this.state.japaneaseConversationLevels.find((v) => (v.code === result.data[0].japaneaseConversationLevel)).name) + (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":`<br	/>
 					【英　　語】：`)+ (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":this.state.englishConversationLevels.find((v) => (v.code === result.data[0].englishConversationLevel)).name) + (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":`<br	/>
-					【業務年数】：`)+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":result.data[0].yearsOfExperience + `年`) + (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":`<br	/>
-					【対応工程】：`)+ (result.data[0].siteRoleName === null || result.data[0].siteRoleName === ""?"":result.data[0].siteRoleName) + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
+					【業務年数】：`)+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":result.data[0].yearsOfExperience + `年`) + (result.data[0].projectPhase === null || result.data[0].projectPhase === ""?"":`<br	/>
+					【対応工程】：`)+ (result.data[0].projectPhase === null || result.data[0].projectPhase === ""?"":result.data[0].projectPhaseName) + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
 					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
 					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null?"":`<br	/>
 					【稼働開始】：`) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null ? "":result.data[0].theMonthOfStartWork) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
@@ -552,6 +553,7 @@ class sendLettersConfirm extends React.Component {
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === "" ? "":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
 						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
+						projectPhaseName:  result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? "":result.data[0].projectPhaseName,
 						initAge: publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
 							Math.ceil((new Date().getTime() - publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) / 31536000000),
 						initNearestStation: result.data[0].nearestStation,
@@ -612,6 +614,7 @@ class sendLettersConfirm extends React.Component {
 						englishLevelCode: result.data[0].englishLevelCode === null || result.data[0].englishLevelCode === ""?"":this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 						siteRoleCode: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleCode,
 						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
+						projectPhaseName:  result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? "":result.data[0].projectPhaseName,
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
 						remark1: result.data[0].remark1,
 						initAge: result.data[0].age,
@@ -1233,8 +1236,8 @@ class sendLettersConfirm extends React.Component {
 【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
 【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
-			(this.state.siteRoleName !=="" && this.state.siteRoleName !== null ? `
-【対応工程】：`:"")+ (this.state.siteRoleName !=="" && this.state.siteRoleName !==null ? this.state.siteRoleName:"") +
+			(this.state.projectPhaseName !=="" && this.state.projectPhaseName !== null ? `
+【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName:"") +
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `

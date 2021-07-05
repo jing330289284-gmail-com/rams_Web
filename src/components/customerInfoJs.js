@@ -17,9 +17,11 @@ export function setDisabled(){
     $("#topCustomerNameShita").attr("disabled",true);
     $("#customerAbbreviation").attr("disabled",true);
     $("#businessStartDate").attr("disabled",true);
+    $("#proposeClassificationCode").attr("disabled",true);
     $("#listedCompanyFlag").attr("disabled",true);
     $("#representative").attr("disabled",true);
     $("#paymentsiteCode").attr("disabled",true);
+    $("#commonMail").attr("disabled",true);
     $("#toroku").attr("disabled",true);
     $("#reset").attr("disabled",true);
     $("#meisaiToroku").attr("disabled",true);

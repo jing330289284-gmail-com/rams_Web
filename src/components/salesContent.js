@@ -304,7 +304,7 @@ class salesContent extends React.Component {
 					yearsOfExperience: result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === undefined ? "" : result.data[0].yearsOfExperience,
 					japaneaseConversationLevel: result.data[0].japaneaseConversationLevel,
 					englishConversationLevel: result.data[0].englishConversationLevel,
-					beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
+					beginMonth: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(publicUtils.converToLocalTime(this.state.admissionEndDate, false),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime(),
 					nearestStation: result.data[0].nearestStation,
 					stationCode: result.data[0].nearestStation,
 					employeeStatus: this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name,

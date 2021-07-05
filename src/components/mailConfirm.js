@@ -29,6 +29,7 @@ class mailConfirm extends React.Component {
 		englishConversationLevels: this.props.personalInfo.state.englishConversationLevels,
 		yearsOfExperience: this.props.personalInfo.state.yearsOfExperience,
 		siteRoleCode: this.props.personalInfo.state.siteRoleName,
+		projectPhaseName: this.props.personalInfo.state.projectPhaseName,
 		developLanguage: this.props.personalInfo.state.developLanguage,
 		unitPrice: this.props.personalInfo.state.unitPrice,
 		salesProgressCode: this.props.personalInfo.state.salesProgressCode,
@@ -73,13 +74,13 @@ CC:`+ this.state.companyMailNames.join(';') + `
 【最寄り駅】：`:"") + (this.state.nearestStation !== "" && this.state.nearestStation !== null ? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
 【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '') + (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ?`
 【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null ? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') + (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?`
-【業務年数】：`:"")+ (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?this.state.yearsOfExperience:"") + (this.state.yearsOfExperience === null || this.state.yearsOfExperience === ""?"":`年`) + (this.state.siteRoleCode === ""?"":`
-【対応工程】：`)+ this.state.siteRoleCode + (this.state.developLanguage === ""?"":`
-【得意言語】：`)+ this.state.developLanguage + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`
+【業務年数】：`:"")+ (this.state.yearsOfExperience!==null&&this.state.yearsOfExperience!==""?this.state.yearsOfExperience:"") + (this.state.yearsOfExperience === null || this.state.yearsOfExperience === ""?"":`年`) + (this.state.projectPhaseName === ""?"":`
+【対応工程】：`)+ this.state.projectPhaseName + (this.state.developLanguage === null || this.state.developLanguage === ""?"":`
+【得意言語】：`)+ (this.state.developLanguage === null ? "" : this.state.developLanguage) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`
 【単　　価】：`)+ (this.state.unitPrice === ""||this.state.unitPrice === null?"":this.state.unitPrice) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`万円`) + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ?`
-【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === null || this.state.remark === ""?"":`
-【備　　考】：`)+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "") + `
+【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === undefined || this.state.remark === null || this.state.remark === ""?"":`
+【備　　考】：`)+ (this.state.remark === undefined || this.state.remark === null || this.state.remark === "" ? "" : this.state.remark) + `
 
 以上、よろしくお願いいたします。
 ******************************************************************

@@ -298,6 +298,11 @@ class sendRepot extends React.Component {
 			}
 		}
 	}
+	
+    // 鼠标悬停显示全文
+    customerNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
 
 	customerDepartmentNameFormat = (cell) => {
 		let customerDepartmentNameDropTem = this.state.customerDepartmentNameDrop;
@@ -1149,7 +1154,7 @@ class sendRepot extends React.Component {
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='any' dataFormat={this.indexN} autoValue editable={false}>番号</TableHeaderColumn>
 							<TableHeaderColumn width='11%' dataField='customerNo' hidden isKey>お客様番号</TableHeaderColumn>
-							<TableHeaderColumn width='20%' dataField='customerName' dataFormat={this.customerNameFormat}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='20%' dataField='customerName' dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='purchasingManagers'>担当者</TableHeaderColumn>
 							<TableHeaderColumn dataField='customerDepartmentCode' hidden dataFormat={this.customerDepartmentNameFormat}>部門</TableHeaderColumn>
 							<TableHeaderColumn width='9%' dataField='positionCode' dataFormat={this.positionNameFormat}>職位</TableHeaderColumn>

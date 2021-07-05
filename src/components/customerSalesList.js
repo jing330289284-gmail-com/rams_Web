@@ -207,6 +207,11 @@ class customerSalesList extends React.Component {
         }
     }
     
+    // 鼠标悬停显示全文
+    customerNameFormat = (cell) => {
+		return <span title={cell}>{cell}</span>;
+	}
+    
 	handleRowSelect = (row, isSelected,e) => {
         
         if (isSelected) {
@@ -325,7 +330,7 @@ class customerSalesList extends React.Component {
                 <div >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} ref="CustomerSaleslListInfoListTable" pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey width='60'>番号</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='customerName' width='150' >お客様名</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='customerName' width='150' dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat} width='100' >単価合計</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='averUnitPrice' dataFormat={this.averUnitPriceFormat} width='100'>平均単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='countPeo' width='100'>稼働人数</TableHeaderColumn>

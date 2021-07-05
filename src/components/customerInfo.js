@@ -208,6 +208,7 @@ class CustomerInfo extends Component {
                     $("#basicContract").val(customerInfoMod.basicContract);
                     $("#response").val(customerInfoMod.response);
                     $("#commonMail").val(customerInfoMod.commonMail);
+                    $("#proposeClassificationCode").val(customerInfoMod.proposeClassificationCode);
 
                     this.setState({
                         businessStartDate: utils.converToLocalTime(customerInfoMod.businessStartDate, false),
@@ -260,6 +261,7 @@ class CustomerInfo extends Component {
         customerInfoMod["basicContract"] = $("#basicContract").val();
         customerInfoMod["contactDate"] = publicUtils.formateDate(this.state.contactDate, true)
         customerInfoMod["salesStaff"] = this.state.salesStaff;
+        customerInfoMod["proposeClassificationCode"] = $("#proposeClassificationCode").val();
 
         // customerInfoMod["topCustomerInfo"] = this.state.topCustomerInfo;
         axios.post(this.state.serverIP + "customerInfo/toroku", customerInfoMod)
@@ -710,6 +712,7 @@ class CustomerInfo extends Component {
         	contactDateFlag: true,
         	contactDate: "",
         	customerNo: "",
+        	salesStaff: "",
         })
         $("#customerName").val("");
         $("#stationCode").val("");
@@ -730,6 +733,7 @@ class CustomerInfo extends Component {
         $("#response").val("");
         $("#commonMail").val("");
         $("#topCustomer").val("");
+        $("#proposeClassificationCode").val("0");
         $("#toBankInfo").attr("disabled", true);
     }
     
@@ -1211,6 +1215,7 @@ class CustomerInfo extends Component {
 									<Autocomplete
 									id="customerNo"
 									name="customerNo"
+	                                disabled={this.state.actionType === "detail" ? true : false}
 									value={this.state.salesStaffDrop.find(v => v.code === this.state.salesStaff) || {}}
 									options={this.state.salesStaffDrop}
 									getOptionLabel={(option) => option.text ? option.text : ""}
