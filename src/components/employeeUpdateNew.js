@@ -94,8 +94,8 @@ class employeeUpdateNew extends React.Component {
 			newEmployeeNo: this.state.employeeNo,// 社員番号
 			employeeNo: this.state.oldEmployeeNo,// 社員番号
 			bpEmployeeNo: this.state.employeeNo,// 社員番号
-			employeeFristName: this.state.employeeFristName,// 社員氏
-			employeeLastName: this.state.employeeLastName,// 社員名
+			employeeFristName: publicUtils.trim(this.state.employeeFristName),// 社員氏
+			employeeLastName: publicUtils.trim(this.state.employeeLastName),// 社員名
 			furigana1: publicUtils.nullToEmpty(this.state.furigana1),// カタカナ
 			furigana2: publicUtils.nullToEmpty(this.state.furigana2),// カタカナ
 			alphabetName1: publicUtils.nullToEmpty(this.state.alphabetName1),// ローマ字
@@ -221,6 +221,10 @@ class employeeUpdateNew extends React.Component {
 					this.setState({ sendValue: sendValue });
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+					this.setState({ 					
+						employeeFristName: publicUtils.trim(this.state.employeeFristName),// 社員氏
+						employeeLastName: publicUtils.trim(this.state.employeeLastName),// 社員名
+					});
 					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
 					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
 					store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});

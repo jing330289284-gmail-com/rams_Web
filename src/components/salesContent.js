@@ -92,7 +92,7 @@ class salesContent extends React.Component {
         message: '',
         type: '',
         tempDate:'',
-		interviewDate: this.props.sendValue.salesProgressCode === "6" ? this.props.sendValue.interviewDate : "",
+		interviewDate: this.props.sendValue.salesProgressCode === "3" ? this.props.sendValue.interviewDate : "",
 		admissionEndDate: this.props.sendValue.admissionEndDate,
 	})
 	

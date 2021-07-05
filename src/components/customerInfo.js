@@ -74,6 +74,7 @@ class CustomerInfo extends Component {
         basicContractStatus: store.getState().dropDown[72],
         responseStatus: store.getState().dropDown[72].slice(1),
         salesStaffDrop: store.getState().dropDown[56].slice(1),
+        proposeClassification: store.getState().dropDown[75].slice(1),
         currentPage: 1,//今のページ
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
@@ -864,11 +865,17 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
+	                            <InputGroup size="sm" className="mb-3">
+		                            <InputGroup.Prepend>
+		                                <InputGroup.Text id="twoKanji">略称</InputGroup.Text>
+		                            </InputGroup.Prepend>
+		                            <Form.Control placeholder="例：LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
+
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">お客様番号</InputGroup.Text>
+                                        <InputGroup.Text id="twoKanji">番号</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="6" id="customerNo" name="customerNo" readOnly />
+    	                            <font color="red">★</font>
                                 </InputGroup>
                             </Col>
                         </Row>
@@ -876,19 +883,32 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>略称</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control placeholder="例：LYC" maxLength="20" id="customerAbbreviation" name="customerAbbreviation" />
-                                    <font color="red">★</font>
-                                </InputGroup>
-                            </Col>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">代表取締役</InputGroup.Text>
+                                        <InputGroup.Text>代表</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control placeholder="例：中山毛石" maxLength="20" id="representative" name="representative" />
                                 </InputGroup>
+                            </Col>
+                            <Col sm={3}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>本社場所</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <Autocomplete
+	                                    disabled={this.state.actionType === "detail" ? true : false}
+	                                    id="stationCode"
+	                                    name="stationCode"
+	                                    value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode2) || {}}
+	                                    onChange={(event, values) => this.getStationCode(event, values)}
+	                                    options={this.state.stationCodeDrop}
+	                                    getOptionLabel={(option) => option.name}
+	                                    renderInput={(params) => (
+	                                        <div ref={params.InputProps.ref}>
+	                                            <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+	                                            />
+	                                        </div>
+	                                    )}
+	                                />
+	                            </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
@@ -925,28 +945,20 @@ class CustomerInfo extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text>本社場所</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Autocomplete
-                                        disabled={this.state.actionType === "detail" ? true : false}
-                                        id="stationCode"
-                                        name="stationCode"
-                                        value={this.state.stationCodeDrop.find(v => v.code === this.state.stationCode2) || {}}
-                                        onChange={(event, values) => this.getStationCode(event, values)}
-                                        options={this.state.stationCodeDrop}
-                                        getOptionLabel={(option) => option.name}
-                                        renderInput={(params) => (
-                                            <div ref={params.InputProps.ref}>
-                                                <input placeholder=" 例：秋葉原駅" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
-                                                />
-                                            </div>
-                                        )}
-                                    />
-                                </InputGroup>
-                            </Col>
+	                        <Col sm={3}>
+		                        <InputGroup size="sm" className="mb-3">
+		                            <InputGroup.Prepend>
+		                                <InputGroup.Text>上場会社</InputGroup.Text>
+		                            </InputGroup.Prepend>
+		                            <Form.Control as="select" placeholder="上場会社" id="listedCompanyFlag" name="listedCompanyFlag">
+		                                {this.state.listedCompanyFlag.map(date =>
+		                                    <option key={date.code} value={date.code}>
+		                                        {date.name}
+		                                    </option>
+		                                )}
+		                            </Form.Control>
+		                        </InputGroup>
+	                        </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
@@ -1012,9 +1024,9 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text style={{ width: "8rem" }}>お客様ランキング</InputGroup.Text>
+                                        <InputGroup.Text id="fiveKanji">ランキング</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="お客様ランキング" id="levelCode" name="levelCode">
+                                    <Form.Control as="select" placeholder="ランキング" id="levelCode" name="levelCode">
                                         {this.state.levelCodeDrop.map(date =>
                                             <option key={date.code} value={date.code}>
                                                 {date.name}
@@ -1023,20 +1035,7 @@ class CustomerInfo extends Component {
                                     </Form.Control>
                                 </InputGroup>
                             </Col>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text>上場会社</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="上場会社" id="listedCompanyFlag" name="listedCompanyFlag">
-                                        {this.state.listedCompanyFlag.map(date =>
-                                            <option key={date.code} value={date.code}>
-                                                {date.name}
-                                            </option>
-                                        )}
-                                    </Form.Control>
-                                </InputGroup>
-                            </Col>
+                            
                             <Col sm={3}>
                           
                                 <InputGroup size="sm" className="mb-3">
@@ -1067,6 +1066,14 @@ class CustomerInfo extends Component {
                                     </Form.Control>
                                 </InputGroup>
                             </Col>
+                            <Col sm={3}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text id="fiveKanji">共通メール</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="commonMail" name="commonMail" />
+	                            </InputGroup>
+                            </Col>
                         </Row>
                         
                         <Row>
@@ -1078,7 +1085,7 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">購買・営業</InputGroup.Text>
+                                        <InputGroup.Text>客様担当</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <Form.Control maxLength="20" placeholder="例：田中" id="purchasingManagers" name="purchasingManagers" />
                                 </InputGroup>
@@ -1138,9 +1145,15 @@ class CustomerInfo extends Component {
                             <Col sm={3}>
 	                            <InputGroup size="sm" className="mb-3">
 	                                <InputGroup.Prepend>
-	                                    <InputGroup.Text id="fiveKanji">共通メール</InputGroup.Text>
+	                                    <InputGroup.Text>提案区分</InputGroup.Text>
 	                                </InputGroup.Prepend>
-	                                <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="commonMail" name="commonMail" />
+	                                <Form.Control as="select" placeholder="提案区分" id="proposeClassificationCode" name="proposeClassificationCode" >
+	                                    {this.state.proposeClassification.map(date =>
+	                                        <option key={date.code} value={date.code}>
+	                                            {date.name}
+	                                        </option>
+	                                    )}
+	                                </Form.Control>
 	                            </InputGroup>
                             </Col>
                         </Row>
@@ -1193,7 +1206,7 @@ class CustomerInfo extends Component {
                            <Col sm={3}>
 	                           <InputGroup size="sm" className="mb-3">
 	                               <InputGroup.Prepend>
-	                                   <InputGroup.Text>連絡担当</InputGroup.Text>
+	                                   <InputGroup.Text>LYC担当</InputGroup.Text>
 	                               </InputGroup.Prepend>
 									<Autocomplete
 									id="customerNo"
