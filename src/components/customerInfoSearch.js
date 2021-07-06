@@ -502,7 +502,7 @@ class CustomerInfoSearch extends Component {
                                     renderOption={(option) => {
                                         return (
                                             <React.Fragment>
-                                                <p >{option.name}</p>
+                                                {option.name}
                                             </React.Fragment>
                                         )
                                     }}
@@ -530,7 +530,7 @@ class CustomerInfoSearch extends Component {
                                 renderOption={(option) => {
                                     return (
                                         <React.Fragment>
-                                            <p >{option.name}</p>
+                                            {option.name}
                                         </React.Fragment>
                                     )
                                 }}

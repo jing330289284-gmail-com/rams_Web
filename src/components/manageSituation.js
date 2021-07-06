@@ -7,13 +7,14 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import SalesContent from './salesContent';
+import InterviewInformation from './interviewInformation';
 import store from './redux/store';
 axios.defaults.withCredentials = true;
 /**
@@ -99,6 +100,7 @@ class manageSituation extends React.Component {
 		checkFlag: false,
 		checkDisabledFlag: false,
 		daiologShowFlag: false,
+		interviewShowFlag: false,
 		isSelectedAll:false,
 		makeDirectoryFalg :true,
 		loading:true,
@@ -198,15 +200,32 @@ class manageSituation extends React.Component {
 		}
 		return y + "" + m;
 	}
+	
+	getNextMonthTemp = (date, addMonths) => {
+		// var dd = new Date();
+		var m = date.getMonth() + 1;
+		var y = date.getMonth() + 1 + addMonths > 12 ? (date.getFullYear() + 1) : date.getFullYear();
+		if (m + addMonths == 0) {
+			y = y - 1;
+			m = 12;
+		} else {
+			if (m + addMonths > 12) {
+				m = '01';
+			} else {
+				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+			}
+		}
+		return y + "/" + m;
+	}
 
 	// レコードを取る
 	getSalesSituation = (searchYearMonth) => {
 		axios.post(this.state.serverIP + "salesSituation/getSalesSituationNew", { salesYearAndMonth: searchYearMonth })
 			.then(result => {
 				if (result.data != null) {
-					this.refs.table.setState({
+/*					this.refs.table.setState({
 						selectedRowKeys: []
-					});
+					});*/
 					let empNoArray = new Array();
 					let empNoNameArray = new Array();
 					let resumeInfo1Array = new Array();
@@ -232,18 +251,18 @@ class manageSituation extends React.Component {
 							}
 						}
 					}
-					this.refs.table.store.selected = [];
+/*					this.refs.table.store.selected = [];
 					this.refs.table.setState({
 						selectedRowKeys: []
-					});
+					});*/
 					this.setState({
-						selectetRowIds: [],
-						modeSelect: 'radio',
-						checkSelect: true,
+/*						selectetRowIds: [],
+*/						modeSelect: 'radio',
+/*						checkSelect: true,
 						onSelectFlag: true,
-						checkFlag: false,
+						checkFlag: false,*/
 						salesSituationLists: result.data,
-						interviewDate1Show: '',　// 面接1日付
+/*						interviewDate1Show: '',　// 面接1日付
 						interviewDate1: '',　// 面接1日付
 						interviewDate2Show: '',　// 面接1日付
 						interviewDate2: '',　// 面接2日付
@@ -256,13 +275,13 @@ class manageSituation extends React.Component {
 						remark1: '',　// 備考
 						remark2: '',　// 備考
 						salesPriorityStatus: '',
-						style: {
+*/						style: {
 							"backgroundColor": ""
 						},
-						readFlag: true,
+/*						readFlag: true,
 						updateBtnflag: false,
 						linkDisableFlag: true,// linkDisableFlag
-						sendLetterFalg:true,
+						sendLetterFalg:true,*/
 						totalPersons: totalPersons,// 合計人数
 						decidedPersons: decidedPersons,// 確定人数
 						errorsMessageShow: false,
@@ -415,6 +434,7 @@ class manageSituation extends React.Component {
 				this.getSalesSituation(salesSituationList.admissionEndDate.substring(0,6));
 				this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
 				setTimeout(() => this.setState({ myToastShow: false }), 3000);
+
 				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeName"});
 				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameNoBP"});
 				store.dispatch({type:"UPDATE_STATE",dropName:"getEmployeeNameByOccupationName"});
@@ -529,6 +549,10 @@ class manageSituation extends React.Component {
 				return (<div>{row.employeeName}</div>);
 			}
 		}
+	}
+	
+	test = () =>{
+		alert("test")
 	}
 
 	// 更新ボタン
@@ -981,6 +1005,25 @@ class manageSituation extends React.Component {
 		});
 	}
 	
+	// サブ画面消す
+	closeInterviewlog = () => {
+		this.setState({
+			interviewShowFlag: false,
+		})
+	}
+
+	// // サブ画面表示
+	openInterviewlog = () => {
+		this.setState({
+			employeeNo:String(this.refs.table.state.selectedRowKeys),
+			interviewShowFlag: true,
+		});
+	}
+	
+	copy = () => {
+		
+	}
+	
 	downloadResume= (resumeInfo, no) => {
 		let fileKey = "";
 		let downLoadPath = "";
@@ -1064,8 +1107,8 @@ class manageSituation extends React.Component {
 					.then(result => {
 						let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name
 						let developLanguage = [this.fromCodeToNameLanguage(result.data[0].developLanguage1),this.fromCodeToNameLanguage(result.data[0].developLanguage2),this.fromCodeToNameLanguage(result.data[0].developLanguage3),this.fromCodeToNameLanguage(result.data[0].developLanguage4),this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {return s && s.trim();}).join('、');
-			            let beginMonth = result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonth(new Date(),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime();
 						let admissionEndDate = this.state.salesSituationLists[i].admissionEndDate === null || this.state.salesSituationLists[i].admissionEndDate === "" ? this.state.salesSituationLists[i].scheduledEndDate : this.state.salesSituationLists[i].admissionEndDate.substring(0,6);
+			            let beginMonth = result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonthTemp((admissionEndDate === null || admissionEndDate === "" ? new Date() : publicUtils.converToLocalTime(admissionEndDate, false)),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime();
 						let salesProgressCode = this.state.salesSituationLists[i].salesProgressCode;
 						let interviewDate = 
 							(this.state.salesSituationLists[i].interviewDate1 !== "" && this.state.salesSituationLists[i].interviewDate1 !== null) && (this.state.salesSituationLists[i].interviewDate2 !== "" && this.state.salesSituationLists[i].interviewDate2 !== null) ? 
@@ -1099,7 +1142,6 @@ class manageSituation extends React.Component {
 			            		+ (remark === "" || remark === " " ? "" : "【備　　考】：" + remark + "\n")
 			            		);
 					})
-
 		        }, Math.random()*3000);
 		    }));
 		}
@@ -1119,6 +1161,7 @@ class manageSituation extends React.Component {
 		    						this.setState({ myDirectoryShow: true, errorsMessageShow: false, errorsMessageValue: '' });
 		    						setTimeout(() => this.setState({ myDirectoryShow: false }), 3000);
 		    						this.setState({ loading: true, });
+		    						this.folderDownload();
 		    					}
 		    				}).catch((error) => {
 		    					this.setState({ loading: true, });
@@ -1254,7 +1297,7 @@ class manageSituation extends React.Component {
 		const options = {
 			noDataText: (<i className="" style={{ 'fontSize': '24px' }}>show what you want to show!</i>),
 			defaultSortOrder: 'dsc',
-			sizePerPage: 10,
+			sizePerPage: 12,
 			pageStartIndex: 1,
 			paginationSize: 3,
 			prePage: '<', // Previous page button text
@@ -1303,22 +1346,34 @@ class manageSituation extends React.Component {
 						/>
 					</Modal.Body>
 				</Modal>
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.closeInterviewlog} show={this.state.interviewShowFlag} dialogClassName="modal-interviewInfo">
+					<Modal.Header closeButton><Col className="text-center">
+						<h2>面談情報</h2>
+					</Col></Modal.Header>
+					<Modal.Body >
+						<InterviewInformation allState={this} 
+						sendValue = {{
+						}}
+						/>
+					</Modal.Body>
+				</Modal>
 				<Row inline="true">
 					<Col className="text-center">
 						<h2>営業状況確認一覧</h2>
 					</Col>
 				</Row>
 				<Form onSubmit={this.savealesSituation}>
-						<Row >
+						<Row hidden>
 							<Col sm={4}>
 								<InputGroup size="sm" className="mb-3" >
-									<FormControl placeholder="社員NO" autoComplete="off" hidden
+									<FormControl placeholder="社員NO" autoComplete="off" 
 										defaultValue={this.state.employeeNo} size="sm" name="employeeNo" />
 								</InputGroup>
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={4}>
+							<Col>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text>
@@ -1344,7 +1399,15 @@ class manageSituation extends React.Component {
 								<Form.Label style={{ "color": "#000000" }}>営業情報設定</Form.Label>
 							</Col>
 							<Col sm={6}>
-								<Form.Label style={{ "color": "#000000" }}>面談情報</Form.Label>
+								<div style={{ "float": "right",}}>
+
+								{/*<Form.Label style={{ "color": "#000000" }}>面談情報</Form.Label>*/}
+								<Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
+								<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button><font style={{ marginLeft: "2px", marginRight: "2px"}}></font>
+								<Button onClick={this.openInterviewlog} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faBook} /> 面談情報</Button><font style={{ marginLeft: "2px", marginRight: "2px"}}></font>
+								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダ作成":"営業フォルダ更新"}</Button>
+
+								</div>
 							</Col>
 						</Row>
 						<Row>
@@ -1383,7 +1446,7 @@ class manageSituation extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={2}>
+							<Col sm={2} hidden>
 								<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
@@ -1404,7 +1467,7 @@ class manageSituation extends React.Component {
 									</InputGroup.Append>
 								</InputGroup>
 							</Col>
-							<Col sm={2}>
+							<Col sm={2} hidden>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
@@ -1426,7 +1489,7 @@ class manageSituation extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={2}>
+							<Col sm={2} hidden>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
@@ -1448,22 +1511,20 @@ class manageSituation extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-							
-						</Row>
-						<Row>
 							<Col sm={6}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl value={this.state.remark1} autoComplete="off" name="remark1"
-										onChange={this.valueChange} size="sm" maxLength="30" readOnly={this.state.readFlag} />
-									<font className="site-mark"></font>
-									<FormControl value={this.state.remark2} autoComplete="off" name="remark2"
+							<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">備考</InputGroup.Text>
+								</InputGroup.Prepend>
+								<FormControl value={this.state.remark1} autoComplete="off" name="remark1"
 									onChange={this.valueChange} size="sm" maxLength="30" readOnly={this.state.readFlag} />
-								</InputGroup>
-							</Col>
-							
+								<font className="site-mark"></font>
+								<FormControl value={this.state.remark2} autoComplete="off" name="remark2"
+								onChange={this.valueChange} size="sm" maxLength="30" readOnly={this.state.readFlag} />
+							</InputGroup>
+						</Col>
+						</Row>
+						<Row hidden>
 							<Col sm={2}>
 							<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
 								<InputGroup.Prepend>
@@ -1531,22 +1592,21 @@ class manageSituation extends React.Component {
 						</Col>
 							
 						</Row>
-					<div>
-						<div style={{ "textAlign": "center" }}><Button size="sm" variant="info" onClick={this.changeState} disabled={this.state.linkDisableFlag}>
-							<FontAwesomeIcon icon={faSave} /> {!this.state.readFlag && this.state.updateBtnflag ? " 更新" : " 解除"}</Button></div>
+					<div hidden>
+						<div style={{ "textAlign": "center" }}></div>
 					</div>
 					<Row>
 						<Col sm={12}>
 							<div style={{"float": "left"}}>
-								<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faListOl} /> すべて選択</Button>{' '}
+								{/*<Button onClick={this.selectAllLists} size="sm" variant="info" name="clickButton"><FontAwesomeIcon icon={faListOl} /> すべて選択</Button>{' '}*/}
 								<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "siteInfo")} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBuilding} /> 現場情報</Button>{' '}
 								<Button onClick={this.shuseiTo.bind(this, "salesSendLetter")} size="sm" variant="info" name="clickButton"  disabled={this.state.sendLetterFalg}><FontAwesomeIcon icon={faEnvelope} /> お客様送信</Button>{' '}
-								<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダ</Button>{' '}
+								{/*<Button onClick={this.folderDownload} size="sm" variant="info" name="clickButton" disabled={this.state.makeDirectoryFalg}><FontAwesomeIcon icon={faDownload} /> 営業フォルダ</Button>{' '}*/}
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
-								<Button onClick={this.makeDirectory} size="sm" variant="info" name="clickButton" ><FontAwesomeIcon icon={faDownload} /> {this.state.makeDirectoryFalg ? "営業フォルダ作成":"営業フォルダ更新"}</Button>{' '}
+								<Button onClick={this.copy} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faCopy} /> コピー</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
 								<Button onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
 								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1": this.state.resumeName1.split("_")[1]}</Button>{' '}
@@ -1568,7 +1628,7 @@ class manageSituation extends React.Component {
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							    <TableHeaderColumn hidden={true} width='0%' dataField='salesDateUpdate' autoValue dataSort={true} editable={false}>salesDateUpdateHid</TableHeaderColumn>
-								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataFormat={this.showGreyNo} editable={false}>番号</TableHeaderColumn>
+								<TableHeaderColumn width='5%' dataField='rowNo' autoValue dataFormat={this.showGreyNo} editable={false}>{<div onClick={this.selectAllLists}>番号</div>}</TableHeaderColumn>
 								<TableHeaderColumn dataField='employeeNo' editable={false} hidden={true} isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn width='11%' dataField='employeeName' dataFormat={this.showPriority} editable={false}>氏名</TableHeaderColumn>
 								<TableHeaderColumn dataField='interviewDate1' hidden={true}>面接1日付</TableHeaderColumn>

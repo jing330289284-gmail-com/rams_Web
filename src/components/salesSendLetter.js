@@ -882,48 +882,6 @@ class salesSendLetter extends React.Component {
 				<Form onSubmit={this.savealesSituation}>
 					<Form.Group>
 						<Row>
-							{/*
-								 * <Col sm={2}> <InputGroup size="sm"
-								 * className="mb-3"> <InputGroup.Prepend>
-								 * <InputGroup.Text
-								 * id="inputGroup-sizing-sm">お客様番号</InputGroup.Text>
-								 * </InputGroup.Prepend> <Autocomplete
-								 * disabled={this.state.allCustomer.length ===
-								 * this.state.customerTemp.length ? true :
-								 * false} options={this.state.customers}
-								 * getOptionLabel={(option) => option.code ?
-								 * option.code : ""}
-								 * value={this.state.customers.find(v => v.code
-								 * === this.state.customerCode) || ""}
-								 * onChange={(event, values) =>
-								 * this.onTagsChange(event, values,
-								 * 'customerCode')} renderInput={(params) => (
-								 * <div ref={params.InputProps.ref}> <input
-								 * type="text" {...params.inputProps}
-								 * id="customerCode" className="auto
-								 * form-control Autocompletestyle-salesSend" />
-								 * </div> )} /> </InputGroup> </Col> <Col
-								 * sm={2}> <InputGroup size="sm"
-								 * className="mb-3"> <InputGroup.Prepend>
-								 * <InputGroup.Text
-								 * id="inputGroup-sizing-sm">お客様名</InputGroup.Text>
-								 * </InputGroup.Prepend> <Autocomplete
-								 * disabled={this.state.allCustomer.length ===
-								 * this.state.customerTemp.length ? true :
-								 * false} options={this.state.customers}
-								 * getOptionLabel={(option) => option.name ?
-								 * option.name : ""}
-								 * value={this.state.customers.find(v => v.code
-								 * === this.state.customerCode) || ""}
-								 * onChange={(event, values) =>
-								 * this.onTagsChange(event, values,
-								 * 'customerName')} renderInput={(params) => (
-								 * <div ref={params.InputProps.ref}> <input
-								 * type="text" {...params.inputProps}
-								 * id="customerCode" className="auto
-								 * form-control Autocompletestyle-salesSend" />
-								 * </div> )} /> </InputGroup> </Col>
-								 */}
 							<Col sm={6}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
@@ -943,30 +901,7 @@ class salesSendLetter extends React.Component {
 										</div>
 									)}
 								/>
-									{/*
-										 * <InputGroup.Prepend> <InputGroup.Text
-										 * id="twoKanji">部門</InputGroup.Text>
-										 * </InputGroup.Prepend> <Autocomplete
-										 * disabled={this.state.allCustomer.length
-										 * === this.state.customerTemp.length ?
-										 * true : false}
-										 * options={this.state.customerDepartmentNameDrop}
-										 * getOptionLabel={(option) =>
-										 * option.name ? option.name : ""}
-										 * value={this.state.customerDepartmentNameDrop.find(v =>
-										 * v.code ===
-										 * this.state.customerDepartmentCode) ||
-										 * ""} onChange={(event, values) =>
-										 * this.onTagsChange(event, values,
-										 * 'customerDepartmentCode')}
-										 * renderInput={(params) => ( <div
-										 * ref={params.InputProps.ref}> <input
-										 * type="text" {...params.inputProps}
-										 * id="customerDepartmentName"
-										 * className="auto form-control
-										 * Autocompletestyle-salesSend" />
-										 * </div> )} />
-										 */}
+									
 								<InputGroup.Prepend>
 									<InputGroup.Text id="sanKanji">担当者</InputGroup.Text>
 								</InputGroup.Prepend>
@@ -984,78 +919,22 @@ class salesSendLetter extends React.Component {
 									</div>
 								)}
 							/>
-								<Button size="sm" variant="info" onClick={this.addClick} /*
-																							 * disabled={this.state.allCustomer.length
-																							 * ===
-																							 * this.state.customerTemp.length ?
-																							 * true :
-																							 * false}
-																							 */
-								disabled={this.state.customerCode !== "" || this.state.purchasingManagers !== ""  ? false : true}>
-									<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
-									</InputGroup>
+								
+							</InputGroup>
 							</Col>
 
-							{/*
-								 * <Col sm={5} style={{ "display":
-								 * this.state.salesLists.length >= 1 ? "block" :
-								 * "none" }}> <InputGroup size="sm"
-								 * className="mb-3" style={{ position:
-								 * 'relative' }}> <div style={{ "display":
-								 * this.state.listShowFlag ? "contents" : "none"
-								 * }}> 格納リスト： <Button size="sm" variant="info"
-								 * onClick={this.showSelectedCtms.bind(this,
-								 * this.state.selectedCtmNoStrs1, '1')} style={{
-								 * "display": this.state.salesLists.length >= 1 ?
-								 * "block" : "none" }}> <FontAwesomeIcon
-								 * icon={faBookmark}
-								 * />{this.state.salesLists.length >= 1 ? ' ' +
-								 * this.state.listName1 : ''}</Button>{' '}
-								 * <Button size="sm" variant="info"
-								 * onClick={this.showSelectedCtms.bind(this,
-								 * this.state.selectedCtmNoStrs2, '2')} style={{
-								 * "display": this.state.salesLists.length >= 2 ?
-								 * "block" : "none" }}> <FontAwesomeIcon
-								 * icon={faBookmark}
-								 * />{this.state.salesLists.length >= 2 ? ' ' +
-								 * this.state.listName2 : ''}</Button>{' '}
-								 * <Button size="sm" variant="info"
-								 * onClick={this.showSelectedCtms.bind(this,
-								 * this.state.selectedCtmNoStrs3, '3')} style={{
-								 * "display": this.state.salesLists.length >= 3 ?
-								 * "block" : "none" }}> <FontAwesomeIcon
-								 * icon={faBookmark}
-								 * />{this.state.salesLists.length >= 3 ? ' ' +
-								 * this.state.listName3 : ''}</Button> </div>
-								 * <span style={{ "display":
-								 * !this.state.listShowFlag ? "contents" :
-								 * "none" }}>格納リスト： <FormControl
-								 * autoComplete="off"
-								 * value={this.state.listName1}
-								 * disabled={this.state.salesLists.length >= 1 ?
-								 * false : true} size="sm" name="listName1"
-								 * style={{ width: "85px" }}
-								 * onChange={this.changeListName} />
-								 * <FormControl autoComplete="off"
-								 * value={this.state.listName2} size="sm"
-								 * name="listName2" style={{ width: "85px",
-								 * "display": this.state.salesLists.length >= 2 ?
-								 * "block" : "none" }}
-								 * onChange={this.changeListName} />
-								 * <FormControl autoComplete="off"
-								 * value={this.state.listName3} size="sm"
-								 * name="listName3" style={{ width: "85px",
-								 * "display": this.state.salesLists.length >= 3 ?
-								 * "block" : "none" }}
-								 * onChange={this.changeListName} />{' '}</span>
-								 * <Button style={{ position: 'absolute', right:
-								 * '0px' }} size="sm" variant="info"
-								 * onClick={this.changeName}><FontAwesomeIcon
-								 * icon={faPencilAlt} />{this.state.listShowFlag ?
-								 * '対象名修正' : '対象名更新'}</Button> </InputGroup>
-								 * </Col>
-								 */}
 							<Col sm={3}>
+							<div style={{position:'absolute',left:'0px'}}>
+							<Button size="sm" variant="info" onClick={this.addClick} /*
+							 * disabled={this.state.allCustomer.length
+							 * ===
+							 * this.state.customerTemp.length ?
+							 * true :
+							 * false}
+							 */
+							disabled={this.state.customerCode !== "" || this.state.purchasingManagers !== ""  ? false : true}>
+							<FontAwesomeIcon icon={faPlusCircle} />追加</Button>
+							</div>
 							<div style={{position:'absolute',right:'0px'}}>
 							<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
