@@ -376,12 +376,12 @@ class interviewInformation extends React.Component {
 								<TableHeaderColumn row='1' dataField='employeeNo' hidden isKey>社員番号</TableHeaderColumn>
 								<TableHeaderColumn row='0' ></TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='employeeName' >氏名</TableHeaderColumn>
-								<TableHeaderColumn row='0' cellSpan='2' >面談情報1</TableHeaderColumn>
+								<TableHeaderColumn row='0' colSpan='4' >面談情報1</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewClassificationCode1' dataFormat={this.formatInterviewClassificationCode} >面談回数</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewDate1' dataFormat={this.formatInterviewDate} >日付</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewCustomer1' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='stationCode1' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
-								<TableHeaderColumn row='0' >面談情報2</TableHeaderColumn>
+								<TableHeaderColumn row='0' colSpan='4' >面談情報2</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewClassificationCode2' dataFormat={this.formatInterviewClassificationCode} >面談回数</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewDate2' dataFormat={this.formatInterviewDate} > 日付</TableHeaderColumn>
 								<TableHeaderColumn row='1' dataField='interviewCustomer2' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
