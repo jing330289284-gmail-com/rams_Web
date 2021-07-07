@@ -978,28 +978,18 @@ class CustomerInfo extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">取引開始月</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <DatePicker
-                                        selected={this.state.businessStartDate}
-                                        onChange={this.businessStartDateChange}
-                                        dateFormat="yyyy/MM"
-                                        autoComplete="off"
-                                        locale="pt-BR"
-                                        id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
-                                        yearDropdownItemNumber={15}
-                                        scrollableYearDropdown
-                                        showMonthYearPicker
-                                        showFullMonthYearPicker
-                                        showDisabledMonthNavigation
-                                        name="businessStartDate"
-                                        className="form-control form-control-sm"
-                                        locale="ja"
-                                        disabled={actionType === "detail" ? true : false}
-                                    />
-                                </InputGroup>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" >
+	                                    {this.state.paymentsiteCodeDrop.map(date =>
+	                                        <option key={date.code} value={date.code}>
+	                                            {date.name}
+	                                        </option>
+	                                    )}
+	                                </Form.Control>
+	                            </InputGroup>
                             </Col>
                             <Col sm={3}>
                                 <InputGroup size="sm" className="mb-3">
@@ -1053,23 +1043,8 @@ class CustomerInfo extends Component {
                                     <Form.Control maxLength="" placeholder="例：www.lyc.co.jp" id="url" name="url"/>
                                     }
                                </InputGroup>
-                       
-                          
                             </Col>
-                            <Col sm={3}>
-                                <InputGroup size="sm" className="mb-3">
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <Form.Control as="select" placeholder="支払サイト" id="paymentsiteCode" name="paymentsiteCode" >
-                                        {this.state.paymentsiteCodeDrop.map(date =>
-                                            <option key={date.code} value={date.code}>
-                                                {date.name}
-                                            </option>
-                                        )}
-                                    </Form.Control>
-                                </InputGroup>
-                            </Col>
+
                             <Col sm={3}>
 	                            <InputGroup size="sm" className="mb-3">
 	                                <InputGroup.Prepend>
@@ -1078,6 +1053,15 @@ class CustomerInfo extends Component {
 	                                <Form.Control maxLength="50" placeholder="例：xxxxxxxxx@xxx.xxx.com" id="commonMail" name="commonMail" />
 	                            </InputGroup>
                             </Col>
+                            
+                            <Col sm={3}>
+	                           <InputGroup size="sm" className="mb-3">
+	                               <InputGroup.Prepend>
+	                                   <InputGroup.Text>備考</InputGroup.Text>
+	                               </InputGroup.Prepend>
+	                               <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
+	                           </InputGroup>
+	                        </Col>
                         </Row>
                         
                         <Row>
@@ -1186,7 +1170,30 @@ class CustomerInfo extends Component {
 		                        </Form.Control>
 		                        </InputGroup>
 	                        </Col>
-	                        
+                            <Col sm={3}>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>取引開始</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <DatePicker
+	                                    selected={this.state.businessStartDate}
+	                                    onChange={this.businessStartDateChange}
+	                                    dateFormat="yyyy/MM"
+	                                    autoComplete="off"
+	                                    locale="pt-BR"
+	                                    id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
+	                                    yearDropdownItemNumber={15}
+	                                    scrollableYearDropdown
+	                                    showMonthYearPicker
+	                                    showFullMonthYearPicker
+	                                    showDisabledMonthNavigation
+	                                    name="businessStartDate"
+	                                    className="form-control form-control-sm"
+	                                    locale="ja"
+	                                    disabled={actionType === "detail" ? true : false}
+	                                />
+	                            </InputGroup>
+                            </Col>
 	                        <Col sm={3}>
 	                            <InputGroup size="sm" className="mb-3">
 	                                <InputGroup.Prepend>
@@ -1236,14 +1243,7 @@ class CustomerInfo extends Component {
 								/>
 	                           </InputGroup>
                            </Col>
-                           <Col sm={3}>
-	                           <InputGroup size="sm" className="mb-3">
-	                               <InputGroup.Prepend>
-	                                   <InputGroup.Text>備考</InputGroup.Text>
-	                               </InputGroup.Prepend>
-	                               <Form.Control maxLength="50" placeholder="備考" id="remark" name="remark" />
-	                           </InputGroup>
-                           </Col>
+                           
                         </Row>
 
                         <div style={{ "textAlign": "center" }}>

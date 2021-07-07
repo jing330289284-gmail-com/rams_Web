@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
+import Clipboard from 'clipboard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -321,7 +322,7 @@ class manageSituation extends React.Component {
 		var statuss = this.state.salesProgressCodes;
 		for (var i in statuss) {
 			if (cell === statuss[i].code) {
-				if(cell === "1"){
+				if(cell === "0" || cell === "1"){
 					return (<div><font color="grey">{statuss[i].name}</font></div>);
 				}else{
 					return (<div>{statuss[i].name}</div>);
@@ -336,7 +337,7 @@ class manageSituation extends React.Component {
 		var customerContracts = this.state.customerContracts;
 		for (var i in customerContracts) {
 			if (cell === customerContracts[i].code) {
-				if(row.salesProgressCode === "1"){
+				if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 					return (<div><font color="grey">{customerContracts[i].name}</font></div>);
 				}else{
 					return (<div>{customerContracts[i].name}</div>);
@@ -354,7 +355,7 @@ class manageSituation extends React.Component {
 		} else {
 			for (var i in allCustomers) {
 				if (cell === allCustomers[i].code) {
-					if(row.salesProgressCode === "1"){
+					if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 						return (<div><font color="grey">{allCustomers[i].name}</font></div>);
 					}else{
 						return (<div>{allCustomers[i].name}</div>);
@@ -413,7 +414,7 @@ class manageSituation extends React.Component {
 		var salesPersons = this.state.salesPersons;
 		for (var i in salesPersons) {
 			if (cell === salesPersons[i].code) {
-				if(row.salesProgressCode === "1"){
+				if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 					return (<div><font color="grey">{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</font></div>);
 				}else{
 					return (<div>{salesPersons[i].name.replace(/\(.*?\)/g, '' )}</div>);
@@ -486,7 +487,7 @@ class manageSituation extends React.Component {
  
 	// 優先度表示
 	showGreyNo(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.rowNo}</font></div>);
 		}else{
 			return (<div>{row.rowNo}</div>);
@@ -494,42 +495,42 @@ class manageSituation extends React.Component {
 	}
 	
 	showGreySiteRoleCode(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.siteRoleCode}</font></div>);
 		}else{
 			return (<div>{row.siteRoleCode}</div>);
 		}
 	}
 	showGreyYearsOfExperience(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, false), new Date()) : row.yearsOfExperience}</font></div>);
 		}else{
 			return (<div>{row.yearsOfExperience === "" || row.yearsOfExperience === null ? publicUtils.getYear(publicUtils.converToLocalTime(row.intoCompanyYearAndMonth, false), new Date()) : row.yearsOfExperience}</div>);
 		}
 	}
 	showGreyDevelopLanguage(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.developLanguage}</font></div>);
 		}else{
 			return (<div>{row.developLanguage}</div>);
 		}
 	}
 	showGreyNearestStation(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.nearestStation}</font></div>);
 		}else{
 			return (<div>{row.nearestStation}</div>);
 		}
 	}
 	showGreyUnitPrice(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.unitPrice}</font></div>);
 		}else{
 			return (<div>{row.unitPrice}</div>);
 		}
 	}
 	showGreyPrice(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.price}</font></div>);
 		}else{
 			return (<div>{row.price}</div>);
@@ -538,7 +539,7 @@ class manageSituation extends React.Component {
 	
 	// 優先度表示
 	showPriority(cell, row, enumObject, index) {
-		if(row.salesProgressCode === "1"){
+		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{row.employeeName}</font></div>);
 		}else{
 			if (row.salesPriorityStatus === '1') {
@@ -835,6 +836,7 @@ class manageSituation extends React.Component {
 				modeSelect: "radio",
 			},()=>{
 				if (isSelected) {
+					this.setCopy(row);
 					this.setState({
 						selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
 						rowNo: row.rowNo === null ? '' : row.rowNo,
@@ -1020,8 +1022,56 @@ class manageSituation extends React.Component {
 		});
 	}
 	
-	copy = () => {
-		
+	setCopy = (row) => {
+		let text = "";
+		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: row.employeeNo })
+		.then(result => {
+			let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name
+			let developLanguage = [this.fromCodeToNameLanguage(result.data[0].developLanguage1),this.fromCodeToNameLanguage(result.data[0].developLanguage2),this.fromCodeToNameLanguage(result.data[0].developLanguage3),this.fromCodeToNameLanguage(result.data[0].developLanguage4),this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {return s && s.trim();}).join('、');
+			let admissionEndDate = row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6);
+            let beginMonth = result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonthTemp((admissionEndDate === null || admissionEndDate === "" ? new Date() : publicUtils.converToLocalTime(admissionEndDate, false)),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime();
+			let salesProgressCode = row.salesProgressCode;
+			let interviewDate = 
+				(row.interviewDate1 !== "" && row.interviewDate1 !== null) && (row.interviewDate2 !== "" && row.interviewDate2 !== null) ? 
+				row.interviewDate1 < row.interviewDate2 ? row.interviewDate1 : row.interviewDate2:
+				((row.interviewDate1 !== "" && row.interviewDate1 !== null) ? row.interviewDate1 : (row.interviewDate2 !== "" && row.interviewDate2 !== null) ? row.interviewDate2 : "");
+			let remark = result.data[0].remark === null || result.data[0].remark=== "" || result.data[0].remark=== undefined ? (row.remark1 === null ? "" : row.remark1 + " ") + (row.remark2 === null ? "" : row.remark2) : result.data[0].remark;
+			if(interviewDate !== ""){
+				var myDate = new Date();
+				myDate = myDate.getFullYear() + this.padding1((myDate.getMonth() + 1),2) + this.padding1(myDate.getDate(),2)
+				if(interviewDate.substring(0,8) >= myDate){
+					interviewDate = " " + interviewDate.substring(4,6) + "/" + interviewDate.substring(6,8)
+						+ " " + interviewDate.substring(8,10) + ":" + interviewDate.substring(10,12);
+				}else{
+					interviewDate = "";
+				}
+			}		
+            text = "【名　　前】：" + result.data[0].employeeFullName + "　" + result.data[0].nationalityName + "　" + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + "\n"
+            		+ "【所　　属】：" + (employeeStatus === "子会社社員" ? "社員" : employeeStatus) + "\n"
+            		+ (result.data[0].age === null || result.data[0].age === undefined  || result.data[0].age === "" ? "" : ("【年　　齢】："+ result.data[0].age + "歳\n"))
+            		+ (result.data[0].nearestStation === "" || result.data[0].nearestStation === null || result.data[0].nearestStation === undefined ? "" : "【最寄り駅】：" + this.state.getstations.find((v) => (v.code === result.data[0].nearestStation)).name + "\n")
+            		+ (result.data[0].japaneaseConversationLevel === "" || result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === undefined ? "" : "【日本　語】：" + this.state.japaneaseConversationLevels.find((v) => (v.code === result.data[0].japaneaseConversationLevel)).name + "\n")
+            		+ (result.data[0].englishConversationLevel === "" || result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === undefined ? "" : "【英　　語】：" + this.state.englishConversationLevels.find((v) => (v.code === result.data[0].englishConversationLevel)).name + "\n")
+            		+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === undefined  || result.data[0].yearsOfExperience === "" ? "" : ("【業務年数】：" + result.data[0].yearsOfExperience　+ "年\n"))
+            		+ (result.data[0].projectPhase === "" || result.data[0].projectPhase === null || result.data[0].projectPhase === undefined ? "" : "【対応工程】：" + this.state.projectPhases.find((v) => (v.code === result.data[0].projectPhase)).name + "から\n")
+            		+ (developLanguage === null || developLanguage === undefined  || developLanguage === "" ? "" : ("【得意言語】："+ developLanguage + "\n"))
+            		+ (result.data[0].unitPrice === null || result.data[0].unitPrice === undefined  || result.data[0].unitPrice === "" ? "" : ("【単　　価】："+ result.data[0].unitPrice + "万円\n"))
+            		+ "【稼働開始】：" + ((Number(admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日\n":(publicUtils.formateDate(beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月\n"))
+            		+ (salesProgressCode === "" || salesProgressCode === null || salesProgressCode === undefined ? "" : "【営業状況】：" + this.state.salesProgressCodes.find((v) => (v.code === salesProgressCode)).name + (salesProgressCode === "6" ? interviewDate : "") + "\n")
+            		+ (remark === "" || remark === " " ? "" : "【備　　考】：" + remark + "\n");
+		})
+		var clipboard = new Clipboard('#copyUrl', {
+			text: function() {
+				return text;
+			}
+		});
+		clipboard.on('success', function() {
+			console.log("已复制到剪贴板！");
+
+		});
+		clipboard.on('error', function() {
+			console.log("err！");
+		});
 	}
 	
 	downloadResume= (resumeInfo, no) => {
@@ -1354,6 +1404,8 @@ class manageSituation extends React.Component {
 					<Modal.Body >
 						<InterviewInformation allState={this} 
 						sendValue = {{
+							interviewLists: this.state.salesSituationLists,
+							yearMonth: this.state.yearMonth
 						}}
 						/>
 					</Modal.Body>
@@ -1606,7 +1658,7 @@ class manageSituation extends React.Component {
 							</div>
 							<div style={{ "float": "right" }}>
 								<Button onClick={this.shuseiTo.bind(this, "detailUpdate")} size="sm" variant="info" name="clickButton" disabled={!this.state.linkDisableFlag || !this.state.checkSelect ? false : true}><FontAwesomeIcon icon={faBuilding} /> 明細更新</Button>{' '}
-								<Button onClick={this.copy} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faCopy} /> コピー</Button>{' '}
+								<Button id='copyUrl' size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faCopy} /> コピー</Button>{' '}
 								<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag}><FontAwesomeIcon icon={faBook} /> 営業文章</Button>{' '}
 								<Button onClick={this.downloadResume.bind(this,this.state.resumeInfo1,1)} size="sm" variant="info" name="clickButton" disabled={this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? true:false}><FontAwesomeIcon icon={faDownload} />
 								{this.state.linkDisableFlag || this.state.resumeInfo1 === null || this.state.resumeInfo1 === "" ? "履歴書1": this.state.resumeName1.split("_")[1]}</Button>{' '}
@@ -1664,6 +1716,7 @@ class manageSituation extends React.Component {
 						</Col>
 					</Row>
 				</Form>
+				<input type="text" id="snippet" value="" hidden></input>
 				<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-300px", "margin-top":"-150px",}}></div>
 			</div>
 		);
