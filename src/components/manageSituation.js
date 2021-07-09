@@ -447,7 +447,7 @@ class manageSituation extends React.Component {
 	
 	// table編集保存
 	afterSaveCell = (row) => {
-		if (row.salesProgressCode === '1' || row.salesProgressCode === '0') {
+		if (row.salesProgressCode === '1' || row.salesProgressCode === '0' || row.salesProgressCode === '2') {
 			if (row.customer === '' || row.customer === undefined) {
 				row.customer = '';
 			}
@@ -1708,7 +1708,7 @@ class manageSituation extends React.Component {
 								<TableHeaderColumn width='7%' dataField='customerContractStatus' dataFormat={this.formatcustomerContract} customEditor={{ getElement: tableSelect4 }} hidden
 									editable={this.state.salesProgressCode === '' || this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? false : true}>契約区分</TableHeaderColumn>
 								<TableHeaderColumn width='10%' dataField='customer' dataFormat={this.formatCustome} customEditor={{ getElement: tableSelect1 }}
-									editable={this.state.salesProgressCode === '1' ? true : false}>確定客様</TableHeaderColumn>
+									editable={this.state.salesProgressCode === '1' || this.state.salesProgressCode === '2' ? true : false}>確定客様</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='price' editable={this.state.salesProgressCode === '0' || this.state.salesProgressCode === '1' ? true : false}
 									editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.showGreyPrice} editable={this.state.priceEditFlag} >確定単価</TableHeaderColumn>
 								<TableHeaderColumn width='8%' dataField='salesStaff' dataFormat={this.formatStaff} customEditor={{ getElement: tableSelect3 }}>営業担当</TableHeaderColumn>

@@ -7,7 +7,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy, faSync } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -39,6 +39,7 @@ class interviewInformation extends React.Component {
 		interviewURL: '',
 		employeeNo: '',
 		row: '',
+		interviewInfoNum: '1',
 		getstations: store.getState().dropDown[14], // 全部場所
 		customers: store.getState().dropDown[15],// 全部お客様 画面入力用
 		interviewClassification: store.getState().dropDown[76].slice(1),// 全部お客様 画面入力用
@@ -53,22 +54,25 @@ class interviewInformation extends React.Component {
 	getInterviewLists = () => {
 		let employeeNoList = [];
 		for(let i = 0;i < this.props.sendValue.interviewLists.length;i++){
-			employeeNoList.push(this.props.sendValue.interviewLists[i].employeeNo);
+			if(this.props.sendValue.interviewLists[i].salesProgressCode !== "0" && this.props.sendValue.interviewLists[i].salesProgressCode !== "1")
+				employeeNoList.push(this.props.sendValue.interviewLists[i].employeeNo);
 		}
-		axios.post(this.state.serverIP + "salesSituation/getInterviewLists", employeeNoList)
-		.then(result => {
-			if (result.data != null) {
-				this.setState({
-					interviewLists: result.data,
-					yearMonth: this.getNextMonth(new Date(), 1),
-				})
-			} else {
-				alert("FAIL");
-			}
-		})
-		.catch(function (error) {
-			alert("ERR");
-		});
+		if(employeeNoList.length > 0){
+			axios.post(this.state.serverIP + "salesSituation/getInterviewLists", employeeNoList)
+			.then(result => {
+				if (result.data != null) {
+					this.setState({
+						interviewLists: result.data,
+						yearMonth: this.getNextMonth(new Date(), 1),
+					})
+				} else {
+					alert("FAIL");
+				}
+			})
+			.catch(function (error) {
+				alert("ERR");
+			});
+		}
 	}
 	
 	getNextMonth = (date, addMonths) => {
@@ -92,13 +96,18 @@ class interviewInformation extends React.Component {
 		let interviewModel = {};
 		interviewModel["employeeNo"] = this.state.employeeNo;
 		interviewModel["salesYearAndMonth"] = this.state.yearMonth;
-		if(this.state.row.interviewClassificationCode1 !== undefined && this.state.row.interviewClassificationCode1 !== null && this.state.row.interviewClassificationCode1 !== ""){
-			interviewModel["interviewClassificationCode2"] = this.state.interviewClassificationCode;
-			interviewModel["interviewDate2"] = this.state.interviewDate;
-			interviewModel["stationCode2"] = this.state.stationCode;
-			interviewModel["interviewCustomer2"] = this.state.interviewCustomer;
-			interviewModel["interviewInfo2"] = this.state.interviewInfo;
-			interviewModel["interviewUrl2"] = this.state.interviewURL;
+/*		if(this.state.row.interviewClassificationCode1 !== undefined && this.state.row.interviewClassificationCode1 !== null && this.state.row.interviewClassificationCode1 !== ""){
+			if(this.state.row.interviewClassificationCode2 !== undefined && this.state.row.interviewClassificationCode2 !== null && this.state.row.interviewClassificationCode2 !== ""){
+				this.setState({ "errorsMessageShow": true, errorsMessageValue: "面談情報二つが入力されて、それ以上入力できません。" });
+				return;
+			}else{
+				interviewModel["interviewClassificationCode2"] = this.state.interviewClassificationCode;
+				interviewModel["interviewDate2"] = this.state.interviewDate;
+				interviewModel["stationCode2"] = this.state.stationCode;
+				interviewModel["interviewCustomer2"] = this.state.interviewCustomer;
+				interviewModel["interviewInfo2"] = this.state.interviewInfo;
+				interviewModel["interviewUrl2"] = this.state.interviewURL;
+			}
 		}else{
 			interviewModel["interviewClassificationCode1"] = this.state.interviewClassificationCode;
 			interviewModel["interviewDate1"] = this.state.interviewDate;
@@ -106,11 +115,46 @@ class interviewInformation extends React.Component {
 			interviewModel["interviewCustomer1"] = this.state.interviewCustomer;
 			interviewModel["interviewInfo1"] = this.state.interviewInfo;
 			interviewModel["interviewUrl1"] = this.state.interviewURL;
+		}*/
+		if(this.state.interviewInfoNum === "1"){
+			interviewModel["interviewClassificationCode1"] = this.state.interviewClassificationCode;
+			interviewModel["interviewDate1"] = this.state.interviewDate;
+			interviewModel["stationCode1"] = this.state.stationCode;
+			interviewModel["interviewCustomer1"] = this.state.interviewCustomer;
+			interviewModel["interviewInfo1"] = this.state.interviewInfo;
+			interviewModel["interviewUrl1"] = this.state.interviewURL;
+			
+			interviewModel["interviewClassificationCode2"] = this.state.row.interviewClassificationCode2 === null ? "" : this.state.row.interviewClassificationCode2;
+			interviewModel["interviewDate2"] = this.state.row.interviewDate2 === null ? "" : this.state.row.interviewDate2;
+			interviewModel["stationCode2"] = this.state.row.stationCode2 === null ? "" : this.state.row.stationCode2;
+			interviewModel["interviewCustomer2"] = this.state.row.interviewCustomer2 === null ? "" : this.state.row.interviewCustomer2;
+			interviewModel["interviewInfo2"] = this.state.row.interviewInfo2 === null ? "" : this.state.row.interviewInfo2;
+			interviewModel["interviewUrl2"] = this.state.row.interviewURL2 === null ? "" : this.state.row.interviewURL2;
+		}else if(this.state.interviewInfoNum === "2"){
+			interviewModel["interviewClassificationCode1"] = this.state.row.interviewClassificationCode1;
+			interviewModel["interviewDate1"] = this.state.row.interviewDate1;
+			interviewModel["stationCode1"] = this.state.row.stationCode1;
+			interviewModel["interviewCustomer1"] = this.state.row.interviewCustomer1;
+			interviewModel["interviewInfo1"] = this.state.row.interviewInfo1;
+			interviewModel["interviewUrl1"] = this.state.row.interviewURL1;
+			
+			interviewModel["interviewClassificationCode2"] = this.state.interviewClassificationCode;
+			interviewModel["interviewDate2"] = this.state.interviewDate;
+			interviewModel["stationCode2"] = this.state.stationCode;
+			interviewModel["interviewCustomer2"] = this.state.interviewCustomer;
+			interviewModel["interviewInfo2"] = this.state.interviewInfo;
+			interviewModel["interviewUrl2"] = this.state.interviewURL;
 		}
 		axios.post(this.state.serverIP + "salesSituation/updateInterviewLists", interviewModel)
 		.then(result => {
 			if (result.data != null) {
-				this.getInterviewLists();
+				if (result.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+				} else {
+					this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
+					setTimeout(() => this.setState({ myToastShow: false }), 3000);
+					this.getInterviewLists();
+				}
 			} else {
 				alert("FAIL");
 			}
@@ -148,6 +192,7 @@ class interviewInformation extends React.Component {
 					case 'stationCode':
 						this.setState({
 							stationCode: this.state.getstations.find((v) => (v.name === value)).code,
+							interviewURL: '',
 						})
 						break;
 					default:
@@ -171,11 +216,27 @@ class interviewInformation extends React.Component {
 			this.setState({
 				row: row,
 				employeeNo: row.employeeNo,
+				interviewClassificationCode: row.interviewClassificationCode1 === null ? '0' : row.interviewClassificationCode1,
+				interviewDateShow: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+				interviewDate: row.interviewDate1 === null ? '' : row.interviewDate1,
+				stationCode: row.stationCode1 === null ? '' : row.stationCode1,
+				interviewCustomer: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+				interviewInfo: row.interviewInfo1 === null ? '' : row.interviewInfo1,
+				interviewURL: row.interviewUrl1 === null ? '' : row.interviewUrl1,
+				interviewInfoNum: "1",
 			});
 		}else{
 			this.setState({
 				row: '',
 				employeeNo: '',
+				interviewClassificationCode: '0',
+				interviewDateShow: '',
+				interviewDate: '',
+				stationCode: '',
+				interviewCustomer: '',
+				interviewInfo: '',
+				interviewURL: '',
+				interviewInfoNum: "1",
 			});
 		}
 	}
@@ -225,6 +286,32 @@ class interviewInformation extends React.Component {
 			}
 		}
 	}
+	
+	changeInterviewInfo = (row) => {
+		if(this.state.interviewInfoNum === "1"){
+			this.setState({
+				interviewClassificationCode: row.interviewClassificationCode2 === null || row.interviewClassificationCode2 === "" ? '0' : row.interviewClassificationCode2,
+				interviewDateShow: row.interviewDate2 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate2)).getTime(),
+				interviewDate: row.interviewDate2 === null ? '' : row.interviewDate2,
+				stationCode: row.stationCode2 === null ? '' : row.stationCode2,
+				interviewCustomer: row.interviewCustomer2 === null ? '' : row.interviewCustomer2,
+				interviewInfo: row.interviewInfo2 === null ? '' : row.interviewInfo2,
+				interviewURL: row.interviewUrl2 === null ? '' : row.interviewUrl2,
+				interviewInfoNum: "2",
+			});
+		}else{
+			this.setState({
+				interviewClassificationCode: row.interviewClassificationCode1 === null || row.interviewClassificationCode1 === "" ? '0' : row.interviewClassificationCode1,
+				interviewDateShow: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
+				interviewDate: row.interviewDate1 === null ? '' : row.interviewDate1,
+				stationCode: row.stationCode1 === null ? '' : row.stationCode1,
+				interviewCustomer: row.interviewCustomer1 === null ? '' : row.interviewCustomer1,
+				interviewInfo: row.interviewInfo1 === null ? '' : row.interviewInfo1,
+				interviewURL: row.interviewUrl1 === null ? '' : row.interviewUrl1,
+				interviewInfoNum: "1",
+			});
+		}
+	}
 
 	render() {
 		const selectRow = {
@@ -253,9 +340,16 @@ class interviewInformation extends React.Component {
 			};
 		return (			
 			<div>
+			<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+				<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"success"} />
+			</div>
+			<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
+				<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"success"} />
+			</div>
 			<Row>
 			<Col sm={3}>
 				<InputGroup size="sm" className="mb-3">
+					<Button size="sm" variant="info" name="clickButton" onClick={this.changeInterviewInfo.bind(this,this.state.row)} disabled = {this.state.employeeNo === '' ? true : false} ><FontAwesomeIcon icon={faSync} /></Button>{' '}
 					<InputGroup.Prepend>
 						<InputGroup.Text id="inputGroup-sizing-sm">面談回数</InputGroup.Text>
 					</InputGroup.Prepend>
@@ -283,10 +377,11 @@ class interviewInformation extends React.Component {
 						autoComplete="off"
 						locale="ja"
 						showTimeSelect
+						timeIntervals={15}
 						className="form-control form-control-sm"
 						dateFormat="MM/dd HH:mm"
 						minDate={new Date()}
-						id={'datePicker'}
+						id={'datePicker-interview'}
 					/>
 				</InputGroup.Append>
 			</InputGroup>
@@ -305,7 +400,7 @@ class interviewInformation extends React.Component {
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>
 								<input type="text" {...params.inputProps}
-									id="stationCode" className="auto form-control Autocompletestyle"
+									id="stationCode" className="auto form-control Autocompletestyle-interview-station"
 								/>
 							</div>
 						)}
@@ -318,7 +413,6 @@ class interviewInformation extends React.Component {
 						<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
 					</InputGroup.Prepend>
 					<Autocomplete
-						disabled={this.state.readFlag}
 						name="interviewCustomer"
 						options={this.state.customers}
 						getOptionLabel={(option) => option.name ? option.name : ""}
@@ -327,7 +421,7 @@ class interviewInformation extends React.Component {
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>
 								<input type="text" {...params.inputProps}
-									id="interviewCustomer" className="auto form-control Autocompletestyle"
+									id="interviewCustomer" className="auto form-control Autocompletestyle-interview"
 								/>
 							</div>
 						)}
@@ -341,7 +435,10 @@ class interviewInformation extends React.Component {
 					<InputGroup.Prepend>
 						<InputGroup.Text id="inputGroup-sizing-sm">面談情報</InputGroup.Text>
 					</InputGroup.Prepend>
-					<FormControl value={this.state.interviewInfo} autoComplete="off" name="interviewInfo" maxLength="100" onChange={this.valueChange} size="sm" />
+					<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewInfo}  id="interviewInfo" name="interviewInfo" 
+						onChange={this.valueChange} maxLength="100" 
+						style={{ height: '80px', width: '81%', resize: 'none', overflow: 'hidden' }}
+					/>
 				</InputGroup>
 			</Col>
 			<Col sm={6}>
@@ -349,7 +446,10 @@ class interviewInformation extends React.Component {
 					<InputGroup.Prepend>
 						<InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
 					</InputGroup.Prepend>
-					<FormControl value={this.state.interviewURL} autoComplete="off" name="interviewURL" maxLength="100" onChange={this.valueChange} size="sm" />
+					<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewURL}  id="interviewURL" name="interviewURL" 
+						onChange={this.valueChange} maxLength="100" disabled={this.state.stationCode === null || this.state.stationCode === "" ? false : true}
+						style={{ height: '80px', width: '81%', resize: 'none', overflow: 'hidden' }}
+					/>
 				</InputGroup>
 			</Col>
 			</Row>
@@ -373,19 +473,18 @@ class interviewInformation extends React.Component {
 								selectRow={selectRow}
 								trClassName="customClass"
 								headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn row='1' dataField='employeeNo' hidden isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn row='0' ></TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='employeeName' >氏名</TableHeaderColumn>
-								<TableHeaderColumn row='0' colSpan='4' >面談情報1</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewClassificationCode1' dataFormat={this.formatInterviewClassificationCode} >面談回数</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewDate1' dataFormat={this.formatInterviewDate} >日付</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewCustomer1' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='stationCode1' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
-								<TableHeaderColumn row='0' colSpan='4' >面談情報2</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewClassificationCode2' dataFormat={this.formatInterviewClassificationCode} >面談回数</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewDate2' dataFormat={this.formatInterviewDate} > 日付</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='interviewCustomer2' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
-								<TableHeaderColumn row='1' dataField='stationCode2' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
+								<TableHeaderColumn dataField='employeeNo' hidden isKey>社員番号</TableHeaderColumn>
+								<TableHeaderColumn width='10%' row='0' rowSpan="2" dataField='employeeName'>{<div style={{ "textAlign": "center" }} >氏名</div>}</TableHeaderColumn>
+								<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報1</div>}</TableHeaderColumn>
+								<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode1' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
+								<TableHeaderColumn width='17%' row='1' dataField='interviewDate1' dataFormat={this.formatInterviewDate} >日付</TableHeaderColumn>
+								<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer1' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
+								<TableHeaderColumn width='11%' row='1' dataField='stationCode1' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
+								<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報2</div>}</TableHeaderColumn>
+								<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode2' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
+								<TableHeaderColumn width='17%' row='1' dataField='interviewDate2' dataFormat={this.formatInterviewDate} > 日付</TableHeaderColumn>
+								<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer2' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
+								<TableHeaderColumn width='11%' row='1' dataField='stationCode2' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
 							</BootstrapTable>
 						</Col>
 					</Row>

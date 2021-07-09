@@ -596,6 +596,7 @@ class CustomerInfo extends Component {
     	if(event.target.value === "1"){
             this.setState({
             	responseFlag: false,
+            	businessStartDate: '',
             })
             $("#response").val("0");
     	}else{
@@ -1181,7 +1182,7 @@ class CustomerInfo extends Component {
 	                                    dateFormat="yyyy/MM"
 	                                    autoComplete="off"
 	                                    locale="pt-BR"
-	                                    id={actionType === "detail" ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
+	                                    id={actionType === "detail" || !this.state.responseFlag ? "customerInfoDatePickerReadOnly" : "customerInfoDatePicker"}
 	                                    yearDropdownItemNumber={15}
 	                                    scrollableYearDropdown
 	                                    showMonthYearPicker
@@ -1190,7 +1191,7 @@ class CustomerInfo extends Component {
 	                                    name="businessStartDate"
 	                                    className="form-control form-control-sm"
 	                                    locale="ja"
-	                                    disabled={actionType === "detail" ? true : false}
+	                                    disabled={actionType === "detail" || !this.state.responseFlag ? true : false}
 	                                />
 	                            </InputGroup>
                             </Col>
