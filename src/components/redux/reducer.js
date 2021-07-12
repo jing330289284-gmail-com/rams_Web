@@ -81,6 +81,8 @@ export function fetchDropDown() {
 		"getWorkingConditionStatus",// 74 稼働ステータス取得
 		"getProposeClassification",// 75 提案区分取得
 		"getInterviewClassification",// 76 面談区分取得
+		"getCustomerNameWithMail",// 77お客様名(メールなし抜く)
+		"getPurchasingManagersWithMail",// 78お客様担当者取得(メールなし抜く)
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -195,6 +197,8 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getWorkingConditionStatus",// 74 稼働ステータス取得
 		"getProposeClassification",// 75 提案区分取得
 		"getInterviewClassification",// 76 面談区分取得
+		"getCustomerNameWithMail",// 77お客様名(メールなし抜く)
+		"getPurchasingManagersWithMail",// 78お客様担当者取得(メールなし抜く)
 		"getServerIP",// 最後
 	]
 var outArray = [];

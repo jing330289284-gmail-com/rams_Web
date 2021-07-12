@@ -179,37 +179,6 @@ class interviewInformation extends React.Component {
 		});
 	}
 	
-	// AUTOSELECT select事件
-	handleTag = ({ target }, fieldName) => {
-		const { value, id } = target;
-		if (value === '') {
-			this.setState({
-				[id]: '',
-			})
-		} else {
-			if (fieldName === "station" && this.state.getstations.find((v) => (v.name === value)) !== undefined) {
-				switch (id) {
-					case 'stationCode':
-						this.setState({
-							stationCode: this.state.getstations.find((v) => (v.name === value)).code,
-							interviewURL: '',
-						})
-						break;
-					default:
-				}
-			} else if (fieldName === "interviewCustomer" && this.state.customers.find((v) => (v.name === value)) !== undefined) {
-				switch (id) {
-					case 'interviewCustomer':
-						this.setState({
-							interviewCustomer: this.state.customers.find((v) => (v.name === value)).code,
-						})
-						break;
-					default:
-				}
-			}
-		}
-	};
-	
 	// レコードselect事件
 	handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
@@ -312,6 +281,38 @@ class interviewInformation extends React.Component {
 			});
 		}
 	}
+	
+    /**
+     * 社員名連想
+     * @param {} event 
+     */
+    getCustomer = (event, values) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            let interviewCustomer = null;
+            if (values !== null) {
+            	interviewCustomer = values.code;
+            }
+            this.setState({
+            	interviewCustomer: interviewCustomer,
+            })
+        })
+    }
+    
+    getStation = (event, values) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            let stationCode = null;
+            if (values !== null) {
+            	stationCode = values.code;
+            }
+            this.setState({
+            	stationCode: stationCode,
+            })
+        })
+    }
 
 	render() {
 		const selectRow = {
@@ -347,145 +348,147 @@ class interviewInformation extends React.Component {
 				<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"success"} />
 			</div>
 			<Row>
-			<Col sm={3}>
-				<InputGroup size="sm" className="mb-3">
-					<Button size="sm" variant="info" name="clickButton" onClick={this.changeInterviewInfo.bind(this,this.state.row)} disabled = {this.state.employeeNo === '' ? true : false} ><FontAwesomeIcon icon={faSync} /></Button>{' '}
+				<Col sm={11}>
+				<Row>
+				<Col sm={3}>
+					<InputGroup size="sm" className="mb-3">
+						<Button size="sm" variant="info" name="clickButton" onClick={this.changeInterviewInfo.bind(this,this.state.row)} disabled = {this.state.employeeNo === '' ? true : false} ><FontAwesomeIcon icon={faSync} /></Button>{' '}
+						<font style={{ marginLeft: "5px", marginRight: "5px"}}></font>
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">面談回数</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control as="select" size="sm"
+							onChange={this.valueChange}
+							name="interviewClassificationCode" value={this.state.interviewClassificationCode}
+							autoComplete="off" >
+							{this.state.interviewClassification.map(date =>
+								<option key={date.code} value={date.code}>
+									{date.name}
+								</option>
+							)}
+						</Form.Control>
+					</InputGroup>
+				</Col>
+				<Col sm={3}>
+					<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
 					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">面談回数</InputGroup.Text>
+						<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
 					</InputGroup.Prepend>
-					<Form.Control as="select" size="sm"
-						onChange={this.valueChange}
-						name="interviewClassificationCode" value={this.state.interviewClassificationCode}
-						autoComplete="off" >
-						{this.state.interviewClassification.map(date =>
-							<option key={date.code} value={date.code}>
-								{date.name}
-							</option>
-						)}
-					</Form.Control>
+					<InputGroup.Append>
+						<DatePicker
+							selected={this.state.interviewDateShow}
+							onChange={this.setinterviewDate}
+							autoComplete="off"
+							locale="ja"
+							showTimeSelect
+							timeIntervals={15}
+							className="form-control form-control-sm"
+							dateFormat="MM/dd HH:mm"
+							minDate={new Date()}
+							id={'datePicker-interview'}
+						/>
+					</InputGroup.Append>
 				</InputGroup>
-			</Col>
-			<Col sm={3}>
-				<InputGroup size="sm" className="mb-3" style={{ flexFlow: "nowrap", width: "200%" }}>
+				</Col>
+				<Col sm={3}>
+					<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Autocomplete
+							name="stationCode"
+							options={this.state.getstations}
+							getOptionLabel={(option) => option.name ? option.name : ""}
+							value={this.state.getstations.find(v => v.code === this.state.stationCode) || ""}
+	                		onChange={(event, values) => this.getStation(event, values)}
+							renderInput={(params) => (
+								<div ref={params.InputProps.ref}>
+									<input type="text" {...params.inputProps}
+										id="stationCode" className="auto form-control Autocompletestyle-interview"
+									/>
+								</div>
+							)}
+						/>
+					</InputGroup>
+				</Col>
+				<Col sm={3}>
+					<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Autocomplete
+							name="interviewCustomer"
+							options={this.state.customers}
+							getOptionLabel={(option) => option.name ? option.name : ""}
+							value={this.state.customers.find(v => v.code === this.state.interviewCustomer) || ""}
+	                    	onChange={(event, values) => this.getCustomer(event, values)}
+							renderInput={(params) => (
+								<div ref={params.InputProps.ref}>
+									<input type="text" {...params.inputProps}
+										id="interviewCustomer" className="auto form-control Autocompletestyle-interview"
+									/>
+								</div>
+							)}
+						/>
+					</InputGroup>
+				</Col>
+				</Row>
+				<Row>
+				<Col sm={6}>
+					<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">面談情報</InputGroup.Text>
+						</InputGroup.Prepend>
+						<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewInfo}  id="interviewInfo" name="interviewInfo" 
+							onChange={this.valueChange} maxLength="100" 
+							className="auto form-control Autocompletestyle-interview-text"
+							style={{ height: '80px', resize: 'none', overflow: 'hidden' }}
+						/>
+					</InputGroup>
+				</Col>
+				<Col sm={6}>
+					<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
+						</InputGroup.Prepend>
+						<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewURL}  id="interviewURL" name="interviewURL" 
+							onChange={this.valueChange} maxLength="100" disabled={this.state.stationCode === null || this.state.stationCode === "" ? false : true}
+							className="auto form-control Autocompletestyle-interview-text"
+							style={{ height: '80px', resize: 'none', overflow: 'hidden' }}
+						/>
+					</InputGroup>
+				</Col>
+				</Row>
+				</Col>
 				<InputGroup.Prepend>
-					<InputGroup.Text id="inputGroup-sizing-sm">日付</InputGroup.Text>
+					<Button size="sm" variant="info" style={{ width: "70px",height: "80px",marginTop: "25px"}} name="clickButton" onClick = {this.update} disabled = {this.state.employeeNo === '' ? true : false} ><span style={{ fontSize:"24px"}}><FontAwesomeIcon icon={faSave} /></span><br/>更新</Button>
 				</InputGroup.Prepend>
-				<InputGroup.Append>
-					<DatePicker
-						selected={this.state.interviewDateShow}
-						onChange={this.setinterviewDate}
-						autoComplete="off"
-						locale="ja"
-						showTimeSelect
-						timeIntervals={15}
-						className="form-control form-control-sm"
-						dateFormat="MM/dd HH:mm"
-						minDate={new Date()}
-						id={'datePicker-interview'}
-					/>
-				</InputGroup.Append>
-			</InputGroup>
-			</Col>
-			<Col sm={3}>
-				<InputGroup size="sm" className="mb-3">
-					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">場所</InputGroup.Text>
-					</InputGroup.Prepend>
-					<Autocomplete
-						name="stationCode"
-						options={this.state.getstations}
-						getOptionLabel={(option) => option.name ? option.name : ""}
-						value={this.state.getstations.find(v => v.code === this.state.stationCode) || ""}
-						onSelect={(event) => this.handleTag(event, 'station')}
-						renderInput={(params) => (
-							<div ref={params.InputProps.ref}>
-								<input type="text" {...params.inputProps}
-									id="stationCode" className="auto form-control Autocompletestyle-interview-station"
-								/>
-							</div>
-						)}
-					/>
-				</InputGroup>
-			</Col>
-			<Col sm={3}>
-				<InputGroup size="sm" className="mb-3">
-					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
-					</InputGroup.Prepend>
-					<Autocomplete
-						name="interviewCustomer"
-						options={this.state.customers}
-						getOptionLabel={(option) => option.name ? option.name : ""}
-						value={this.state.customers.find(v => v.code === this.state.interviewCustomer) || ""}
-						onSelect={(event) => this.handleTag(event, 'interviewCustomer')}
-						renderInput={(params) => (
-							<div ref={params.InputProps.ref}>
-								<input type="text" {...params.inputProps}
-									id="interviewCustomer" className="auto form-control Autocompletestyle-interview"
-								/>
-							</div>
-						)}
-					/>
-				</InputGroup>
-			</Col>
 			</Row>
-			<Row>
-			<Col sm={6}>
-				<InputGroup size="sm" className="mb-3">
-					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">面談情報</InputGroup.Text>
-					</InputGroup.Prepend>
-					<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewInfo}  id="interviewInfo" name="interviewInfo" 
-						onChange={this.valueChange} maxLength="100" 
-						style={{ height: '80px', width: '81%', resize: 'none', overflow: 'hidden' }}
-					/>
-				</InputGroup>
-			</Col>
-			<Col sm={6}>
-				<InputGroup size="sm" className="mb-3">
-					<InputGroup.Prepend>
-						<InputGroup.Text id="inputGroup-sizing-sm">URL</InputGroup.Text>
-					</InputGroup.Prepend>
-					<textarea ref={(textarea) => this.textArea = textarea} maxLength="100" value = {this.state.interviewURL}  id="interviewURL" name="interviewURL" 
-						onChange={this.valueChange} maxLength="100" disabled={this.state.stationCode === null || this.state.stationCode === "" ? false : true}
-						style={{ height: '80px', width: '81%', resize: 'none', overflow: 'hidden' }}
-					/>
-				</InputGroup>
-			</Col>
-			</Row>
-			<Row>
-			<Col sm={12}>
-				<div>
-					<div style={{ "textAlign": "center" }}>
-						<Button size="sm" variant="info" name="clickButton" onClick = {this.update} disabled = {this.state.employeeNo === '' ? true : false} ><FontAwesomeIcon icon={faSave} /> 更新</Button>{' '}
-					</div>
-				</div>
-			</Col>
-			</Row>
+			
 				<Form onSubmit={this.savealesSituation}>
 					<Row>
 						<Col sm={12}>
-							<BootstrapTable
-								ref='table'
-								data={this.state.interviewLists}
-								pagination
-								options={options}
-								selectRow={selectRow}
-								trClassName="customClass"
-								headerStyle={{ background: '#5599FF' }} striped hover condensed>
-								<TableHeaderColumn dataField='employeeNo' hidden isKey>社員番号</TableHeaderColumn>
-								<TableHeaderColumn width='10%' row='0' rowSpan="2" dataField='employeeName'>{<div style={{ "textAlign": "center" }} >氏名</div>}</TableHeaderColumn>
-								<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報1</div>}</TableHeaderColumn>
-								<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode1' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
-								<TableHeaderColumn width='17%' row='1' dataField='interviewDate1' dataFormat={this.formatInterviewDate} >日付</TableHeaderColumn>
-								<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer1' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
-								<TableHeaderColumn width='11%' row='1' dataField='stationCode1' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
-								<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報2</div>}</TableHeaderColumn>
-								<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode2' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
-								<TableHeaderColumn width='17%' row='1' dataField='interviewDate2' dataFormat={this.formatInterviewDate} > 日付</TableHeaderColumn>
-								<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer2' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
-								<TableHeaderColumn width='11%' row='1' dataField='stationCode2' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
-							</BootstrapTable>
+								<BootstrapTable
+									ref='table'
+									data={this.state.interviewLists}
+									pagination
+									options={options}
+									selectRow={selectRow}
+									trClassName="customClass"
+									headerStyle={{ background: '#5599FF' }} striped hover condensed>
+									<TableHeaderColumn dataField='employeeNo' hidden isKey>社員番号</TableHeaderColumn>
+									<TableHeaderColumn width='10%' row='0' rowSpan="2" dataField='employeeName'>{<div style={{ "textAlign": "center" }} >氏名</div>}</TableHeaderColumn>
+									<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報1</div>}</TableHeaderColumn>
+									<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode1' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
+									<TableHeaderColumn width='17%' row='1' dataField='interviewDate1' dataFormat={this.formatInterviewDate} >日付</TableHeaderColumn>
+									<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer1' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
+									<TableHeaderColumn width='11%' row='1' dataField='stationCode1' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
+									<TableHeaderColumn row='0' colSpan='4' >{<div style={{ "textAlign": "center" }} >面談情報2</div>}</TableHeaderColumn>
+									<TableHeaderColumn width='7%' row='1' dataField='interviewClassificationCode2' dataFormat={this.formatInterviewClassificationCode} >回数</TableHeaderColumn>
+									<TableHeaderColumn width='17%' row='1' dataField='interviewDate2' dataFormat={this.formatInterviewDate} > 日付</TableHeaderColumn>
+									<TableHeaderColumn width='11%' row='1' dataField='interviewCustomer2' dataFormat={this.formatInterviewCustomer} >お客様</TableHeaderColumn>
+									<TableHeaderColumn width='11%' row='1' dataField='stationCode2' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
+								</BootstrapTable>
 						</Col>
 					</Row>
 				</Form>

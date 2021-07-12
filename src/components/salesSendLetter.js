@@ -29,9 +29,9 @@ class salesSendLetter extends React.Component {
 		allCustomerTemp: [],// お客様レコード用
 		customerName: '', // おきゃく名前
 		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
-		customers: store.getState().dropDown[53].slice(1),
+		customers: store.getState().dropDown[77].slice(1),
 		storageList: store.getState().dropDown[63].slice(1),
-		personInCharge: store.getState().dropDown[64].slice(1),
+		personInCharge: store.getState().dropDown[78].slice(1),
 		errorsMessageShow: false,
 		purchasingManagers: '',
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
@@ -139,15 +139,32 @@ class salesSendLetter extends React.Component {
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
+				let dataArray = new Array();
 				for (let i in result.data) {
 					customerNoArray.push(result.data[i].customerNo);
+					switch (this.state.backPage) {
+					case "manageSituation":
+						if(result.data[i].proposeClassificationCode === null || result.data[i].proposeClassificationCode === "2" || result.data[i].proposeClassificationCode === "3")
+							dataArray.push(result.data[i]);
+						break;
+					case "projectInfoSearch":
+						if(result.data[i].proposeClassificationCode === null || result.data[i].proposeClassificationCode === "1" || result.data[i].proposeClassificationCode === "3")
+							dataArray.push(result.data[i]);
+						break;
+					default:
+						dataArray.push(result.data[i]);
+						break;
+					}
+				}
+				for (let i in dataArray) {
+					dataArray[i].rowId = i;
 				}
 				this.setState({
-					allCustomer: result.data,
-					allCustomerTemp: result.data,
-					customerTemp: [...result.data],
+					allCustomer: dataArray,
+					allCustomerTemp: dataArray,
+					customerTemp: [...dataArray],
 					allCustomerNo: customerNoArray,
-					allCustomerNum: result.data.length,
+					allCustomerNum: dataArray.length,
 				},()=>{
 					if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 					if (this.props.location.state.targetCusInfos !== null && this.props.location.state.targetCusInfos !== undefined && this.props.location.state.targetCusInfos !== '') {
@@ -221,10 +238,29 @@ class salesSendLetter extends React.Component {
 					})
 					axios.post(this.state.serverIP + "salesSendLetters/getCustomersByNos", { ctmNos: values.code.split(','),storageListName:values.name,})
 					.then(result => {
+						let dataArray = new Array();
+						for (let i in result.data) {
+							switch (this.state.backPage) {
+							case "manageSituation":
+								if(result.data[i].proposeClassificationCode === null || result.data[i].proposeClassificationCode === "2" || result.data[i].proposeClassificationCode === "3")
+									dataArray.push(result.data[i]);
+								break;
+							case "projectInfoSearch":
+								if(result.data[i].proposeClassificationCode === null || result.data[i].proposeClassificationCode === "1" || result.data[i].proposeClassificationCode === "3")
+									dataArray.push(result.data[i]);
+								break;
+							default:
+								dataArray.push(result.data[i]);
+								break;
+							}
+						}
+						for (let i in dataArray) {
+							dataArray[i].rowId = i;
+						}
 				this.setState({
-					allCustomer: result.data,
-					allCustomerTemp: result.data,
-					customerTemp: [...result.data],
+					allCustomer: dataArray,
+					allCustomerTemp: dataArray,
+					customerTemp: [...dataArray],
 					selectetRowIds: [],
 					selectedCusInfos: [],
 				});
@@ -875,12 +911,11 @@ class salesSendLetter extends React.Component {
 				</Modal>
 				<Row inline="true">
 					<Col className="text-center">
-						<h2>お客様選択（要員送信）</h2>
+						<h2>{"お客様選択"+ (this.state.backPage === "" ? "" : this.state.backPage === "manageSituation" ? "（要員送信）" : "（案件送信）")}</h2>
 					</Col>
 				</Row>
 				<br />
 				<Form onSubmit={this.savealesSituation}>
-					<Form.Group>
 						<Row>
 							<Col sm={6}>
 							<InputGroup size="sm" className="mb-3">
@@ -924,7 +959,7 @@ class salesSendLetter extends React.Component {
 							</Col>
 
 							<Col sm={3}>
-							<div style={{position:'absolute',left:'0px'}}>
+							<div style={{position:'absolute',left:'0px',marginLeft:"-22px"}}>
 							<Button size="sm" variant="info" onClick={this.addClick} /*
 							 * disabled={this.state.allCustomer.length
 							 * ===
@@ -967,7 +1002,6 @@ class salesSendLetter extends React.Component {
 							</InputGroup>
 						</Col>
 						</Row>
-					</Form.Group>
 					<Row>
 						<Col sm={6}>
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}

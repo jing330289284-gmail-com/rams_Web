@@ -224,7 +224,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-	width: 10.2rem !important;
+	width: 10.4rem !important;
 }
 
 #datePickerReadonlyDefault {
@@ -1024,17 +1024,7 @@ body {
 }
 
 .Autocompletestyle-interview {
-	width: 10.3rem;
-	height: 31px;
-	border-color: "#ced4da";
-	border-width: 1;
-	border-style: "solid";
-	font-size: ".875rem";
-	color: "#495057"
-}
-
-.Autocompletestyle-interview-station {
-	width: 12.2rem;
+	width: 10.1rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
@@ -1656,16 +1646,7 @@ body {
 		color: "#495057"
 	}
 	.Autocompletestyle-interview {
-		width: 7.5rem;
-		height: 31px;
-		border-color: "#ced4da";
-		border-width: 1;
-		border-style: "solid";
-		font-size: ".875rem";
-		color: "#495057"
-	}
-	.Autocompletestyle-interview-station {
-		width: 7.7rem;
+		width: 5.8rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;
@@ -1889,7 +1870,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
-		width: 7.6rem !important;
+		width: 6.3rem !important;
 	}
 	.input-group-text {
 		background-color: #76a8af;

@@ -1244,7 +1244,7 @@ class sendLettersConfirm extends React.Component {
 【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?this.state.unitPrice:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
-【営業状況】：`)+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
+【営業状況】：`)+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
 (this.state.remark1 !== "" && this.state.remark1 !== null?`
 【備　　考】：`:"")+ (this.state.remark1 !== "" && this.state.remark1 !== null ? this.state.remark1 : "");
 		return (
