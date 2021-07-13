@@ -50,7 +50,7 @@ class sendLettersConfirm extends React.Component {
 		japaneseLevelName: '',
 		beginMonth: '',
 		salesProgressCode: '',
-		remark1: '',
+		remark: '',
 		myToastShow: false,// 状態ダイアログ
 		employeeNo: this.props.empNo,
 		genderStatus: '',
@@ -81,6 +81,7 @@ class sendLettersConfirm extends React.Component {
 		stations: store.getState().dropDown[14].slice(1),
 		developLanguages: store.getState().dropDown[8].slice(1),
 		developLanguagesShow: store.getState().dropDown[8].slice(1),
+		frameWorks: store.getState().dropDown[71].slice(1),
 		employeeStatusS: store.getState().dropDown[4].slice(1),
 		positions: store.getState().dropDown[20],
 		wellUseLanguagss: [],
@@ -132,6 +133,7 @@ class sendLettersConfirm extends React.Component {
 		EmployeeNameIndex: 0,
 		// ページ数
 		currentPage: 1,
+		currentPage2: 1,
         // 選択されたのindex
         selectedColumnId: 0,
 		// 提示情報
@@ -154,6 +156,7 @@ class sendLettersConfirm extends React.Component {
 	
 	componentDidMount() {
 		console.log(this.props.location);
+		this.setNewDevelopLanguagesShow();
 		if (this.props.location.state !== null && this.props.location.state !== undefined && this.props.location.state !== '') {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
@@ -199,6 +202,20 @@ class sendLettersConfirm extends React.Component {
 			selectedCusInfos : selectedCusInfos,
 		})
 	}
+	
+	setNewDevelopLanguagesShow = () => {
+		let developLanguagesTemp = [];
+		for(let i = 0; i < this.state.developLanguagesShow.length; i++){
+			developLanguagesTemp.push(this.state.developLanguagesShow[i]);
+		}
+		let frameWorkTemp = [];
+		for(let i = 0; i < this.state.frameWorks.length; i++){
+			developLanguagesTemp.push({code:String((Number(this.state.frameWorks[i].code) + 1) * -1),name:this.state.frameWorks[i].name});
+		}
+		this.setState({
+			developLanguages: developLanguagesTemp,
+		});
+    }
 
 	/* 要員追加機能の新規 20201216 張棟 START */
 	getAllEmployInfoName = () => {
@@ -329,8 +346,8 @@ class sendLettersConfirm extends React.Component {
 					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
 					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null?"":`<br	/>
 					【稼働開始】：`) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null ? "":result.data[0].theMonthOfStartWork) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
-					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark1 === null || result.data[0].remark1 === ""?"":`<br	/>
-					【備　　考】：`)+ (result.data[0].remark1 === null || result.data[0].remark1 === ""?"":result.data[0].remark1)		
+					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark === null || result.data[0].remark === ""?"":`<br	/>
+					【備　　考】：`)+ (result.data[0].remark === null || result.data[0].remark === ""?"":result.data[0].remark)		
 					+ `<br/>`
 					clearTimeout(time)
 			        time=setTimeout(()=>{
@@ -371,8 +388,8 @@ class sendLettersConfirm extends React.Component {
  * this.state.remark + `<br/> <br/>
  */
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
-			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
-				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers) + `様<br/>
+			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0] + `&nbsp;株式会社<br/>
+				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `&nbsp;様<br/>
 				<br/>
 				お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
 				<br/>`
@@ -572,6 +589,7 @@ class sendLettersConfirm extends React.Component {
 						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						resumeInfoList: result.data[0].resumeInfoList,
+						remark: result.data[0].remark,
 					})
 				} else {
 					this.setState({
@@ -616,7 +634,7 @@ class sendLettersConfirm extends React.Component {
 						siteRoleName: result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ? "":result.data[0].siteRoleName,
 						projectPhaseName:  result.data[0].projectPhase === null || result.data[0].projectPhase === "" ? "":result.data[0].projectPhaseName,
 						unitPrice: hopeHighestPrice !== null && hopeHighestPrice !== "" && hopeHighestPrice !== undefined ? hopeHighestPrice : result.data[0].unitPrice ,
-						remark1: result.data[0].remark1,
+						remark: result.data[0].remark,
 						initAge: result.data[0].age,
 						employeeInfo : index !== undefined ? employeeInfo : this.state.employeeInfo,
 						initNearestStation: result.data[0].nearestStation,
@@ -629,7 +647,7 @@ class sendLettersConfirm extends React.Component {
 						initDevelopLanguageCode9: result.data[0].developLanguage4,
 						initDevelopLanguageCode10: result.data[0].developLanguage5,
 						initUnitPrice: result.data[0].unitPrice,
-						initRemark: result.data[0].remark1,
+						initRemark: result.data[0].remark,
 						resumeInfoList: result.data[0].resumeInfoList,
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						initWellUseLanguagss: [this.fromCodeToListLanguage(result.data[0].developLanguage1),
@@ -772,6 +790,7 @@ class sendLettersConfirm extends React.Component {
 			this.searchPersonnalDetail(row.employeeNo,row.hopeHighestPrice);
 		}
 	};
+	
 	formatEmpStatus = (cell, row, enumObject, index) => {
 		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
@@ -1032,9 +1051,7 @@ class sendLettersConfirm extends React.Component {
 				employeeInfoList[i].index = (i + 1);
 			}
 		}
-		var currentPage = Math.ceil(employeeInfoList.length / 5);
 		this.setState({
-			currentPage: currentPage,
 			employeeInfo: employeeInfoList,
 			selectRowFlag: false,
 			// rowNo: '',
@@ -1182,7 +1199,7 @@ class sendLettersConfirm extends React.Component {
 			defaultSortOrder: 'dsc',
 			sizePerPage: 5,
 			pageStartIndex: 1,
-			paginationSize: 2,
+			paginationSize: 3,
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text
@@ -1196,6 +1213,30 @@ class sendLettersConfirm extends React.Component {
 			handleConfirmDeleteRow: this.customConfirm
 			//
 		};
+		
+		const options2 = {
+				onPageChange : page => {
+					this.setState({ currentPage2: page});
+				},
+				page: this.state.currentPage2,
+				noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
+				defaultSortOrder: 'dsc',
+				sizePerPage: 5,
+				pageStartIndex: 1,
+				paginationSize: 3,
+				prePage: '<', // Previous page button text
+				nextPage: '>', // Next page button text
+				firstPage: '<<', // First page button text
+				lastPage: '>>', // Last page button text
+				hideSizePerPage: true,
+				paginationShowsTotal: this.renderShowsTotal,
+				//
+				expandRowBgColor: 'rgb(165, 165, 165)',
+				deleteBtn: this.createCustomDeleteButton,
+				onDeleteRow: this.onDeleteRow,
+				handleConfirmDeleteRow: this.customConfirm
+				//
+			};
 		
 		// 要員一覧表の入力框
 		const cellEdit = {
@@ -1245,8 +1286,8 @@ class sendLettersConfirm extends React.Component {
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
 【営業状況】：`)+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
-(this.state.remark1 !== "" && this.state.remark1 !== null?`
-【備　　考】：`:"")+ (this.state.remark1 !== "" && this.state.remark1 !== null ? this.state.remark1 : "");
+(this.state.remark !== "" && this.state.remark !== null?`
+【備　　考】：`:"")+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "");
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1419,7 +1460,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={1}></Col>
 					<Col sm={9}>
 						<BootstrapTable
-							options={options}
+							options={options2}
 							selectRow={selectRow1}
 							ref='table1'
 							data={this.state.selectedCusInfos}
@@ -1427,9 +1468,9 @@ class sendLettersConfirm extends React.Component {
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='15%' dataField='customerName' dataAlign='center' autoValue editable={false}>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='12%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
-							<TableHeaderColumn width='13%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
+							<TableHeaderColumn width='23%' dataField='customerName' autoValue editable={false}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='17%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
+							<TableHeaderColumn hidden dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
 							{/*<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='positionCode2' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>

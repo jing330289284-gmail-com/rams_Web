@@ -27,6 +27,7 @@ class salesSendLetter extends React.Component {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		allCustomer: [],// お客様レコード用
 		allCustomerTemp: [],// お客様レコード用
+		customerNo: "",
 		customerName: '', // おきゃく名前
 		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		customers: store.getState().dropDown[77].slice(1),
@@ -653,6 +654,7 @@ class salesSendLetter extends React.Component {
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds.concat([rowNo]),
 				selectedCusInfos: this.state.selectedCusInfos.concat(this.state.customerTemp[rowNo]),
+				customerNo: row.customerNo,
 			})
 		} else {
 			let index = this.state.selectetRowIds.findIndex(item => item === rowNo);
@@ -663,6 +665,7 @@ class salesSendLetter extends React.Component {
 				selectedCusInfos: this.state.selectedCusInfos,
 				sendLetterBtnFlag: true,
 				selectetRowIds: this.state.selectetRowIds,
+				customerNo: "",
 			})
 		}
 	}
@@ -859,6 +862,20 @@ class salesSendLetter extends React.Component {
 					},
 				}
 				break;
+			case "update":
+                path = {
+                    pathname: '/subMenuManager/customerInfo',
+                    state: {
+                        actionType: 'update',
+                        customerNo: this.state.customerNo,
+                        backPage: "salesSendLetter", sendValue: sendValue,
+						backbackPage: this.state.backPage,
+                        searchFlag: this.state.searchFlag,
+						projectNo: this.state.projectNo,
+						sendValue: sendValue,
+                    },
+                }
+                break;
 			default:
 		}
 		this.props.history.push(path);
@@ -1007,9 +1024,10 @@ class salesSendLetter extends React.Component {
 							<Button size="sm" variant="info" name="clickButton" onClick={this.selectAllLists}
 								disabled={0 !== this.state.allCustomer.length ? false : true}
 							><FontAwesomeIcon icon={faListOl} />すべて選択</Button>{" "}
-							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" hidden={(this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
 							
-							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
+							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" hidden={(this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
+                            <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} disabled={this.state.customerNo === "" ? true : false} variant="info"><FontAwesomeIcon icon={faEdit} />お客様情報</Button>{' '}
 							<Button
 								size="sm"
 								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false)}

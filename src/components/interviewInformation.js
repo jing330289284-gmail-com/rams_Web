@@ -7,7 +7,7 @@ import * as publicUtils from './utils/publicUtils.js';
 import '../asserts/css/style.css';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faEnvelope, faIdCard, faListOl, faBuilding, faDownload, faBook, faCopy, faSync, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import TableSelect from './TableSelect';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -96,26 +96,6 @@ class interviewInformation extends React.Component {
 		let interviewModel = {};
 		interviewModel["employeeNo"] = this.state.employeeNo;
 		interviewModel["salesYearAndMonth"] = this.state.yearMonth;
-/*		if(this.state.row.interviewClassificationCode1 !== undefined && this.state.row.interviewClassificationCode1 !== null && this.state.row.interviewClassificationCode1 !== ""){
-			if(this.state.row.interviewClassificationCode2 !== undefined && this.state.row.interviewClassificationCode2 !== null && this.state.row.interviewClassificationCode2 !== ""){
-				this.setState({ "errorsMessageShow": true, errorsMessageValue: "面談情報二つが入力されて、それ以上入力できません。" });
-				return;
-			}else{
-				interviewModel["interviewClassificationCode2"] = this.state.interviewClassificationCode;
-				interviewModel["interviewDate2"] = this.state.interviewDate;
-				interviewModel["stationCode2"] = this.state.stationCode;
-				interviewModel["interviewCustomer2"] = this.state.interviewCustomer;
-				interviewModel["interviewInfo2"] = this.state.interviewInfo;
-				interviewModel["interviewUrl2"] = this.state.interviewURL;
-			}
-		}else{
-			interviewModel["interviewClassificationCode1"] = this.state.interviewClassificationCode;
-			interviewModel["interviewDate1"] = this.state.interviewDate;
-			interviewModel["stationCode1"] = this.state.stationCode;
-			interviewModel["interviewCustomer1"] = this.state.interviewCustomer;
-			interviewModel["interviewInfo1"] = this.state.interviewInfo;
-			interviewModel["interviewUrl1"] = this.state.interviewURL;
-		}*/
 		if(this.state.interviewInfoNum === "1"){
 			interviewModel["interviewClassificationCode1"] = this.state.interviewClassificationCode;
 			interviewModel["interviewDate1"] = this.state.interviewDate;
@@ -151,7 +131,7 @@ class interviewInformation extends React.Component {
 				if (result.data.errorsMessage != null) {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 				} else {
-					this.setState({ myToastShow: true, errorsMessageShow: false, errorsMessageValue: '' });
+					this.setState({ myToastShow: true, message: "更新成功!", errorsMessageShow: false, errorsMessageValue: '' });
 					setTimeout(() => this.setState({ myToastShow: false }), 3000);
 					this.getInterviewLists();
 				}
@@ -162,6 +142,61 @@ class interviewInformation extends React.Component {
 		.catch(function (error) {
 			alert("ERR");
 		});
+	}
+	
+	clear = () => {
+		var a = window.confirm("削除していただきますか？");
+		if (a) {
+			let interviewModel = {};
+			interviewModel["employeeNo"] = this.state.employeeNo;
+			interviewModel["salesYearAndMonth"] = this.state.yearMonth;
+			if(this.state.interviewInfoNum === "1"){
+				interviewModel["interviewClassificationCode1"] = "";
+				interviewModel["interviewDate1"] = "";
+				interviewModel["stationCode1"] = "";
+				interviewModel["interviewCustomer1"] = "";
+				interviewModel["interviewInfo1"] = "";
+				interviewModel["interviewUrl1"] = "";
+				
+				interviewModel["interviewClassificationCode2"] = this.state.row.interviewClassificationCode2 === null ? "" : this.state.row.interviewClassificationCode2;
+				interviewModel["interviewDate2"] = this.state.row.interviewDate2 === null ? "" : this.state.row.interviewDate2;
+				interviewModel["stationCode2"] = this.state.row.stationCode2 === null ? "" : this.state.row.stationCode2;
+				interviewModel["interviewCustomer2"] = this.state.row.interviewCustomer2 === null ? "" : this.state.row.interviewCustomer2;
+				interviewModel["interviewInfo2"] = this.state.row.interviewInfo2 === null ? "" : this.state.row.interviewInfo2;
+				interviewModel["interviewUrl2"] = this.state.row.interviewURL2 === null ? "" : this.state.row.interviewURL2;
+			}else if(this.state.interviewInfoNum === "2"){
+				interviewModel["interviewClassificationCode1"] = this.state.row.interviewClassificationCode1;
+				interviewModel["interviewDate1"] = this.state.row.interviewDate1;
+				interviewModel["stationCode1"] = this.state.row.stationCode1;
+				interviewModel["interviewCustomer1"] = this.state.row.interviewCustomer1;
+				interviewModel["interviewInfo1"] = this.state.row.interviewInfo1;
+				interviewModel["interviewUrl1"] = this.state.row.interviewURL1;
+				
+				interviewModel["interviewClassificationCode2"] = "";
+				interviewModel["interviewDate2"] = "";
+				interviewModel["stationCode2"] = "";
+				interviewModel["interviewCustomer2"] = "";
+				interviewModel["interviewInfo2"] = "";
+				interviewModel["interviewUrl2"] = "";
+			}
+			axios.post(this.state.serverIP + "salesSituation/deleteInterviewLists", interviewModel)
+			.then(result => {
+				if (result.data != null) {
+					if (result.data.errorsMessage != null) {
+						this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+					} else {
+						this.setState({ myToastShow: true, message: "削除成功!", errorsMessageShow: false, errorsMessageValue: '' });
+						setTimeout(() => this.setState({ myToastShow: false }), 3000);
+						this.getInterviewLists();
+					}
+				} else {
+					alert("FAIL");
+				}
+			})
+			.catch(function (error) {
+				alert("ERR");
+			});
+		}
 	}
 	
 	// onchange
@@ -185,7 +220,7 @@ class interviewInformation extends React.Component {
 			this.setState({
 				row: row,
 				employeeNo: row.employeeNo,
-				interviewClassificationCode: row.interviewClassificationCode1 === null ? '0' : row.interviewClassificationCode1,
+				interviewClassificationCode: row.interviewClassificationCode1 === null || row.interviewClassificationCode1 === "" ? '0' : row.interviewClassificationCode1,
 				interviewDateShow: row.interviewDate1 === null ? '' : new Date(publicUtils.strToTime(row.interviewDate1)).getTime(),
 				interviewDate: row.interviewDate1 === null ? '' : row.interviewDate1,
 				stationCode: row.stationCode1 === null ? '' : row.stationCode1,
@@ -342,7 +377,7 @@ class interviewInformation extends React.Component {
 		return (			
 			<div>
 			<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
-				<MyToast myToastShow={this.state.myToastShow} message={"更新成功！"} type={"success"} />
+				<MyToast myToastShow={this.state.myToastShow} message={this.state.message} type={"success"} />
 			</div>
 			<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 				<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={this.state.errorsMessageValue} type={"success"} />
@@ -460,13 +495,23 @@ class interviewInformation extends React.Component {
 				</Col>
 				</Row>
 				</Col>
+				<Col sm={1}>
+				<Row>
 				<InputGroup.Prepend>
-					<Button size="sm" variant="info" style={{ width: "70px",height: "80px",marginTop: "25px"}} name="clickButton" onClick = {this.update} disabled = {this.state.employeeNo === '' ? true : false} ><span style={{ fontSize:"24px"}}><FontAwesomeIcon icon={faSave} /></span><br/>更新</Button>
+					<Button size="sm" variant="info" style={{ width: "60px",height: "60px",marginLeft: "-20px",marginTop: "0px"}} name="clickButton" onClick = {this.update} disabled = {this.state.employeeNo === '' ? true : false} ><span><FontAwesomeIcon icon={faSave} /></span><br/>更新</Button>
 				</InputGroup.Prepend>
+				</Row>
+				<Row>
+				<InputGroup.Prepend>
+					<Button size="sm" variant="info" style={{ width: "60px",height: "60px",marginLeft: "-20px",marginTop: "5px"}} name="clickButton" onClick = {this.clear} disabled = {this.state.employeeNo === '' ? true : false} ><span><FontAwesomeIcon icon={faTrash} /></span><br/>削除</Button>
+				</InputGroup.Prepend>
+				</Row>
+				</Col>
 			</Row>
 			
 				<Form onSubmit={this.savealesSituation}>
 					<Row>
+					<Col>
 						<Col sm={12}>
 								<BootstrapTable
 									ref='table'
@@ -490,6 +535,7 @@ class interviewInformation extends React.Component {
 									<TableHeaderColumn width='11%' row='1' dataField='stationCode2' dataFormat={this.formatStationCode} >場所</TableHeaderColumn>
 								</BootstrapTable>
 						</Col>
+					</Col>
 					</Row>
 				</Form>
 			</div>

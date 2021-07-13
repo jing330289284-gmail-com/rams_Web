@@ -32,14 +32,13 @@ class mailMatter extends React.Component {
 				<div >
 					<textarea ref={(textarea) => this.textArea = textarea} disabled
 						style={{ height: '800px', width: '100%', resize: 'none', border: '0'}}
-					value={`To:` + this.state.selectedmail + `
-CC:`+ this.state.companyMailNames.join(';') + `         
+					value={`To:` + this.state.selectedmail + (String(this.state.companyMailNames) === "" ? "" : `	CC:`+ this.state.companyMailNames.join(';')) + `         
 
 タイトル:`+ this.state.mailTitle + `
 
 `+
-this.state.selectedCustomerName + `株式会社
-`+ (this.state.selectedPurchasingManagers === "" ? "ご担当者" : this.state.selectedPurchasingManagers) + `様
+this.state.selectedCustomerName.split("(")[0] + ` 株式会社
+`+ (this.state.selectedPurchasingManagers === "" ? "ご担当者" : this.state.selectedPurchasingManagers.split("　")[0]) + ` 様
 
 お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。
 

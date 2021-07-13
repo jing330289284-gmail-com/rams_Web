@@ -160,6 +160,8 @@ class CustomerInfo extends Component {
             searchFlag: this.props.location.state.searchFlag,
             customerNoForPageChange: this.props.location.state.customerNo,
             currPage: this.props.location.state.currPage,
+            backbackPage: this.props.location.state.backbackPage,
+			projectNo: this.props.location.state.projectNo,
         })
         $("#customerNo").val(this.props.location.state.customerNo);
         this.setState({
@@ -758,6 +760,8 @@ class CustomerInfo extends Component {
             state: {
                 searchFlag: this.state.searchFlag, sendValue: this.state.sendValue, customerNo: this.state.customerNoForPageChange,
                 currPage: this.state.currPage,
+                backbackPage: this.state.backbackPage,
+                projectNo: this.state.projectNo,
             },
         }
         this.props.history.push(path);
@@ -1256,7 +1260,7 @@ class CustomerInfo extends Component {
                                 </Button>{" "}
                             <Button
                                 size="sm"
-                                hidden={backPage !== "customerInfoSearch" ? true : false}
+                                hidden={backPage !== "customerInfoSearch" && backPage !== "salesSendLetter"  ? true : false}
                                 variant="info"
                                 onClick={this.back}
                             >
@@ -1293,11 +1297,11 @@ class CustomerInfo extends Component {
                                 cellEdit={actionType !== "detail" ? cellEdit : cellEditDetail}
                                 headerStyle={{ background: '#5599FF' }} striped hover condensed>
                                 <TableHeaderColumn isKey dataField='rowNo' tdStyle={{ padding: '.45em' }} width="6%">番号</TableHeaderColumn>
-                                <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="8%">責任者</TableHeaderColumn>
-                                <TableHeaderColumn dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="15%"
+                                <TableHeaderColumn dataField='responsiblePerson' tdStyle={{ padding: '.45em' }} width="11%">責任者</TableHeaderColumn>
+                                <TableHeaderColumn dataField='customerDepartmentCode' tdStyle={{ padding: '.45em' }} width="14%"
                                     dataFormat={this.formatCustomerDepartment.bind(this)} customEditor={{ getElement: tableSelect1 }}>部門</TableHeaderColumn>
                                 <TableHeaderColumn dataField='positionCode'  tdStyle={{ padding: '.45em' }}  
-                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="12%">職位</TableHeaderColumn>
+                                    dataFormat={this.formatPosition.bind(this)} customEditor={{ getElement: tableSelect2 }} width="10%">職位</TableHeaderColumn>
                                 <TableHeaderColumn dataField='customerDepartmentMail'  tdStyle={{ padding: '.45em' }} width="15%">メール</TableHeaderColumn>
                                 <TableHeaderColumn dataField='typeOfIndustryCode'  tdStyle={{ padding: '.45em' }}  
                                     dataFormat={this.formatIndustry.bind(this)} customEditor={{ getElement: tableSelect3 }} width="10%">業種</TableHeaderColumn>
