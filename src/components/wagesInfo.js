@@ -134,6 +134,20 @@ class WagesInfo extends Component {
         }
         )
     }
+    //onchange(保険金額)
+    valueChangeInsuranceMoney = event => {
+        var name = event.target.name;
+        var value = event.target.value;
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            this.setState({
+                [name]: utils.addComma(value),
+            });
+        }
+        )
+    }
+    
     componentDidMount() {
 		axios.post(this.state.serverIP + "subMenu/getCompanyDate")
 		.then(response => {
@@ -548,7 +562,24 @@ class WagesInfo extends Component {
     * 社会保険計算
     */
     async hokenKeisan() {
-        var salary = utils.deleteComma(this.state.salary);
+        var salary = '';
+        if(this.state.workingCondition === "0"){
+            salary = utils.deleteComma(this.state.salary);
+        }
+        else if(this.state.workingCondition === "1"){
+        	if(this.state.wagesInfoList.length > 0){
+        		if(this.state.wagesInfoList[this.state.wagesInfoList.length - 1].workingCondition === "1"){
+                	if(this.state.wagesInfoList.length > 1)
+                		salary = utils.deleteComma(this.state.wagesInfoList[this.state.wagesInfoList.length - 2].salary);
+                	else 
+                		salary = utils.deleteComma(this.state.wagesInfoList[this.state.wagesInfoList.length - 1].salary);
+        		}
+        		else 
+            		salary = utils.deleteComma(this.state.wagesInfoList[this.state.wagesInfoList.length - 1].salary);
+        	}
+        	else 
+        		salary = utils.deleteComma(this.state.waitingCost);
+        }
         if (this.state.socialInsuranceFlag === "1") {
             if (salary === '') {
                 this.setState({ errorsMessageShow: true, errorsMessageValue: "給料を入力してください", socialInsuranceFlag: "0", healthInsuranceAmount: '', welfarePensionAmount: '', insuranceFeeAmount: '' });
@@ -625,7 +656,7 @@ class WagesInfo extends Component {
         }
         wagesInfoModel["welfarePensionAmount"] = utils.deleteComma(this.state.welfarePensionAmount);
         wagesInfoModel["healthInsuranceAmount"] = utils.deleteComma(this.state.healthInsuranceAmount);
-        wagesInfoModel["insuranceFeeAmount"] = utils.deleteComma(this.state.insuranceFeeAmount);
+        wagesInfoModel["insuranceFeeAmount"] = Number(utils.deleteComma(this.state.welfarePensionAmount)) + Number(utils.deleteComma(this.state.healthInsuranceAmount));
         wagesInfoModel["scheduleOfBonusAmount"] = utils.deleteComma(this.state.scheduleOfBonusAmount);
         wagesInfoModel["lastTimeBonusAmount"] = utils.deleteComma(this.state.lastTimeBonusAmount);
         wagesInfoModel["totalAmount"] = utils.deleteComma(this.state.totalAmount);
@@ -1146,8 +1177,9 @@ class WagesInfo extends Component {
                                             <InputGroup.Text id="niKanji">厚生</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            readOnly
-                                            onChange={this.valueChange}
+                                        	maxLength="6"
+                                            readOnly={socialInsuranceFlag === "1" && this.state.workingCondition === "1" ? false : true}
+                                            onChange={this.valueChangeInsuranceMoney}
                                             disabled={actionType === "detail" ? true : false}
                                             name="welfarePensionAmount"
                                             value={welfarePensionAmount} />
@@ -1155,10 +1187,11 @@ class WagesInfo extends Component {
                                             <InputGroup.Text id="niKanji">健康</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            readOnly
+                                    		maxLength="6"
+                                            readOnly={socialInsuranceFlag === "1" && this.state.workingCondition === "1" ? false : true}
                                             disabled={actionType === "detail" ? true : false}
                                             name="healthInsuranceAmount"
-                                            onChange={this.valueChange}
+                                            onChange={this.valueChangeInsuranceMoney}
                                             value={healthInsuranceAmount} />
                                         <InputGroup.Prepend hidden>
                                             <InputGroup.Text id="niKanji">総額</InputGroup.Text>

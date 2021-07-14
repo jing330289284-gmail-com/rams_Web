@@ -279,59 +279,25 @@ class sendLettersConfirm extends React.Component {
 			});
 
 	}
-	/*
-	 * this.setState({ employeeName: result.data[0].employeeFullName,
-	 * genderStatus: this.state.genders.find((v) => (v.code ===
-	 * result.data[0].genderStatus)).name, nationalityName:
-	 * result.data[0].nationalityName, age:
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-	 * Math.ceil((new Date().getTime() -
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
-	 * 31536000000), developLanguage: result.data[0].developLanguage,
-	 * yearsOfExperience: result.data[0].yearsOfExperience, beginMonth: new
-	 * Date("2020/09").getTime(), salesProgressCode: '2', nearestStation:
-	 * result.data[0].employeeStatus === null ? "" :
-	 * result.data[0].nearestStation, stationCode: result.data[0].employeeStatus
-	 * === null ? "" : result.data[0].nearestStation, employeeStatus:
-	 * result.data[0].employeeStatus === null || result.data[0].employeeStatus
-	 * ===""?"":this.state.employees.find((v) => (v.code ===
-	 * result.data[0].employeeStatus)).name, japaneseLevelCode:
-	 * result.data[0].japaneseLevelCode === null ||
-	 * result.data[0].japaneseLevelCode
-	 * ===""?"":this.state.japaneseLevels.find((v) => (v.code ===
-	 * result.data[0].japaneseLevelCode)).name, englishLevelCode:
-	 * result.data[0].englishLevelCode === null ||
-	 * result.data[0].englishLevelCode === "" ?
-	 * "":this.state.englishLevels.find((v) => (v.code ===
-	 * result.data[0].englishLevelCode)).name, siteRoleCode:
-	 * result.data[0].siteRoleCode === null || result.data[0].siteRoleCode === "" ?
-	 * "":result.data[0].siteRoleCode, siteRoleName: result.data[0].siteRoleCode
-	 * === null || result.data[0].siteRoleCode === "" ?
-	 * "":result.data[0].siteRoleName, initAge:
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :
-	 * Math.ceil((new Date().getTime() -
-	 * publicUtils.converToLocalTime(result.data[0].birthday, true).getTime()) /
-	 * 31536000000), initNearestStation: result.data[0].nearestStation,
-	 * initJapaneaseConversationLevel: '', initEnglishConversationLevel: '',
-	 * initYearsOfExperience: result.data[0].yearsOfExperience,
-	 * initDevelopLanguageCode6: null, initDevelopLanguageCode7: null,
-	 * initDevelopLanguageCode8: null, initDevelopLanguageCode9: null,
-	 * initDevelopLanguageCode10: null, initUnitPrice: '', initRemark: '',
-	 * initWellUseLanguagss: [], unitPrice: hopeHighestPrice !== null &&
-	 * hopeHighestPrice !== "" && hopeHighestPrice !== undefined ?
-	 * hopeHighestPrice : result.data[0].unitPrice , employeeInfo : index !==
-	 * undefined ? employeeInfo : this.state.employeeInfo, })
-	 */
+
 	// 送信処理
 	beforeSendMailWithFile = () => {
 		this.setSelectedCusInfos("○");
 		let mailText = ``;
 		var time;
+		let resumeInfo1 = [];
+		let resumeInfo2 = [];
+		let resumeName1 = [];
+		let resumeName2 = [];
 		for(let i = 0 ; i < this.state.employeeInfo.length;i++){
 			if(this.state.employeeInfo[i].employeeNo !== ""){
 				// alert(this.state.employeeInfo[i].resumeInfo1Name)
 				axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: String(this.state.employeeInfo[i].employeeNo) })
 				.then(result => {		
+					resumeInfo1.push(result.data[0].resumeInfo1 === null ? " " : result.data[0].resumeInfo1);
+					resumeInfo2.push(result.data[0].resumeInfo2 === null ? " " : result.data[0].resumeInfo2);
+					resumeName1.push(result.data[0].resumeName1 === null ? " " : result.data[0].resumeName1);
+					resumeName2.push(result.data[0].resumeName2 === null ? " " : result.data[0].resumeName2);
 					mailText += `<br/>
 					【名　　前】：`+ result.data[0].employeeFullName + `　` + result.data[0].nationalityName + `　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
 					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :`<br	/>
@@ -351,8 +317,8 @@ class sendLettersConfirm extends React.Component {
 					+ `<br/>`
 					clearTimeout(time)
 			        time=setTimeout(()=>{
-						this.sendMailWithFile(mailText);
-			        },1000)
+						this.sendMailWithFile(mailText,resumeInfo1,resumeInfo2,resumeName1,resumeName2);
+			        },3000)
 
 				})
 				.catch(function(error) {
@@ -365,28 +331,8 @@ class sendLettersConfirm extends React.Component {
 	}
 
 	// 送信処理
-	sendMailWithFile = (mailText) => {
-/*
- * 【名 前】：`+ this.state.employeeName + ` ` + this.state.nationalityName + ` ` +
- * this.state.genderStatus + `<br/> 【所 属】：`+ this.state.employeeStatus +
- * (this.state.age === ""?"":`<br	/> 【年 齢】：`)+ this.state.age + (this.state.age
- * === ""?"":`歳<br/>`) + (this.state.nearestStation !== "" &&
- * this.state.nearestStation !== null ?` 【最寄り駅】：`:"")+
- * (this.state.nearestStation !== "" && this.state.nearestStation !== null ?
- * this.state.stations.find((v) => (v.code === this.state.nearestStation)).name :
- * '') + `<br/> 【日本 語】：`+ (this.state.japaneaseConversationLevel !== "" ?
- * this.state.japaneaseConversationLevels.find((v) => (v.code ===
- * this.state.japaneaseConversationLevel)).name : '') + `<br/> 【英 語】：`+
- * (this.state.englishConversationLevel !== "" ?
- * this.state.englishConversationLevels.find((v) => (v.code ===
- * this.state.englishConversationLevel)).name : '') + `<br/> 【業務年数】：`+
- * this.state.yearsOfExperience + `年<br/> 【対応工程】：`+ this.state.siteRoleName + `<br/>
- * 【得意言語】：`+ this.state.developLanguage + `<br/> 【単 価】：`+ this.state.unitPrice +
- * `万円<br/> 【稼働開始】：2020/09<br/> 【営業状況】：`+ (this.state.salesProgressCode !== "" ?
- * this.state.salesProgresss.find((v) => (v.code ===
- * this.state.salesProgressCode)).name : '') + `<br/> 【備 考】：`+
- * this.state.remark + `<br/> <br/>
- */
+	sendMailWithFile = (mailText,resumeInfo1,resumeInfo2,resumeName1,resumeName2) => {
+
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0] + `&nbsp;株式会社<br/>
 				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `&nbsp;様<br/>
@@ -415,7 +361,19 @@ class sendLettersConfirm extends React.Component {
 						});
 						console.log(selectedMailCC);
 						let mailFrom = this.state.loginUserInfo[0].companyMail;
-						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
+						let paths = [];
+						let names = [];
+						for(let i in this.state.employeeInfo){
+							if(this.state.employeeInfo[i].resumeInfoName === resumeName1[i]){
+								paths.push(resumeInfo1[i]);
+								names.push(resumeInfo1[i].split("/")[resumeInfo1[i].split("/").length - 1]);
+							}
+							else if(this.state.employeeInfo[i].resumeInfoName === resumeName2[i]){
+								paths.push(resumeInfo2[i]);
+								names.push(resumeInfo2[i].split("/")[resumeInfo2[i].split("/").length - 1]);
+							}
+						}
+						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { names, mailTitle, paths, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
 							.then(result => {
 								/*
 								 * this.setState({ mails: result.data, })
@@ -521,6 +479,10 @@ class sendLettersConfirm extends React.Component {
 		this.setState({
 			employeeInfo:tempEmployeeInfo,
 		});
+	}
+	
+	customerNameFormat = (cell) => {
+		return (<div title={cell}>{cell}</div>);
 	}
 	
 	positionNameFormat = (cell) => {
@@ -845,7 +807,7 @@ class sendLettersConfirm extends React.Component {
 		}
 
 		if (flg) {
-			return name;
+			return (<div>&nbsp;&nbsp;{name}</div>);
 		} else {
 			if (cell === "" || cell === null) {
 				return (<div>
@@ -1386,7 +1348,15 @@ class sendLettersConfirm extends React.Component {
 						</InputGroup>
 					</Col>
 				</Row>
-				<Row style={{ padding: "10px" }}><Col sm={1}></Col><Col sm={1}>要員一覧</Col>
+				<Row><Col sm={1}></Col><Col sm={1}>
+					<Button size="sm"
+						hidden={backPage === "" ? true : false}
+						variant="info"
+						onClick={this.back.bind(this)}
+					>
+						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+	                </Button>{" "}
+					</Col>
 					<Col sm={4}>
 						<div style={{ "float": "right" }}>
 							<Button size="sm" variant="info" id="bookButton" name="bookButton" onClick={(event) => this.addFile(event, 'resumeInfo1')}><FontAwesomeIcon icon={faFile} />履歴書</Button>{" "}
@@ -1394,7 +1364,8 @@ class sendLettersConfirm extends React.Component {
 							<Button size="sm" variant="info" id="deleteButton" name="deleteButton" onClick={this.deleteRow}><FontAwesomeIcon icon={faTrash} />要員削除</Button>{" "}
 						</div>
 					</Col>
-					<Col sm={2}>{'　'}営業文章</Col></Row>
+					<Col sm={2}>{'　'}営業文章</Col>
+				</Row>
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={5}>
@@ -1442,13 +1413,7 @@ class sendLettersConfirm extends React.Component {
 				<Row>
 					<Col sm={1}></Col>
 					<Col sm={3}>
-					<Button size="sm"
-						hidden={backPage === "" ? true : false}
-						variant="info"
-						onClick={this.back.bind(this)}
-					>
-						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-                    </Button>{" "}
+
                     </Col>
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
@@ -1468,8 +1433,8 @@ class sendLettersConfirm extends React.Component {
 							trClassName="customClass"
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='8%' dataField='rowNo' editable={false} isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='23%' dataField='customerName' autoValue editable={false}>お客様名</TableHeaderColumn>
-							<TableHeaderColumn width='17%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
+							<TableHeaderColumn width='25%' dataField='customerName' dataFormat={this.customerNameFormat} autoValue editable={false}>お客様名</TableHeaderColumn>
+							<TableHeaderColumn width='15%' dataField='purchasingManagers' editable={false}>担当者</TableHeaderColumn>
 							<TableHeaderColumn hidden dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
 							{/*<TableHeaderColumn width='8%' dataField='purchasingManagers2' editable={false}>担当者</TableHeaderColumn>

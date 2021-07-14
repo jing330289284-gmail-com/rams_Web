@@ -38,6 +38,7 @@ class CustomerInfo extends Component {
         customerDepartmentCode2: '',
         positionCode2: '',
         customerDepartmentName: '',//部門コード
+        responsiblePerson: '',
         customerDepartmentNameDrop: store.getState().dropDown[55].slice(1),//部門の連想数列
         customerDepartmentList: [],//部門情報数列
         accountInfo: null,//口座情報のデータ
@@ -204,7 +205,7 @@ class CustomerInfo extends Component {
                     $("#purchasingManagersMail").val(customerInfoMod.purchasingManagersMail);
                     $("#remark").val(customerInfoMod.remark);
                     $("#purchasingManagers").val(customerInfoMod.purchasingManagers);
-                    $("#capitalStock").val(customerInfoMod.capitalStock);
+                    $("#capitalStock").val(utils.addComma(customerInfoMod.capitalStock));
                     $("#url").val(customerInfoMod.url);
                     $("#remark").val(customerInfoMod.remark);
                     $("#basicContract").val(customerInfoMod.basicContract);
@@ -302,6 +303,7 @@ class CustomerInfo extends Component {
                 rowNo: row.rowNo,
                 customerDepartmentName: row.customerDepartmentCode,
                 customerDepartmentCode: row.customerDepartmentCode,
+                responsiblePerson:row.responsiblePerson,
                 positionCode: row.positionCode,
                 typeOfIndustryCode: row.typeOfIndustryCode,
                 topCustomerCode:row.topCustomerCode,
@@ -318,6 +320,7 @@ class CustomerInfo extends Component {
             this.setState({
                 customerDepartmentValue: '',
                 customerDepartmentName: '',
+                responsiblePerson: '',
             })
             $("#sakujo").attr("disabled", true);
         }
@@ -391,6 +394,7 @@ class CustomerInfo extends Component {
                 rowNo: '',
                 customerDepartmentNameValue: '',
                 customerDepartmentName: '',
+                responsiblePerson: '',
             })
             $("#positionCode").val('');
             $("#responsiblePerson").val('');
@@ -399,6 +403,7 @@ class CustomerInfo extends Component {
             customerDepartmentInfoModel["customerNo"] = $("#customerNo").val();
             customerDepartmentInfoModel["customerDepartmentCode"] = this.state.customerDepartmentName;
             customerDepartmentInfoModel["positionCode"] = this.state.positionCode;
+            customerDepartmentInfoModel["responsiblePerson"] = this.state.responsiblePerson;
             if (this.state.actionType === "update") {
                 axios.post(this.state.serverIP + "customerInfo/customerDepartmentdelete", customerDepartmentInfoModel)
                     .then(result => {

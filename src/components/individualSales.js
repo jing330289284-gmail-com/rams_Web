@@ -166,7 +166,7 @@ class individualSales extends React.Component {//個人売上検索
         var date = new Date();
         var year = date.getFullYear();
         $('#fiscalYear').append('<option value="">' + "" + '</option>');
-        for (var i = 2019; i <= year; i++) {
+        for (var i = year - 1; i <= year + 1; i++) {
             $('#fiscalYear').append('<option value="' + i + '">' + i + '</option>');
         }
         const { location } = this.props
@@ -958,32 +958,66 @@ class individualSales extends React.Component {//個人売上検索
                 </Row>
                 <Row style={{ marginTop: "20px" }}>
                     <Col className="totalAmountWidth">
-                        <label>稼働月数：</label>
-                        <label>{this.state.workMonthCount}</label>
+                        {/*<label>稼働月数：</label>
+                        <label>{this.state.workMonthCount}</label>*/}
+	                    <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">稼働月数</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={this.state.workMonthCount}
+	                        disabled/>
+	                    </InputGroup>
                     </Col>
 
                     <Col className="totalAmountWidth">
-                        <label>単価合計：</label>
-                        <label>{this.state.unitPriceTotal} </label>
+                        {/*<label>単価合計：</label>
+                        <label>{this.state.unitPriceTotal} </label>*/}
+                        <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={this.state.unitPriceTotal}
+	                        disabled/>
+	                    </InputGroup>
                     </Col>
                     <Col className="totalAmountWidth">
-                        <label>支払合計：</label>
-                        <label>{this.state.paymentTotal} </label>
-                    </Col>
+                        {/*<label>支払合計：</label>
+                        <label>{this.state.paymentTotal} </label>*/}
+                        <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支払合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={this.state.paymentTotal}
+	                        disabled/>
+	                    </InputGroup>
+	                </Col>
                     <Col className="totalAmountWidth">
-                        <label>粗利合計：</label>
-                        <label>{this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}</label>
+                        {/*<label>粗利合計：</label>
+                        <label>{this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}</label>*/}
+                        <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}
+	                        disabled/>
+	                    </InputGroup>
                     </Col>
-                    <Button
-								size="sm"
-                                id="backToMonthly"
-								variant="info"
-                                className="btn btn-info btn-sm disabled"
-                                // hidden={this.state.backPage === "" ? true : false}
-								onClick={this.back}
-							>
-								<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-                            </Button>
+					<div style={{ "float": "right" }}>
+	                    <Button
+									size="sm"
+	                                id="backToMonthly"
+									variant="info"
+	                                className="btn btn-info btn-sm disabled"
+	                                // hidden={this.state.backPage === "" ? true : false}
+									onClick={this.back}
+								>
+									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+	                            </Button>
+			        </div>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >

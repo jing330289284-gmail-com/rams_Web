@@ -825,6 +825,14 @@ body {
 	/* width:4.5rem; */
 }
 
+.input-group-indiv {
+	background-color: #808080;
+	font-family: "幼�?";
+	color: rgb(255, 255, 255);
+	width: 4.8rem;
+	/* width:4.5rem; */
+}
+
 .fileUploader {
 	width: 50% !important;
 }
@@ -2493,6 +2501,15 @@ body {
 		width: 5.1rem;
 		/* width:4.5rem; */
 	}
+	
+	.input-group-indiv {
+		background-color: #808080;
+		font-family: "幼�?";
+		color: rgb(255, 255, 255);
+		width: 5.1rem;
+		/* width:4.5rem; */
+	}
+	
 	#expensesInfoDatePicker {
 		background-repeat: no-repeat;
 		width: 8.5rem;
