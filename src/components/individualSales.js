@@ -18,6 +18,7 @@ class individualSales extends React.Component {//個人売上検索
         actionType: '',
         fiscalYear: '',
         employeeName: '',
+        bpFlag: false,
         individualSales_startYearAndMonth: '',
         individualSales_endYearAndMonth: '',
         monthlySales_startYearAndMonth: '',
@@ -514,27 +515,35 @@ class individualSales extends React.Component {//個人売上検索
     }
 
     handleTag = (event, values) => {
-        if (this.state.fiscalYear !== '' || (this.state.individualSales_startYearAndMonth !== '' && this.state.individualSales_endYearAndMonth !== '')) {
+    	let bpFlag = false;
+    	if(String(values.code).search("BP") !== -1){
+    		bpFlag = true;
+    	}
+    	if (this.state.fiscalYear !== '' || (this.state.individualSales_startYearAndMonth !== '' && this.state.individualSales_endYearAndMonth !== '')) {
             if (values != null) {
                 this.setState({
                     employeeName: values.name,
+                    bpFlag: bpFlag,
                 }, () =>
                     this.searchEmployee())
 
             } else {
                 this.setState({
                     employeeName: '',
+                    bpFlag: bpFlag,
                 })
             }
         } else {
             if (values != null) {
                 this.setState({
                     employeeName: values.name,
+                    bpFlag: bpFlag,
                 })
 
             } else {
                 this.setState({
                     employeeName: '',
+                    bpFlag: bpFlag,
                 })
             }
 
@@ -892,7 +901,7 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-                    <Col className="selectWidth">
+            		<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
@@ -905,8 +914,8 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <InputGroup size="sm" >
+	        		<Col sm={3}>
+	                	<InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
                             <Autocomplete
                                 id="employeeName"
@@ -917,13 +926,16 @@ class individualSales extends React.Component {//個人売上検索
                                 onChange={(event, values) => this.handleTag(event, values)}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
-                                        <input placeholder="  社員名" type="text" {...params.inputProps} className="auto"
-                                            style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+										<input placeholder="  社員名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"/>
                                     </div>
                                 )}
                             />
-                            <font color="red" style={{ marginLeft: "15px" }}>★</font>
-                            <InputGroup.Prepend style={{ marginLeft: "30px" }}>
+                        </InputGroup>
+                    </Col>
+        	        <Col>
+    	                <InputGroup size="sm" className="mb-3">
+	                    	<font color="red" style={{ marginLeft: "-30px" , marginRight: "15px" }}>★</font>
+                            <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.individualSales_startYearAndMonth}
                                     onChange={this.individualSalesStartYearAndMonthChange.bind(this)}
@@ -956,10 +968,8 @@ class individualSales extends React.Component {//個人売上検索
                         </InputGroup>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: "20px" }}>
-                    <Col className="totalAmountWidth">
-                        {/*<label>稼働月数：</label>
-                        <label>{this.state.workMonthCount}</label>*/}
+                <Row>
+            		<Col sm={3}>
 	                    <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">稼働月数</InputGroup.Text>
@@ -970,9 +980,7 @@ class individualSales extends React.Component {//個人売上検索
 	                    </InputGroup>
                     </Col>
 
-                    <Col className="totalAmountWidth">
-                        {/*<label>単価合計：</label>
-                        <label>{this.state.unitPriceTotal} </label>*/}
+            		<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
@@ -982,9 +990,7 @@ class individualSales extends React.Component {//個人売上検索
 	                        disabled/>
 	                    </InputGroup>
                     </Col>
-                    <Col className="totalAmountWidth">
-                        {/*<label>支払合計：</label>
-                        <label>{this.state.paymentTotal} </label>*/}
+            		<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支払合計</InputGroup.Text>
@@ -994,9 +1000,7 @@ class individualSales extends React.Component {//個人売上検索
 	                        disabled/>
 	                    </InputGroup>
 	                </Col>
-                    <Col className="totalAmountWidth">
-                        {/*<label>粗利合計：</label>
-                        <label>{this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}</label>*/}
+            		<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
@@ -1004,20 +1008,20 @@ class individualSales extends React.Component {//個人売上検索
 		                    <FormControl
 	                        value={this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}
 	                        disabled/>
-	                    </InputGroup>
-                    </Col>
-					<div style={{ "float": "right" }}>
+		                    
+		                    <font color="red" style={{ marginLeft: "15px" , marginRight: "15px" }}></font>
+
 	                    <Button
 									size="sm"
 	                                id="backToMonthly"
 									variant="info"
 	                                className="btn btn-info btn-sm disabled"
-	                                // hidden={this.state.backPage === "" ? true : false}
 									onClick={this.back}
 								>
 									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
 	                            </Button>
-			        </div>
+						</InputGroup>
+                    </Col>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
@@ -1028,9 +1032,10 @@ class individualSales extends React.Component {//個人売上検索
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='110' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='' width='290' >所属会社</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='100' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>

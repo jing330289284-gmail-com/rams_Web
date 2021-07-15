@@ -334,7 +334,7 @@ class sendLettersConfirm extends React.Component {
 	sendMailWithFile = (mailText,resumeInfo1,resumeInfo2,resumeName1,resumeName2) => {
 
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
-			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0] + `&nbsp;株式会社<br/>
+			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0].replace("株式会社","") + `&nbsp;株式会社<br/>
 				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `&nbsp;様<br/>
 				<br/>
 				お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>

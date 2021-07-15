@@ -43,7 +43,7 @@ class IndividualCustomerSales extends React.Component {
         var date = new Date();
         var year = date.getFullYear();
         $('#fiscalYear').append('<option value="">' + "" + '</option>');
-        for (var i = 2019; i <= year; i++) {
+        for (var i = year - 1; i <= year + 1; i++) {
             $('#fiscalYear').append('<option value="' + i + '">' + i + '</option>');
         }
     }
@@ -383,7 +383,7 @@ class IndividualCustomerSales extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col className="selectWidth">
+                	<Col sm={3}>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
@@ -393,7 +393,7 @@ class IndividualCustomerSales extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col >
+            		<Col sm={3}>
                         <InputGroup size="sm" >
                             <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">お客様名</InputGroup.Text></InputGroup.Prepend>
                             <Autocomplete
@@ -405,13 +405,16 @@ class IndividualCustomerSales extends React.Component {
                                 onChange={(event, values) => this.handleTag(event, values)}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
-                                        <input placeholder="  お客様名" type="text" {...params.inputProps} className="auto"
-                                            style={{ width: 200, height: 31, borderColor: "#ced4da", borderWidth: 1, borderStyle: "solid", fontSize: ".875rem", color: "#495057" }} />
+										<input placeholder="  お客様名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"/>
                                     </div>
                                 )}
                             />
-                            <font color="red" style={{ marginLeft: "15px" }}>★</font>
-                            <InputGroup.Prepend style={{ marginLeft: "30px" }}>
+                            </InputGroup>
+                    </Col>
+               		<Col>
+	                    <InputGroup size="sm" >
+	                    <font color="red" style={{ marginLeft: "-30px" , marginRight: "15px" }}>★</font>
+                            <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.individualCustomerSales_startYearAndMonth}
                                     onChange={this.individualCustomerSalesStartYearAndMonthChange}
@@ -444,25 +447,49 @@ class IndividualCustomerSales extends React.Component {
                         </InputGroup>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: "10px" }}>
+                <Row style={{ marginTop: "15px" }}>
+	                <Col sm={3}>
+	                    <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">取引人数</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={totalworkPeoSum}
+	                        disabled/>
+	                    </InputGroup>
+	                </Col>
+	
+	                <Col sm={3}>
+	                    <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={totaluPrice}
+	                        disabled/>
+	                    </InputGroup>
+	                </Col>
                     <Col sm={3}>
-                        <label>取引人数：</label>
-                        <label>{totalworkPeoSum}</label>
-                    </Col>
-
+	                    <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">売上合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={overTimeOrExpectFee}
+	                        disabled/>
+	                    </InputGroup>
+	                </Col>
                     <Col sm={3}>
-                        <label>単価合計：</label>
-                        <label>{totaluPrice}</label>
-                    </Col>
-                    <Col sm={3}>
-                        <label>売上合計：</label>
-                        <label> {overTimeOrExpectFee}</label>
-                    </Col>
-                    <Col sm={3}>
-                        <label>粗利合計：</label>
-                        <label id="totalGp">{totalgrossProfit}</label>
-                    </Col>
-                </Row>
+	                    <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+	                        value={totalgrossProfit}
+	                        disabled/>
+	                    </InputGroup>
+	                </Col>
+		        </Row>
                 <div >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' isKey>年月</TableHeaderColumn>

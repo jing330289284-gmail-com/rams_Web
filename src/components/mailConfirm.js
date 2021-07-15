@@ -55,8 +55,7 @@ class mailConfirm extends React.Component {
 						value={`To:` + this.state.selectedmail + (String(this.state.companyMailNames) === "" ? "" : `	CC:`+ this.state.companyMailNames.join(';')) + `         
 タイトル:`+ this.state.mailTitle + `	添付ファイル名前:` + this.state.resumeName + `
 
-`+
-							this.state.selectedCustomerName.split("(")[0] + `株式会社
+`+ this.state.selectedCustomerName.split("(")[0].replace("株式会社","") + `株式会社
 `+ (this.state.selectedPurchasingManagers === "" ? "ご担当者" : this.state.selectedPurchasingManagers.split("　")[0]) + ` 様 
 お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。
  ` +

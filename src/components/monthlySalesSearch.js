@@ -38,7 +38,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 		this.options = {
 			sizePerPage: 10,
 			pageStartIndex: 1,
-			paginationSize: 2,
+			paginationSize: 3,
 			prePage: '<', // Previous page button text
             nextPage: '>', // Next page button text
             firstPage: '<<', // First page button text
@@ -485,7 +485,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                         </InputGroup>  
                     </Col>
                 </Row>
-                <Row>
+                <Row className="mb-3">
 					<Col  className="text-center">
 					<Button variant="info" size="sm" id="shusei" onClick={this.searchMonthlySales}><FontAwesomeIcon icon={faSearch} />検索</Button>
                     {' '}
@@ -515,24 +515,47 @@ class monthlySalesSearch extends Component {//月次売上検索
                 } 
                     }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
                     </div> 
-                    <Col className="totalAmountWidth">
-                            <label>単価総額：</label>
-                            <label>{this.state.unitPirceTotal}</label>
+                    <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価総額</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.unitPirceTotal}
+		                    disabled/>
+	                    </InputGroup>
 					</Col>
                     
-					<Col className="totalAmountWidth">
-                            <label>支給総額：</label>
-                            <label>{this.state.salaryTotal}</label>
+                    <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支給総額</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.salaryTotal}
+		                    disabled/>
+	                    </InputGroup>
 					</Col>
-					<Col className="totalAmountWidth">
-                            <label>非稼働総額：</label>
-                            <label>{this.state.TotalNonOperation}</label>
+                    <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="fiveKanji" className="input-group-indiv">非稼働総額</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.TotalNonOperation}
+		                    disabled/>
+	                    </InputGroup>
 					</Col>
-					<Col className="totalAmountWidth">
-                            <label>粗利総額：</label>
-                            <label>{this.state.grossProfitTotal}</label>
+                    <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利総額</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.grossProfitTotal}
+		                    disabled/>
+	                    </InputGroup>
 					</Col>
-                    
 				</Row>
                 <div>
                     <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>

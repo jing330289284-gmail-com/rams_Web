@@ -284,7 +284,7 @@ class customerSalesList extends React.Component {
                 </Row>
                 <Row>
                     <Col>
-                        <InputGroup size="sm" >
+	                	<InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend >
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.customerSalesListYearAndMonth}
@@ -304,28 +304,61 @@ class customerSalesList extends React.Component {
                         </InputGroup>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: "10px" }}>
-                    <Col className='customerSalesPeoWidth'>
-                        <label>取引人数：</label>
-                        <label>{this.state.calPeoCount}</label>
-                    </Col>
+                <Row>
+	                <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">取引人数</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.calPeoCount}
+		                    disabled/>
+		                </InputGroup>
+	                </Col>
+	                
+	                <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">全体比率</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.totalpercent}
+		                    disabled/>
+		                </InputGroup>
+	                </Col>
+	                
+	                <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.unitPTotal}
+		                    disabled/>
+		                </InputGroup>
+	                </Col>
+	                
+	                <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">売上合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.totalSales}
+		                    disabled/>
+		                </InputGroup>
+	                </Col>
 
-                    <Col className='customerSalesWidth'>
-                        <label>全体比率：</label>
-                         <label>{this.state.totalpercent}</label>
-                    </Col>
-                    <Col className='customerSalesWidth'>
-                        <label>単価合計：</label>
-                                <label>{this.state.unitPTotal}</label>
-                    </Col>
-                    <Col className='customerSalesWidth'>
-                        <label>売上合計：</label>
-                                <label>{this.state.totalSales}</label>
-                    </Col>
-                    <Col className='customerSalesWidth'>
-                        <label>粗利合計：</label>
-                        <label>{this.state.totalgrossProfit}</label>
-                    </Col>
+	                <Col>
+		                <InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <FormControl
+		                    value={this.state.totalgrossProfit}
+		                    disabled/>
+		                </InputGroup>
+	                </Col>
                 </Row>
                 <div >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} ref="CustomerSaleslListInfoListTable" pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
