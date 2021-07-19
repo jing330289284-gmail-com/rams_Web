@@ -356,7 +356,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                 <Form>
                 <Row inline="true">
                      <Col  className="text-center">
-                    <h2>月次売上検索</h2>
+                    <h2>全員売上検索</h2>
                     </Col> 
                 </Row>
                 <br/>
@@ -562,7 +562,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='90'>年月</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='100'>氏名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員区分</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='90'>職種</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'  width='150'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='150' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>

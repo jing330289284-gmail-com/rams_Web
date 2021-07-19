@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, InputGroup, Button, FormControl, Popover, OverlayTrigger, Table } from 'react-bootstrap';
+import { Row, Col, InputGroup, Button, Form, FormControl, Popover, OverlayTrigger, Table } from 'react-bootstrap';
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
 import * as publicUtils from './utils/publicUtils.js';
@@ -18,6 +18,7 @@ class individualSales extends React.Component {//個人売上検索
         actionType: '',
         fiscalYear: '',
         employeeName: '',
+        employeeNo: '',
         bpFlag: false,
         individualSales_startYearAndMonth: '',
         individualSales_endYearAndMonth: '',
@@ -48,9 +49,16 @@ class individualSales extends React.Component {//個人売上検索
     }
     initialState = {
         employeeInfo: store.getState().dropDown[9].slice(1),
+        workingEmployeeInfo: store.getState().dropDown[79].slice(1),
+        notWorkingEmployeeInfo: store.getState().dropDown[80].slice(1),
+		employeeInfoAll: store.getState().dropDown[9].slice(1),
+		employeeStatuss: store.getState().dropDown[4],
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         textcolorCheck: '',
         employeeName: '',
+        employeeNo: '',
+        employeeStatus: '',
+        kadou: '',
         individualSales_startYearAndMonth: '',
         individualSales_endYearAndMonth: '',
         fiscalYear: '',
@@ -170,53 +178,72 @@ class individualSales extends React.Component {//個人売上検索
         for (var i = year - 1; i <= year + 1; i++) {
             $('#fiscalYear').append('<option value="' + i + '">' + i + '</option>');
         }
-        const { location } = this.props
-        var actionType = '';
-        var backPage ='';
-        var monthlySales_startYearAndMonth = '';
-        var monthlySales_endYearAndMonth = '';
-        var rowSelectemployeeNo = '';
-        var rowSelectemployeeName = '';
-        var utilPricefront ='';
-        var utilPriceback ='';
-        var salaryfront='';
-        var salaryback ='';
-        var grossProfitFront='';
-        var grossProfitBack='';
-        var employeeClassification='';
-        if (location.state) {
-            actionType = location.state.actionType;
-            backPage= location.state.backPage;
-            this.setState({backPage:backPage});
-            sessionStorage.setItem('actionType', actionType);
-            monthlySales_startYearAndMonth = location.state.monthlySales_startYearAndMonth;
-            monthlySales_endYearAndMonth = location.state.monthlySales_endYearAndMonth;
-            rowSelectemployeeNo = location.state.rowSelectemployeeNo;
-            rowSelectemployeeName = location.state.rowSelectemployeeName;
-            utilPricefront =location.state.utilPricefront;
-            utilPriceback =location.state.utilPriceback;
-            salaryfront =location.state.salaryfront;
-            salaryback =location.state.salaryback;
-            grossProfitFront =location.state.grossProfitFront;
-            grossProfitBack =location.state.grossProfitBack;
-            $('#backToMonthly').removeClass('disabled');
-            this.setState({
-                individualSales_startYearAndMonth: monthlySales_startYearAndMonth,
-                individualSales_endYearAndMonth: monthlySales_endYearAndMonth,
-                employeeName: rowSelectemployeeName + "(" + rowSelectemployeeNo + ")",
-                utilPricefront:utilPricefront,
-                utilPriceback:utilPriceback,
-                salaryfront:salaryfront,
-                salaryback:salaryback,
-                grossProfitFront:grossProfitFront,
-                grossProfitBack:grossProfitBack,
-                
-            }, () =>
-                this.searchEmployee()
-            );
-        }else{
-            $('#backToMonthly').addClass('disabled');
-        }
+		if (this.props.location.state !== undefined) {
+			if (this.props.location.state.sendValue !== undefined) {
+	            var sendValue = this.props.location.state.sendValue;
+	            this.setState({
+	    			fiscalYear: sendValue.fiscalYear,
+	    			kadou: sendValue.kadou,
+	    			employeeStatus: sendValue.employeeStatus,
+	    			employeeName: sendValue.employeeName,
+	    			individualSales_startYearAndMonth: sendValue.individualSales_startYearAndMonth,
+	    			individualSales_endYearAndMonth: sendValue.individualSales_endYearAndMonth,
+	    			employeeInfoList: sendValue.employeeInfoList,
+	    			workMonthCount: sendValue.workMonthCount,
+	    			unitPriceTotal: sendValue.unitPriceTotal,
+	    			paymentTotal: sendValue.paymentTotal,
+					employeeNo: sendValue.employeeNo,
+					employeeInfo: sendValue.employeeInfo,
+	            })
+			}else{
+		        const { location } = this.props
+		        var actionType = '';
+		        var backPage ='';
+		        var monthlySales_startYearAndMonth = '';
+		        var monthlySales_endYearAndMonth = '';
+		        var rowSelectemployeeNo = '';
+		        var rowSelectemployeeName = '';
+		        var utilPricefront ='';
+		        var utilPriceback ='';
+		        var salaryfront='';
+		        var salaryback ='';
+		        var grossProfitFront='';
+		        var grossProfitBack='';
+		        var employeeClassification='';
+		        if (location.state) {
+		            actionType = location.state.actionType;
+		            backPage= location.state.backPage;
+		            this.setState({backPage:backPage});
+		            sessionStorage.setItem('actionType', actionType);
+		            monthlySales_startYearAndMonth = location.state.monthlySales_startYearAndMonth;
+		            monthlySales_endYearAndMonth = location.state.monthlySales_endYearAndMonth;
+		            rowSelectemployeeNo = location.state.rowSelectemployeeNo;
+		            rowSelectemployeeName = location.state.rowSelectemployeeName;
+		            utilPricefront =location.state.utilPricefront;
+		            utilPriceback =location.state.utilPriceback;
+		            salaryfront =location.state.salaryfront;
+		            salaryback =location.state.salaryback;
+		            grossProfitFront =location.state.grossProfitFront;
+		            grossProfitBack =location.state.grossProfitBack;
+		            $('#backToMonthly').removeClass('disabled');
+		            this.setState({
+		                individualSales_startYearAndMonth: monthlySales_startYearAndMonth,
+		                individualSales_endYearAndMonth: monthlySales_endYearAndMonth,
+		                employeeName: rowSelectemployeeName + "(" + rowSelectemployeeNo + ")",
+		                utilPricefront:utilPricefront,
+		                utilPriceback:utilPriceback,
+		                salaryfront:salaryfront,
+		                salaryback:salaryback,
+		                grossProfitFront:grossProfitFront,
+		                grossProfitBack:grossProfitBack,
+		            }, () =>
+		                this.searchEmployee()
+		            );
+		        }else{
+		            $('#backToMonthly').addClass('disabled');
+		        }
+			}
+		}
     }
     individualSalesStartYearAndMonthChange = date => {
         if (this.state.employeeName !== '') {
@@ -516,13 +543,14 @@ class individualSales extends React.Component {//個人売上検索
 
     handleTag = (event, values) => {
     	let bpFlag = false;
-    	if(String(values.code).search("BP") !== -1){
-    		bpFlag = true;
-    	}
     	if (this.state.fiscalYear !== '' || (this.state.individualSales_startYearAndMonth !== '' && this.state.individualSales_endYearAndMonth !== '')) {
             if (values != null) {
+            	if(String(values.code).search("BP") !== -1){
+            		bpFlag = true;
+            	}
                 this.setState({
                     employeeName: values.name,
+                    employeeNo: values.code,
                     bpFlag: bpFlag,
                 }, () =>
                     this.searchEmployee())
@@ -530,25 +558,201 @@ class individualSales extends React.Component {//個人売上検索
             } else {
                 this.setState({
                     employeeName: '',
+                    employeeNo: '',
                     bpFlag: bpFlag,
                 })
             }
         } else {
             if (values != null) {
+            	if(String(values.code).search("BP") !== -1){
+            		bpFlag = true;
+            	}
                 this.setState({
                     employeeName: values.name,
+                    employeeNo: values.code,
                     bpFlag: bpFlag,
                 })
 
             } else {
                 this.setState({
                     employeeName: '',
+                    employeeNo: '',
                     bpFlag: bpFlag,
                 })
             }
 
         }
     }
+    
+	kadouChange = event => {
+		let value = event.target.value;
+		let employeeInfoList = this.state.employeeInfoAll;
+		let tempEmployeeList = [];
+		if(this.state.employeeStatus !== ""){
+			if(this.state.employeeStatus === '0'){
+				for(let i in employeeInfoList){
+					if(employeeInfoList[i].code.substring(0,2) !== "BP" && employeeInfoList[i].code.substring(0,2) !== "SP" && employeeInfoList[i].code.substring(0,2) !== "SC"){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			} else if (this.state.employeeStatus === '1') {
+				for(let i in employeeInfoList){
+					if(employeeInfoList[i].code.substring(0,2) === "BP"){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			} else if (this.state.employeeStatus === '2') {
+				for(let i in employeeInfoList){
+					if(employeeInfoList[i].code.substring(0,2) === "SP"){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			} else if (this.state.employeeStatus === '3') {
+				for(let i in employeeInfoList){
+					if(employeeInfoList[i].code.substring(0,2) === "SC"){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			} else if (this.state.employeeStatus === '4') {
+				for(let i in employeeInfoList){
+					if(employeeInfoList[i].code.substring(0,3) === "BPR"){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			} else if (this.state.employeeStatus === '5') {
+				for(let i in employeeInfoList){
+					if(!(employeeInfoList[i].code.substring(0,2) === "BP")){
+						tempEmployeeList.push(employeeInfoList[i]);
+					}
+				}
+			}
+		}
+		else{
+			for(let i in employeeInfoList){
+				tempEmployeeList.push(employeeInfoList[i]);
+			}
+		}
+		
+		let workingEmployeeInfo = this.state.workingEmployeeInfo;
+		let notWorkingEmployeeInfo = this.state.notWorkingEmployeeInfo;
+		if(value === '0'){
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				for(let j in workingEmployeeInfo){
+					if(workingEmployeeInfo[j].code === tempEmployeeList[i].code){
+						newEmpInfoList.push(tempEmployeeList[i]);
+						break;
+					}
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		}
+		else if(value === '1'){
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				for(let j in notWorkingEmployeeInfo){
+					if(notWorkingEmployeeInfo[j].code === tempEmployeeList[i].code){
+						newEmpInfoList.push(tempEmployeeList[i]);
+						break;
+					}
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		} else {
+			this.setState({ employeeInfo: tempEmployeeList });
+		}
+		this.setState({ kadou: value });
+	}
+    
+	/**
+	 * タイプが違う時に、色々な操作をします。
+	 */
+	employeeStatusChange = event => {
+		let value = event.target.value;
+		let employeeInfoList = this.state.employeeInfoAll;
+		let tempEmployeeList = [];
+		if(this.state.kadou !== ""){
+			let workingEmployeeInfo = this.state.workingEmployeeInfo;
+			let notWorkingEmployeeInfo = this.state.notWorkingEmployeeInfo;
+			if(this.state.kadou === '0'){
+				for(let i in employeeInfoList){
+					for(let j in workingEmployeeInfo){
+						if(workingEmployeeInfo[j].code === employeeInfoList[i].code){
+							tempEmployeeList.push(employeeInfoList[i]);
+							break;
+						}
+					}
+				}
+			}
+			else if(this.state.kadou === '1'){
+				for(let i in employeeInfoList){
+					for(let j in notWorkingEmployeeInfo){
+						if(notWorkingEmployeeInfo[j].code === employeeInfoList[i].code){
+							tempEmployeeList.push(employeeInfoList[i]);
+							break;
+						}
+					}
+				}
+			} 
+		}else{
+			for(let i in employeeInfoList){
+				tempEmployeeList.push(employeeInfoList[i]);
+			}
+		}
+		
+		if(value === '0'){
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(tempEmployeeList[i].code.substring(0,2) !== "BP" && tempEmployeeList[i].code.substring(0,2) !== "SP" && tempEmployeeList[i].code.substring(0,2) !== "SC"){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		} else if (value === '1') {
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(tempEmployeeList[i].code.substring(0,2) === "BP"){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		} else if (value === '2') {
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(tempEmployeeList[i].code.substring(0,2) === "SP"){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '3') {
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(tempEmployeeList[i].code.substring(0,2) === "SC"){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else if (value === '4') {
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(tempEmployeeList[i].code.substring(0,3) === "BPR"){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList , employeeName: "" });
+		} else if (value === '5') {
+			let newEmpInfoList = [];
+			for(let i in tempEmployeeList){
+				if(!(tempEmployeeList[i].code.substring(0,2) === "BP")){
+					newEmpInfoList.push(tempEmployeeList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList, employeeName: ""  });
+		} else {
+			this.setState({ employeeInfo: tempEmployeeList });
+		}
+		this.setState({ employeeStatus: value });
+	}
 
     workDaysCal = (cell, row) => {
         var holidayCount = 0;
@@ -826,6 +1030,15 @@ class individualSales extends React.Component {//個人売上検索
         this.setState({ unitPriceTotalnoComma: unitPriceTotal })
 
     }
+    
+    bpBelongCustomerDetail = (cell, row) => {
+    	if(cell === null || cell === "" || cell === undefined){
+    		return "";
+    	}
+    	else{
+    		return store.getState().dropDown[53].slice(1).find(v => v.code === cell).text;
+    	}
+    }
 
     allowanceDetail = (cell, row) => {
         const listItems = row.empNameList.map((empNameList) =>
@@ -884,11 +1097,63 @@ class individualSales extends React.Component {//個人売上検索
             return returnItem;
         }
     }
-
+    
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				fiscalYear: this.state.fiscalYear,
+				kadou: this.state.kadou,
+				employeeStatus: this.state.employeeStatus,
+				employeeName: this.state.employeeName,
+				individualSales_startYearAndMonth: this.state.individualSales_startYearAndMonth,
+				individualSales_endYearAndMonth: this.state.individualSales_endYearAndMonth,
+				employeeInfoList: this.state.employeeInfoList,
+				workMonthCount: this.state.workMonthCount,
+				unitPriceTotal: this.state.unitPriceTotal,
+				paymentTotal: this.state.paymentTotal,
+				employeeNo: this.state.employeeNo,
+				employeeInfo: this.state.employeeInfo,
+		};
+		switch (actionType) {
+			case "wagesInfo":
+				path = {
+					pathname: '/subMenuManager/wagesInfo',
+					state: {
+						employeeNo: this.state.employeeNo,
+						backPage: "individualSales",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.employeeNo,
+						backPage: "individualSales",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
 
     render() {
         const { errorsMessageValue, employeeInfo } = this.state;
         const { backPage } = this.state;
+        //テーブルの行の選択
+        const selectRow = {
+            mode: 'radio',
+            bgColor: 'pink',
+            hideSelectColumn: true,
+            clickToSelect: true,  // click to select, default is false
+            clickToExpand: true,// click to expand row, default is false
+            onSelect: this.handleRowSelect,
+        };
         return (
 
             <div>
@@ -914,6 +1179,32 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
+	        		<Col sm={2}>
+						<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">稼働区分</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control as="select" size="sm" onChange={this.kadouChange.bind(this)} name="kadou" value={this.state.kadou} autoComplete="off" >
+							<option value=""　></option>
+							<option value="0">はい</option>
+							<option value="1">いいえ</option>
+						</Form.Control>
+						</InputGroup>
+	                </Col>
+	        		<Col sm={2}>
+						<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control as="select" size="sm" onChange={this.employeeStatusChange.bind(this)} name="employeeStatus" value={this.state.employeeStatus} autoComplete="off">
+							{this.state.employeeStatuss.map(data =>
+								<option key={data.code} value={data.code}>
+									{data.name}
+								</option>
+							)}
+						</Form.Control>
+						</InputGroup>
+	                </Col>
 	        		<Col sm={3}>
 	                	<InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
@@ -969,9 +1260,14 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-            		<Col sm={3}>
-	                    <InputGroup size="sm" className="mb-3">
-		                    <InputGroup.Prepend>
+            		<Col sm={2}>
+						<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>
+		                <font style={{ marginLeft: "3px" , marginRight: "3px" }}></font>
+		                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false}  name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
+		            </Col>
+            		<Col>
+		                <InputGroup size="sm" className="mb-3">
+	                    	<InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">稼働月数</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <FormControl
@@ -980,7 +1276,7 @@ class individualSales extends React.Component {//個人売上検索
 	                    </InputGroup>
                     </Col>
 
-            		<Col sm={3}>
+            		<Col>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
@@ -990,7 +1286,7 @@ class individualSales extends React.Component {//個人売上検索
 	                        disabled/>
 	                    </InputGroup>
                     </Col>
-            		<Col sm={3}>
+            		<Col>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支払合計</InputGroup.Text>
@@ -1000,7 +1296,7 @@ class individualSales extends React.Component {//個人売上検索
 	                        disabled/>
 	                    </InputGroup>
 	                </Col>
-            		<Col sm={3}>
+            		<Col>
                         <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
@@ -1009,8 +1305,9 @@ class individualSales extends React.Component {//個人売上検索
 	                        value={this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma ? publicUtils.addComma(this.state.unitPriceTotalnoComma - this.state.paymentTotalnoComma, false) : ''}
 	                        disabled/>
 		                    
-		                    <font color="red" style={{ marginLeft: "15px" , marginRight: "15px" }}></font>
-
+						</InputGroup>
+	                 </Col>
+	                 <Col sm={1}>
 	                    <Button
 									size="sm"
 	                                id="backToMonthly"
@@ -1020,13 +1317,12 @@ class individualSales extends React.Component {//個人売上検索
 								>
 									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
 	                            </Button>
-						</InputGroup>
                     </Col>
                 </Row>
                 <div >
-                    <BootstrapTable data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
+                    <BootstrapTable selectRow={selectRow} data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員区分</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='118' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
@@ -1035,7 +1331,7 @@ class individualSales extends React.Component {//個人売上検索
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='' width='290' >所属会社</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='bpBelongCustomer' width='290' dataFormat={this.bpBelongCustomerDetail.bind(this)}>所属会社</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='100' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
