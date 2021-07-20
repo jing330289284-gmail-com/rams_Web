@@ -145,6 +145,7 @@ class sendLettersMatter extends React.Component {
 		// 送信ボタン活性
 		sendLetterButtonDisFlag: true,
 		/* 要員追加機能の新規 20201216 張棟 END */
+		sendLetterOverFlag: false,
 	})
 	
 	componentDidMount() {
@@ -173,14 +174,19 @@ class sendLettersMatter extends React.Component {
 			                            payOffRange = (result.data.projectInfoList[0].payOffRangeLowest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeLowest) 
 			                                                + "-" + (result.data.projectInfoList[0].payOffRangeHighest === "0" ? "固定" : result.data.projectInfoList[0].payOffRangeHighest) 
 			                        }
+			                	if(payOffRange === "固定-固定"){
+			                		payOffRange = "固定";
+			                	}
 			                    if(result.data.projectInfoList[0].unitPriceRangeLowest !== undefined && result.data.projectInfoList[0].unitPriceRangeLowest !== null && result.data.projectInfoList[0].unitPriceRangeLowest !== ''|| 
 			                            result.data.projectInfoList[0].unitPriceRangeHighest !== undefined && result.data.projectInfoList[0].unitPriceRangeHighest !== null  && result.data.projectInfoList[0].unitPriceRangeHighest !== ''){
 			                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円~" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";
 			                        }
 			                    if(result.data.projectInfoList[0].projectPhaseStart !== undefined && result.data.projectInfoList[0].projectPhaseStart !== null && result.data.projectInfoList[0].projectPhaseStart !== ''){
-			                            projectPhase = result.data.projectInfoList[0].projectPhaseNameStart + "~" + result.data.projectInfoList[0].projectPhaseNameEnd;
-			                        }
-
+			                        projectPhase = result.data.projectInfoList[0].projectPhaseNameStart;
+			                    }
+			                    if(result.data.projectInfoList[0].projectPhaseNameEnd !== undefined && result.data.projectInfoList[0].projectPhaseNameEnd !== null && result.data.projectInfoList[0].projectPhaseNameEnd !== ''){
+		                            projectPhase = (projectPhase === "" ? "" : projectPhase + "~") + result.data.projectInfoList[0].projectPhaseNameEnd;
+		                        }
 
 			                    if(result.data.projectInfoList[0].keyWordOfLanagurueName1 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== ''){
 			                    	keyWordOfLanagurueName += result.data.projectInfoList[0].keyWordOfLanagurueName1 + ",";
@@ -310,6 +316,7 @@ class sendLettersMatter extends React.Component {
 	
 	// 送信処理
 	beforeSendMailWithFile = () => {
+		this.setSelectedCusInfos("○");
 		var mailText = this.state.matterText;
 		mailText = mailText.replace(/\n/g,"<br>");        // i9及以上
 		this.sendMailWithFile(mailText);
@@ -320,8 +327,8 @@ class sendLettersMatter extends React.Component {
 	// 送信処理
 	sendMailWithFile = (mailText) => {
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
-			const mailConfirmContont = this.state.selectedCusInfos[i].customerName + `株式会社<br/>
-				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers) + `様<br/>
+			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0].replace("株式会社","") + `株式会社<br/>
+				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `様<br/>
 				<br/>
 				お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。<br/>
 				<br/>`
@@ -357,6 +364,9 @@ class sendLettersMatter extends React.Component {
 								 * this.setState({ mails: result.data, })
 								 */
 								this.setSelectedCusInfos("済み");
+								this.setState({
+									sendLetterOverFlag: true,
+								})
 							})
 							.catch(function(error) {
 								alert(error);
@@ -449,6 +459,13 @@ class sendLettersMatter extends React.Component {
            	 	selectRow1Flag: false,
 			})
 		}
+	}
+	
+	sendOverFormat = (cell) => {
+		if(cell === "○"){
+			return <div class='donut'></div>;
+		}
+		return cell;
 	}
 
 	valueChange = event => {
@@ -623,7 +640,7 @@ class sendLettersMatter extends React.Component {
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRow1Flag ? false:true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" ? true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" || this.state.sendLetterOverFlag ? true:false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>
@@ -643,7 +660,7 @@ class sendLettersMatter extends React.Component {
 							<TableHeaderColumn width='13%' dataField='positionCode' dataFormat={this.positionNameFormat} editable={false}>職位</TableHeaderColumn>
 							<TableHeaderColumn width='25%' dataField='purchasingManagersMail' editable={false}>メール</TableHeaderColumn>
 							<TableHeaderColumn width='17%' dataField='purchasingManagersOthers' editable={false}>追加者</TableHeaderColumn>
-							<TableHeaderColumn width='10%' dataField='sendOver' editable={false}>送信状況</TableHeaderColumn>
+							<TableHeaderColumn width='10%' dataField='sendOver' dataFormat={this.sendOverFormat} editable={false}>送信状況</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>
 				</Row>

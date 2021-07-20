@@ -518,7 +518,7 @@ class ProjectInfoSearch extends Component {
                     <Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static" dialogClassName="modal-projectContent"
                         onHide={this.handleHideModal.bind(this)} show={this.state.showProjectContentModal}>
                         <Modal.Header closeButton>
-                        <h2>営業文章</h2>
+                        <h2>案件文章</h2>
                         </Modal.Header>
                         <Modal.Body >
                             <ProjectContent projectNo={selectedProjectNo}/>
@@ -831,11 +831,11 @@ class ProjectInfoSearch extends Component {
                         <Row >
                             <Col sm={12}>
                                 <BootstrapTable ref="projectInfoSearchTable" data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-                                    <TableHeaderColumn row='0' rowSpan='2' width='85' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='70' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='110' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>

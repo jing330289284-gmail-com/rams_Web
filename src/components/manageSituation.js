@@ -168,8 +168,14 @@ class manageSituation extends React.Component {
 		for(let i = 1; i < this.state.frameWorks.length; i++){
 			developLanguagesTemp.push({code:String((Number(this.state.frameWorks[i].code) + 1) * -1),name:this.state.frameWorks[i].name});
 		}
+		let employees = [];
+		for(let i in this.state.employees){
+			employees.push(this.state.employees[i]);
+		}
+		employees.push({code:String(this.state.employees.length),name:"1社先の社員"});
 		this.setState({
 			developLanguages: developLanguagesTemp,
+			employees:employees,
 		});
     }
 	

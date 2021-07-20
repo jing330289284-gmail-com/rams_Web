@@ -166,12 +166,35 @@ class individualSales extends React.Component {//個人売上検索
         this.setState({ paymentTotal: publicUtils.addComma(paymentTotal, false) })
         this.setState({ paymentTotalnoComma: paymentTotal })
     }
+    
     clickButtonDisabled = () => {
         $('button[name="backToMonthly"]').prop('disabled', true);
     };
+    
+    setValue = () => {
+    	let employeeInfoAll = [];
+    	for(let i in this.state.employeeInfoAll){
+    		if(this.state.employeeInfoAll[i].code.search("BPR") === -1){
+        		employeeInfoAll.push(this.state.employeeInfoAll[i]);
+    		}
+    	}
+    	
+    	let employeeStatuss = [];
+    	for(let i in this.state.employeeStatuss){
+    		if(this.state.employeeStatuss[i].code !== "4"){
+    			employeeStatuss.push(this.state.employeeStatuss[i]);
+    		}
+    	}
+    	
+    	this.setState({
+    		employeeInfo: employeeInfoAll,
+    		employeeInfoAll: employeeInfoAll,
+    		employeeStatuss: employeeStatuss,
+    	})
+    }
     componentDidMount() {
-        this.clickButtonDisabled();  
-
+        this.setValue();
+    	this.clickButtonDisabled();  
         var date = new Date();
         var year = date.getFullYear();
         $('#fiscalYear').append('<option value="">' + "" + '</option>');
@@ -194,7 +217,9 @@ class individualSales extends React.Component {//個人売上検索
 	    			paymentTotal: sendValue.paymentTotal,
 					employeeNo: sendValue.employeeNo,
 					employeeInfo: sendValue.employeeInfo,
-	            })
+	            }, () =>
+                	this.searchEmployee()
+	            );
 			}else{
 		        const { location } = this.props
 		        var actionType = '';
@@ -1166,7 +1191,7 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-            		<Col sm={3}>
+            		<Col>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
@@ -1174,12 +1199,18 @@ class individualSales extends React.Component {//個人売上検索
                             <FormControl id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange.bind(this)} />
                         </InputGroup>
                     </Col>
-                    <Col sm={3}>
+                    <Col>
+                    </Col>
+                    <Col>
+                    </Col>
+                    <Col>
+                    </Col>
+                    <Col>
                         <p id="individualSalesErrmsg" style={{ visibility: "hidden" }} class="font-italic font-weight-light text-danger"></p>
                     </Col>
                 </Row>
                 <Row>
-	        		<Col sm={2}>
+	        		<Col>
 						<InputGroup size="sm" className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text id="inputGroup-sizing-sm">稼働区分</InputGroup.Text>
@@ -1191,7 +1222,7 @@ class individualSales extends React.Component {//個人売上検索
 						</Form.Control>
 						</InputGroup>
 	                </Col>
-	        		<Col sm={2}>
+	        		<Col>
 						<InputGroup size="sm" className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text id="inputGroup-sizing-sm">社員区分</InputGroup.Text>
@@ -1205,7 +1236,7 @@ class individualSales extends React.Component {//個人売上検索
 						</Form.Control>
 						</InputGroup>
 	                </Col>
-	        		<Col sm={3}>
+	        		<Col>
 	                	<InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
                             <Autocomplete
@@ -1217,7 +1248,7 @@ class individualSales extends React.Component {//個人売上検索
                                 onChange={(event, values) => this.handleTag(event, values)}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
-										<input placeholder="  社員名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfoSearch-customerNo"/>
+										<input placeholder="  社員名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-individualSales"/>
                                     </div>
                                 )}
                             />
@@ -1225,8 +1256,8 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
         	        <Col>
     	                <InputGroup size="sm" className="mb-3">
-	                    	<font color="red" style={{ marginLeft: "-30px" , marginRight: "15px" }}>★</font>
                             <InputGroup.Prepend>
+                        	<font color="red" style={{ marginLeft: "-25px" , marginRight: "10px" }}>★</font>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.individualSales_startYearAndMonth}
                                     onChange={this.individualSalesStartYearAndMonthChange.bind(this)}
@@ -1258,15 +1289,27 @@ class individualSales extends React.Component {//個人売上検索
                             </InputGroup.Prepend>
                         </InputGroup>
                     </Col>
+        	        <Col>
+                    </Col>
                 </Row>
                 <Row>
-            		<Col sm={2}>
-						<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>
-		                <font style={{ marginLeft: "3px" , marginRight: "3px" }}></font>
-		                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false}  name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
+            		<Col style={{ padding: "0px",marginLeft: "15px",marginRight: "15px" }}>
+		                <Button
+						size="sm"
+	                    id="backToMonthly"
+						variant="info"
+	                    className="btn btn-info btn-sm disabled"
+						onClick={this.back}
+		                >
+						<FontAwesomeIcon icon={faLevelUpAlt} />戻る
+						</Button>
+		                <font style={{ marginLeft: "2px" , marginRight: "2px" }}></font>
+						<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="siteInfo">現場情報</Button>
+		                <font style={{ marginLeft: "2px" , marginRight: "2px" }}></font>
+		                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
 		            </Col>
             		<Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 	                    	<InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">稼働月数</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -1277,7 +1320,7 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
 
             		<Col>
-                        <InputGroup size="sm" className="mb-3">
+                        <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -1287,7 +1330,7 @@ class individualSales extends React.Component {//個人売上検索
 	                    </InputGroup>
                     </Col>
             		<Col>
-                        <InputGroup size="sm" className="mb-3">
+                        <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支払合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -1297,7 +1340,7 @@ class individualSales extends React.Component {//個人売上検索
 	                    </InputGroup>
 	                </Col>
             		<Col>
-                        <InputGroup size="sm" className="mb-3">
+                        <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -1307,34 +1350,25 @@ class individualSales extends React.Component {//個人売上検索
 		                    
 						</InputGroup>
 	                 </Col>
-	                 <Col sm={1}>
-	                    <Button
-									size="sm"
-	                                id="backToMonthly"
-									variant="info"
-	                                className="btn btn-info btn-sm disabled"
-									onClick={this.back}
-								>
-									<FontAwesomeIcon icon={faLevelUpAlt} />戻る
-	                            </Button>
-                    </Col>
                 </Row>
-                <div >
-                    <BootstrapTable selectRow={selectRow} data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員区分</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='118' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='110' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='bpBelongCustomer' width='290' dataFormat={this.bpBelongCustomerDetail.bind(this)}>所属会社</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='100' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
-                    </BootstrapTable>
-                </div>
+        		<Col>
+	                <div>
+	                    <BootstrapTable selectRow={selectRow} data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員区分</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='110' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='110' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='90' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='insuranceFeeAmount'width='100' dataFormat={this.insuranceFeeAmountAddComma}>社会保険</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='bounsFee' width='100' dataFormat={this.scheduleOfBonusAmountAddComma}>ボーナス</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='allowanceAmount' width='90' dataFormat={this.allowanceDetail.bind(this)}>諸費用</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='bpBelongCustomer' width='290' dataFormat={this.bpBelongCustomerDetail.bind(this)}>所属会社</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grosProfits' width='90' dataFormat={this.grosProfitsAddComma} >粗利</TableHeaderColumn>
+	                    </BootstrapTable>
+	                </div>
+	           </Col>
             </div>
         );
     }

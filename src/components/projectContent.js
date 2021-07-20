@@ -105,13 +105,16 @@ class ProjectContent extends Component {
                     unitPriceRange:unitPriceRange,
                 })
         }
+        var projectPhase = '';
         if(projectInfo.projectPhaseStart !== undefined && projectInfo.projectPhaseStart !== null && projectInfo.projectPhaseStart !== ''){
-                var projectPhase = '';
-                projectPhase = projectInfo.projectPhaseNameStart + "~" + projectInfo.projectPhaseNameEnd;
-                this.setState({
-                    projectPhase:projectPhase,
-                })
+                projectPhase = projectInfo.projectPhaseNameStart;
         }
+        if(projectInfo.projectPhaseNameEnd !== undefined && projectInfo.projectPhaseNameEnd !== null && projectInfo.projectPhaseNameEnd !== ''){
+                projectPhase = (projectPhase === "" ? "" : projectPhase + "~") + projectInfo.projectPhaseNameEnd;
+        }
+        this.setState({
+            projectPhase:projectPhase,
+        })
     }
     search = (projectNo) => {
         var projectInfoModel = {

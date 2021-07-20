@@ -378,7 +378,6 @@ class projectInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     if (this.state.actionType === "insert") {
-                        window.location.reload();
                     } else {
                         $("#toroku").attr("disabled", false);
                     }

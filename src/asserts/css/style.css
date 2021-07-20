@@ -1418,6 +1418,16 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-individualSales {
+	width: 10.9rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-siteInfoSearch-topCustomer {
 	width: 13.4rem;
 	height: 31px;
@@ -2200,6 +2210,16 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
+	
+	.Autocompletestyle-individualSales {
+		width: 6.9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
 	.Autocompletestyle-siteInfoSearch {
 		width: 9rem;
 		height: 31px;
@@ -2231,6 +2251,10 @@ body {
 	
 	.downloadButtom{
 		width:5.99rem;
+	}
+	
+	.individualSalesButtom{
+		width:4.7rem;
 	}
 	
 	.Autocompletestyle-customerInfo {
