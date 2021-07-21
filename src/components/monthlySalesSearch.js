@@ -59,6 +59,15 @@ class monthlySalesSearch extends Component {//月次売上検索
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         }
         componentDidMount(){
+        	let employeeStatuss = [];
+        	for(let i in this.state.employeeStatuss){
+        		if(this.state.employeeStatuss[i].code !== "4"){
+        			employeeStatuss.push(this.state.employeeStatuss[i]);
+        		}
+        	}
+            this.setState({
+            	employeeStatuss: employeeStatuss,
+            });
            this.clickButtonDisabled();  
            const { location } = this.props
            if (location.state) {

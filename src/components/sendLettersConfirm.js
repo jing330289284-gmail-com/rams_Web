@@ -308,7 +308,7 @@ class sendLettersConfirm extends React.Component {
 					【日本　語】：`)+ (result.data[0].japaneaseConversationLevel === null || result.data[0].japaneaseConversationLevel === ""?"":this.state.japaneaseConversationLevels.find((v) => (v.code === result.data[0].japaneaseConversationLevel)).name) + (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":`<br	/>
 					【英　　語】：`)+ (result.data[0].englishConversationLevel === null || result.data[0].englishConversationLevel === ""?"":this.state.englishConversationLevels.find((v) => (v.code === result.data[0].englishConversationLevel)).name) + (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":`<br	/>
 					【業務年数】：`)+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === ""?"":result.data[0].yearsOfExperience + `年`) + (result.data[0].projectPhase === null || result.data[0].projectPhase === ""?"":`<br	/>
-					【対応工程】：`)+ (result.data[0].projectPhase === null || result.data[0].projectPhase === ""?"":result.data[0].projectPhaseName) + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
+					【対応工程】：`)+ (result.data[0].projectPhase === null || result.data[0].projectPhase === ""?"":result.data[0].projectPhaseName + " から") + (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":`<br	/>
 					【得意言語】：`)+ (result.data[0].developLanguage === null || result.data[0].developLanguage === ""?"":result.data[0].developLanguage) + (((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "") && (result.data[0].unitPrice === null || result.data[0].unitPrice === ""))?"":`<br	/>
 					【単　　価】：`)+ ((((this.state.employeeInfo[i].hopeHighestPrice === null || this.state.employeeInfo[i].hopeHighestPrice === "")?"":this.state.employeeInfo[i].hopeHighestPrice + `万円`) === "" ? ((result.data[0].unitPrice === null || result.data[0].unitPrice === "") ? "" : result.data[0].unitPrice + `万円`):this.state.employeeInfo[i].hopeHighestPrice + `万円`)) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null?"":`<br	/>
 					【稼働開始】：`) + (result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === "" || result.data[0].theMonthOfStartWork === null ? "":result.data[0].theMonthOfStartWork) + (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":`<br	/>
@@ -375,13 +375,17 @@ class sendLettersConfirm extends React.Component {
 						}
 						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { names, mailTitle, paths, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
 							.then(result => {
-								/*
-								 * this.setState({ mails: result.data, })
-								 */
-								this.setSelectedCusInfos("済み");
-								this.setState({
-									sendLetterOverFlag: true,
-								})
+								if (result.data.errorsMessage != null) {
+									this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+									setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+									this.setSelectedCusInfos("未");
+								} 								
+								else{
+									this.setSelectedCusInfos("済み");
+									this.setState({
+										sendLetterOverFlag: true,
+									})
+								}
 							})
 							.catch(function(error) {
 								alert(error);
@@ -1240,7 +1244,7 @@ class sendLettersConfirm extends React.Component {
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
 【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
 			(this.state.projectPhaseName !=="" && this.state.projectPhaseName !== null ? `
-【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName:"") +
+【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName + " から":"") +
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `

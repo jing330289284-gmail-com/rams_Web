@@ -73,6 +73,7 @@ class bpInfo extends React.Component {
 						bpUnitPrice: data.bpUnitPrice,// 単価
 						bpSalesProgressCode: data.bpSalesProgressCode,// 選択中の営業状況
 						bpOtherCompanyAdmissionEndDate: utils.converToLocalTime(data.bpOtherCompanyAdmissionEndDate, false),
+						unitPriceStartMonth: utils.converToLocalTime(data.unitPriceStartMonth, false),
 						bpRemark: data.bpRemark,// 備考
 					});
 				}
@@ -112,6 +113,14 @@ class bpInfo extends React.Component {
 			}
 		);
 	};
+	
+	unitPriceStartMonthChange = (date) => {
+		this.setState(
+				{
+					unitPriceStartMonth: date,
+				}
+			);
+		};
 
 	insertOrUpdateBpInfo = () => {
 		const bpInfoModel = {
@@ -120,6 +129,7 @@ class bpInfo extends React.Component {
 			bpUnitPrice: this.state.bpUnitPrice,
 			bpSalesProgressCode: this.state.bpSalesProgressCode,
 			bpOtherCompanyAdmissionEndDate: utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate, false),
+			unitPriceStartMonth: utils.formateDate(this.state.unitPriceStartMonth, false),
 			bpRemark: this.state.bpRemark,
 		};
 		if(this.props.actionType === "update"){
@@ -170,7 +180,7 @@ class bpInfo extends React.Component {
 							</Col>
 						</Row>
 						<Row>
-							<Col sm={5}>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">BP所属</InputGroup.Text>
@@ -192,21 +202,7 @@ class bpInfo extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-							<Col sm={7}>
-								<InputGroup size="sm" className="mb-3">
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
-									</InputGroup.Prepend>
-									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off" 
-										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='3' disabled={this.props.actionType === "detail" ? true : false} />
-									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">万円</InputGroup.Text>
-									</InputGroup.Prepend>
-								</InputGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col sm={5}>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
 										<InputGroup.Text id="inputGroup-sizing-sm">営業状況</InputGroup.Text>
@@ -223,10 +219,46 @@ class bpInfo extends React.Component {
 									</Form.Control>
 								</InputGroup>
 							</Col>
-							<Col sm={7}>
+						</Row>
+						<Row>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="sevenKanji">所属現場終年月</InputGroup.Text>
+										<InputGroup.Text id="sixKanji">単価開始年月</InputGroup.Text>
+									</InputGroup.Prepend>
+									<DatePicker
+										selected={this.state.unitPriceStartMonth}
+										onChange={this.unitPriceStartMonthChange}
+										autoComplete="off"
+										showMonthYearPicker
+										showFullMonthYearPicker
+										showDisabledMonthNavigation
+										className="form-control form-control-sm"
+										id={this.props.actionType === "detail" || bpSalesProgressCode === "4" ? "datePickerReadonlyDefault-bpInfo" : "datePicker-bpInfo"}
+										dateFormat={"yyyy/MM"}
+										locale="ja"
+										disabled={this.props.actionType === "detail" || bpSalesProgressCode === "4" ? true : false}
+									/>
+								</InputGroup>
+							</Col>
+							<Col sm={6}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">BP単価</InputGroup.Text>
+									</InputGroup.Prepend>
+									<FormControl placeholder="BP単価" value={bpUnitPrice} autoComplete="off" 
+										onChange={this.valueChange} size="sm" name="bpUnitPrice" maxlength='3' disabled={this.props.actionType === "detail" ? true : false} />
+									<InputGroup.Prepend>
+										<InputGroup.Text id="twoKanji">万円</InputGroup.Text>
+									</InputGroup.Prepend>
+								</InputGroup>
+							</Col>
+						</Row>
+						<Row>
+							<Col sm={6}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="sixKanji">所属終了年月</InputGroup.Text>
 									</InputGroup.Prepend>
 									<DatePicker
 										selected={this.state.bpOtherCompanyAdmissionEndDate}
@@ -243,12 +275,10 @@ class bpInfo extends React.Component {
 									/>
 								</InputGroup>
 							</Col>
-						</Row>
-						<Row>
-							<Col sm={12}>
+							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
-										<InputGroup.Text id="inputGroup-sizing-sm">備考　　</InputGroup.Text>
+										<InputGroup.Text id="twoKanji">備考</InputGroup.Text>
 									</InputGroup.Prepend>
 									<FormControl placeholder="例：XXXXX" name="bpRemark" value={bpRemark} autoComplete="off" disabled={this.props.actionType === "detail" ? true : false}
 										onChange={this.valueChange} type="text" aria-label="Small" size="sm" aria-describedby="inputGroup-sizing-sm" />

@@ -525,7 +525,7 @@ body {
 }
 
 .modal-pbinfoSet {
-	width: 30.5%;
+	width: 35.5%;
 	max-width: none !important;
 }
 
@@ -1499,7 +1499,7 @@ body {
 }
 
 .Autocompletestyle-bpInfo-bpBelongCustomerCode {
-	width: 7.5rem;
+	width: 13.5rem;
 	height: 31px;
 	border-color: "#ced4da";
 	border-width: 1;
@@ -1516,7 +1516,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: #e9ecef;
-	width: 10.3rem !important;
+	width: 11.8rem !important;
 }
 
 #datePicker-bpInfo {
@@ -1527,7 +1527,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-	width: 10.3rem !important;
+	width: 11.8rem !important;
 }
 
 .Autocompletestyle-wagesInfo-employeeName {
@@ -2625,7 +2625,7 @@ body {
 		color: "#495057"
 	}
 	.Autocompletestyle-bpInfo-bpBelongCustomerCode {
-		width: 4.15rem;
+		width: 9.0rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;
@@ -2641,7 +2641,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: #e9ecef;
-		width: 6.0rem !important;
+		width: 7.6rem !important;
 	}
 	
 	#datePickerReadonlyDefault-empInsert-right {
@@ -2717,7 +2717,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
-		width: 6.0rem !important;
+		width: 7.6rem !important;
 	}
 	.Autocompletestyle-wagesInfo-employeeName {
 		width: 10.2rem;

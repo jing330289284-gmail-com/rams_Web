@@ -397,7 +397,7 @@ class salesContent extends React.Component {
 					{/*<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus === "子会社社員" ? "社員" : this.state.employeeStatus}</ListGroup.Item>*/}
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 					<span style={{ flexFlow: "nowrap" }}>【所　　属】：
-				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
+				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
 							name="employeeStatus" value={this.state.employeeStatus}
 						>
 							{this.state.employees.map(date =>
@@ -430,7 +430,7 @@ class salesContent extends React.Component {
 					</ListGroup.Item>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
+					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
 								name="japaneaseConversationLevel" value={this.state.japaneaseConversationLevel}>
 								{this.state.japaneaseConversationLevels.map(date =>
 									<option key={date.code} value={date.code}>
@@ -441,7 +441,7 @@ class salesContent extends React.Component {
 							&nbsp;&nbsp;{this.state.japaneseLevelCode}</ListGroup.Item>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 						<span style={{ flexFlow: "nowrap" }}>【英　　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
+					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
 								name="englishConversationLevel" value={this.state.englishConversationLevel}
 							>
 								{this.state.englishConversationLevels.map(date =>
@@ -457,7 +457,7 @@ class salesContent extends React.Component {
 					{<ListGroup.Item style={{padding:".3rem 1.25rem"}} hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>
 					<span style={{ flexFlow: "nowrap" }}>【対応工程】：
-				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "35px" }} onChange={this.valueChange}
+				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
 							name="projectPhase" value={this.state.projectPhase}
 						>
 							{this.state.projectPhases.map(date =>
@@ -466,6 +466,7 @@ class salesContent extends React.Component {
 								</option>
 							)}
 						</Form.Control></span>
+						&nbsp;&nbsp;{"から"}
 					</ListGroup.Item>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}>【得意言語】：{this.state.developLanguage}
 						<Autocomplete
@@ -510,7 +511,7 @@ class salesContent extends React.Component {
 					}
 					</ListGroup.Item></span>
 					<ListGroup.Item style={{padding:".3rem 1.25rem"}}><span style={{ flexFlow: "nowrap" }}>【営業状況】：
-					    <Form.Control as="select" disabled style={{ display: "inherit", width: "145px", height: "35px" }} onChange={this.valueChange}
+					    <Form.Control as="select" disabled style={{ display: "inherit", width: "145px", height: "30px" }} onChange={this.valueChange}
 							name="salesProgressCode" value={this.state.salesProgressCode}
 						>
 							{this.state.salesProgresss.map(date =>
