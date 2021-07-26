@@ -40,17 +40,21 @@ class WagesInfo extends Component {
         healthInsuranceAmount: '',//健康保険
         insuranceFeeAmount: '',//保険総額
         lastTimeBonusAmount: '',//ボーナス前回額
-        scheduleOfBonusAmount: '',//ボーナス予定額
-        bonusFlag: '',//ボーナスフラグ
+        secondTimeBonusAmount: '',//ボーナス予定額
+        fristTimeBonusAmount: '',//ボーナス一回目額
+        secondTimeBonusAmount: '',//ボーナス二回目額
+        bonusNo: '0',//ボーナスフラグ
         nextBonusMonth: '',//次ボーナス月
         nextRaiseMonth: '',//次回昇給月
         totalAmount: '',//総額
         employeeFormCode: '',//社員形式
         remark: '',//備考
-        bonusStartDate: '',//ボーナスの期日
+        fristBonusMonth: '',//ボーナス1の期日
+        secondBonusMonth: '',//ボーナス2の期日
         raiseStartDate: '',//昇給の期日
         reflectStartDate: '',//反映年月
         lastTimeBonusAmountForInsert: "",//前回のボーナス額（）
+        fristTimeBonusAmountForInsert: "",//前回のボーナス額（）
         employeeFormCodeStart: "",
         bonus: null,//ボーナス
         costInfoShow: false,//諸費用画面フラグ
@@ -99,8 +103,10 @@ class WagesInfo extends Component {
         }, () => {
             if (value === "0") {
                 this.setState({
-                    scheduleOfBonusAmount: '',
-                    bonusStartDate: '',
+                	fristTimeBonusAmount: '',
+                	secondTimeBonusAmount: '',
+                    fristBonusMonth: '',
+                    secondBonusMonth: '',
                 }, () => {
                     this.totalKeisan();
                 })
@@ -213,11 +219,21 @@ class WagesInfo extends Component {
     getDropDowns = () => {
         var methodArray = ["getInsurance", "getBonus", "getEmployeeForm", "getEmployeeNameNoBP"]
         var data = utils.getPublicDropDown(methodArray, this.state.serverIP);
+        var bonusFlagDrop = [];
+        bonusFlagDrop.push({code:"0",name:"0"});
+        bonusFlagDrop.push({code:"1",name:"1"});
+        bonusFlagDrop.push({code:"2",name:"2"});
+        var EmployeeFormCodeDrop = [];
+        for(let i in data[2]){
+        	if(data[2][i].code != "4")
+        		EmployeeFormCodeDrop.push(data[2][i]);
+        }
         this.setState(
             {
                 socialInsuranceFlagDrop: data[0].slice(1),
-                bonusFlagDrop: data[1].slice(1),
-                EmployeeFormCodeDrop: data[2],
+                //bonusFlagDrop: data[1].slice(1),
+                bonusFlagDrop: bonusFlagDrop,
+                EmployeeFormCodeDrop: EmployeeFormCodeDrop,
                 employeeNameDrop: data[3].slice(1),
                 employeeInfo: data[3].slice(1),
             }
@@ -226,17 +242,30 @@ class WagesInfo extends Component {
     /**
     * ボーナス期日の変化
     */
-    bonusChange = date => {
+    bonus1Change = date => {
         if (date !== null) {
             this.setState({
-                bonusStartDate: date,
+                fristBonusMonth: date,
             });
         } else {
             this.setState({
-                bonusStartDate: '',
+                fristBonusMonth: '',
             });
         }
     };
+    
+    bonus2Change = date => {
+        if (date !== null) {
+            this.setState({
+            	secondBonusMonth: date,
+            });
+        } else {
+            this.setState({
+            	secondBonusMonth: '',
+            });
+        }
+    };
+    
     /**
      * 昇給期日の変化
      */
@@ -299,13 +328,16 @@ class WagesInfo extends Component {
             welfarePensionAmount: utils.addComma(wagesInfoMod.welfarePensionAmount),
             healthInsuranceAmount: utils.addComma(wagesInfoMod.healthInsuranceAmount),
             insuranceFeeAmount: utils.addComma(wagesInfoMod.insuranceFeeAmount),
-            lastTimeBonusAmount: utils.addComma(wagesInfoMod.lastTimeBonusAmount),
+            //lastTimeBonusAmount: utils.addComma(wagesInfoMod.lastTimeBonusAmount),
+            fristTimeBonusAmount: utils.addComma(wagesInfoMod.fristTimeBonusAmount),
+            secondTimeBonusAmount: utils.addComma(wagesInfoMod.secondTimeBonusAmount),
             scheduleOfBonusAmount: utils.addComma(wagesInfoMod.scheduleOfBonusAmount),
-            bonusFlag: wagesInfoMod.bonusFlag,
+            bonusNo: wagesInfoMod.bonusNo === null ? "0" : wagesInfoMod.bonusNo,
             totalAmount: utils.addComma(wagesInfoMod.totalAmount),
             employeeFormCode: wagesInfoMod.employeeFormCode,
             remark: wagesInfoMod.remark,
-            bonusStartDate: utils.converToLocalTime(wagesInfoMod.nextBonusMonth, false),
+            fristBonusMonth: utils.converToLocalTime(wagesInfoMod.fristBonusMonth, false),
+            secondBonusMonth: utils.converToLocalTime(wagesInfoMod.secondBonusMonth, false),
             raiseStartDate: utils.converToLocalTime(wagesInfoMod.nextRaiseMonth, false),
             reflectStartDate: utils.converToLocalTime(wagesInfoMod.reflectYearAndMonth, false),
             workingCondition: wagesInfoMod.workingCondition,
@@ -324,14 +356,17 @@ class WagesInfo extends Component {
                 healthInsuranceAmount: '',
                 insuranceFeeAmount: '',
                 lastTimeBonusAmount: '',
+                fristTimeBonusAmount: '',
+                secondTimeBonusAmount: '',
                 totalAmount: '',
                 employeeFormCode: this.state.employeeFormCodeStart,
                 remark: '',
                 raiseStartDate: '',
                 reflectStartDate: '',
-                bonusFlag: this.state.bonus.bonusFlag,
+                bonusNo: this.state.bonus.bonusNo,
                 scheduleOfBonusAmount: utils.addComma(this.state.bonus.scheduleOfBonusAmount),
-                bonusStartDate: utils.converToLocalTime(this.state.bonus.nextBonusMonth, false),
+                fristBonusMonth: utils.converToLocalTime(this.state.bonus.fristBonusMonth, false),
+                secondBonusMonth: utils.converToLocalTime(this.state.bonus.secondBonusMonth, false),
             },()=>{
                 this.totalKeisan();
             })
@@ -344,14 +379,17 @@ class WagesInfo extends Component {
                 healthInsuranceAmount: '',
                 insuranceFeeAmount: '',
                 lastTimeBonusAmount: '',
+                fristTimeBonusAmount: '',
+                secondTimeBonusAmount: '',
                 totalAmount: '',
                 employeeFormCode: this.state.employeeFormCodeStart,
                 remark: '',
                 raiseStartDate: '',
                 reflectStartDate: '',
-                bonusFlag: '',
+                bonusNo: '0',
                 scheduleOfBonusAmount: '',
-                bonusStartDate: '',
+                fristBonusMonth: '',
+                secondBonusMonth: '',
             },()=>{
                 this.totalKeisan();
             })
@@ -456,19 +494,24 @@ class WagesInfo extends Component {
                     })
                     if (result.data.bonus !== null) {
                         this.setState({
-                            bonusFlag: result.data.bonus.bonusFlag,
+                            bonusNo: result.data.bonus.bonusNo === null ? "0" : result.data.bonus.bonusNo,
+                            fristTimeBonusAmount: utils.addComma(result.data.bonus.fristTimeBonusAmount),
+                            secondTimeBonusAmount: utils.addComma(result.data.bonus.secondTimeBonusAmount),
+                            fristTimeBonusAmountForInsert: utils.addComma(result.data.bonus.fristTimeBonusAmount),
                             lastTimeBonusAmount: utils.addComma(result.data.bonus.lastTimeBonusAmount),
                             lastTimeBonusAmountForInsert: utils.addComma(result.data.bonus.lastTimeBonusAmount),
                             scheduleOfBonusAmount: utils.addComma(result.data.bonus.scheduleOfBonusAmount),
-                            bonusStartDate: utils.converToLocalTime(result.data.bonus.nextBonusMonth, false),
+                            fristBonusMonth: utils.converToLocalTime(result.data.bonus.fristBonusMonth, false),
+                            secondBonusMonth: utils.converToLocalTime(result.data.bonus.secondBonusMonth, false),
                         }, () => {
                             this.totalKeisan();
                         })
                     } else {
                         this.setState({
-                            bonusFlag: '',
+                            bonusNo: '0',
                             scheduleOfBonusAmount: '',
-                            bonusStartDate: '',
+                            fristBonusMonth: '',
+                            secondBonusMonth: '',
                         }, () => {
                             this.totalKeisan();
                         })
@@ -486,10 +529,14 @@ class WagesInfo extends Component {
                         employeeFormCodeStart: result.data.employeeFormCode,
                         lastTimeBonusAmount: '',
                         lastTimeBonusAmountForInsert: '',
+                        fristTimeBonusAmount: '',
+                        secondTimeBonusAmount: '',
+                        fristTimeBonusAmountForInsert: '',
                         bonus: result.data.bonus,
-                        bonusFlag: '',
+                        bonusNo: '0',
                         scheduleOfBonusAmount: '',
-                        bonusStartDate: '',
+                        fristBonusMonth: '',
+                        secondBonusMonth: '',
                         hatsunyubaFlag:true,
                     }, () => {
                         this.totalKeisan();
@@ -641,7 +688,7 @@ class WagesInfo extends Component {
     toroku = () => {
         var wagesInfoModel = {};
         $("#socialInsuranceFlag").attr("disabled", false);
-        $("#bonusFlag").attr("disabled", false);
+        $("#bonusNo").attr("disabled", false);
         var formArray = $("#wagesInfoForm").serializeArray();
         $.each(formArray, function (i, item) {
             wagesInfoModel[item.name] = item.value;
@@ -658,11 +705,14 @@ class WagesInfo extends Component {
         wagesInfoModel["healthInsuranceAmount"] = utils.deleteComma(this.state.healthInsuranceAmount);
         wagesInfoModel["insuranceFeeAmount"] = Number(utils.deleteComma(this.state.welfarePensionAmount)) + Number(utils.deleteComma(this.state.healthInsuranceAmount));
         wagesInfoModel["scheduleOfBonusAmount"] = utils.deleteComma(this.state.scheduleOfBonusAmount);
-        wagesInfoModel["lastTimeBonusAmount"] = utils.deleteComma(this.state.lastTimeBonusAmount);
+        //wagesInfoModel["lastTimeBonusAmount"] = utils.deleteComma(this.state.lastTimeBonusAmount);
+        wagesInfoModel["fristTimeBonusAmount"] = utils.deleteComma(this.state.fristTimeBonusAmount);
+        wagesInfoModel["secondTimeBonusAmount"] = utils.deleteComma(this.state.secondTimeBonusAmount);
         wagesInfoModel["totalAmount"] = utils.deleteComma(this.state.totalAmount);
         wagesInfoModel["employeeNo"] = this.state.employeeNo;
         wagesInfoModel["nextRaiseMonth"] = utils.formateDate(this.state.raiseStartDate, false);
-        wagesInfoModel["nextBonusMonth"] = utils.formateDate(this.state.bonusStartDate, false);
+        wagesInfoModel["fristBonusMonth"] = utils.formateDate(this.state.fristBonusMonth, false);
+        wagesInfoModel["secondBonusMonth"] = utils.formateDate(this.state.secondBonusMonth, false);
         wagesInfoModel["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate, false);
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
@@ -670,7 +720,7 @@ class WagesInfo extends Component {
         wagesInfoModel["employeeStatus"] = this.state.newEmployeeStatus;
         if (this.state.employeeFormCode === "3") {
             $("#socialInsuranceFlag").attr("disabled", true);
-            $("#bonusFlag").attr("disabled", true);
+            $("#bonusNo").attr("disabled", true);
         }
         axios.post(this.state.serverIP + "wagesInfo/toroku", wagesInfoModel)
             .then(result => {
@@ -766,8 +816,8 @@ class WagesInfo extends Component {
         return otherAllowanceAmount === "0" ? "" : otherAllowanceAmount;
     }
     addMarkScheduleOfBonusAmount = (cell, row) => {
-        let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
-        return scheduleOfBonusAmount;
+        let bonusSum = utils.addComma(row.bonusSum).replace(".0","");
+        return bonusSum;
     }
     /**
      * 戻るボタン
@@ -850,17 +900,19 @@ class WagesInfo extends Component {
                     welfarePensionAmount: "",
                     healthInsuranceAmount: "",
                     insuranceFeeAmount: "",
-                    bonusFlag: "0",
+                    bonusNo: "0",
                     scheduleOfBonusAmount: "",
-                    bonusStartDate: '',
+                    fristBonusMonth: '',
+                    secondBonusMonth: '',
                 }, () => {
                     this.totalKeisan();
                 })
             } else {
                 if (this.state.bonus !== null) {
                     this.setState({
-                        bonusStartDate: utils.converToLocalTime(this.state.bonus.nextBonusMonth, false),
-                        bonusFlag: this.state.bonus.bonusFlag,
+                        fristBonusMonth: utils.converToLocalTime(this.state.bonus.fristBonusMonth, false),
+                        secondBonusMonth: utils.converToLocalTime(this.state.bonus.secondBonusMonth, false),
+                        bonusNo: this.state.bonus.bonusNo === null ? "0" : this.state.bonus.bonusNo,
                         scheduleOfBonusAmount: utils.addComma(this.state.bonus.scheduleOfBonusAmount),
                     }, () => {
                         this.totalKeisan();
@@ -905,13 +957,14 @@ class WagesInfo extends Component {
 		switch (actionType) {
 			case "employeeInfo":
 				path = {
-					pathname: '/subMenuManager/employeeDetailNew',
+					pathname: '/subMenuManager/employeeUpdateNew',
 					state: {
 						id: this.state.employeeName,
+						employeeNo: this.state.employeeName,
 						backPage: "wagesInfo",
 						sendValue: this.state.sendValue,
                         searchFlag: true,
-                        actionType:"detail",
+                        actionType:"update",
                         backbackPage: this.state.backPage,
 					},
 				}
@@ -943,8 +996,10 @@ class WagesInfo extends Component {
             healthInsuranceAmount,
             insuranceFeeAmount,
             lastTimeBonusAmount,
+            fristTimeBonusAmount,
+            secondTimeBonusAmount,
             scheduleOfBonusAmount,
-            bonusFlag,
+            bonusNo,
             bonus,
             totalAmount,
             employeeFormCode,
@@ -1158,7 +1213,7 @@ class WagesInfo extends Component {
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
-                                            disabled={actionType === "detail" ? true : kadouCheck === true ? true : employeeFormCode === "3" ? true : false}
+                                            disabled={actionType === "detail" ? true : employeeFormCode === "3" ? true : false}
                                             name="socialInsuranceFlag"
                                             id="socialInsuranceFlag"
                                             onChange={this.valueChangeInsurance}
@@ -1207,56 +1262,45 @@ class WagesInfo extends Component {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col hidden>
-                                    <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>社員形式</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl
-                                            as="select"
-                                            onChange={this.employeeFormChange}
+                                <Col sm={3}>
+                                <InputGroup size="sm">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="sixKanji">次回昇給月</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <InputGroup.Append>
+                                        <DatePicker
+                                            selected={raiseStartDate}
+                                            onChange={this.raiseChange}
+                                            autoComplete="off"
+                                            locale="pt-BR"
+                                            showMonthYearPicker
+                                            showFullMonthYearPicker
+                                            minDate={new Date(new Date().getFullYear(), new Date().getMonth())}
+                                            showDisabledMonthNavigation
+                                            className="form-control form-control-sm"
+                                            id={actionType === "detail" ? "wagesInfoDatePicker-nextRaiseMonth-readOnly" : "wagesInfoDatePicker-nextRaiseMonth"}
+                                            dateFormat={"yyyy/MM"}
+                                            name="nextRaiseMonth"
+                                            locale="ja"
                                             disabled={actionType === "detail" ? true : false}
-                                            name="employeeFormCode"
-                                            value={employeeFormCode}>
-                                            {EmployeeFormCodeDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
-                                        </FormControl>
-                                    </InputGroup>
+                                        />
+                                    </InputGroup.Append>
+                                </InputGroup>
                                 </Col>
-                                <Col sm={3}>
-	                                <InputGroup size="sm" className="mb-3">
-	                                    <InputGroup.Prepend>
-	                                        <InputGroup.Text>社員区分</InputGroup.Text>
-	                                    </InputGroup.Prepend>
-	                                    <FormControl
-	                                        as="select"
-	                                        onChange={this.newEmployeeStatusChange}
-	                                        disabled={actionType === "detail" ? true : false}
-	                                        name="newEmployeeStatus"
-	                                        value={newEmployeeStatus}>
-	                                        {this.state.employeeStatuss.map(date =>
-	                                            <option key={date.code} value={date.code}>
-	                                                {date.name}
-	                                            </option>
-	                                        )}
-	                                    </FormControl>
-	                                </InputGroup>
-                                </Col>
+                                
+                                
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text>ボーナス</InputGroup.Text>
+                                            <InputGroup.Text id="sixKanji">ボーナス回数</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
                                             disabled={actionType === "detail" ? true : employeeFormCode === "3" ? true : false}
-                                            name="bonusFlag"
-                                            id="bonusFlag"
+                                            name="bonusNo"
+                                            id="bonusNo"
                                             onChange={this.valueChangeBonus}
-                                            value={bonusFlag}>
+                                            value={bonusNo}>
                                             {bonusFlagDrop.map(date =>
                                                 <option key={date.code} value={date.code}>
                                                     {date.name}
@@ -1268,13 +1312,13 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text style={{ width: "7.5rem" }}>次ボーナス月</InputGroup.Text>
+                                            <InputGroup.Text>支払月</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <InputGroup.Append>
                                             <InputGroup.Prepend>
                                                 <DatePicker
-                                                    selected={this.state.bonusStartDate}
-                                                    onChange={this.bonusChange}
+                                                    selected={this.state.fristBonusMonth}
+                                                    onChange={this.bonus1Change}
                                                     autoComplete="off"
                                                     locale="pt-BR"
                                                     showMonthYearPicker
@@ -1282,11 +1326,30 @@ class WagesInfo extends Component {
                                                     // minDate={new Date()}
                                                     showDisabledMonthNavigation
                                                     className="form-control form-control-sm"
-                                                    id={actionType === "detail" ? "wagesInfoDatePickerReadOnly" : bonusFlag !== "1" ? "wagesInfoDatePickerReadOnly" : "wagesInfoDatePicker"}
-                                                    name="nextBonusMonth"
+                                                    id={actionType === "detail" ? "wagesInfoDatePickerReadOnly" : bonusNo === "0" ? "wagesInfoDatePickerReadOnly" : "wagesInfoDatePicker"}
+                                                    name="fristBonusMonth"
                                                     dateFormat={"yyyy/MM"}
                                                     locale="ja"
-                                                    readOnly={bonusFlag !== "1" ? true : false}
+                                                    readOnly={bonusNo === "0" ? true : false}
+                                                    disabled={actionType === "detail" ? true : false}
+                                                />
+                                            </InputGroup.Prepend>
+                                            <InputGroup.Prepend>
+                                                <DatePicker
+                                                    selected={this.state.secondBonusMonth}
+                                                    onChange={this.bonus2Change}
+                                                    autoComplete="off"
+                                                    locale="pt-BR"
+                                                    showMonthYearPicker
+                                                    showFullMonthYearPicker
+                                                    // minDate={new Date()}
+                                                    showDisabledMonthNavigation
+                                                    className="form-control form-control-sm"
+                                                    id={actionType === "detail" ? "wagesInfoDatePickerReadOnly" : bonusNo !== "2" ? "wagesInfoDatePickerReadOnly" : "wagesInfoDatePicker"}
+                                                    name="secondBonusMonth"
+                                                    dateFormat={"yyyy/MM"}
+                                                    locale="ja"
+                                                    readOnly={bonusNo !== "2" ? true : false}
                                                     disabled={actionType === "detail" ? true : false}
                                                 />
                                             </InputGroup.Prepend>
@@ -1295,7 +1358,7 @@ class WagesInfo extends Component {
                                 </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
+                                        {/*<InputGroup.Prepend>
                                             <InputGroup.Text id="sanKanji">前回額</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
@@ -1305,46 +1368,49 @@ class WagesInfo extends Component {
                                             maxLength="7"
                                             readOnly
                                             placeholder="例：400000"
-                                            value={lastTimeBonusAmount === "" ? this.state.lastTimeBonusAmountForInsert : lastTimeBonusAmount} />
+                                            value={lastTimeBonusAmount === "" ? this.state.lastTimeBonusAmountForInsert : lastTimeBonusAmount} />*/}
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="sanKanji">予定額</InputGroup.Text>
+	                                        <InputGroup.Text id="sanKanji">一回目</InputGroup.Text>
+	                                    </InputGroup.Prepend>
+	                                    <FormControl
+		                                    readOnly={bonusNo === "0" ? true : false}
+	                                        onChange={this.valueChangeMoney}
+	                                        disabled={actionType === "detail" ? true : false}
+	                                        name="fristTimeBonusAmount"
+	                                        maxLength="8"
+	                                        placeholder="例：400000"
+	                                        value={fristTimeBonusAmount} />                                  	
+										<InputGroup.Prepend>
+                                            <InputGroup.Text id="sanKanji">二回目</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            readOnly={bonusFlag === "1" ? false : true}
+                                            readOnly={bonusNo !== "2" ? true : false}
                                             onChange={this.valueChangeMoney}
                                             disabled={actionType === "detail" ? true : false}
-                                            name="scheduleOfBonusAmount"
+                                            name="secondTimeBonusAmount"
                                             maxLength="8"
                                             placeholder="例：400000"
-                                            value={scheduleOfBonusAmount} />
+                                            value={secondTimeBonusAmount} />
                                     </InputGroup>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col sm={3}>
-                                    <InputGroup size="sm">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="sixKanji">次回昇給月</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <InputGroup.Append>
-                                            <DatePicker
-                                                selected={raiseStartDate}
-                                                onChange={this.raiseChange}
-                                                autoComplete="off"
-                                                locale="pt-BR"
-                                                showMonthYearPicker
-                                                showFullMonthYearPicker
-                                                minDate={new Date(new Date().getFullYear(), new Date().getMonth())}
-                                                showDisabledMonthNavigation
-                                                className="form-control form-control-sm"
-                                                id={actionType === "detail" ? "wagesInfoDatePicker-nextRaiseMonth-readOnly" : "wagesInfoDatePicker-nextRaiseMonth"}
-                                                dateFormat={"yyyy/MM"}
-                                                name="nextRaiseMonth"
-                                                locale="ja"
-                                                disabled={actionType === "detail" ? true : false}
-                                            />
-                                        </InputGroup.Append>
-                                    </InputGroup>
+	                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>総額</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl
+                                        maxLength="7"
+                                        readOnly
+                                        onChange={this.valueChange}
+                                        disabled={actionType === "detail" ? true : false}
+                                        name="totalAmount"
+                                        value={totalAmount} />
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                </InputGroup>
                                 </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm">
@@ -1373,23 +1439,44 @@ class WagesInfo extends Component {
                                         </InputGroup.Append>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={3}>
-                                    <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>総額</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl
-                                            maxLength="7"
-                                            readOnly
-                                            onChange={this.valueChange}
-                                            disabled={actionType === "detail" ? true : false}
-                                            name="totalAmount"
-                                            value={totalAmount} />
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text style={{ width: "2rem" }}>円</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                    </InputGroup>
+	                            <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>社員形式</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl
+                                        as="select"
+                                        onChange={this.employeeFormChange}
+                                        disabled={actionType === "detail" ? true : false}
+                                        name="employeeFormCode"
+                                        value={employeeFormCode}>
+                                        {EmployeeFormCodeDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
+                                    </FormControl>
+                                </InputGroup>
                                 </Col>
+	                            <Col hidden>
+	                            <InputGroup size="sm" className="mb-3">
+	                                <InputGroup.Prepend>
+	                                    <InputGroup.Text>社員区分</InputGroup.Text>
+	                                </InputGroup.Prepend>
+	                                <FormControl
+	                                    as="select"
+	                                    onChange={this.newEmployeeStatusChange}
+	                                    disabled={actionType === "detail" ? true : false}
+	                                    name="newEmployeeStatus"
+	                                    value={newEmployeeStatus}>
+	                                    {this.state.employeeStatuss.map(date =>
+	                                        <option key={date.code} value={date.code}>
+	                                            {date.name}
+	                                        </option>
+	                                    )}
+	                                </FormControl>
+	                            </InputGroup>
+	                            </Col>
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
@@ -1475,7 +1562,7 @@ class WagesInfo extends Component {
                                 <TableHeaderColumn dataField='introductionAllowance' tdStyle={{ padding: '.45em' }} dataFormat={this.addMarkintroductionAllowance}　hidden >特別手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceName' tdStyle={{ padding: '.45em' }}　hidden >他の手当</TableHeaderColumn>
                                 <TableHeaderColumn dataField='otherAllowanceAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkOtherAllowanceAmount}>手当合計</TableHeaderColumn>
-                                <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
+                                <TableHeaderColumn dataField='bonusSum' tdStyle={{ padding: '.45em' }} width="10%" dataFormat={this.addMarkScheduleOfBonusAmount}>ボーナス</TableHeaderColumn>
                                 <TableHeaderColumn dataField='remark' tdStyle={{ padding: '.45em' }} width="27%" >備考</TableHeaderColumn>
                             </BootstrapTable>
                         </Col>

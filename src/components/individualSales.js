@@ -1289,7 +1289,7 @@ class individualSales extends React.Component {//個人売上検索
                             </InputGroup.Prepend>
                         </InputGroup>
                     </Col>
-        	        <Col>
+        	        <Col style={{ pointerEvents: "none"}}>
                     </Col>
                 </Row>
                 <Row>

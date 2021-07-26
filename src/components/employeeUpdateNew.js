@@ -841,6 +841,7 @@ class employeeUpdateNew extends React.Component {
 	        path = {
 	            pathname: "/subMenuManager/" + backPage,
 	            state: { sendValue: this.state.sendValue,
+					employeeNo: this.state.employeeNo,
 	            },
 	        }
 			return this.props.history.push(path);

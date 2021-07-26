@@ -141,6 +141,17 @@ class siteInfo extends Component {
 				remark:"単金調整",
 				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
+		}else if(event.target.value === '3'){
+			this.reset();
+			this.setState({
+				[event.target.name]: event.target.value,
+				unitPrice: "0",
+				workStateFlag: true,
+				systemName: "休暇",
+				customerNo: this.state.customerMaster.find(v => v.name === "LYC").code,
+				remark:"",
+				scheduledEndDate:this.state.scheduledEndDateForSave
+			})
 		} else {
 			this.setState({
 				workStateFlag: false,
@@ -860,9 +871,9 @@ class siteInfo extends Component {
 		switch (actionType) {
 			case "detail":
 				path = {
-					pathname: '/subMenuManager/employeeDetailNew',
+					pathname: '/subMenuManager/employeeUpdateNew',
 					state: {
-						actionType: 'detail',
+						actionType: 'update',
 						id: String(this.state.employeeName),
 						backPage: 'siteInfo',
 						sendValue: this.state.sendValue,
@@ -1042,10 +1053,10 @@ class siteInfo extends Component {
 												className="form-control form-control-sm"
 												locale="ja"
 												autoComplete="off"
-												id={this.state.workState !== "0" ? pageDisabledFlag ? "siteDatePickerReadonlyDefault" : "admissionEndDate" : "siteDatePickerReadonlyDefault"}
-												disabled={this.state.employeeName === '' ? true : this.state.workState === "0" ? true : pageDisabledFlag ? true : false}
+												id={this.state.workState !== "0" && this.state.workState !== "3" ? pageDisabledFlag ? "siteDatePickerReadonlyDefault" : "admissionEndDate" : "siteDatePickerReadonlyDefault"}
+												disabled={this.state.employeeName === '' ? true : this.state.workState === "0" || this.state.workState === "3" ? true : pageDisabledFlag ? true : false}
 											/>
-											<font color="red" hidden={this.state.workState === "0" ? true : false} className="site-mark">★</font>
+											<font color="red" hidden={this.state.workState === "0" || this.state.workState === "3" ? true : false} className="site-mark">★</font>
 										</InputGroup.Prepend>
 									</InputGroup>
 								</Col>
