@@ -30,6 +30,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         rowSelectemployeeNo:'',
         rowSelectemployeeName:'',
         sendFlag:'',
+        bpFlag: false,
      }
      constructor(props){
         super(props);
@@ -59,6 +60,12 @@ class monthlySalesSearch extends Component {//月次売上検索
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         }
         componentDidMount(){
+            var date = new Date();
+            var year = date.getFullYear();
+            $('#fiscalYear').append('<option value="">' + "" + '</option>');
+            for (var i = year - 1; i <= year + 1; i++) {
+                $('#fiscalYear').append('<option value="' + i + '">' + i + '</option>');
+            }
         	let employeeStatuss = [];
         	for(let i in this.state.employeeStatuss){
         		if(this.state.employeeStatuss[i].code !== "4"){
@@ -123,6 +130,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         if(date !== null){
             this.setState({
                 monthlySales_startYearAndMonth: date,
+                fiscalYear: '',
             });
         }else{
             this.setState({
@@ -135,6 +143,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         if(date !== null){
             this.setState({
                 monthlySales_endYearAndMonth: date,
+                fiscalYear: '',
             });
         }else{
             this.setState({
@@ -143,10 +152,17 @@ class monthlySalesSearch extends Component {//月次売上検索
         }
 	};
     searchMonthlySales = () => { 
+    	let employeeOccupation = this.state.employeeOccupation;
+    	if(this.state.employeeClassification === "1"){
+            this.setState({ bpFlag: true })
+            employeeOccupation = "";
+    	}else{
+            this.setState({ bpFlag: false })
+    	}
 		const monthlyInfo = {
             employeeClassification:this.state.employeeClassification,
             employeeForms:this.state.employeeForms,
-            employeeOccupation:this.state.employeeOccupation,
+            employeeOccupation: employeeOccupation,
             kadou:this.state.kadou,
             utilPricefront:this.state.utilPricefront,
             utilPriceback:this.state.utilPriceback,
@@ -156,7 +172,7 @@ class monthlySalesSearch extends Component {//月次売上検索
             grossProfitBack:this.state.grossProfitBack,
             startYandM: publicUtils.formateDate(this.state.monthlySales_startYearAndMonth,false),
             endYandM: publicUtils.formateDate(this.state.monthlySales_endYearAndMonth,false),
-
+            fiscalYear: this.state.fiscalYear,
         };
         axios.post(this.state.serverIP + "monthlySales/searchMonthlySales", monthlyInfo)
 			.then(response => {
@@ -189,6 +205,7 @@ class monthlySalesSearch extends Component {//月次売上検索
             salaryback: '',
             grossProfitFront: '',
             grossProfitBack: '',
+            fiscalYear: '',
         });
     }
     totalfee = () =>{
@@ -340,6 +357,14 @@ class monthlySalesSearch extends Component {//月次売上検索
 		}
 	}
     
+    yearAndMonthChange = event => {
+            this.setState({
+                [event.target.name]: event.target.value,
+                monthlySales_startYearAndMonth: '' ,
+                monthlySales_endYearAndMonth: '' ,
+            })
+    }
+    
     render(){
         const { kadou,
                 employeeOccupation,
@@ -370,43 +395,26 @@ class monthlySalesSearch extends Component {//月次売上検索
                 </Row>
                 <br/>
 				<Row>
-                    <Col sm={6}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
-                                selected={this.state.monthlySales_startYearAndMonth}
-                                onChange={this.monthlySalesStartYearAndMonthChange}
-                                dateFormat={"yyyy MM"}
-                                autoComplete="off"
-                                locale="pt-BR"
-                                showMonthYearPicker
-                                showFullMonthYearPicker
-                                showDisabledMonthNavigation
-                                className="form-control form-control-sm"
-                                id="monthlysalesSearchDatePicker"
-                                dateFormat={"yyyy/MM"}
-                                name="individualSales_startYearAndMonth"
-                                locale="ja">
-								</DatePicker><font id="mark">～</font><DatePicker
-                                selected={this.state.monthlySales_endYearAndMonth}
-                                onChange={this.monthlySalesEndYearAndMonthChange}
-                                dateFormat={"yyyy MM"}
-                                autoComplete="off"
-                                locale="pt-BR"
-                                showMonthYearPicker
-                                showFullMonthYearPicker
-                                showDisabledMonthNavigation
-                                className="form-control form-control-sm"
-                                id="monthlysalesSearchDatePicker"
-                                dateFormat={"yyyy/MM"}
-                                name="individualSales_endYearAndMonth"
-                                locale="ja">
-								</DatePicker>
-                            </InputGroup.Prepend>
-                        </InputGroup>                       
-                    </Col>
-				</Row>
-				<Row>
+        		<Col sm={3}>
+	                <InputGroup size="sm" className="mb-3">
+	                    <InputGroup.Prepend>
+	                        <InputGroup.Text id="inputGroup-sizing-sm">年度</InputGroup.Text>
+	                    </InputGroup.Prepend>
+	                    <FormControl id="fiscalYear" name="fiscalYear" value={this.state.fiscalYear} as="select" aria-label="Small" aria-describedby="inputGroup-sizing-sm" onChange={this.yearAndMonthChange.bind(this)} />
+	                </InputGroup>
+                </Col>
+                <Col sm={3}>
+	                <InputGroup size="sm" className="mb-3">
+	                    <InputGroup.Prepend>
+	                    <InputGroup.Text id="inputGroup-sizing-sm">稼働区分</InputGroup.Text>
+	                    </InputGroup.Prepend>
+	                    <Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" id="kadou" value={kadou} autoComplete="off" >
+										<option value=""　></option>
+										<option value="0">はい</option>
+										<option value="1">いいえ</option>
+									</Form.Control>
+	                </InputGroup>
+                </Col>
                 <Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 									<InputGroup.Prepend>
@@ -420,7 +428,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                                             </Form.Control>
 								</InputGroup>
 							</Col>
-                    <Col sm={3}>
+                    <Col hidden>
                         <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">社員形式</InputGroup.Text>
@@ -440,25 +448,13 @@ class monthlySalesSearch extends Component {//月次売上検索
                             <InputGroup.Prepend>
                             <InputGroup.Text id="inputGroup-sizing-sm">職種</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control as="select" size="sm" onChange={this.valueChange} name="employeeOccupation" id="employeeOccupation" value={employeeOccupation} autoComplete="off">
+                            <Form.Control as="select" size="sm" onChange={this.valueChange} disabled={this.state.employeeClassification==="1"?true:false} name="employeeOccupation" id="employeeOccupation" value={this.state.employeeClassification==="1"?"":employeeOccupation} autoComplete="off">
 											{occupationCodes.map(data =>
 												<option key={data.code} value={data.code}>
 													{data.name}
 												</option>
 											)}
                                             </Form.Control>
-                        </InputGroup>
-                    </Col>
-                    <Col sm={3}>
-                        <InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="inputGroup-sizing-sm">稼働</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Form.Control as="select" size="sm" onChange={this.valueChange} name="kadou" id="kadou" value={kadou} autoComplete="off" >
-											<option value=""　></option>
-											<option value="0">はい</option>
-											<option value="1">いいえ</option>
-										</Form.Control>
                         </InputGroup>
                     </Col>
                 </Row>
@@ -492,6 +488,41 @@ class monthlySalesSearch extends Component {//月次売上検索
                             <font id="mark">～</font>
                             <FormControl name="grossProfitBack" id="grossProfitBack" value={this.state.grossProfitBack}  onChange={(e) => this.vNumberChange(e, 'grossProfitBack')} aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder=" 万円"/>
                         </InputGroup>  
+                    </Col>
+                    <Col sm={3}>
+	                    <InputGroup size="sm" className="mb-3">
+	                        <InputGroup.Prepend>
+	                        <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
+	                            selected={this.state.monthlySales_startYearAndMonth}
+	                            onChange={this.monthlySalesStartYearAndMonthChange}
+	                            dateFormat={"yyyy MM"}
+	                            autoComplete="off"
+	                            locale="pt-BR"
+	                            showMonthYearPicker
+	                            showFullMonthYearPicker
+	                            showDisabledMonthNavigation
+	                            className="form-control form-control-sm"
+	                            id="monthlysalesSearchDatePicker"
+	                            dateFormat={"yyyy/MM"}
+	                            name="individualSales_startYearAndMonth"
+	                            locale="ja">
+								</DatePicker><font id="mark">～</font><DatePicker
+	                            selected={this.state.monthlySales_endYearAndMonth}
+	                            onChange={this.monthlySalesEndYearAndMonthChange}
+	                            dateFormat={"yyyy MM"}
+	                            autoComplete="off"
+	                            locale="pt-BR"
+	                            showMonthYearPicker
+	                            showFullMonthYearPicker
+	                            showDisabledMonthNavigation
+	                            className="form-control form-control-sm"
+	                            id="monthlysalesSearchDatePicker"
+	                            dateFormat={"yyyy/MM"}
+	                            name="individualSales_endYearAndMonth"
+	                            locale="ja">
+								</DatePicker>
+	                        </InputGroup.Prepend>
+	                    </InputGroup>                       
                     </Col>
                 </Row>
                 <Row className="mb-3">
@@ -571,12 +602,13 @@ class monthlySalesSearch extends Component {//月次売上検索
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='90'>年月</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='100'>氏名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員区分</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='90'>職種</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'  width='150'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='150' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='otherFee' dataFormat={this.otherFeeAddComma} width='100'>他の費用</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='waitingCost' dataFormat={this.waitingCostAddComma} width='110'>非稼動費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='otherFee' dataFormat={this.otherFeeAddComma} width='100'>他の費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={this.state.bpFlag} dataField='waitingCost' dataFormat={this.waitingCostAddComma} width='110'>非稼動費用</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} hidden={!this.state.bpFlag} dataField='bpBelongCustomer' width='210'>所属会社</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125'　dataField='monthlyGrosProfits'dataFormat={this.monthlyGrosProfitsAddComma} width='120'>粗利(税抜き)</TableHeaderColumn>         
 					</BootstrapTable>
                     </div>

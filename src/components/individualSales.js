@@ -119,8 +119,6 @@ class individualSales extends React.Component {//個人売上検索
                 [event.target.name]: event.target.value
             })
         }
-
-
     }
 
     //onchange
@@ -1238,7 +1236,7 @@ class individualSales extends React.Component {//個人売上検索
 	                </Col>
 	        		<Col>
 	                	<InputGroup size="sm" className="mb-3">
-                            <InputGroup.Prepend><InputGroup.Text id="inputGroup-sizing-sm">社員名</InputGroup.Text></InputGroup.Prepend>
+                            <InputGroup.Prepend><InputGroup.Text id="threeKanji">社員名</InputGroup.Text></InputGroup.Prepend>
                             <Autocomplete
                                 id="employeeName"
                                 name="employeeName"
@@ -1248,7 +1246,7 @@ class individualSales extends React.Component {//個人売上検索
                                 onChange={(event, values) => this.handleTag(event, values)}
                                 renderInput={(params) => (
                                     <div ref={params.InputProps.ref}>
-										<input placeholder="  社員名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-individualSales"/>
+										<input placeholder=" 社員名" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-individualSales"/>
                                     </div>
                                 )}
                             />
@@ -1355,7 +1353,7 @@ class individualSales extends React.Component {//個人売上検索
 	                <div>
 	                    <BootstrapTable selectRow={selectRow} data={this.state.employeeInfoList} pagination={true} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
-	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員区分</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='110' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>

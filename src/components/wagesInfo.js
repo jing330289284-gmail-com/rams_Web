@@ -491,6 +491,7 @@ class WagesInfo extends Component {
                         "errorsMessageShow": false,
                         allExpensesInfoList:result.data.allExpensesInfoList,
                         expensesInfoModels: result.data.allExpensesInfoList,
+                        workingCondition: "0",
                     })
                     if (result.data.bonus !== null) {
                         this.setState({
@@ -503,6 +504,7 @@ class WagesInfo extends Component {
                             scheduleOfBonusAmount: utils.addComma(result.data.bonus.scheduleOfBonusAmount),
                             fristBonusMonth: utils.converToLocalTime(result.data.bonus.fristBonusMonth, false),
                             secondBonusMonth: utils.converToLocalTime(result.data.bonus.secondBonusMonth, false),
+                            workingCondition: "0",
                         }, () => {
                             this.totalKeisan();
                         })
@@ -512,6 +514,7 @@ class WagesInfo extends Component {
                             scheduleOfBonusAmount: '',
                             fristBonusMonth: '',
                             secondBonusMonth: '',
+                            workingCondition: "0",
                         }, () => {
                             this.totalKeisan();
                         })
@@ -534,6 +537,7 @@ class WagesInfo extends Component {
                         fristTimeBonusAmountForInsert: '',
                         bonus: result.data.bonus,
                         bonusNo: '0',
+                        workingCondition: "0",
                         scheduleOfBonusAmount: '',
                         fristBonusMonth: '',
                         secondBonusMonth: '',
@@ -1359,7 +1363,7 @@ class WagesInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         {/*<InputGroup.Prepend>
-                                            <InputGroup.Text id="sanKanji">前回額</InputGroup.Text>
+                                            <InputGroup.Text>前回額</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             onChange={this.valueChange}

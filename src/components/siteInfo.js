@@ -193,7 +193,7 @@ class siteInfo extends Component {
 					dailyCalculationStatusFlag: false
 				});
 			} else {
-				if (this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
+				if (this.state.admissionEndDate !== null && this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
 					if (new Date(this.state.admissionEndDate.getFullYear(), this.state.admissionEndDate.getMonth() + 1, 0).getDate() - this.state.admissionEndDate.getDate() > 2) {
 						this.setState({
 							dailyCalculationStatusFlag: false
@@ -210,7 +210,7 @@ class siteInfo extends Component {
 				}
 			}
 		} else {
-			if (this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
+			if (this.state.admissionEndDate !== null && this.state.admissionEndDate !== '' && this.state.admissionEndDate !== undefined) {
 				if (new Date(this.state.admissionEndDate.getFullYear(), this.state.admissionEndDate.getMonth() + 1, 0).getDate() - this.state.admissionEndDate.getDate() > 2) {
 					this.setState({
 						dailyCalculationStatusFlag: false
