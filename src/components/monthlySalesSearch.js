@@ -37,7 +37,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         this.state = this.initialState;
         this.valueChange = this.valueChange.bind(this);
 		this.options = {
-			sizePerPage: 10,
+			sizePerPage: 12,
 			pageStartIndex: 1,
 			paginationSize: 3,
 			prePage: '<', // Previous page button text
@@ -556,7 +556,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                     }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
                     </div> 
                     <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価総額</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -567,7 +567,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 					</Col>
                     
                     <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">支給総額</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -577,7 +577,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 	                    </InputGroup>
 					</Col>
                     <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="fiveKanji" className="input-group-indiv">非稼働総額</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -587,7 +587,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 	                    </InputGroup>
 					</Col>
                     <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利総額</InputGroup.Text>
 		                    </InputGroup.Prepend>

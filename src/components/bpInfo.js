@@ -5,8 +5,9 @@ import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 import '../asserts/css/style.css';
 import DatePicker from "react-datepicker";
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
 import store from './redux/store';
@@ -28,6 +29,7 @@ class bpInfo extends React.Component {
 		bpSalesProgressCode: String(this.props.employeeNo).substring(0,3) === "BPR" ? '3' : '4',// 選択中の営業状況
 		bpRemark: '',// 備考
 		bpOtherCompanyAdmissionEndDate: '',
+		oldUnitPriceStartMonth: null,
 		customer: store.getState().dropDown[15].slice(1),
 		salesProgressCodes: store.getState().dropDown[16].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -69,12 +71,10 @@ class bpInfo extends React.Component {
 				.then(response => response.data)
 				.then((data) => {
 					this.setState({
-						bpBelongCustomerCode: data.bpBelongCustomerCode,// 選択中のBP所属
-						bpUnitPrice: data.bpUnitPrice,// 単価
-						bpSalesProgressCode: data.bpSalesProgressCode,// 選択中の営業状況
-						bpOtherCompanyAdmissionEndDate: utils.converToLocalTime(data.bpOtherCompanyAdmissionEndDate, false),
-						unitPriceStartMonth: utils.converToLocalTime(data.unitPriceStartMonth, false),
-						bpRemark: data.bpRemark,// 備考
+						bpInfoTable: data.bpInfoList,
+						bpBelongCustomerCode: data.model === null ? '' : data.model.bpBelongCustomerCode,// 選択中のBP所属
+						bpSalesProgressCode: data.model === null ? '4' : data.model.bpSalesProgressCode,// 選択中の営業状況
+						bpOtherCompanyAdmissionEndDate: data.model === null ? "" : utils.converToLocalTime(data.model.bpOtherCompanyAdmissionEndDate, false),
 					});
 				}
 				);
@@ -104,8 +104,29 @@ class bpInfo extends React.Component {
 		}
 	}
 
+	handleRowSelect = (row, isSelected, e) => {
+		if (isSelected) {
+			this.setState(
+					{
+						oldUnitPriceStartMonth: row.unitPriceStartMonth,
+						unitPriceStartMonth: row.unitPriceStartMonth === null || row.unitPriceStartMonth === undefined || row.unitPriceStartMonth === "" ? "" : utils.converToLocalTime(row.unitPriceStartMonth, false),
+						bpUnitPrice: row.bpUnitPrice === null || row.bpUnitPrice === undefined || row.bpUnitPrice === "" ? "" : row.bpUnitPrice,
+						bpRemark: row.bpRemark === null || row.bpRemark === undefined || row.bpRemark === "" ? "" : row.bpRemark,
+					}
+				);
+		}
+		else{
+			this.setState(
+					{
+						oldUnitPriceStartMonth: null,
+						unitPriceStartMonth: "",
+						bpUnitPrice: "",
+						bpRemark: "",
+					}
+				);
+		}
+	}
 	
-
 	bpOtherCompanyAdmissionEndDateChange = (date) => {
 		this.setState(
 			{
@@ -131,6 +152,7 @@ class bpInfo extends React.Component {
 			bpOtherCompanyAdmissionEndDate: utils.formateDate(this.state.bpOtherCompanyAdmissionEndDate, false),
 			unitPriceStartMonth: utils.formateDate(this.state.unitPriceStartMonth, false),
 			bpRemark: this.state.bpRemark,
+			oldUnitPriceStartMonth: this.state.oldUnitPriceStartMonth,
 		};
 		if(this.props.actionType === "update"){
 			axios.post(this.state.serverIP + "employee/updatebpInfo", bpInfoModel)
@@ -162,6 +184,33 @@ class bpInfo extends React.Component {
 	}
 	render() {
 		const { bpUnitPrice, bpSalesProgressCode, bpRemark, pbInfoEmployeeName, } = this.state;
+		// テーブルの行の選択
+		const selectRow = {
+			mode: 'radio',
+			bgColor: 'pink',
+			hideSelectColumn: true,
+			clickToSelect: true,
+			clickToExpand: true,
+			onSelect: this.handleRowSelect,
+		};
+		// テーブルの定義
+		const options = {
+			page: 1,
+			sizePerPage: 5,
+			pageStartIndex: 1,
+			paginationSize: 3,
+			prePage: '<',
+			nextPage: '>',
+			firstPage: '<<',
+			lastPage: '>>',
+			paginationShowsTotal: this.renderShowsTotal,
+			hideSizePerPage: true,
+			expandRowBgColor: 'rgb(165, 165, 165)',
+			deleteBtn: this.createCustomDeleteButton,
+			onDeleteRow: this.onDeleteRow,
+			handleConfirmDeleteRow: this.customConfirm,
+			sortIndicator: false, // 隐藏初始排序箭头
+		};
 		return (
 			<div>
 				<Row inline="true">
@@ -286,14 +335,34 @@ class bpInfo extends React.Component {
 							</Col>
 						</Row>
 					</Form.Group>
-					{this.props.actionType === "detail" ? "" : <div style={{ "textAlign": "center" }}>
+					<div style={{ "textAlign": "center" }} hidden={this.props.actionType === "detail"}>
 						<Button size="sm" variant="info" onClick={this.insertOrUpdateBpInfo} type="button" on>
 							<FontAwesomeIcon icon={faSave} /> {this.props.actionType === "update" ? "更新" : "登録"}
 						</Button>{' '}
 						<Button size="sm" variant="info" onClick={this.resetButton}>
 							<FontAwesomeIcon icon={faUndo} /> リセット
                         </Button>
-					</div>}
+					</div>
+					<div style={{ "textAlign": "right" }} hidden={this.props.actionType === "detail"}>
+					<Col>
+					<Button size="sm" variant="info" type="button" on>
+						<FontAwesomeIcon icon={faTrash} /> 削除
+					</Button>
+					</Col>
+					</div>
+					<div >
+						<Row>
+							<Col sm={12}>
+								<BootstrapTable ref="bpInfoTable"
+									data={this.state.bpInfoTable} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
+									<TableHeaderColumn width='15%' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
+									<TableHeaderColumn width='25%' tdStyle={{ padding: '.45em' }} dataField='unitPriceStartMonth' isKey>単価開始月</TableHeaderColumn>
+									<TableHeaderColumn width='20%' tdStyle={{ padding: '.45em' }} dataField='bpUnitPrice'>単価</TableHeaderColumn>
+									<TableHeaderColumn width='40%' tdStyle={{ padding: '.45em' }} dataField='bpRemark'>備考</TableHeaderColumn>
+								</BootstrapTable>
+							</Col>
+						</Row>
+					</div>
 				</Form>
 			</div>
 		);

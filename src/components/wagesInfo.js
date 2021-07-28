@@ -1194,7 +1194,7 @@ class WagesInfo extends Component {
                                             <InputGroup.Text id="fiveKanji">非稼動費用</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
-                                            maxLength="7"
+                                            maxLength="8"
                                             /*readOnly={!kadouCheck}*/
                                             disabled={actionType === "detail" ? true : false}
                                             name="waitingCost"

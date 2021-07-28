@@ -1244,7 +1244,7 @@ class sendLettersConfirm extends React.Component {
 (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
 【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
 			(this.state.projectPhaseName !=="" && this.state.projectPhaseName !== null ? `
-【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName + " から":"") +
+【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName + "から":"") +
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
