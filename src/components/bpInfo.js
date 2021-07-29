@@ -60,24 +60,35 @@ class bpInfo extends React.Component {
 			bpRemark: '',// 備考
 		})
 	};
+	
+	deleteRow = () => {
+		var a = window.confirm("削除していただきますか？");
+		if (a) {
+			const bpInfoModel = {
+					bpEmployeeNo: this.props.employeeNo,
+					oldUnitPriceStartMonth: this.state.oldUnitPriceStartMonth,
+				};
+			axios.post(this.state.serverIP + "employee/deletebpInfo", bpInfoModel)
+			.then(response => {
+				if (response.data.errorsMessage != null) {
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+				} else {
+					this.setState({ "myToastShow": true, "errorsMessageShow": false });
+					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+				}
+				this.getbpInfoList();
+			}).catch((error) => {
+				console.error("Error - " + error);
+			});
+		}
+	};
 
 	// 初期化メソッド
 	componentDidMount() {
 		this.setEmployeeName();
 		if (this.props.actionType !== "insert") {
-			const formData = new FormData()
-			formData.append('bpEmployeeNo', this.props.employeeNo)
-			axios.post(this.state.serverIP + "bpInfo/getBpInfo", formData)
-				.then(response => response.data)
-				.then((data) => {
-					this.setState({
-						bpInfoTable: data.bpInfoList,
-						bpBelongCustomerCode: data.model === null ? '' : data.model.bpBelongCustomerCode,// 選択中のBP所属
-						bpSalesProgressCode: data.model === null ? '4' : data.model.bpSalesProgressCode,// 選択中の営業状況
-						bpOtherCompanyAdmissionEndDate: data.model === null ? "" : utils.converToLocalTime(data.model.bpOtherCompanyAdmissionEndDate, false),
-					});
-				}
-				);
+			this.getbpInfoList();
 		}
 		var bpInfoModel = this.props.bpInfoModel;// 父画面のパラメータ（画面既存口座情報）
 		if (!$.isEmptyObject(bpInfoModel)) {
@@ -90,6 +101,29 @@ class bpInfo extends React.Component {
 			});
 
 		}
+	}
+	
+	getbpInfoList = () =>{
+		const formData = new FormData()
+		formData.append('bpEmployeeNo', this.props.employeeNo)
+		axios.post(this.state.serverIP + "bpInfo/getBpInfo", formData)
+			.then(response => response.data)
+			.then((data) => {
+				this.setState({
+					bpInfoTable: data.bpInfoList,
+					bpBelongCustomerCode: data.model === null ? '' : data.model.bpBelongCustomerCode,// 選択中のBP所属
+					bpSalesProgressCode: data.model === null ? '4' : data.model.bpSalesProgressCode,// 選択中の営業状況
+					bpOtherCompanyAdmissionEndDate: data.model === null ? "" : utils.converToLocalTime(data.model.bpOtherCompanyAdmissionEndDate, false),
+				});
+				if(data.bpInfoList.length > 0){
+					this.setState({
+						unitPriceStartMonth: utils.converToLocalTime(data.bpInfoList[data.bpInfoList.length - 1].unitPriceStartMonth, false),
+						bpUnitPrice: data.bpInfoList[data.bpInfoList.length - 1].bpUnitPrice,
+						bpRemark: data.bpInfoList[data.bpInfoList.length - 1].bpRemark,
+					});
+				}
+			}
+		);
 	}
 
 	setEmployeeName = () => {
@@ -164,11 +198,13 @@ class bpInfo extends React.Component {
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				}
+				this.getbpInfoList();
+				this.setState({ oldUnitPriceStartMonth: null });
 			}).catch((error) => {
 				console.error("Error - " + error);
 			});
 		}
-		this.props.pbInfoTokuro(bpInfoModel);
+		//this.props.pbInfoTokuro(bpInfoModel);
 	};
 
 	getCustomer = (event, values) => {
@@ -345,7 +381,7 @@ class bpInfo extends React.Component {
 					</div>
 					<div style={{ "textAlign": "right" }} hidden={this.props.actionType === "detail"}>
 					<Col>
-					<Button size="sm" variant="info" type="button" on>
+					<Button size="sm" variant="info" type="button" disabled={this.state.oldUnitPriceStartMonth === null} onClick={this.deleteRow}>
 						<FontAwesomeIcon icon={faTrash} /> 削除
 					</Button>
 					</Col>

@@ -640,10 +640,10 @@ class employeeUpdateNew extends React.Component {
 			this.getNO(this.state.empNoHead);
 			this.setState({ bpDisabled:false,residenceTimeDisabled:this.state.residenceCode === "5"?true:false, authorityCode: "1",  });
 		}else if(value === '2'){
-			this.setState({ companyMail: '', authorityCode: "1", intoCompanyCode: '', departmentCode: '',
-				retirementYearAndMonth: '',retirementResonClassificationCode: '',occupationCode: '3',
+			this.setState({ authorityCode: "1", departmentCode: '',
+				retirementYearAndMonth: '',retirementResonClassificationCode: '',
 				employeeFormCode:'',temporary_retirementYearAndMonth:'',retirementYearAndMonthDisabled:false,
-				occupationCode: '',socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
+				socialInsuranceDate: '',employmentInsurance: '',residenceTimeDisabled: true,employmentInsuranceNo: '',socialInsuranceNo: '',socialInsurance: "0",});
 			this.getNO("SP");
 		}
 		else if(value === '3'){
@@ -1160,7 +1160,7 @@ class employeeUpdateNew extends React.Component {
 									<Form.Control as="select" size="sm"
 										onChange={this.valueChange}
 										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "3" ? false : true} >
+										autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "2" || employeeStatus === "3" ? false : true} >
 										{this.state.intoCompanyCodes.map(date =>
 											<option key={date.code} value={date.code}>
 												{date.name}
@@ -1195,7 +1195,7 @@ class employeeUpdateNew extends React.Component {
 									onChange={this.valueChange}
 									name="occupationCode" value={occupationCode}
 									autoComplete="off" 
-									disabled={departmentCode === "0" || employeeStatus === "2" ? true : false}
+									disabled={departmentCode === "0" || employeeStatus === "1" ? true : false}
 									>
 									{this.state.occupationCodes.map(date =>
 										<option key={date.code} value={date.code}>

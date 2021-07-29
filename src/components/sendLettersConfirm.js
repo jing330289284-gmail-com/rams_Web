@@ -325,6 +325,13 @@ class sendLettersConfirm extends React.Component {
 					alert(error);
 				});
 			}
+			else{
+				if(this.state.employeeInfo.length === 1){
+					this.setState({ "errorsMessageShow": true, errorsMessageValue: "要員は存在していない。" });
+					setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+					this.setSelectedCusInfos("X");
+				}
+			}
 		}
 
 		// this.sendMailWithFile();
@@ -378,10 +385,10 @@ class sendLettersConfirm extends React.Component {
 								if (result.data.errorsMessage != null) {
 									this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
 									setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
-									this.setSelectedCusInfos("未");
+									this.setSelectedCusInfos("X");
 								} 								
 								else{
-									this.setSelectedCusInfos("済み");
+									this.setSelectedCusInfos("O");
 									this.setState({
 										sendLetterOverFlag: true,
 									})
@@ -1422,7 +1429,7 @@ class sendLettersConfirm extends React.Component {
 					<Col sm={6}>
 						<div style={{ "float": "right" }}>
 							<Button onClick={this.openDaiolog} size="sm" variant="info" name="clickButton" disabled={this.state.selectRowFlag && this.state.selectRow1Flag ? false : true}><FontAwesomeIcon icon={faGlasses} />メール確認</Button>{" "}
-							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" || this.state.sendLetterOverFlag ? true : false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
+							<Button onClick={this.beforeSendMailWithFile} size="sm" variant="info" disabled={this.state.mailTitle === "" || this.state.sendLetterOverFlag || this.state.employeeInfo.length === 0 ? true : false}><FontAwesomeIcon icon={faEnvelope} /> {"送信"}</Button></div>
 					</Col>
 				</Row>
 				<Row>

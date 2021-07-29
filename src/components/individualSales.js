@@ -1291,7 +1291,8 @@ class individualSales extends React.Component {//個人売上検索
                     </Col>
                 </Row>
                 <Row>
-            		<Col style={{ padding: "0px",marginLeft: "15px",marginRight: "15px" }}>
+            		<Col>
+            		<div  style={{ 	position: "absolute",width:"300px" }}>
 		                <Button
 						size="sm"
 	                    id="backToMonthly"
@@ -1305,6 +1306,7 @@ class individualSales extends React.Component {//個人売上検索
 						<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="siteInfo">現場情報</Button>
 		                <font style={{ marginLeft: "2px" , marginRight: "2px" }}></font>
 		                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
+		            </div>
 		            </Col>
             		<Col>
 		                <InputGroup size="sm">

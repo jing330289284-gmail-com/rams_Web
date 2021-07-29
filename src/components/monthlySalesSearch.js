@@ -58,6 +58,7 @@ class monthlySalesSearch extends Component {//月次売上検索
             employeeFormCodes: store.getState().dropDown[2],
             occupationCodes: store.getState().dropDown[10],
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+            rowSelectemployeeNo:'',
         }
         componentDidMount(){
             var date = new Date();
@@ -353,6 +354,7 @@ class monthlySalesSearch extends Component {//月次売上検索
             this.setState({rowSelectemployeeName:row.employeeName});
 			$('#personalSearchBtn').removeClass('disabled');
 		} else {
+            this.setState({rowSelectemployeeNo:""});
 			$('#personalSearchBtn').addClass('disabled');
 		}
 	}
@@ -364,6 +366,27 @@ class monthlySalesSearch extends Component {//月次売上検索
                 monthlySales_endYearAndMonth: '' ,
             })
     }
+    
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+		};
+		
+		switch (actionType) {
+			case "wagesInfo":
+				path = {
+					pathname: '/subMenuManager/wagesInfo',
+					state: {
+						employeeNo: this.state.rowSelectemployeeNo,
+						backPage: "monthlySalesSearch",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+		}
+		this.props.history.push(path);
+	}
     
     render(){
         const { kadou,
@@ -554,6 +577,10 @@ class monthlySalesSearch extends Component {//月次売上検索
                     grossProfitBack:this.state.grossProfitBack,
                 } 
                     }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
+                
+	                <font style={{ marginLeft: "2px" , marginRight: "2px" }}></font>
+	                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.rowSelectemployeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
+
                     </div> 
                     <Col>
 		                <InputGroup size="sm">
