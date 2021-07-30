@@ -147,7 +147,7 @@ class individualSales extends React.Component {//個人売上検索
             salaryback:this.state.salaryback === "" ? undefined :this.state.salaryback,
             grossProfitFront:this.state.grossProfitFront === "" ? undefined :this.state.grossProfitFront,
             grossProfitBack:this.state.grossProfitBack === "" ? undefined :this.state.grossProfitBack,
-          
+            sendValue: this.state.monthlyValue,
 		}   	
 	}
     this.props.history.push(path);
@@ -259,6 +259,9 @@ class individualSales extends React.Component {//個人売上検索
 		                salaryback:salaryback,
 		                grossProfitFront:grossProfitFront,
 		                grossProfitBack:grossProfitBack,
+		                monthlyValue: location.state.monthlyValue,
+                        fiscalYear: location.state.fiscalYear,
+                        employeeNo: location.state.employeeNo,
 		            }, () =>
 		                this.searchEmployee()
 		            );

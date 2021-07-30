@@ -220,8 +220,8 @@ class ProjectContent extends Component {
 ■募集人数：` + recruitmentNumbers) + ((admissionPeriod === null || admissionPeriod === "") && (projectPeriodName === null || projectPeriodName === "") ? `` : `
 ■稼動時期：` + admissionPeriod + ` ~ ` + projectPeriodName) + (siteLocationName === null || siteLocationName === "" ? ``:`
 ■勤務地：` + siteLocationName) + (projectPhase === null || projectPhase === "" ? ``:`
-■作業工程：` + projectPhase) + ((nationalityName !== null && nationalityName !== "") || (japaneaseConversationName!== null && japaneaseConversationName !== "") ? `
-■国籍：` + (nationalityName === null ? `` : (nationalityName + `、` + japaneaseConversationName)):``) + (noOfInterviewName === null || noOfInterviewName === "" ? ``:`
+■作業工程：` + projectPhase) + ((nationalityName !== null && nationalityName !== "") ? `
+■国籍：` + (nationalityName === null ? `` : (nationalityName + ((japaneaseConversationName=== null || japaneaseConversationName === "") ? "" : (`、` + japaneaseConversationName)))):``) + (noOfInterviewName === null || noOfInterviewName === "" ? ``:`
 ■面談回数：` + noOfInterviewName) + (remark === null || remark === "" ? ``:`
 ■備考：` + remark)
 				

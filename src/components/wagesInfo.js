@@ -721,7 +721,7 @@ class WagesInfo extends Component {
         wagesInfoModel["actionType"] = this.state.actionType;
         wagesInfoModel["expensesInfoModel"] = this.state.expensesInfoModel;
         wagesInfoModel["newEmployeeNo"] = this.state.newEmployeeNo;
-        wagesInfoModel["employeeStatus"] = this.state.newEmployeeStatus;
+        wagesInfoModel["employeeStatus"] = this.state.employeeFormCode;
         if (this.state.employeeFormCode === "3") {
             $("#socialInsuranceFlag").attr("disabled", true);
             $("#bonusNo").attr("disabled", true);

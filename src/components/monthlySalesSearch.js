@@ -79,22 +79,29 @@ class monthlySalesSearch extends Component {//月次売上検索
            this.clickButtonDisabled();  
            const { location } = this.props
            if (location.state) {
-                this.setState({
-                    monthlySales_startYearAndMonth : location.state.monthlySales_startYearAndMonth,
-                    monthlySales_endYearAndMonth : location.state.monthlySales_endYearAndMonth,
-                    //employeeClassification:this.state.employeeClassification === "" ? "" :location.state.employeeClassification,
-                    // employeeFormCodes:this.state.employeeFormCodes === "" ? "" :location.state.employeeFormCodes,
-                    // occupationCodes:this.state.occupationCodes === "" ? "" :location.state.occupationCodes,
-                    // kadou:this.state.kadou === "" ? "" :location.state.kadou,
-                    utilPricefront:this.state.utilPricefront === "" ? "" :location.state.utilPricefront,
-                    utilPriceback: this.state.utilPriceback === "" ? "" :location.state.utilPriceback,
-                    salaryfront:this.state.salaryfront === "" ? "" :location.state.salaryfront,
-                    salaryback:this.state.salaryback === "" ? "" :location.state.salaryback,
-                    grossProfitFront:this.state.grossProfitFront === "" ? "" :location.state.grossProfitFront,
-                    grossProfitBack:this.state.grossProfitBack === "" ? "" :location.state.grossProfitBack,
+        	   	let data = location.state;
+               	if(data.sendValue !== undefined && data.sendValue !== null){
+               		data = data.sendValue;
+               	}
+        	   	this.setState({
+                    monthlySales_startYearAndMonth : data.monthlySales_startYearAndMonth,
+                    monthlySales_endYearAndMonth : data.monthlySales_endYearAndMonth,
+                    //employeeClassification:this.state.employeeClassification === "" ? "" :data.employeeClassification,
+                    // employeeFormCodes:this.state.employeeFormCodes === "" ? "" :data.employeeFormCodes,
+                    // occupationCodes:this.state.occupationCodes === "" ? "" :data.occupationCodes,
+                    // kadou:this.state.kadou === "" ? "" :data.kadou,
+                    utilPricefront:this.state.utilPricefront === "" ? "" :data.utilPricefront,
+                    utilPriceback: this.state.utilPriceback === "" ? "" :data.utilPriceback,
+                    salaryfront:this.state.salaryfront === "" ? "" :data.salaryfront,
+                    salaryback:this.state.salaryback === "" ? "" :data.salaryback,
+                    grossProfitFront:this.state.grossProfitFront === "" ? "" :data.grossProfitFront,
+                    grossProfitBack:this.state.grossProfitBack === "" ? "" :data.grossProfitBack,
+                    fiscalYear: data.fiscalYear,
+                    kadou: data.kadou,
+                    employeeClassification: data.employeeClassification,
+                    employeeOccupation: data.employeeOccupation,
                 }, () =>
                 this.searchMonthlySales())
-               
             }
         }
 
@@ -370,6 +377,18 @@ class monthlySalesSearch extends Component {//月次売上検索
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = {
+                monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
+                monthlySales_endYearAndMonth: this.state.monthlySales_endYearAndMonth,
+                utilPricefront: this.state.utilPricefront,
+                utilPriceback: this.state.utilPriceback,
+                salaryfront: this.state.salaryfront,
+                salaryback: this.state.salaryback,
+                grossProfitFront: this.state.grossProfitFront,
+                grossProfitBack: this.state.grossProfitBack,
+                fiscalYear: this.state.fiscalYear,
+                kadou: this.state.kadou,
+                employeeClassification: this.state.employeeClassification,
+                employeeOccupation: this.state.employeeOccupation,
 		};
 		
 		switch (actionType) {
@@ -380,7 +399,8 @@ class monthlySalesSearch extends Component {//月次売上検索
 						employeeNo: this.state.rowSelectemployeeNo,
 						backPage: "monthlySalesSearch",
 						sendValue: sendValue,
-						searchFlag: this.state.searchFlag
+						searchFlag: this.state.searchFlag,
+
 					},
 				}
 				break;
@@ -575,6 +595,22 @@ class monthlySalesSearch extends Component {//月次売上検索
                     salaryback:this.state.salaryback,
                     grossProfitFront:this.state.grossProfitFront,
                     grossProfitBack:this.state.grossProfitBack,
+                    fiscalYear: this.state.fiscalYear,
+                    employeeNo: this.state.rowSelectemployeeNo,
+                    monthlyValue: {
+                            monthlySales_startYearAndMonth: this.state.monthlySales_startYearAndMonth,
+                            monthlySales_endYearAndMonth: this.state.monthlySales_endYearAndMonth,
+                            utilPricefront: this.state.utilPricefront,
+                            utilPriceback: this.state.utilPriceback,
+                            salaryfront: this.state.salaryfront,
+                            salaryback: this.state.salaryback,
+                            grossProfitFront: this.state.grossProfitFront,
+                            grossProfitBack: this.state.grossProfitBack,
+                            fiscalYear: this.state.fiscalYear,
+                            kadou: this.state.kadou,
+                            employeeClassification: this.state.employeeClassification,
+                            employeeOccupation: this.state.employeeOccupation,
+            		},
                 } 
                     }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
                 

@@ -179,13 +179,13 @@ class sendLettersMatter extends React.Component {
 			                	}
 			                    if(result.data.projectInfoList[0].unitPriceRangeLowest !== undefined && result.data.projectInfoList[0].unitPriceRangeLowest !== null && result.data.projectInfoList[0].unitPriceRangeLowest !== ''|| 
 			                            result.data.projectInfoList[0].unitPriceRangeHighest !== undefined && result.data.projectInfoList[0].unitPriceRangeHighest !== null  && result.data.projectInfoList[0].unitPriceRangeHighest !== ''){
-			                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円~" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";
+			                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円～" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";
 			                        }
 			                    if(result.data.projectInfoList[0].projectPhaseStart !== undefined && result.data.projectInfoList[0].projectPhaseStart !== null && result.data.projectInfoList[0].projectPhaseStart !== ''){
 			                        projectPhase = result.data.projectInfoList[0].projectPhaseNameStart;
 			                    }
 			                    if(result.data.projectInfoList[0].projectPhaseNameEnd !== undefined && result.data.projectInfoList[0].projectPhaseNameEnd !== null && result.data.projectInfoList[0].projectPhaseNameEnd !== ''){
-		                            projectPhase = (projectPhase === "" ? "" : projectPhase + "~") + result.data.projectInfoList[0].projectPhaseNameEnd;
+		                            projectPhase = (projectPhase === "" ? "" : projectPhase + "～") + result.data.projectInfoList[0].projectPhaseNameEnd;
 		                        }
 
 			                    if(result.data.projectInfoList[0].keyWordOfLanagurueName1 !== undefined && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== null && result.data.projectInfoList[0].keyWordOfLanagurueName1 !== ''){
@@ -212,10 +212,10 @@ class sendLettersMatter extends React.Component {
 			        					(unitPriceRange ===  "" ? "" : ("\n■月額単金：" + unitPriceRange)) +
 			        					(payOffRange ===  "" ? "" : ("\n■清算範囲：" + payOffRange)) +
 			        					((result.data.projectInfoList[0].recruitmentNumbers === null || result.data.projectInfoList[0].recruitmentNumbers ===  "") ? "" : ("\n■募集人数：" + (result.data.projectInfoList[0].recruitmentNumbers === null ? "" : result.data.projectInfoList[0].recruitmentNumbers))) +
-			        					((result.data.projectInfoList[0].admissionPeriod === null || result.data.projectInfoList[0].admissionPeriod ===  "") && (result.data.projectInfoList[0].projectPeriodName === null || result.data.projectInfoList[0].projectPeriodName ===  "") ? "" : ("\n■稼動時期：" + result.data.projectInfoList[0].admissionPeriod + "~" + result.data.projectInfoList[0].projectPeriodName)) +
+			        					((result.data.projectInfoList[0].admissionPeriod === null || result.data.projectInfoList[0].admissionPeriod ===  "") && (result.data.projectInfoList[0].projectPeriodName === null || result.data.projectInfoList[0].projectPeriodName ===  "") ? "" : ("\n■稼動時期：" + result.data.projectInfoList[0].admissionPeriod + "～" + result.data.projectInfoList[0].projectPeriodName)) +
 			        					((result.data.projectInfoList[0].siteLocationName === null || result.data.projectInfoList[0].siteLocationName ===  "") ? "" : ("\n■勤務地：" + (result.data.projectInfoList[0].siteLocationName === null ? "" : result.data.projectInfoList[0].siteLocationName))) +
 			        					(projectPhase ===  "" ? "" : ("\n■作業工程：" + projectPhase)) +
-			        					((result.data.projectInfoList[0].nationalityName === null || result.data.projectInfoList[0].nationalityName ===  "") && (result.data.projectInfoList[0].japaneaseConversationName === null || result.data.projectInfoList[0].japaneaseConversationName ===  "") ? "" : ("\n■国籍：" + (result.data.projectInfoList[0].nationalityName === null ? "" : (result.data.projectInfoList[0].nationalityName + "、" + result.data.projectInfoList[0].japaneaseConversationName))))  +
+			        					((result.data.projectInfoList[0].nationalityName === null || result.data.projectInfoList[0].nationalityName ===  "") ? "" : ("\n■国籍：" + (result.data.projectInfoList[0].nationalityName === null ? "" : (result.data.projectInfoList[0].nationalityName + (result.data.projectInfoList[0].japaneaseConversationName === null || result.data.projectInfoList[0].japaneaseConversationName === "" ? "" : "、" + result.data.projectInfoList[0].japaneaseConversationName)))))  +
 			        					((result.data.projectInfoList[0].noOfInterviewName === null || result.data.projectInfoList[0].noOfInterviewName ===  "") ? "" : ("\n■面談回数：" + (result.data.projectInfoList[0].noOfInterviewName === null ? "" : result.data.projectInfoList[0].noOfInterviewName))) +
 			        					((result.data.projectInfoList[0].remark === null || result.data.projectInfoList[0].remark ===  "") ? "" : ("\n■備考：" + (result.data.projectInfoList[0].remark === null ? "" : result.data.projectInfoList[0].remark))),
 			        				mailTitle: result.data.projectInfoList[0].projectName,

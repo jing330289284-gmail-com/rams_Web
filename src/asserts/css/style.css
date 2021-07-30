@@ -351,6 +351,17 @@ body {
 	background-color: white;
 }
 
+#projectInfoSearchDatePicker {
+	background-repeat: no-repeat;
+	width: 12.3rem;
+	background-position: 10px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+}
+
 #wagesInfoDatePicker-nextRaiseMonth {
 	background-repeat: no-repeat;
 	width: 13.55rem;
@@ -2349,6 +2360,16 @@ body {
 	#wagesInfoDatePicker {
 		background-repeat: no-repeat;
 		width: 5.3rem;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+	}
+	#projectInfoSearchDatePicker {
+		background-repeat: no-repeat;
+		width: 9.2rem;
 		background-position: 10px 7px;
 		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
 			right center transparent;

@@ -160,6 +160,7 @@ class employeeSearch extends React.Component {
 				resumeName2: sendValue.resumeName2,
 				residentCardInfo: sendValue.residentCardInfo,
 				passportInfo: sendValue.passportInfo,
+				employeeInfo: sendValue.employeeInfo,
             }, () => {
                     this.searchEmployee();
             })
@@ -712,6 +713,7 @@ class employeeSearch extends React.Component {
 			resumeName2: this.state.resumeName2,
 			residentCardInfo: this.state.residentCardInfo,
 			passportInfo: this.state.passportInfo,
+			employeeInfo: this.state.employeeInfo,
 		};
 		switch (actionType) {
 			case "update":

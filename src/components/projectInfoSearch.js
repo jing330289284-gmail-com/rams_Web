@@ -658,7 +658,7 @@ class ProjectInfoSearch extends Component {
                                             minDate={new Date()}
                                             showDisabledMonthNavigation
                                             className="form-control form-control-sm"
-                                            id="wagesInfoDatePicker"
+                                            id="projectInfoSearchDatePicker"
                                             dateFormat={"yyyy/MM"}
                                             name="admissionPeriod"
                                             locale="ja"
@@ -811,7 +811,6 @@ class ProjectInfoSearch extends Component {
                             <FontAwesomeIcon icon={faUndo} /> Reset
                         </Button>
                     </div>
-                    <br />
                     <div>
                         <Row >
                             <Col sm={7}>
