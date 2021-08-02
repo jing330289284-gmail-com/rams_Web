@@ -48,7 +48,7 @@ class IndividualCustomerSales extends React.Component {
         }
     }
     initialState = {
-        customerInfo: store.getState().dropDown[53].slice(1),
+        customerInfo: store.getState().dropDown[73].slice(1),
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         customerName: '',
         individualCustomerSales_startYearAndMonth: '',
@@ -350,6 +350,8 @@ class IndividualCustomerSales extends React.Component {
                                         現場先</TableHeaderColumn>
                                     <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
                                         単価(万)</TableHeaderColumn>
+                                    <TableHeaderColumn dataField='cost' tdStyle={{ padding: '.45em' }}>
+                                        費用</TableHeaderColumn>
                                 </BootstrapTable>
                             </div>
                         </Popover.Content>

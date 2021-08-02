@@ -302,9 +302,9 @@ class monthlySalesSearch extends Component {//月次売上検索
                     return (<div><div style={{ float:'left' }}>{publicUtils.addComma(row.salary , false)}</div><div style={{ color: 'red',float:'left' }}>({publicUtils.addComma(row.deductionsAndOvertimePay , false)})</div></div>);  
                 }
                
-            }else{
-                formatSalary = publicUtils.addComma(row.salary , false);
-            }
+            }/*else{*/
+            formatSalary = publicUtils.addComma(row.salary , false);
+            /*}*/
             
             return formatSalary;
         }   

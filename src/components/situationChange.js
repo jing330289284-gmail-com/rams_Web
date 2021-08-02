@@ -112,6 +112,15 @@ selectSituationChange =() => {
 
 }
 
+bonusAmount(cell, row) {
+    if (row.scheduleOfBonusAmount === null || row.scheduleOfBonusAmount === "") {
+        return
+    } else {
+        let scheduleOfBonusAmount = row.scheduleOfBonusAmount.replace(".0","")
+        return scheduleOfBonusAmount;
+    }
+}
+
 handleRowSelect = (row, isSelected, e) => {
 	if (isSelected) {this.setState({rowSelectEmployeeNo: row.employeeNo,});}
 	else{this.setState({rowSelectEmployeeNo: "",});}
@@ -261,7 +270,7 @@ shuseiTo = (actionType) => {
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'>給料</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='socialInsuranceFlag'>社会保険</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' >ボーナス</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='scheduleOfBonusAmount' dataFormat={this.bonusAmount} >ボーナス</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='remark' >備考</TableHeaderColumn>
 					</BootstrapTable>
                     </div>

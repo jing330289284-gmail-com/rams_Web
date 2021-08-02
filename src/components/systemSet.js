@@ -20,7 +20,6 @@ class systemSet extends Component {
 		super(props);
 		this.state = this.initialState;// 初期化
 		this.onchange = this.onchange.bind(this);
-		this.refreshReducer = this.refreshReducer.bind(this);
 	}
 	// 初期化
 	initialState = {
@@ -58,6 +57,7 @@ class systemSet extends Component {
 					companyName : response.data.companyName,
 					image: response.data.companyLogo,
 					empNoHead: response.data.empNoHead,
+					taxRate: response.data.taxRate,
 				})
 				$("#myColor").val(response.data.backgroundColor);
 		}).catch((error) => {
@@ -77,6 +77,7 @@ class systemSet extends Component {
 				companyLogo: imgSrc,// logo
 				backgroundColor: color,// 背景色
 				empNoHead: this.state.empNoHead,// 社員番号の頭
+				taxRate: this.state.taxRate,
 		}
 		axios.post(this.state.serverIP + "masterUpdate/updateSystem", companyDate)
 		.then(result => {
@@ -84,19 +85,6 @@ class systemSet extends Component {
 		}).catch((error) => {
 			console.error("Error - " + error);
 		});
-	}
-	
-	refreshReducer = () =>{
-		switch (this.state.master) {
-		case "TOPお客様":
-			store.dispatch({type:"UPDATE_STATE",dropName:"getTopCustomer"});
-			break;
-		case "支店マスター":
-			break;
-		default:
-			window.location.reload();
-			break;
-		}
 	}
 
 	handleTag = (event, values) => {
@@ -172,7 +160,7 @@ class systemSet extends Component {
 	}
 
 	render() {
-		const { master, errorsMessageValue, masterStatus, bankName, bankInfo,companyName,backgroundColor,empNoHead } = this.state;
+		const { master, errorsMessageValue, masterStatus, bankName, bankInfo,companyName,backgroundColor,empNoHead,taxRate } = this.state;
 
 		return (
 			<div className="container col-7">
@@ -218,13 +206,22 @@ class systemSet extends Component {
 						</InputGroup.Prepend>
 						<input type="color" id="myColor" style={{ "height": "30px" }}/>
 					    </InputGroup>
-					<InputGroup size="sm" className="mb-3">
-					<InputGroup.Prepend>
-						<InputGroup.Text id="sixKanji">社員番号の頭</InputGroup.Text>
-					</InputGroup.Prepend>
-					<Form.Control type="text" placeholder="社員番号の頭" value={empNoHead} autoComplete="off" maxlength="3"
-						onChange={this.valueChange} size="sm" name="empNoHead" />
-				</InputGroup>
+						
+						<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="sixKanji">社員番号の頭</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control type="text" placeholder="社員番号の頭" value={empNoHead} autoComplete="off" maxlength="3"
+							onChange={this.valueChange} size="sm" name="empNoHead" />
+						</InputGroup>
+						
+						<InputGroup size="sm" className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="inputGroup-sizing-sm">税率</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control type="text" placeholder="税率" value={taxRate} autoComplete="off" maxlength="5"
+							onChange={this.valueChange} size="sm" name="taxRate" />
+						</InputGroup>
 					</Col>
 					</Row>
 					<br />
