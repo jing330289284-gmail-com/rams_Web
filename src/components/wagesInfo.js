@@ -133,6 +133,11 @@ class WagesInfo extends Component {
     }
     //onchange(保険)
     valueChangeInsurance = event => {
+    	if(event.target.value === "1"){
+            this.setState({
+        		employeeFormCode: "2",
+            })
+    	}
         this.setState({
             [event.target.name]: event.target.value,
         }, () => {
@@ -1451,7 +1456,7 @@ class WagesInfo extends Component {
                                     <FormControl
                                         as="select"
                                         onChange={this.employeeFormChange}
-                                        disabled={actionType === "detail" ? true : false}
+                                        disabled={actionType === "detail" || socialInsuranceFlag === "1" ? true : false}
                                         name="employeeFormCode"
                                         value={employeeFormCode}>
                                         {EmployeeFormCodeDrop.map(date =>

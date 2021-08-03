@@ -187,9 +187,11 @@ class monthlySalesSearch extends Component {//月次売上検索
 				if (response.data.errorsMessage != null) {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.errorsMessage });
                     this.setState({ monthlySalesInfoList: [] })
+                    this.setState({ unitPirceTotal: "",salaryTotal: "",TotalNonOperation: "",grossProfitTotal: "" })
                 }else if(response.data.noData != null){
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: response.data.noData });
                     this.setState({ monthlySalesInfoList: [] })
+                    this.setState({ unitPirceTotal: "",salaryTotal: "",TotalNonOperation: "",grossProfitTotal: "" })
                 }else {
                     this.setState({"errorsMessageShow":false})
                     this.setState({ monthlySalesInfoList: response.data.data })
@@ -274,6 +276,20 @@ class monthlySalesSearch extends Component {//月次売上検索
 			}
 		}
     }
+    
+    bpFormName(cell,row){
+        if(row.employeeNo ===null||row.employeeNo===0){
+            return 
+        }else{
+            let bpFormName = row.employeeFormName;
+            if(row.employeeNo.search("BP") !== -1){
+            	bpFormName = "協力";
+            }
+                          
+            return bpFormName;
+        }   
+    }
+
     
     unitPriceAddComma(cell,row){
         if(row.unitPrice ===null||row.unitPrice===0){
@@ -665,7 +681,7 @@ class monthlySalesSearch extends Component {//月次売上検索
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='90'>年月</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='100'>氏名</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='110'>社員形式</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' dataFormat={this.bpFormName} width='110'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='90'>職種</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'  width='150'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='150' dataFormat={this.salaryAddComma}>基本給(控除残業)</TableHeaderColumn>

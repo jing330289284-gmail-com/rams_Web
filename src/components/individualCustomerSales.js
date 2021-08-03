@@ -351,7 +351,7 @@ class IndividualCustomerSales extends React.Component {
                                     <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
                                         単価(万)</TableHeaderColumn>
                                     <TableHeaderColumn dataField='cost' tdStyle={{ padding: '.45em' }}>
-                                        費用</TableHeaderColumn>
+                                        費用(万)</TableHeaderColumn>
                                 </BootstrapTable>
                             </div>
                         </Popover.Content>
