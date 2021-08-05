@@ -317,6 +317,13 @@ class IndividualCustomerSales extends React.Component {
 
         }
     }
+    
+    costChange = (cell, row) => {
+    	if(cell === "0")
+    		return "";
+    	return cell;
+    }
+    
     empDetailCheck = (cell, row) => {
 
         let returnItem = cell;
@@ -326,6 +333,13 @@ class IndividualCustomerSales extends React.Component {
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
         };
+        const selectRow = {
+                mode: 'radio',
+                bgColor: 'pink',
+                hideSelectColumn: true,
+                clickToSelect: true,
+                clickToExpand: true,
+            };
         returnItem =
             <OverlayTrigger
                 trigger="focus"
@@ -338,9 +352,10 @@ class IndividualCustomerSales extends React.Component {
                                     pagination={false}
                                     options={options}
                                     data={row.empDetail}
+                                	selectRow={selectRow}
                                     headerStyle={{ background: '#5599FF' }}
                                     striped
-                                    hover
+                                    click
                                     condensed>
                                     <TableHeaderColumn isKey={true} dataField='employeeName' tdStyle={{ padding: '.45em' }} width="30%">
                                         氏名</TableHeaderColumn>
@@ -350,7 +365,7 @@ class IndividualCustomerSales extends React.Component {
                                         現場先</TableHeaderColumn>
                                     <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
                                         単価(万)</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='cost' tdStyle={{ padding: '.45em' }}>
+                                    <TableHeaderColumn dataField='cost' dataFormat={this.costChange} tdStyle={{ padding: '.45em' }}>
                                         費用(万)</TableHeaderColumn>
                                 </BootstrapTable>
                             </div>

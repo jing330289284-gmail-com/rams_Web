@@ -10,6 +10,7 @@ import ja from 'date-fns/locale/ja';
 import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
+import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -71,6 +72,19 @@ class siteInfo extends Component {
 			[event.target.name]: event.target.value
 		})
 	}
+	
+    valueChangeMoney = event => {
+        var name = event.target.name;
+        var value = event.target.value;
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            this.setState({
+                [name]: utils.addComma(value)
+            });
+        }
+        )
+    }
 	
 	/**
 	 * タイプが違う時に、色々な操作をします。
@@ -529,7 +543,7 @@ class siteInfo extends Component {
 				topCustomerNo: row.topCustomerNo === null ? '' : row.topCustomerNo,
 				developLanguageCode: row.developLanguageCode === null ? '' : row.developLanguageCode,
 				developLanguageCode2: row.developLanguageCode2 === null ? '' : row.developLanguageCode2,
-				unitPrice: row.unitPrice === null ? '' : row.unitPrice,
+				unitPrice: row.unitPrice === null ? '' : utils.addComma(row.unitPrice),
 				payOffRange1: row.payOffRange1 === null ? '' : row.payOffRange1,
 				payOffRange2: row.payOffRange2 === null ? '' : row.payOffRange2,
 				siteRoleCode: row.siteRoleName === null ? '' : row.siteRoleCode,
@@ -623,6 +637,7 @@ class siteInfo extends Component {
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		siteModel["typteOfContractCode"] = this.state.typteOfContract;
+		siteModel["unitPrice"] = utils.deleteComma(this.state.unitPrice);
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
@@ -678,6 +693,7 @@ class siteInfo extends Component {
 		siteModel["typeOfIndustryCode"] = this.state.typeOfIndustryCode;
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		siteModel["typteOfContractCode"] = this.state.typteOfContract;
+		siteModel["unitPrice"] = utils.deleteComma(this.state.unitPrice);
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {
@@ -886,6 +902,11 @@ class siteInfo extends Component {
 		this.props.history.push(path);
 	}
 	
+	addCommaUnitPrice = (cell, row) => {
+        let unitPrice = utils.addComma(row.unitPrice);
+        return unitPrice;
+    }
+	
 	render() {
 		this.options = {
 			page: 1,  // which page you want to show as default
@@ -1027,8 +1048,8 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="cssNikanji">単価</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl maxLength="3"
-										id="unitPrice" name="unitPrice" type="text" onChange={this.onchange} value={unitPrice} disabled={pageDisabledFlag} />
+										<FormControl maxLength="8"
+										id="unitPrice" name="unitPrice" type="text" onChange={this.valueChangeMoney} value={unitPrice} disabled={pageDisabledFlag} />
 										<InputGroup.Prepend id="checkBox">
 											<InputGroup.Text className="hiwari">日割</InputGroup.Text>
 											<InputGroup.Checkbox className="hiwari" name="dailyCalculationStatus"
@@ -1450,7 +1471,7 @@ class siteInfo extends Component {
 								<TableHeaderColumn dataField='location' width='90' tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
 								<TableHeaderColumn dataField='customerName' width='150' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteManager' width='60' tdStyle={{ padding: '.45em' }} >責任者</TableHeaderColumn>
-								<TableHeaderColumn dataField='unitPrice' width='60' tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' width='60' dataFormat={this.addCommaUnitPrice} tdStyle={{ padding: '.45em' }}>単価</TableHeaderColumn>
 								<TableHeaderColumn dataField='developLanguageName' width='110' tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteRoleName' width='50' tdStyle={{ padding: '.45em' }}>役割</TableHeaderColumn>
 								<TableHeaderColumn dataField='levelName' width='50' tdStyle={{ padding: '.45em' }}>評価</TableHeaderColumn>
