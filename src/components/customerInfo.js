@@ -273,6 +273,8 @@ class CustomerInfo extends Component {
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerName"});
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomer"});
                     store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerAbbreviation"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getCustomerNameWithMail"});
+                    store.dispatch({type:"UPDATE_STATE",dropName:"getPurchasingManagersWithMail"});
                     if (this.state.actionType === "insert") {
                         this.setState({
                             actionType:"update",

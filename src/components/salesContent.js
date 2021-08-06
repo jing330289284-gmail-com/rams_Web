@@ -3,6 +3,7 @@ import { Form, Button,ListGroup} from 'react-bootstrap';
 import { faSave, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as publicUtils from './utils/publicUtils.js';
+import * as utils from './utils/publicUtils.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
@@ -45,6 +46,7 @@ class salesContent extends React.Component {
 		englishLevellabal: '',
 		siteRoleCode: '',
 		unitPrice: this.props.sendValue.unitPrice,
+		unitPriceShow: utils.addComma(this.props.sendValue.unitPrice),
 		addDevelopLanguage: '',
 		developLanguageCode6: null,
 		developLanguageCode7: null,
@@ -380,6 +382,20 @@ class salesContent extends React.Component {
 			}),
 		})
 	}
+	
+    valueChangeMoney = event => {
+        var name = event.target.name;
+        var value = event.target.value;
+        this.setState({
+            [event.target.name]: event.target.value,
+        }, () => {
+            this.setState({
+                [name]: utils.addComma(value),
+                unitPrice: utils.deleteComma(value)
+            });
+        }
+        )
+    }
 
 	render() {
 		const { topCustomerInfo, stationCode, customerDepartmentList, accountInfo
@@ -491,8 +507,8 @@ class salesContent extends React.Component {
 							)}
 						/>
 					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPrice} name="unitPrice"
-						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />万円</ListGroup.Item></span>
+					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPriceShow} name="unitPriceShow"
+						style={{ width: "80px" }} onChange={this.valueChangeMoney} className="inputWithoutBorder" />万円</ListGroup.Item></span>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
 					{	
 					(Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":

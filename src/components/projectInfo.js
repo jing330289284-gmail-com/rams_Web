@@ -62,7 +62,7 @@ class projectInfo extends Component {
         //Drop 
         recruitmentNumbersDrop: [{ "code": "1", "name": "1" }, { "code": "2", "name": "2" }, { "code": "3", "name": "3" }, { "code": "4", "name": "4" }, { "code": "5", "name": "5" }],
         projectTypeDrop: store.getState().dropDown[52],
-        payOffRangeDrop: store.getState().dropDown[33].slice(1),
+        payOffRangeDrop: store.getState().dropDown[33],
         nationalityDrop: store.getState().dropDown[7],
         japaneaseConversationLevelDrop: store.getState().dropDown[43],
         projectPhaseDrop: store.getState().dropDown[45],

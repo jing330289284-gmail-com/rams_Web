@@ -112,7 +112,7 @@ class customerSalesList extends React.Component {
         if(row. totalUnitPrice===null||row. totalUnitPrice==="0"){
             return 
         }else{
-            let formatTotalUnitPrice = row.totalUnitPrice*10000
+            let formatTotalUnitPrice = row.totalUnitPrice
          return publicUtils.addComma( formatTotalUnitPrice,false);
         }
     }
@@ -215,7 +215,7 @@ class customerSalesList extends React.Component {
 	handleRowSelect = (row, isSelected,e) => {
         
         if (isSelected) {
-           let percent= row.totalUnitPrice*10000+parseInt(row.overTimeFee)+parseInt(row.expectFee)
+           let percent= parseInt(row.totalUnitPrice)+parseInt(row.overTimeFee)+parseInt(row.expectFee)
           this.state.perCal.push(percent)
           var salesCal = 0 ;
             for(var i=0;i<this.state.perCal.length;i++){
@@ -233,7 +233,7 @@ class customerSalesList extends React.Component {
         }
         else{
             for(var i=this.state.perCal.length;i>=0;i--){
-                if(this.state.perCal[i]===row.totalUnitPrice*10000+parseInt(row.overTimeFee)+parseInt(row.expectFee)){
+                if(this.state.perCal[i]===parseInt(row.totalUnitPrice) + parseInt(row.overTimeFee)+parseInt(row.expectFee)){
                     this.state.perCal.splice(i, 1);
                 }
             }
@@ -241,7 +241,7 @@ class customerSalesList extends React.Component {
             for(var j =0;j<this.state.perCal.length;j++){
                 caltotalSales =caltotalSales+parseInt(this.state.perCal[j])
             }
-            var percentCal =parseInt(this.state.totalHidden)-(row.totalUnitPrice*10000+parseInt(row.overTimeFee)+parseInt(row.expectFee))  
+            var percentCal =parseInt(this.state.totalHidden)-(parseInt(row.totalUnitPrice)+parseInt(row.overTimeFee)+parseInt(row.expectFee))  
             var salesPercet =percentCal/row.totalSales
             var salesToPercet= (Math.round(salesPercet * 10000) / 100).toFixed(1) + '%'; 
             this.setState({

@@ -177,6 +177,9 @@ class sendLettersMatter extends React.Component {
 			                	if(payOffRange === "固定-固定"){
 			                		payOffRange = "固定";
 			                	}
+			                	if(payOffRange === "-"){
+			                		payOffRange = "";
+			                	}
 			                    if(result.data.projectInfoList[0].unitPriceRangeLowest !== undefined && result.data.projectInfoList[0].unitPriceRangeLowest !== null && result.data.projectInfoList[0].unitPriceRangeLowest !== ''|| 
 			                            result.data.projectInfoList[0].unitPriceRangeHighest !== undefined && result.data.projectInfoList[0].unitPriceRangeHighest !== null  && result.data.projectInfoList[0].unitPriceRangeHighest !== ''){
 			                                unitPriceRange = result.data.projectInfoList[0].unitPriceRangeLowest + "万円～" + result.data.projectInfoList[0].unitPriceRangeHighest + "万円";

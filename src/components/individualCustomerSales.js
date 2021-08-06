@@ -246,7 +246,7 @@ class IndividualCustomerSales extends React.Component {
         if (row.totalUnitPrice === null || row.totalUnitPrice === "0") {
             return
         } else {
-            let formatTotalUnitPrice = row.totalUnitPrice * 10000
+            let formatTotalUnitPrice = row.totalUnitPrice
             return publicUtils.addComma(formatTotalUnitPrice, false);
         }
     }
@@ -256,7 +256,7 @@ class IndividualCustomerSales extends React.Component {
             return
         } else {
             let formatMaxlUnitPrice = row.maxUnitPrice.split('.')[0];
-            formatMaxlUnitPrice = formatMaxlUnitPrice * 10000
+            formatMaxlUnitPrice = formatMaxlUnitPrice
             return publicUtils.addComma(formatMaxlUnitPrice, false);
         }
     }
@@ -266,7 +266,7 @@ class IndividualCustomerSales extends React.Component {
             return
         } else {
             let formatMinUnitPrice = row.minUnitPrice.split('.')[0];
-            formatMinUnitPrice = formatMinUnitPrice * 10000
+            formatMinUnitPrice = formatMinUnitPrice
 
             return publicUtils.addComma(formatMinUnitPrice, false);
 
@@ -280,10 +280,10 @@ class IndividualCustomerSales extends React.Component {
             let averageUnitP;
             let formatTotalUnitPrice = row.averUnitPrice.split('.')[1];
             if (formatTotalUnitPrice !== "0") {
-                averageUnitP = row.averUnitPrice * 10000
+                averageUnitP = row.averUnitPrice
             }
             else {
-                averageUnitP = row.averUnitPrice.split('.')[0] * 10000
+                averageUnitP = row.averUnitPrice.split('.')[0]
             }
             return publicUtils.addComma(averageUnitP, false);
         }
@@ -324,6 +324,9 @@ class IndividualCustomerSales extends React.Component {
     	return cell;
     }
     
+    test = () => {
+    }
+    
     empDetailCheck = (cell, row) => {
 
         let returnItem = cell;
@@ -342,10 +345,10 @@ class IndividualCustomerSales extends React.Component {
             };
         returnItem =
             <OverlayTrigger
-                trigger="focus"
+                trigger="click"
                 placement={"left"}
                 overlay={
-                    <Popover className="popoverC">
+                    <Popover className="popoverC" id="popoverC">
                         <Popover.Content >
                             <div >
                                 <BootstrapTable
@@ -373,7 +376,7 @@ class IndividualCustomerSales extends React.Component {
                     </Popover>
                 }
             >
-                <Button variant="warning" size="sm" >要員確認</Button>
+                <Button variant="warning" size="sm" onClick={this.test}>要員確認</Button>
             </OverlayTrigger>
         return returnItem;
     }
