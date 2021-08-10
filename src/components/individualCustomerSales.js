@@ -324,9 +324,6 @@ class IndividualCustomerSales extends React.Component {
     	return cell;
     }
     
-    test = () => {
-    }
-    
     empDetailCheck = (cell, row) => {
 
         let returnItem = cell;
@@ -376,7 +373,7 @@ class IndividualCustomerSales extends React.Component {
                     </Popover>
                 }
             >
-                <Button variant="warning" size="sm" onClick={this.test}>要員確認</Button>
+                <Button variant="warning" size="sm">要員確認</Button>
             </OverlayTrigger>
         return returnItem;
     }
@@ -521,7 +518,7 @@ class IndividualCustomerSales extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck' dataFormat={this.empDetailCheck.bind(this)}>要員確認</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma}>残業代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='125' dataField='expectFee' dataFormat={this.expectFeeAddComma}>控除</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma}>コスト合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma}>費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma}>粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>

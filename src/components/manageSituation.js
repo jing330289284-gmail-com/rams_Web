@@ -529,10 +529,11 @@ class manageSituation extends React.Component {
 		}
 	}
 	showGreyUnitPrice(cell, row, enumObject, index) {
+		let unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
 		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
-			return (<div><font color="grey">{row.unitPrice}</font></div>);
+			return (<div><font color="grey">{unitPrice}</font></div>);
 		}else{
-			return (<div>{row.unitPrice}</div>);
+			return (<div>{unitPrice}</div>);
 		}
 	}
 	showGreyPrice(cell, row, enumObject, index) {

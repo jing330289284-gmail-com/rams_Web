@@ -425,7 +425,7 @@ class individualSales extends React.Component {//個人売上検索
     }
 
     grosProfitsAddComma(cell, row) {
-        if (row.grosProfits === null || row.grosProfits === "0") {
+    	if (row.grosProfits === null || row.grosProfits === "0") {
             return
         } else {
             var holidayCount = 0;

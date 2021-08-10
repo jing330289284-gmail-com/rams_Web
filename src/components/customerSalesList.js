@@ -116,6 +116,12 @@ class customerSalesList extends React.Component {
          return publicUtils.addComma( formatTotalUnitPrice,false);
         }
     }
+    
+    costChange = (cell, row) => {
+    	if(cell === "0")
+    		return "";
+    	return cell;
+    }
 
     empDetailCheck=(cell,row)=>{
 
@@ -128,7 +134,7 @@ class customerSalesList extends React.Component {
         };
         returnItem = 
         <OverlayTrigger 
-            trigger="focus"
+            trigger="click"
             placement={"left"}
             overlay={
             <Popover className="popoverC">
@@ -150,6 +156,8 @@ class customerSalesList extends React.Component {
                         現場先</TableHeaderColumn>
                         <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }}>
                         単価(万)</TableHeaderColumn>
+                        <TableHeaderColumn dataField='cost' dataFormat={this.costChange} tdStyle={{ padding: '.45em' }}>
+                        費用(万)</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
                 </Popover.Content>
@@ -371,7 +379,7 @@ class customerSalesList extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='empDetailCheck' dataFormat={this.empDetailCheck.bind(this)} width='100'>要員確認</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='overTimeFee' dataFormat={this.overTimeFeeAddComma} width='90'>残業代</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='expectFee' dataFormat={this.expectFeeAddComma} width='100'>控除</TableHeaderColumn>
-                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma} width='110'>コスト合計</TableHeaderColumn>
+                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma} width='110'>費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma} width='100'>粗利</TableHeaderColumn>
                     </BootstrapTable>
                 </div>

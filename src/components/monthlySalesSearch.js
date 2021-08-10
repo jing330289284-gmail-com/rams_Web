@@ -30,6 +30,7 @@ class monthlySalesSearch extends Component {//月次売上検索
         rowSelectemployeeNo:'',
         rowSelectemployeeName:'',
         sendFlag:'',
+        rowNo: '',
         bpFlag: false,
      }
      constructor(props){
@@ -82,7 +83,11 @@ class monthlySalesSearch extends Component {//月次売上検索
         	   	let data = location.state;
                	if(data.sendValue !== undefined && data.sendValue !== null){
                		data = data.sendValue;
+        			$('#personalSearchBtn').removeClass('disabled');
                	}
+                this.refs.monthlySalesInfoList.setState({
+                    selectedRowKeys: data.rowNo,
+                })
         	   	this.setState({
                     monthlySales_startYearAndMonth : data.monthlySales_startYearAndMonth,
                     monthlySales_endYearAndMonth : data.monthlySales_endYearAndMonth,
@@ -96,6 +101,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                     salaryback:this.state.salaryback === "" ? "" :data.salaryback,
                     grossProfitFront:this.state.grossProfitFront === "" ? "" :data.grossProfitFront,
                     grossProfitBack:this.state.grossProfitBack === "" ? "" :data.grossProfitBack,
+                    rowSelectemployeeNo: data.rowSelectemployeeNo,
                     fiscalYear: data.fiscalYear,
                     kadou: data.kadou,
                     employeeClassification: data.employeeClassification,
@@ -373,11 +379,11 @@ class monthlySalesSearch extends Component {//月次売上検索
     }
     handleRowSelect = (row, isSelected, e) => {
 		if (isSelected) {
-            this.setState({rowSelectemployeeNo:row.employeeNo});
+            this.setState({rowSelectemployeeNo:row.employeeNo, rowNo: row.rowNo});
             this.setState({rowSelectemployeeName:row.employeeName});
 			$('#personalSearchBtn').removeClass('disabled');
 		} else {
-            this.setState({rowSelectemployeeNo:""});
+            this.setState({rowSelectemployeeNo:"", rowNo: ""});
 			$('#personalSearchBtn').addClass('disabled');
 		}
 	}
@@ -405,6 +411,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                 kadou: this.state.kadou,
                 employeeClassification: this.state.employeeClassification,
                 employeeOccupation: this.state.employeeOccupation,
+                rowNo: this.state.rowNo,
 		};
 		
 		switch (actionType) {
@@ -626,6 +633,7 @@ class monthlySalesSearch extends Component {//月次売上検索
                             kadou: this.state.kadou,
                             employeeClassification: this.state.employeeClassification,
                             employeeOccupation: this.state.employeeOccupation,
+                            rowNo: this.state.rowNo,
             		},
                 } 
                     }} className="btn btn-info btn-sm disabled" id="personalSearchBtn" > 個人売上検索</Link>
@@ -677,10 +685,12 @@ class monthlySalesSearch extends Component {//月次売上検索
 					</Col>
 				</Row>
                 <div>
-                    <BootstrapTable data={this.state.monthlySalesInfoList}  pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='80' dataField='rowNo'dataSort={true} isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
+                    <BootstrapTable data={this.state.monthlySalesInfoList}
+                    ref="monthlySalesInfoList"
+                    pagination={true}  headerStyle={{ background: '#5599FF' }} selectRow={selectRow} options={this.options}　striped hover condensed>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} width='60' dataField='rowNo' isKey dataFormat={this.rowNoFormat}>番号</TableHeaderColumn>                           
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' width='90'>年月</TableHeaderColumn>
-							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='100'>氏名</TableHeaderColumn>
+							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeName'width='120'>氏名</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' dataFormat={this.bpFormName} width='110'>社員形式</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='occupationName' width='90'>職種</TableHeaderColumn>
 							<TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice'  width='150'dataFormat={this.unitPriceAddComma}>単価(控除残業)</TableHeaderColumn>

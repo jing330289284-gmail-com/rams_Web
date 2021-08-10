@@ -677,15 +677,15 @@ class WagesInfo extends Component {
     getExpensesInfo = (expensesInfoToroku) => {
         if (expensesInfoToroku === "success") {
             this.setState({
-                //costInfoShow: false,
+                costInfoShow: false,
             }, () => {
                 var wagesInfoMod = {
                     "employeeNo": this.state.employeeNo,
                 }
                 this.search(wagesInfoMod);
-/*                this.refs.wagesInfoTable.setState({
+                this.refs.wagesInfoTable.setState({
                     selectedRowKeys:[],
-                })*/
+                })
             }
             )
         }

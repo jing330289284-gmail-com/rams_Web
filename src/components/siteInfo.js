@@ -141,6 +141,11 @@ class siteInfo extends Component {
 	
 	onchangeworkState = event => {
 		if (event.target.value === '0') {
+			if(this.state.systemName === "休暇"){
+				this.setState({
+					systemName: "",
+				})
+			}
 			this.setState({
 				workStateFlag: true,
 				levelCode: '',
@@ -149,6 +154,11 @@ class siteInfo extends Component {
 				admissionEndDate:'',
 			})
 		}else if(event.target.value === '2'){
+			if(this.state.systemName === "休暇"){
+				this.setState({
+					systemName: "",
+				})
+			}
 			this.setState({
 				[event.target.name]: event.target.value,
 				workStateFlag: false,
@@ -167,6 +177,11 @@ class siteInfo extends Component {
 				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
 		} else {
+			if(this.state.systemName === "休暇"){
+				this.setState({
+					systemName: "",
+				})
+			}
 			this.setState({
 				workStateFlag: false,
 				[event.target.name]: event.target.value,
@@ -903,7 +918,7 @@ class siteInfo extends Component {
 	}
 	
 	addCommaUnitPrice = (cell, row) => {
-        let unitPrice = utils.addComma(row.unitPrice);
+		let unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
         return unitPrice;
     }
 	
@@ -1086,7 +1101,7 @@ class siteInfo extends Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="fiveKanji">システム名</InputGroup.Text>
 										</InputGroup.Prepend>
-										<FormControl  maxLength="20" id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={pageDisabledFlag} />
+										<FormControl  maxLength="20" id="systemName" name="systemName" type="text" onChange={this.onchange} value={systemName} aria-label="Small" aria-describedby="inputGroup-sizing-sm" disabled={ this.state.workState === "3" || pageDisabledFlag ? true : false } />
 									</InputGroup>
 								</Col>
 							</Row>
