@@ -83,6 +83,7 @@ class WagesInfo extends Component {
         deleteFlag:true,
         hatsunyubaFlag:true,
         employeeStatus: '',
+        period: '',
 		employeeStatuss: store.getState().dropDown[4],
 		workingConditionStatus: store.getState().dropDown[74].slice(1),
 		newEmployeeStatus: '',
@@ -585,6 +586,9 @@ class WagesInfo extends Component {
                     expensesInfoModels: [],
                 })
             }
+            this.setState({
+                period: row.period,
+            })
         } else {
             this.resetValue();
             this.setState({
@@ -592,6 +596,7 @@ class WagesInfo extends Component {
                 torokuText: '登録',
                 expensesInfoModels: this.state.allExpensesInfoList,
                 deleteFlag:true,
+                period: '',
             })
         }
     }
@@ -677,15 +682,15 @@ class WagesInfo extends Component {
     getExpensesInfo = (expensesInfoToroku) => {
         if (expensesInfoToroku === "success") {
             this.setState({
-                costInfoShow: false,
-            }, () => {
+/*                costInfoShow: false,
+*/            }, () => {
                 var wagesInfoMod = {
                     "employeeNo": this.state.employeeNo,
                 }
                 this.search(wagesInfoMod);
-                this.refs.wagesInfoTable.setState({
+/*                this.refs.wagesInfoTable.setState({
                     selectedRowKeys:[],
-                })
+                })*/
             }
             )
         }
@@ -997,6 +1002,7 @@ class WagesInfo extends Component {
     render() {
         const {
             employeeNo,
+            period,
             employeeName,
             socialInsuranceFlag,
             salary,
@@ -1085,9 +1091,10 @@ class WagesInfo extends Component {
                                 relatedEmployees={relatedEmployees}
                                 expensesInfoModels={expensesInfoModels}
                                 employeeNo={employeeNo}
+                            	period={period}
                                 expensesInfoModel={this.state.expensesInfoModel}
                                 expensesInfoToroku={this.getExpensesInfo} 
-                                actionType={expensesInfoModels === this.state.allExpensesInfoList ? "detail" : "insert"}/>
+                                actionType={period === "" ? "detail" : "insert"}/>
                         </Modal.Body>
                     </Modal>
                     <Row inline="true">

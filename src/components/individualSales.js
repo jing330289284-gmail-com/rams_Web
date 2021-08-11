@@ -427,7 +427,15 @@ class individualSales extends React.Component {//個人売上検索
     grosProfitsAddComma(cell, row) {
     	if (row.grosProfits === null || row.grosProfits === "0") {
             return
-        } else {
+        } 
+    	else if(row.grosProfits !== null || row.grosProfits !== "0"){
+            let grosProfitsAmount = publicUtils.addComma(row.grosProfits, false);
+            if(row.grosProfits < 0)
+                return (<div style={{ color: 'red' }}>{grosProfitsAmount}</div>);
+            else
+            	return grosProfitsAmount;
+    	}
+    	else {
             var holidayCount = 0;
             var workdayCount = 0;
             var totalholidayCount = 0;

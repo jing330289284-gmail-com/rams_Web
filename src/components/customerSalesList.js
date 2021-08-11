@@ -40,7 +40,7 @@ class customerSalesList extends React.Component {
         customerSalesListYearAndMonth:'',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
         perCal:[],
-        
+        totalGrossProfitAdd: 0,
     }
     customerSalesListYearAndMonth = date => {
         if (date !== null) {
@@ -76,13 +76,14 @@ class customerSalesList extends React.Component {
                      this.setState({unitPTotal:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].unitPTotal,false)})
                      this.setState({totalSales:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totalSales,false)})
                      this.setState({totalgrossProfit:publicUtils.addComma(this.state.CustomerSaleslListInfoList[0].totalgrossProfit,false)})
-                     this.setState({totalpercent:''})
+                     /*this.setState({totalpercent:''})*/
                      this.refs.CustomerSaleslListInfoListTable.setState({
                         selectedRowKeys: []
                     });
                      this.setState({totalHidden:''})
                      this.setState({
                         perCal:[],
+                        totalGrossProfitAdd: 0,
                      })
     
                     
@@ -231,8 +232,18 @@ class customerSalesList extends React.Component {
             }
             var salesPercet =salesCal/row.totalSales
             var salesToPercet= (Math.round(salesPercet * 10000) / 100).toFixed(1) + '%'; 
+            
+            let totalGrossProfitAdd = parseInt(this.state.totalGrossProfitAdd) + parseInt(row.grossProfit);
+            let grossProfitPercet = 0;
+            if(totalGrossProfitAdd > 0){
+            	let totalgrossProfit = publicUtils.deleteComma(this.state.totalgrossProfit,false)
+            	grossProfitPercet = parseInt(totalGrossProfitAdd)/parseInt(totalgrossProfit);
+            }
+            grossProfitPercet = (Math.round(grossProfitPercet * 10000) / 100).toFixed(1) + '%'; 
            this.setState({
-            totalpercent:salesToPercet
+            totalpercent:salesToPercet,
+            totalGrossProfitAdd:totalGrossProfitAdd,
+            grossProfitPercent:grossProfitPercet,
            })
            this.setState({
             totalHidden:salesCal
@@ -247,21 +258,32 @@ class customerSalesList extends React.Component {
             }
             var caltotalSales =0;
             for(var j =0;j<this.state.perCal.length;j++){
-                caltotalSales =caltotalSales+parseInt(this.state.perCal[j])
+                caltotalSales = caltotalSales+parseInt(this.state.perCal[j])
             }
             var percentCal =parseInt(this.state.totalHidden)-(parseInt(row.totalUnitPrice)+parseInt(row.overTimeFee)+parseInt(row.expectFee))  
             var salesPercet =percentCal/row.totalSales
             var salesToPercet= (Math.round(salesPercet * 10000) / 100).toFixed(1) + '%'; 
+            
+            let totalGrossProfitAdd = parseInt(this.state.totalGrossProfitAdd) - parseInt(row.grossProfit);
+            let grossProfitPercet = 0;
+            if(totalGrossProfitAdd > 0){
+            	let totalgrossProfit = publicUtils.deleteComma(this.state.totalgrossProfit,false)
+            	grossProfitPercet = parseInt(totalGrossProfitAdd)/parseInt(totalgrossProfit);
+            }
+            grossProfitPercet = (Math.round(grossProfitPercet * 10000) / 100).toFixed(1) + '%'; 
+            
             this.setState({
-                totalpercent:salesToPercet
+                totalpercent:salesToPercet,
+                totalGrossProfitAdd:totalGrossProfitAdd,
+                grossProfitPercent:grossProfitPercet,
             })
             this.setState({
                 totalHidden:caltotalSales
             })
             if(salesToPercet=='0.0%'){
-                this.setState({
+/*                this.setState({
                     totalpercent:''
-                })
+                })*/
                 if(this.state.totalHidden===0){
                     this.state.perCal=[]
                 }
@@ -316,10 +338,10 @@ class customerSalesList extends React.Component {
 	                <Col>
 		                <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
-		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">取引人数</InputGroup.Text>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">全体比率</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <FormControl
-		                    value={this.state.calPeoCount}
+		                    value={this.state.totalpercent}
 		                    disabled/>
 		                </InputGroup>
 	                </Col>
@@ -327,10 +349,10 @@ class customerSalesList extends React.Component {
 	                <Col>
 		                <InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
-		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">全体比率</InputGroup.Text>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利比率</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <FormControl
-		                    value={this.state.totalpercent}
+		                    value={this.state.grossProfitPercent}
 		                    disabled/>
 		                </InputGroup>
 	                </Col>

@@ -47,12 +47,14 @@ class ExpensesInfo extends Component {
         leaderCheck: false,//リーダーフラグ
         siteRoleCode: '',//役割
         remark: '', //備考
+        deleteFlag: true,
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     componentDidMount() {
+    	this.getExpensesInfoModels(this.props.employeeNo,this.props.period);
         this.setState({
             employeeNo: this.props.employeeNo,
-            expensesInfoModels: this.props.expensesInfoModels,
+            //expensesInfoModels: this.props.expensesInfoModels,
             kadouCheck: this.props.kadouCheck,
             leaderCheck: this.props.leaderCheck,
             actionType:this.props.actionType,
@@ -71,6 +73,24 @@ class ExpensesInfo extends Component {
             })
         }
     }
+    
+    getExpensesInfoModels = (employeeNo,period) => {
+        var expensesInfoModel = {};
+        expensesInfoModel["employeeNo"] = employeeNo;
+        expensesInfoModel["expensesReflectYearAndMonth"] = period;
+        axios.post(this.state.serverIP + "expensesInfo/getExpensesInfoModels", expensesInfoModel)
+        .then(result => {
+            if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+                this.setState({ expensesInfoModels: result.data.expensesInfoModels });
+            } else {
+                this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+            }
+        })
+        .catch(error => {
+            this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
+        });
+    }
+    
     /**
      * 昇給期日の変化
      */
@@ -156,6 +176,7 @@ class ExpensesInfo extends Component {
                     this.setState({ "myToastShow": true, "type": "success", "errorsMessageShow": false, message: result.data.message });
                     setTimeout(() => this.setState({ "myToastShow": false }), 3000);
                     var seikou = "success";
+                	this.getExpensesInfoModels(this.props.employeeNo,this.props.period);
                     this.props.expensesInfoToroku(seikou);
                 } else {
                     this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -174,12 +195,14 @@ class ExpensesInfo extends Component {
             if (row.expensesPeriod.length <= 7) {
                 this.giveValue(row);
                 this.setState({
+                	deleteFlag: false,
                     actionType: 'update',
                     btnText: '更新',
                 })
             } else {
                 this.resetValue();
                 this.setState({
+                	deleteFlag: true,
                     actionType: 'insert',
                     btnText: '登録',
                 })
@@ -187,6 +210,7 @@ class ExpensesInfo extends Component {
         } else {
             this.resetValue();
             this.setState({
+            	deleteFlag: true,
                 actionType: 'insert',
                 btnText: '登録',
             })
@@ -227,6 +251,7 @@ class ExpensesInfo extends Component {
                         var expensesInfoMod = {};
                         expensesInfoMod["employeeNo"] = this.state.employeeNo;
                         var seikou = "success";
+                    	this.getExpensesInfoModels(this.props.employeeNo,this.props.period);
                         this.props.expensesInfoToroku(seikou);
                     } else {
                         this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -271,6 +296,7 @@ class ExpensesInfo extends Component {
             kadouCheck,
             leaderCheck,
             relatedEmployees,
+            deleteFlag,
             remark} = this.state;
         //テーブルの列の選択
         const selectRow = {
@@ -485,7 +511,7 @@ class ExpensesInfo extends Component {
                                     size="sm"
                                     id="delete"
                                     onClick={this.delete}
-                                    disabled={actionType === "detail" ? true : false}
+                                    disabled={deleteFlag}
                                 >
                                     <FontAwesomeIcon icon={faTrash} />削除
                                 </Button>
