@@ -1290,6 +1290,26 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-projectInfo-siteLocation {
+	width: 15.2rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
+.Autocompletestyle-projectInfo-keyWordOfLanagurue {
+	width: 7.6rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-experienceYear {
 	width: 11.5rem;
 	height: 31px;
@@ -1763,6 +1783,27 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
+	
+	.Autocompletestyle-projectInfo-siteLocation {
+		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	
+	.Autocompletestyle-projectInfo-keyWordOfLanagurue {
+		width: 5.2rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	
 	.Autocompletestyle-experienceYear {
 		width: 6.8rem;
 		height: 31px;

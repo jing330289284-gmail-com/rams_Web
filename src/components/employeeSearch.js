@@ -164,6 +164,8 @@ class employeeSearch extends React.Component {
             }, () => {
                     this.searchEmployee();
             })
+        }else{
+    		this.searchEmployee();
         }
 		
 		let temp = [];

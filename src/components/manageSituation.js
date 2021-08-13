@@ -529,7 +529,12 @@ class manageSituation extends React.Component {
 		}
 	}
 	showGreyUnitPrice(cell, row, enumObject, index) {
-		let unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
+		let unitPrice;
+		if(row.employeeNo.indexOf("BP") != -1){
+			unitPrice = row.unitPrice;
+		}else{
+			unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
+		}
 		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
 			return (<div><font color="grey">{unitPrice}</font></div>);
 		}else{
@@ -1291,6 +1296,7 @@ class manageSituation extends React.Component {
 			selectetRowIds: this.refs.table.state.selectedRowKeys,
 			linkDisableFlag: this.state.linkDisableFlag,// linkDisableFlag
 			sendLetterFalg: this.state.sendLetterFalg,
+			proposeClassificationCode: "2",
 		};
 		switch (actionType) {
 			case "selectAll":

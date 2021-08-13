@@ -33,6 +33,7 @@ class salesSendLetter extends React.Component {
 		customers: store.getState().dropDown[77].slice(1),
 		storageList: store.getState().dropDown[63].slice(1),
 		personInCharge: store.getState().dropDown[78].slice(1),
+        proposeClassification: [{code: "0",name: "すべて"},{code: "1",name: "案件"},{code: "2",name: "要員"}],
 		errorsMessageShow: false,
 		purchasingManagers: '',
 		customerDepartmentNameDrop: store.getState().dropDown[22],// 部門の連想数列
@@ -76,6 +77,7 @@ class salesSendLetter extends React.Component {
 		isHidden:true,
 		addCustomerCode: "",
 		backbackPage: "",
+		proposeClassificationCode: "0",
 	};
 	
 	componentDidMount() {
@@ -83,6 +85,7 @@ class salesSendLetter extends React.Component {
 			this.setState({
 				sendValue: this.props.location.state.sendValue,
 				projectNo: this.props.location.state.projectNo,
+				proposeClassificationCode: this.props.location.state.sendValue.proposeClassificationCode,
 			})
 		
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
@@ -136,14 +139,15 @@ class salesSendLetter extends React.Component {
 	}
 
 	// 初期化お客様取る
-	getCustomers = () => {
+	getCustomers = (proposeClassificationCode) => {
+		let backPage = (proposeClassificationCode === null || proposeClassificationCode === undefined || proposeClassificationCode === "" ? this.state.backPage : proposeClassificationCode);
 		axios.post(this.state.serverIP + "salesSendLetters/getCustomers")
 			.then(result => {
 				let customerNoArray = new Array();
 				let dataArray = new Array();
 				for (let i in result.data) {
 					customerNoArray.push(result.data[i].customerNo);
-					switch (this.state.backPage) {
+					switch (backPage) {
 					case "manageSituation":
 						if(result.data[i].proposeClassificationCode === null || result.data[i].proposeClassificationCode === "2" || result.data[i].proposeClassificationCode === "3")
 							dataArray.push(result.data[i]);
@@ -399,6 +403,25 @@ class salesSendLetter extends React.Component {
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
+	}
+	
+	proposeClassificationCodeChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		switch (event.target.value) {
+		case "0":
+			this.getCustomers("all");
+			break;
+		case "1":
+			this.getCustomers("projectInfoSearch");
+			break;
+		case "2":
+			this.getCustomers("manageSituation");	
+			break;
+		default:
+			break;
+		}
 	}
 
 	createList = () => {
@@ -933,6 +956,24 @@ class salesSendLetter extends React.Component {
 				</Row>
 				<br />
 				<Form onSubmit={this.savealesSituation}>
+					<Row>
+					<Col sm={3}>
+						<InputGroup size="sm" className="mb-3">
+		                    <InputGroup.Prepend>
+		                        <InputGroup.Text>提案区分</InputGroup.Text>
+		                    </InputGroup.Prepend>
+		                    <Form.Control as="select" placeholder="提案区分" id="proposeClassificationCode" name="proposeClassificationCode"
+		                    	onChange={this.proposeClassificationCodeChange} disabled={this.state.backPage !== "" ? true : false}
+		                    	value={this.state.proposeClassificationCode} >
+		                        {this.state.proposeClassification.map(date =>
+		                            <option key={date.code} value={date.code}>
+		                                {date.name}
+		                            </option>
+		                        )}
+		                    </Form.Control>
+	                    </InputGroup>
+					</Col>
+					</Row>
 						<Row>
 							<Col sm={6}>
 							<InputGroup size="sm" className="mb-3">
@@ -1027,7 +1068,7 @@ class salesSendLetter extends React.Component {
 							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersConfirm")} variant="info" name="clickButton" hidden={(this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "manageSituation") ? true : false}><FontAwesomeIcon icon={faEnvelope} />要員送信</Button>{' '}
 							
 							<Button size="sm" onClick={this.shuseiTo.bind(this,"sendLettersMatter")} variant="info" name="clickButton" hidden={(this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false} disabled={(this.state.selectetRowIds.length !== 0 || !this.state.sendLetterBtnFlag ? false : true) || (this.state.backPage !== "" && this.state.backPage !== "projectInfoSearch") ? true : false}><FontAwesomeIcon icon={faEnvelope} />案件送信</Button>{' '}
-                            <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} disabled={this.state.customerNo === "" ? true : false} variant="info"><FontAwesomeIcon icon={faEdit} />お客様情報</Button>{' '}
+                            <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} disabled={this.state.selectetRowIds.length !== 1 ? true : false} variant="info"><FontAwesomeIcon icon={faEdit} />お客様情報</Button>{' '}
 							<Button
 								size="sm"
 								hidden={(this.state.backPage === "" ||  this.state.backPage === null ? true : false)}

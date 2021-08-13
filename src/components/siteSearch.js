@@ -129,6 +129,8 @@ class siteSearch extends Component {
 					this.siteSearch(sendValue);
 				}
 			})
+		}else{
+			this.siteSearch();
 		}
 	}
 	giveValue = (sendValue) => {

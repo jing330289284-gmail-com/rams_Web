@@ -69,6 +69,7 @@ class ProjectInfoSearch extends Component {
         ageClassificationDrop: store.getState().dropDown[49],
         admissionPeriodDrop: store.getState().dropDown[51],
         typeOfIndustryDrop: store.getState().dropDown[36],
+        salesStaffDrop: store.getState().dropDown[9].slice(1),
     }
     //onchange
     valueChange = event => {
@@ -187,6 +188,10 @@ class ProjectInfoSearch extends Component {
         }
     }
     componentDidMount() {
+        let stationDrop = this.state.stationDrop;
+        stationDrop.push({code:String(stationDrop.length),name:"テレワーク"});
+        this.setState({ stationDrop: stationDrop, })
+        
         $('button[name="clickButton"]').attr('disabled', true);
         if (this.props.location.state !== undefined) {
             var sendValue = this.props.location.state.sendValue;
@@ -198,6 +203,9 @@ class ProjectInfoSearch extends Component {
             if (searchFlag) {
                 this.search(sendValue);
             }
+        }
+        else{
+            this.search();
         }
     }
     shuseiTo = (actionType) => {
@@ -219,6 +227,7 @@ class ProjectInfoSearch extends Component {
             projectPhaseEnd: this.state.projectPhaseEnd,
             experienceYear: this.state.experienceYear,
             noOfInterviewCode: this.state.noOfInterviewCode,
+			proposeClassificationCode: "1",
         };
         switch (actionType) {
             case "update":
@@ -443,6 +452,31 @@ class ProjectInfoSearch extends Component {
             return row.successRateName;
         }
     }
+    
+    showSiteLocation = (cell, row) => {
+    	if(row.siteLocation !== null && row.siteLocation !== ""){
+            return this.state.stationDrop.find(v => v.code === row.siteLocation).name || {};
+    	}
+    }
+    
+    showExperienceYear = (cell, row) => {
+    	if(row.experienceYear !== null && row.experienceYear !== ""){
+            return row.experienceYear + "年～";
+    	}
+    }
+    
+    showProjectPhaseNameStart = (cell, row) => {
+    	if(row.projectPhaseNameStart !== null && row.projectPhaseNameStart !== ""){
+            return row.projectPhaseNameStart + "～";
+    	}
+    }
+    
+    showSalesStaff = (cell, row) => {
+    	if(row.salesStaff !== null && row.salesStaff !== ""){
+            return this.state.salesStaffDrop.find(v => v.code === row.salesStaff).text || {};
+    	}
+    }
+    
     render() {
         const {
             actionType,
@@ -573,7 +607,7 @@ class ProjectInfoSearch extends Component {
                                         />
                                     </InputGroup>
                                 </Col>
-                                <Col sm={6}>
+                                <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>開発言語</InputGroup.Text>
@@ -587,7 +621,7 @@ class ProjectInfoSearch extends Component {
                                             onChange={(event, values) => this.getJapanese1(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
@@ -601,12 +635,12 @@ class ProjectInfoSearch extends Component {
                                             onChange={(event, values) => this.getJapanese2(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
                                         />
-                                        <Autocomplete
+                                        <Autocomplete hidden
                                             id="keyWordOfLanagurue3"
                                             name="keyWordOfLanagurue3"
                                             value={developLanguageDrop.find(v => v.code === keyWordOfLanagurue3) || {}}
@@ -615,12 +649,31 @@ class ProjectInfoSearch extends Component {
                                             onChange={(event, values) => this.getJapanese3(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
                                         />
                                     </InputGroup>
+                                </Col>
+                                <Col sm={3}>
+                                <InputGroup size="sm" className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>確率</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl
+                                        as="select"
+                                        value={successRate}
+                                        name="successRate"
+                                        onChange={this.valueChange}
+                                    >
+                                        {successRateDrop.map(date =>
+                                            <option key={date.code} value={date.code}>
+                                                {date.name}
+                                            </option>
+                                        )}
+                                    </FormControl>
+                                </InputGroup>
                                 </Col>
                             </Row>
                             <Row>
@@ -743,7 +796,7 @@ class ProjectInfoSearch extends Component {
                                         <font style={{ marginLeft: "10px", marginRight: "10px", marginTop: "5px" }}>年以上</font>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={4}>
+                                <Col sm={6}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>作業工程</InputGroup.Text>
@@ -759,7 +812,7 @@ class ProjectInfoSearch extends Component {
                                                     {date.name}
                                                 </option>
                                             )}
-                                        </FormControl><font style={{ marginLeft: "5px", marginRight: "5px", marginTop: "5px" }}>から</font>
+                                        </FormControl><font style={{marginTop: "5px" }}>から</font>
 
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>面談回数</InputGroup.Text>
@@ -771,25 +824,6 @@ class ProjectInfoSearch extends Component {
                                             onChange={this.valueChange}
                                         >
                                             {noOfInterviewDrop.map(date =>
-                                                <option key={date.code} value={date.code}>
-                                                    {date.name}
-                                                </option>
-                                            )}
-                                        </FormControl>
-                                    </InputGroup>
-                                </Col>
-                                <Col sm={2}>
-                                    <InputGroup size="sm" className="mb-3">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl
-                                            as="select"
-                                            value={successRate}
-                                            name="successRate"
-                                            onChange={this.valueChange}
-                                        >
-                                            {successRateDrop.map(date =>
                                                 <option key={date.code} value={date.code}>
                                                     {date.name}
                                                 </option>
@@ -834,15 +868,17 @@ class ProjectInfoSearch extends Component {
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.showSiteLocation} dataField='siteLocation'>場所</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='110' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataField='experienceYear'>経験年数</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataFormat={this.showExperienceYear} dataField='experienceYear'>経験年数</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} hidden dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataFormat={this.showProjectPhaseNameStart} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='130' tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }}>開発言語</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' colSpan='2' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }}>開発言語</TableHeaderColumn>
                                     <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName1'></TableHeaderColumn>
                                     <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName2'></TableHeaderColumn>
-                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName3'></TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} hidden dataField='keyWordOfLanagurueName3'></TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.showSalesStaff}　dataField='salesStaff'>営業担当</TableHeaderColumn>
                                 </BootstrapTable>
                             </Col>
                         </Row>

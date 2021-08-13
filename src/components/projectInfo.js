@@ -49,6 +49,7 @@ class projectInfo extends Component {
         recruitmentNumbers: '',
         remark: '',
         workStartPeriodForDate: '',
+        salesStaff: '',
         //パラメータ
         actionType: this.props.location.state.actionType,
         backPage: "",//遷移元
@@ -75,6 +76,7 @@ class projectInfo extends Component {
         ageClassificationDrop: store.getState().dropDown[49],
         workStartPeriodDrop: store.getState().dropDown[59],
         admissionMonthDrop: store.getState().dropDown[62],
+        salesStaffDrop: store.getState().dropDown[56].slice(1),
         experienceYearDrop: [],
     }
     //onchange
@@ -82,6 +84,21 @@ class projectInfo extends Component {
         this.setState({
             [event.target.name]: event.target.value,
         })
+    }
+    
+    //onchange
+    salesStaffChange = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let salesStaff = null;
+			if (values !== null) {
+				salesStaff = values.code;
+			}
+			this.setState({
+				salesStaff: salesStaff,
+			})
+		})
     }
     
     //リセット
@@ -154,6 +171,7 @@ class projectInfo extends Component {
             noOfInterviewCode: projectInfoMod.noOfInterviewCode,
             siteLocation: projectInfoMod.siteLocation,
             recruitmentNumbers: projectInfoMod.recruitmentNumbers,
+            salesStaff: projectInfoMod.salesStaff,
             remark: projectInfoMod.remark,
         })
         if (projectInfoMod.workStartPeriod.length > 2) {
@@ -372,6 +390,7 @@ class projectInfo extends Component {
         projectInfoModel["customerNo"] = this.state.customerNo;
         projectInfoModel["actionType"] = this.state.actionType;
         projectInfoModel["experienceYear"] = this.state.experienceYear;
+        projectInfoModel["salesStaff"] = this.state.salesStaff;
         axios.post(this.state.serverIP + "projectInfo/toroku", projectInfoModel)
             .then(result => {
                 if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
@@ -774,7 +793,7 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getStation(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：秋葉原" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-siteLocation"
                                                     />
                                                 </div>
                                             )}
@@ -871,7 +890,7 @@ class projectInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">確率</InputGroup.Text>
+                                            <InputGroup.Text >確率</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             as="select"
@@ -887,7 +906,7 @@ class projectInfo extends Component {
                                         </FormControl>
                                     </InputGroup>
                                 </Col>
-                                <Col sm={6}>
+                                <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
                                             <InputGroup.Text>開発言語</InputGroup.Text>
@@ -902,7 +921,7 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getJapanese1(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
@@ -917,12 +936,12 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getJapanese2(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
                                         />
-                                        <Autocomplete
+                                        <Autocomplete hidden
                                             id="keyWordOfLanagurue3"
                                             name="keyWordOfLanagurue3"
                                             value={developLanguageDrop.find(v => v.code === keyWordOfLanagurue3) || {}}
@@ -932,13 +951,42 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getJapanese3(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：JAVA" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-keyWordOfLanagurue"
                                                     />
                                                 </div>
                                             )}
                                         />
                                     </InputGroup>
                                 </Col>
+                                <Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+									<InputGroup.Prepend>
+										<InputGroup.Text id="inputGroup-sizing-sm">営業担当</InputGroup.Text>
+									</InputGroup.Prepend>
+									<Autocomplete
+										id="salesStaff"
+										name="salesStaff"
+                                        disabled={actionType === "detail" ? true : false}
+										value={this.state.salesStaffDrop.find(v => v.code === this.state.salesStaff) || {}}
+										options={this.state.salesStaffDrop}
+										onChange={(event, values) => this.salesStaffChange(event, values)}
+										getOptionLabel={(option) => option.text ? option.text : ""}
+										renderOption={(option) => {
+											return (
+												<React.Fragment>
+													{option.name}
+												</React.Fragment>
+											)
+										}}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-customerInfo"
+												/>
+											</div>
+										)}
+									/>
+								</InputGroup>
+								</Col>
                             </Row>
                             <Row>
                                 <Col sm={6}>
@@ -976,7 +1024,7 @@ class projectInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">お客様</InputGroup.Text>
+                                            <InputGroup.Text >お客様</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <Autocomplete
                                             id="customerNo"
@@ -988,7 +1036,7 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getCustomer(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：ベース" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-siteLocation"
                                                     />
                                                 </div>
                                             )}
@@ -998,7 +1046,7 @@ class projectInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">担当者</InputGroup.Text>
+                                            <InputGroup.Text>担当者</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <Autocomplete
                                             id="personInCharge"
@@ -1010,7 +1058,7 @@ class projectInfo extends Component {
                                             onChange={(event, values) => this.getPersonInChange(event, values)}
                                             renderInput={(params) => (
                                                 <div ref={params.InputProps.ref}>
-                                                    <input placeholder="例：田中" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo"
+                                                    <input placeholder="例：田中" type="text" {...params.inputProps} className="auto form-control Autocompletestyle-projectInfo-siteLocation"
                                                     />
                                                 </div>
                                             )}
@@ -1034,7 +1082,7 @@ class projectInfo extends Component {
                                 <Col sm={3}>
                                     <InputGroup size="sm" className="mb-3">
                                         <InputGroup.Prepend>
-                                            <InputGroup.Text id="fiveKanji">備考</InputGroup.Text>
+                                            <InputGroup.Text>備考</InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl
                                             value={remark}

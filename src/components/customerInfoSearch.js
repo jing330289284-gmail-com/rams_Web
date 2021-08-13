@@ -97,6 +97,9 @@ class CustomerInfoSearch extends Component {
                 }
             })
         }
+        else{
+            this.search();
+        }
     }
     /**
      * 数字チェック
