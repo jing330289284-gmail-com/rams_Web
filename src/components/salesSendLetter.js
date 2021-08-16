@@ -32,6 +32,7 @@ class salesSendLetter extends React.Component {
 		// customers: store.getState().dropDown[15],// 全部お客様 dropDowm用
 		customers: store.getState().dropDown[77].slice(1),
 		storageList: store.getState().dropDown[63].slice(1),
+		storageListAll: store.getState().dropDown[63].slice(1),
 		personInCharge: store.getState().dropDown[78].slice(1),
         proposeClassification: [{code: "0",name: "すべて"},{code: "1",name: "案件"},{code: "2",name: "要員"}],
 		errorsMessageShow: false,
@@ -87,6 +88,7 @@ class salesSendLetter extends React.Component {
 				projectNo: this.props.location.state.projectNo,
 				proposeClassificationCode: this.props.location.state.sendValue.proposeClassificationCode,
 			})
+			this.setStorageList(this.props.location.state.sendValue.proposeClassificationCode);
 		
 			if(this.props.location.state.salesPersons === null || this.props.location.state.salesPersons === undefined || this.props.location.state.salesPersons === '' ||
 				this.props.location.state.targetCusInfos === null || this.props.location.state.targetCusInfos === undefined || this.props.location.state.targetCusInfos === ''){
@@ -111,9 +113,24 @@ class salesSendLetter extends React.Component {
 					isHidden:true,
 				})
 			}
+		}else{
+			this.setStorageList("0");
 		}
 		this.getCustomers();
 		this.getLists();
+	}
+	
+	setStorageList = (proposeClassificationCode) => {
+		let newStorageList = [];
+		let storageList = this.state.storageListAll;
+		for(let i in storageList){
+			if(storageList[i].text === proposeClassificationCode){
+				newStorageList.push(storageList[i]);
+			}
+		}
+		this.setState({
+			storageList: newStorageList,
+		})
 	}
 
 	getLists = () => {
@@ -408,46 +425,25 @@ class salesSendLetter extends React.Component {
 	proposeClassificationCodeChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
+			storageListName: "",
+			storageListNameChange: "",
 		})
 		switch (event.target.value) {
 		case "0":
 			this.getCustomers("all");
+			this.setStorageList("0");
 			break;
 		case "1":
 			this.getCustomers("projectInfoSearch");
+			this.setStorageList("1");
 			break;
 		case "2":
 			this.getCustomers("manageSituation");	
+			this.setStorageList("2");
 			break;
 		default:
 			break;
 		}
-	}
-
-	createList = () => {
-		let { selectetRowIds, customerTemp, listName } = this.state;
-		let selectedArray = new Array();
-		for (let i in selectetRowIds) {
-			selectedArray.push(customerTemp.find(v => v.rowId === selectetRowIds[i]));
-		}
-		let name = `送信対象${listName}`;
-		let selectedNoArray = new Array();
-		for (let i in selectedArray) {
-			selectedNoArray.push(selectedArray[i].customerNo);
-		}
-		let code = selectedNoArray.join(',');
-		axios.post(this.state.serverIP + "salesSendLetters/creatList", { name, code })
-			.then(result => {
-				this.refs.customersTable.store.selected = [];
-				this.refs.customersTable.setState({
-					selectedRowKeys: [],
-				})
-				/* listName=listName+1; */
-				this.setState({
-					selectetRowIds: [],
-				});
-				this.getLists();
-			})
 	}
 	
 	addNewList = () => {
@@ -456,7 +452,7 @@ class salesSendLetter extends React.Component {
 			newAllCtmNos += this.state.allCustomer[i].customerNo + ",";
 		}
 		newAllCtmNos = newAllCtmNos.substring(0, newAllCtmNos.lastIndexOf(','));
-		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) })
+		axios.post(this.state.serverIP + "salesSendLetters/addNewList", { proposeClassificationCode: this.state.proposeClassificationCode, code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) })
 		.then(result => {
 			let newStorageListArray = this.state.storageList;
 			let storageListTemp = {name:result.data,code:(this.state.sendLetterBtnFlag ? String(this.refs.customersTable.state.selectedRowKeys): newAllCtmNos) };
@@ -726,8 +722,8 @@ class salesSendLetter extends React.Component {
 		this.CellFormatter(row.salesPersonsAppend, row);
 	}
 	changeName = () => {
-		for (let i in this.state.storageList) {
-			if(this.state.storageList[i].name === this.state.storageListNameChange){
+		for (let i in this.state.storageListAll) {
+			if(this.state.storageListAll[i].name === this.state.storageListNameChange){
                 this.setState({ "errorsMessageShow": true, message: "同名なリストが存在しています、チェックしてください。" });
                 setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
 				return;

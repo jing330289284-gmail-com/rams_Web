@@ -461,6 +461,13 @@ class siteInfo extends Component {
 			this.setState({
 				typteOfContract: typteOfContract,
 			})
+			if(typteOfContract === "4"){
+				let customerNo = this.state.customerMaster.find(v => v.name === "LYC").code || {};
+				this.setState({
+					customerNo: customerNo,
+					topCustomerNo: "",
+				})
+			}
 		})
 	}
 	
@@ -1129,6 +1136,28 @@ class siteInfo extends Component {
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
+								<InputGroup size="sm" className="mb-3">
+								<InputGroup.Prepend>
+									<InputGroup.Text id="inputGroup-sizing-sm">形態</InputGroup.Text>
+									<Autocomplete
+										id="typteOfContractStatus"
+										name="typteOfContractStatus"
+										options={this.state.typteOfContractStatus}
+										getOptionLabel={(option) => option.name}
+										value={this.state.typteOfContractStatus.find(v => v.code === this.state.typteOfContract) || {}}
+										onChange={(event, values) => this.getTypteOfContract(event, values)}
+										renderInput={(params) => (
+											<div ref={params.InputProps.ref}>
+												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
+												/>
+											</div>
+										)}
+										disabled={pageDisabledFlag}
+									/>
+									</InputGroup.Prepend>
+								</InputGroup>
+								</Col>
+								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">お客様</InputGroup.Text>
@@ -1154,28 +1183,6 @@ class siteInfo extends Component {
 								<Col sm={3}>
 								<InputGroup size="sm" className="mb-3">
 								<InputGroup.Prepend>
-									<InputGroup.Text id="inputGroup-sizing-sm">形態</InputGroup.Text>
-									<Autocomplete
-										id="typteOfContractStatus"
-										name="typteOfContractStatus"
-										options={this.state.typteOfContractStatus}
-										getOptionLabel={(option) => option.name}
-										value={this.state.typteOfContractStatus.find(v => v.code === this.state.typteOfContract) || {}}
-										onChange={(event, values) => this.getTypteOfContract(event, values)}
-										renderInput={(params) => (
-											<div ref={params.InputProps.ref}>
-												<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-siteInfo"
-												/>
-											</div>
-										)}
-										disabled={pageDisabledFlag}
-									/>
-									</InputGroup.Prepend>
-								</InputGroup>
-								</Col>
-								<Col sm={3}>
-								<InputGroup size="sm" className="mb-3">
-								<InputGroup.Prepend>
 									<InputGroup.Text id="sixKanji">トップお客様</InputGroup.Text>
 									<Autocomplete
 										id="topCustomerNo"
@@ -1190,7 +1197,7 @@ class siteInfo extends Component {
 												/>
 											</div>
 										)}
-										disabled={pageDisabledFlag}
+										disabled={pageDisabledFlag || this.state.typteOfContract === "4"}
 									/>
 								</InputGroup.Prepend>
 							</InputGroup>

@@ -133,6 +133,13 @@ class customerSalesList extends React.Component {
             hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
             expandRowBgColor: 'rgb(165, 165, 165)',
         };
+        const selectRow = {
+                mode: 'radio',
+                bgColor: 'pink',
+                hideSelectColumn: true,
+                clickToSelect: true,
+                clickToExpand: true,
+            };
         returnItem = 
         <OverlayTrigger 
             trigger="click"
@@ -145,6 +152,7 @@ class customerSalesList extends React.Component {
                         pagination={false}
                         options={options}
                         data={row.empDetail}
+                		selectRow={selectRow}
                         headerStyle={{ background: '#5599FF' }}
                         striped
                         hover
