@@ -508,7 +508,7 @@ class salesContent extends React.Component {
 						/>
 					</ListGroup.Item>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPriceShow} name="unitPriceShow"
-						style={{ width: "80px" }} onChange={this.valueChangeMoney} className="inputWithoutBorder" />万円</ListGroup.Item></span>
+						style={{ width: "80px" }} onChange={this.valueChangeMoney} className="inputWithoutBorder" />円</ListGroup.Item></span>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
 					{	
 					(Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":

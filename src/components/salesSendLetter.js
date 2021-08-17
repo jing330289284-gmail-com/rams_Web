@@ -113,10 +113,20 @@ class salesSendLetter extends React.Component {
 					isHidden:true,
 				})
 			}
+			switch (this.props.location.state.sendValue.proposeClassificationCode) {
+			case "1":
+				this.getCustomers("projectInfoSearch");
+				break;
+			case "2":
+				this.getCustomers("manageSituation");	
+				break;
+			default:
+				break;
+		}
 		}else{
 			this.setStorageList("0");
+			this.getCustomers("all");
 		}
-		this.getCustomers();
 		this.getLists();
 	}
 	
@@ -228,6 +238,19 @@ class salesSendLetter extends React.Component {
 						storageListNameChange: '',
 						selectedCustomers: '',
 					})
+					switch (this.state.proposeClassificationCode) {
+						case "0":
+							this.getCustomers("all");
+							break;
+						case "1":
+							this.getCustomers("projectInfoSearch");
+							break;
+						case "2":
+							this.getCustomers("manageSituation");	
+							break;
+						default:
+							break;
+					}
 					break;	
 				case 'personInCharge':
 					this.setState({
@@ -428,18 +451,16 @@ class salesSendLetter extends React.Component {
 			storageListName: "",
 			storageListNameChange: "",
 		})
+		this.setStorageList(event.target.value);
 		switch (event.target.value) {
 		case "0":
 			this.getCustomers("all");
-			this.setStorageList("0");
 			break;
 		case "1":
 			this.getCustomers("projectInfoSearch");
-			this.setStorageList("1");
 			break;
 		case "2":
 			this.getCustomers("manageSituation");	
-			this.setStorageList("2");
 			break;
 		default:
 			break;

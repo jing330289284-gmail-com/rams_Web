@@ -1242,6 +1242,7 @@ class manageSituation extends React.Component {
     	salesSituationLists[(Number(this.state.rowNo) - 1)].yearsOfExperience = yearsOfExperience;
 		this.setState({
 			salesSituationLists: salesSituationLists,
+			unitPrice: unitPrice,
 		});
     }
     

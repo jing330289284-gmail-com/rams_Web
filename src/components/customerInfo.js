@@ -33,6 +33,7 @@ class CustomerInfo extends Component {
         businessStartDate: '',//取引開始の期日
         topCustomerDrop: store.getState().dropDown[35].slice(1),
         topCustomerName: '',//上位お客様のname
+        oldCustomerName: '',
         rowNo: '',//行のコード
         currPage: '',
         customerDepartmentCode2: '',
@@ -187,6 +188,7 @@ class CustomerInfo extends Component {
                     this.setState({
                         customerDepartmentList: resultMap.data.customerDepartmentInfoList,
                         customerNo: customerNoSaiBan,
+                        oldCustomerName: '',
                         urlDisable: false,
                     })
                 } else {
@@ -223,6 +225,7 @@ class CustomerInfo extends Component {
                         salesStaff: customerInfoMod.salesStaff,
                         responseFlag: actionType === "detail" || customerInfoMod.basicContract !== "1" ? true : false,
                         contactDateFlag: actionType === "detail" || customerInfoMod.response !== "1" ? true : false,
+                        oldCustomerName: customerInfoMod.customerName,
                     })
                     if (resultMap.data.customerDepartmentInfoList.length === 0) {
                         $("#meisaiToroku").attr("disabled", true);
@@ -249,6 +252,7 @@ class CustomerInfo extends Component {
         $.each(formArray, function (i, item) {
             customerInfoMod[item.name] = item.value;
         });
+        customerInfoMod["oldCustomerName"] = this.state.oldCustomerName;
         customerInfoMod["capitalStock"] = utils.deleteComma($("#capitalStock").val());
         //customerInfoMod["topCustomerNo"] = utils.labelGetValue($("#topCustomer").val(), this.state.topCustomerDrop);
         customerInfoMod["topCustomerNo"] = this.state.topCustomer;
@@ -280,6 +284,9 @@ class CustomerInfo extends Component {
                             actionType:"update",
                         })
                     }
+                    this.setState({
+                        oldCustomerName: $("#customerName").val(),
+                    })
                 	this.setState({ "myMessageShow": true, "type": "success", "errorsMessageShow": false,"myUpdateShow":false,"myDeleteShow":false, message: "処理成功" });
                     setTimeout(() => this.setState({ "myMessageShow": false }), 3000);
                 } else {
