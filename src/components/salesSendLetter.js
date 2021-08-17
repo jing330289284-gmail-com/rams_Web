@@ -802,8 +802,17 @@ class salesSendLetter extends React.Component {
 									newStorageListArray.push(this.state.storageList[i]);
 								}
 							}
+							let newStorageListAllArray = new Array();
+							for (let i in this.state.storageListAll) {
+								if(this.state.storageListAll[i].name === this.state.storageListName){
+								}
+								else{
+									newStorageListAllArray.push(this.state.storageListAll[i]);
+								}
+							}
 							this.setState({
 								storageList: newStorageListArray,
+								storageListAll: newStorageListAllArray,
 								sendLetterBtnFlag: true,
 								storageListNameChange: "",
 								storageListName: "",
