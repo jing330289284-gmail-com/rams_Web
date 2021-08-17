@@ -261,6 +261,12 @@ class siteSearch extends Component {
 				console.error("Error - " + error);
 			});
 	}
+	
+	addCommaUnitPrice = (cell, row) => {
+		let unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
+        return unitPrice;
+    }
+	
 	renderShowsTotal(start, to, total) {
 		return (
 			<p style={{ color: 'dark', "float": "left", "display": total > 0 ? "block" : "none" }}  >
@@ -833,7 +839,7 @@ class siteSearch extends Component {
 								<TableHeaderColumn dataField='systemName' tdStyle={{ padding: '.45em' }} width='220'>システム名</TableHeaderColumn>
 								<TableHeaderColumn dataField='station' width="90" tdStyle={{ padding: '.45em' }} >場所</TableHeaderColumn>
 								<TableHeaderColumn dataField='customerName' width="150" tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
-								<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='70' >単価</TableHeaderColumn>
+								<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} dataFormat={this.addCommaUnitPrice} width='70' >単価</TableHeaderColumn>
 								<TableHeaderColumn dataField='developLanguageName' width="110" tdStyle={{ padding: '.45em' }} >言語</TableHeaderColumn>
 								<TableHeaderColumn dataField='workTime' width="100" tdStyle={{ padding: '.45em' }} >勤務月数</TableHeaderColumn>
 								<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='65' >役割</TableHeaderColumn>
