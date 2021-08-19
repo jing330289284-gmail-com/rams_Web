@@ -166,6 +166,7 @@ class siteInfo extends Component {
 				scheduledEndDate:this.state.scheduledEndDateForSave
 			})
 		}else if(event.target.value === '3'){
+			let admissionStartDate = this.state.admissionStartDate;
 			this.reset();
 			this.setState({
 				[event.target.name]: event.target.value,
@@ -174,14 +175,10 @@ class siteInfo extends Component {
 				systemName: "休暇",
 				customerNo: this.state.customerMaster.find(v => v.name === "LYC").code,
 				remark:"",
-				scheduledEndDate:this.state.scheduledEndDateForSave
+				scheduledEndDate:this.state.scheduledEndDateForSave,
+				admissionStartDate: admissionStartDate,
 			})
 		} else {
-			if(this.state.systemName === "休暇"){
-				this.setState({
-					systemName: "",
-				})
-			}
 			this.setState({
 				workStateFlag: false,
 				[event.target.name]: event.target.value,
@@ -660,6 +657,7 @@ class siteInfo extends Component {
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		siteModel["typteOfContractCode"] = this.state.typteOfContract;
 		siteModel["unitPrice"] = utils.deleteComma(this.state.unitPrice);
+		siteModel["systemName"] = this.state.systemName;
 		if (this.state.siteData.length > 0) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 1].admissionEndDate
 		} else {
@@ -716,6 +714,8 @@ class siteInfo extends Component {
 		siteModel["scheduledEndDate"] = publicUtils.formateDate(this.state.scheduledEndDate,false);
 		siteModel["typteOfContractCode"] = this.state.typteOfContract;
 		siteModel["unitPrice"] = utils.deleteComma(this.state.unitPrice);
+		siteModel["systemName"] = this.state.systemName;
+
 		if (this.state.siteData.length > 1) {
 			siteModel["checkDate"] = this.state.siteData[this.state.siteData.length - 2].admissionEndDate
 		} else {

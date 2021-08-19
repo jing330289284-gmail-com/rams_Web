@@ -52,6 +52,7 @@ class ProjectInfoSearch extends Component {
         projectPhaseEnd: '',
         noOfInterviewCode: '',
         projectInfoList: [],
+        endFlag: '1',
         //Drop
         projectNoDrop: store.getState().dropDown[51].slice(1),
         theSelectProjectperiodStatusDrop: store.getState().dropDown[58].slice(1),
@@ -208,6 +209,32 @@ class ProjectInfoSearch extends Component {
             this.search();
         }
     }
+    
+    endFlagChange = () => {
+        const projectInfoModel = {
+                projectNo: this.state.selectedProjectNo,
+            };
+        axios.post(this.state.serverIP + "projectInfoSearch/endFlagChange", projectInfoModel)
+        .then(result => {
+            if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+            	let projectInfoList = this.state.projectInfoList;
+            	for(let i in projectInfoList){
+            		if(projectInfoList[i].projectNo === this.state.selectedProjectNo){
+            			projectInfoList[i].endFlag = (this.state.endFlag === "0" ? "1" : "0");
+            		}
+            	}
+            	this.setState({ endFlag: (this.state.endFlag === "0" ? "1" : "0"), projectInfoList: projectInfoList});
+                this.setState({ "myToastShow": true, "type": "success", message: result.data.message });
+                setTimeout(() => this.setState({ "myToastShow": false }), 3000);
+            } else {
+                this.setState({ "myToastShow": false, "errorsMessageShow": true, errorsMessage: result.data.errorsMessage });
+            }
+        })
+        .catch(error => {
+            alert("删除错误，请检查程序");
+        });
+    }
+    
     shuseiTo = (actionType) => {
         var path = {};
         const sendValue = {
@@ -286,6 +313,7 @@ class ProjectInfoSearch extends Component {
         if (isSelected) {
             this.setState({
                 selectedProjectNo: row.projectNo,
+                endFlag: row.endFlag === null ? "1" : row.endFlag,
             })
             $('button[name="clickButton"]').attr('disabled', false);
         } else {
@@ -312,7 +340,6 @@ class ProjectInfoSearch extends Component {
     onDeleteRow = (rows) => {
         const projectInfoModel = {
             projectNo: this.state.selectedProjectNo,
-
         };
         var id = this.state.selectedProjectNo;
         var projectInfoList = this.state.projectInfoList;
@@ -445,29 +472,45 @@ class ProjectInfoSearch extends Component {
         this.setState({ showProjectContentModal: true })
     }
     successRateNameData=(cell,row)=>{
-        var successRate = row.successRate;
-        if(successRate === "0" || successRate === "1"){
-            return <i style={{color:"red"}}>{row.successRateName}</i>
+        if(row.endFlag === "0"){
+            return <div style={{color:"gray"}}>{row.successRateName}</div>
         }else{
-            return row.successRateName;
+            var successRate = row.successRate;
+            if(successRate === "0" || successRate === "1"){
+                return <i style={{color:"red"}}>{row.successRateName}</i>
+            }else{
+                return row.successRateName;
+            }
         }
     }
     
     showSiteLocation = (cell, row) => {
     	if(row.siteLocation !== null && row.siteLocation !== ""){
-            return this.state.stationDrop.find(v => v.code === row.siteLocation).name || {};
+            if(row.endFlag === "0"){
+                return <div style={{color:"gray"}}>{this.state.stationDrop.find(v => v.code === row.siteLocation).name || {}}</div>
+            }else{
+                return this.state.stationDrop.find(v => v.code === row.siteLocation).name || {};
+            }
     	}
     }
     
     showExperienceYear = (cell, row) => {
     	if(row.experienceYear !== null && row.experienceYear !== ""){
-            return row.experienceYear + "年～";
+            if(row.endFlag === "0"){
+                return <div style={{color:"gray"}}>{row.experienceYear + "年～"}</div>
+            }else{
+                return row.experienceYear + "年～";
+            }
     	}
     }
     
     showProjectPhaseNameStart = (cell, row) => {
     	if(row.projectPhaseNameStart !== null && row.projectPhaseNameStart !== ""){
-            return row.projectPhaseNameStart + "～";
+            if(row.endFlag === "0"){
+                return <div style={{color:"gray"}}>{row.projectPhaseNameStart + "～"}</div>
+            }else{
+            	return row.projectPhaseNameStart + "～";
+            }
     	}
     }
     
@@ -475,6 +518,14 @@ class ProjectInfoSearch extends Component {
     	if(row.salesStaff !== null && row.salesStaff !== ""){
             return this.state.salesStaffDrop.find(v => v.code === row.salesStaff).text || {};
     	}
+    }
+    
+    grayRow = (cell, row) => {
+        if(row.endFlag === "0"){
+            return <div style={{color:"gray"}}>{cell}</div>
+        }else{
+            return cell;
+        }
     }
     
     render() {
@@ -518,7 +569,7 @@ class ProjectInfoSearch extends Component {
         const options = {
             noDataText: (<i>データなし</i>),
             page: 1,
-            sizePerPage: 8,
+            sizePerPage: 10,
             pageStartIndex: 1,
             paginationSize: 3,
             prePage: '<',
@@ -852,6 +903,7 @@ class ProjectInfoSearch extends Component {
                             </Col>
                             <Col sm={5}>
                                 <div style={{ "float": "right" }}>
+                                	<Button size="sm" onClick={this.endFlagChange} name="clickButton" id="endFlag" variant="info"><FontAwesomeIcon icon={faList} />{this.state.endFlag === "0" ? "終了": "未終了"}</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "detail")} name="clickButton" id="detail" variant="info"><FontAwesomeIcon icon={faList} />詳細</Button>{' '}
                                     <Button size="sm" onClick={this.shuseiTo.bind(this, "update")} name="clickButton" id="update" variant="info"><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
                                     <Button size="sm" variant="info" name="clickButton" id="delete" variant="info" onClick={this.delete}><FontAwesomeIcon icon={faTrash} /> 削	除</Button>{' '}
@@ -864,21 +916,21 @@ class ProjectInfoSearch extends Component {
                         <Row >
                             <Col sm={12}>
                                 <BootstrapTable ref="projectInfoSearchTable" data={projectInfoList} pagination={true} options={options} deleteRow selectRow={selectRow} headerStyle={{ background: '#5599FF' }} striped hover condensed >
-                                    <TableHeaderColumn row='0' rowSpan='2' width='70' tdStyle={{ padding: '.45em' }} dataField='rowNo'>番号</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='70' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='rowNo'>番号</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='projectNo' isKey>案件番号</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='120' tdStyle={{ padding: '.45em' }} dataFormat={this.successRateNameData.bind(this)} dataField='successRateName'>確率</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='150' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='admissionPeriodReset'>入場時期</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.showSiteLocation} dataField='siteLocation'>場所</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='110' tdStyle={{ padding: '.45em' }} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='110' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='japaneaseConversationName'>日本語</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='95' tdStyle={{ padding: '.45em' }} dataFormat={this.showExperienceYear} dataField='experienceYear'>経験年数</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} hidden dataField='unitPriceRangeHighest'>単価上限</TableHeaderColumn>
                                     <TableHeaderColumn row='0' rowSpan='2' width='125' tdStyle={{ padding: '.45em' }} dataFormat={this.showProjectPhaseNameStart} dataField='projectPhaseNameStart'>作業工程</TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='130' tdStyle={{ padding: '.45em' }} dataField='customerName'>お客様</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='130' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='customerName'>お客様</TableHeaderColumn>
                                     <TableHeaderColumn row='0' colSpan='2' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }}>開発言語</TableHeaderColumn>
-                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName1'></TableHeaderColumn>
-                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataField='keyWordOfLanagurueName2'></TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='keyWordOfLanagurueName1'></TableHeaderColumn>
+                                    <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataField='keyWordOfLanagurueName2'></TableHeaderColumn>
                                     <TableHeaderColumn row='1' rowSpan='1' width='90' tdStyle={{ padding: '.45em' }} hidden dataField='keyWordOfLanagurueName3'></TableHeaderColumn>
-                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.showSalesStaff}　dataField='salesStaff'>営業担当</TableHeaderColumn>
+                                    <TableHeaderColumn row='0' rowSpan='2' width='90' tdStyle={{ padding: '.45em' }} dataFormat={this.grayRow} dataFormat={this.showSalesStaff}　dataField='salesStaff'>営業担当</TableHeaderColumn>
                                 </BootstrapTable>
                             </Col>
                         </Row>

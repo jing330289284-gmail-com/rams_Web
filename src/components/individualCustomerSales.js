@@ -222,7 +222,7 @@ class IndividualCustomerSales extends React.Component {
     }
 
     grossProfitAddComma(cell, row) {
-        if (row.grossProfit === null || row.grossProfit === "0") {
+        if (row.grossProfit === null/* || row.grossProfit === "0"*/) {
             return
         } else {
             let formatmGrosProfits = publicUtils.addComma(row.grossProfit, false)
@@ -321,6 +321,8 @@ class IndividualCustomerSales extends React.Component {
     costChange = (cell, row) => {
     	if(cell === "0")
     		return "";
+    	if(row.cost > row.unitPrice)
+    		return (<div style={{ color: 'red' }}>{cell}</div>);
     	return cell;
     }
     
