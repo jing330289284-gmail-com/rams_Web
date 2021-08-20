@@ -187,7 +187,7 @@ employeeSelected = () => {
 			defaultSortOrder: 'dsc',
 			sizePerPage: 5,
 			pageStartIndex: 1,
-			paginationSize: 2,
+			paginationSize: 3,
 			prePage: '<', // Previous page button text
 			nextPage: '>', // Next page button text
 			firstPage: '<<', // First page button text

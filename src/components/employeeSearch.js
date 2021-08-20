@@ -30,7 +30,6 @@ class employeeSearch extends React.Component {
 		this.valueChange = this.valueChange.bind(this);
 		this.socialInsuranceValueChange = this.socialInsuranceValueChange.bind(this);
 		this.ageValueChange = this.ageValueChange.bind(this);
-		this.searchEmployee = this.searchEmployee.bind(this);
 	};
 	
 	// ageValueChange
@@ -108,6 +107,7 @@ class employeeSearch extends React.Component {
 			this.setState({
 				authorityCode: result.data[0].authorityCode,
 			})
+			this.searchEmployee(result.data[0].authorityCode);
 		})
 		.catch(function(error) {
 			alert(error);
@@ -162,10 +162,8 @@ class employeeSearch extends React.Component {
 				passportInfo: sendValue.passportInfo,
 				employeeInfo: sendValue.employeeInfo,
             }, () => {
-                    this.searchEmployee();
+                    this.searchEmployee(this.state.authorityCode);
             })
-        }else{
-    		this.searchEmployee();
         }
 		
 		let temp = [];
@@ -201,7 +199,7 @@ class employeeSearch extends React.Component {
 	};
 
 	// 検索s
-	searchEmployee = () => {
+	searchEmployee = (authorityCode) => {
 		if(this.state.employeeStatus === "1"){
 			this.setState({
 				changeFlag: false,
@@ -232,7 +230,7 @@ class employeeSearch extends React.Component {
 			kadou: this.state.kadou === "" ? undefined : this.state.kadou,
 			socialInsuranceStatus: this.state.socialInsurance === "" ? undefined : this.state.socialInsurance,
 			socialInsuranceDate: this.state.socialInsuranceDate === "" || this.state.socialInsuranceDate === null || this.state.socialInsuranceDate === undefined ? undefined : publicUtils.formateDate(this.state.socialInsuranceDate, true),
-			authorityCode: this.state.authorityCode,
+			authorityCode: authorityCode === null ? this.state.authorityCode : authorityCode,
 		};
 		axios.post(this.state.serverIP + "employee/getEmployeeInfo", emp)
 			.then(response => {
@@ -349,7 +347,7 @@ class employeeSearch extends React.Component {
 			.then(result => {
 				if (result.data) {
 					if(tableSize>1){
-						this.searchEmployee();
+						this.searchEmployee(this.state.authorityCode);
 						// 削除の後で、rowSelectEmployeeNoの値に空白をセットする
 						this.setState(
 							{
@@ -1132,7 +1130,7 @@ class employeeSearch extends React.Component {
 					</div>
 				</Form>
 				<div style={{ "textAlign": "center" }}>
-					<Button size="sm" variant="info" type="submit"  onClick={this.searchEmployee} >
+					<Button size="sm" variant="info" type="submit"  onClick={this.searchEmployee.bind(this,this.state.authorityCode)} >
 						<FontAwesomeIcon icon={faSearch} /> 検索
                         </Button>{' '}
 					<Button size="sm" onClick={this.shuseiTo.bind(this, "insert")} variant="info">

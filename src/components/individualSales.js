@@ -37,7 +37,7 @@ class individualSales extends React.Component {//個人売上検索
         this.options = {
             sizePerPage: 12,
             pageStartIndex: 1,
-            paginationSize: 2,
+            paginationSize: 3,
             prePage: '<', // Previous page button text
             nextPage: '>', // Next page button text
             firstPage: '<<', // First page button text
