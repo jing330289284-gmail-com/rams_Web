@@ -201,9 +201,7 @@ class ProjectInfoSearch extends Component {
             this.setState({
                 selectedProjectNo: this.props.location.state.selectedProjectNo,
             })
-            if (searchFlag) {
-                this.search(sendValue);
-            }
+            this.search(sendValue);
         }
         else{
             this.search();

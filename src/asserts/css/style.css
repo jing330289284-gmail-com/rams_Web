@@ -216,6 +216,28 @@ body {
 	width: 8rem !important;
 }
 
+#datePicker-certificatePrinting-birthday {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+	width: 20rem !important;
+}
+
+#datePicker-certificatePrinting-intoCompanyYearAndMonth {
+	background-repeat: no-repeat;
+	background-position: 10px 7px;
+	background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+		right center transparent;
+	padding-right: 0px;
+	height: calc(1.5em + .5rem + 2px);
+	background-color: white;
+	width: 9.5rem !important;
+}
+
 #datePicker-interview {
 	background-repeat: no-repeat;
 	background-position: 10px 7px;
@@ -1463,6 +1485,16 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-certificatePrinting-employeeName {
+	width: 20.1rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-siteInfoSearch-topCustomer {
 	width: 13.4rem;
 	height: 31px;
@@ -1915,6 +1947,29 @@ body {
 		background-color: white;
 		width: 5.5rem !important;
 	}
+	
+	#datePicker-certificatePrinting-birthday {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 13.9rem !important;
+	}
+	
+	#datePicker-certificatePrinting-intoCompanyYearAndMonth {
+		background-repeat: no-repeat;
+		background-position: 10px 7px;
+		background: url(date_24px_533395_easyicon.net.ico) no-repeat scroll
+			right center transparent;
+		padding-right: 0px;
+		height: calc(1.5em + .5rem + 2px);
+		background-color: white;
+		width: 6.5rem !important;
+	}
+	
 	#datePicker-interview {
 		background-repeat: no-repeat;
 		background-position: 10px 7px;
@@ -2256,6 +2311,17 @@ body {
 		font-size: ".875rem";
 		color: "#495057"
 	}
+	
+	.Autocompletestyle-certificatePrinting-employeeName {
+		width: 13.9rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	
 	.Autocompletestyle-siteInfoSearch {
 		width: 9rem;
 		height: 31px;

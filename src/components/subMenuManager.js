@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import EmployeeInsert from './employeeInsert';
 import EmployeeInsertNew from './employeeInsertNew';
 import EmployeeInformation from './employeeInformation';
+import CertificatePrinting from './certificatePrinting';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -46,7 +47,7 @@ import customerSalesList from './customerSalesList';
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
-	faCommentDollar, faList, faSearchMinus, faNewspaper,
+	faCommentDollar, faList, faSearchMinus, faNewspaper,faDownload,
 	faFilePowerpoint, faChartPie, faTable, faCog, faUpload, faCheckSquare, faBars, faCaretSquareLeft
 } from '@fortawesome/free-solid-svg-icons';
 import '../asserts/css/subMenu.css';
@@ -216,6 +217,8 @@ class SubMenu extends Component {
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearch} />社員・BP検索</Link></ListGroup.Item>
 													<ListGroup.Item style={styleLow}><Link className={this.state.click==="個人情報期限"?"linkFont-click":"linkFont"} onClick={() => this.click('個人情報期限')} to="/subMenuManager/employeeInformation">
 														<FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} />個人情報期限</Link></ListGroup.Item>
+													<ListGroup.Item style={styleLow}><Link className={this.state.click==="証明書印刷"?"linkFont-click":"linkFont"} onClick={() => this.click('証明書印刷')} to="/subMenuManager/certificatePrinting">
+														<FontAwesomeIcon className="fa-fw" size="lg" icon={faDownload} />証明書印刷</Link></ListGroup.Item>
 												</ListGroup>
 											</Accordion.Collapse>
 										</ListGroup.Item>
@@ -380,6 +383,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeInsertNew`} component={EmployeeInsertNew} />
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employeeInformation`} component={EmployeeInformation} />
+								<Route exact path={`${this.props.match.url}/certificatePrinting`} component={CertificatePrinting} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />

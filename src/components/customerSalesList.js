@@ -35,15 +35,24 @@ class customerSalesList extends React.Component {
         }
     }
 
-
     initialState = {
-        customerSalesListYearAndMonth:'',
-        serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-        perCal:[],
-        CustomerSaleslListInfoList: [],
-        totalGrossProfitAdd: 0,
-        countPeo: 0,
-    }
+            customerSalesListYearAndMonth:'',
+            serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
+            perCal:[],
+            CustomerSaleslListInfoList: [],
+            totalGrossProfitAdd: 0,
+            countPeo: 0,
+        }
+    
+	renderShowsTotal = () => {
+		return (
+			<p style={{ color: 'dark', "float": "left" }}  >
+				稼働人数：{this.state.countPeo}
+			</p>
+		);
+	}
+
+
     customerSalesListYearAndMonth = date => {
         if (date !== null) {
             this.setState({
@@ -422,18 +431,6 @@ class customerSalesList extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma} width='110'>費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma} width='100'>粗利</TableHeaderColumn>
                     </BootstrapTable>
-                    <Row style={{marginTop: this.state.CustomerSaleslListInfoList.length > 0 ? "-50px" : "-20px"}}>
-		                <Col sm={2}>
-			                <InputGroup size="sm" className="mb-3">
-			                    <InputGroup.Prepend>
-			                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">稼働人数</InputGroup.Text>
-			                    </InputGroup.Prepend>
-			                    <FormControl
-			                    value={this.state.countPeo}
-			                    disabled/>
-			                </InputGroup>
-		                </Col>
-	                </Row>
                 </div>
             </div>
         );
