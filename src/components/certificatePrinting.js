@@ -27,14 +27,16 @@ class certificatePrinting extends Component {// 状況変動一覧
 		occupationCodes: store.getState().dropDown[10],
         certificate: '0',
         employeeName: '',
+        employeeNamePrint: '',
         employeeNo: '',
 		birthday:　'',
 		intoCompanyYearAndMonth:　'',
 		nowYearAndMonth: new Date(),
 		lastDayofYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
-		workingTime: '10:00~19:00',
+		workingTime: '10:00～19:00',
 		occupationCode: '',
 		address: '',
+		remark: '',
     }
     
 	// valueChange
@@ -46,6 +48,25 @@ class certificatePrinting extends Component {// 状況変動一覧
 
     componentDidMount(){
     	this.setOccupationCodes();
+		if (this.props.location.state !== undefined) {
+            var sendValue = this.props.location.state.sendValue;
+            this.searchEmp(sendValue.employeeNo);
+            this.setState({
+				certificate: sendValue.certificate,
+				employeeName: sendValue.employeeName,
+				employeeNamePrint: sendValue.employeeNamePrint,
+				employeeNo: sendValue.employeeNo,
+				//address: sendValue.address,
+				birthday: sendValue.birthday,
+				intoCompanyYearAndMonth: sendValue.intoCompanyYearAndMonth,
+				nowYearAndMonth: sendValue.nowYearAndMonth,
+				workingTime: sendValue.workingTime,
+				lastDayofYearAndMonth: sendValue.lastDayofYearAndMonth,
+				retirementYearAndMonth: sendValue.retirementYearAndMonth,
+				occupationCode: sendValue.occupationCode,
+				remark: sendValue.remark,
+            })
+		}
     }
     
     setOccupationCodes = () => {
@@ -60,27 +81,31 @@ class certificatePrinting extends Component {// 状況変動一覧
 		})
     }
     
+    searchEmp = (No) => {
+		const emp = {
+				employeeNo: No,
+			};
+		axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
+		.then(response => response.data)
+		.then((data) => {
+			this.setState({
+				employeeNamePrint: data.employeeFristName + data.employeeLastName + "(" + (data.alphabetName1===null?"":data.alphabetName1) + " " + (data.alphabetName2===null?"":data.alphabetName2) + (data.alphabetName3===null?"":data.alphabetName3) + ")",
+				address: data.postcode === null || data.postcode === "" ? "" : ("〒" + data.postcode + " " + data.firstHalfAddress + data.lastHalfAddress),
+				birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
+				intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
+				occupationCode: data.occupationCode,// 職種
+				retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
+	        });
+		});
+    }
+    
     handleTag = (event, values) => {
         if (values != null) {
 			this.setState({
                 employeeName: values.name,
                 employeeNo: values.code,
 	        });
-			const emp = {
-					employeeNo: values.code
-				};
-				axios.post(this.state.serverIP + "employee/getEmployeeByEmployeeNo", emp)
-					.then(response => response.data)
-					.then((data) => {
-						this.setState({
-							address: data.firstHalfAddress + data.lastHalfAddress,
-							birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
-							intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
-							occupationCode: data.occupationCode,// 職種
-							retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
-				        });
-					}
-				);
+			this.searchEmp(values.code);
         }
         else{
 			this.setState({
@@ -145,7 +170,19 @@ class certificatePrinting extends Component {// 状況変動一覧
 	shuseiTo = (actionType) => {
 		var path = {};
 		const sendValue = {
-
+				certificate: this.state.certificate,
+				employeeName: this.state.employeeName,
+				employeeNamePrint: this.state.employeeNamePrint,
+				employeeNo: this.state.employeeNo,
+				address: this.state.address,
+				birthday: this.state.birthday,
+				intoCompanyYearAndMonth: this.state.intoCompanyYearAndMonth,
+				nowYearAndMonth: this.state.nowYearAndMonth,
+				workingTime: this.state.workingTime,
+				lastDayofYearAndMonth: this.state.lastDayofYearAndMonth,
+				retirementYearAndMonth: this.state.retirementYearAndMonth,
+				occupationCode: this.state.occupationCode,
+				remark: this.state.remark,
 		};
 		switch (actionType) {
 			case "update":
@@ -163,6 +200,39 @@ class certificatePrinting extends Component {// 状況変動一覧
 		}
 		this.props.history.push(path);
 	}	
+	
+	downloadPDF = (event) => {
+		let dataInfo = {};
+		dataInfo["certificate"] = this.state.certificate;
+		dataInfo["employeeName"] = this.state.employeeNamePrint;
+		dataInfo["address"] = this.state.address;
+		dataInfo["birthday"] = this.state.birthday;
+		dataInfo["intoCompanyYearAndMonth"] = this.state.intoCompanyYearAndMonth;
+		dataInfo["nowYearAndMonth"] = this.state.nowYearAndMonth;
+		dataInfo["workingTime"] = this.state.workingTime;
+		dataInfo["lastDayofYearAndMonth"] = this.state.lastDayofYearAndMonth;
+		dataInfo["retirementYearAndMonth"] = this.state.retirementYearAndMonth;
+		if(this.state.occupationCode !== "3"){
+			dataInfo["occupationCode"] = this.state.occupationCodes.find(v => v.code === this.state.occupationCode).name || {};
+		}else{
+			if(this.state.certificate === "0")
+				dataInfo["occupationCode"] = "IT関係";
+			else if(this.state.certificate === "1")
+				dataInfo["occupationCode"] = "システムエンジニア";
+		}
+		dataInfo["remark"] = this.state.remark;
+		axios.post(this.state.serverIP + "certificatePrinting/downloadPDF", dataInfo)
+			.then(resultMap => {
+				if (resultMap.data) {
+					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
+				} else {
+					alert("更新失败");
+				}
+			})
+			.catch(function () {
+				alert("更新错误，请检查程序");
+			});
+	}
 	
     render(){
         const  errorsMessageValue= this.state.errorsMessageValue;
@@ -384,7 +454,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 						<Button size="sm" variant="info" onClick={this.shuseiTo.bind(this, "update")} disabled={this.state.employeeNo === ""} type="button" on>
 							<FontAwesomeIcon icon={faEdit} /> 個人情報
 						</Button>{" "}
-						<Button size="sm" variant="info" /*onClick={this.updateEmployee}*/ disabled={this.state.employeeNo === ""} type="button" on>
+						<Button size="sm" variant="info" onClick={this.downloadPDF} disabled={this.state.employeeNo === ""} type="button" on>
 							<FontAwesomeIcon icon={faDownload} /> 印刷
 						</Button>
 					</div>

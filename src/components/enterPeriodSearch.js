@@ -214,8 +214,10 @@ class EnterPeriodSearch extends React.Component {
         return unitPrice;
     }
     addMarkScheduleOfBonusAmount=(cell,row)=>{
+    	if(row.scheduleOfBonusAmount === "0" || row.scheduleOfBonusAmount === "0.0")
+    		return "";
         let scheduleOfBonusAmount = utils.addComma(row.scheduleOfBonusAmount);
-        return scheduleOfBonusAmount;
+        return scheduleOfBonusAmount.replace(".0","");
     }
     //以下の二つは期日に/の追加
     addMarkReflectYearAndMonth=(cell,row)=>{
