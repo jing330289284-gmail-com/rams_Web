@@ -489,7 +489,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 						<Button size="sm" variant="info" onClick={this.downloadPDF} disabled={this.state.employeeNo === ""} type="button" on>
 							<FontAwesomeIcon icon={faDownload} /> 印刷
 						</Button>
-						<a href="http://127.0.0.1:3000/certificate/%E8%A8%BC%E6%98%8E%E6%9B%B8.pdf">test</a>
+						<a　hidden href="http://127.0.0.1:3000/certificate/%E8%A8%BC%E6%98%8E%E6%9B%B8.pdf">test</a>
 					</div>
 				</div>
          </div>
