@@ -11,6 +11,7 @@ import { faSave, faUndo, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import * as utils from './utils/publicUtils.js';
 import store from './redux/store';
+import MyToast from './myToast';
 import $ from 'jquery';
 axios.defaults.withCredentials = true;
 
@@ -30,6 +31,7 @@ class bpInfo extends React.Component {
 		bpRemark: '',// 備考
 		bpOtherCompanyAdmissionEndDate: '',
 		oldUnitPriceStartMonth: null,
+		myToastShow: false,
 		customer: store.getState().dropDown[15].slice(1),
 		salesProgressCodes: store.getState().dropDown[16].slice(1),
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -257,6 +259,9 @@ class bpInfo extends React.Component {
 				<br />
 				<Form >
 					<Form.Group>
+					<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
+						<MyToast myToastShow={this.state.myToastShow} message={"修正成功！"} type={"success"} />
+					</div>
 						<Row>
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">

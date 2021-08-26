@@ -35,7 +35,7 @@ class employeeInformation extends Component {// 状況変動一覧
     initialState = {
     	salesProgressCodes: store.getState().dropDown[70],// ステータス
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
-		modeSelect: 'checkbox',
+		modeSelect: 'radio',
 		selectetRowIds: [],
 		myToastShow: false,
     }
@@ -148,6 +148,7 @@ class employeeInformation extends Component {// 状況変動一覧
 				blurToSave: true,
 			}
         const selectRow = {
+				bgColor: 'pink',
     			mode: this.state.modeSelect,
     			clickToSelectAndEditCell: true,
     			hideSelectColumn: true,

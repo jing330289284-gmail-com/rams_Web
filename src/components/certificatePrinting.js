@@ -36,6 +36,9 @@ class certificatePrinting extends Component {// 状況変動一覧
 		workingTime: '10:00～19:00',
 		occupationCode: '',
 		address: '',
+		postcode: '',
+		firstHalfAddress: '',
+		lastHalfAddress: '',
 		remark: '',
     }
     
@@ -44,6 +47,17 @@ class certificatePrinting extends Component {// 状況変動一覧
 		this.setState({
 			[event.target.name]: event.target.value,
 		})
+	}
+	
+	certificateChange = event => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		})
+		if(event.target.value === "1"){
+			this.setState({
+				remark: "個人の都合",
+			})
+		}
 	}
 
     componentDidMount(){
@@ -89,12 +103,16 @@ class certificatePrinting extends Component {// 状況変動一覧
 		.then(response => response.data)
 		.then((data) => {
 			this.setState({
-				employeeNamePrint: data.employeeFristName + data.employeeLastName + "(" + (data.alphabetName1===null?"":data.alphabetName1) + " " + (data.alphabetName2===null?"":data.alphabetName2) + (data.alphabetName3===null?"":data.alphabetName3) + ")",
+				employeeNamePrint: data.employeeFristName + data.employeeLastName + "(" + (data.alphabetName1 === null ? "" : data.alphabetName1)
+				+ " " + (data.alphabetName2 === null ? "" : data.alphabetName2) + (data.alphabetName3 === null ? "" : data.alphabetName3) + ")",
 				address: data.postcode === null || data.postcode === "" ? "" : ("〒" + data.postcode + " " + data.firstHalfAddress + data.lastHalfAddress),
-				birthday: publicUtils.converToLocalTime(data.birthday, true),// 年齢
+				postcode: data.postcode === null || data.postcode === "" ? "" : "〒" + data.postcode,
+				firstHalfAddress: data.firstHalfAddress === null || data.firstHalfAddress === "" ? "" : data.firstHalfAddress,
+				lastHalfAddress: data.lastHalfAddress === null || data.lastHalfAddress === "" ? "" : data.lastHalfAddress,
+				birthday: data.birthday === null ? "" : publicUtils.converToLocalTime(data.birthday, true),// 年齢
 				intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
-				occupationCode: data.occupationCode,// 職種
-				retirementYearAndMonth: publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
+				occupationCode: data.occupationCode === null ? "" : data.occupationCode,// 職種
+				retirementYearAndMonth: data.retirementYearAndMonth === null ? "" : publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
 	        });
 		});
     }
@@ -175,6 +193,9 @@ class certificatePrinting extends Component {// 状況変動一覧
 				employeeNamePrint: this.state.employeeNamePrint,
 				employeeNo: this.state.employeeNo,
 				address: this.state.address,
+				postcode: this.state.postcode,
+				firstHalfAddress: this.state.firstHalfAddress,
+				lastHalfAddress: this.state.lastHalfAddress,
 				birthday: this.state.birthday,
 				intoCompanyYearAndMonth: this.state.intoCompanyYearAndMonth,
 				nowYearAndMonth: this.state.nowYearAndMonth,
@@ -203,27 +224,38 @@ class certificatePrinting extends Component {// 状況変動一覧
 	
 	downloadPDF = (event) => {
 		let dataInfo = {};
+
 		dataInfo["certificate"] = this.state.certificate;
 		dataInfo["employeeName"] = this.state.employeeNamePrint;
 		dataInfo["address"] = this.state.address;
-		dataInfo["birthday"] = this.state.birthday;
-		dataInfo["intoCompanyYearAndMonth"] = this.state.intoCompanyYearAndMonth;
-		dataInfo["nowYearAndMonth"] = this.state.nowYearAndMonth;
+		dataInfo["postcode"] = this.state.postcode;
+		dataInfo["firstHalfAddress"] = this.state.firstHalfAddress;
+		dataInfo["lastHalfAddress"] = this.state.lastHalfAddress;
+		dataInfo["birthday"] = publicUtils.formateDate(this.state.birthday, true);
+		dataInfo["intoCompanyYearAndMonth"] = publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true);
+		dataInfo["nowYearAndMonth"] = publicUtils.formateDate(this.state.nowYearAndMonth, true);
 		dataInfo["workingTime"] = this.state.workingTime;
-		dataInfo["lastDayofYearAndMonth"] = this.state.lastDayofYearAndMonth;
-		dataInfo["retirementYearAndMonth"] = this.state.retirementYearAndMonth;
-		if(this.state.occupationCode !== "3"){
-			dataInfo["occupationCode"] = this.state.occupationCodes.find(v => v.code === this.state.occupationCode).name || {};
+		dataInfo["lastDayofYearAndMonth"] = publicUtils.formateDate(this.state.lastDayofYearAndMonth, true);
+		dataInfo["retirementYearAndMonth"] = publicUtils.formateDate(this.state.retirementYearAndMonth, true);
+		if(this.state.occupationCode === "0"){
+			dataInfo["occupationCode"] = "";
 		}else{
-			if(this.state.certificate === "0")
-				dataInfo["occupationCode"] = "IT関係";
-			else if(this.state.certificate === "1")
-				dataInfo["occupationCode"] = "システムエンジニア";
+			if(this.state.occupationCode !== "3"){
+				dataInfo["occupationCode"] = this.state.occupationCodes.find(v => v.code === this.state.occupationCode).name || "";
+			}else{
+				if(this.state.certificate === "0")
+					dataInfo["occupationCode"] = "IT関係";
+				else if(this.state.certificate === "1")
+					dataInfo["occupationCode"] = "システムエンジニア";
+			}
 		}
+
 		dataInfo["remark"] = this.state.remark;
 		axios.post(this.state.serverIP + "certificatePrinting/downloadPDF", dataInfo)
 			.then(resultMap => {
 				if (resultMap.data) {
+					//alert(resultMap.data)
+					//window.open(resultMap.data, "_blank");
 					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
 				} else {
 					alert("更新失败");
@@ -258,9 +290,9 @@ class certificatePrinting extends Component {// 状況変動一覧
 				                <InputGroup.Prepend>
 									<InputGroup.Text id="fiveKanji">書類</InputGroup.Text>
 								</InputGroup.Prepend>
-								<Form.Control as="select" size="sm" onChange={this.valueChange} name="certificate" value={this.state.certificate} autoComplete="off" >
+								<Form.Control as="select" size="sm" onChange={this.certificateChange} name="certificate" value={this.state.certificate} autoComplete="off" >
 									<option value="0">在職証明書</option>
-									<option value="1">離職証明書</option>
+									<option value="1">退職証明書</option>
 								</Form.Control>
 							</InputGroup>
 	                    </Col>
@@ -303,7 +335,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 		                <Col>
 	                	<InputGroup size="sm" className="mb-3">
 		                    <InputGroup.Prepend>
-		                    	<InputGroup.Text id="fiveKanji">誕生日</InputGroup.Text>
+		                    	<InputGroup.Text id="fiveKanji">生年月日</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <InputGroup.Append>
 							<DatePicker
