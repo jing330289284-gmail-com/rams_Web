@@ -764,6 +764,13 @@ class sendLettersConfirm extends React.Component {
 		}
 	};
 	
+	formatPrice = (cell, row, enumObject, index) => {
+		if(cell.length > 3){
+			cell = cell.substring(0,3);
+		}
+		return cell;
+	}
+		
 	formatEmpStatus = (cell, row, enumObject, index) => {
 		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
@@ -1255,7 +1262,7 @@ class sendLettersConfirm extends React.Component {
 			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
 【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
-【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?this.state.unitPrice:"") +
+【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?(this.state.unitPrice.length>3?this.state.unitPrice.substring(0,3) : this.state.unitPrice):"") +
 			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
 【営業状況】：`)+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
@@ -1394,7 +1401,7 @@ class sendLettersConfirm extends React.Component {
 							headerStyle={{ background: '#5599FF' }} striped hover condensed>
 							<TableHeaderColumn width='12%'　tdStyle={{ padding: '.45em'}} dataField='employeeName' dataFormat={this.formatEmployeeName.bind(this)} autoValue editable={false} isKey>名前</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='employeeStatus' dataFormat={this.formatEmpStatus.bind(this)} editable={false} >所属</TableHeaderColumn>
-							<TableHeaderColumn width='8%' dataField='hopeHighestPrice' editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
+							<TableHeaderColumn width='8%' dataField='hopeHighestPrice'dataFormat={this.formatPrice.bind(this)} editColumnClassName="dutyRegistration-DataTableEditingCell">単価</TableHeaderColumn>
 							{/*
 								 * <TableHeaderColumn dataField='resumeInfo1'
 								 * hidden={true}>履歴書1</TableHeaderColumn>
