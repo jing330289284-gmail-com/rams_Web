@@ -26,9 +26,11 @@ class certificatePrinting extends Component {// 状況変動一覧
         employeeInfo: store.getState().dropDown[38].slice(1),
 		occupationCodes: store.getState().dropDown[10],
         certificate: '0',
+        stamp: '0',
         employeeName: '',
         employeeNamePrint: '',
         employeeNo: '',
+        furigana: '',
 		birthday:　'',
 		intoCompanyYearAndMonth:　'',
 		nowYearAndMonth: new Date(),
@@ -40,6 +42,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 		firstHalfAddress: '',
 		lastHalfAddress: '',
 		remark: '',
+		loading: true,
     }
     
 	// valueChange
@@ -70,6 +73,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 				employeeName: sendValue.employeeName,
 				employeeNamePrint: sendValue.employeeNamePrint,
 				employeeNo: sendValue.employeeNo,
+				furigana: sendValue.furigana,
 				//address: sendValue.address,
 				birthday: sendValue.birthday,
 				intoCompanyYearAndMonth: sendValue.intoCompanyYearAndMonth,
@@ -79,6 +83,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 				retirementYearAndMonth: sendValue.retirementYearAndMonth,
 				occupationCode: sendValue.occupationCode,
 				remark: sendValue.remark,
+				stamp: sendValue.stamp,
             })
 		}
     }
@@ -105,6 +110,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 			this.setState({
 				employeeNamePrint: data.employeeFristName + data.employeeLastName + "(" + (data.alphabetName1 === null ? "" : data.alphabetName1)
 				+ " " + (data.alphabetName2 === null ? "" : data.alphabetName2) + (data.alphabetName3 === null ? "" : data.alphabetName3) + ")",
+				furigana: data.furigana,
 				address: data.postcode === null || data.postcode === "" ? "" : ("〒" + data.postcode.substring(0,3) + "-" + data.postcode.substring(3,data.postcode.length) + " " + data.firstHalfAddress + data.lastHalfAddress),
 				postcode: data.postcode === null || data.postcode === "" ? "" : "〒" + data.postcode.substring(0,3) + "-" + data.postcode.substring(3,data.postcode.length),
 				firstHalfAddress: data.firstHalfAddress === null || data.firstHalfAddress === "" ? "" : data.firstHalfAddress,
@@ -192,6 +198,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 				employeeName: this.state.employeeName,
 				employeeNamePrint: this.state.employeeNamePrint,
 				employeeNo: this.state.employeeNo,
+				furigana: this.state.furigana,
 				address: this.state.address,
 				postcode: this.state.postcode,
 				firstHalfAddress: this.state.firstHalfAddress,
@@ -204,6 +211,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 				retirementYearAndMonth: this.state.retirementYearAndMonth,
 				occupationCode: this.state.occupationCode,
 				remark: this.state.remark,
+				stamp: this.state.stamp,
 		};
 		switch (actionType) {
 			case "update":
@@ -223,10 +231,13 @@ class certificatePrinting extends Component {// 状況変動一覧
 	}	
 	
 	downloadPDF = (event) => {
+		this.setState({ loading: false, });
+
 		let dataInfo = {};
 
 		dataInfo["certificate"] = this.state.certificate;
 		dataInfo["employeeName"] = this.state.employeeNamePrint;
+		dataInfo["furigana"] = this.state.furigana;
 		dataInfo["address"] = this.state.address;
 		dataInfo["postcode"] = this.state.postcode;
 		dataInfo["firstHalfAddress"] = this.state.firstHalfAddress;
@@ -251,18 +262,29 @@ class certificatePrinting extends Component {// 状況変動一覧
 		}
 
 		dataInfo["remark"] = this.state.remark;
+		dataInfo["stamp"] = this.state.stamp;
+
 		axios.post(this.state.serverIP + "certificatePrinting/downloadPDF", dataInfo)
 			.then(resultMap => {
 				if (resultMap.data) {
 					//alert(resultMap.data)
 					//window.open(resultMap.data, "_blank");
-					publicUtils.handleDownload(resultMap.data, this.state.serverIP);
+					var a = document.createElement("a");
+					a.setAttribute("href",this.state.serverIP + "証明書.pdf");
+					a.setAttribute("target","_blank");
+					document.body.appendChild(a);
+					a.click();
+					this.setState({ loading: true, });
+					//window.open(this.state.serverIP + "証明書.pdf", "_blank");
+					//publicUtils.handleDownload(resultMap.data, this.state.serverIP);
 				} else {
 					alert("更新失败");
+					this.setState({ loading: true, });
 				}
 			})
 			.catch(function () {
 				alert("更新错误，请检查程序");
+				this.setState({ loading: true, });
 			});
 	}
 	
@@ -465,7 +487,14 @@ class certificatePrinting extends Component {// 状況変動一覧
 								</option>
 							)}
 							</Form.Control>
-	                    </InputGroup>
+		                <InputGroup.Prepend>
+							<InputGroup.Text id="twoKanji">印鑑</InputGroup.Text>
+						</InputGroup.Prepend>
+						<Form.Control as="select" size="sm" onChange={this.valueChange} name="stamp" value={this.state.stamp} autoComplete="off" >
+							<option value="0">あり</option>
+							<option value="1">なし</option>
+						</Form.Control>
+						</InputGroup>
 		                </Col>
 	                </Row>
 	                <Row>
@@ -489,8 +518,8 @@ class certificatePrinting extends Component {// 状況変動一覧
 						<Button size="sm" variant="info" onClick={this.downloadPDF} disabled={this.state.employeeNo === ""} type="button" on>
 							<FontAwesomeIcon icon={faDownload} /> 印刷
 						</Button>
-						<a　hidden href="http://127.0.0.1:3000/certificate/%E8%A8%BC%E6%98%8E%E6%9B%B8.pdf">test</a>
 					</div>
+					<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-150px", "margin-top":"-160px",}}></div>
 				</div>
          </div>
         )

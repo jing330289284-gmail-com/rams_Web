@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl, Modal } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import $ from 'jquery';
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +11,7 @@ import '../asserts/css/style.css';
 import axios from 'axios';
 import * as publicUtils from './utils/publicUtils.js';
 import * as utils from './utils/publicUtils.js';
+import BpInfoModel from './bpInfo';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
@@ -42,6 +43,7 @@ class siteInfo extends Component {
 		scheduledEndDate:'',
 		scheduledEndDateForSave:'',
 		pageDisabledFlag: true,// 画面非活性フラグ
+		showBpInfoModalFlag: false,// bp情報
 		errorsMessageShow: false,
 		updateFlag: true,// 修正登録状態フラグ
 		disabledFlag: true,// 活性非活性フラグ
@@ -904,6 +906,24 @@ class siteInfo extends Component {
 		this.props.history.push(path);
 	}
 	
+	/**
+	 * 小さい画面の閉め
+	 */
+	handleHideModal = (kbn) => {
+		if (kbn === "bpInfoModel") {// pb情報
+			this.setState({ showBpInfoModalFlag: false })
+		}
+	}
+
+	/**
+	 * 小さい画面の開き
+	 */
+	handleShowModal = (kbn) => {
+		if (kbn === "bpInfoModel") {// pb情報
+			this.setState({ showBpInfoModalFlag: true })
+		}
+	}
+	
 	shuseiTo = (actionType) => {
 		var path = {};
 		switch (actionType) {
@@ -967,6 +987,14 @@ class siteInfo extends Component {
 				<div style={{ "display": this.state.errorsMessageShow ? "block" : "none" }}>
 					<ErrorsMessageToast errorsMessageShow={this.state.errorsMessageShow} message={errorsMessageValue} type={"danger"} />
 				</div>
+				{/* bp情報 */}
+				<Modal aria-labelledby="contained-modal-title-vcenter" centered backdrop="static"
+					onHide={this.handleHideModal.bind(this, "bpInfoModel")} show={this.state.showBpInfoModalFlag} dialogClassName="modal-pbinfoSet">
+					<Modal.Header closeButton>
+					</Modal.Header>
+					<Modal.Body >
+						<BpInfoModel /*bpInfoModel={bpInfoModel}*/ customer={this.state.customer} actionType={"update"} employeeNo={this.state.employeeName} employeeFristName={this.state.employeeFristName} employeeLastName={this.state.employeeLastName} pbInfoTokuro={this.pbInfoGet} /></Modal.Body>
+				</Modal>
 				<div>
 					<Form id="siteForm">
 						<Form.Group>
@@ -1476,7 +1504,8 @@ class siteInfo extends Component {
 					</Form>
 					<Row >
 					<Col sm={6}>
-						<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={pageDisabledFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>
+						<Button onClick={this.shuseiTo.bind(this, "detail")} size="sm" variant="info" name="clickButton" disabled={pageDisabledFlag}><FontAwesomeIcon icon={faIdCard} /> 個人情報</Button>{' '}
+						<Button size="sm" variant="info" name="clickButton" onClick={this.handleShowModal.bind(this, "bpInfoModel")} disabled={this.state.employeeName === null || this.state.employeeName.search("BP") === -1 ? true : false}>BP情報</Button>
 					</Col>
 						<Col sm={6}>
 							<div style={{ "float": "right" }}>

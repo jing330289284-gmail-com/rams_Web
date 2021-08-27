@@ -89,7 +89,8 @@ class bpInfo extends React.Component {
 	// 初期化メソッド
 	componentDidMount() {
 		this.setEmployeeName();
-		if (this.props.actionType !== "insert") {
+		this.getbpInfoList();
+/*		if (this.props.actionType !== "insert") {
 			this.getbpInfoList();
 		}
 		var bpInfoModel = this.props.bpInfoModel;// 父画面のパラメータ（画面既存口座情報）
@@ -102,7 +103,7 @@ class bpInfo extends React.Component {
 				bpRemark: bpInfoModel["bpRemark"],
 			});
 
-		}
+		}*/
 	}
 	
 	getbpInfoList = () =>{
@@ -265,7 +266,7 @@ class bpInfo extends React.Component {
 						<Row>
 							<Col sm={6}>
 								<InputGroup size="sm" className="mb-3">
-									BP社員名：{pbInfoEmployeeName}
+									BP名：{pbInfoEmployeeName}
 								</InputGroup>
 							</Col>
 						</Row>

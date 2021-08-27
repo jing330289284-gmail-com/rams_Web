@@ -543,9 +543,9 @@ class manageSituation extends React.Component {
 	}
 	showGreyPrice(cell, row, enumObject, index) {
 		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
-			return (<div><font color="grey">{row.price}</font></div>);
+			return (<div><font color="grey">{publicUtils.addComma(row.price)}</font></div>);
 		}else{
-			return (<div>{row.price}</div>);
+			return (<div>{publicUtils.addComma(row.price)}</div>);
 		}
 	}
 	
@@ -1038,7 +1038,7 @@ class manageSituation extends React.Component {
 		let text = "";
 		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: row.employeeNo })
 		.then(result => {
-			let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name
+			let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name || "";
 			let developLanguage = [this.fromCodeToNameLanguage(result.data[0].developLanguage1),this.fromCodeToNameLanguage(result.data[0].developLanguage2),this.fromCodeToNameLanguage(result.data[0].developLanguage3),this.fromCodeToNameLanguage(result.data[0].developLanguage4),this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {return s && s.trim();}).join('、');
 			let admissionEndDate = row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6);
             let beginMonth = result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonthTemp((admissionEndDate === null || admissionEndDate === "" ? new Date() : publicUtils.converToLocalTime(admissionEndDate, false)),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime();
@@ -1167,7 +1167,7 @@ class manageSituation extends React.Component {
 		        setTimeout(()=> {
 		        	axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: this.state.salesSituationLists[i].employeeNo })
 					.then(result => {
-						let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name
+						let employeeStatus = this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name || ""
 						let developLanguage = [this.fromCodeToNameLanguage(result.data[0].developLanguage1),this.fromCodeToNameLanguage(result.data[0].developLanguage2),this.fromCodeToNameLanguage(result.data[0].developLanguage3),this.fromCodeToNameLanguage(result.data[0].developLanguage4),this.fromCodeToNameLanguage(result.data[0].developLanguage5)].filter(function(s) {return s && s.trim();}).join('、');
 						let admissionEndDate = this.state.salesSituationLists[i].admissionEndDate === null || this.state.salesSituationLists[i].admissionEndDate === "" ? this.state.salesSituationLists[i].scheduledEndDate : this.state.salesSituationLists[i].admissionEndDate.substring(0,6);
 			            let beginMonth = result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? new Date(this.getNextMonthTemp((admissionEndDate === null || admissionEndDate === "" ? new Date() : publicUtils.converToLocalTime(admissionEndDate, false)),1)).getTime() : new Date(result.data[0].theMonthOfStartWork).getTime();
