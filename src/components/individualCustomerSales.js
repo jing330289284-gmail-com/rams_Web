@@ -468,7 +468,7 @@ class IndividualCustomerSales extends React.Component {
                 </Row>
                 <Row style={{ marginTop: "15px" }}>
 	                <Col sm={3}>
-	                    <InputGroup size="sm" className="mb-3">
+	                    <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">取引人数</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -479,9 +479,9 @@ class IndividualCustomerSales extends React.Component {
 	                </Col>
 	
 	                <Col sm={3}>
-	                    <InputGroup size="sm" className="mb-3">
+	                    <InputGroup size="sm">
 		                    <InputGroup.Prepend>
-		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">平均単価</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <FormControl
 	                        value={totaluPrice}
@@ -489,7 +489,7 @@ class IndividualCustomerSales extends React.Component {
 	                    </InputGroup>
 	                </Col>
                     <Col sm={3}>
-	                    <InputGroup size="sm" className="mb-3">
+	                    <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">売上合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -499,7 +499,7 @@ class IndividualCustomerSales extends React.Component {
 	                    </InputGroup>
 	                </Col>
                     <Col sm={3}>
-	                    <InputGroup size="sm" className="mb-3">
+	                    <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -509,7 +509,7 @@ class IndividualCustomerSales extends React.Component {
 	                    </InputGroup>
 	                </Col>
 		        </Row>
-                <div >
+                <Col >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='yearAndMonth' isKey>年月</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalUnitPrice' dataFormat={this.totalUnitPriceFormat}>単価合計</TableHeaderColumn>
@@ -523,7 +523,7 @@ class IndividualCustomerSales extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma}>費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma}>粗利</TableHeaderColumn>
                     </BootstrapTable>
-                </div>
+                </Col>
             </div>
         );
     }

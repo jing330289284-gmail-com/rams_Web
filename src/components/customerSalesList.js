@@ -101,6 +101,7 @@ class customerSalesList extends React.Component {
                         perCal:[],
                         totalGrossProfitAdd: 0,
                         countPeo: countPeo,
+                        unitPTotal: publicUtils.addComma((this.state.CustomerSaleslListInfoList[0].unitPTotal/countPeo).toFixed(0),false),
                      })
     
                     
@@ -363,7 +364,7 @@ class customerSalesList extends React.Component {
                 </Row>
                 <Row>
 	                <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">全体比率</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -374,7 +375,7 @@ class customerSalesList extends React.Component {
 	                </Col>
 	                
 	                <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利比率</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -385,9 +386,9 @@ class customerSalesList extends React.Component {
 	                </Col>
 	                
 	                <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
-		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">単価合計</InputGroup.Text>
+		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">平均単価</InputGroup.Text>
 		                    </InputGroup.Prepend>
 		                    <FormControl
 		                    value={this.state.unitPTotal}
@@ -396,7 +397,7 @@ class customerSalesList extends React.Component {
 	                </Col>
 	                
 	                <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">売上合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -407,7 +408,7 @@ class customerSalesList extends React.Component {
 	                </Col>
 
 	                <Col>
-		                <InputGroup size="sm" className="mb-3">
+		                <InputGroup size="sm">
 		                    <InputGroup.Prepend>
 		                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
 		                    </InputGroup.Prepend>
@@ -417,7 +418,7 @@ class customerSalesList extends React.Component {
 		                </InputGroup>
 	                </Col>
                 </Row>
-                <div >
+                <Col >
                     <BootstrapTable data={this.state.CustomerSaleslListInfoList} ref="CustomerSaleslListInfoListTable" pagination={true} selectRow={selectRow} headerStyle={{ background: '#5599FF' }} options={this.options} striped hover condensed >
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='rowNo' isKey width='60'>番号</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='customerName' width='150' dataFormat={this.customerNameFormat.bind(this)}>お客様名</TableHeaderColumn>
@@ -431,7 +432,7 @@ class customerSalesList extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='totalAmount' dataFormat={this.totalAmountAddComma} width='110'>費用</TableHeaderColumn>
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='grossProfit' dataFormat={this.grossProfitAddComma} width='100'>粗利</TableHeaderColumn>
                     </BootstrapTable>
-                </div>
+                </Col>
             </div>
         );
     }

@@ -354,12 +354,15 @@ class individualSales extends React.Component {//個人売上検索
         );
     }
     unitPriceAddComma(cell, row) {
-        if (row.unitPrice === null) {
+        if (row.unitPrice === null || row.unitPrice === "0") {
             return
         } else {
-
             let formatUprice = publicUtils.addComma(row.unitPrice, false);
-            return formatUprice;
+            if(row.dailyCalculationStatus == "0"){
+            	return (<div>{formatUprice}<font color="red">(日割)</font></div>);
+            }else{
+                return formatUprice;
+            }
         }
     }
 
@@ -1368,7 +1371,7 @@ class individualSales extends React.Component {//個人売上検索
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='onlyYandM' isKey width='75'>年月</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='employeeFormName' width='100'>社員形式</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='100' dataField='customerName'>客様</TableHeaderColumn>
-	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='110' dataFormat={this.workDaysCal.bind(this)}>単価</TableHeaderColumn>
+	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='unitPrice' width='110' dataFormat={this.unitPriceAddComma} /*dataFormat={this.workDaysCal.bind(this)}*/>単価</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'  width='108' dataFormat={this.deductionsAndOvertimePayOfUnitPriceAddComma}>控/残(単価)</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} dataField='salary'  width='110' dataFormat={this.salaryAddComma}>基本支給</TableHeaderColumn>
 	                        <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='90' dataField='deductionsAndOvertimePay' dataFormat={this.deductionsAndOvertimePayAddComma.bind(this)} >控/残</TableHeaderColumn>

@@ -521,7 +521,7 @@ class ExpensesInfo extends Component {
                         <div>
                             <Col sm={12}>
                                 <BootstrapTable
-                                    selectRow={actionType !== "detail" ? selectRow : selectRowDetail}
+                                    selectRow={/*actionType !== "detail" ? */selectRow/* : selectRowDetail*/}
                                     pagination={true}
                                     options={options}
                                     data={expensesInfoModels}

@@ -309,8 +309,11 @@ class monthlySalesSearch extends Component {//月次売上検索
             }else{
                 formatUprice = publicUtils.addComma(row.unitPrice , false);
             }
-                          
-            return formatUprice;
+            if(row.dailyCalculationStatus == "0"){
+            	return (<div>{formatUprice}<font color="red">(日割)</font></div>);
+            }else{
+                return formatUprice;
+            }
         }   
     }
 

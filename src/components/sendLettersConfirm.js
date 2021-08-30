@@ -470,7 +470,10 @@ class sendLettersConfirm extends React.Component {
 	}
 
 	onAfterSaveCell = (row, cellName, cellValue) => {
-		axios.post(this.state.serverIP + "sendLettersConfirm/updateSalesSentence", { employeeNo:row.employeeNo, unitPrice:cellValue })
+		let unitPrice = cellValue;
+		if(cellValue.length > 3)
+			unitPrice = cellValue.substring(0,3);
+		axios.post(this.state.serverIP + "sendLettersConfirm/updateSalesSentence", { employeeNo:row.employeeNo, unitPrice:unitPrice })
 		.then(result => {
 			this.setState({
 				unitPrice: cellValue,
@@ -766,7 +769,7 @@ class sendLettersConfirm extends React.Component {
 	
 	formatPrice = (cell, row, enumObject, index) => {
 		if(cell.length > 3){
-			cell = cell.substring(0,3);
+			cell = (cell / 10000).toFixed(0);
 		}
 		return cell;
 	}
