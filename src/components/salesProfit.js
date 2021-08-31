@@ -26,6 +26,7 @@ class salesProfit extends React.Component {
 	initialState = {
 		no: '',
 		employee: '',
+		employeeNo: "",
 		newMember: '',
 		customerNo: null,//選択した列のお客様番号
 		customerContract: '',
@@ -47,7 +48,19 @@ class salesProfit extends React.Component {
 
 	// 页面加载
 	componentDidMount() {
-		this.select();
+		if (this.props.location.state !== undefined) {
+            var sendValue = this.props.location.state.sendValue;
+            this.setState({
+            	employeeName: sendValue.employeeName,
+				employeeSearch: sendValue.employeeSearch,
+				admissionStartDate: sendValue.admissionStartDate,
+				admissionEndDate: sendValue.admissionEndDate,
+            }, () =>{
+            	this.select();
+            }
+            );
+		}
+		//this.select();
 	}
 
     /**
@@ -163,7 +176,7 @@ class salesProfit extends React.Component {
 	}
 
 	//页面跳转
-	shuseiTo = () => {
+	shuseiTo (actionType) {
 		var path = {};
 		var startTime = null;
 		var endTime = null;
@@ -171,13 +184,46 @@ class salesProfit extends React.Component {
 			startTime = this.state.admissionStartDate;
 			endTime = this.state.admissionEndDate;
 		}
-		path = {
-			pathname: '/subMenuManager/salesPoint',
-			state: {
-				customerNo: this.state.customerNo,
-				startTime: startTime,
-				endTime: endTime,
-			},
+		const sendValue = {
+				employeeName: this.state.employeeName,
+				employeeSearch: this.state.employeeSearch,
+				admissionStartDate: this.state.admissionStartDate,
+				admissionEndDate: this.state.admissionEndDate,
+		};
+		switch (actionType) {
+			case "wagesInfo":
+				path = {
+					pathname: '/subMenuManager/wagesInfo',
+					state: {
+						employeeNo: this.state.employeeNo,
+						backPage: "salesProfit",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.employeeNo,
+						backPage: "salesProfit",
+						sendValue: sendValue,
+						searchFlag: this.state.searchFlag
+					},
+				}
+				break;
+			case "salesPoint":
+				path = {
+					pathname: '/subMenuManager/salesPoint',
+					state: {
+						customerNo: this.state.customerNo,
+						startTime: startTime,
+						endTime: endTime,
+					},
+				}
+				break;
+			default:
 		}
 		this.props.history.push(path);
 	}
@@ -222,14 +268,25 @@ class salesProfit extends React.Component {
 		if (isSelected) {
 			this.setState({
 				//no: row.no,
+				employeeNo: row.employeeNo,
 				updateFlag: false
 			});
 		} else {
 			this.setState({
+				employeeNo: "",
 				updateFlag: true
 			});
 		}
 	}
+	
+	renderShowsTotal = () => {
+		return (
+			<p style={{ color: 'dark', "float": "left" }}  >
+				入場人数：{this.state.no}
+			</p>
+		);
+	}
+	
 	render() {
 		//表格样式设定
 		this.options = {
@@ -354,18 +411,34 @@ class salesProfit extends React.Component {
 							<div>
 								<br />
 								<Row>
-									<Col sm={3}>
-										<font style={{ whiteSpace: 'nowrap' }}>入場人数：{this.state.no}</font>
-									</Col>
-									<Col sm={3}>
-										<font style={{ whiteSpace: 'nowrap' }}>売上合計：{this.state.profitAll}</font>
-									</Col>
 									<Col sm={2}>
-										<font style={{ whiteSpace: 'nowrap' }}>粗利合計：{this.state.siteRoleNameAll}</font>
+										{/*<font style={{ whiteSpace: 'nowrap' }}>入場人数：{this.state.no}</font>*/}
+										<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
+						                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
 									</Col>
-									<Col sm={4}>
+				                    <Col>
+						                <InputGroup size="sm">
+						                    <InputGroup.Prepend>
+						                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">売上合計</InputGroup.Text>
+						                    </InputGroup.Prepend>
+						                    <FormControl
+						                    value={this.state.profitAll}
+						                    disabled/>
+					                    </InputGroup>
+				                    </Col>
+				                    <Col>
+						                <InputGroup size="sm">
+						                    <InputGroup.Prepend>
+						                        <InputGroup.Text id="inputGroup-sizing-sm" className="input-group-indiv">粗利合計</InputGroup.Text>
+						                    </InputGroup.Prepend>
+						                    <FormControl
+						                    value={this.state.siteRoleNameAll}
+						                    disabled/>
+					                    </InputGroup>
+				                    </Col>
+									<Col sm={3}>
 										<div style={{ "float": "right" }}>
-											<Button size="sm" id="syounin" onClick={this.shuseiTo.bind(this)} disabled={this.state.customerNo === null ? true : false} className="btn btn-primary btn-sm">
+											<Button size="sm" className="individualSalesButtom" name="clickButton" variant="info" id="syounin" onClick={this.shuseiTo.bind(this,"salesPoint")} disabled={this.state.customerNo === null ? true : false} className="btn btn-primary btn-sm">
 												営業ポイント明細
 								        </Button>
 										</div>

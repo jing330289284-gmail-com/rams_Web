@@ -100,18 +100,7 @@ class salesContent extends React.Component {
 	
 	componentDidMount() {
 		this.setNewDevelopLanguagesShow();
-		var clipboard2 = new Clipboard('#copyUrl', {
-			text: function() {
-				return document.getElementById('snippet').value.replace("　　　　営業文章\n","");
-			}
-		});
-		clipboard2.on('success', function() {
-			console.log("已复制到剪贴板！");
-
-		});
-		clipboard2.on('error', function() {
-			console.log("err！");
-		});
+		this.copyToClipboard();
 		
 		if(this.state.interviewDate !== ""){
 			var myDate = new Date();
@@ -187,21 +176,20 @@ class salesContent extends React.Component {
 
 	// コピー
 	copyToClipboard = () => {
-		let tempValue = this.textArea.value;
-		var clipboard2 = new Clipboard('#copyUrl', {
+		var clipboard = new Clipboard('#copyUrl', {
 			text: function() {
-				return document.getValueById('snippet');
+				return document.getElementById('snippet').value.replace("　　　　営業文章\n","");
 			}
 		});
-		clipboard2.on('success', function() {
+		clipboard.on('success', function() {
 			console.log("已复制到剪贴板！");
 
 		});
-		clipboard2.on('error', function() {
-			console.log("已复制qqqqqqqqqqqqqqqqqqqq剪贴板！");
+		clipboard.on('error', function() {
+			console.log("err！");
 		});
 	};
-
+	
 	// 更新ボタン
 	updateSalesSentence = () => {
 		this.setState({tempDate:publicUtils.formateDate(this.state.beginMonth, false)},()=>{
@@ -211,6 +199,7 @@ class salesContent extends React.Component {
 				this.setState({ 
 					beginMonth: new Date(this.state.beginMonth).getTime(),
 					myToastShow: true ,
+					unitPrice: this.state.unitPriceShow,
 					"type": "success", 
 					"errorsMessageShow": false, 
 					message: "処理成功"
@@ -521,8 +510,8 @@ class salesContent extends React.Component {
 							showFullMonthYearPicker
 							className="form-control form-control-sm"
 							dateFormat="yyyy/MM"
-							id="datePickerReadonly"
-							disabled
+							id="datePicker"
+							//disabled
 						/>
 					}
 					</ListGroup.Item></span>

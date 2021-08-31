@@ -31,6 +31,7 @@ class manageSituation extends React.Component {
 	initialState = {
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		rowNo: '',// 明細番号
+		row: [],
 		employeeNo: '',// 社員NO
 		lastEmpNo: '',
 		yearMonth: new Date(new Date().getFullYear() + '/' + (new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 2) : (new Date().getMonth() + 2))).getTime(),
@@ -563,10 +564,6 @@ class manageSituation extends React.Component {
 			}
 		}
 	}
-	
-	test = () =>{
-		alert("test")
-	}
 
 	// 更新ボタン
 	changeState = () => {
@@ -729,6 +726,7 @@ class manageSituation extends React.Component {
 			},()=>{
 				if (isSelected) {
 					this.setState({
+						row: this.state.row,
 						selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
 						rowNo: row.rowNo === null ? '' : row.rowNo,
 						salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
@@ -778,6 +776,7 @@ class manageSituation extends React.Component {
 							}
 						}
 						this.setState({
+							row: [],
 							selectetRowIds: row.employeeNo === null ? [] : this.state.selectetRowIds.concat([row.employeeNo]),
 							rowNo: row.rowNo === null ? '' : row.rowNo,
 							salesDateUpdate: row.salesDateUpdate === null ? '' : row.salesDateUpdate,
@@ -1067,7 +1066,7 @@ class manageSituation extends React.Component {
             		+ (result.data[0].yearsOfExperience === null || result.data[0].yearsOfExperience === undefined  || result.data[0].yearsOfExperience === "" ? "" : ("【業務年数】：" + result.data[0].yearsOfExperience　+ "年\n"))
             		+ (result.data[0].projectPhase === "" || result.data[0].projectPhase === null || result.data[0].projectPhase === undefined ? "" : "【対応工程】：" + this.state.projectPhases.find((v) => (v.code === result.data[0].projectPhase)).name + "から\n")
             		+ (developLanguage === null || developLanguage === undefined  || developLanguage === "" ? "" : ("【得意言語】："+ developLanguage + "\n"))
-            		+ (result.data[0].unitPrice === null || result.data[0].unitPrice === undefined  || result.data[0].unitPrice === "" ? "" : ("【単　　価】："+ result.data[0].unitPrice + "万円\n"))
+            		+ (result.data[0].unitPrice === null || result.data[0].unitPrice === undefined  || result.data[0].unitPrice === "" ? "" : ("【単　　価】："+ result.data[0].unitPrice/10000 + "万円\n"))
             		+ "【稼働開始】：" + ((Number(admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日\n":(publicUtils.formateDate(beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月\n"))
             		+ (salesProgressCode === "" || salesProgressCode === null || salesProgressCode === undefined ? "" : "【営業状況】：" + this.state.salesProgressCodes.find((v) => (v.code === salesProgressCode)).name + (salesProgressCode === "6" ? interviewDate : "") + "\n")
             		+ (remark === "" || remark === " " ? "" : "【備　　考】：" + remark + "\n");

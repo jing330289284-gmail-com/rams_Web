@@ -226,7 +226,21 @@ class employeeUpdateNew extends React.Component {
 					}
 					sendValue.resumeName1 = this.state.resumeName1;
 					sendValue.resumeName2 = this.state.resumeName2;
-
+					
+					if(this.state.resumeName1 === ""){
+						this.setState({
+							resumeInfo1: undefined,
+							resumeInfo1URL: "",
+						});
+						sendValue.resumeInfo1 = "";
+					}
+					if(this.state.resumeName2 === ""){
+						this.setState({
+							resumeInfo2: undefined,
+							resumeInfo2URL: "",
+						});
+						sendValue.resumeInfo2 = "";
+					}
 					this.setState({ sendValue: sendValue });
 					this.setState({ "myToastShow": true, "errorsMessageShow": false });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
