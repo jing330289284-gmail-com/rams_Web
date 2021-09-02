@@ -33,7 +33,7 @@ class certificatePrinting extends Component {// 状況変動一覧
         furigana: '',
 		birthday:　'',
 		intoCompanyYearAndMonth:　'',
-		nowYearAndMonth: new Date(),
+		nowYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
 		lastDayofYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
 		workingTime: '10:00～19:00',
 		occupationCode: '',

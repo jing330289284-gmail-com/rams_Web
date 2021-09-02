@@ -203,7 +203,7 @@ class manageSituation extends React.Component {
 			if (m + addMonths > 12) {
 				m = '01';
 			} else {
-				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+				m = m + 1 < 10 ? '0' + (m + addMonths) : (m + addMonths);
 			}
 		}
 		return y + "" + m;
@@ -220,7 +220,7 @@ class manageSituation extends React.Component {
 			if (m + addMonths > 12) {
 				m = '01';
 			} else {
-				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+				m = m + 1 < 10 ? '0' + (m + addMonths) : (m + addMonths);
 			}
 		}
 		return y + "/" + m;

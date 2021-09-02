@@ -491,7 +491,7 @@ class CustomerInfoSearch extends Component {
                 <Form id="conditionForm">
                     <Row>
                         <Col sm={3}>
-                            <InputGroup size="sm" className="mb-2">
+                            <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">お客様名</InputGroup.Text>
                                 </InputGroup.Prepend>
@@ -519,7 +519,7 @@ class CustomerInfoSearch extends Component {
                             </InputGroup>
                         </Col>
                         <Col sm={3}>
-                        <InputGroup size="sm" className="mb-2">
+                        <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="fiveKanji">客様略称</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -549,7 +549,7 @@ class CustomerInfoSearch extends Component {
                     </Row>
                     <Row>
 	                    <Col sm={3}>
-		                    <InputGroup size="sm" className="mb-2">
+		                    <InputGroup size="sm" className="mb-3">
 		                        <InputGroup.Prepend>
 		                            <InputGroup.Text id="fiveKanji">代表</InputGroup.Text>
 		                        </InputGroup.Prepend>
@@ -585,7 +585,7 @@ class CustomerInfoSearch extends Component {
 	                    </InputGroup>
 	                    </Col>
 	                    <Col sm={3}>
-                        <InputGroup size="sm" className="mb-2">
+                        <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="fiveKanji">支払サイト</InputGroup.Text>
                             </InputGroup.Prepend>
@@ -616,7 +616,7 @@ class CustomerInfoSearch extends Component {
 	                    </Col>
 	                    
                         <Col sm={3}>
-                            <InputGroup size="sm" className="mb-2">
+                            <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">資本金</InputGroup.Text>
                                 </InputGroup.Prepend>
@@ -676,7 +676,7 @@ class CustomerInfoSearch extends Component {
                     </Row>
                     <Row>
 	                    <Col sm={3}>
-		                    <InputGroup size="sm" className="mb-2">
+		                    <InputGroup size="sm" className="mb-3">
 		                        <InputGroup.Prepend>
 		                            <InputGroup.Text id="twoKanji">契約</InputGroup.Text>
 		                        </InputGroup.Prepend>
@@ -701,7 +701,7 @@ class CustomerInfoSearch extends Component {
 	                    </Col>
                         
                         <Col sm={3}>
-                            <InputGroup size="sm" className="mb-2">
+                            <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">{this.state.contactDateFlag ? "最終連絡日" : "取引開始日"}</InputGroup.Text>
                                 </InputGroup.Prepend>
@@ -726,7 +726,7 @@ class CustomerInfoSearch extends Component {
                             </InputGroup>
                         </Col>
                         <Col sm={3}>
-	                        <InputGroup size="sm" className="mb-2">
+	                        <InputGroup size="sm" className="mb-3">
 	                            <InputGroup.Prepend>
 	                                <InputGroup.Text id="fiveKanji">取引区分</InputGroup.Text>
 	                            </InputGroup.Prepend>
@@ -740,7 +740,7 @@ class CustomerInfoSearch extends Component {
 	                        </InputGroup>
                         </Col>
                         <Col sm={3}>
-                            <InputGroup size="sm" className="mb-2">
+                            <InputGroup size="sm" className="mb-3">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="fiveKanji">取引人月</InputGroup.Text>
                                 </InputGroup.Prepend>

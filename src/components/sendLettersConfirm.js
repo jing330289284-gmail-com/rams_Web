@@ -768,14 +768,14 @@ class sendLettersConfirm extends React.Component {
 	};
 	
 	formatPrice = (cell, row, enumObject, index) => {
-		if(cell.length > 3){
+		if(cell != null && cell != undefined && cell.length > 3){
 			cell = (cell / 10000).toFixed(0);
 		}
 		return cell;
 	}
 		
 	formatEmpStatus = (cell, row, enumObject, index) => {
-		return cell !== null && cell!== ""?this.state.employees.find((v) => (v.code === cell)).name:"";
+		return cell !== null && cell!== "" ? this.state.employees.find((v) => (v.code === cell)).name:"";
 	}
 	/* 要員追加機能の新規 20201216 張棟 END */
 	// formatResume(cell, row, enumObject, index) {

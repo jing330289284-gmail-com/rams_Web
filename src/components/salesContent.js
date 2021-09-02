@@ -161,7 +161,7 @@ class salesContent extends React.Component {
 			if (m + addMonths > 12) {
 				m = '01';
 			} else {
-				m = m + 1 <= 10 ? '0' + (m + addMonths) : (m + addMonths);
+				m = m + 1 < 10 ? '0' + (m + addMonths) : (m + addMonths);
 			}
 		}
 		return y + "/" + m;
@@ -500,7 +500,7 @@ class salesContent extends React.Component {
 						style={{ width: "80px" }} onChange={this.valueChangeMoney} className="inputWithoutBorder" />円</ListGroup.Item></span>
 					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".3rem 1.25rem"}}>【稼働開始】：
 					{	
-					(Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":
+					(Number(this.state.admissionEndDate) + 1) < Number(this.getNextMonth(new Date(),1).replace("/","")) ? "即日":
 					<DatePicker
 							selected={this.state.beginMonth}
 							onChange={this.setEndDate}
@@ -541,8 +541,8 @@ class salesContent extends React.Component {
 【英　　語】：`+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '')) +  (this.state.yearsOfExperience === "" ? "" : `
 【業務年数】：`+ this.state.yearsOfExperience + `年`) + (this.state.projectPhase === "" || this.state.projectPhase === null  || this.state.projectPhase === undefined ? "" :  `
 【対応工程】：`+ (this.state.projectPhase !== "" && this.state.projectPhase !== null && this.state.projectPhase !== undefined ? this.state.projectPhases.find((v) => (v.code === this.state.projectPhase)).name : '') + `から`) + (this.state.developLanguage === "" ? "" : `
-【得意言語】：`+ this.state.developLanguage) + (this.state.unitPrice === "" ? "" : `
-【単　　価】：`+ this.state.unitPrice + `万円`) + `
+【得意言語】：`+ this.state.developLanguage) + (this.state.unitPriceShow === "" ? "" : `
+【単　　価】：`+ this.state.unitPriceShow + `万円`) + `
 【稼働開始】：`+ /*(this.state.beginMonth !== "" && this.state.beginMonth !== null ? publicUtils.formateDate(this.state.beginMonth, false).substring(0,4) + "/" + */
 ((Number(this.state.admissionEndDate) + 1) < (this.getNextMonth(new Date(),1).replace("/","")) ? "即日":(publicUtils.formateDate(this.state.beginMonth, false).substring(4,6).replace(/\b(0+)/gi,"") + "月")) + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null ? "" :  `
 【営業状況】：`+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + this.state.interviewDate) + (this.state.remark === " " ? "" : `

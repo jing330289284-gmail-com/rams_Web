@@ -701,7 +701,7 @@ class siteSearch extends Component {
 								<Col sm={3}>
 									<InputGroup size="sm" className="mb-3">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="fiveKanji">予定終了月</InputGroup.Text>
+											<InputGroup.Text id="sixKanji">退場・予定月</InputGroup.Text>
 										</InputGroup.Prepend>
 										<InputGroup.Prepend>
 											<DatePicker

@@ -326,7 +326,7 @@ body {
 	padding-right: 0px;
 	height: calc(1.5em + .5rem + 2px);
 	background-color: white;
-	width: 14.5rem;
+	width: 13.5rem;
 }
 
 #admissionStartDate {
@@ -2234,7 +2234,7 @@ body {
 		padding-right: 0px;
 		height: calc(1.5em + .5rem + 2px);
 		background-color: white;
-		width: 10rem;
+		width: 9rem;
 	}
 	#admissionStartDate {
 		background-repeat: no-repeat;
