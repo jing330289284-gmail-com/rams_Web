@@ -1269,7 +1269,7 @@ class individualSales extends React.Component {//個人売上検索
         	        <Col>
     	                <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
-                        	<font color="red" style={{ marginLeft: "-25px" , marginRight: "10px" }}>★</font>
+                        	<font color="red" style={{ marginLeft: "-30px" , marginRight: "15px" }}>★</font>
                                 <InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
                                     selected={this.state.individualSales_startYearAndMonth}
                                     onChange={this.individualSalesStartYearAndMonthChange.bind(this)}

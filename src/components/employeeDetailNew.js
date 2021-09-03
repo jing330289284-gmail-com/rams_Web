@@ -837,7 +837,7 @@ class EmployeeDetailNew extends React.Component {
 							</InputGroup.Prepend>
 							<FormControl value={resumeName1} autoComplete="off"
 								onChange={this.valueChange} size="sm" name="resumeName1" disabled />
-							<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 済み" : " 添付"}</Button>
+							<Button size="sm" disabled style={this.state.resumeInfo1URL !== "" ? {backgroundColor: "#53A100",border: "none"} : {backgroundColor: "",border: "none"}}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1URL !== "" ? " 済み" : " 添付"}</Button>
 							<font className="site-mark"></font>
 
 							<Row></Row>
@@ -847,7 +847,7 @@ class EmployeeDetailNew extends React.Component {
 							</InputGroup.Prepend>
 							<FormControl value={resumeName2} autoComplete="off"
 								onChange={this.valueChange} size="sm" name="resumeName2" disabled />
-							<Button size="sm" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 済み" : " 添付"}</Button>
+							<Button size="sm" disabled style={this.state.resumeInfo2URL !== "" ? {backgroundColor: "#53A100",border: "none"} : {backgroundColor: "",border: "none"}}><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2URL !== "" ? " 済み" : " 添付"}</Button>
 							<font className="site-mark"></font>
 
 							</InputGroup>
@@ -1088,8 +1088,8 @@ class EmployeeDetailNew extends React.Component {
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-										<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 済み" : " 添付"}</Button>
-										<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+										<Button size="sm" style={this.state.residentCardInfoURL !== "" ? {backgroundColor: "#53A100",border: "none",marginLeft: "3px"} : {backgroundColor: "",border: "none",marginLeft: "3px"}} className="uploadButtom" disabled ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfoURL !== "" ? " 済み" : " 添付"}</Button>
+										<Button size="sm" style={{ marginLeft: "3px",border: "none"}} disabled={this.state.residentCardInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 										</div>
 									)}
 								/>
@@ -1117,8 +1117,8 @@ class EmployeeDetailNew extends React.Component {
 									getOptionLabel={(option) => option.name}
 									renderInput={(params) => (
 										<div ref={params.InputProps.ref}>
-										<Button size="sm" style={{ marginLeft: "3px"}} className="uploadButtom" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 済み" : " 添付"}</Button>
-										<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
+										<Button size="sm" style={this.state.passportInfoURL !== "" ? {backgroundColor: "#53A100",border: "none",marginLeft: "3px"} : {backgroundColor: "",border: "none",marginLeft: "3px"}} className="uploadButtom" disabled  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfoURL !== "" ? " 済み" : " 添付"}</Button>
+										<Button size="sm" style={{ marginLeft: "3px",border: "none"}} disabled={this.state.passportInfoURL === "" ? true:false} className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfoURL, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>
 										</div>
 									)}
 								/>

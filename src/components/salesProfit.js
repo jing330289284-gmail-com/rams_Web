@@ -36,6 +36,7 @@ class salesProfit extends React.Component {
 		insertFlag: false,
 		currentPage: 1,//今のページ
 		insertNo: '',
+		salesPointData: [],
 		employeeStatus: store.getState().dropDown[4].slice(1),
 		newMemberStatus: store.getState().dropDown[23].slice(1),
 		customerContractStatus: store.getState().dropDown[24].slice(1),
@@ -281,7 +282,7 @@ class salesProfit extends React.Component {
 	
 	renderShowsTotal = () => {
 		return (
-			<p style={{ color: 'dark', "float": "left" }}  >
+			<p hidden={!this.state.salesPointData.length > 0} style={{ color: 'dark', "float": "left" }}  >
 				入場人数：{this.state.no}
 			</p>
 		);
@@ -416,6 +417,8 @@ class salesProfit extends React.Component {
 										<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 						                <Button size="sm" onClick={this.shuseiTo.bind(this, "wagesInfo")}  disabled={this.state.employeeNo === '' ? true : false} className="individualSalesButtom" name="clickButton" variant="info" id="wagesInfo">給料情報</Button>
 									</Col>
+									<Col sm={1}>
+									</Col>
 				                    <Col>
 						                <InputGroup size="sm">
 						                    <InputGroup.Prepend>
@@ -426,6 +429,8 @@ class salesProfit extends React.Component {
 						                    disabled/>
 					                    </InputGroup>
 				                    </Col>
+									<Col sm={1}>
+									</Col>
 				                    <Col>
 						                <InputGroup size="sm">
 						                    <InputGroup.Prepend>
@@ -449,9 +454,9 @@ class salesProfit extends React.Component {
 										<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 											<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 											<TableHeaderColumn dataField='yearAndMonth' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
-											<TableHeaderColumn dataField='employeeStatus' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
-											<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} >所属</TableHeaderColumn>
+											<TableHeaderColumn dataField='employeeStatus' width='90' tdStyle={{ padding: '.45em' }} hidden >社員区分</TableHeaderColumn>
 											<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
+											<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} >所属</TableHeaderColumn>
 											<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} >お客様</TableHeaderColumn>
 											<TableHeaderColumn dataField='workDate' tdStyle={{ padding: '.45em' }} >入場期間</TableHeaderColumn>
 											<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='120' >単価</TableHeaderColumn>

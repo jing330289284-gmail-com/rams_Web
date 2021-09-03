@@ -1243,7 +1243,7 @@ class employeeInsertNew extends React.Component {
 							onChange={this.valueChange} size="sm" name="resumeName1"
 								disabled={departmentCode === "0" ? true : false}/>
 						
-						<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo1')} disabled={departmentCode === "0" ? true : false} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
+						<Button size="sm" style={this.state.resumeInfo1 !== undefined ? {backgroundColor: "#53A100",border: "none"} : {backgroundColor: "",border: "none"}} onClick={(event) => this.addFile(event, 'resumeInfo1')} disabled={departmentCode === "0" ? true : false} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo1 !== undefined ? "済み" : "添付"}</Button>
 
 						<font className="site-mark"></font>
 
@@ -1255,7 +1255,7 @@ class employeeInsertNew extends React.Component {
 						<FormControl placeholder="履歴書2名" value={resumeName2} autoComplete="off"  maxlength="30"
 							onChange={this.valueChange} size="sm" name="resumeName2"
 								disabled={departmentCode === "0" ? true : false}/>
-						<Button size="sm" onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={departmentCode === "0" ? true : false} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>		
+						<Button size="sm" style={this.state.resumeInfo2 !== undefined ? {backgroundColor: "#53A100",border: "none"} : {backgroundColor: "",border: "none"}} onClick={(event) => this.addFile(event, 'resumeInfo2')} disabled={departmentCode === "0" ? true : false} ><FontAwesomeIcon icon={faFile} /> {this.state.resumeInfo2 !== undefined ? "済み" : "添付"}</Button>		
 						<font className="site-mark"></font>
 
 						</InputGroup>
@@ -1521,9 +1521,9 @@ class employeeInsertNew extends React.Component {
 						getOptionLabel={(option) => option.name}
 						renderInput={(params) => (
 							<div ref={params.InputProps.ref}>
-							<Button size="sm" style={{ marginLeft: "3px"}} disabled={employeeStatus === "1" || employeeStatus === "4"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
+							<Button size="sm" style={this.state.residentCardInfo !== undefined ? {backgroundColor: "#53A100",border: "none",marginLeft: "3px"} : {backgroundColor: "",border: "none",marginLeft: "3px"}} disabled={employeeStatus === "1" || employeeStatus === "4"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'residentCardInfo')} ><FontAwesomeIcon icon={faFile} /> {this.state.residentCardInfo !== undefined ? "済み" : "添付"}</Button>
 							{/*<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.residentCardInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>*/}
-							<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.residentCardInfo !== undefined ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'residentCardInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
+							<Button size="sm" style={{ marginLeft: "3px",border: "none"}} disabled={this.state.residentCardInfo !== undefined ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'residentCardInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
 							</div>
 						)}
 					/>
@@ -1555,9 +1555,9 @@ class employeeInsertNew extends React.Component {
 							getOptionLabel={(option) => option.name}
 							renderInput={(params) => (
 								<div ref={params.InputProps.ref}>
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled={employeeStatus === "1" || employeeStatus === "4"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
+								<Button size="sm" style={this.state.passportInfo !== undefined ? {backgroundColor: "#53A100",border: "none",marginLeft: "3px"} : {backgroundColor: "",border: "none",marginLeft: "3px"}} disabled={employeeStatus === "1" || employeeStatus === "4"?true:false} className="uploadButtom" onClick={(event) => this.addFile(event, 'passportInfo')}  ><FontAwesomeIcon icon={faFile} /> {this.state.passportInfo !== undefined ? "済み" : "添付"}</Button>
 								{/*<Button size="sm" style={{ marginLeft: "3px"}} disabled className="downloadButtom" onClick={publicUtils.handleDownload.bind(this, this.state.passportInfo, this.state.serverIP)} ><FontAwesomeIcon icon={faDownload} /> download</Button>*/}
-								<Button size="sm" style={{ marginLeft: "3px"}} disabled={this.state.passportInfo !== undefined ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'passportInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
+								<Button size="sm" style={{ marginLeft: "3px",border: "none"}} disabled={this.state.passportInfo !== undefined ? false : true} className="uploadButtom" onClick={this.deleteFile.bind(this,'passportInfo')} ><FontAwesomeIcon icon={faDownload} />削除</Button>
 								</div>
 							)}
 						/>

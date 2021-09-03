@@ -46,7 +46,7 @@ class customerSalesList extends React.Component {
     
 	renderShowsTotal = () => {
 		return (
-			<p style={{ color: 'dark', "float": "left" }}  >
+			<p hidden={!this.state.CustomerSaleslListInfoList.length > 0} style={{ color: 'dark', "float": "left" }}  >
 				稼働人数：{this.state.countPeo}
 			</p>
 		);
