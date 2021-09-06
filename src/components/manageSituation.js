@@ -537,7 +537,10 @@ class manageSituation extends React.Component {
 			unitPrice = (row.unitPrice === "" ? "" : (row.unitPrice / 10000).toFixed(1).replace(".0",""));
 		/*}*/
 		if(row.salesProgressCode === "0" || row.salesProgressCode === "1"){
-			return (<div><font color="grey">{unitPrice}</font></div>);
+			if(row.bpUnitPrice !== null)
+				return (<div><font color="grey">{row.bpUnitPrice}</font></div>);
+			else
+				return (<div><font color="grey">{unitPrice}</font></div>);
 		}else{
 			return (<div>{unitPrice}</div>);
 		}

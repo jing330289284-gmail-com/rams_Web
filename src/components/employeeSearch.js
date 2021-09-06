@@ -777,6 +777,12 @@ class employeeSearch extends React.Component {
 		}
 		this.props.history.push(path);
 	}
+	
+	test = (event) => {
+		if(event.keyCode === 13){
+			this.searchEmployee(this.state.authorityCode)
+		}
+	}
 
 	render() {
 		const { employeeFormCode, genderStatus, employeeStatus, ageFrom, ageTo,
@@ -826,7 +832,7 @@ class employeeSearch extends React.Component {
 				</Row>
 				<br />
 				<Form >
-					<div >
+					<div onKeyDown={this.test}>
 						<Form.Group>
 							<Row>
 								<Col sm={3}>

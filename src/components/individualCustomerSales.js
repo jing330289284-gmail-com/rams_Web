@@ -321,7 +321,7 @@ class IndividualCustomerSales extends React.Component {
     costChange = (cell, row) => {
     	if(cell === "0")
     		return "";
-    	if(row.cost > row.unitPrice)
+    	if(Number(row.cost) > Number(row.unitPrice))
     		return (<div style={{ color: 'red' }}>{cell}</div>);
     	return cell;
     }

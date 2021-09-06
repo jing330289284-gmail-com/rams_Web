@@ -35,6 +35,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 		intoCompanyYearAndMonth:　'',
 		nowYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
 		lastDayofYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
+		retirementYearAndMonth: new Date(new Date().getFullYear(),new Date().getMonth() + 1,0),
 		workingTime: '10:00～19:00',
 		occupationCode: '',
 		address: '',
@@ -59,6 +60,11 @@ class certificatePrinting extends Component {// 状況変動一覧
 		if(event.target.value === "1"){
 			this.setState({
 				remark: "個人の都合",
+			})
+		}
+		else{
+			this.setState({
+				remark: "",
 			})
 		}
 	}
@@ -108,17 +114,17 @@ class certificatePrinting extends Component {// 状況変動一覧
 		.then(response => response.data)
 		.then((data) => {
 			this.setState({
-				employeeNamePrint: data.employeeFristName + data.employeeLastName + "(" + (data.alphabetName1 === null ? "" : data.alphabetName1)
+				employeeNamePrint: data.employeeFristName + "　" + data.employeeLastName + "(" + (data.alphabetName1 === null ? "" : data.alphabetName1)
 				+ " " + (data.alphabetName2 === null ? "" : data.alphabetName2) + (data.alphabetName3 === null ? "" : data.alphabetName3) + ")",
 				furigana: data.furigana,
-				address: data.postcode === null || data.postcode === "" ? "" : ("〒" + data.postcode.substring(0,3) + "-" + data.postcode.substring(3,data.postcode.length) + " " + data.firstHalfAddress + data.lastHalfAddress),
+				address: data.postcode === null || data.postcode === "" ? "" : ("〒" + data.postcode.substring(0,3) + "-" + data.postcode.substring(3,data.postcode.length) + "\n" + data.firstHalfAddress + "\n" + data.lastHalfAddress),
 				postcode: data.postcode === null || data.postcode === "" ? "" : "〒" + data.postcode.substring(0,3) + "-" + data.postcode.substring(3,data.postcode.length),
 				firstHalfAddress: data.firstHalfAddress === null || data.firstHalfAddress === "" ? "" : data.firstHalfAddress,
 				lastHalfAddress: data.lastHalfAddress === null || data.lastHalfAddress === "" ? "" : data.lastHalfAddress,
 				birthday: data.birthday === null ? "" : publicUtils.converToLocalTime(data.birthday, true),// 年齢
 				intoCompanyYearAndMonth: publicUtils.converToLocalTime(data.intoCompanyYearAndMonth, true),// 入社年月
 				occupationCode: data.occupationCode === null ? "" : data.occupationCode,// 職種
-				retirementYearAndMonth: data.retirementYearAndMonth === null ? "" : publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
+				retirementYearAndMonth: data.retirementYearAndMonth === null || data.retirementYearAndMonth === "" ? this.state.lastDayofYearAndMonth : publicUtils.converToLocalTime(data.retirementYearAndMonth, true),// 退職年月
 	        });
 		});
     }
@@ -246,7 +252,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 		dataInfo["intoCompanyYearAndMonth"] = publicUtils.formateDate(this.state.intoCompanyYearAndMonth, true);
 		dataInfo["nowYearAndMonth"] = publicUtils.formateDate(this.state.nowYearAndMonth, true);
 		dataInfo["workingTime"] = this.state.workingTime;
-		dataInfo["lastDayofYearAndMonth"] = publicUtils.formateDate(this.state.lastDayofYearAndMonth, true);
+		dataInfo["lastDayofYearAndMonth"] = publicUtils.formateDate(this.state.retirementYearAndMonth, true);
 		dataInfo["retirementYearAndMonth"] = publicUtils.formateDate(this.state.retirementYearAndMonth, true);
 		if(this.state.occupationCode === "0"){
 			dataInfo["occupationCode"] = "";
@@ -349,7 +355,11 @@ class certificatePrinting extends Component {// 状況変動一覧
 		                    <InputGroup.Prepend>
 		                    	<InputGroup.Text id="fiveKanji">住所</InputGroup.Text>
 		                    </InputGroup.Prepend>
-							<FormControl placeholder="住所" value={this.state.address} autoComplete="off" disabled onChange={this.valueChange} size="sm" name="address"/>
+							<textarea ref={(textarea) => this.textArea = textarea} value = {this.state.address}  id="address" name="address" 
+								disabled
+								className="auto form-control Autocompletestyle-interview-text"
+								style={{ height: '70px', resize: 'none', overflow: 'hidden' }}
+							/>
 	                    </InputGroup>
 		                </Col>
 	                </Row>
@@ -440,8 +450,8 @@ class certificatePrinting extends Component {// 状況変動一覧
 								/>
 								<font>～</font>
 								<DatePicker
-								selected={this.state.lastDayofYearAndMonth}
-								onChange={this.inactiveintoLastDayofYearAndMonth}
+								selected={this.state.retirementYearAndMonth}
+								onChange={this.inactiveRetirementYearAndMonth}
 								locale="ja"
 								dateFormat="yyyy/MM/dd"
 								className="form-control form-control-sm"
@@ -519,7 +529,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 							<FontAwesomeIcon icon={faDownload} /> 印刷
 						</Button>
 					</div>
-					<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-150px", "margin-top":"-160px",}}></div>
+					<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-150px", "margin-top":"-160px", "opacity":"0.6"}}></div>
 				</div>
          </div>
         )

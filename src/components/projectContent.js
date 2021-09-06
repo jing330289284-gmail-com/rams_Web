@@ -85,13 +85,16 @@ class ProjectContent extends Component {
         })
         if(projectInfo.payOffRangeLowest !== undefined && projectInfo.payOffRangeLowest !== null && 
             projectInfo.payOffRangeHighest !== undefined && projectInfo.payOffRangeHighest !== null){
-            var payOffRange = '';
+            var payOffRange = "";
             if(projectInfo.payOffRangeLowest === "0" && projectInfo.payOffRangeHighest === "0"){
             	payOffRange = "固定";
             }
             else{
                 payOffRange = (projectInfo.payOffRangeLowest === "0" ? "固定" : projectInfo.payOffRangeLowest) 
                 + "-" + (projectInfo.payOffRangeHighest === "0" ? "固定" : projectInfo.payOffRangeHighest)
+            }
+            if(payOffRange === "-"){
+            	payOffRange = "";
             }
             this.setState({
                 payOffRange:payOffRange,
