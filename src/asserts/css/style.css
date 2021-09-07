@@ -18,6 +18,7 @@
 }
 
 .loadingImage {
+	opacity: 0.5;
     position: relative;
     width: 100px;
     height: 100px;

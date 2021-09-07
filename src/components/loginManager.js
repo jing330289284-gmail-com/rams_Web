@@ -25,6 +25,7 @@ class Login extends Component {
 			errorsMessageShow: false,
 			errorsMessageValue: '',
 			pic: '',
+			remberPassWord: false,
 		}
 	};
 
@@ -47,6 +48,38 @@ class Login extends Component {
 				}
 			})
 	}
+	
+	componentDidMount() {
+		this.loadAccountInfo();
+	}
+	
+	loadAccountInfo = () => {
+		//读取Cookie
+		let arr,reg = new RegExp("(^| )" + 'accoutInfo' + "=([^;]*)(;|$)");
+		let accoutInfo = '';
+		if(arr = document.cookie.match(reg)){
+			accoutInfo = unescape(arr[2]);
+		}else{
+			accoutInfo = null;
+		}
+		
+		if(!Boolean(accoutInfo)){
+			return false;
+		}else{
+			let userName = "";
+			let passWord = "";
+			
+			let i = new Array();
+			i = accoutInfo.split("&");
+			userName = i[0];
+			passWord = i[1];
+
+			$("#employeeNo").val(userName);
+			$("#password").val(passWord);
+			this.setState({ remberPassWord: true,});
+		}
+	}
+	
 	/**
 	 * ログインボタン
 	 */
@@ -58,6 +91,24 @@ class Login extends Component {
 		axios.post(this.state.serverIP + "login/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {
+					if(this.state.remberPassWord){
+						let accoutInfo = $("#employeeNo").val() + '&' + $("#password").val();
+						let Days = 7; //Cookie保存時間
+						let exp = new Date();
+						exp.setTime(exp.getTime() + Days*24*60*60*1000);
+						document.cookie = 'accoutInfo' + "=" + escape(accoutInfo) + ";expires=" + exp.toGMTString();
+					}else{
+						let exp = new Date();
+						exp.setTime(exp.getTime() - 1);
+						let accoutInfo = document.cookie;
+						var cookie_pos = accoutInfo.indexOf('accoutInfo');
+						
+						if(cookie_pos != -1){
+							document.cookie = 'accoutInfo' + "=" + ' ' + ";expires=" + exp.toGMTString();
+						}
+						$("#employeeNo").val(" ");
+						$("#password").val(" ");
+					}
 					this.props.history.push("/subMenuManager");
 				} else {
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -67,6 +118,13 @@ class Login extends Component {
 				this.setState({ "errorsMessageShow": true, errorsMessageValue: "エラーが発生してしまいました、画面をリフレッシュしてください" });
 			});
 	}
+	
+	handleChecked = () => {
+		this.setState({
+			remberPassWord: !this.state.remberPassWord,
+		})
+	}
+	
 	render() {
 		const { errorsMessageValue, } = this.state;
 		let timeChange;
@@ -139,6 +197,10 @@ class Login extends Component {
 								<Button size="sm" variant="info" id="sendVerificationCode" disabled={this.state.btnDisable} onClick={sendCode}>{this.state.buttonText}</Button>
 							</InputGroup.Append>
 						</InputGroup>
+						<div style={{ "textAlign": "center" }}>
+						<input type="checkbox" checked={this.state.remberPassWord} onChange={this.handleChecked} value={this.state.remberPassWord} />
+						<span> ログイン情報保存</span>
+						</div>
 						<Button variant="primary" id="login" onClick={this.login} block type="button">
 							ログイン
 				</Button>

@@ -44,6 +44,38 @@ class Login2 extends Component {
 				}
 			})
 	}
+	
+	componentDidMount() {
+		this.loadAccountInfo();
+	}
+	
+	loadAccountInfo = () => {
+		//读取Cookie
+		let arr,reg = new RegExp("(^| )" + 'accoutInfo' + "=([^;]*)(;|$)");
+		let accoutInfo = '';
+		if(arr = document.cookie.match(reg)){
+			accoutInfo = unescape(arr[2]);
+		}else{
+			accoutInfo = null;
+		}
+		
+		if(!Boolean(accoutInfo)){
+			return false;
+		}else{
+			let userName = "";
+			let passWord = "";
+			
+			let i = new Array();
+			i = accoutInfo.split("&");
+			userName = i[0];
+			passWord = i[1];
+
+			$("#employeeNo").val(userName);
+			$("#password").val(passWord);
+			this.setState({ remberPassWord: true,});
+		}
+	}
+	
 	/**
 	 * ログインボタン
 	 */
@@ -55,6 +87,24 @@ class Login2 extends Component {
 		axios.post(this.state.serverIP + "login2/login", loginModel)
 			.then(result => {
 				if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {//ログイン成功
+					if(this.state.remberPassWord){
+						let accoutInfo = $("#employeeNo").val() + '&' + $("#password").val();
+						let Days = 3; //Cookie保存時間
+						let exp = new Date();
+						exp.setTime(exp.getTime() + Days*24*60*60*1000);
+						document.cookie = 'accoutInfo' + "=" + escape(accoutInfo) + ";expires=" + exp.toGMTString();
+					}else{
+						let exp = new Date();
+						exp.setTime(exp.getTime() - 1);
+						let accoutInfo = document.cookie;
+						var cookie_pos = accoutInfo.indexOf('accoutInfo');
+						
+						if(cookie_pos != -1){
+							document.cookie = 'accoutInfo' + "=" + ' ' + ";expires=" + exp.toGMTString();
+						}
+						$("#employeeNo").val(" ");
+						$("#password").val(" ");
+					}
 					this.props.history.push("/subMenuEmployee");
 				} else {//ログイン失敗
 					this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -131,6 +181,10 @@ class Login2 extends Component {
 						<div className="text-center">
 							<button onClick={sendMail} disabled={this.state.btnDisable} className="btn btn-link resetFont">{this.state.buttonText}</button>
 							<br />
+							<div style={{ "textAlign": "center" }}>
+							<input type="checkbox" checked={this.state.remberPassWord} onChange={this.handleChecked} value={this.state.remberPassWord} />
+							<span> ログイン情報保存</span>
+							</div>
 							<Button variant="primary" id="login" block onClick={this.login} type="button">
 								ログイン
 							</Button>

@@ -529,7 +529,7 @@ class certificatePrinting extends Component {// 状況変動一覧
 							<FontAwesomeIcon icon={faDownload} /> 印刷
 						</Button>
 					</div>
-					<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-150px", "margin-top":"-160px", "opacity":"0.6"}}></div>
+					<div className='loadingImage' hidden={this.state.loading} style = {{"position": "absolute","top":"60%","left":"60%","margin-left":"-150px", "margin-top":"-160px"}}></div>
 				</div>
          </div>
         )
