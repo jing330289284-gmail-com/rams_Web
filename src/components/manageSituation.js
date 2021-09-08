@@ -763,7 +763,7 @@ class manageSituation extends React.Component {
 						resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
 						resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
 						customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-						admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6),
+						admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? (row.scheduledEndDate === null || row.scheduledEndDate === "" ? row.bpOtherCompanyAdmissionEndDate : row.scheduledEndDate) : row.admissionEndDate.substring(0,6),
 					});
 				} else {
 					if(this.refs.table.state.selectedRowKeys.length === 2){
@@ -813,7 +813,7 @@ class manageSituation extends React.Component {
 							resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
 							resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
 							customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-							admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6),
+							admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? (row.scheduledEndDate === null || row.scheduledEndDate === "" ? row.bpOtherCompanyAdmissionEndDate : row.scheduledEndDate) : row.admissionEndDate.substring(0,6),
 						});
 						}
 						else{
@@ -887,7 +887,7 @@ class manageSituation extends React.Component {
 						resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
 						resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
 						customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-						admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6),
+						admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? (row.scheduledEndDate === null || row.scheduledEndDate === "" ? row.bpOtherCompanyAdmissionEndDate : row.scheduledEndDate) : row.admissionEndDate.substring(0,6),
 						lastEmpNo: row.employeeNo === null ? '' : row.employeeNo,
 					});
 				} else {
@@ -937,7 +937,7 @@ class manageSituation extends React.Component {
 							resumeName1: row.resumeName1 === null ? '' : row.resumeName1,
 							resumeName2: row.resumeName2 === null ? '' : row.resumeName2,
 							customerContractStatus: row.customerContractStatus === null ? '' : row.customerContractStatus,
-							admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? row.scheduledEndDate : row.admissionEndDate.substring(0,6),
+							admissionEndDate: row.admissionEndDate === null || row.admissionEndDate === "" ? (row.scheduledEndDate === null || row.scheduledEndDate === "" ? row.bpOtherCompanyAdmissionEndDate : row.scheduledEndDate) : row.admissionEndDate.substring(0,6),
 						});
 						}
 						else{

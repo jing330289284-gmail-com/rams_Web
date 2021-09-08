@@ -126,6 +126,14 @@ class siteInfo extends Component {
 				}
 			}
 			this.setState({ employeeInfo: newEmpInfoList});
+		} else if (value === '4') {
+			let newEmpInfoList = [];
+			for(let i in employeeInfoList){
+				if(employeeInfoList[i].code.substring(0,3) === "BPR"){
+					newEmpInfoList.push(employeeInfoList[i]);
+				}
+			}
+			this.setState({ employeeInfo: newEmpInfoList});
 		} else {
 			this.setState({ employeeInfo: employeeInfoList });
 		}

@@ -75,6 +75,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-select": "^3.1.0",
+    "react-tooltip": "^4.2.21",
     "react-zmage": "^0.8.5-beta.36",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",

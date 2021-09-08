@@ -44,6 +44,9 @@ import IndividualCustomerSales from './individualCustomerSales';
 import projectInfo from './projectInfo';
 import sendRepotConfirm from './sendRepotConfirm';
 import customerSalesList from './customerSalesList';
+import ReactTooltip from 'react-tooltip';
+
+
 import {
 	faAddressBook, faHome, faUser, faUsers, faYenSign, faPaperPlane, faBuilding, faCalendar,
 	faCalendarAlt, faThList, faCogs, faCloudUploadAlt, faSearch, faSave,
@@ -67,6 +70,8 @@ class SubMenu extends Component {
 			companyName: '',
 			nowDate: '',// 今の期日
 			authorityCode: '',
+			test: 'aaa',
+			test1: 'aaa',
 		}
 	};
 
@@ -166,6 +171,7 @@ class SubMenu extends Component {
 		const styleHigh = {
 			backgroundColor: "#1a94a8"
 		}
+		
 		return (
 			<div className="mainBody">
 				<div id="popu_div"></div>
@@ -204,7 +210,10 @@ class SubMenu extends Component {
 						            </ListGroup.Item>*/}
 
 										<ListGroup.Item style={styleLow} block>
-											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font className={this.state.click==="社員・BP"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員・BP</font></Accordion.Toggle>
+											<Accordion.Toggle as={Button} variant="link" eventKey="0"><font data-place="right" data-type="info" 
+											data-tip="<span>社員・BP登録<br/>社員・BP検索<br/>個人情報期限<br/>証明書印刷</span>"
+											data-html={true} data-class="my-tabcolor" data-effect="solid"  className={this.state.click==="社員・BP"?"linkFont-click":"linkFont"} onClick={() => this.click('社員・BP')}><FontAwesomeIcon className="fa-fw" size="lg" icon={faAddressBook} />社員・BP</font></Accordion.Toggle>
+											<ReactTooltip delayHide={300} delayUpdate={1000}/>
 											<Accordion.Collapse eventKey="0">
 												<ListGroup>
 													<ListGroup.Item style={styleLow}>

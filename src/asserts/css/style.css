@@ -17,6 +17,11 @@
 	background-color: transparent;
 }
 
+.my-tabcolor{
+	color: black !important;
+	background-color: #dfffff !important;
+}
+
 .loadingImage {
 	opacity: 0.5;
     position: relative;
