@@ -384,6 +384,8 @@ class manageSituation extends React.Component {
 		this.state.salesSituationLists[this.state.rowNo - 1].salesProgressCode = no;
 		if (!(no === '0' || no === '1')) {
 			this.state.salesSituationLists[this.state.rowNo - 1].customer = '';
+			this.state.salesSituationLists[this.state.rowNo - 1].price = '';
+			this.state.salesSituationLists[this.state.rowNo - 1].salesStaff = '';
 			this.formatCustome(no,this.state.salesSituationLists[this.state.rowNo - 1]);
 		}
 		if (no === '0') {

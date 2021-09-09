@@ -387,6 +387,7 @@ class salesProfit extends React.Component {
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
+												maxDate={new Date()}
 												name="admissionStartDate"
 												className="form-control form-control-sm"
 												id="datePicker"
@@ -399,6 +400,7 @@ class salesProfit extends React.Component {
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
+												maxDate={new Date()}
 												name="admissionEndDate"
 												className="form-control form-control-sm"
 												id="datePicker"

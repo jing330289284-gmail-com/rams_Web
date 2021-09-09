@@ -18,8 +18,14 @@
 }
 
 .my-tabcolor{
-	color: black !important;
-	background-color: #dfffff !important;
+	background-color: #64ffff!important;
+}
+
+.my-tabcolor-font{
+	color: #383036;
+	font-size: 18px;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
 }
 
 .loadingImage {
