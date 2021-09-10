@@ -123,6 +123,7 @@ class sendLettersConfirm extends React.Component {
 		backPage: "",
 		searchFlag: true,
 		sendValue: {},
+		mailContent: '',
 		/* 要員追加機能の新規 20201216 張棟 START */
 		// 全部要員名前集合
 		allEmployeeName: [],
@@ -299,6 +300,7 @@ class sendLettersConfirm extends React.Component {
 					resumeInfo2.push(result.data[0].resumeInfo2 === null ? " " : result.data[0].resumeInfo2);
 					resumeName1.push(result.data[0].resumeName1 === null ? " " : result.data[0].resumeName1);
 					resumeName2.push(result.data[0].resumeName2 === null ? " " : result.data[0].resumeName2);
+					if(this.state.employeeInfo[i].mailContent === undefined || this.state.employeeInfo[i].mailContent === null)	{
 					mailText += `<br/>
 					【名　　前】：`+ result.data[0].employeeFullName + `　` + result.data[0].nationalityName + `　` + this.state.genders.find((v) => (v.code === result.data[0].genderStatus)).name + `<br/>
 					【所　　属】：`+ (result.data[0].employeeStatus === null || result.data[0].employeeStatus ===""?"":this.state.employees.find((v) => (v.code === result.data[0].employeeStatus)).name) + (result.data[0].age === null || result.data[0].age === ""?(publicUtils.converToLocalTime(result.data[0].birthday, true) === "" ? "" :`<br	/>
@@ -316,11 +318,13 @@ class sendLettersConfirm extends React.Component {
 					【営業状況】：`)+ (result.data[0].salesProgressCode === null || result.data[0].salesProgressCode === ""?"":this.state.salesProgresss.find((v) => (v.code === result.data[0].salesProgressCode)).name) + (result.data[0].remark === null || result.data[0].remark === ""?"":`<br	/>
 					【備　　考】：`)+ (result.data[0].remark === null || result.data[0].remark === ""?"":result.data[0].remark)		
 					+ `<br/>`
+					}else{
+						mailText += this.state.employeeInfo[i].mailContent.replaceAll("【","<br/>【") + `<br/>`;
+					}
 					clearTimeout(time)
 			        time=setTimeout(()=>{
 						this.sendMailWithFile(mailText,resumeInfo1,resumeInfo2,resumeName1,resumeName2);
 			        },3000)
-
 				})
 				.catch(function(error) {
 					alert(error);
@@ -516,7 +520,7 @@ class sendLettersConfirm extends React.Component {
 		return cell;
 	}
 	
-	searchPersonnalDetail = (employeeNo,hopeHighestPrice,index) => {
+	searchPersonnalDetail = (employeeNo,hopeHighestPrice,index,mailContent) => {
 		var employeeInfo = this.state.employeeInfo;
 		axios.post(this.state.serverIP + "salesSituation/getPersonalSalesInfo", { employeeNo: employeeNo })
 			.then(result => {
@@ -567,6 +571,8 @@ class sendLettersConfirm extends React.Component {
 						theMonthOfStartWork: result.data[0].theMonthOfStartWork === undefined || result.data[0].theMonthOfStartWork === null || result.data[0].theMonthOfStartWork === "" ? "":result.data[0].theMonthOfStartWork,
 						resumeInfoList: result.data[0].resumeInfoList,
 						remark: result.data[0].remark,
+					},()=>{
+						this.setMailContent(mailContent);
 					})
 				} else {
 					this.setState({
@@ -634,6 +640,8 @@ class sendLettersConfirm extends React.Component {
 						this.fromCodeToListLanguage(result.data[0].developLanguage5)].filter(function(s) {
 							return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
 						}),
+					},()=>{
+						this.setMailContent(mailContent);
 					})
 				}
 			})
@@ -745,13 +753,50 @@ class sendLettersConfirm extends React.Component {
 
 		this.searchPersonnalDetail(row.employeeNo);
 	}
+	
+	setMailContent = (mailContent) => {
+		if(mailContent === undefined || mailContent === null){
+			mailContent = `【名　　前】：` + this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
+【所　　属】：`+ this.state.employeeStatus + 
+			(this.state.age !== null && this.state.age !== ""?`
+【年　　齢】：`:"")+ (this.state.age !== null && this.state.age !== ""? this.state.age : "") + (this.state.age !== null && this.state.age !== ""?`歳`:"") +
+			(this.state.nearestStation !== "" && this.state.nearestStation !== null?`
+【最寄り駅】：`:"")
+			+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + 
+			(this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
+【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')
+			+(this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null?`
+【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
+			(this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
+【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
+			(this.state.projectPhaseName !=="" && this.state.projectPhaseName !== null ? `
+【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName + "から":"") +
+			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
+【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
+			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
+【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?(this.state.unitPrice.length>3?this.state.unitPrice.substring(0,3) : this.state.unitPrice):"") +
+			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
+【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
+【営業状況】：`)+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
+			(this.state.remark !== "" && this.state.remark !== null?`
+【備　　考】：`:"")+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "");	
+		}
+		this.setState({
+       	 	mailContent: mailContent,
+		})
+	}
+	
 	/* 要員追加機能の新規 20201216 張棟 START */
 	handleRowSelect = (row, isSelected, e) => {
+		if (row.employeeNo !== "" && row.employeeNo !== null) {
+			this.searchPersonnalDetail(row.employeeNo,row.hopeHighestPrice,null,row.mailContent);
+		}
 		if (isSelected) {
 			this.setState({
            	 	selectedColumnId: row.index,
            	 	employeeFlag: true,
            	 	selectRowFlag: true,
+           	 	unitPriceShow: row.hopeHighestPrice,
            	 	resumeName: this.state.employeeInfo[row.index - 1].resumeInfoName,
 			})
 			$("#bookButton").attr("disabled",false);
@@ -761,10 +806,8 @@ class sendLettersConfirm extends React.Component {
 			$("#bookButton").attr("disabled",true);
 			this.setState({
            	 	selectRowFlag: false,
+           	 	mailContent: '',
 			})
-		}
-		if (row.employeeNo !== "" && row.employeeNo !== null) {
-			this.searchPersonnalDetail(row.employeeNo,row.hopeHighestPrice);
 		}
 	};
 	
@@ -1005,34 +1048,6 @@ class sendLettersConfirm extends React.Component {
 		});
 	}
 	
-	onTagsChange = (event, values, fieldName) => {
-		if (values.length === 6) {
-			this.setState({
-				disbleState: true,
-			});
-		} else {
-			this.setState({
-				disbleState: false,
-			});
-		}
-		this.setState({
-			developLanguageCode6: values.length >= 1 ? values[0].code : null,
-			developLanguageCode7: values.length >= 2 ? values[1].code : null,
-			developLanguageCode8: values.length >= 3 ? values[2].code : null,
-			developLanguageCode9: values.length >= 4 ? values[3].code : null,
-			developLanguageCode10: values.length >= 5 ? values[4].code : null,
-			developLanguageCode11: values.length >= 6 ? values[5].code : null,
-			wellUseLanguagss: [this.fromCodeToListLanguage(values.length >= 1 ? values[0].code : ''),
-			this.fromCodeToListLanguage(values.length >= 2 ? values[1].code : ''),
-			this.fromCodeToListLanguage(values.length >= 3 ? values[2].code : ''),
-			this.fromCodeToListLanguage(values.length >= 4 ? values[3].code : ''),
-			this.fromCodeToListLanguage(values.length >= 5 ? values[4].code : ''),
-			this.fromCodeToListLanguage(values.length >= 6 ? values[5].code : '')].filter(function(s) {
-				return s; // 注：IE9(不包含IE9)以下的版本没有trim()方法
-			}),
-		})
-	}
-	
 	getStation = (event, values) => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -1178,6 +1193,15 @@ class sendLettersConfirm extends React.Component {
 		})
 	}
 	
+	mailContentChange = event =>{
+		let employeeInfo = this.state.employeeInfo;
+		employeeInfo[this.state.selectedColumnId - 1].mailContent = event.target.value;
+		this.setState({
+			[event.target.name]: event.target.value,
+			employeeInfo: employeeInfo,
+		})
+	}
+	
 	titleValueChange = event => {
 		this.setState({
 			[event.target.name]: event.target.value,
@@ -1298,30 +1322,6 @@ class sendLettersConfirm extends React.Component {
 			clickToSelect: true,
 			onSelect: this.handleCtmSelect,
 		};
-		const mailContent = `【名　　前】：` + this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
-【所　　属】：`+ this.state.employeeStatus + 
-(this.state.age !== null && this.state.age !== ""?`
-【年　　齢】：`:"")+ (this.state.age !== null && this.state.age !== ""? this.state.age : "") + (this.state.age !== null && this.state.age !== ""?`歳`:"") +
-(this.state.nearestStation !== "" && this.state.nearestStation !== null?`
-【最寄り駅】：`:"")
-+ (this.state.nearestStation !== "" && this.state.nearestStation !== null? this.state.stations.find((v) => (v.code === this.state.nearestStation)).name : '') + 
-(this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ?`
-【日本　語】：`:"")+ (this.state.japaneaseConversationLevel !== "" && this.state.japaneaseConversationLevel !== null ? this.state.japaneaseConversationLevels.find((v) => (v.code === this.state.japaneaseConversationLevel)).name : '')
-+(this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null?`
-【英　　語】：`:"")+ (this.state.englishConversationLevel !== "" && this.state.englishConversationLevel !== null? this.state.englishConversationLevels.find((v) => (v.code === this.state.englishConversationLevel)).name : '') +
-(this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? `
-【業務年数】：`:"")+ (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ? this.state.yearsOfExperience:"") + (this.state.yearsOfExperience !== null && this.state.yearsOfExperience !== "" ?`年`:"")+
-			(this.state.projectPhaseName !=="" && this.state.projectPhaseName !== null ? `
-【対応工程】：`:"")+ (this.state.projectPhaseName !=="" && this.state.projectPhaseName !==null ? this.state.projectPhaseName + "から":"") +
-			(this.state.developLanguage !=="" && this.state.developLanguage !==null ?`
-【得意言語】：`:"")+ (this.state.developLanguage !=="" && this.state.developLanguage !==null ?this.state.developLanguage:"") +
-			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `
-【単　　価】：`:"")+ (this.state.unitPrice !== "" && this.state.unitPrice !== null?(this.state.unitPrice.length>3?this.state.unitPrice.substring(0,3) : this.state.unitPrice):"") +
-			(this.state.unitPrice !== "" && this.state.unitPrice !== null? `万円`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
-【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode === "" || this.state.salesProgressCode === null || this.state.salesProgressCode === undefined ? "":`
-【営業状況】：`)+ (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') +
-(this.state.remark !== "" && this.state.remark !== null?`
-【備　　考】：`:"")+ (this.state.remark !== "" && this.state.remark !== null ? this.state.remark : "");
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -1472,143 +1472,10 @@ class sendLettersConfirm extends React.Component {
 					</Col>
 
 					<Col sm={4}>
-					<ListGroup hidden>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>【名　　前】：{this.state.employeeName}{'　'}{this.state.nationalityName}{'　'}{this.state.genderStatus}</ListGroup.Item>
-					{/*<ListGroup.Item style={{padding:".0rem 1.25rem"}}>【所　　属】：{this.state.employeeStatus === "子会社社員" ? "社員" : this.state.employeeStatus}</ListGroup.Item>*/}
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>
-					<span style={{ flexFlow: "nowrap" }}>【所　　属】：
-				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
-							name="employeeStatus" value={this.state.employeeStatus}
-						>
-							{this.state.employees.map(date =>
-								<option key={date.code} value={date.code}>
-									{date.name}
-								</option>
-							)}
-						</Form.Control></span>
-					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".0rem 1.25rem"}}>【年　　齢】：<input value={this.state.age} name="age"
-						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />
-					歳</ListGroup.Item></span>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>
-						<span style={{ flexFlow: "nowrap" }}>【最寄り駅】：
-						<Autocomplete
-						id="nearestStation"
-						name="nearestStation"
-						value={this.state.stations.find(v => v.code === this.state.nearestStation) || {}}
-						onChange={(event, values) => this.getStation(event, values)}
-						options={this.state.stations}
-						getOptionLabel={(option) => option.name}
-						renderInput={(params) => (
-							<div ref={params.InputProps.ref}>
-								<input type="text" {...params.inputProps} className="auto form-control Autocompletestyle-salesContent-station"
-								/>
-							</div>
-						)}
-					/>
-				    </span>
-					</ListGroup.Item>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>
-						<span style={{ flexFlow: "nowrap" }}>【日本　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
-								name="japaneaseConversationLevel" value={this.state.japaneaseConversationLevel}>
-								{this.state.japaneaseConversationLevels.map(date =>
-									<option key={date.code} value={date.code}>
-										{date.name}
-									</option>
-								)}
-							</Form.Control></span>
-							&nbsp;&nbsp;{this.state.japaneseLevelCode}</ListGroup.Item>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>
-						<span style={{ flexFlow: "nowrap" }}>【英　　語】：
-					    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
-								name="englishConversationLevel" value={this.state.englishConversationLevel}
-							>
-								{this.state.englishConversationLevels.map(date =>
-									<option key={date.code} value={date.code}>
-										{date.name}
-									</option>
-								)}
-							</Form.Control></span>
-						&nbsp;&nbsp;{this.state.englishLevelCode}</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".0rem 1.25rem"}}>【業務年数】：<input value={this.state.yearsOfExperience} name="yearsOfExperience"
-						style={{ width: "45px" }} onChange={this.valueChange} className="inputWithoutBorder" />
-					年</ListGroup.Item></span>
-					{<ListGroup.Item style={{padding:".0rem 1.25rem"}} hidden>【対応工程】：{this.state.projectPhase}</ListGroup.Item>}
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>
-					<span style={{ flexFlow: "nowrap" }}>【対応工程】：
-				    <Form.Control as="select" style={{ display: "inherit", width: "150px", height: "30px" }} onChange={this.valueChange}
-							name="projectPhase" value={this.state.projectPhase}
-						>
-							{this.state.projectPhases.map(date =>
-								<option key={date.code} value={date.code}>
-									{date.name}
-								</option>
-							)}
-						</Form.Control></span>
-						&nbsp;&nbsp;{"から"}
-					</ListGroup.Item>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}>【得意言語】：{this.state.developLanguage}
-						<Autocomplete
-							multiple
-							id="tags-standard"
-							options={this.state.developLanguagesShow}
-							getOptionDisabled={option => this.state.disbleState}
-							// getOptionDisabled={(option) => option ===
-							// this.state.developLanguagesShow[0] || option ===
-							// this.state.developLanguagesShow[2]}
-							value={this.state.wellUseLanguagss}
-							getOptionLabel={(option) => option.name ? option.name : ""}
-							onChange={(event, values) => this.onTagsChange(event, values, 'customerName')}
-							renderInput={(params) => (
-								<TextField
-									{...params}
-									variant="standard"
-									label="言語追加"
-									placeholder="言語追加"
-									style={{ width: "400px", float: "right" }}
-								/>
-							)}
-						/>
-					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".0rem 1.25rem"}}>【単　　価】：<input value={this.state.unitPriceShow} name="unitPriceShow"
-						style={{ width: "80px" }} onChange={this.valueChangeMoney} className="inputWithoutBorder" />円</ListGroup.Item></span>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".0rem 1.25rem"}}>【稼働開始】：
-					{	
-					(Number(this.state.admissionEndDate) + 1) < Number(this.getNextMonth(new Date(),1).replace("/","")) ? "即日":
-					<DatePicker
-							selected={this.state.beginMonth}
-							onChange={this.setEndDate}
-							autoComplete="off"
-							locale="ja"
-							showMonthYearPicker
-							showFullMonthYearPicker
-							className="form-control form-control-sm"
-							dateFormat="yyyy/MM"
-							id="datePicker"
-							//disabled
-						/>
-					}
-					</ListGroup.Item></span>
-					<ListGroup.Item style={{padding:".0rem 1.25rem"}}><span style={{ flexFlow: "nowrap" }}>【営業状況】：
-					    <Form.Control as="select" disabled style={{ display: "inherit", width: "145px", height: "30px" }} onChange={this.valueChange}
-							name="salesProgressCode" value={this.state.salesProgressCode}
-						>
-							{this.state.salesProgresss.map(date =>
-								<option key={date.code} value={date.code}>
-									{date.name}
-								</option>
-							)}
-						</Form.Control></span>
-						{this.state.interviewDate}
-					</ListGroup.Item>
-					<span style={{ flexFlow: "nowrap" }}><ListGroup.Item style={{padding:".0rem 1.25rem"}}>【備　　考】：<input value={this.state.remark} name="remark"
-						style={{ width: "60%" }} onChange={this.valueChange} className="inputWithoutBorder" /></ListGroup.Item></span>
-				</ListGroup>
-						<textarea ref={(textarea) => this.textArea = textarea} onChange={this.valueChange} name="mailContent" 
+						<textarea ref={(textarea) => this.textArea = textarea} onChange={this.mailContentChange} name="mailContent"
 							style={{ height: '340px', width: '100%', resize: 'none', overflow: 'hidden' }}
 							// value={mailContent} 
-							value={this.state.employeeName === "empty" || this.state.employeeName === ""? "要員追加してください。":(this.state.employeeFlag? mailContent:"要員追加してください。") }
+							value={this.state.employeeName === "empty" || this.state.employeeName === ""? "要員追加してください。":(this.state.employeeFlag? this.state.mailContent:"要員追加してください。") }
 						/>
 					</Col>
 				</Row>

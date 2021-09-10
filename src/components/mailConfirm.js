@@ -42,6 +42,7 @@ class mailConfirm extends React.Component {
 		greetinTtext: this.props.personalInfo.state.greetinTtext,
 		theMonthOfStartWork: this.props.personalInfo.state.theMonthOfStartWork,
 		resumeName: this.props.personalInfo.state.resumeName === undefined || this.props.personalInfo.state.resumeName === null ? "" : this.props.personalInfo.state.resumeName,
+		mailContent: this.props.personalInfo.state.mailContent,
 	})
 	componentDidMount() {
 	}
@@ -58,9 +59,7 @@ class mailConfirm extends React.Component {
 `+ this.state.selectedCustomerName.split("(")[0].replace("株式会社","") + `株式会社
 `+ (this.state.selectedPurchasingManagers === "" ? "ご担当者" : this.state.selectedPurchasingManagers.split("　")[0]) + ` 様 
 お世話になっております、LYC`+ this.state.loginUserInfo[0].employeeFristName + `です。
- ` +
- this.state.greetinTtext
- + `
+` + this.state.greetinTtext + /*`
 
 【名　　前】：`+ this.state.employeeName + `　` + this.state.nationalityName + `　` + this.state.genderStatus + `
 【所　　属】：`+ this.state.employeeStatus + (this.state.age === "" || this.state.age === null ?"":`
@@ -74,7 +73,10 @@ class mailConfirm extends React.Component {
 【単　　価】：`)+ (this.state.unitPrice === ""||this.state.unitPrice === null?"":this.state.unitPrice) + (this.state.unitPrice === ""||this.state.unitPrice === null?"":`万円`) + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? `
 【稼働開始】：`:"") + (this.state.theMonthOfStartWork !== "" && this.state.theMonthOfStartWork !== null ? this.state.theMonthOfStartWork:"") + (this.state.salesProgressCode !== "" && this.state.salesProgressCode !== null ?`
 【営業状況】：`:"")+ (this.state.salesProgressCode !== "" ? this.state.salesProgresss.find((v) => (v.code === this.state.salesProgressCode)).name : '') + (this.state.remark === undefined || this.state.remark === null || this.state.remark === ""?"":`
-【備　　考】：`)+ (this.state.remark === undefined || this.state.remark === null || this.state.remark === "" ? "" : this.state.remark) + `
+【備　　考】：`)+ (this.state.remark === undefined || this.state.remark === null || this.state.remark === "" ? "" : this.state.remark)*/
+`
+
+` + this.state.mailContent + `
 
 以上、よろしくお願いいたします。
 ******************************************************************

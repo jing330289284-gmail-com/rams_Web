@@ -17,13 +17,19 @@
 	background-color: transparent;
 }
 
+#社員・BP,#現場,#お客様,
+#給料と売上,#営業送信,
+#営業管理,#勤務,#期限確認,
+#マスター,#他の設定{
+	padding: 0px;
+}
+
 .my-tabcolor{
-	background-color: #64ffff!important;
 }
 
 .my-tabcolor-font{
-	color: #383036;
-	font-size: 18px;
+	color: #4a4a4a;
+	font-size: 16px;
 	margin-top: 0.2rem;
 	margin-bottom: 0.2rem;
 }
