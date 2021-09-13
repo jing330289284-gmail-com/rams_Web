@@ -51,7 +51,7 @@ h2 {
 
 .title-font {
 	font-family: "幼园", Sans-serif;
-	font-size: 25px;
+	font-size: 34px;
 	width: auto;
 	font-weight: bolder;
 	padding: 0;
@@ -64,7 +64,7 @@ h2 {
 
 .linkFont {
 	font-family: "黑体", Sans-serif;
-	font-size: 1.1rem;
+	font-size: 1.5rem;
 	margin-left: -0.5rem;
 	color: rgb(247, 226, 248);
 }
@@ -85,7 +85,7 @@ h2 {
 
 .linkFont-click {
 	font-family: "黑体", Sans-serif;
-	font-size: 1.1rem;
+	font-size: 1.5rem;
 	margin-left: -0.5rem;
 	color: black;
 }
@@ -160,21 +160,21 @@ h2 {
 	display: block;
 	padding: .5rem 1.25rem;
 	background-color: #fff;
-	border: none !important;
+	border: none;
 }
 
 @media screen and (max-width: 1550px) {
 	.linkFont {
 		font-family: "黑体", Sans-serif;
-		font-size: .78rem;
+		font-size: 1.2rem;
 		color: rgb(247, 226, 248);
-		margin-left: -0.5rem;
+		margin-left: -0.8rem;
 	}
 	.linkFont-click {
 		font-family: "黑体", Sans-serif;
-		font-size: .78rem;
+		font-size: 1.2rem;
 		color: rgb(0, 0, 0);
-		margin-left: -0.5rem;
+		margin-left: -0.8rem;
 	}
 	.collapse {
 		margin-left: 0.05rem;
@@ -184,7 +184,7 @@ h2 {
 	}
 	.title-font {
 		font-family: "幼园", Sans-serif;
-		font-size: 1.2rem;
+		font-size: 1.4rem;
 		width: auto;
 		font-weight: bolder;
 		padding: 0;

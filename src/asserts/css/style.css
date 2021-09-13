@@ -22,14 +22,23 @@
 #営業管理,#勤務,#期限確認,
 #マスター,#他の設定{
 	padding: 0px;
+	margin: 0px;
 }
 
 .my-tabcolor{
 }
 
+.my-tabcolor::before{
+	display: none;
+}
+
+.my-tabcolor::after{
+	display: none;
+}
+
 .my-tabcolor-font{
 	color: #4a4a4a;
-	font-size: 16px;
+	font-size: 18px;
 	margin-top: 0.2rem;
 	margin-bottom: 0.2rem;
 }
@@ -2927,5 +2936,12 @@ body {
 
 #startKanji {
 	width: 2.7rem;
+}
+
+.my-tabcolor-font{
+	color: #4a4a4a;
+	font-size: 14px;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
 }
 }
