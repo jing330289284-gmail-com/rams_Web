@@ -64,45 +64,69 @@ h2 {
 
 .linkFont {
 	font-family: "黑体", Sans-serif;
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 	margin-left: -0.5rem;
 	color: rgb(247, 226, 248);
 }
 
-.linkFont:hover {
+/* .linkFont:hover {
 	color: black;
-	text-decoration: none;
 	animation: light 0.5s ease infinite alternate;
-}
-
-/*.linkFont:hover {
-	color: orange;
-	background: linear-gradient(to bottom right, orange , #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-animation: change 5s infinite linear;
 } */
 
 .linkFont-click {
 	font-family: "黑体", Sans-serif;
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 	margin-left: -0.5rem;
 	color: black;
 }
 
-.linkFont-click:hover {
+/* .linkFont-click:hover {
 	color: black;
 	text-decoration: none;
 	animation: light 0.5s ease infinite alternate;
+} */
+
+#社員・BP,#現場,#お客様,
+#給料と売上,#営業送信,
+#営業管理,#勤務,#期限確認,
+#マスター,#他の設定{
+	padding: 0px;
+	margin: 0px;
 }
 
-/* .linkFont-click:hover {
-	color: orange;
-	background: linear-gradient(to bottom right, orange , #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-animation: change 5s infinite linear;
-} */
+.my-tabcolor{
+}
+
+.my-tabcolor::before{
+	display: none;
+}
+
+.my-tabcolor::after{
+	display: none;
+}
+
+.my-tabcolor-font{
+	color: #4a4a4a;
+	font-size: 18px;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
+}
+
+.my-tabcolor-font-hover{
+	color: #ffffff;
+	font-size: 18px;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
+}
+
+.my-tabcolor-font-hover:hover{
+	color: #ffffff;
+	font-size: 18px;
+	margin-top: 0.2rem;
+	margin-bottom: 0.2rem;
+	text-decoration: none;
+}
 
 @-webkit-keyframes change {
     from {
@@ -193,5 +217,25 @@ h2 {
 		text-align: center;
 		color: rgb(110, 70, 185);
 		text-shadow: 5px 2px 6px rgb(148, 195, 207);
+	}
+	.my-tabcolor-font{
+		color: #4a4a4a;
+		font-size: 14px;
+		margin-top: 0.2rem;
+		margin-bottom: 0.2rem;
+	}	
+	.my-tabcolor-font-hover{
+		color: #ffffff;
+		font-size: 14px;
+		margin-top: 0.2rem;
+		margin-bottom: 0.2rem;
+	}
+	
+	.my-tabcolor-font-hover:hover{
+		color: #ffffff;
+		font-size: 14px;
+		margin-top: 0.2rem;
+		margin-bottom: 0.2rem;
+		text-decoration: none;
 	}
 }
