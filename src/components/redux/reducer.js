@@ -85,6 +85,7 @@ export function fetchDropDown() {
 		"getPurchasingManagersWithMail",// 78お客様担当者取得(メールなし抜く)
 		"getWorkingEmployeeNo",// 79稼働中社員番号取得
 		"getNotWorkingEmployeeNo",// 80稼働してなの社員番号取得
+		"getBpGrossProfit",// 81 BP粗利取得
 		"getServerIP",// 最後
 	]
 	var outArray = [];
@@ -203,6 +204,7 @@ var methodNameList = ["getGender",// 0.性別区別
 		"getPurchasingManagersWithMail",// 78お客様担当者取得(メールなし抜く)
 		"getWorkingEmployeeNo",// 79稼働中社員番号取得
 		"getNotWorkingEmployeeNo",// 80稼働してなの社員番号取得
+		"getBpGrossProfit",// 81 BP粗利取得
 		"getServerIP",// 最後
 	]
 var outArray = [];

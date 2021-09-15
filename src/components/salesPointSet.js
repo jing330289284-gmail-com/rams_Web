@@ -36,6 +36,7 @@ class salesPointSet extends React.Component {
 		levelStatus: store.getState().dropDown[18],
 		salesPutternStatus: store.getState().dropDown[25],
 		specialPointStatus: store.getState().dropDown[26],
+		bpGrossProfitStatus: store.getState().dropDown[81],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
 
@@ -66,7 +67,7 @@ class salesPointSet extends React.Component {
 	}
 
 	newMemberStatusFormat = (cell,row) => {
-		if(row.employee=="0"){
+		if(row.employee==="0"){
 			var statuss = this.state.newMemberStatus;
 			for (var i in statuss) {
 				if (cell === statuss[i].value) {
@@ -102,6 +103,19 @@ class salesPointSet extends React.Component {
 			if (cell === statuss[i].value) {
 				return statuss[i].text;
 			}
+		}
+	}
+	
+	bpGrossProfitStatusFormat = (cell,row) => {
+		if(row.employee==="1"){
+			var statuss = this.state.bpGrossProfitStatus;
+			for (var i in statuss) {
+				if (cell === statuss[i].value) {
+					return statuss[i].text;
+				}
+			}
+		}else{
+			return "";
 		}
 	}
 
@@ -176,7 +190,8 @@ class salesPointSet extends React.Component {
 		salesPointSetModel["newMember"] = "";
 		salesPointSetModel["customerContract"] = "0";
 		salesPointSetModel["level"] = "";
-		salesPointSetModel["salesPuttern"] = "";
+		//salesPointSetModel["salesPuttern"] = "";
+		salesPointSetModel["bpGrossProfit"] = "";
 		salesPointSetModel["specialPoint"] = "";
 		salesPointSetModel["point"] = "";
 		salesPointSetModel["remark"] = "";
@@ -209,7 +224,8 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["newMember"] = this.state.salesPointData[i].employee=="0"?this.state.salesPointData[i].newMember:null;
 				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
-				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				//salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				salesPointSetModel["bpGrossProfit"] = this.state.salesPointData[i].bpGrossProfit
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
 				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo!=null&&this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
 				salesPointSetModel["point"] = this.state.salesPointData[i].point!=null&&this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
@@ -256,12 +272,12 @@ class salesPointSet extends React.Component {
 				if (this.state.salesPointData[i].customerContract === ""　|| this.state.salesPointData[i].customerContract == null){
 					isNull += " 契約区分 ";
 				}
-				if (this.state.salesPointData[i].level === ""　|| this.state.salesPointData[i].level == null){
+				/*if (this.state.salesPointData[i].level === ""　|| this.state.salesPointData[i].level == null){
 					isNull += " お客様レベル ";
 				}
 				if (this.state.salesPointData[i].salesPuttern === ""　|| this.state.salesPointData[i].salesPuttern == null){
 					isNull += " 営業結果パタンー ";
-				}
+				}*/
 				if (this.state.salesPointData[i].point === ""　|| this.state.salesPointData[i].point == null){
 					isNull += " ポイント ";
 				}
@@ -279,7 +295,8 @@ class salesPointSet extends React.Component {
 				salesPointSetModel["newMember"] = this.state.salesPointData[i].employee=="0"?this.state.salesPointData[i].newMember:null;
 				salesPointSetModel["customerContract"] = this.state.salesPointData[i].customerContract
 				salesPointSetModel["level"] = this.state.salesPointData[i].level
-				salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				//salesPointSetModel["salesPuttern"] = this.state.salesPointData[i].salesPuttern
+				salesPointSetModel["bpGrossProfit"] = this.state.salesPointData[i].bpGrossProfit
 				salesPointSetModel["specialPoint"] = this.state.salesPointData[i].specialPoint
 				salesPointSetModel["specialPointNo"] = this.state.salesPointData[i].specialPointNo!=null&&this.state.salesPointData[i].specialPointNo.length>=3?this.state.salesPointData[i].specialPointNo.substring(0,3):this.state.salesPointData[i].specialPointNo
 				salesPointSetModel["point"] = this.state.salesPointData[i].point!=null&&this.state.salesPointData[i].point.length>=3?this.state.salesPointData[i].point.substring(0,3):this.state.salesPointData[i].point
@@ -341,12 +358,12 @@ class salesPointSet extends React.Component {
 		if (this.state.salesPointData[this.state.salesPointData.length - 1].customerContract === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].customerContract == null){
 			isNull += " 契約区分 ";
 		}
-		if (this.state.salesPointData[this.state.salesPointData.length - 1].level === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].level == null){
+		/*if (this.state.salesPointData[this.state.salesPointData.length - 1].level === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].level == null){
 			isNull += " お客様レベル ";
 		}
 		if (this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].salesPuttern == null){
 			isNull += " 営業結果パタンー ";
-		}
+		}*/
 		if (this.state.salesPointData[this.state.salesPointData.length - 1].point === ""　|| this.state.salesPointData[this.state.salesPointData.length - 1].point == null){
 			isNull += " ポイント ";
 		}
@@ -469,7 +486,7 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.employeeStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='newMember' editable={this.state.employeefrom=="0"?{ type: 'select', options: { values: this.state.newMemberStatus }}:false} 
+										<TableHeaderColumn dataField='newMember' editable={this.state.employeefrom==="0"?{ type: 'select', options: { values: this.state.newMemberStatus }}:false} 
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.newMemberStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >新人区分</TableHeaderColumn>
 
@@ -477,13 +494,17 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.customerContractStatusFormat.bind(this)}
 											width='95' tdStyle={{ padding: '.45em' }} >契約区分</TableHeaderColumn>
 
-										<TableHeaderColumn dataField='level' editable={{ type: 'select', options: { values: this.state.levelStatus } }}
+										{/*<TableHeaderColumn dataField='level' editable={{ type: 'select', options: { values: this.state.levelStatus } }}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.levelStatusFormat.bind(this)}
 											width='125' tdStyle={{ padding: '.45em' }} >お客様レベル</TableHeaderColumn>
 
 										<TableHeaderColumn dataField='salesPuttern' editable={{ type: 'select', options: { values: this.state.salesPutternStatus } }}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
-											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>
+											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>*/}
+											
+										<TableHeaderColumn dataField='bpGrossProfit' editable={this.state.employeefrom==="1"?{ type: 'select', options: { values: this.state.newMemberStatus }}:false}
+											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.bpGrossProfitStatusFormat.bind(this)}
+											width='155' tdStyle={{ padding: '.45em' }} >BP粗利</TableHeaderColumn>
 
 										<TableHeaderColumn dataField='point' width='95' tdStyle={{ padding: '.45em' }} editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.pointFormat.bind(this)}>ポイント</TableHeaderColumn>
 

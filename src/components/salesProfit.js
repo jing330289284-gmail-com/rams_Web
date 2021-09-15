@@ -451,7 +451,6 @@ class salesProfit extends React.Component {
 								</Col>
 							</Row>
 							<div>
-								<br />
 								<Row>
 									<Col sm={2}>
 										{/*

@@ -379,7 +379,7 @@ class SubMenu extends Component {
 																	<div><Link className={this.state.hover.search("2") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to="/subMenuManager/salesSendLetter"><FontAwesomeIcon className="fa-fw" size="lg" icon={faCheckSquare} /> お客様選択</Link></div>
 																</ListGroup.Item>
 																<ListGroup.Item style={this.state.hover.search("3") !== -1 ? subMenuHover : subMenu} onMouseEnter={this.toggleHover.bind(this,"営業送信-3")} onMouseLeave={this.toggleHover.bind(this,"営業送信")} onClick={this.shuseiTo.bind(this,projectInfoPath)} block>
-																	<div><Link className={this.state.hover.search("3") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to={projectInfoPath}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} />案件登録</Link></div>
+																	<div><Link className={this.state.hover.search("3") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to={projectInfoPath}><FontAwesomeIcon className="fa-fw" size="lg" icon={faSave} /> 案件登録</Link></div>
 																</ListGroup.Item>
 																<ListGroup.Item style={this.state.hover.search("4") !== -1 ? subMenuHover : subMenu} onMouseEnter={this.toggleHover.bind(this,"営業送信-4")} onMouseLeave={this.toggleHover.bind(this,"営業送信")} onClick={this.shuseiTo.bind(this,{ pathname: '/subMenuManager/projectInfoSearch'})} block>
 																	<div><Link className={this.state.hover.search("4") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to="/subMenuManager/projectInfoSearch"><FontAwesomeIcon className="fa-fw" size="lg" icon={faSearchMinus} /> 案件一覧</Link></div>

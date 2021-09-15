@@ -1,6 +1,6 @@
 import React from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { Row, Form, Col, InputGroup, Button } from 'react-bootstrap';
+import { Row, Form, Col, InputGroup, Button, FormControl } from 'react-bootstrap';
 import MyToast from './myToast';
 import ErrorsMessageToast from './errorsMessageToast';
 import axios from 'axios'
@@ -179,7 +179,7 @@ class salesPoint extends React.Component {
 			default:
 				break;
 		}
-		axios.post(this.state.serverIP + "getPointInfo", salesPointSetModel)
+		axios.post(this.state.serverIP + "getPointInfoNew", salesPointSetModel)
 			.then(response => {
 				if (response.data != null) {
 					if (response.data.length > 0) {
@@ -306,6 +306,7 @@ class salesPoint extends React.Component {
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
+												maxDate={new Date()}
 												name="admissionStartDate"
 												className="form-control form-control-sm"
 												id="datePicker"
@@ -318,6 +319,7 @@ class salesPoint extends React.Component {
 												dateFormat="yyyy/MM"
 												showMonthYearPicker
 												showFullMonthYearPicker
+												maxDate={new Date()}
 												name="admissionEndDate"
 												className="form-control form-control-sm"
 												id="datePicker"
@@ -328,12 +330,18 @@ class salesPoint extends React.Component {
 									</InputGroup>
 								</Col>
 							</Row>
-							<br />
 							<Row>
-								<Col sm={3}>
-									<font style={{ whiteSpace: 'nowrap' }}>ポイント合計：{this.state.pointAll}</font>
+								<Col sm={2}>
+				                <InputGroup size="sm">
+				                    <InputGroup.Prepend>
+				                        <InputGroup.Text id="sixKanji">ポイント合計</InputGroup.Text>
+				                    </InputGroup.Prepend>
+				                    <FormControl
+				                    value={this.state.pointAll}
+				                    disabled/>
+			                    </InputGroup>
 								</Col>
-								<Col sm={7}>
+								<Col sm={8}>
 								</Col>
 								<Col sm={2}>
 									<div style={{ "float": "right" }}>
@@ -346,12 +354,12 @@ class salesPoint extends React.Component {
 									<BootstrapTable selectRow={selectRow} data={this.state.salesPointData} ref='table' pagination={true} options={this.options} headerStyle={{ background: '#5599FF' }} striped hover condensed>
 										<TableHeaderColumn dataField='rowNo' width='57' tdStyle={{ padding: '.45em' }} isKey>番号</TableHeaderColumn>
 										<TableHeaderColumn dataField='yearAndMonth' width='80' tdStyle={{ padding: '.45em' }}>年月</TableHeaderColumn>
-										<TableHeaderColumn dataField='employeeStatusName' width='90' tdStyle={{ padding: '.45em' }} >社員区分</TableHeaderColumn>
-										<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} width='120'>所属会社</TableHeaderColumn>
 										<TableHeaderColumn dataField='employeeName' tdStyle={{ padding: '.45em' }} width='120'>氏名</TableHeaderColumn>
+										<TableHeaderColumn dataField='employeeStatusName' width='90' tdStyle={{ padding: '.45em' }} hidden>社員区分</TableHeaderColumn>
+										<TableHeaderColumn dataField='employeeFrom' tdStyle={{ padding: '.45em' }} width='120' hidden>所属会社</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerName' tdStyle={{ padding: '.45em' }} width='120'>お客様</TableHeaderColumn>
 										<TableHeaderColumn dataField='customerContractStatus' hidden tdStyle={{ padding: '.45em' }} width='80'>契約区分</TableHeaderColumn>
-										<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>
+										{/*<TableHeaderColumn dataField='salesProgressName' tdStyle={{ padding: '.45em' }} width='150' >営業結果パタンー</TableHeaderColumn>*/}
 										<TableHeaderColumn dataField='point' tdStyle={{ padding: '.45em' }} width='80' >ポイント</TableHeaderColumn>
 										<TableHeaderColumn dataField='specialsalesPointCondition' tdStyle={{ padding: '.45em' }} width='200' dataFormat={this.specialPointStatusFormat.bind(this)}>特別ポイント理由</TableHeaderColumn>
 										<TableHeaderColumn dataField='specialsalesPoint' tdStyle={{ padding: '.45em' }} width='130' >特別ポイント</TableHeaderColumn>
