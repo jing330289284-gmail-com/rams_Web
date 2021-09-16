@@ -319,6 +319,13 @@ class salesProfit extends React.Component {
 		return employeeName;
 	}
 	
+	siteRoleNameFormat = (cell, row, enumObject, index) => {
+		if(Number(utils.deleteComma(row.siteRoleName)) < 0){
+			return (<font color="red">{row.siteRoleName}</font>);
+		}
+		return row.siteRoleName;
+	}
+	
 	profitFormat = (cell, row, enumObject, index) => {
 		let profitFormat = row.profit + "(" + row.month + ")";
 		return profitFormat;
@@ -505,7 +512,7 @@ class salesProfit extends React.Component {
 											<TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='120' hidden>単価</TableHeaderColumn>
 											<TableHeaderColumn dataField='profit' tdStyle={{ padding: '.45em' }} width='150' dataFormat={this.profitFormat}>売上</TableHeaderColumn>
 											<TableHeaderColumn dataField='salary' tdStyle={{ padding: '.45em' }} width='150' >給料(発注)合計</TableHeaderColumn>
-											<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='150' >粗利</TableHeaderColumn>
+											<TableHeaderColumn dataField='siteRoleName' tdStyle={{ padding: '.45em' }} width='150' dataFormat={this.siteRoleNameFormat}>粗利</TableHeaderColumn>
 										</BootstrapTable>
 									</Col>
 								</Row>

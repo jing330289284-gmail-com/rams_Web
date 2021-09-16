@@ -1159,6 +1159,16 @@ body {
 	color: "#495057"
 }
 
+.Autocompletestyle-employeeInsertNew-employeeNo {
+	width: 8.0rem;
+	height: 31px;
+	border-color: "#ced4da";
+	border-width: 1;
+	border-style: "solid";
+	font-size: ".875rem";
+	color: "#495057"
+}
+
 .Autocompletestyle-siteInfoSearch-employeeNo {
 	width: 14.4rem;
 	height: 31px;
@@ -2075,6 +2085,15 @@ body {
 	}
 	.Autocompletestyle-siteInfoSearch-station {
 		width: 10.4rem;
+		height: 31px;
+		border-color: "#ced4da";
+		border-width: 1;
+		border-style: "solid";
+		font-size: ".875rem";
+		color: "#495057"
+	}
+	.Autocompletestyle-employeeInsertNew-employeeNo {
+		width: 5.8rem;
 		height: 31px;
 		border-color: "#ced4da";
 		border-width: 1;

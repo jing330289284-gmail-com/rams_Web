@@ -45,6 +45,7 @@ class EmployeeDetailNew extends React.Component {
 		employeeStatusFlag: true,
 		backPage:"",
 		sendValue:{},
+		introducer: null,
 		searchFlag:false,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
@@ -77,6 +78,11 @@ class EmployeeDetailNew extends React.Component {
 	 */
 	componentDidMount() {
 		const { location } = this.props
+		let employeeInfo = [];
+		for(let i in this.state.employeeInfo){
+			if(this.state.employeeInfo[i].code.search("BP") === -1)
+				employeeInfo.push({code:this.state.employeeInfo[i].code,name:this.state.employeeInfo[i].text,text:this.state.employeeInfo[i].text,value:this.state.employeeInfo[i].value,})
+		}
 		this.setState(
 			{
 				actionType: location.state.actionType,
@@ -84,6 +90,7 @@ class EmployeeDetailNew extends React.Component {
 				sendValue:location.state.sendValue,
 				searchFlag:location.state.searchFlag,
 				backbackPage :location.state.backbackPage,
+				employeeInfo: employeeInfo,
 			}
 		);
 		this.getEmployeeByEmployeeNo(location.state.id);
@@ -176,7 +183,9 @@ class EmployeeDetailNew extends React.Component {
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),// パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),// 経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
-					image: data.picInfo
+					image: data.picInfo,
+					introducer: data.introducer,
+					employeeName: this.state.employeeInfo.find((v) => (v.code === data.introducer)).name,
 				});
 			}
 			);
@@ -579,23 +588,7 @@ class EmployeeDetailNew extends React.Component {
 									<font className="site-mark"></font>
 									
 									<Row></Row>
-									
-								<InputGroup.Prepend>
-									<InputGroup.Text id="fiveKanji">採用区分</InputGroup.Text>
-								</InputGroup.Prepend>
-								<Form.Control as="select" size="sm"
-									name="intoCompanyCode" value={intoCompanyCode}
-									disabled>
-									{this.state.intoCompanyCodes.map(date =>
-										<option key={date.code} value={date.code}>
-											{date.name}
-										</option>
-									)}
-								</Form.Control>
-								<font className="site-mark"></font>
-								
-								<Row></Row>
-								
+
 							<InputGroup.Prepend>
 								<InputGroup.Text id="fiveKanji">部署 </InputGroup.Text>
 							</InputGroup.Prepend>
@@ -624,6 +617,47 @@ class EmployeeDetailNew extends React.Component {
 									</option>
 								)}
 								</Form.Control>
+								<font className="site-mark"></font>
+								
+								<Row></Row>
+								
+								<InputGroup.Prepend>
+									<InputGroup.Text id="fiveKanji">採用区分</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control as="select" size="sm"
+									name="intoCompanyCode" value={intoCompanyCode}
+									disabled>
+									{this.state.intoCompanyCodes.map(date =>
+										<option key={date.code} value={date.code}>
+											{date.name}
+										</option>
+									)}
+								</Form.Control>
+								<InputGroup.Prepend>
+									<InputGroup.Text id="sanKanji">紹介者</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									id="employeeName"
+									name="employeeName"
+									disabled
+									value={this.state.employeeInfo.find(v => v.text === this.state.employeeName) || {}}
+									options={this.state.employeeInfo}
+									getOptionLabel={(option) => option.text ? option.text : ""}
+									renderOption={(option) => {
+										return (
+											<React.Fragment>
+												{option.name}
+											</React.Fragment>
+										)
+									}}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps} className="auto"
+												className="auto form-control Autocompletestyle-employeeInsertNew-employeeNo"
+											/>
+										</div>
+									)}
+								/>
 								<font className="site-mark"></font>
 								
 								<Row></Row>

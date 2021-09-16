@@ -54,6 +54,7 @@ class employeeUpdateNew extends React.Component {
 		loading:true,
 		residentCardInfoName: '',
 		passportInfoName: '',
+		introducer: null,
 		genderStatuss: store.getState().dropDown[0],
 		intoCompanyCodes: store.getState().dropDown[1],
 		employeeFormCodes: store.getState().dropDown[2],
@@ -160,6 +161,7 @@ class employeeUpdateNew extends React.Component {
 			picInfo: imgSrc,// pb情報
 			residentCardInfoName: this.state.residentCardInfoName,
 			passportInfoName: this.state.passportInfoName,
+			introducer: this.state.introducer,
 		};
 		formData.append('emp', JSON.stringify(emp))
 		formData.append('resumeInfo1', publicUtils.nullToEmpty($('#resumeInfo1').get(0).files[0]))
@@ -327,11 +329,17 @@ class employeeUpdateNew extends React.Component {
 				authorityCodes:authorityCodes,
 			},()=>{
 				const { location } = this.props
+				let employeeInfo = [];
+				for(let i in this.state.employeeInfo){
+					if(this.state.employeeInfo[i].code.search("BP") === -1)
+						employeeInfo.push({code:this.state.employeeInfo[i].code,name:this.state.employeeInfo[i].text,text:this.state.employeeInfo[i].text,value:this.state.employeeInfo[i].value,})
+				}
 				this.setState(
 					{
 						actionType: location.state.actionType,
 						backPage: location.state.backPage,
 						sendValue: this.props.location.state.sendValue,
+						employeeInfo: employeeInfo,
 					}
 				);
 				this.getEmployeeByEmployeeNo(location.state.id);
@@ -443,7 +451,9 @@ class employeeUpdateNew extends React.Component {
 					passportInfoURL: publicUtils.nullToEmpty(data.passportInfo),// パスポート
 					yearsOfExperience: publicUtils.converToLocalTime(data.yearsOfExperience, false),// 経験年数
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
-					image: data.picInfo
+					image: data.picInfo,
+					introducer: data.introducer,
+					employeeName: this.state.employeeInfo.find((v) => (v.code === data.introducer)).name,
 				});
 			}
 			);
@@ -963,6 +973,50 @@ class employeeUpdateNew extends React.Component {
 			})
 		}
 	}
+	
+	// AUTOSELECT select事件
+	handleTag = ({ target }, fieldName) => {
+		const { value, id } = target;
+		if (value === '') {
+			this.setState({
+				[id]: '',
+			})
+		} else {
+			if (this.state.employeeInfo.find((v) => (v.name === value)) !== undefined) {
+				switch (fieldName) {
+					case 'employeeName':
+						this.setState({
+							employeeName: value,
+						})
+						break;
+				}
+			}
+		}
+	};
+	
+	/**
+	 * 社員名連想
+	 * 
+	 * @param {}
+	 *            event
+	 */
+	getEmployeeName = (event, values) => {
+		this.setState({
+			[event.target.name]: event.target.value,
+		}, () => {
+			let employeeName = null;
+			let introducer = null;
+			if (values !== null) {
+				employeeName = values.text;
+				introducer = values.code;
+			}
+			this.setState({
+				employeeName: employeeName,
+				introducer: introducer,
+			})
+		})
+	}
+
 
 	/**
 	 * 郵便番号API
@@ -1177,23 +1231,6 @@ class employeeUpdateNew extends React.Component {
 									
 									<Row></Row>
 							
-									<InputGroup.Prepend>
-										<InputGroup.Text id="fiveKanji">採用区分</InputGroup.Text>
-									</InputGroup.Prepend>
-									<Form.Control as="select" size="sm"
-										onChange={this.valueChange}
-										name="intoCompanyCode" value={intoCompanyCode}
-										autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "2" || employeeStatus === "3" ? false : true} >
-										{this.state.intoCompanyCodes.map(date =>
-											<option key={date.code} value={date.code}>
-												{date.name}
-											</option>
-										)}
-									</Form.Control>
-									<font className="site-mark"></font>
-									
-									<Row></Row>
-							
 								<InputGroup.Prepend>
 									<InputGroup.Text id="fiveKanji">部署</InputGroup.Text>
 								</InputGroup.Prepend>
@@ -1229,7 +1266,50 @@ class employeeUpdateNew extends React.Component {
 								<font className="site-mark"></font>
 								
 								<Row></Row>
-						
+								
+								<InputGroup.Prepend>
+									<InputGroup.Text id="fiveKanji">採用区分</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Form.Control as="select" size="sm"
+									onChange={this.valueChange}
+									name="intoCompanyCode" value={intoCompanyCode}
+									autoComplete="off" disabled={employeeStatus === "0" || employeeStatus === "2" || employeeStatus === "3" ? false : true} >
+									{this.state.intoCompanyCodes.map(date =>
+										<option key={date.code} value={date.code}>
+											{date.name}
+										</option>
+									)}
+								</Form.Control>
+								
+								<InputGroup.Prepend>
+									<InputGroup.Text id="sanKanji">紹介者</InputGroup.Text>
+								</InputGroup.Prepend>
+								<Autocomplete
+									id="employeeName"
+									name="employeeName"
+									value={this.state.employeeInfo.find(v => v.text === this.state.employeeName) || {}}
+									options={this.state.employeeInfo}
+									getOptionLabel={(option) => option.text ? option.text : ""}
+									onSelect={(event) => this.handleTag(event, 'employeeName')}
+									onChange={(event, values) => this.getEmployeeName(event, values)}
+									renderOption={(option) => {
+										return (
+											<React.Fragment>
+												{option.name}
+											</React.Fragment>
+										)
+									}}
+									renderInput={(params) => (
+										<div ref={params.InputProps.ref}>
+											<input type="text" {...params.inputProps} className="auto"
+												className="auto form-control Autocompletestyle-employeeInsertNew-employeeNo"
+											/>
+										</div>
+									)}
+								/>
+								<font className="site-mark"></font>
+							
+							<Row></Row>
 							<InputGroup.Prepend>
 								<InputGroup.Text id="fiveKanji">社内メール</InputGroup.Text>
 							</InputGroup.Prepend>

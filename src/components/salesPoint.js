@@ -36,6 +36,7 @@ class salesPoint extends React.Component {
 		insertNo: '',
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 		customerDrop: store.getState().dropDown[56].slice(1),
+		specialPointStatus: store.getState().dropDown[26],
 	};
 
 	// 页面加载
@@ -112,7 +113,12 @@ class salesPoint extends React.Component {
 	
 	// 鼠标悬停显示全文
 	specialPointStatusFormat = (cell) => {
-		return <span title={cell}>{cell}</span>;
+		var statuss = this.state.specialPointStatus;
+		for (var i in statuss) {
+			if (cell === statuss[i].value) {
+				return <span title={statuss[i].text}>{statuss[i].text}</span>;
+			}
+		}
 	}
 
 	/**
@@ -183,9 +189,16 @@ class salesPoint extends React.Component {
 			.then(response => {
 				if (response.data != null) {
 					if (response.data.length > 0) {
+						let pointAll = 0;
+						for(let i in response.data){
+							if(response.data[i].point !== null && response.data[i].point !== "")
+								pointAll += Number(response.data[i].point);
+							if(response.data[i].specialsalesPoint !== null && response.data[i].specialsalesPoint !== "")
+								pointAll += Number(response.data[i].specialsalesPoint);
+						}
 						this.setState({
 							salesPointData: response.data,
-							pointAll: response.data[0].pointAll,
+							pointAll: pointAll,
 							rows: response.data.length,
 						});
 					} else {

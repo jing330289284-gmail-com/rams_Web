@@ -42,6 +42,15 @@ class salesPointSet extends React.Component {
 
 	// 页面加载
 	componentDidMount() {
+		let employeeStatus = [];
+		for(let i in this.state.employeeStatus){
+			if(this.state.employeeStatus[i].code === "0" || this.state.employeeStatus[i].code === "1"){
+				employeeStatus.push(this.state.employeeStatus[i]);
+			}
+		}
+		this.setState({
+			employeeStatus: employeeStatus
+		})
 		this.select();
 	}
 	// 明细查询
@@ -502,7 +511,7 @@ class salesPointSet extends React.Component {
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.salesPutternStatusFormat.bind(this)}
 											width='155' tdStyle={{ padding: '.45em' }} >営業結果パタンー</TableHeaderColumn>*/}
 											
-										<TableHeaderColumn dataField='bpGrossProfit' editable={this.state.employeefrom==="1"?{ type: 'select', options: { values: this.state.newMemberStatus }}:false}
+										<TableHeaderColumn dataField='bpGrossProfit' editable={this.state.employeefrom==="1"?{ type: 'select', options: { values: this.state.bpGrossProfitStatus }}:false}
 											editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.bpGrossProfitStatusFormat.bind(this)}
 											width='155' tdStyle={{ padding: '.45em' }} >BP粗利</TableHeaderColumn>
 
