@@ -88,6 +88,7 @@ class WagesInfo extends Component {
 		workingConditionStatus: store.getState().dropDown[74].slice(1),
 		newEmployeeStatus: '',
 		workingCondition: "0",
+		rowReflectYearAndMonth: '',
         serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],//劉林涛　テスト
     }
     //onchange
@@ -588,6 +589,7 @@ class WagesInfo extends Component {
             }
             this.setState({
                 period: row.period,
+                rowReflectYearAndMonth: row.reflectYearAndMonth,
             })
         } else {
             this.resetValue();
@@ -597,6 +599,7 @@ class WagesInfo extends Component {
                 expensesInfoModels: this.state.allExpensesInfoList,
                 deleteFlag:true,
                 period: '',
+                rowReflectYearAndMonth: '',
             })
         }
     }
@@ -936,11 +939,13 @@ class WagesInfo extends Component {
         })
     }
     delete = () => {
+    	alert(this.state.employeeName)
+    	alert(this.state.reflectStartDate)
         var a = window.confirm("削除していただきますか？");
         if (a) {
             var deleteMod = {};
             deleteMod["employeeNo"] = this.state.employeeName;
-            deleteMod["reflectYearAndMonth"] = utils.formateDate(this.state.reflectStartDate);
+            deleteMod["reflectYearAndMonth"] = this.state.rowReflectYearAndMonth;
             axios.post(this.state.serverIP + "wagesInfo/delete", deleteMod)
                 .then(result => {
                     if (result.data.errorsMessage === null || result.data.errorsMessage === undefined) {

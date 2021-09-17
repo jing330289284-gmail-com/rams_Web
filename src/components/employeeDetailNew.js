@@ -185,7 +185,7 @@ class EmployeeDetailNew extends React.Component {
 					temporary_yearsOfExperience: publicUtils.getFullYearMonth(publicUtils.converToLocalTime(data.yearsOfExperience === "" ? data.graduationYearAndMonth : data.yearsOfExperience, false), new Date()),
 					image: data.picInfo,
 					introducer: data.introducer,
-					employeeName: this.state.employeeInfo.find((v) => (v.code === data.introducer)).name,
+					employeeName: this.state.employeeInfo.find((v) => (v.code === data.introducer)) === undefined ? "" : this.state.employeeInfo.find((v) => (v.code === data.introducer)).name,
 				});
 			}
 			);

@@ -60,8 +60,11 @@ class monthlySalesSearch extends Component {//月次売上検索
             occupationCodes: store.getState().dropDown[10],
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
             rowSelectemployeeNo:'',
+            monthlySales_startYearAndMonth: new Date(),
+            monthlySales_endYearAndMonth: new Date(),
         }
         componentDidMount(){
+        	this.searchMonthlySales();
             var date = new Date();
             var year = date.getFullYear();
             $('#fiscalYear').append('<option value="">' + "" + '</option>');

@@ -34,15 +34,18 @@ class customerSalesList extends React.Component {
             paginationShowsTotal: this.renderShowsTotal,
         }
     }
-
     initialState = {
-            customerSalesListYearAndMonth:'',
+            customerSalesListYearAndMonth: new Date(),
             serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
             perCal:[],
             CustomerSaleslListInfoList: [],
             totalGrossProfitAdd: 0,
             countPeo: 0,
-        }
+    }
+    
+    componentDidMount(){
+        this.searchCustomer();
+    }
     
 	renderShowsTotal = () => {
 		return (

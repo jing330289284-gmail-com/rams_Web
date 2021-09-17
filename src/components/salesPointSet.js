@@ -480,7 +480,7 @@ class salesPointSet extends React.Component {
 								<Col sm={3}>
 									<div style={{ "float": "right" }}>
 										<Button variant="info" size="sm" id="revise" onClick={this.state.insertFlag === true ? this.insert : this.insertRow}><FontAwesomeIcon icon={faSave} /> {this.state.insertFlag === true ? '登録' : '追加'}</Button>{' '}
-										<Button variant="info" size="sm" id="revise" onClick={this.update.bind(this)} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faEdit} />修正</Button>{' '}
+										<Button variant="info" size="sm" id="revise" onClick={this.update.bind(this)} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faEdit} />更新</Button>{' '}
 										<Button variant="info" size="sm" id="revise" onClick={this.delete} disabled={this.state.updateFlag === false && this.state.insertFlag === false ? false : true}><FontAwesomeIcon icon={faTrash} />削除</Button>{' '}
 									</div>
 								</Col>
