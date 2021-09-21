@@ -149,30 +149,30 @@ class EnterPeriodSearch extends React.Component {
     periodButton=(cell,row)=>{
         let returnItem = cell;
         const options = {
-            noDataText: (<i className="" style={{ 'fontSize': '24px' }}>データなし</i>),
-            page: 1,  // which page you want to show as default
-            sizePerPage: 12,  // which size per page you want to locate as default
-            pageStartIndex: 1, // where to start counting the pages
-            paginationSize: 3,  // the pagination bar size.
-            prePage: '<', // Previous page button text
-            nextPage: '>', // Next page button text
-            firstPage: '<<', // First page button text
-            lastPage: '>>', // Last page button text
-            expandRowBgColor: 'rgb(165, 165, 165)',
-            hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
-            expandRowBgColor: 'rgb(165, 165, 165)',
-        };
+                noDataText: (<i className="" style={{ 'fontSize': '20px' }}>データなし</i>),
+                expandRowBgColor: 'rgb(165, 165, 165)',
+                hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
+                expandRowBgColor: 'rgb(165, 165, 165)',
+            };
+        const selectRow = {
+                mode: 'radio',
+                bgColor: 'pink',
+                hideSelectColumn: true,
+                clickToSelect: true,
+                clickToExpand: true,
+            };	
         returnItem = 
         <OverlayTrigger
-            trigger="focus"
+            trigger="click"
             placement={"left"}
             overlay={
             <Popover>
                 <Popover.Content>
                 <div>
                     <BootstrapTable
-                        pagination={true}
+                        pagination={false}
                         options={options}
+            			selectRow={selectRow}
                         data={row.nonSitePeriodsList}
                         headerStyle={{ background: '#5599FF' }}
                         striped
@@ -207,6 +207,8 @@ class EnterPeriodSearch extends React.Component {
     }
     addMarkInsuranceFeeAmount=(cell,row)=>{
         let insuranceFeeAmount = utils.addComma(row.insuranceFeeAmount);
+        if(insuranceFeeAmount === "0")
+        	return "";
         return insuranceFeeAmount;
     }
     addMarkUnitPrice=(cell,row)=>{
@@ -226,6 +228,8 @@ class EnterPeriodSearch extends React.Component {
     }
     addMarkAdmissionStartDate=(cell,row)=>{
         let admissionStartDate = utils.dateFormate(row.admissionStartDate);
+        if(admissionStartDate === "")
+        	return "";
         admissionStartDate += "(" + row.admissionMonth + ")";
         return admissionStartDate;
     }
@@ -457,7 +461,7 @@ class EnterPeriodSearch extends React.Component {
                         <TableHeaderColumn tdStyle={{ padding: '.45em' }} width='11%' dataFormat={this.periodButton.bind(this)}>
                             非稼動月数</TableHeaderColumn>
                         <TableHeaderColumn dataField='unitPrice' tdStyle={{ padding: '.45em' }} width='12%' dataFormat={this.addMarkUnitPrice}>
-                            単価（万円）</TableHeaderColumn>
+                            単価（円）</TableHeaderColumn>
                         <TableHeaderColumn dataField='scheduleOfBonusAmount' tdStyle={{ padding: '.45em' }} width='13%' dataFormat={this.addMarkScheduleOfBonusAmount}>
                             ボーナス予定額</TableHeaderColumn>
                     </BootstrapTable>

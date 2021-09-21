@@ -939,8 +939,6 @@ class WagesInfo extends Component {
         })
     }
     delete = () => {
-    	alert(this.state.employeeName)
-    	alert(this.state.reflectStartDate)
         var a = window.confirm("削除していただきますか？");
         if (a) {
             var deleteMod = {};
