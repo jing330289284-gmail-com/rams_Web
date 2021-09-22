@@ -1143,7 +1143,7 @@ class salesSendLetter extends React.Component {
 							<TableHeaderColumn width='11%' dataField='levelCode' hidden >ランキング</TableHeaderColumn>
 							<TableHeaderColumn width='8%' dataField='businessCount' dataFormat={this.businessCountFormat}>取引数</TableHeaderColumn>
 							<TableHeaderColumn width='12%' dataField='salesPersonsAppend' dataFormat={this.CellFormatter.bind(this)}>担当追加</TableHeaderColumn>
-							<TableHeaderColumn width='11%' dataField='monthMailCount'>月送信回数</TableHeaderColumn>
+							<TableHeaderColumn width='11%' dataField='sendLetterCount'>月送信回数</TableHeaderColumn>
 							<TableHeaderColumn dataField='rowId' hidden={true} >ID</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>

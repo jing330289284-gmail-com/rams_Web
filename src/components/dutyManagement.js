@@ -9,7 +9,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faUpload, faSearch } from '@fortawesome/free-solid-svg-icons';
 import * as publicUtils from './utils/publicUtils.js';
 import MyToast from './myToast';
 import store from './redux/store';
@@ -47,6 +47,7 @@ class dutyManagement extends React.Component {
 		totalPersons:"",
 		averageWorkingTime:"",
 		totalWorkingTime: "",
+		rowSelectEmployeeNo: "",
 		approvalStatuslist: store.getState().dropDown[27],
 		checkSectionlist: store.getState().dropDown[28],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -182,6 +183,30 @@ class dutyManagement extends React.Component {
 			$("#syounin").attr("disabled",true);
 		}
 	}
+	
+	shuseiTo = (actionType) => {
+		var path = {};
+		const sendValue = {
+				yearAndMonthDate: this.state.yearAndMonthDate,
+				enterPeriodKbn: this.state.enterPeriodKbn,
+				employeeName: this.state.employeeName,
+				employeeNo: $("#employeeName").val(),
+		};
+		switch (actionType) {
+			case "siteInfo":
+				path = {
+					pathname: '/subMenuManager/siteInfo',
+					state: {
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "dutyManagement",
+						sendValue: sendValue,
+					},
+				}
+				break;
+			default:
+		}
+		this.props.history.push(path);
+	}
 
 	renderShowsTotal(start, to, total) {
 		return (
@@ -238,8 +263,8 @@ class dutyManagement extends React.Component {
 						</Form.Group>
 						<Form.Group>
 							<Row>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
+								<Col sm={2}>
+									<InputGroup size="sm" className="mb-2">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
 												selected={this.state.yearAndMonth}
@@ -257,9 +282,9 @@ class dutyManagement extends React.Component {
 									</InputGroup>
 								</Col>
 								<Col sm={3}>
-									<InputGroup size="sm" className="mb-3">
+									<InputGroup size="sm" className="mb-2">
 										<InputGroup.Prepend>
-											<InputGroup.Text id="inputGroup-sizing-sm">時間登録ステータス</InputGroup.Text>
+											<InputGroup.Text id="nineKanji">時間登録ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
 										<Form.Control id="approvalStatus" as="select" size="sm" onChange={this.valueChange} name="approvalStatus" value={approvalStatus} autoComplete="off" >
 											<option value="0">すべて</option>
@@ -270,24 +295,53 @@ class dutyManagement extends React.Component {
 										</Form.Control>
 									</InputGroup>
 								</Col>
+								<div>
+									<Button size="sm" variant="info" >
+										<FontAwesomeIcon icon={faSearch} /> 検索
+			                        </Button>
+								</div>
 							</Row>
 						</Form.Group>
 					</div>
 				</Form>
 				<div >
-	                <br/>
                     <Row>
 						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>稼動人数：{this.state.totalPersons}</font>
+							{/*<font style={{ whiteSpace: 'nowrap' }}>稼動人数：{this.state.totalPersons}</font>*/}
+							<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 						</Col>
-						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>平均稼働時間：{this.state.averageWorkingTime}</font>
+						<Col>
+							<InputGroup size="sm">
+			                    <InputGroup.Prepend>
+			                        <InputGroup.Text id="sixKanji" className="input-group-indiv">最小稼働時間</InputGroup.Text>
+			                    </InputGroup.Prepend>
+			                    <FormControl
+			                    value={this.state.minWorkingTime}
+			                    disabled/>
+		                    </InputGroup>
 						</Col>
-						<Col sm={2}>
-							<font style={{ whiteSpace: 'nowrap' }}>最大稼働時間：{this.state.totalWorkingTime}</font>
+						<Col>
+							<InputGroup size="sm">
+			                    <InputGroup.Prepend>
+			                        <InputGroup.Text id="sixKanji" className="input-group-indiv">最大稼働時間</InputGroup.Text>
+			                    </InputGroup.Prepend>
+			                    <FormControl
+			                    value={this.state.totalWorkingTime}
+			                    disabled/>
+		                    </InputGroup>
 						</Col>
-  						<Col sm={2}></Col>
-                        <Col sm={4}>
+						<Col>
+							<InputGroup size="sm">
+			                    <InputGroup.Prepend>
+			                        <InputGroup.Text id="sixKanji" className="input-group-indiv">平均稼働時間</InputGroup.Text>
+			                    </InputGroup.Prepend>
+			                    <FormControl
+			                    value={this.state.averageWorkingTime}
+			                    disabled/>
+		                    </InputGroup>
+						</Col>
+
+                        <Col sm={3}>
                             <div style={{ "float": "right" }}>
                                <Button variant="info" size="sm" id="syounin" onClick={this.listApproval} >
 									<FontAwesomeIcon icon={faEdit} />承認
@@ -298,20 +352,22 @@ class dutyManagement extends React.Component {
 	 						</div>
 						</Col>  
                     </Row>
-					<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
-						<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
-						<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
-						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>所属お客様</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
-						<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
-						<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePay'>残業代/控除</TableHeaderColumn>
-						<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
-						<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
-						<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
-					</BootstrapTable>
+                    <Col>
+						<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+							<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
+							<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>お客様</TableHeaderColumn>
+							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
+							<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
+							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePay'>残業代/控除</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
+							<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
+							<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} hidden dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
+						</BootstrapTable>
+					</Col>  
 				</div>
 			</div >
 		);

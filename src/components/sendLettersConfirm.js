@@ -344,8 +344,8 @@ class sendLettersConfirm extends React.Component {
 
 	// 送信処理
 	sendMailWithFile = (mailText,resumeInfo1,resumeInfo2,resumeName1,resumeName2) => {
-
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
+			let selectedCustomer = this.state.selectedCusInfos[i].customerNo;
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0].replace("株式会社","") + `&nbsp;株式会社<br/>
 				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `&nbsp;様<br/>
 				<br/>
@@ -385,7 +385,7 @@ class sendLettersConfirm extends React.Component {
 								names.push(resumeInfo2[i].split("/")[resumeInfo2[i].split("/").length - 1]);
 							}
 						}
-						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { names, mailTitle, paths, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
+						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { names, mailTitle, paths, mailConfirmContont, selectedmail, selectedMailCC, mailFrom, selectedCustomer })
 							.then(result => {
 								if (result.data.errorsMessage != null) {
 									this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
@@ -393,7 +393,7 @@ class sendLettersConfirm extends React.Component {
 									this.setSelectedCusInfos("X");
 								} 								
 								else{
-									this.setSelectedCusInfos("O");
+									this.setSelectedCusInfos("済み");
 									this.setState({
 										sendLetterOverFlag: true,
 									})

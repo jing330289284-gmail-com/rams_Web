@@ -312,6 +312,7 @@ class salesContent extends React.Component {
 					englishLevelCode: this.state.englishLevels.find((v) => (v.code === result.data[0].englishLevelCode)).name,
 					siteRoleCode: result.data[0].siteRoleCode,
 					unitPrice: result.data[0].unitPrice === null || result.data[0].unitPrice=== "" || result.data[0].unitPrice=== undefined ? this.state.unitPrice : result.data[0].unitPrice,
+					unitPriceShow: result.data[0].unitPrice === null || result.data[0].unitPrice=== "" || result.data[0].unitPrice=== undefined ? utils.addComma(this.state.unitPrice) : utils.addComma(result.data[0].unitPrice),
 					remark: result.data[0].remark === null || result.data[0].remark=== "" || result.data[0].remark=== undefined ? this.state.remark : result.data[0].remark,
 					initAge: result.data[0].age,
 					initNearestStation: result.data[0].nearestStation,

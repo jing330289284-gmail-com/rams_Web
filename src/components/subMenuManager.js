@@ -7,6 +7,7 @@ import EmployeeInsert from './employeeInsert';
 import EmployeeInsertNew from './employeeInsertNew';
 import EmployeeInformation from './employeeInformation';
 import CertificatePrinting from './certificatePrinting';
+import EnvelopePrinting from './envelopePrinting';
 import EmployeeSearch from './employeeSearch';
 import CustomerInfo from './customerInfo';
 import masterInsert from './masterInsert';
@@ -239,6 +240,9 @@ class SubMenu extends Component {
 														</ListGroup.Item>
 														<ListGroup.Item style={this.state.hover.search("4") !== -1 ? subMenuHover : subMenu} onMouseEnter={this.toggleHover.bind(this,"社員・BP-4")} onMouseLeave={this.toggleHover.bind(this,"社員・BP")} onClick={this.shuseiTo.bind(this,{ pathname: '/subMenuManager/certificatePrinting'})} block>
 															<div><Link className={this.state.hover.search("4") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to="/subMenuManager/certificatePrinting"><FontAwesomeIcon className="fa-fw" size="lg" icon={faDownload} /> 証明書印刷</Link></div>
+														</ListGroup.Item>
+														<ListGroup.Item style={this.state.hover.search("5") !== -1 ? subMenuHover : subMenu} onMouseEnter={this.toggleHover.bind(this,"社員・BP-5")} onMouseLeave={this.toggleHover.bind(this,"社員・BP")} onClick={this.shuseiTo.bind(this,{ pathname: '/subMenuManager/envelopePrinting'})} block>
+															<div><Link className={this.state.hover.search("5") !== -1 ? "my-tabcolor-font-hover" : "my-tabcolor-font"} to="/subMenuManager/envelopePrinting"><FontAwesomeIcon className="fa-fw" size="lg" icon={faDownload} /> 封筒印刷</Link></div>
 														</ListGroup.Item>
 													</Accordion>
 												</ListGroup>
@@ -580,6 +584,7 @@ class SubMenu extends Component {
 								<Route exact path={`${this.props.match.url}/employeeSearch`} component={EmployeeSearch} />
 								<Route exact path={`${this.props.match.url}/employeeInformation`} component={EmployeeInformation} />
 								<Route exact path={`${this.props.match.url}/certificatePrinting`} component={CertificatePrinting} />
+								<Route exact path={`${this.props.match.url}/envelopePrinting`} component={EnvelopePrinting} />
 								<Route exact path={`${this.props.match.url}/dutyManagement`} component={dutyManagement} />
 								<Route exact path={`${this.props.match.url}/customerInfo`} component={CustomerInfo} />
 								<Route exact path={`${this.props.match.url}/siteInfo`} component={siteInfo} />

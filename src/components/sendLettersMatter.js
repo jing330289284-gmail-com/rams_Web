@@ -330,6 +330,7 @@ class sendLettersMatter extends React.Component {
 	// 送信処理
 	sendMailWithFile = (mailText) => {
 		for(let i = 0; i < this.state.selectedCusInfos.length; i++){
+			let selectedCustomer = this.state.selectedCusInfos[i].customerNo;
 			const mailConfirmContont = this.state.selectedCusInfos[i].customerName.split("(")[0].replace("株式会社","") + `株式会社<br/>
 				`+ (this.state.selectedCusInfos[i].purchasingManagers === "" ? "ご担当者" : this.state.selectedCusInfos[i].purchasingManagers.split("　")[0]) + `様<br/>
 				<br/>
@@ -361,15 +362,19 @@ class sendLettersMatter extends React.Component {
 						});
 						console.log(selectedMailCC);
 						let mailFrom = this.state.loginUserInfo[0].companyMail;
-						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom })
+						axios.post(this.state.serverIP + "sendLettersConfirm/sendMailWithFile", { resumeName, mailTitle, resumePath, mailConfirmContont, selectedmail, selectedMailCC, mailFrom, selectedCustomer })
 							.then(result => {
-								/*
-								 * this.setState({ mails: result.data, })
-								 */
-								this.setSelectedCusInfos("済み");
-								this.setState({
-									sendLetterOverFlag: true,
-								})
+								if (result.data.errorsMessage != null) {
+									this.setState({ "errorsMessageShow": true, errorsMessageValue: result.data.errorsMessage });
+									setTimeout(() => this.setState({ "errorsMessageShow": false }), 3000);
+									this.setSelectedCusInfos("X");
+								} 								
+								else{
+									this.setSelectedCusInfos("済み");
+									this.setState({
+										sendLetterOverFlag: true,
+									})
+								}
 							})
 							.catch(function(error) {
 								alert(error);
