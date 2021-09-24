@@ -27,11 +27,20 @@ class dutyManagement extends React.Component {
 		this.searchEmployee = this.searchDutyManagement.bind(this);
 	};
 	componentDidMount(){
+		$("#update").attr("disabled",true);
 		$("#syounin").attr("disabled",true);
 		$("#workRepot").attr("disabled",true);
 		$("#datePicker").attr("readonly","readonly");
+		axios.post(this.state.serverIP + "sendLettersConfirm/getLoginUserInfo")
+		.then(result => {
+			this.setState({
+				authorityCode: result.data[0].authorityCode,
+			})
+		})
+		.catch(function(error) {
+			alert(error);
+		});	
 		this.searchDutyManagement();
-		
 	}
 	//onchange
 	valueChange = event => {
@@ -48,6 +57,7 @@ class dutyManagement extends React.Component {
 		averageWorkingTime:"",
 		totalWorkingTime: "",
 		rowSelectEmployeeNo: "",
+		authorityCode: "",
 		approvalStatuslist: store.getState().dropDown[27],
 		checkSectionlist: store.getState().dropDown[28],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -79,12 +89,16 @@ class dutyManagement extends React.Component {
 				var totalPersons=0;
 				var averageWorkingTime=0;
 				var totalWorkingTime=0;
+				var minWorkingTime=999;
 				if (response.data.length>0) {
 					totalPersons=response.data.length;
 					for(var i=0;i<totalPersons;i++){
-						averageWorkingTime=averageWorkingTime+response.data[i].workTime;
-						if(totalWorkingTime<response.data[i].workTime){
-							totalWorkingTime=response.data[i].workTime;
+						averageWorkingTime = averageWorkingTime+response.data[i].workTime;
+						if(Number(totalWorkingTime) < Number(response.data[i].workTime)){
+							totalWorkingTime = response.data[i].workTime;
+						}
+						if(Number(minWorkingTime) > Number(response.data[i].workTime)){
+							minWorkingTime = response.data[i].workTime
 						}
 					}
 					averageWorkingTime=Math.round(averageWorkingTime/totalPersons);
@@ -95,35 +109,28 @@ class dutyManagement extends React.Component {
 					totalPersons="";
 					averageWorkingTime="";
 					totalWorkingTime="";
+					minWorkingTime="";
 				}
-				this.setState({ employeeList: response.data,totalPersons: totalPersons,totalWorkingTime:totalWorkingTime,averageWorkingTime:averageWorkingTime })
+				this.setState({ employeeList: response.data,totalPersons: totalPersons,totalWorkingTime:totalWorkingTime,minWorkingTime:minWorkingTime,averageWorkingTime:averageWorkingTime })
 			}
 			);
 	}
 	/**
 	  * 行の承認
 	  */
-	listApproval = () => {
+	listApproval = (approvalStatus) => {
 		const emp = {
 			yearAndMonth: publicUtils.formateDate(this.state.yearAndMonth, false),
 			employeeNo: this.state.rowSelectEmployeeNo,
 			checkSection: this.state.rowSelectCheckSection,
-			deductionsAndOvertimePay: publicUtils.deleteComma((this.state.rowSelectDeductionsAndOvertimePay).replace(/￥/, "")),
-			deductionsAndOvertimePayOfUnitPrice: publicUtils.deleteComma(this.state.rowSelectDeductionsAndOvertimePayOfUnitPrice),
+			deductionsAndOvertimePay: publicUtils.deleteComma((this.state.employeeList[this.state.rowNo - 1].deductionsAndOvertimePay).replace(/￥/, "")),
+			deductionsAndOvertimePayOfUnitPrice: publicUtils.deleteComma(this.state.employeeList[this.state.rowNo - 1].deductionsAndOvertimePayOfUnitPrice.replace(/￥/, "")),
+			approvalStatus: approvalStatus,
 		}
 		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
 					this.searchDutyManagement();
-					//削除の後で、rowSelectの値に空白をセットする
-					this.setState(
-						{
-							rowSelectEmployeeNo: '',
-							rowSelectCheckSection: '',
-							rowSelectDeductionsAndOvertimePay: '',
-							rowSelectDdeductionsAndOvertimePayOfUnitPrice: '',
-						}
-					);
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else if (result.data == false) {
@@ -143,6 +150,14 @@ class dutyManagement extends React.Component {
     workRepot=()=>{
  
     }
+    
+    overtimePayFormat = (cell) => {
+    	if(cell === null || cell === "")
+    		return "";
+    	else
+    		return ("￥" + publicUtils.addComma(cell));
+	}
+    
 	//　年月
 	inactiveYearAndMonth = (date) => {
 		this.setState(
@@ -167,6 +182,8 @@ class dutyManagement extends React.Component {
 				}
 			);
 			$("#syounin").attr("disabled",false);
+			$("#update").attr("disabled",false);
+
 			if(row.checkSection==0){
 				$("#workRepot").attr("disabled",false);
 			}
@@ -181,6 +198,7 @@ class dutyManagement extends React.Component {
 				}
 			);
 			$("#syounin").attr("disabled",true);
+			$("#update").attr("disabled",true);
 		}
 	}
 	
@@ -222,6 +240,7 @@ class dutyManagement extends React.Component {
 		const selectRow = {
 			mode: 'radio',
 			bgColor: 'pink',
+			clickToSelectAndEditCell: true,
 			hideSelectColumn: true,
 			clickToSelect: true,  // click to select, default is false
 			clickToExpand: true,// click to expand row, default is false
@@ -244,7 +263,10 @@ class dutyManagement extends React.Component {
 			onApprovalRow: this.onApprovalRow,
 			handleConfirmApprovalRow: this.customConfirm,
 		};
-
+		const cellEdit = {
+				mode: 'click',
+				blurToSave: true
+			};
 		return (
 			<div>
 				<div style={{ "display": this.state.myToastShow ? "block" : "none" }}>
@@ -263,7 +285,7 @@ class dutyManagement extends React.Component {
 						</Form.Group>
 						<Form.Group>
 							<Row>
-								<Col sm={2}>
+								<Col sm={5}>
 									<InputGroup size="sm" className="mb-2">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
@@ -279,10 +301,7 @@ class dutyManagement extends React.Component {
 												className="form-control form-control-sm"
 											/>
 										</InputGroup.Prepend>
-									</InputGroup>
-								</Col>
-								<Col sm={3}>
-									<InputGroup size="sm" className="mb-2">
+									<font style={{ marginRight: "30px" }}></font>
 										<InputGroup.Prepend>
 											<InputGroup.Text id="nineKanji">時間登録ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
@@ -296,7 +315,7 @@ class dutyManagement extends React.Component {
 									</InputGroup>
 								</Col>
 								<div>
-									<Button size="sm" variant="info" >
+									<Button size="sm" variant="info" onClick={this.searchDutyManagement} >
 										<FontAwesomeIcon icon={faSearch} /> 検索
 			                        </Button>
 								</div>
@@ -343,7 +362,10 @@ class dutyManagement extends React.Component {
 
                         <Col sm={3}>
                             <div style={{ "float": "right" }}>
-                               <Button variant="info" size="sm" id="syounin" onClick={this.listApproval} >
+	                            <Button variant="info" size="sm" id="update" onClick={this.listApproval.bind(this,0)} >
+									<FontAwesomeIcon icon={faEdit} />残業控除更新
+								</Button>{' '}
+                               <Button variant="info" size="sm" id="syounin" onClick={this.listApproval.bind(this,1)} >
 									<FontAwesomeIcon icon={faEdit} />承認
 								</Button>{' '}
 		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot">
@@ -353,19 +375,19 @@ class dutyManagement extends React.Component {
 						</Col>  
                     </Row>
                     <Col>
-						<BootstrapTable data={employeeList} pagination={true} options={options} approvalRow selectRow={selectRow} headerStyle={ { background: '#5599FF'} } striped hover condensed >
+						<BootstrapTable data={employeeList} selectRow={selectRow} pagination={true} cellEdit={cellEdit} options={options} approvalRow headerStyle={ { background: '#5599FF'} } striped hover condensed >
 							<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo'>社員番号</TableHeaderColumn>
-							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName'>氏名</TableHeaderColumn>
-							<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName'>お客様</TableHeaderColumn>
-							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName'>場所</TableHeaderColumn>
-							<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange'>精算範囲</TableHeaderColumn>
-							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime'>稼働時間</TableHeaderColumn>
-							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePay'>残業代/控除</TableHeaderColumn>
-							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection'>確認区分</TableHeaderColumn>
-							<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime'>更新日付</TableHeaderColumn>
-							<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus'>ステータス</TableHeaderColumn>
-							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} hidden dataField='deductionsAndOvertimePayOfUnitPrice'></TableHeaderColumn>
+							<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo' hidden>社員番号</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
+							<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName' editable={false}>お客様</TableHeaderColumn>
+							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName' editable={false}>場所</TableHeaderColumn>
+							<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange' editable={false}>精算範囲</TableHeaderColumn>
+							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime' editable={false}>稼働時間</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} hidden={this.state.authorityCode==="4" ? false : true} dataField='deductionsAndOvertimePay' editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除(客)</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection' editable={false}>確認区分</TableHeaderColumn>
+							<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime' editable={false}>更新日付</TableHeaderColumn>
+							<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus' editable={false}>ステータス</TableHeaderColumn>
 						</BootstrapTable>
 					</Col>  
 				</div>

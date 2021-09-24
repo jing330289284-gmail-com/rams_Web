@@ -595,8 +595,8 @@ body {
 }
 
 .dutyRegistration-DataTableEditingCell input {
-	height: 20px;
-	padding: 1px 1px 1px 4px;
+	height: 14px;
+	padding: 1px 1px 0px 4px;
 }
 
 .dutyRegistration-DataTableEditingCell select {
