@@ -38,10 +38,13 @@ class workRepot extends React.Component {
 	//　初期化データ
 	initialState = {
 		employeeList: [],
+		approvalStatuslist: store.getState().dropDown[27],
 		costClassificationCode: store.getState().dropDown[30],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
 	};
-	approvalStatus(code) {
+	approvalStatus(code,row) {
+		if(row.sumWorkTime === "" || row.sumWorkTime === null)
+			return "";
 		let approvalStatuss = this.state.approvalStatuslist;
         for (var i in approvalStatuss) {
             if (code === approvalStatuss[i].code) {
@@ -71,6 +74,24 @@ class workRepot extends React.Component {
 	};
 	//　変更
 	sumWorkTimeChange = (e) =>{
+		if(e.sumWorkTime !== null){
+			if(e.sumWorkTime.length > 6){
+				alert("稼働時間をチェックしてください。");
+				return;
+			}else{
+				if(e.sumWorkTime.split(".").length > 1){
+					if(e.sumWorkTime.split(".")[0].length > 3 || e.sumWorkTime.split(".")[1].length > 2 ){
+						alert("稼働時間をチェックしてください。");
+						return;
+					}
+				}else{
+					if(e.sumWorkTime.length > 3){
+						alert("稼働時間をチェックしてください。");
+						return;
+					}
+				}
+			}
+		}
 		const emp = {
 			attendanceYearAndMonth: this.state.rowSelectAttendanceYearAndMonth,
 			sumWorkTime:　e.sumWorkTime,
@@ -142,16 +163,18 @@ if($("#getFile").get(0).files[0].size>1048576){
 					rowSelectAttendanceYearAndMonth: row.attendanceYearAndMonth,
 					rowSelectWorkingTimeReport: row.workingTimeReport,
 					rowSelectSumWorkTime: row.sumWorkTime,
-					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth?true:false,
+					rowSelectapproval:row.attendanceYearAndMonth-0>=TheYearMonth && row.approvalStatus !== "1"?true:false,
 				}
 			);
-			if(row.attendanceYearAndMonth-0>=TheYearMonth){
+			if(row.attendanceYearAndMonth-0>=TheYearMonth && row.approvalStatus !== "1"){
 				$("#workRepotUpload").attr("disabled",false);
 			}
-			if(row.attendanceYearAndMonth-0>TheYearMonth){
+			/*if(row.attendanceYearAndMonth-0>TheYearMonth){
 				$("#workRepotDownload").attr("disabled",true);
-			}
+			}*/
 		} else {
+			$("#workRepotUpload").attr("disabled",true);
+			$("#workRepotDownload").attr("disabled",true);
 			this.setState(
 				{	
 					rowSelectWorkingTimeReport:'',
@@ -186,10 +209,10 @@ if($("#getFile").get(0).files[0].size>1048576){
 			sizePerPage: 5,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
-			prePage: 'Prev', // Previous page button text
-			nextPage: 'Next', // Next page button text
-			firstPage: 'First', // First page button text
-			lastPage: 'Last', // Last page button text
+			prePage: '<', // Previous page button text
+            nextPage: '>', // Next page button text
+            firstPage: '<<', // First page button text
+            lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 			expandRowBgColor: 'rgb(165, 165, 165)',
@@ -243,7 +266,7 @@ if($("#getFile").get(0).files[0].size>1048576){
 						<TableHeaderColumn width='0'hidden={true}  tdStyle={ { padding: '.0em' } }   dataField='workingTimeReport'></TableHeaderColumn>
 						<TableHeaderColumn width='130'　tdStyle={ { padding: '.45em' } }   dataField='attendanceYearAndMonth' editable={false} isKey>年月</TableHeaderColumn>
 						<TableHeaderColumn width='380' tdStyle={ { padding: '.45em' } }   dataField='workingTimeReportFile' editable={false}>ファイル名</TableHeaderColumn>
-						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange}  dataField='sumWorkTime' editable={this.state.rowSelectapproval}>稼働時間</TableHeaderColumn>
+						<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } } onChange={this.sumWorkTimeChange}  dataField='sumWorkTime' editable={this.state.rowSelectapproval} editColumnClassName="dutyRegistration-DataTableEditingCell" >稼働時間</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='updateUser' editable={false}>登録者</TableHeaderColumn>
 						<TableHeaderColumn width='350' tdStyle={ { padding: '.45em' } }   dataField='updateTime' editable={false}>更新日</TableHeaderColumn>
 						<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }   dataField='approvalStatus' editable={false} dataFormat={this.approvalStatus.bind(this)}>ステータス</TableHeaderColumn>

@@ -58,6 +58,8 @@ class dutyManagement extends React.Component {
 		totalWorkingTime: "",
 		rowSelectEmployeeNo: "",
 		authorityCode: "",
+		rowWorkTime: '',
+		rowApprovalStatus: '',
 		approvalStatuslist: store.getState().dropDown[27],
 		checkSectionlist: store.getState().dropDown[28],
 		serverIP: store.getState().dropDown[store.getState().dropDown.length - 1],
@@ -70,16 +72,26 @@ class dutyManagement extends React.Component {
             }
         }
     };
-	approvalStatus(code) {
-    let approvalStatuss = this.state.approvalStatuslist;
-        for (var i in approvalStatuss) {
-            if (code === approvalStatuss[i].code) {
-                return approvalStatuss[i].name;
-            }
-        }
+
+	greyShow(cell,row) {
+		if(row.workTime === "" || row.workTime === null)
+			return (<div style={{color:"grey"}}>{cell}</div>);
+		else
+			return cell;
+    };
+	
+	approvalStatus(code,row) {
+		if(row.workTime === "" || row.workTime === null)
+			return "";
+	    let approvalStatuss = this.state.approvalStatuslist;
+	        for (var i in approvalStatuss) {
+	            if (code === approvalStatuss[i].code) {
+	                return approvalStatuss[i].name;
+	            }
+	        }
     };
 	//　検索
-	searchDutyManagement = () => {
+	searchDutyManagement = (rowNo) => {
 		const emp = {
 			yearAndMonth: publicUtils.formateDate($("#datePicker").val(), false),
 			approvalStatus: $("#approvalStatus").val(),
@@ -97,8 +109,10 @@ class dutyManagement extends React.Component {
 						if(Number(totalWorkingTime) < Number(response.data[i].workTime)){
 							totalWorkingTime = response.data[i].workTime;
 						}
-						if(Number(minWorkingTime) > Number(response.data[i].workTime)){
-							minWorkingTime = response.data[i].workTime
+						if(!(response.data[i].workTime === "" || response.data[i].workTime === null)){
+							if(Number(minWorkingTime) > Number(response.data[i].workTime)){
+								minWorkingTime = response.data[i].workTime
+							}
 						}
 					}
 					averageWorkingTime=Math.round(averageWorkingTime/totalPersons);
@@ -111,7 +125,23 @@ class dutyManagement extends React.Component {
 					totalWorkingTime="";
 					minWorkingTime="";
 				}
-				this.setState({ employeeList: response.data,totalPersons: totalPersons,totalWorkingTime:totalWorkingTime,minWorkingTime:minWorkingTime,averageWorkingTime:averageWorkingTime })
+				this.setState({
+					employeeList: response.data,
+					totalPersons: totalPersons,
+					totalWorkingTime: totalWorkingTime,
+					minWorkingTime: minWorkingTime,
+					averageWorkingTime: averageWorkingTime
+				})
+				if(rowNo !== undefined){
+					this.setState({
+						rowApprovalStatus: response.data[rowNo - 1].approvalStatus,
+					})
+					if(response.data[rowNo - 1].approvalStatus === "1"){
+						$("#update").attr("disabled",true);
+					}else{
+						$("#update").attr("disabled",false);
+					}
+				}
 			}
 			);
 	}
@@ -130,7 +160,7 @@ class dutyManagement extends React.Component {
 		axios.post(this.state.serverIP + "dutyManagement/updateDutyManagement", emp)
 			.then(result => {
 				if (result.data == true) {
-					this.searchDutyManagement();
+					this.searchDutyManagement(this.state.rowNo);
 					this.setState({ "myToastShow": true });
 					setTimeout(() => this.setState({ "myToastShow": false }), 3000);
 				} else if (result.data == false) {
@@ -151,7 +181,9 @@ class dutyManagement extends React.Component {
  
     }
     
-    overtimePayFormat = (cell) => {
+    overtimePayFormat = (cell,row) => {
+    	if(row.workTime === "" || row.workTime === null)
+    		return "";
     	if(cell === null || cell === "")
     		return "";
     	else
@@ -178,11 +210,21 @@ class dutyManagement extends React.Component {
 					rowSelectEmployeeNo: row.employeeNo,
 					rowSelectCheckSection: row.checkSection,
 					rowSelectDeductionsAndOvertimePay: row.deductionsAndOvertimePay,
-					rowSelectDeductionsAndOvertimePayOfUnitPrice: row.deductionsAndOvertimePayOfUnitPrice
+					rowSelectDeductionsAndOvertimePayOfUnitPrice: row.deductionsAndOvertimePayOfUnitPrice,
+					rowWorkTime: row.workTime,
+					rowApprovalStatus: row.approvalStatus,
 				}
 			);
-			$("#syounin").attr("disabled",false);
-			$("#update").attr("disabled",false);
+			if(!(row.workTime === "" || row.workTime === null)){
+				$("#syounin").attr("disabled",false);
+				if(row.approvalStatus !== "1")
+					$("#update").attr("disabled",false);
+				else
+					$("#update").attr("disabled",true);
+			}else{
+				$("#syounin").attr("disabled",true);
+				$("#update").attr("disabled",true);
+			}
 
 			if(row.checkSection==0){
 				$("#workRepot").attr("disabled",false);
@@ -195,6 +237,7 @@ class dutyManagement extends React.Component {
 					rowSelectCheckSection: '',
 					rowSelectDeductionsAndOvertimePay: '',
 					rowSelectDdeductionsAndOvertimePayOfUnitPrice: '',
+					rowApprovalStatus: '',
 				}
 			);
 			$("#syounin").attr("disabled",true);
@@ -211,6 +254,19 @@ class dutyManagement extends React.Component {
 				employeeNo: $("#employeeName").val(),
 		};
 		switch (actionType) {
+			case "employeeInfo":
+				path = {
+					pathname: '/subMenuManager/employeeUpdateNew',
+					state: {
+						id: this.state.rowSelectEmployeeNo,
+						employeeNo: this.state.rowSelectEmployeeNo,
+						backPage: "dutyManagement",
+						sendValue: sendValue,
+	                    searchFlag: true,
+	                    actionType:"update",
+					},
+				}
+				break;
 			case "siteInfo":
 				path = {
 					pathname: '/subMenuManager/siteInfo',
@@ -249,13 +305,13 @@ class dutyManagement extends React.Component {
 		//　 テーブルの定義
 		const options = {
 			page: 1, 
-			sizePerPage: 5,  // which size per page you want to locate as default
+			sizePerPage: 10,  // which size per page you want to locate as default
 			pageStartIndex: 1, // where to start counting the pages
 			paginationSize: 3,  // the pagination bar size.
-			prePage: 'Prev', // Previous page button text
-			nextPage: 'Next', // Next page button text
-			firstPage: 'First', // First page button text
-			lastPage: 'Last', // Last page button text
+			prePage: '<', // Previous page button text
+            nextPage: '>', // Next page button text
+            firstPage: '<<', // First page button text
+            lastPage: '>>', // Last page button text
 			paginationShowsTotal: this.renderShowsTotal,  // Accept bool or function
 			hideSizePerPage: true, //> You can hide the dropdown for sizePerPage
 			expandRowBgColor: 'rgb(165, 165, 165)',
@@ -285,7 +341,8 @@ class dutyManagement extends React.Component {
 						</Form.Group>
 						<Form.Group>
 							<Row>
-								<Col sm={5}>
+								<Col sm={10}>
+									<Col sm={6} style={{padding:"0px"}}>
 									<InputGroup size="sm" className="mb-2">
 										<InputGroup.Prepend>
 											<InputGroup.Text id="inputGroup-sizing-sm">年月</InputGroup.Text><DatePicker
@@ -305,20 +362,17 @@ class dutyManagement extends React.Component {
 										<InputGroup.Prepend>
 											<InputGroup.Text id="nineKanji">時間登録ステータス</InputGroup.Text>
 										</InputGroup.Prepend>
-										<Form.Control id="approvalStatus" as="select" size="sm" onChange={this.valueChange} name="approvalStatus" value={approvalStatus} autoComplete="off" >
+										<Form.Control id="approvalStatus" as="select" size="sm" onChange={this.valueChange} style={{width:"30px"}} name="approvalStatus" value={approvalStatus} autoComplete="off" >
 											<option value="0">すべて</option>
 											<option value="1">未</option>
 											<option value="2">済み</option>
 											<option value="3">総時間のみ</option>
 											<option value="4">登録のみ</option>
 										</Form.Control>
+										<font style={{ marginLeft: "90px" }}></font>
 									</InputGroup>
 								</Col>
-								<div>
-									<Button size="sm" variant="info" onClick={this.searchDutyManagement} >
-										<FontAwesomeIcon icon={faSearch} /> 検索
-			                        </Button>
-								</div>
+								</Col>
 							</Row>
 						</Form.Group>
 					</div>
@@ -327,6 +381,7 @@ class dutyManagement extends React.Component {
                     <Row>
 						<Col sm={2}>
 							{/*<font style={{ whiteSpace: 'nowrap' }}>稼動人数：{this.state.totalPersons}</font>*/}
+                            <Button size="sm" onClick={this.shuseiTo.bind(this, "employeeInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} variant="info" id="employeeInfo">個人情報</Button>{' '}
 							<Button size="sm" onClick={this.shuseiTo.bind(this, "siteInfo")} disabled={this.state.rowSelectEmployeeNo === "" ? true : false} name="clickButton" variant="info" id="siteInfo">現場情報</Button>{' '}
 						</Col>
 						<Col>
@@ -362,30 +417,31 @@ class dutyManagement extends React.Component {
 
                         <Col sm={3}>
                             <div style={{ "float": "right" }}>
-	                            <Button variant="info" size="sm" id="update" onClick={this.listApproval.bind(this,0)} >
+		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot">
+		                     		 <FontAwesomeIcon icon={faUpload} />報告書
+		                       </Button>{' '}
+	                            <Button variant="info" size="sm" id="update" onClick={this.listApproval.bind(this,2)}>
 									<FontAwesomeIcon icon={faEdit} />残業控除更新
 								</Button>{' '}
-                               <Button variant="info" size="sm" id="syounin" onClick={this.listApproval.bind(this,1)} >
-									<FontAwesomeIcon icon={faEdit} />承認
+                               <Button variant="info" size="sm" id="syounin" onClick={this.state.rowApprovalStatus !== "1" ? this.listApproval.bind(this,1) : this.listApproval.bind(this,0)}>
+									<FontAwesomeIcon icon={faEdit} />{this.state.rowApprovalStatus !== "1" ? "承認" : "取り消し" }
 								</Button>{' '}
-		                        <Button variant="info" size="sm" onClick={this.workRepot} id="workRepot">
-	                          		 <FontAwesomeIcon icon={faUpload} />作業報告書
-		                        </Button>                   
+               
 	 						</div>
 						</Col>  
                     </Row>
                     <Col>
 						<BootstrapTable data={employeeList} selectRow={selectRow} pagination={true} cellEdit={cellEdit} options={options} approvalRow headerStyle={ { background: '#5599FF'} } striped hover condensed >
-							<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } }  dataField='rowNo' isKey>番号</TableHeaderColumn>
-							<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　 dataField='employeeNo' hidden>社員番号</TableHeaderColumn>
-							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
-							<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } }  dataField='customerName' editable={false}>お客様</TableHeaderColumn>
-							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='stationName' editable={false}>場所</TableHeaderColumn>
-							<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } }  dataField='payOffRange' editable={false}>精算範囲</TableHeaderColumn>
+							<TableHeaderColumn width='55'　tdStyle={ { padding: '.45em' } } dataFormat={this.greyShow.bind(this)} dataField='rowNo' isKey>番号</TableHeaderColumn>
+							<TableHeaderColumn width='90'　tdStyle={ { padding: '.45em' } } 　dataFormat={this.greyShow.bind(this)} dataField='employeeNo' hidden>社員番号</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } } dataFormat={this.greyShow.bind(this)} dataField='employeeName' editable={false}>氏名</TableHeaderColumn>
+							<TableHeaderColumn width='150' tdStyle={ { padding: '.45em' } } dataFormat={this.greyShow.bind(this)} dataField='customerName' editable={false}>お客様</TableHeaderColumn>
+							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } } dataFormat={this.greyShow.bind(this)} dataField='stationName' editable={false}>場所</TableHeaderColumn>
+							<TableHeaderColumn width='95' tdStyle={ { padding: '.45em' } } dataFormat={this.greyShow.bind(this)} dataField='payOffRange' editable={false}>精算範囲</TableHeaderColumn>
 							<TableHeaderColumn width='90' tdStyle={ { padding: '.45em' } }  dataField='workTime' editable={false}>稼働時間</TableHeaderColumn>
-							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} hidden={this.state.authorityCode==="4" ? false : true} dataField='deductionsAndOvertimePay' editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除</TableHeaderColumn>
-							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除(客)</TableHeaderColumn>
-							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)}  dataField='checkSection' editable={false}>確認区分</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} hidden={this.state.authorityCode==="4" ? false : true} dataField='deductionsAndOvertimePay' editable={!(this.state.rowWorkTime === "" || this.state.rowWorkTime === null)} editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除</TableHeaderColumn>
+							<TableHeaderColumn width='125' tdStyle={{ padding: '.45em' }} dataField='deductionsAndOvertimePayOfUnitPrice' editable={!(this.state.rowWorkTime === "" || this.state.rowWorkTime === null)} editColumnClassName="dutyRegistration-DataTableEditingCell" dataFormat={this.overtimePayFormat.bind(this)}>残業/控除(客)</TableHeaderColumn>
+							<TableHeaderColumn width='120' tdStyle={ { padding: '.45em' } }  dataFormat={this.checkSection.bind(this)} hidden dataField='checkSection' editable={false}>確認区分</TableHeaderColumn>
 							<TableHeaderColumn width='140' tdStyle={ { padding: '.45em' } }  dataField='updateTime' editable={false}>更新日付</TableHeaderColumn>
 							<TableHeaderColumn width='110' tdStyle={ { padding: '.45em' } }  dataFormat={this.approvalStatus.bind(this)} dataField='approvalStatus' editable={false}>ステータス</TableHeaderColumn>
 						</BootstrapTable>
